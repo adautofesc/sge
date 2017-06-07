@@ -14,3 +14,6 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('about',function(){
+   return "Sistema de Gestão Educacional. Todos direitos reservados";
+});

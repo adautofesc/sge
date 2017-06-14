@@ -1,4 +1,4 @@
-<p align="center">Sistema de Gestão Educacional</p>
+<h1 align="center">Sistema de Gestão Educacional</h1>
 
 ## About o SGE
 

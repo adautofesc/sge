@@ -12,14 +12,21 @@
 */
 
 Route::get('/', function () {
-    return view('login');
+    return view('home');
 });
 Route::get('about',function(){
    return "Sistema de Gestão Educacional. Todos direitos reservados";
 });
-Route::get('home',function(){
-   return view('home');
+
+//------------------------------ Login 
+Route::get('login',function(){
+   return view('login');
 });
+Route::post('login_check', 'pessoaController@loginCheck');
+Route::get('logout', 'pessoaController@logout');
+//----------------------------- Errors treatment
+
+
 Route::get('404',function(){
    return view('error-404');
 });

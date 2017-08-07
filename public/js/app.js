@@ -77,13 +77,13 @@ $(function() {
 	    rules: {
 	        email1: {
 	            required: true,
-	            email: true
+	            email: false
 	        }
 	    },
 	    messages: {
 	        email1: {
-	            required: "Please enter email address",
-	            email: "Please enter a valid email address"
+	            required: "Por favor coloque seu e-mail",
+	            email: "Por favor coloque um endereço válido"
 	        }
 	    },
 	    invalidHandler: function() {
@@ -108,18 +108,18 @@ $(function() {
 	    rules: {
 	        username: {
 	            required: true,
-	            email: true
+	            email: false
 	        },
 	        password: "required",
 	        agree: "required"
 	    },
 	    messages: {
 	        username: {
-	            required: "Please enter username",
-	            email: "Please enter a valid email address"
+	            required: "Por favor insira seu nome de usuário",
+	            email: "Entre com um nome de usuário válido"
 	        },
-	        password:  "Please enter password",
-	        agree: "Please accept our policy"
+	        password:  "Por favor insira sua senha",
+	        agree: "Por favor aceite os termos"
 	    },
 	    invalidHandler: function() {
 			animate({

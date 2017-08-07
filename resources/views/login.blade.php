@@ -4,8 +4,8 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title> SGE FESC</title>
-        <meta name="description" content="Sistema de Gestão Educacional da FESC">
+        <title> Sistema de Gestão Educacional - SGE FESC </title>
+        <meta name="description" content="Página de login do SGE da FESC">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
         <!-- Place favicon.ico in the root directory -->
@@ -32,27 +32,23 @@
                 <div class="card">
                     <header class="auth-header">
                         <h1 class="auth-title">
-                             Sistema de Gestão
-                        </h1>
+                            <div class="logo"> <span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div> SGE <i>FESC</i></h1>
                     </header>
                     <div class="auth-content">
-                        <p class="text-xs-center">Preencha dos dados para prosseguir.</p>
-                        <form id="login-form" action="/index.html" method="GET" novalidate="">
-                            <div class="form-group"> <label for="usernamex">Nome de Usuário</label> <input type="text" class="form-control underlined" name="usernamex" id="usernamex" placeholder="Digite aqui seu login" required> </div>
-                            <div class="form-group"> <label for="password">Senha</label> <input type="password" class="form-control underlined" name="password" id="password" placeholder="digite aqui sua senha" required> </div>
+                        <p class="text-xs-center">Preencha os dados para acessar:</p>
+                        <form id="login-form" action="./index.php" method="POST" novalidate="">
+                            <div class="form-group"> <label for="username">Login</label> <input type="text" class="form-control underlined" name="username" id="username" placeholder="Digite aqui seu nome de usuário" required> </div>
+                            <div class="form-group"> <label for="password">Senha</label> <input type="password" class="form-control underlined" name="password" id="password" placeholder="Sua senha" required> </div>
                             <div class="form-group"> <label for="remember">
-            <input class="checkbox" id="remember" type="checkbox">
-            <span>Lembrar senha</span>
-          </label> <a href="reset.html" class="forgot-btn pull-right">Esqueceu a senha?</a> </div>
-                            <div class="form-group"> <button type="submit" class="btn btn-block btn-primary">Login</button> </div>
+            <input class="checkbox" id="remember" type="checkbox"> 
+            <span>Lembrar</span>
+          </label> <a href="#" class="forgot-btn pull-right">Esqueci a senha</a> </div>
+                            <div class="form-group"> <button type="submit" class="btn btn-block btn-primary">Entrar</button> </div>
                             <div class="form-group">
-                                <p class="text-muted text-xs-center">Não tem cadastro?? <a href="signup.html">Solicitar</a></p>
+                                <p class="text-muted text-xs-center">Não tem cadastro? <a href="#">Solicite</a></p>
                             </div>
                         </form>
                     </div>
-                </div>
-                <div class="text-xs-center">
-                    <a href="index.html" class="btn btn-secondary rounded btn-sm"> <i class="fa fa-arrow-left"></i> Back to dashboard </a>
                 </div>
             </div>
         </div>

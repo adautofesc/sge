@@ -13,48 +13,66 @@ class CreatePessoas extends Migration
      */
     public function up()
     {
+        Schema::enableForeignKeyConstraints();
+
         Schema::create('pessoas', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->string('nome');
-            $table->char('sexo');
+            $table->char('genero');
             $table->date('nascimento');
             $table->timestamps('created');
         });
         Schema::create('pessoas_dados_gerais', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
+            $table->integer('pessoa')->references('id')->on('pessoas');
             $table->unsignedInteger('dado');
-            $tabel->string('valor',150);
+            $table->string('valor',150);
             $table->timestamps('created');
         });
         Schema::create('pessoas_dados_contato', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
+            $table->integer('pessoa')->references('id')->on('pessoas');
             $table->unsignedInteger('dado');
-            $tabel->string('valor',150);
+            $table->string('valor',150);
             $table->timestamps('created');
         });
         Schema::create('pessoas_dados_academicos', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
+            $table->integer('pessoa')->references('id')->on('pessoas');
             $table->unsignedInteger('dado');
-            $tabel->string('valor',150);
+            $table->string('valor',150);
             $table->timestamps('created');
         });
         Schema::create('pessoas_dados_administrativos', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
+            $table->integer('pessoa')->references('id')->on('pessoas');
             $table->unsignedInteger('dado');
-            $tabel->string('valor',150);
+            $table->string('valor',150);
             $table->timestamps('created');
         });
         Schema::create('pessoas_dados_clinicos', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
+            $table->integer('pessoa')->references('id')->on('pessoas');
             $table->unsignedInteger('dado');
-            $tabel->string('valor',150);
+            $table->string('valor',150);
             $table->timestamps('created');
         });
         Schema::create('pessoas_dados_financeiros', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
+            $table->integer('pessoa')->references('id')->on('pessoas');
             $table->unsignedInteger('dado');
-            $tabel->string('valor',150);
+            $table->string('valor',150);
             $table->timestamps('created');
+        });
+        Schema::create('pessoas_dados_acesso', function (Blueprint $table) {
+            $table->increments('id')->unsigned();
+            $table->integer('pessoa')->references('id')->on('pessoas');
+            $table->string('email',150)->unique();
+            $table->string('senha');
+            $table->date('validade');
+            $table->char('status',1);
+            $table->rememberToken();
+            $table->timestamps();
         });
     }
 
@@ -65,13 +83,14 @@ class CreatePessoas extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pessoas');
+        Schema::dropIfExists('pessoas_dados_acesso');
         Schema::dropIfExists('pessoas_dados_gerais');
         Schema::dropIfExists('pessoas_dados_contato');
         Schema::dropIfExists('pessoas_dados_academicos');
         Schema::dropIfExists('pessoas_dados_administrativos');
         Schema::dropIfExists('pessoas_dados_clinicos');
         Schema::dropIfExists('pessoas_dados_financeiros');
+        Schema::dropIfExists('pessoas');
 
     }
 }

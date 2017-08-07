@@ -13029,7 +13029,7 @@ Licensed under the MIT license.
                             ctx.lineTo(xrange.to + subPixel, yrange.to);
                         } else {
                             ctx.moveTo(xrange.from, yrange.to + subPixel);
-                            ctx.lineTo(xrange.to, yrange.to + subPixel);
+                            ctx.lineTo(xrange.to, yrange.to + subPixel);                            
                         }
                         ctx.stroke();
                     } else {
@@ -13544,9 +13544,9 @@ Licensed under the MIT license.
                 radius = series.points.radius,
                 symbol = series.points.symbol;
 
-            // If the user sets the line width to 0, we change it to a very
+            // If the user sets the line width to 0, we change it to a very 
             // small value. A line width of 0 seems to force the default of 1.
-            // Doing the conditional here allows the shadow setting to still be
+            // Doing the conditional here allows the shadow setting to still be 
             // optional even with a lineWidth of 0.
 
             if( lw == 0 )
@@ -14225,7 +14225,7 @@ can just fix the size of their placeholders.
             plot.setupGrid();
             plot.draw();
         }
-
+        
         function bindEvents(plot, eventHolder) {
             plot.getPlaceholder().resize(onResize);
         }
@@ -14233,11 +14233,11 @@ can just fix the size of their placeholders.
         function shutdown(plot, eventHolder) {
             plot.getPlaceholder().unbind("resize", onResize);
         }
-
+        
         plot.hooks.bindEvents.push(bindEvents);
         plot.hooks.shutdown.push(shutdown);
     }
-
+    
     $.plot.plugins.push({
         init: init,
         options: options,
@@ -15227,7 +15227,7 @@ API.txt for details.
 			return makeUtcWrapper(new Date(ts));
 		}
 	}
-
+	
 	// map of app. size of time units in milliseconds
 
 	var timeUnitSize = {
@@ -15245,9 +15245,9 @@ API.txt for details.
 
 	var baseSpec = [
 		[1, "second"], [2, "second"], [5, "second"], [10, "second"],
-		[30, "second"],
+		[30, "second"], 
 		[1, "minute"], [2, "minute"], [5, "minute"], [10, "minute"],
-		[30, "minute"],
+		[30, "minute"], 
 		[1, "hour"], [2, "hour"], [4, "hour"],
 		[8, "hour"], [12, "hour"],
 		[1, "day"], [2, "day"], [3, "day"],
@@ -15502,15 +15502,15 @@ API.txt for details.
 
 /*
  * jquery.flot.tooltip
- *
+ * 
  * description: easy-to-use tooltips for Flot charts
  * version: 0.8.7
  * authors: Krzysztof Urbas @krzysu [myviews.pl],Evan Steinkerchner @Roundaround
  * website: https://github.com/krzysu/flot.tooltip
- *
+ * 
  * build on 2016-03-15
  * released under MIT License, 2012
-*/
+*/ 
 (function ($) {
     // plugin options, default values
     var defaultOptions = {
@@ -15767,13 +15767,13 @@ API.txt for details.
                 pos.y -= totalTipHeight;
             }
 
-	    /*
+	    /* 
 	       The section applies the new positioning ONLY if pos.x and pos.y
 	       are numbers. If they are undefined or not a number, use the last
-	       known numerical position. This hack fixes a bug that kept pie
+	       known numerical position. This hack fixes a bug that kept pie 
 	       charts from keeping their tooltip positioning.
 	     */
-
+	    
             if (isNaN(pos.x)) {
 		that.tipPosition.x = that.tipPosition.xPrev;
 	    }
@@ -15788,7 +15788,7 @@ API.txt for details.
 		that.tipPosition.y = pos.y;
 		that.tipPosition.yPrev = pos.y;
 	    }
-
+	    
         };
 
         // Quick little function for showing the tooltip.
@@ -15835,7 +15835,7 @@ API.txt for details.
             if( $tip.length === 0 ){
                 $tip = $('<div />').addClass(this.tooltipOptions.cssClass);
                 $tip.appendTo('body').hide().css({position: 'absolute'});
-
+    
                 if(this.tooltipOptions.defaultTheme) {
                     $tip.css({
                         'background': '#fff',
@@ -15872,7 +15872,7 @@ API.txt for details.
         var yPatternWithoutPrecision = "%y";
         var customTextPattern = "%ct";
 	var nPiePattern = "%n";
-
+	
         var x, y, customText, p, n;
 
         // for threshold plugin we need to read data from different place
@@ -15887,7 +15887,7 @@ API.txt for details.
 		x = item.datapoint[0];
 		y = item.datapoint[1];
 	    }
-
+	    
         else if (typeof item.series.lines !== "undefined" && item.series.lines.steps) {
             x = item.series.datapoints.points[item.dataIndex * 2];
             y = item.series.datapoints.points[item.dataIndex * 2 + 1];
@@ -15915,7 +15915,7 @@ API.txt for details.
         }
 
 	/* replacement of %ct and other multi-character templates must
-	   precede the replacement of single-character templates
+	   precede the replacement of single-character templates 
 	   to avoid conflict between '%c' and '%ct'  and similar substrings
 	*/
 	if (customText)
@@ -15926,7 +15926,7 @@ API.txt for details.
             p = item.series.percent;
         } else if (typeof (item.series.percents) !== 'undefined') {
             p = item.series.percents[item.dataIndex];
-        }
+        }        
         if (typeof p === 'number') {
             content = this.adjustValPrecision(percentPattern, content, p);
         }
@@ -15940,7 +15940,7 @@ API.txt for details.
 	if (typeof n === 'number') {
             content = content.replace(nPiePattern, n);
 	}
-
+	
         // series match
         if (typeof(item.series.label) !== 'undefined') {
             content = content.replace(seriesPattern, item.series.label);
@@ -15948,7 +15948,7 @@ API.txt for details.
             //remove %s if label is undefined
             content = content.replace(seriesPattern, "");
         }
-
+        
         // color match
         if (typeof(item.series.color) !== 'undefined') {
             content = content.replace(colorPattern, item.series.color);
@@ -16431,22 +16431,22 @@ $.extend( $.validator, {
 	},
 
 	messages: {
-		required: "Campo obrigatório.",
-		remote: "Por favor conserte esse campo.",
-		email: "Por favor entre com um e-mail válido.",
-		url: "Por favor, entre com uma URL válida.",
-		date: "Por favor entre com uma data válida",
-		dateISO: "Por favor entre com uma data válida( ISO ).",
-		number: "Por favor digite um número válido",
-		digits: "Somente digitos por favor.",
-		creditcard: "Entre com um número de cartão de crédito válido.",
-		equalTo: "Por favor repita o mesmo valor.",
-		maxlength: $.validator.format( "Não mais do que {0} caracteres." ),
-		minlength: $.validator.format( "Pelo menos {0} caracteres." ),
-		rangelength: $.validator.format( "Valores somente entre {0} e {1} caracteres." ),
-		range: $.validator.format( "Por favor, valores somente entre {0} e {1}." ),
-		max: $.validator.format( "Por favor, somente valores menores ou iguais a {0}." ),
-		min: $.validator.format( "Por favor, somente valores maiores ou iguais a {0}." )
+		required: "Campo necessário.",
+		remote: "Modifique este valor.",
+		email: "Por favor insira um endereço válido.",
+		url: "Por favor insira uma URL válida.",
+		date: "Por favor insira uma data válida.",
+		dateISO: "Por favor insira uma data válida ( ISO ).",
+		number: "Por favor insira um número válido.",
+		digits: "Por favor insira somente digitos.",
+		creditcard: "Por favor insira um número de cartão válido.",
+		equalTo: "Por favor insira o mesmo valor novamente.",
+		maxlength: $.validator.format( "Por favor insira até {0} caracteres." ),
+		minlength: $.validator.format( "Por favor insira pelo menos {0} caracteres." ),
+		rangelength: $.validator.format( "Por favor insira um valor entre {0} e {1} caracteres." ),
+		range: $.validator.format( "Por favor insira um valor entre {0} e {1}." ),
+		max: $.validator.format( "Por favor insira menor ou igual a {0}." ),
+		min: $.validator.format( "Por favor insira um valor maior ou igual a {0}." )
 	},
 
 	autoCreateRanges: false,
@@ -22105,13 +22105,13 @@ jQuery.fn.vectorMap('addMap', 'world_en', {"width":950,"height":550,"paths":{"id
 })(jQuery);
 
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-//
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 // http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22311,7 +22311,7 @@ jQuery.fn.vectorMap('addMap', 'world_en', {"width":950,"height":550,"paths":{"id
      - name (array) if you don’t want to use separators, you can use array of strings
      - f (function) event handler function
      **
-     = (function) returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment.
+     = (function) returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment. 
      > Example:
      | eve.on("mouse", eatIt)(2);
      | eve.on("mouse", scream);
@@ -23233,28 +23233,28 @@ Progress.prototype.draw = function(ctx){
       , y = half
       , rad = half - 1
       , fontSize = this._fontSize;
-
+  
     ctx.font = fontSize + 'px ' + this._font;
-
+  
     var angle = Math.PI * 2 * (percent / 100);
     ctx.clearRect(0, 0, size, size);
-
+  
     // outer circle
     ctx.strokeStyle = '#9f9f9f';
     ctx.beginPath();
     ctx.arc(x, y, rad, 0, angle, false);
     ctx.stroke();
-
+  
     // inner circle
     ctx.strokeStyle = '#eee';
     ctx.beginPath();
     ctx.arc(x, y, rad - 1, 0, angle, true);
     ctx.stroke();
-
+  
     // text
     var text = this._text || (percent | 0) + '%'
       , w = ctx.measureText(text).width;
-
+  
     ctx.fillText(
         text
       , x - w / 2 + 1
@@ -28428,16 +28428,16 @@ Mocha.process = process;
 
       if (n === 1) {
         // Fade out
-        css(progress, {
-          transition: 'none',
-          opacity: 1
+        css(progress, { 
+          transition: 'none', 
+          opacity: 1 
         });
         progress.offsetWidth; /* Repaint */
 
         setTimeout(function() {
-          css(progress, {
-            transition: 'all ' + speed + 'ms linear',
-            opacity: 0
+          css(progress, { 
+            transition: 'all ' + speed + 'ms linear', 
+            opacity: 0 
           });
           setTimeout(function() {
             NProgress.remove();
@@ -28565,7 +28565,7 @@ Mocha.process = process;
     if (NProgress.isRendered()) return document.getElementById('nprogress');
 
     addClass(document.documentElement, 'nprogress-busy');
-
+    
     var progress = document.createElement('div');
     progress.id = 'nprogress';
     progress.innerHTML = Settings.template;
@@ -28574,7 +28574,7 @@ Mocha.process = process;
         perc     = fromStart ? '-100' : toBarPerc(NProgress.status || 0),
         parent   = document.querySelector(Settings.parent),
         spinner;
-
+    
     css(bar, {
       transition: 'all 0 linear',
       transform: 'translate3d(' + perc + '%,0,0)'
@@ -28685,7 +28685,7 @@ Mocha.process = process;
 
   var queue = (function() {
     var pending = [];
-
+    
     function next() {
       var fn = pending.shift();
       if (fn) {
@@ -28700,10 +28700,10 @@ Mocha.process = process;
   })();
 
   /**
-   * (Internal) Applies css properties to an element, similar to the jQuery
+   * (Internal) Applies css properties to an element, similar to the jQuery 
    * css method.
    *
-   * While this helper does assist with vendor prefixed property names, it
+   * While this helper does assist with vendor prefixed property names, it 
    * does not perform any manipulation of values prior to setting styles.
    */
 
@@ -28744,7 +28744,7 @@ Mocha.process = process;
 
     return function(element, properties) {
       var args = arguments,
-          prop,
+          prop, 
           value;
 
       if (args.length == 2) {
@@ -28775,7 +28775,7 @@ Mocha.process = process;
     var oldList = classList(element),
         newList = oldList + name;
 
-    if (hasClass(oldList, name)) return;
+    if (hasClass(oldList, name)) return; 
 
     // Trim the opening space.
     element.className = newList.substring(1);
@@ -28799,8 +28799,8 @@ Mocha.process = process;
   }
 
   /**
-   * (Internal) Gets a space separated list of the class names on the element.
-   * The list is wrapped with a single space on each end to facilitate finding
+   * (Internal) Gets a space separated list of the class names on the element. 
+   * The list is wrapped with a single space on each end to facilitate finding 
    * matches within the list.
    */
 
@@ -42387,9 +42387,9 @@ else {
 
     /*
     This is a list of all available events you can register on a dropzone object.
-
+    
     You can register an event handler like this:
-
+    
         dropzone.on("dragEnter", function() { });
      */
 
@@ -43922,7 +43922,7 @@ else {
 
 
   /*
-
+  
   Bugfix for iOS 6 and 7
   Source: http://stackoverflow.com/questions/11929099/html5-canvas-drawimage-ratio-bug-ios
   based on the work of https://github.com/stomita/ios-imagefile-megapixel
@@ -52951,13 +52951,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
-	//
+	// 
 	// Licensed under the Apache License, Version 2.0 (the "License");
 	// you may not use this file except in compliance with the License.
 	// You may obtain a copy of the License at
-	//
+	// 
 	// http://www.apache.org/licenses/LICENSE-2.0
-	//
+	// 
 	// Unless required by applicable law or agreed to in writing, software
 	// distributed under the License is distributed on an "AS IS" BASIS,
 	// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53157,7 +53157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     - name (array) if you don’t want to use separators, you can use array of strings
 	     - f (function) event handler function
 	     **
-	     = (function) returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment.
+	     = (function) returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment. 
 	     > Example:
 	     | eve.on("mouse", eatIt)(2);
 	     | eve.on("mouse", scream);

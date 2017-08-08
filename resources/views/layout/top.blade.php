@@ -67,7 +67,7 @@
                                     <a class="dropdown-item" href="#"> <i class="fa fa-bell icon"></i> Notificações </a>
                                     <a class="dropdown-item" href="#"> <i class="fa fa-gear icon"></i> Configurações </a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="login.html"> <i class="fa fa-power-off icon"></i> Sair </a>
+                                    <a class="dropdown-item" href="/logout"> <i class="fa fa-power-off icon"></i> Sair </a>
                                 </div>
                             </li>
                         </ul>

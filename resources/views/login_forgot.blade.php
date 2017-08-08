@@ -40,18 +40,16 @@
                         @endif
 
 
-                        <p class="text-xs-center">Preencha os dados para acessar:</p>
-                        <form id="login-form" action="/loginCheck" method="POST" novalidate="">
+                        <p class="text-xs-center">Não podemos recuperar sua senha, mas não se preocupe, vamos lhe enviar um código para que você possa alterar sua senha e voltar a ter acesso. Para isso preencha o campo abaixo.</p>
+                        <form id="login-form" action="/loginRemember" method="POST" novalidate="">
                         {{csrf_field()}}
-                            <div class="form-group"> <label for="username">Login</label> <input type="text" class="form-control underlined" name="login_name" id="username" placeholder="Digite aqui seu nome de usuário" required> </div>
-                            <div class="form-group"> <label for="password">Senha</label> <input type="password" class="form-control underlined" name="login_pwd" id="password" placeholder="Sua senha" required> </div>
-                            <div class="form-group"> <label for="remember">
-            <input class="checkbox" id="remember" type="checkbox"> 
-            <span>Lembrar</span>
-          </label> <a href="trocarSenha" class="forgot-btn pull-right">Esqueci a senha</a> </div>
-                            <div class="form-group"> <button type="submit" class="btn btn-block btn-primary">Entrar</button> </div>
+                            <div class="form-group"> <label for="username">E-mail</label> <input type="text" class="form-control underlined" name="login_name" id="username" placeholder="Digite aqui seu E-mail" required> </div>
+                            
+                            <div class="form-group"> <button type="submit" class="btn btn-block btn-primary">Pedir uma nova senha</button> </div>
                             <div class="form-group">
-                                <p class="text-muted text-xs-center">Não tem cadastro? Solicite na FESC 1</p>
+                                <small>
+                                <p class="text-muted text-xs-center"> Caso você não tenha cadastrado um endereço de E-mail, terá que comparecer na FESC 1, levando um documento com foto.</p></small>
+                                <p class="text-muted text-xs-center">Lembrou da senha? <a href="javascript:history.back(-1)">voltar</a></p>
                             </div>
                         </form>
                     </div>

@@ -12,7 +12,8 @@ class CreatePessoas extends Migration
      * @return void
      */
     public function up()
-    {
+    
+
         Schema::enableForeignKeyConstraints();
 
         Schema::create('pessoas', function (Blueprint $table) {
@@ -66,8 +67,8 @@ class CreatePessoas extends Migration
         });
         Schema::create('pessoas_dados_acesso', function (Blueprint $table) {
             $table->increments('id')->unsigned();
-            $table->integer('pessoa')->references('id')->on('pessoas');
-            $table->string('email',150)->unique();
+            $table->integer('pessoa')->references('id')->on('pessoas')->unsigned();
+            $table->string('usuario',15)->unique();
             $table->string('senha');
             $table->date('validade');
             $table->char('status',1);

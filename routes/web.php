@@ -11,19 +11,17 @@
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-});
+Route::get('/', 'painelController@index');
 Route::get('about',function(){
    return "Sistema de Gestão Educacional. Todos direitos reservados";
 });
 
 //------------------------------ Login 
-Route::get('login',function(){
-   return view('login');
-});
-Route::post('login_check', 'pessoaController@loginCheck');
+Route::get('login', 'pessoaController@login');
+Route::post('loginCheck', 'pessoaController@loginCheck');
 Route::get('logout', 'pessoaController@logout');
+Route::get('trocarSenha', 'pessoaController@trocarSenha');
+Route::get('logout','pessoaController@logout');
 //----------------------------- Errors treatment
 
 

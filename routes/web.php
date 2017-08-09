@@ -12,16 +12,19 @@
 */
 
 Route::get('/', 'painelController@index');
-Route::get('about',function(){
-   return "Sistema de Gestão Educacional. Todos direitos reservados";
-});
+
+
+Route::get('addpessoa','pessoaController@adicionaPrimeiro');
+Route::get('addacesso','loginController@addPrimeiro');
 
 //------------------------------ Login 
-Route::get('login', 'pessoaController@login');
-Route::post('loginCheck', 'pessoaController@loginCheck');
-Route::get('logout', 'pessoaController@logout');
-Route::get('trocarSenha', 'pessoaController@trocarSenha');
-Route::get('logout','pessoaController@logout');
+Route::get('login', 'loginController@login');
+Route::post('loginCheck', 'loginController@loginCheck');
+Route::get('loginCheck', 'loginController@logout');
+Route::get('esqueciasenha', 'loginController@viewPwdRescue');
+Route::get('logout','loginController@logout');
+Route::post('recuperaSenha','loginController@pwdRescue');
+Route::get('recuperaSenha','loginController@viewPwdRescue');
 //----------------------------- Errors treatment
 
 
@@ -30,4 +33,7 @@ Route::get('404',function(){
 });
 Route::get('500',function(){
    return view('error-500');
+});
+Route::get('about',function(){
+   return "Sistema de Gestão Educacional. Todos direitos reservados";
 });

@@ -11,69 +11,140 @@ class CreatePessoas extends Migration
      *
      * @return void
      */
-    public function up()
-    
-
-        Schema::enableForeignKeyConstraints();
+    public function up(){
 
         Schema::create('pessoas', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
+            $table->increments('id');
             $table->string('nome');
             $table->char('genero');
             $table->date('nascimento');
-            $table->timestamps('created');
+            $table->timestamps();
+
         });
         Schema::create('pessoas_dados_gerais', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
-            $table->integer('pessoa')->references('id')->on('pessoas');
+            $table->increments('id');
+            $table->unsignedInteger('pessoa');
             $table->unsignedInteger('dado');
             $table->string('valor',150);
             $table->timestamps('created');
+            //-criação das chaves
+            $table->foreign('pessoa')->
+                references('id')->
+                on('pessoas')->
+                onDelete('restrict')->
+                onUpdate('restrict');
+            $table->foreign('dado')->
+                references('id')->
+                on('tipos_dados')->
+                onDelete('restrict')->
+                onUpdate('restrict');
         });
         Schema::create('pessoas_dados_contato', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
-            $table->integer('pessoa')->references('id')->on('pessoas');
+            $table->increments('id');
+            $table->unsignedInteger('pessoa');
             $table->unsignedInteger('dado');
             $table->string('valor',150);
             $table->timestamps('created');
+            //-criação das chaves
+            $table->foreign('pessoa')
+                ->references('id')
+                ->on('pessoas')
+                ->onDelete('restrict')
+                ->onUpdate('restrict');
+            $table->foreign('dado')->
+                references('id')->
+                on('tipos_dados')->
+                onDelete('restrict')->
+                onUpdate('restrict');
         });
         Schema::create('pessoas_dados_academicos', function (Blueprint $table) {
             $table->increments('id')->unsigned();
-            $table->integer('pessoa')->references('id')->on('pessoas');
+            $table->unsignedInteger('pessoa');
             $table->unsignedInteger('dado');
             $table->string('valor',150);
             $table->timestamps('created');
+            //-criação das chaves
+            $table->foreign('pessoa')
+                ->references('id')
+                ->on('pessoas')
+                ->onDelete('restrict')
+                ->onUpdate('restrict');
+            $table->foreign('dado')->
+                references('id')->
+                on('tipos_dados')->
+                onDelete('restrict')->
+                onUpdate('restrict');
         });
         Schema::create('pessoas_dados_administrativos', function (Blueprint $table) {
             $table->increments('id')->unsigned();
-            $table->integer('pessoa')->references('id')->on('pessoas');
+            $table->unsignedInteger('pessoa');
             $table->unsignedInteger('dado');
             $table->string('valor',150);
             $table->timestamps('created');
+            //-criação das chaves
+            $table->foreign('pessoa')
+                ->references('id')
+                ->on('pessoas')
+                ->onDelete('restrict')
+                ->onUpdate('restrict');
+            $table->foreign('dado')->
+                references('id')->
+                on('tipos_dados')->
+                onDelete('restrict')->
+                onUpdate('restrict');
         });
         Schema::create('pessoas_dados_clinicos', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
-            $table->integer('pessoa')->references('id')->on('pessoas');
+            $table->increments('id');
+            $table->unsignedInteger('pessoa');
             $table->unsignedInteger('dado');
             $table->string('valor',150);
             $table->timestamps('created');
+            //-criação das chaves
+            $table->foreign('pessoa')
+                ->references('id')
+                ->on('pessoas')
+                ->onDelete('restrict')
+                ->onUpdate('restrict');
+            $table->foreign('dado')->
+                references('id')->
+                on('tipos_dados')->
+                onDelete('restrict')->
+                onUpdate('restrict');
         });
         Schema::create('pessoas_dados_financeiros', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
-            $table->integer('pessoa')->references('id')->on('pessoas');
+            $table->increments('id');
+            $table->unsignedInteger('pessoa');
             $table->unsignedInteger('dado');
             $table->string('valor',150);
             $table->timestamps('created');
+            //-criação das chaves
+            $table->foreign('pessoa')
+                ->references('id')
+                ->on('pessoas')
+                ->onDelete('restrict')
+                ->onUpdate('restrict');
+            $table->foreign('dado')->
+                references('id')->
+                on('tipos_dados')->
+                onDelete('restrict')->
+                onUpdate('restrict');
         });
         Schema::create('pessoas_dados_acesso', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
-            $table->integer('pessoa')->references('id')->on('pessoas')->unsigned();
+            $table->increments('id');
+            $table->unsignedInteger('pessoa');
             $table->string('usuario',15)->unique();
             $table->string('senha');
             $table->date('validade');
             $table->char('status',1);
             $table->rememberToken();
             $table->timestamps();
+
+            //-criação das chaves
+            $table->foreign('pessoa')
+                ->references('id')
+                ->on('pessoas')
+                ->onDelete('restrict')
+                ->onUpdate('restrict');
         });
     }
 

@@ -35,20 +35,18 @@
                             <div class="logo"> <span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div> SGE <i>FESC</i></h1>
                     </header>
                     <div class="auth-content">
-                        @if(count($errors) !=0)
-                        <p>{{count($errors)}}</p>
-                        @endif
 
+                        @include('inc.errors')
 
                         <p class="text-xs-center">Preencha os dados para acessar:</p>
                         <form id="login-form" action="/loginCheck" method="POST" novalidate="">
                         {{csrf_field()}}
-                            <div class="form-group"> <label for="username">Login</label> <input type="text" class="form-control underlined" name="login_name" id="username" placeholder="Digite aqui seu nome de usuário" required> </div>
-                            <div class="form-group"> <label for="password">Senha</label> <input type="password" class="form-control underlined" name="login_pwd" id="password" placeholder="Sua senha" required> </div>
+                            <div class="form-group"> <label for="username">Login</label> <input type="text" class="form-control underlined" name="login" id="username" placeholder="Digite aqui seu nome de usuário" required> </div>
+                            <div class="form-group"> <label for="password">Senha</label> <input type="password" class="form-control underlined" name="senha" id="password" placeholder="Sua senha" required> </div>
                             <div class="form-group"> <label for="remember">
             <input class="checkbox" id="remember" type="checkbox"> 
             <span>Lembrar</span>
-          </label> <a href="trocarSenha" class="forgot-btn pull-right">Esqueci a senha</a> </div>
+          </label> <a href="/esqueciasenha" class="forgot-btn pull-right">Esqueci a senha</a> </div>
                             <div class="form-group"> <button type="submit" class="btn btn-block btn-primary">Entrar</button> </div>
                             <div class="form-group">
                                 <p class="text-muted text-xs-center">Não tem cadastro? Solicite na FESC 1</p>

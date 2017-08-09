@@ -35,15 +35,15 @@
                             <div class="logo"> <span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div> SGE <i>FESC</i></h1>
                     </header>
                     <div class="auth-content">
-                        @if(count($errors) !=0)
-                        <p>{{count($errors)}}</p>
-                        @endif
+
+
+                        @include('inc.errors')
 
 
                         <p class="text-xs-center">Não podemos recuperar sua senha, mas não se preocupe, vamos lhe enviar um código para que você possa alterar sua senha e voltar a ter acesso. Para isso preencha o campo abaixo.</p>
-                        <form id="login-form" action="/loginRemember" method="POST" novalidate="">
+                        <form id="login-form" action="/recuperaSenha" method="POST" novalidate="">
                         {{csrf_field()}}
-                            <div class="form-group"> <label for="username">E-mail</label> <input type="text" class="form-control underlined" name="login_name" id="username" placeholder="Digite aqui seu E-mail" required> </div>
+                            <div class="form-group"> <label for="username">E-mail</label> <input type="email" class="form-control underlined" name="email" id="username" placeholder="Digite aqui seu E-mail" required> </div>
                             
                             <div class="form-group"> <button type="submit" class="btn btn-block btn-primary">Pedir uma nova senha</button> </div>
                             <div class="form-group">

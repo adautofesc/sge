@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\classes\Data;
+use App\Pessoa;
 use Session;
 
 class painelController extends Controller
@@ -13,9 +15,22 @@ class painelController extends Controller
     		return view('login');
     	}
     	else{
-    		return view('home');
+    		$hoje=new Data();
+            $data=$hoje->getData();
+            $user=Session::get('usuario');
+            $usuario= Pessoa::where('id',$user)->first();
+            $array_nome=explode(' ',$usuario->nome);
+            $nome=$array_nome[0].' '.end($array_nome);           
+            $dados=['data'=>$data,'usuario'=>$nome];
+            
+            return view('home', compact('dados'));
     	}
+
+        
+
+
     	
     }
+
     	
 }

@@ -23,7 +23,8 @@ class PessoaController extends Controller
 	public function listaTodos(){
 
 	}
-	public function adiciona(){
+	public function adiciona(Request $request){
+		
 
 	}
 	public function mostra($id){

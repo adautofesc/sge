@@ -16,7 +16,9 @@ class loginController extends Controller
     //Classe de tratamento exclusivo de Login
 
 
-
+	/*
+	Metodo de fazer o login - deverá ser futuramente ser trocado pelo Auth
+	*/
     public function loginCheck(Request $request){
 		$this->validate($request, [
 			'login'=>'required|between:3,30|alpha_num',
@@ -62,9 +64,13 @@ class loginController extends Controller
 
 		}
 	}
+
+	//metodo mostrar a view de esqueci minha senha
 	public function viewPwdRescue(){
 		return view('login_esqueci_senha');
 	}
+
+	//metodo acionado depois do usuário clicou em  "pedir uma nova senha".
 	public function pwdRescue(Request $request){
 		$this->validate($request, [
 			'email'=>'required|email'
@@ -82,8 +88,9 @@ class loginController extends Controller
 		else{
 
 			$novasenha = keyGen::generate();
-			Mail::to($usuario->valor)->send(new recuperarSenha($senha)); //
-			return $novasenha;
+			//Mail::to($usuario->valor)->send(new recuperarSenha($senha)); //Envia email
+			$erros_bd= ['Desculpe, este recurso ainda está em desenvolvimento. Contate a FESC para reiniciar sua senha.'];
+			return view('login_esqueci_senha', compact('erros_bd'));
 
 
 
@@ -91,15 +98,17 @@ class loginController extends Controller
 
 
 
-		}
-		
+		}		
 
 	}
+
+	//metodo acionado para encerrar a sessão do usuário
 	public function logout(){
 		Session::flush();
 		return redirect('/');
 	}
 
+	//Metodo para adicionar o primeiro registro no BD vem pela route /addpessoa
 	public function addPrimeiro(){
 		$user= new PessoaDadosAcesso;
 		$user->pessoa = 1;

@@ -12,13 +12,20 @@ class CreatePessoas extends Migration
      * @return void
      */
     public function up(){
+        
 
         Schema::create('pessoas', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nome');
             $table->char('genero');
             $table->date('nascimento');
+            $tabel->unsignedInteger('por');
             $table->timestamps();
+            $table->foreign('por')->
+                references('id')->
+                on('pessoas')->
+                onDelete('restrict')->
+                onUpdate('restrict');
 
         });
         Schema::create('pessoas_dados_gerais', function (Blueprint $table) {
@@ -145,6 +152,24 @@ class CreatePessoas extends Migration
                 ->on('pessoas')
                 ->onDelete('restrict')
                 ->onUpdate('restrict');
+        });
+
+        Schema::create('pessoas_controle_acessos', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('pessoa');
+            $table->unsignedInteger('recurso');
+
+            //-criação das chaves
+            $table->foreign('pessoa')
+                ->references('id')
+                ->on('pessoas')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table->foreign('recurso')
+                ->references('id')
+                ->on('recursos_sistema')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

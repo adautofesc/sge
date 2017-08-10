@@ -6,11 +6,11 @@
             <div class="app" id="app">
                 @include('layout.top')
                 @include('layout.menu')
-                <article class="content items-list-page">
+                <div class="content items-list-page">
 
                 @yield('pagina')  <!-- Aqui vem o código da página -->
 
-                </article>
+                </div>
             </div>
         </div>
         @include('layout.bottom')

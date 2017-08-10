@@ -17,6 +17,8 @@ Route::get('/', 'painelController@index');
 Route::get('addpessoa','pessoaController@adicionaPrimeiro');
 Route::get('addacesso','loginController@addPrimeiro');
 
+Route::get('/pessoa/cadastrar', 'GerenciadorAcesso@cadastrarPessoa');
+
 //------------------------------ Login 
 Route::get('login', 'loginController@login');
 Route::post('loginCheck', 'loginController@loginCheck');

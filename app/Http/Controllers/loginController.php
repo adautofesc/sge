@@ -55,7 +55,10 @@ class loginController extends Controller
 					}
 					else{
 						Session::put('sge_fesc_logged','yes');
-						Session::put('usuario',$usuario->pessoa);
+						Session::put('usuario',$usuario->pessoa);						
+            			$array_nome=explode(' ',$usuario->nome);
+            			$nome=$array_nome[0].' '.end($array_nome);
+						Session::put('nome_usuario',$nome);
 						return redirect('/');
 
 					}

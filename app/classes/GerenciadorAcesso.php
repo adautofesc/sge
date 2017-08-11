@@ -1,19 +1,28 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\classes;
 
-use Illuminate\Http\Request;
 use App\ControleAcessoRecurso;
 use Session;
 
-class GerenciadorAcesso extends Controller
-{
-    //
-    public function cadastrarPessoa(){
-    	$query=ControleAcessoRecurso::where('pessoa', Session::get('usuario'))
-    								->where('recurso', 1)->first();
-    	return $query;
 
+class GerenciadorAcesso 
+{
+    // Verifica se o usuário pode executar um comando, baseado na tabela de controle de acesso
+    public static function pedirPermissao($recurso){
+
+        if(!Session::has('usuario'))
+            return view('login');
+
+        $query=ControleAcessoRecurso::where('pessoa', Session::get('usuario'))
+                                    ->where('recurso', $recurso)->first();
+        
+
+        if(count($query))
+            return True;
+        else
+            return False;
 
     }
+
 }

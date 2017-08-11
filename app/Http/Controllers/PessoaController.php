@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Pessoa;
+use App\classes\GerenciadorAcesso;
 use Session;
 
 class PessoaController extends Controller
 {
     //
+
+
+
     public function adicionaPrimeiro(){
     	$admin= new Pessoa;
     	$admin->nome = "Adauto";
@@ -22,9 +26,15 @@ class PessoaController extends Controller
 	}
 	public function listaTodos(){
 
+
 	}
-	public function adiciona(Request $request){
-		
+	public function mostraFormularioAdicionar(){
+		//posso cadastrar
+		if(GerenciadorAcesso::pedirPermissao(1))
+			return view('pessoas.cadastrarPessoa');
+		else
+			return redirect('/403');
+
 
 	}
 	public function mostra($id){

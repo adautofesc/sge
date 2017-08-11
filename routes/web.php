@@ -17,7 +17,7 @@ Route::get('/', 'painelController@index');
 Route::get('addpessoa','pessoaController@adicionaPrimeiro');
 Route::get('addacesso','loginController@addPrimeiro');
 
-Route::get('/pessoa/cadastrar', 'GerenciadorAcesso@cadastrarPessoa');
+Route::get('/pessoa/cadastrar', 'PessoaController@mostraFormularioAdicionar');
 
 //------------------------------ Login 
 Route::get('login', 'loginController@login');
@@ -29,7 +29,9 @@ Route::post('recuperaSenha','loginController@pwdRescue');
 Route::get('recuperaSenha','loginController@viewPwdRescue');
 //----------------------------- Errors treatment
 
-
+Route::get('403',function(){
+   return view('error-403');
+});
 Route::get('404',function(){
    return view('error-404');
 });

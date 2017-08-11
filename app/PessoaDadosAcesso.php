@@ -10,6 +10,6 @@ class PessoaDadosAcesso extends Model
     protected $table  = 'pessoas_dados_acesso';
 
     public function pessoa(){
-    	return $this->hasOne('App\Pessoa','pessoa'); // (Pessoa::class)
+    	return $this->belongsTo('App\Pessoa','pessoa'); // (Pessoa::class)
     }
 }

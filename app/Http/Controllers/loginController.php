@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;// coloca classe email
+use App\Pessoa;
 use App\PessoaDadosAcesso;
 use App\PessoaDadosContato;
 use App\Mail\recuperarSenha;
@@ -55,11 +56,12 @@ class loginController extends Controller
 					}
 					else{
 						Session::put('sge_fesc_logged','yes');
-						Session::put('usuario',$usuario->pessoa);						
+						Session::put('usuario',$usuario->pessoa);	
+						$usuario= Pessoa::where('id',$usuario->pessoa)->first();
             			$array_nome=explode(' ',$usuario->nome);
             			$nome=$array_nome[0].' '.end($array_nome);
-						Session::put('nome_usuario',$nome);
-						return redirect('/');
+						Session::put('nome_usuario', $nome);
+						return redirect(asset('/'));
 
 					}
 				}

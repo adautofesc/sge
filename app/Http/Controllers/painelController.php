@@ -16,12 +16,8 @@ class painelController extends Controller
     	
     	else{
     		$hoje=new Data();
-            $data=$hoje->getData();
-            $user=Session::get('usuario');
-            $usuario= Pessoa::where('id',$user)->first();
-            $array_nome=explode(' ',$usuario->nome);
-            $nome=$array_nome[0].' '.end($array_nome);           
-            $dados=['data'=>$data,'usuario'=>$nome];
+            $data=$hoje->getData();        
+            $dados=['data'=>$data];
             
             return view('home', compact('dados'));
     	}

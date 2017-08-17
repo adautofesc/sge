@@ -1,0 +1,221 @@
+@extends('layout.app')
+@section('pagina')
+
+<form name="item" method="POST">
+
+                    <div class="title-block">
+                        <h3 class="title"> Cadastrando uma nova pessoa<span class="sparkline bar" data-type="bar"></span> </h3>
+                    </div>
+                   @include('inc.errors')
+                    <div class="subtitle-block">
+                        <h3 class="subtitle"> Dados Gerais </h3>
+                    </div>
+                    
+                        <div class="card card-block">
+                            
+                            
+                            <div class="form-group row"> 
+                                <label class="col-sm-2 form-control-label text-xs-right">Nome*</label>
+                                <div class="col-sm-10"> 
+                                    <input type="text" class="form-control boxed" placeholder="Preencha o nome completo, sem abreviações." name="nome" required> 
+                                </div>
+                            </div>
+                            
+                            <div class="form-group row">
+                                
+                                <label class="col-sm-2 form-control-label text-xs-right">Nascimento*</label>
+                                <div class="col-sm-3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
+                                        <input type="date" class="form-control boxed" placeholder="dd/mm/aaaa" name="nascimento" required> 
+                                    </div>
+                                </div>
+                                <label class="col-sm-2 form-control-label text-xs-right">Telefone*</label>
+                                <div class="col-sm-3"> 
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-phone"></i></span> 
+                                        <input type="tel" class="form-control boxed" placeholder="Somente numeros" name="telefone" required> 
+                                    </div>
+                                </div>
+                            </div>
+                                
+                            
+                            <div class="form-group row"> 
+                                <label class="col-sm-2 form-control-label text-xs-right">Gênero*</label>
+                                <div class="col-sm-10"> 
+                                    <label>
+                                        <input class="radio" name="genero" type="radio" value="h" >
+                                        <span>Masculino</span>
+                                    </label>
+                                    <label>
+                                        <input class="radio" name="genero" type="radio" value="m" >
+                                        <span>Feminino</span>
+                                    </label>
+                                    <label>
+                                        <input class="radio" name="genero" type="radio" value="x" >
+                                        <span>Trans Masculino</span>
+                                    </label>
+                                    <label>
+                                        <input class="radio" name="genero" type="radio" value=y >
+                                        <span>Trans Feminino</span>
+                                    </label>
+                                    <label>
+                                        <input class="radio" name="genero" type="radio" value="z" >
+                                        <span>Não Classificar</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group row"> 
+                                <label class="col-sm-2 form-control-label text-xs-right">Nome Social</label>
+                                <div class="col-sm-10"> 
+                                    <input type="text" class="form-control boxed" placeholder="nome social" name="nome_social"> 
+                                </div>
+                            </div>    
+                                
+                            <div class="form-group row"> 
+                                <label class="col-sm-2 form-control-label text-xs-right">RG </label>
+                                <div class="col-sm-3"> 
+                                    <input type="text" class="form-control boxed" placeholder="Somente numeros" name="rg"> 
+                                </div>
+                                <label class="col-sm-2 form-control-label text-xs-right">CPF* <small title="Caso não tiver CPF o responsável legal deverá ser cadastrado"><i class="fa fa-info-circle"></i></small></label>
+                                <div class="col-sm-3"> 
+                                    <input type="text" class="form-control boxed" placeholder="Somente numeros" name="cpf">
+                                </div>
+                                
+                                
+                            </div>                                
+                        </div>
+                        <div class="subtitle-block">
+                            <h3 class="subtitle"> Dados de contato </h3>
+                        </div>
+                        <div class="card card-block">
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label text-xs-right">E-mail</label>
+                                <div class="col-sm-4"> 
+                                    <input type="email" class="form-control boxed" placeholder="" name="email"> 
+                                </div>  
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label text-xs-right">Telefone alternativo</label>
+                                <div class="col-sm-4"> 
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-phone"></i></span> 
+                                        <input type="text" class="form-control boxed" placeholder="Somente numeros" name="tel2"> 
+                                    </div> 
+                                </div>
+                                <label class="col-sm-2 form-control-label text-xs-right">Telefone de um contato</label>
+                                <div class="col-sm-4"> 
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-phone"></i></span> 
+                                        <input type="text" class="form-control boxed" placeholder="Somente numeros" name="tel3"> 
+                                    </div> 
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label text-xs-right">Logradouro</label>
+                                <div class="col-sm-10"> 
+                                    <input type="text" class="form-control boxed" placeholder="Rua, avenida, etc" name="rua"> 
+                                </div>  
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label text-xs-right">Número</label>
+                                <div class="col-sm-4"> 
+                                    <input type="text" class="form-control boxed" placeholder="" name="numero_endereco"> 
+                                </div>  
+                                <label class="col-sm-2 form-control-label text-xs-right">Complemento</label>
+                                <div class="col-sm-4"> 
+                                    <input type="text" class="form-control boxed" placeholder="" name="complemento_endereco"> 
+                                </div>  
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label text-xs-right">Bairro</label>
+                                <div class="col-sm-4"> 
+                                    <select class="c-select form-control boxed" name='bairro'>
+                                        <option selected>Selecione uma opção</option>
+                                        @if(count($dados['bairros']))
+                                            @foreach ($dados['bairros'] as $bairro)
+                                                <option value="{{ $bairro->id }}"> {{ $bairro->nome }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>  
+                                <label class="col-sm-2 form-control-label text-xs-right">CEP</label>
+                                <div class="col-sm-4"> 
+                                    <input type="text" class="form-control boxed" placeholder="00000-000" name="cep"> 
+                                </div>  
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label text-xs-right">Cidade</label>
+                                <div class="col-sm-4"> 
+                                    <input type="text" class="form-control boxed" placeholder="" name="cidade" value="São Carlos"> 
+                                </div>  
+                                <label class="col-sm-2 form-control-label text-xs-right">Estado</label>
+                                <div class="col-sm-4"> 
+                                    <input type="text" class="form-control boxed" placeholder="" name="estado" value="São Paulo"> 
+                                </div>  
+                            </div>
+                        </div>
+                    
+
+                        <div class="subtitle-block">
+                        <h3 class="subtitle"> Dados Clínicos</h3>
+                        </div>
+                        <div class="card card-block">
+                            <div class="form-group row"> 
+                                    <label class="col-sm-4 form-control-label text-xs-right">Necesssidades especiais</label>
+                                    <div class="col-sm-8"> 
+                                        <input type="text" class="form-control boxed" placeholder="Motora, visual, auditiva, etc. Se não tiver, não preencha." name="necessidade_especial"> 
+                                    </div>
+                            </div>
+                            <div class="form-group row"> 
+                                    <label class="col-sm-4 form-control-label text-xs-right">Medicamentos uso contínuo</label>
+                                    <div class="col-sm-8"> 
+                                        <input type="text" class="form-control boxed" placeholder="Digite os medicamentos de uso contínuo da pessoa. Se não tiver, não preencha." name="medicamentos"> 
+                                    </div>
+                            </div>
+                            <div class="form-group row"> 
+                                    <label class="col-sm-4 form-control-label text-xs-right">Alergias</label>
+                                    <div class="col-sm-8"> 
+                                        <input type="text" class="form-control boxed" placeholder="Digite alergias ou reações medicamentosas. Se não tiver, não preencha." name="alergias"> 
+                                    </div>
+                            </div>
+                            <div class="form-group row"> 
+                                    <label class="col-sm-4 form-control-label text-xs-right">Doença crônica</label>
+                                    <div class="col-sm-8"> 
+                                        <input type="text" class="form-control boxed" placeholder="Se não tiver, não preencha." name="doenca_cronica"> 
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="subtitle-block">
+                            <h3 class="subtitle">Finalizando cadastro</h3>
+                        </div>
+                        <div class="card card-block">
+                            <div class="form-group row"> 
+                                <label class="col-sm-2 form-control-label text-xs-right">
+                                    Observações
+                                </label>
+                                <div class="col-sm-10"> 
+                                    <textarea rows="4" class="form-control boxed" name="obs"></textarea> 
+                                </div>
+                            </div>  
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label text-xs-right"></label>
+                                <div class="col-sm-10 col-sm-offset-2"> 
+                                    <button type="submit" name="btn_sub" value='1' class="btn btn-primary">Salvar</button>
+                                    @if(isset($dados['responsavel_por']) && $dados['responsavel_por']!='')
+                                        <input type="hidden" name="responsavel_por" value="{{ $dados['responsavel_por' ]}}"/>
+                                    @else
+                                        <button type="submit" name="btn_sub" value='2' class="btn btn-secondary">Salvar sem CPF e cadastrar Responsável</button>
+                                    @endif
+                                    
+                                    <button type="submit" name="btn_sub" value='3'  class="btn btn-secondary">Salvar e inserir outra pessoa</button>
+                                   
+                                    {{ csrf_field() }}
+                                </div>
+                                
+                           </div>
+                        </div>
+                    </form>
+
+@endsection

@@ -12,12 +12,19 @@
 */
 
 Route::get('/', 'painelController@index');
+Route::get('home', 'painelController@index');
 
 
 Route::get('addpessoa','pessoaController@adicionaPrimeiro');
 Route::get('addacesso','loginController@addPrimeiro');
 
+
+
+
+
+
 Route::get('/pessoa/cadastrar', 'PessoaController@mostraFormularioAdicionar');
+Route::post('/pessoa/cadastrar','PessoaController@gravarPessoa');
 
 //------------------------------ Login 
 Route::get('login', 'loginController@login');

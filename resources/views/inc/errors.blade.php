@@ -3,8 +3,34 @@
         <p class="alert alert-warning .alert-dismissible">{{ $erro }}</p>
     @endforeach
 @endif
+
+
 @if(isset($erros_bd) !=0)
     @foreach($erros_bd as $erro)
         <p class="alert alert-danger text-center .alert-dismissible">{{ $erro }}</p>
     @endforeach
+@endif
+
+
+@if(isset($dados['alert_danger']) && $dados['alert_danger']!='')
+	@foreach($dados['alert_danger'] as $erro)
+        <p class="alert alert-danger text-center .alert-dismissible">{{ $erro }}</p>
+  	@endforeach
+@endif
+
+@if(isset($dados['alert_warning']) && $dados['alert_warning']!='')
+	@foreach($dados['alert_warning'] as $erro)
+        <p class="alert alert-warning text-center .alert-dismissible">{{ $erro }}</p>
+  	@endforeach
+@endif
+
+@if(isset($dados['alert_info']) && $dados['alert_info']!='')
+	@foreach($dados['alert_info'] as $erro)
+        <p class="alert alert-info text-center .alert-dismissible">{{ $erro }}</p>
+  	@endforeach
+@endif
+@if(isset($dados['alert_sucess']) && $dados['alert_sucess']!='')
+	@foreach($dados['alert_sucess'] as $erro)
+        <p class="alert alert-success text-center alert-dismissible">{{ $erro }}</p>
+  	@endforeach
 @endif

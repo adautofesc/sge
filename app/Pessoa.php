@@ -13,7 +13,7 @@ class Pessoa extends Model
 		return $this->hasMany('App\PessoaDadosAdministrativos');
 	}
 	public function dadosContato(){
-		return $this->hasMany('App\PessoaDadosContato');
+		return $this->hasMany('App\PessoaDadosContato','pessoa');
 	}
 	public function dadosClinicos(){
 		return $this->hasMany('App\PessoaDadosClinicos');

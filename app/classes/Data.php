@@ -1,6 +1,8 @@
 <?php
 namespace App\classes;
 
+use Carbon\Carbon;
+
 Class Data
 {
         private $dia;
@@ -72,6 +74,14 @@ Class Data
                 );
 
                 return $Dia[$this->diaSemana];
+        }
+        public static function converteParaBd($d){
+            $data= Carbon::createFromFormat('D/M/Y',$d)->toDateString();
+            return $data;
+        }
+        public static function converteParaUsuario($d){
+            $data= Carbon::parse($d)->format('d/m/Y');
+            return $data;
         }
 }
 

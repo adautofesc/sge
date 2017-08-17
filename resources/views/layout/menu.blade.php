@@ -7,7 +7,7 @@
                         <nav class="menu">
                             <ul class="nav metismenu" id="sidebar-menu">
                                 <li  class="active">
-                                    <a href="./"> <i class="fa fa-home"></i> Home </a>
+                                    <a href="{{asset('/')}}"> <i class="fa fa-home"></i> Home </a>
                                 </li>
                                 <!-- Futuro módulo de Admin
                                 <li>

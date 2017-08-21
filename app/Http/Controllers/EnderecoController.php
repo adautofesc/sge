@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Endereco;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EnderecoController extends Controller
 {
@@ -81,5 +82,12 @@ class EnderecoController extends Controller
     public function destroy(Enderecos $enderecos)
     {
         //
+    }
+    public static function getBairro($id){
+        $bairro=DB::table('bairros_sanca')->find($id);
+        if(count($bairro))
+            return $bairro->nome;
+        else
+            return "Não definido";
     }
 }

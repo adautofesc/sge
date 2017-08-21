@@ -132,8 +132,7 @@
                                 <label class="col-sm-2 form-control-label text-xs-right">Bairro</label>
                                 <div class="col-sm-4"> 
                                     <select class="c-select form-control boxed" name='bairro'>
-                                        <option value="0" selected>Não listado/outra cidade</option>
-                                        @if(count($dados['bairros']))
+                                            @if(count($dados['bairros']))
                                             @foreach ($dados['bairros'] as $bairro)
                                                 <option value="{{ $bairro->id }}"> {{ $bairro->nome }}</option>
                                             @endforeach

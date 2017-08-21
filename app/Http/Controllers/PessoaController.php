@@ -9,11 +9,14 @@ use App\Pessoa;
 use App\PessoaDadosGerais;
 use App\PessoaDadosContato;
 use App\PessoaDadosClinicos;
+use App\PessoaDadosAcesso;
 use App\Endereco;
 use App\TipoDado;
 use App\classes\GerenciadorAcesso;
 use App\classes\Data;
 use App\classes\Strings;
+use App\Http\Controllers\loginController;
+use App\Http\Controllers\EnderecoController;
 use Session;
 
 
@@ -93,24 +96,38 @@ class PessoaController extends Controller
 						
 
 			]);
+
+			// Verifica se já tem alguem com mesmo nome e data de nascimento.
 			$pessoanobd=Pessoa::where('nome', $request->nome)->where('nascimento',$request->nascimento)->get();
-			if(count($pessoanobd))
-				return $this->mostraFormularioAdicionar(['Esta pessoa parece já estar cadastrada no sistema. Mesmo nome e mesma data de nascimento']);
+			if(count($pessoanobd)) 
+				return $this->mostraFormularioAdicionar(['Ops, parece que essa pessoa já está cadastrada no sistema. Encontrado alguém com o mesmo nome e mesma data de nascimento. Pode confirmar isso?']);
 			
-			if(isset($request->cpf)) // se preencheu o CPF
+			// se preencheu o CPF
+			if(isset($request->cpf)) 
 			{
+				//se o CPF já está no sistema
 				$cpf_no_sistema=PessoaDadosGerais::where('dado','3')->where('valor',$request->cpf)->get();
-				if (count($cpf_no_sistema)) // Já existe no sistema?
+				if (count($cpf_no_sistema)) 
 				{
 					$erros_bd=["Desculpe, CPF já cadastrado no sistema."];
 					//return $cpf_no_sistema;
 					return $this->mostraFormularioAdicionar($erros_bd);
 				}
-				else // CPF não está cadastrado. Pode cadastrar NORMALMENTE	
+				//se o cpf é valido
+				elseif (!Strings::validaCPF($request->cpf)) 
+				{
+				 	$erros_bd=["Desculpe, o CPF fornecido é inválido."];
+					//return $cpf_no_sistema;
+					return $this->mostraFormularioAdicionar($erros_bd);
+				}
+				// Verificados os dados obrigatorios, se a pessoa ja existe, se o cpf é válido e não já está cadastrado.
+				else 	
 				{
 
 
-					//se nome e data de nascimento já no sistema************************************ to do
+			
+
+
 					$pessoa = new Pessoa;
 					$pessoa->nome=mb_convert_case($request->nome, MB_CASE_UPPER, 'UTF-8');
 					$pessoa->nascimento=$request->nascimento;
@@ -265,13 +282,17 @@ class PessoaController extends Controller
 						return redirect(asset('/pessoa/mostrar/'.$pessoa->id));
 				}	//*********************************************************************************
 			}
-			else{    // não preencheu o CPF
-				if($request->btn_sub==1||$request->btn_sub==3) // Apertou submit para CPF?
+			// O CPF não Foi Preenchido 
+			else{   
+
+				// Apertou a opção de cadastro com CPF?
+				if($request->btn_sub==1||$request->btn_sub==3) 
 				{
 					$erros_bd=["Desculpe, mas o preenchimento de CPF é obrigatório. Porém você pode clicar em cadastrar responsável"];
 					return $this->mostraFormularioAdicionar($erros_bd); // volta pro form com erro
 				}
-				elseif($request->btn_sub==2) // Apertou opção para cadastrar Responsável
+				// Apertou opção para cadastrar Responsável
+				else
 				{
 
 
@@ -329,7 +350,15 @@ class PessoaController extends Controller
 						$info->pessoa=$pessoa->id;
 						$info->dado=7;
 						$info->valor=$request->responsavel_por;
-						$pessoa->dadosContato()->save($info);
+						$pessoa->dadosContato()->save($info); //cadastra o dependente no titular
+
+						$info=new PessoaDadosGerais;					
+						$info->pessoa=$request->responsavel_por;
+						$info->dado=15;
+						$info->valor=$pessoa->id;
+						$pessoa->dadosContato()->save($info); //cadastra o titular no dependente
+
+
 					}
 
 
@@ -436,12 +465,20 @@ class PessoaController extends Controller
 			return redirect(asset('/403')); //vai para acesso não autorizado
 	}//end gravarPessoa
 
-
 	
 	public function mostrar($id){
 
+		loginController::check();
+
+		if(!GerenciadorAcesso::pedirPermissao(1))
+			return $this->listar();
+
 		$pessoa=Pessoa::find($id);
-		
+		if(!$pessoa)
+			return $this->listar();
+
+
+		//Carrega todos dados Gerais para jogar na view
 		foreach( $pessoa->dadosGerais->all() as $dado){
 			$tipoDado=TipoDado::find($dado['dado'])->tipo;			
 			$pessoa->$tipoDado=$dado['valor'];
@@ -455,8 +492,22 @@ class PessoaController extends Controller
 			$pessoa->$tipoDado=$dado['valor'];
 		}
 		
+		$dependentes= $pessoa->dadosGerais->where('pessoa',$pessoa->id)->where('dado',7);
+		
+		foreach($dependentes as $dependente)
+		{
+			$dependente->nome=$this->getNome($dependente->valor);
+		}
+		$pessoa->dependentes=$dependentes;
+		if(isset($pessoa->responsavel))
+			$pessoa->nomeresponsavel=$this->getNome($pessoa->responsavel);
+		
+
+
 		$pessoa->nome=Strings::converteNomeParaUsuario($pessoa->nome);
 		$pessoa->idade=Data::converteParaUsuario($pessoa->nascimento).' ('.Data::calculaIdade($pessoa->nascimento).' anos)';
+
+		$pessoa->cadastro=Data::converteParaUsuario($pessoa->created_at). "  Cadastrad".$this->getArtigoGenero($pessoa->genero).' por '. $this->getNome($pessoa->por);
 
 		switch ($pessoa->genero) {
 			case 'h':
@@ -480,6 +531,39 @@ class PessoaController extends Controller
 				break;
 		}
 
+		$username=PessoaDadosAcesso::where('pessoa',$pessoa->id)->first();
+		if($username)
+			$pessoa->username=$username->usuario;
+
+
+		if(isset($pessoa->endereco)){
+			$endereco=Endereco::find($pessoa->endereco);
+			$pessoa->logradouro=$endereco->logradouro;
+			$pessoa->end_numero=$endereco->numero;
+			$pessoa->bairro=EnderecoController::getBairro($endereco->bairro);
+			$pessoa->end_complemento=$endereco->complemento;
+			$pessoa->cidade=$endereco->cidade;
+			$pessoa->estado=$endereco->estado;
+			$pessoa->cep=$endereco->cep;
+		}
+
+		
+	
+
+
+
+		//return $pessoa;
+
+
+
+
+
+
+			
+
+
+
+
 		//return $pessoa;
 
 		return view('pessoa.mostrar', compact('pessoa'));
@@ -489,6 +573,45 @@ class PessoaController extends Controller
 
 	}
 	public function apaga($id){
+
+	}
+	public function listar($page=0,$nome=''){
+		return "pagina com os cadastros";
+	}
+	public function getNome($id)
+	{
+		
+		$query=Pessoa::find($id);
+		if($query)
+			$nome=Strings::converteNomeParaUsuario($query->nome);
+		else
+			$nome="Impossível encontrar o nome dessa pessoa";
+
+		return $nome;
+	}
+	public function getArtigoGenero($a)
+	{
+		switch ($a) {
+			case 'h':
+				return "o";
+				break;
+			case 'm':
+				return "a";
+				break;
+			case 'x':
+				return "o";
+				break;
+			case 'y':
+				return "a";
+				break;
+			case 'z':
+				return "o(a)";
+				break;
+			
+			default:
+				return "o(a)";
+				break;
+		}
 
 	}
 	

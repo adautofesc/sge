@@ -11,8 +11,7 @@ class GerenciadorAcesso
     // Verifica se o usuário pode executar um comando, baseado na tabela de controle de acesso
     public static function pedirPermissao($recurso){
 
-        if(!Session::has('usuario'))
-            return view('login');
+
 
         $query=ControleAcessoRecurso::where('pessoa', Session::get('usuario'))
                                     ->where('recurso', $recurso)->first();
@@ -24,5 +23,6 @@ class GerenciadorAcesso
             return False;
 
     }
+ 
 
 }

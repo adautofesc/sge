@@ -112,7 +112,7 @@ class loginController extends Controller
 		Session::flush();
 		return redirect('/');
 	}
-
+/*
 	//Metodo para adicionar o primeiro registro no BD vem pela route /addpessoa
 	public function addPrimeiro(){
 		$user= new PessoaDadosAcesso;
@@ -124,6 +124,13 @@ class loginController extends Controller
 		$user->save();
 
 		return 'Acesso ao usuário 1 ativado';
+
+	}
+	*/
+	public static function check()
+	{
+		if(!Session::has('sge_fesc_logged'))
+    		die(redirect(asset('/')));
 
 	}
 }

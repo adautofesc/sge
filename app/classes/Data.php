@@ -75,15 +75,18 @@ Class Data
 
                 return $Dia[$this->diaSemana];
         }
-        public static function converteParaBd($d){
+        public static function converteParaBd($d)
+        {
             $data= Carbon::createFromFormat('D/M/Y',$d)->toDateString();
             return $data;
         }
-        public static function converteParaUsuario($d){
+        public static function converteParaUsuario($d)
+        {
             $data= Carbon::parse($d)->format('d/m/Y');
             return $data;
         }
-        public static function calculaIdade($data_nasc) {
+        public static function calculaIdade($data_nasc)
+         {
 
             $data_nasc=explode('-',$data_nasc);
 

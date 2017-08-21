@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pessoa extends Model
 {
+	public function dadosAcesso(){
+		return $this->hasOne('App\PessoaDadosAcesso','pessoa');
+	}
 	public function dadosAcademicos(){
 		return $this->hasMany('App\PessoaDadosAcademicos','pessoa');
 	}

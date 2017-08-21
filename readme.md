@@ -14,7 +14,7 @@ Sistema de gestão da Fundação Educacional São Carlos (FESC), que contará co
 
 Para o desenvolvimento são empregadas as ferramentas:
 
-  - Atom (IDE de desenvolvimento)
+  - Sublime Text (IDE de desenvolvimento)
   - Laragon (servidor interno)
   - Git (controle de versionamento)
   - gitHub for Desktop (backup versionamento online)

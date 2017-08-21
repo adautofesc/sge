@@ -25,6 +25,7 @@ Route::get('addacesso','loginController@addPrimeiro');
 
 Route::get('/pessoa/cadastrar', 'PessoaController@mostraFormularioAdicionar');
 Route::post('/pessoa/cadastrar','PessoaController@gravarPessoa');
+Route::get('/pessoa/mostrar/{var}','PessoaController@mostrar');
 
 //------------------------------ Login 
 Route::get('login', 'loginController@login');

@@ -21,6 +21,7 @@ class CreatePessoas extends Migration
             $table->date('nascimento');
             $tabel->unsignedInteger('por');
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('por')->
                 references('id')->
                 on('pessoas')->
@@ -33,7 +34,9 @@ class CreatePessoas extends Migration
             $table->unsignedInteger('pessoa');
             $table->unsignedInteger('dado');
             $table->string('valor',150);
+            $table->softDeletes();
             $table->timestamps('created');
+
             //-criação das chaves
             $table->foreign('pessoa')->
                 references('id')->
@@ -51,6 +54,7 @@ class CreatePessoas extends Migration
             $table->unsignedInteger('pessoa');
             $table->unsignedInteger('dado');
             $table->string('valor',150);
+            $table->softDeletes();
             $table->timestamps('created');
             //-criação das chaves
             $table->foreign('pessoa')
@@ -69,6 +73,7 @@ class CreatePessoas extends Migration
             $table->unsignedInteger('pessoa');
             $table->unsignedInteger('dado');
             $table->string('valor',150);
+            $table->softDeletes();
             $table->timestamps('created');
             //-criação das chaves
             $table->foreign('pessoa')
@@ -86,7 +91,9 @@ class CreatePessoas extends Migration
             $table->increments('id')->unsigned();
             $table->unsignedInteger('pessoa');
             $table->unsignedInteger('dado');
+            $table->softDeletes();
             $table->string('valor',150);
+            $table->softDeletes();
             $table->timestamps('created');
             //-criação das chaves
             $table->foreign('pessoa')
@@ -105,6 +112,7 @@ class CreatePessoas extends Migration
             $table->unsignedInteger('pessoa');
             $table->unsignedInteger('dado');
             $table->string('valor',150);
+            $table->softDeletes();
             $table->timestamps('created');
             //-criação das chaves
             $table->foreign('pessoa')
@@ -123,6 +131,7 @@ class CreatePessoas extends Migration
             $table->unsignedInteger('pessoa');
             $table->unsignedInteger('dado');
             $table->string('valor',150);
+            $table->softDeletes();
             $table->timestamps('created');
             //-criação das chaves
             $table->foreign('pessoa')
@@ -144,6 +153,7 @@ class CreatePessoas extends Migration
             $table->date('validade');
             $table->char('status',1);
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
 
             //-criação das chaves
@@ -158,6 +168,7 @@ class CreatePessoas extends Migration
             $table->increments('id');
             $table->unsignedInteger('pessoa');
             $table->unsignedInteger('recurso');
+            $table->softDeletes();
 
             //-criação das chaves
             $table->foreign('pessoa')

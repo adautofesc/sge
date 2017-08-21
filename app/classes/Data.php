@@ -83,6 +83,33 @@ Class Data
             $data= Carbon::parse($d)->format('d/m/Y');
             return $data;
         }
+        public static function calculaIdade($data_nasc) {
+
+            $data_nasc=explode('-',$data_nasc);
+
+            $data=date('d/m/Y');
+
+            $data=explode('/',$data);
+
+            $anos=$data[2]-$data_nasc[0];
+
+            if($data_nasc[1] > $data[1])
+
+            return $anos-1;
+
+            if($data_nasc[1] == $data[1])
+            if($data_nasc[2] <= $data[0]) {
+            return $anos;
+            
+            }
+            else{
+            return $anos-1;
+            
+            }
+
+            if ($data_nasc[1] < $data[1])
+            return $anos;
+        }
 }
 
 /* para retornar uma data específica por extenso 

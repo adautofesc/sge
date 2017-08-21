@@ -15,7 +15,7 @@
                             
                             
                             <div class="form-group row"> 
-                                <label class="col-sm-2 form-control-label text-xs-right">Nome*</label>
+                                <label class="col-sm-2 form-control-label text-xs-right">Nome/social*</label>
                                 <div class="col-sm-10"> 
                                     <input type="text" class="form-control boxed" placeholder="Preencha o nome completo, sem abreviações." name="nome" required> 
                                 </div>
@@ -30,11 +30,11 @@
                                         <input type="date" class="form-control boxed" placeholder="dd/mm/aaaa" name="nascimento" required> 
                                     </div>
                                 </div>
-                                <label class="col-sm-2 form-control-label text-xs-right">Telefone*</label>
+                                <label class="col-sm-2 form-control-label text-xs-right">Telefone</label>
                                 <div class="col-sm-3"> 
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-phone"></i></span> 
-                                        <input type="tel" class="form-control boxed" placeholder="Somente numeros" name="telefone" required> 
+                                        <input type="tel" class="form-control boxed" placeholder="Somente numeros" name="telefone"> 
                                     </div>
                                 </div>
                             </div>
@@ -67,7 +67,7 @@
                             </div>
                             
                             <div class="form-group row"> 
-                                <label class="col-sm-2 form-control-label text-xs-right">Nome Social</label>
+                                <label class="col-sm-2 form-control-label text-xs-right">Nome Registro</label>
                                 <div class="col-sm-10"> 
                                     <input type="text" class="form-control boxed" placeholder="nome social" name="nome_social"> 
                                 </div>
@@ -132,7 +132,7 @@
                                 <label class="col-sm-2 form-control-label text-xs-right">Bairro</label>
                                 <div class="col-sm-4"> 
                                     <select class="c-select form-control boxed" name='bairro'>
-                                        <option selected>Selecione uma opção</option>
+                                        <option value="0" selected>Não listado/outra cidade</option>
                                         @if(count($dados['bairros']))
                                             @foreach ($dados['bairros'] as $bairro)
                                                 <option value="{{ $bairro->id }}"> {{ $bairro->nome }}</option>
@@ -152,7 +152,35 @@
                                 </div>  
                                 <label class="col-sm-2 form-control-label text-xs-right">Estado</label>
                                 <div class="col-sm-4"> 
-                                    <input type="text" class="form-control boxed" placeholder="" name="estado" value="São Paulo"> 
+                                    <select  class="form-control boxed"  name="estado"> 
+                                        <option value="AC">Acre</option>
+                                        <option value="AL">Alagoas</option>
+                                        <option value="AP">Amapá</option>
+                                        <option value="AM">Amazonas</option>
+                                        <option value="BA">Bahia</option>
+                                        <option value="CE">Ceará</option>
+                                        <option value="DF">Distrito Federal</option>
+                                        <option value="ES">Espirito Santo</option>
+                                        <option value="GO">Goiás</option>
+                                        <option value="MA">Maranhão</option>
+                                        <option value="MS">Mato Grosso do Sul</option>
+                                        <option value="MT">Mato Grosso</option>
+                                        <option value="MG">Minas Gerais</option>
+                                        <option value="PA">Pará</option>
+                                        <option value="PB">Paraíba</option>
+                                        <option value="PR">Paraná</option>
+                                        <option value="PE">Pernambuco</option>
+                                        <option value="PI">Piauí</option>
+                                        <option value="RJ">Rio de Janeiro</option>
+                                        <option value="RN">Rio Grande do Norte</option>
+                                        <option value="RS">Rio Grande do Sul</option>
+                                        <option value="RO">Rondônia</option>
+                                        <option value="RR">Roraima</option>
+                                        <option value="SC">Santa Catarina</option>
+                                        <option value="SP" selected="selected">São Paulo</option>
+                                        <option value="SE">Sergipe</option>
+                                        <option value="TO">Tocantins</option>
+                                    </select>
                                 </div>  
                             </div>
                         </div>

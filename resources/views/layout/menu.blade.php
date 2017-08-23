@@ -2,7 +2,7 @@
                     <div class="sidebar-container">
                         <div class="sidebar-header">
                             <div class="brand">
-                                <div class="logo"> <span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div> SGE <i>FESC</i></div>
+                                <div class="logo"> <span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div> SGE2 <i>FESC</i></div>
                         </div>
                         <nav class="menu">
                             <ul class="nav metismenu" id="sidebar-menu">
@@ -28,9 +28,13 @@
                                 <li>
                                     <a href=""> <i class="fa fa-th-large"></i> Secretaria <i class="fa arrow"></i> </a>
                                     <ul>
-                                    	<li> <a href="pessoas_localiza_aluno.php">Atendimento ao aluno</a> </li>
+                                        <li> <a href="{{asset('/pessoa/listar')}}">Alunos</a> </li>
+                                    	<li> <a href="{{asset('secretaria/atender')}}">Atendimento ao aluno</a> </li>
+                                        <li> <a href="{{asset("/pessoa/cadastrar")}}">Cadastrar aluno</a> </li>
                                         <li> <a href="turmas.php">Turmas Abertas	</a> </li>
 										<li> <a href="matriculas.php">Matrículas</a> </li>
+                                                             
+                                        
                                     </ul>
                                 </li>
                                 <li>
@@ -63,7 +67,7 @@
                                  <li>
                                     <a href=""> <i class="fa fa-users"></i> Pessoas <i class="fa arrow"></i> </a>
                                     <ul>
-                                        <li> <a href="./pessoas.php">Lista</a></li>
+                                        <li> <a href="{{asset('/pessoa/listar')}}">Lista</a></li>
                                         <li> <a href="./pessoas_add.php">Adicionar</a></li>
                                         <li> <a href="./pessoas_acesso.php">Credenciais de acesso</a></li><!--
                                         <li> <a href="./pessoas.php?relacao=adm">Administrativo</a></li>

@@ -26,6 +26,16 @@ Route::get('addacesso','loginController@addPrimeiro');
 Route::get('/pessoa/cadastrar', 'PessoaController@mostraFormularioAdicionar');
 Route::post('/pessoa/cadastrar','PessoaController@gravarPessoa');
 Route::get('/pessoa/mostrar/{var}','PessoaController@mostrar');
+Route::get('/pessoa/listar','PessoaController@listarTodos');
+Route::post('pessoa/listar','PessoaController@procurarPessoa');
+
+Route::get('secretaria/atender','PessoaController@iniciarAtendimento');
+Route::get('pessoa/buscarapida/{var}','PessoaController@liveSearchPessoa');
+
+
+
+
+
 
 //------------------------------ Login 
 Route::get('login', 'loginController@login');

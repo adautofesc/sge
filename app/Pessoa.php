@@ -27,5 +27,4 @@ class Pessoa extends Model
 	public function dadosGerais(){
 		return $this->hasMany('App\PessoaDadosGerais','pessoa');
 	}
-
 }

@@ -17,10 +17,10 @@
                     
                     <ul class="nav nav-tabs nav-tabs-bordered">
                         <li class="nav-item"> <a href="" class="nav-link active" data-target="#geral" data-toggle="tab" aria-controls="geral" role="tab">Dados Gerais</a> </li>
-                        <li class="nav-item"> <a href="" class="nav-link" data-target="#academicos" aria-controls="academicos" data-toggle="tab" role="tab">Dados Acadêmicos</a> </li>
-                        <li class="nav-item"> <a href="" class="nav-link" data-target="#clinicos" aria-controls="clinicos" data-toggle="tab" role="tab">Dados de Clínicos</a> </li>
-                        <li class="nav-item"> <a href="" class="nav-link" data-target="#contato" aria-controls="contato" data-toggle="tab" role="tab">Dados Contato</a> </li>
-                        <li class="nav-item"> <a href="" class="nav-link" data-target="#financeiros" aria-controls="financeiros" data-toggle="tab" role="tab">Dados Financeiros</a> </li>
+                        <li class="nav-item"> <a href="" class="nav-link" data-target="#academicos" aria-controls="academicos" data-toggle="tab" role="tab">Acadêmicos</a> </li>
+                        <li class="nav-item"> <a href="" class="nav-link" data-target="#clinicos" aria-controls="clinicos" data-toggle="tab" role="tab">Clínicos</a> </li>
+                        <li class="nav-item"> <a href="" class="nav-link" data-target="#contato" aria-controls="contato" data-toggle="tab" role="tab">Contato</a> </li>
+                        <li class="nav-item"> <a href="" class="nav-link" data-target="#financeiros" aria-controls="financeiros" data-toggle="tab" role="tab">Financeiros</a> </li>
                         <li class="nav-item"> <a href="" class="nav-link" data-target="#obs" aria-controls="obs" data-toggle="tab" role="tab">Obs</a> </li>
                     </ul>
                     <!-- Tab panes -->
@@ -46,7 +46,7 @@
         
                                     <label class="col-sm-2 form-control-label text-xs-right">Nascimento</label>
                                     <div class="col-sm-3">
-                                        {{$pessoa['idade']}}
+                                        {{$pessoa['nascimento']}} ({{$pessoa['idade']}} anos)
                                     </div>
                                     @if(isset($pessoa['telefone']))
                                     <label class="col-sm-2 form-control-label text-xs-right">Telefone</label>
@@ -87,12 +87,13 @@
                                      @if(isset($pessoa['username']))
                                     <label class="col-sm-2 form-control-label text-xs-right">Usuário</label>
                                     <div class="col-sm-3"> 
-                                        {{$pessoa['username']}}
+                                        {{$pessoa['username']}} <a href="{{asset('/pessoa/redefinir-senha/'.$pessoa['id']) }}" class="btn btn-primary btn-sm rounded-s"> Ver Credenciais </a>
                                     </div>                                 
                                     
                                     <label class="col-sm-2 form-control-label text-xs-right">Senha</label>
                                     <div class="col-sm-3"> 
-                                        <a href="{{asset('/pessoa/redefinir-senha/'.$pessoa['id']) }}" class="btn btn-secondary btn-sm rounded-s"> Redefinir senha </a>
+                                        <a href="{{asset('/pessoa/acesso-recursos/'.$pessoa['id']) }}" class="btn btn-secondary btn-sm rounded-s"> Redefinir senha </a>
+
                                     </div>
                                     @else
                                     <label class="col-sm-3 form-control-label text-xs-right">Acesso ao sistema</label>

@@ -98,7 +98,7 @@
                                     @else
                                     <label class="col-sm-3 form-control-label text-xs-right">Acesso ao sistema</label>
                                     <div class="col-sm-3"> 
-                                        <a href="{{asset('/pessoa/cadastrar-acesso/'.$pessoa['id']) }}" class="btn btn-primary btn-sm rounded-s"> Cadastrar usuário </a>
+                                        <a href="{{asset('/pessoa/'.$pessoa['id'].'/cadastrar-acesso/') }}" class="btn btn-primary btn-sm rounded-s"> Cadastrar usuário </a>
                                     </div>
                                     @endif                                  
                                 </div> 

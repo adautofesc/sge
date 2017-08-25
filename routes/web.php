@@ -27,10 +27,18 @@ Route::get('/pessoa/cadastrar', 'PessoaController@mostraFormularioAdicionar');
 Route::post('/pessoa/cadastrar','PessoaController@gravarPessoa');
 Route::get('/pessoa/mostrar/{var}','PessoaController@mostrar');
 Route::get('/pessoa/listar','PessoaController@listarTodos');
+Route::get('/pessoa/{var}','PessoaController@mostrar');
+Route::get('/pessoas','PessoaController@listarTodos');
 Route::post('pessoa/listar','PessoaController@procurarPessoa');
+Route::post('/pessoas','PessoaController@procurarPessoa');
 
 Route::get('secretaria/atender','PessoaController@iniciarAtendimento');
 Route::get('pessoa/buscarapida/{var}','PessoaController@liveSearchPessoa');
+
+
+Route::get('/pessoa/{var}/cadastrar-acesso/', 'PessoaController@mostrarCadastrarUsuario');
+Route::post('/pessoa/{var}/cadastrar-acesso/', 'PessoaController@gravaCadastrarUsuario');
+
 
 
 

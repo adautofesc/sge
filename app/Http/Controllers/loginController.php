@@ -129,8 +129,52 @@ class loginController extends Controller
 	*/
 	public static function check()
 	{
-		if(!Session::has('sge_fesc_logged'))
-    		die(redirect(asset('/')));
+		if(Session::has('sge_fesc_logged') && Session::get('usuario')>0)
+    		return True;
+    	else
+    		return False;
 
+	}
+
+	public function trocarMinhaSenha_view()
+	{
+		if(!loginController::check())
+			return redirect(asset("/"));
+		else
+		return view('pessoa.trocar-senha');
+	}
+	public function trocarMinhaSenha_exec(Request $r)
+	{
+		if(!loginController::check())
+			return redirect(asset("/"));
+
+		if($r->userid != Session::get('usuario'))
+			return $this->logout();
+		$this->validate($r , [
+			'novasenha'=>'required|between:6,10|alpha_num',
+			'confirmanovasenha'=>'required|same:novasenha'
+
+		]);
+		$usuario=PessoaDadosAcesso::where('pessoa', Session::get('usuario'))->first();
+		if(count($usuario)!=1){
+			$erros_bd= ['Erro ao carregar dados de usuário.'];
+			return view('pessoa.trocar-senha', compact('erros_bd'));
+		}
+		if(!Hash::check($r->senha, $usuario->senha))
+		{
+			$erros_bd= ['Senha anterior incorreta.'];
+			return view('pessoa.trocar-senha', compact('erros_bd'));
+		}
+		else
+		{	
+			$usuario->senha=Hash::make($r->novasenha);
+			$usuario->save();
+			return $this->logout();
+
+
+		}
+		
+
+		
 	}
 }

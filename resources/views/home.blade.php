@@ -19,8 +19,15 @@
                     </div>
                 </div>
                 <div class="card-block">
-                    <div><a href="/pessoa/cadastrar" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-plus-circle "></i> Adicionar alguém</a></div>
-                    <div><a href="pessoas_add.php" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-check-square-o"></i> Ver lista de Cadastrados</a></div>
+                    <div>
+                        <a href="/secretaria/atender" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Atendimento</a></div>
+                    <div>
+                        <a href="/pessoa/cadastrar" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-plus-circle "></i>
+                        &nbsp;&nbsp;Cadastrar</a></div>
+                    <div><a href="/pessoa/listar" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-group"></i>&nbsp;&nbsp;Lista de Cadastrados</a></div>
 
                 
             </div>

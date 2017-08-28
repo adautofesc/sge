@@ -19,27 +19,24 @@ Route::get('addpessoa','pessoaController@adicionaPrimeiro');
 Route::get('addacesso','loginController@addPrimeiro');
 
 
-
-
-
-
-Route::get('/pessoa/cadastrar', 'PessoaController@mostraFormularioAdicionar');
+Route::get ('/pessoa/cadastrar', 'PessoaController@mostraFormularioAdicionar');
 Route::post('/pessoa/cadastrar','PessoaController@gravarPessoa');
-Route::get('/pessoa/mostrar/{var}','PessoaController@mostrar');
+Route::get ('/pessoa/mostrar/{var}','PessoaController@mostrar');
 Route::get('/pessoa/listar','PessoaController@listarTodos');
-Route::get('/pessoa/{var}','PessoaController@mostrar');
-Route::get('/pessoas','PessoaController@listarTodos');
+
+
+
+
+// procura pessoas na lista
 Route::post('pessoa/listar','PessoaController@procurarPessoa');
-Route::post('/pessoas','PessoaController@procurarPessoa');
 
 Route::get('secretaria/atender','PessoaController@iniciarAtendimento');
+Route::get('secretaria/atender/{var}','PessoaController@atender');
 Route::get('pessoa/buscarapida/{var}','PessoaController@liveSearchPessoa');
 
 
-Route::get('/pessoa/{var}/cadastrar-acesso/', 'PessoaController@mostrarCadastrarUsuario');
-Route::post('/pessoa/{var}/cadastrar-acesso/', 'PessoaController@gravaCadastrarUsuario');
-
-
+Route::get('/trocarminhasenha','loginController@trocarMinhaSenha_view');
+Route::post('/trocarminhasenha','loginController@trocarMinhaSenha_exec');
 
 
 

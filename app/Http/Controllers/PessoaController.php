@@ -49,19 +49,25 @@ class PessoaController extends Controller
 	public function mostraFormularioAdicionar($erros='',$sucessos='',$responsavel='')
 	{
 		//posso cadastrar
+		/*
 		$hoje=new Data();
 		$data=$hoje->getData();
 		$user=Session::get('usuario');
 		$usuario= Pessoa::where('id',$user)->first();
 		$array_nome=explode(' ',$usuario->nome);
-		$nome=$array_nome[0].' '.end($array_nome); 
-		$bairros=DB::table('bairros_sanca')->get();          
-		$dados=['data'=>$data,'usuario'=>$nome, 'bairros'=>$bairros,'alert_danger'=>$erros,'alert_sucess'=>$sucessos,'responsavel_por'=>$responsavel];
+		$nome=$array_nome[0].' '.end($array_nome);*/ 
 		
+		
+		if(!loginController::check())
+			return redirect(asset("/"));
+
+
+
 
 		if(GerenciadorAcesso::pedirPermissao(1))
 		{ // pede permissao para acessar o formulário
-			
+			$bairros=DB::table('bairros_sanca')->get();          
+			$dados=['bairros'=>$bairros,'alert_danger'=>$erros,'alert_sucess'=>$sucessos,'responsavel_por'=>$responsavel];
 			return view('pessoa.cadastrar', compact('dados'));
 			//return $erros;
 			//return $dados;
@@ -80,6 +86,9 @@ class PessoaController extends Controller
  */
 	public function gravarPessoa(Request $request)
 	{	
+		if(!loginController::check())
+			return redirect(asset("/"));
+
 		// Verifica se pode gravar
 			if(!GerenciadorAcesso::pedirPermissao(1))
 				return redirect(asset('/403')); //vai para acesso não autorizado
@@ -280,7 +289,9 @@ class PessoaController extends Controller
 	public function mostrar($id)
 	{
 
-		loginController::check();
+		if(!loginController::check())
+			return redirect(asset("/"));
+
 
 		$pessoa=Pessoa::find($id);
 		// Verifica se a pessoa existe
@@ -310,13 +321,12 @@ class PessoaController extends Controller
 		$pessoa=$this->formataParaMostrar($pessoa);
 
 		return view('pessoa.mostrar', compact('pessoa'));
-
 	}
 	public function edita($id){
 
 	}
-	public function apaga($id){
-
+	public function apaga($id)
+	{
 	}
 
 /**
@@ -410,7 +420,9 @@ class PessoaController extends Controller
 	 */
 	public function listarTodos()
 	{
-		loginController::check();
+		if(!loginController::check())
+			return redirect(asset("/"));
+
 		if(!GerenciadorAcesso::pedirPermissao(4))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.4','desc'=>'Seu cadastro não permite que você veja os dados de outra pessoa']));
 
@@ -430,7 +442,6 @@ class PessoaController extends Controller
 	 * @param  Request $
 	 *
 	 */
-
 	public function procurarPessoa(Request $r)
 	{		
 		if(isset($r['queryword']))
@@ -463,33 +474,29 @@ class PessoaController extends Controller
 		return $nome;
 	}
 
-	public function iniciarAtendimento(){
+	public function iniciarAtendimento()
+	{
 		return view('pessoa.inicio-atendimento');
 	}
 
 
-	public function liveSearchPessoa($query=''){
-
-
+	public function liveSearchPessoa($query='')
+	{
 		$pessoas=Pessoa::leftjoin('pessoas_dados_gerais', 'pessoas_dados_gerais.id', '=', 'pessoas.id')
 						->where('pessoas.id',$query)
 						->orwhere('nome', 'like', '%'.$query."%")
 						->orwhere('valor', 'like', '%'.$query."%")
 						->orderby('nome')
-						->get();
-
-		/*where('nome', 'like', '%'.$query.'%' )
-						->dadosContato
-						->orwhere('dado',3)
-						->where('valor', 'like','%'.$query.'%')->get();*/
+						->limit(20)
+						->get(['pessoas.id','pessoas.nome','pessoas.nascimento']);
+		foreach($pessoas->all() as $pessoa)
+		{	
+			$pessoa->nome=Strings::converteNomeParaUsuario($pessoa->nome);
+			$pessoa->nascimento=Data::converteParaUsuario($pessoa->nascimento);
+			$pessoa->numero=str_pad($pessoa->id,7,"0",STR_PAD_LEFT);
+		}
 		return $pessoas;
-
-
 	}
-
-
-
-
 
 	public function getArtigoGenero($a)
 	{
@@ -514,18 +521,17 @@ class PessoaController extends Controller
 				return "o(a)";
 				break;
 		}
-
 	}
-
 
 	public function mostrarCadastrarUsuario()
 	{
+		if(!loginController::check())
+			return redirect(asset("/"));
+
 		if(GerenciadorAcesso::pedirPermissao(8))
 			return view('pessoa.cadastrar-acesso');
 		else
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.8','desc'=>'Você não pode cadastrar usuários no sistema.']));
-
-
 	}
 
 	public function gravarUsuario(Request $request)
@@ -537,6 +543,25 @@ class PessoaController extends Controller
 				]);
 		return "ok";	
 	}
+
+	public function atender($id){
+
+		if(!loginController::check())
+			return redirect(asset("/"));
+
+		$pessoa=Pessoa::find($id);
+		// Verifica se a pessoa existe
+		if(!$pessoa)
+			return $this->listarTodos();
+
+		$pessoa=Pessoa::find($id);
+		$pessoa=$this->formataParaMostrar($pessoa);
+
+
+		return view('pessoa.atendimento', compact('pessoa'));
+	}
+
+
 
 	
 }

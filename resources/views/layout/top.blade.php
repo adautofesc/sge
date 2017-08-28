@@ -80,9 +80,9 @@
                 <div class="dropdown-menu profile-dropdown-menu" aria-labelledby="dropdownMenu1">
                     <a class="dropdown-item" href="{{asset('/pessoa/mostrar/'.Session::get('usuario'))}}"> <i class="fa fa-user icon"></i> Perfil </a>
                     <!--
-                    <a class="dropdown-item" href="#"> <i class="fa fa-bell icon"></i> Notificações </a>
-                    <a class="dropdown-item" href="#"> <i class="fa fa-gear icon"></i> Configurações </a>
-                    -->
+                    <a class="dropdown-item" href="#"> <i class="fa fa-bell icon"></i> Notificações </a>-->
+                    <a class="dropdown-item" href="{{asset('/').'trocarminhasenha'}}"> <i class="fa fa-gear icon"></i> Alterar senha </a>
+                    
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{{asset('/logout')}}"> <i class="fa fa-power-off icon"></i> Sair </a>
                 </div>

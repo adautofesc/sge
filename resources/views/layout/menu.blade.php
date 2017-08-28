@@ -28,11 +28,13 @@
                                 <li>
                                     <a href=""> <i class="fa fa-th-large"></i> Secretaria <i class="fa arrow"></i> </a>
                                     <ul>
-                                        <li> <a href="{{asset('/pessoa/listar')}}">Alunos</a> </li>
-                                    	<li> <a href="{{asset('secretaria/atender')}}">Atendimento ao aluno</a> </li>
-                                        <li> <a href="{{asset("/pessoa/cadastrar")}}">Cadastrar aluno</a> </li>
-                                        <li> <a href="turmas.php">Turmas Abertas	</a> </li>
-										<li> <a href="matriculas.php">Matrículas</a> </li>
+                                        
+                                    	<li> <a href="{{asset('secretaria/atender')}}">Atendimento</a> </li>
+
+                                        <li> <a href="{{asset("/pessoa/cadastrar")}}">Cadastrar usuário</a> </li>
+                                        <li> <a href="{{asset('/pessoa/listar')}}">Lista de usuários</a> </li>
+                                        <li> <a href="#">Turmas Abertas	</a> </li>
+										<li> <a href="#">Matrículas</a> </li>
                                                              
                                         
                                     </ul>
@@ -40,8 +42,8 @@
                                 <li>
                                     <a href=""> <i class="fa fa-th-large"></i> Institucional <i class="fa arrow"></i> </a>
                                     <ul>
-                                        <li> <a href="cursos.php">	Cursos</a> </li>
-                                        <li> <a href="disciplinas.php"> Disciplinas </a> </li>
+                                        <li> <a href="#">	Cursos</a> </li>
+                                        <li> <a href="#"> Disciplinas </a> </li>
                                         <li> <a href="#"> Unidades </a> </li>
                                         <li> <a href="#"> Salas </a> </li>
                                         <li> <a href="#"> Ocupação </a> </li>
@@ -60,16 +62,16 @@
                                 <li>
                                     <a href=""> <i class="fa fa-bar-chart"></i>Pedagógico <i class="fa arrow"></i> </a>
                                     <ul>
-                                    	<li> <a href="turmas.php">Turmas Ativas</a> </li>
-										<li> <a href="turmas_add.php">Nova Turma</a> </li>
+                                    	<li> <a href="#">Turmas Ativas</a> </li>
+										<li> <a href="#">Nova Turma</a> </li>
                                     </ul>
                                 </li>
                                  <li>
                                     <a href=""> <i class="fa fa-users"></i> Pessoas <i class="fa arrow"></i> </a>
                                     <ul>
                                         <li> <a href="{{asset('/pessoa/listar')}}">Lista</a></li>
-                                        <li> <a href="./pessoas_add.php">Adicionar</a></li>
-                                        <li> <a href="./pessoas_acesso.php">Credenciais de acesso</a></li><!--
+                                        <li> <a href="{{asset('/pessoa/cadastrar')}}">Adicionar</a></li>
+                                    <!--
                                         <li> <a href="./pessoas.php?relacao=adm">Administrativo</a></li>
                                         <li> <a href="./pessoas.php?relacao=alu">Alunos</a></li>
                                         <li> <a href="./pessoas.php?relacao=doc">Docentes</a></li>

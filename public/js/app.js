@@ -1113,9 +1113,8 @@ $(function() {
         $(this).parents('li')
             .siblings()
             .find(':checkbox')
-            .prop('checked', $this.checked)
-            .val($this.checked)
-            .change();
+            .prop('checked', $this.checked);
+
     });
 
 

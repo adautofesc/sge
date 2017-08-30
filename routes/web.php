@@ -21,6 +21,7 @@ Route::get('addacesso','loginController@addPrimeiro');
 
 Route::get ('/pessoa/cadastrar', 'PessoaController@mostraFormularioAdicionar');
 Route::post('/pessoa/cadastrar','PessoaController@gravarPessoa');
+Route::get ('/pessoa/mostrar/','PessoaController@listarTodos');
 Route::get ('/pessoa/mostrar/{var}','PessoaController@mostrar');
 Route::get('/pessoa/listar','PessoaController@listarTodos');
 
@@ -38,6 +39,15 @@ Route::get('pessoa/buscarapida/{var}','PessoaController@liveSearchPessoa');
 Route::get('/trocarminhasenha','loginController@trocarMinhaSenha_view');
 Route::post('/trocarminhasenha','loginController@trocarMinhaSenha_exec');
 
+Route::get('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_view');
+Route::post('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_exec');
+
+Route::get('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_view');
+Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec');
+
+Route::get('/admin/listarusuarios', 'loginController@listarUsuarios');
+Route::get('/admin/listarusuarios/{var}', 'loginController@listarUsuarios');
+Route::post('/admin/listarusuarios/{var}', 'loginController@listarUsuarios_action');
 
 
 

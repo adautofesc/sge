@@ -17,7 +17,7 @@
 		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Senha
+				Nova senha
 			</label>
 			<div class="col-sm-5"> 
 				<input type="password" name="novasenha" class="form-control boxed" placeholder="Mínimo 6 caracteres"> 
@@ -25,7 +25,7 @@
 		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Repetir senha
+				Repetir nova senha
 			</label>
 			<div class="col-sm-5"> 
 				<input type="password" name="confirmanovasenha" class="form-control boxed" placeholder="A mesma do campo anterior"> 

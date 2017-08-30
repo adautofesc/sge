@@ -27,7 +27,8 @@ class PessoaController extends Controller
     
 
 
-    public function adicionaPrimeiro(){
+    public function adicionaPrimeiro()
+    {
     	$admin= new Pessoa;
     	$admin->nome = "Adauto";
     	$admin->genero="h";
@@ -64,7 +65,7 @@ class PessoaController extends Controller
 
 
 
-		if(GerenciadorAcesso::pedirPermissao(1))
+		if(loginController::pedirPermissao(1))
 		{ // pede permissao para acessar o formulário
 			$bairros=DB::table('bairros_sanca')->get();          
 			$dados=['bairros'=>$bairros,'alert_danger'=>$erros,'alert_sucess'=>$sucessos,'responsavel_por'=>$responsavel];
@@ -90,7 +91,7 @@ class PessoaController extends Controller
 			return redirect(asset("/"));
 
 		// Verifica se pode gravar
-			if(!GerenciadorAcesso::pedirPermissao(1))
+			if(!loginController::pedirPermissao(1))
 				return redirect(asset('/403')); //vai para acesso não autorizado
 				//Validação dos requisitos
 			$this->validate($request, [
@@ -302,18 +303,18 @@ class PessoaController extends Controller
 		if($pessoa->id != Session::get('usuario'))
 		{
 		//verifica se pode ver outras pessoas
-			if(!GerenciadorAcesso::pedirPermissao(4))			
+			if(!loginController::pedirPermissao(4))			
 				return view('error-404-alt')->with(array('error'=>['id'=>'403.4','desc'=>'Seu cadastro não permite que você veja os dados de outra pessoa']));
 				//return $this->listar();	
 		// verifica se a pessoa tem relação institucional
 			$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
-			if($relacao_institucional && !GerenciadorAcesso::pedirPermissao(5))
+			if($relacao_institucional && !loginController::pedirPermissao(5))
 			{
 				return view('error-404-alt')->with(array('error'=>['id'=>'403.5','desc'=>'Você não possui acesso a dados de pessoas ligadas à instituição.']));		
 			}
 		// Verifica se a pessoa tem perfil privado.
 			$pessoa_restrita=count($pessoa->dadosGerais->where('dado',17));
-			if($pessoa_restrita && !GerenciadorAcesso::pedirPermissao(6))
+			if($pessoa_restrita && !loginController::pedirPermissao(6))
 				return view('error-404-alt')->with(array('error'=>['id'=>'403.6','desc'=>'Esta pessoa possui restrição de acesso aos seus dados']));	
 
 		}
@@ -354,11 +355,11 @@ class PessoaController extends Controller
 		
 		foreach($dependentes as $dependente)
 		{
-			$dependente->nome=$this->getNome($dependente->valor);
+			$dependente->nome=Pessoa::getNome($dependente->valor);
 		}
 		$pessoa->dependentes=$dependentes;
 		if(isset($pessoa->responsavel))
-			$pessoa->nomeresponsavel=$this->getNome($pessoa->responsavel);
+			$pessoa->nomeresponsavel=Pessoa::getNome($pessoa->responsavel);
 		
 
 
@@ -367,7 +368,7 @@ class PessoaController extends Controller
 		$pessoa->nascimento=Data::converteParaUsuario($pessoa->nascimento);
 		
 
-		$pessoa->cadastro=Data::converteParaUsuario($pessoa->created_at). "  Cadastrad".$this->getArtigoGenero($pessoa->genero).' por '. $this->getNome($pessoa->por);
+		$pessoa->cadastro=Data::converteParaUsuario($pessoa->created_at). "  Cadastrad".$this->getArtigoGenero($pessoa->genero).' por '. Pessoa::getNome($pessoa->por);
 
 		switch ($pessoa->genero) {
 			case 'h':
@@ -463,16 +464,7 @@ class PessoaController extends Controller
 		return view('pessoa.listar-todos', compact('pessoas'));
 	}
 
-	public function getNome($id)
-	{		
-		$query=Pessoa::find($id);
-		if($query)
-			$nome=Strings::converteNomeParaUsuario($query->nome);
-		else
-			$nome="Impossível encontrar o nome dessa pessoa";
-
-		return $nome;
-	}
+	
 
 	public function iniciarAtendimento()
 	{

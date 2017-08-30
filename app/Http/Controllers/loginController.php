@@ -8,8 +8,11 @@ use Illuminate\Support\Facades\Mail;// coloca classe email
 use App\Pessoa;
 use App\PessoaDadosAcesso;
 use App\PessoaDadosContato;
+use App\ControleAcessoRecurso;
 use App\Mail\recuperarSenha;
 use App\classes\keygen;
+use App\classes\Strings;
+use App\classes\Data;
 use Session;
 
 class loginController extends Controller
@@ -20,9 +23,10 @@ class loginController extends Controller
 	/*
 	Metodo de fazer o login - deverá ser futuramente ser trocado pelo Auth
 	*/
-    public function loginCheck(Request $request){
+    public function loginCheck(Request $request)
+    {
 		$this->validate($request, [
-			'login'=>'required|between:3,30|alpha_num',
+			'login'=>'required|between:4,30|alpha_num',
 			'senha'=>'required|between:6,30|alpha_num'
 
 		]);
@@ -71,12 +75,15 @@ class loginController extends Controller
 	}
 
 	//metodo mostrar a view de esqueci minha senha
-	public function viewPwdRescue(){
+	public function viewPwdRescue()
+	{
 		return view('login_esqueci_senha');
 	}
 
-	//metodo acionado depois do usuário clicou em  "pedir uma nova senha".
-	public function pwdRescue(Request $request){
+	/**
+	 * Metodo acionado depois do usuário clicou em  "pedir uma nova senha".*/
+	public function pwdRescue(Request $request)
+	{
 		$this->validate($request, [
 			'email'=>'required|email'
 			]);
@@ -96,19 +103,13 @@ class loginController extends Controller
 			//Mail::to($usuario->valor)->send(new recuperarSenha($senha)); //Envia email
 			$erros_bd= ['Desculpe, este recurso ainda está em desenvolvimento. Contate a FESC para reiniciar sua senha.'];
 			return view('login_esqueci_senha', compact('erros_bd'));
-
-
-
-
-
-
-
 		}		
-
 	}
 
-	//metodo acionado para encerrar a sessão do usuário
-	public function logout(){
+	/**
+	 * Encerra todas sessões */
+	public function logout()
+	{
 		Session::flush();
 		return redirect('/');
 	}
@@ -126,15 +127,29 @@ class loginController extends Controller
 		return 'Acesso ao usuário 1 ativado';
 
 	}
-	*/
+*/
+
+	/**
+	 * Checa se houve o login */
 	public static function check()
 	{
 		if(Session::has('sge_fesc_logged') && Session::get('usuario')>0)
     		return True;
     	else
     		return False;
-
 	}
+
+	public static function pedirPermissao($recurso){
+
+        $query=ControleAcessoRecurso::where('pessoa', Session::get('usuario'))
+                                    ->where('recurso', $recurso)->first();
+        
+        if(count($query))
+            return True;
+        else
+            return False;
+
+    }
 
 	public function trocarMinhaSenha_view()
 	{
@@ -143,17 +158,18 @@ class loginController extends Controller
 		else
 		return view('pessoa.trocar-senha');
 	}
+
+	/**
+	 * Efetua a troca da senha */
 	public function trocarMinhaSenha_exec(Request $r)
 	{
 		if(!loginController::check())
 			return redirect(asset("/"));
-
 		if($r->userid != Session::get('usuario'))
 			return $this->logout();
 		$this->validate($r , [
 			'novasenha'=>'required|between:6,10|alpha_num',
 			'confirmanovasenha'=>'required|same:novasenha'
-
 		]);
 		$usuario=PessoaDadosAcesso::where('pessoa', Session::get('usuario'))->first();
 		if(count($usuario)!=1){
@@ -170,11 +186,195 @@ class loginController extends Controller
 			$usuario->senha=Hash::make($r->novasenha);
 			$usuario->save();
 			return $this->logout();
+		}
+	}
 
+	/**
+	 * Mostra formulário de adicionar usuario ao sistema
+	 * @param Integer id da pessoa que se quer criar o acesso */
+	public function cadastrarAcesso_view($p)	
+	{
+		$pessoa=Pessoa::find($p);
+		if(!count($pessoa))
+		{
+			$erros_bd= ['Código de pessoa inválido'];
+			return view('pessoa.cadastrar-acesso', compact('erros_bd'));
+		}
+		$acesso=PessoaDadosAcesso::where('pessoa', $p)->first();
+		if(count($acesso))
+		{
+			$erros_bd= ['Esta pessoa já possui login: '.$acesso->usuario];
+			return view('pessoa.cadastrar-acesso', compact('erros_bd'));
 
 		}
 		
+		$pessoa->nome=Strings::converteNomeParaUsuario($pessoa->nome);
+		return view('pessoa.cadastrar-acesso',compact('pessoa'));
+	}
 
-		
+	/**
+	 * Grava usuário no sistema */	 
+	public function cadastrarAcesso_exec(Request $request)
+	{
+		if(!$this->check())
+			return redirect(asset("/"));
+		$this->validate($request, [
+			'nome_usuario'=>'required|between:4,10|alpha_num',
+			'senha'=>'required|between:6,10|alpha_num',
+			'repetir_senha'=>'required|same:senha',
+			]);
+		$acesso=PessoaDadosAcesso::where('usuario', $request->nome_usuario)->get();
+		if(count($acesso)>0)
+		{
+			$erros_bd= ['Este nome de usuário já está em uso. '];
+			return view('pessoa.cadastrar-acesso', compact('erros_bd'));
+		}
+		$novo=new PessoaDadosAcesso;
+
+		$novo->usuario=mb_convert_case($request->nome_usuario, MB_CASE_LOWER, 'UTF-8');
+		$novo->senha=Hash::make($request->senha);
+		$novo->status=1;
+		$novo->pessoa=$request->pessoa;
+		if(!isset($request->validade))				
+			$novo->validade=date('Y').'-12-31';
+		else
+			$novo->validade=$request->validade;
+		$novo->save();
+
+		$dados=['alert_sucess'=>['Usuario cadastrado com sucesso']];
+		return view('pessoa.cadastrar-acesso', compact('dados'));
+	}
+
+	public function trocarSenhaUsuario_view($usuario)
+	{
+		if(!$this->check())
+			return redirect(asset("/"));
+		$pessoa=Pessoa::find($usuario);
+		if(!count($pessoa))
+		{
+			$erros_bd= ['Código de pessoa inválido'];
+			return view('pessoa.cadastrar-acesso', compact('erros_bd'));
+		}
+		$acesso=PessoaDadosAcesso::where('pessoa', $usuario)->first();
+		if(count($acesso)==0)
+		{
+			$erros_bd= ['Este nome de usuário ainda não possui Login'];
+			return view('pessoa.trocar-senha-usuario', compact('erros_bd'));
+		}
+		if(!$this->pedirPermissao(9))
+		{
+			$erros_bd= ['Desculpe, você não tem permissão para alterar senha de outras pessoas'];
+			return view('pessoa.cadastrar-acesso', compact('erros_bd'));
+		}
+		$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
+		if($relacao_institucional && !$this->pedirPermissao(10))
+		{
+			$erros_bd= ['Desculpe, você não tem permissão para alterar senha de pessoas ligadas à FESC'];
+			return view('pessoa.cadastrar-acesso', compact('erros_bd'));	
+		}
+		$pessoa_restrita=count($pessoa->dadosGerais->where('dado',17));
+		if($pessoa_restrita && !$this->pedirPermissao(11))
+		{
+			$erros_bd= ['Desculpe, você não tem permissão para alterar senha de pessoas restritas'];
+			return view('pessoa.cadastrar-acesso', compact('erros_bd'));
+		}
+		return view('pessoa.trocar-senha-usuario', compact('pessoa'));
+	}
+
+	public function trocarSenhaUsuario_exec(Request $request)
+	{
+		if(!$this->check())
+			return redirect(asset("/"));
+
+		$this->validate($request, [
+			'pessoa'=>'required|integer',
+			'nova_senha'=>'required|between:6,10|alpha_num',
+			'repetir_senha'=>'required|same:nova_senha'
+			]);
+		$pessoa=Pessoa::find($request->pessoa);
+		if(!count($pessoa))
+		{
+			$erros_bd= ['Código de pessoa inválido'];
+			return view('pessoa.trocar-senha-usuario', compact('erros_bd'));
+		}
+		$acesso=PessoaDadosAcesso::where('pessoa', $request->pessoa)->first();
+		if(count($acesso)==0)
+		{
+			$erros_bd= ['Este nome de usuário ainda não possui Login'];
+			return view('pessoa.trocar-senha-usuario', compact('erros_bd'));
+		}
+
+		if(!$this->pedirPermissao(9))
+		{
+			$erros_bd= ['Desculpe, você não tem permissão para alterar senha de outras pessoas'];
+			return view('pessoa.trocar-senha-usuario', compact('erros_bd'));
+		}
+		$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
+		if($relacao_institucional && !$this->pedirPermissao(10))
+		{
+			$erros_bd= ['Desculpe, você não tem permissão para alterar senha de pessoas ligadas à FESC'];
+			return view('pessoa.trocar-senha-usuario', compact('erros_bd'));	
+		}
+		$pessoa_restrita=count($pessoa->dadosGerais->where('dado',17));
+		if($pessoa_restrita && !$this->pedirPermissao(11))
+		{
+			$erros_bd= ['Desculpe, você não tem permissão para alterar senha de pessoas restritas'];
+			return view('pessoa.trocar-senha-usuario', compact('erros_bd'));
+		}
+		if(!isset($request->validade))				
+			$acesso->validade=date('Y').'-12-31';
+		else
+		{
+			$this->validate($request,[
+				'validade'=>'date'
+				]);
+			$acesso->validade=$request->validade;
+		}
+		$acesso->senha=Hash::make($request->nova_senha);
+		$acesso->save();
+		$dados=['alert_sucess'=>['Senha alterada com sucesso!']];
+
+		return view('pessoa.trocar-senha-usuario', compact('dados'));
+
+	}
+	public function listarUsuarios(Request $r = Request)
+	{
+		if(!$this->check())
+			return redirect(asset("/"));
+
+		if(!$this->pedirPermissao(10))			
+				return view('error-404-alt')->with(array('error'=>['id'=>'403.10','desc'=>'Desculpe, você não tem autorização para listar os usuários.']));
+
+	if($r->buscar=='')
+		$usuarios=PessoaDadosAcesso::orderBy('usuario','ASC')->paginate(35);
+	else
+		$usuarios=PessoaDadosAcesso::where('usuario', 'like', '%'.$r->buscar.'%')->orderBy('usuario','ASC')->paginate(35);
+	
+	$dados=['usuarios'=> $usuarios];
+
+	foreach($dados['usuarios'] as $usuario)
+	{
+		if(strtotime($usuario->validade) < strtotime(date('Y-m-d')))
+			$usuario->status=2;
+
+		switch($usuario->status){
+			case 0:
+			$usuario->status="Bloqueado";
+			break;			
+			case 1:
+			$usuario->status="Normal";
+			break;
+			case 2:
+			$usuario->status="Vencido";
+			break;
+
+
+		}
+		$usuario->nome=Pessoa::getNome($usuario->pessoa);
+		$usuario->validade=Data::converteParaUsuario($usuario->validade);
+
+
+	}
+		return view('admin/listarusuarios', compact('dados'));
 	}
 }

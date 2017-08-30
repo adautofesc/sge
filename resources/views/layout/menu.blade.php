@@ -71,6 +71,7 @@
                                     <ul>
                                         <li> <a href="{{asset('/pessoa/listar')}}">Lista</a></li>
                                         <li> <a href="{{asset('/pessoa/cadastrar')}}">Adicionar</a></li>
+                                        <li> <a href="{{asset('/admin/listarusuarios')}}">Usuários sistema</a></li>
                                     <!--
                                         <li> <a href="./pessoas.php?relacao=adm">Administrativo</a></li>
                                         <li> <a href="./pessoas.php?relacao=alu">Alunos</a></li>

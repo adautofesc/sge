@@ -123,8 +123,8 @@
 											</div>
 										</div>
 										<div class="card-block">
-											<div><a href="matricula_cursos_disponiveis.php" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-plus-circle "></i>  Criar Login</a></div>
-											<div><a href="pessoas_add.php" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-check-square-o"></i> Trocar senha</a></div>
+											<div><a href="{{asset('/pessoa/cadastraracesso/').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-plus-circle "></i>  Criar Login</a></div>
+											<div><a href="{{asset('/pessoa/trocarsenha/').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-check-square-o"></i> Trocar senha</a></div>
 											<div><a href="pessoas_add.php" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-times-circle"></i> Recursos</a></div>
 											<div><a href="pessoas_add.php" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-times"></i> Histórico</a></div>
 											<div><a href="pessoas_add.php" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-print"></i> Relatórios</a></div>

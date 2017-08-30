@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\classes\Strings;
 
 class Pessoa extends Model
 {
@@ -26,5 +27,15 @@ class Pessoa extends Model
 	}
 	public function dadosGerais(){
 		return $this->hasMany('App\PessoaDadosGerais','pessoa');
+	}
+	public static function getNome($id)
+	{		
+		$query=Pessoa::find($id);
+		if($query)
+			$nome=Strings::converteNomeParaUsuario($query->nome);
+		else
+			$nome="Impossível encontrar o nome dessa pessoa";
+
+		return $nome;
 	}
 }

@@ -77,7 +77,7 @@ Class Data
         }
         public static function converteParaBd($d)
         {
-            $data= Carbon::createFromFormat('D/M/Y',$d)->toDateString();
+            $data= Carbon::createFromFormat('d/m/Y',$d)->toDateString();
             return $data;
         }
         public static function converteParaUsuario($d)

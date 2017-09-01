@@ -4,10 +4,13 @@
 <!-- ********************************************************************************** tab -->
  <div class="title-block">
     <h3 class="title">Visualização de informações<span ></span> </h3>
-</div>
+</div> @include('inc.errors')  
+ @if(isset($pessoa['id']))
 <div class="subtitle-block">
     <h3 class="subtitle"><small>Dados de: </small> {{$pessoa['nome']}}</h3>
 </div>
+
+
     <section class="section">
     <div class="row ">
         <div class="col-xl-12">
@@ -37,9 +40,10 @@
                                         <a href="pessoas_add.php" class="btn btn-secondary btn-sm rounded-s"> Adicionar responsável financeiro</a>                                         
                                     </div>                                           
                                     <div class="col-xs-2 text-xs-right">                                        
-                                        <a href="pessoas_add.php" class="btn btn-primary btn-sm rounded-s"> Editar </a>
+                                        <a href="{{asset('/pessoa/editar/geral').'/'.$pessoa['id']}}" class="btn btn-primary btn-sm rounded-s"> Editar </a>
                                     </div>
                                 </div>  
+
 
                                 <section class="card card-block">
                                 <div class="form-group row">
@@ -98,7 +102,7 @@
                                     @else
                                     <label class="col-sm-3 form-control-label text-xs-right">Acesso ao sistema</label>
                                     <div class="col-sm-3"> 
-                                        <a href="{{asset('/pessoa/'.$pessoa['id'].'/cadastrar-acesso/') }}" class="btn btn-primary btn-sm rounded-s"> Cadastrar usuário </a>
+                                        <a href="{{asset('/pessoa/cadastraracesso/').'/'.$pessoa['id']}}" class="btn btn-primary btn-sm rounded-s"> Cadastrar usuário </a>
                                     </div>
                                     @endif                                  
                                 </div> 
@@ -338,7 +342,7 @@
                                 
 
                             </section>
-
+@endif
                          
                         </div>
 

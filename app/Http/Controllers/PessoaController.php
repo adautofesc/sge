@@ -124,11 +124,12 @@ class PessoaController extends Controller
 				}		
 			}	    
 		// Apertou a opção de cadastro com CPF?
-			if($request->btn_sub==1||$request->btn_sub==3) 
-			{
+			if($request->btn_sub==1||$request->btn_sub==3)
+				if($request->cpf=='')
+				{
 				$erros_bd=["Desculpe, mas o preenchimento de CPF é obrigatório. Porém você pode clicar em cadastrar responsável"];
 				return $this->mostraFormularioAdicionar($erros_bd); // volta pro form com erro
-			}
+				}
 			$pessoa = new Pessoa;
 			$pessoa->nome=mb_convert_case($request->nome, MB_CASE_UPPER, 'UTF-8');
 			$pessoa->nascimento=$request->nascimento;
@@ -287,13 +288,8 @@ class PessoaController extends Controller
  * @param \App\Pessoa $id
  *
  */
-	public function mostrar($id)
+	public function dadosPessoa($id)
 	{
-
-		if(!loginController::check())
-			return redirect(asset("/"));
-
-
 		$pessoa=Pessoa::find($id);
 		// Verifica se a pessoa existe
 		if(!$pessoa)
@@ -321,7 +317,16 @@ class PessoaController extends Controller
 	
 		$pessoa=$this->formataParaMostrar($pessoa);
 
+		return $pessoa;
+	}
+
+	public function mostrar($id)
+	{	
+		if(!loginController::check())
+			return redirect(asset("/"));
+		$pessoa=$this->dadosPessoa($id);
 		return view('pessoa.mostrar', compact('pessoa'));
+
 	}
 	public function edita($id){
 
@@ -365,10 +370,11 @@ class PessoaController extends Controller
 
 		$pessoa->nome=Strings::converteNomeParaUsuario($pessoa->nome);
 		$pessoa->idade=Data::calculaIdade($pessoa->nascimento);
+		//$pessoa->aniversario=$pessoa->nascimento;
 		$pessoa->nascimento=Data::converteParaUsuario($pessoa->nascimento);
 		
 
-		$pessoa->cadastro=Data::converteParaUsuario($pessoa->created_at). "  Cadastrad".$this->getArtigoGenero($pessoa->genero).' por '. Pessoa::getNome($pessoa->por);
+		$pessoa->cadastro=Data::converteParaUsuario($pessoa->created_at). "  Cadastrad".Pessoa::getArtigoGenero($pessoa->genero).' por '. Pessoa::getNome($pessoa->por);
 
 		switch ($pessoa->genero) {
 			case 'h':
@@ -490,30 +496,7 @@ class PessoaController extends Controller
 		return $pessoas;
 	}
 
-	public function getArtigoGenero($a)
-	{
-		switch ($a) {
-			case 'h':
-				return "o";
-				break;
-			case 'm':
-				return "a";
-				break;
-			case 'x':
-				return "o";
-				break;
-			case 'y':
-				return "a";
-				break;
-			case 'z':
-				return "o(a)";
-				break;
-			
-			default:
-				return "o(a)";
-				break;
-		}
-	}
+	
 
 	public function mostrarCadastrarUsuario()
 	{
@@ -552,6 +535,117 @@ class PessoaController extends Controller
 
 		return view('pessoa.atendimento', compact('pessoa'));
 	}
+	public function editarGeral_view($id){
+		if(!loginController::check())
+			return redirect(asset("/"));
+		if(!GerenciadorAcesso::pedirPermissao(3))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
+
+
+		$dados=$this->dadosPessoa($id);
+		//return $dados;
+				switch ($dados['genero']) {
+			case 'Masculino':
+				$dados['generom']="checked";
+				break;
+			case 'Feminino':
+				$dados['generof']="checked";
+				break;
+			case 'Trans Masculino':
+				$dados['generox']="checked";
+				break;
+			case 'Trans Feminino':
+				$dados['generoy']="checked";
+				break;
+			case 'Não especificado':
+				$dados['generoz']="checked";
+				break;
+			default:
+				$pessoa->genero="Não especificado";
+				break;
+		}
+		return view('pessoa.editar-dados-gerais', compact('dados'));
+	}
+	public function editarGeral_exec(Request $request){
+		if(!loginController::check())
+			return redirect(asset("/"));
+		if(!GerenciadorAcesso::pedirPermissao(3))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Desculpe, você não possui autorização para alterar dados de outras pessoas']));
+		$this->validate($request, [
+				'pessoa'=>'required|integer',
+				'nome'=>'required',
+				'nascimento'=>'required',
+				'genero'=>'required'
+			]);
+		$pessoa=Pessoa::find($request->pessoa);
+		if(!$pessoa){
+			return redirect(asset("/pessoa/mostrar/"));
+		}
+		$pessoa->nome=mb_convert_case($request->nome, MB_CASE_UPPER, 'UTF-8');
+		$pessoa->nascimento=Data::converteParaBd($request->nascimento);
+		$pessoa->genero=$request->genero;
+		$pessoa->save();
+		$dados['alert_success'][]="Nome, nascimento e gênero gravados com sucesso";
+		if($request->rg!=''){
+
+			$rg=new PessoaDadosGerais;
+			$rg->pessoa=$pessoa->id;
+			$rg->dado=4;
+			$rg->valor=$request->rg;
+			$rg->save();
+			$dados['alert_success'][]="RG gravado com sucesso,";
+
+			
+		}
+		if($request->cpf!='')
+		{	
+			if (!Strings::validaCPF($request->cpf)) 
+			{
+				$dados['alert_warning'][]="Erro ao gravar: O CPF informado não é válido,";
+				
+			}
+			elseif(PessoaDadosGerais::where('dado',3)->where('valor', $request->cpf)->where('pessoa','!=',$request->pessoa)->first()){
+				$dados['alert_warning'][]="Erro ao gravar: O CPF informado já consta no sistema,";
+			}
+			else{
+		
+				$cpf=new PessoaDadosGerais;
+				$cpf->pessoa=$pessoa->id;
+				$cpf->dado=3;
+				$cpf->valor=$request->cpf;
+				$cpf->save();
+				$dados['alert_success'][]="Erro ao gravar: CPF gravado com sucesso,";
+			}
+
+		}
+		if($request->nome_registro!='')
+		{
+		
+			$nome=new PessoaDadosGerais;
+			$nome->pessoa=$pessoa->id;
+			$nome->dado=8;
+			$nome->valor=$request->nome_registro;
+			$nome->save();
+			$dados['alert_success'][]="Nome de registro gravado com sucesso,";
+			
+		}
+		$dadospessoa=get_object_vars($this->$pessoa);
+
+		return $dadospessoa;
+		//$dados=array_merge($dados, );
+
+		return $pessoa;
+
+
+
+		return view('pessoa.mostrar', compact('dados'));
+			
+
+
+
+
+	}
+
 
 
 

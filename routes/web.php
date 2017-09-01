@@ -19,40 +19,45 @@ Route::get('addpessoa','pessoaController@adicionaPrimeiro');
 Route::get('addacesso','loginController@addPrimeiro');
 
 
+
+
+
+
+
+// Pessoas
+Route::post('pessoa/listar','PessoaController@procurarPessoa');
 Route::get ('/pessoa/cadastrar', 'PessoaController@mostraFormularioAdicionar');
 Route::post('/pessoa/cadastrar','PessoaController@gravarPessoa');
 Route::get ('/pessoa/mostrar/','PessoaController@listarTodos');
 Route::get ('/pessoa/mostrar/{var}','PessoaController@mostrar');
 Route::get('/pessoa/listar','PessoaController@listarTodos');
+Route::get('/pessoa/editar/geral/{var}','PessoaController@editarGeral_view');
+Route::post('/pessoa/editar/geral/{var}','PessoaController@editarGeral_exec');
+Route::get('/pessoa/editar/contato/{var}','PessoaController@editarContato_view');
+Route::post('/pessoa/editar/contato/{var}','PessoaController@editarContato_exec');
+Route::get('/pessoa/editar/saude/{var}','PessoaController@editarSaude_view');
+Route::post('/pessoa/editar/obs/{var}','PessoaController@editarSaude_exec');
 
 
 
 
-// procura pessoas na lista
-Route::post('pessoa/listar','PessoaController@procurarPessoa');
-
+// Secretaria
 Route::get('secretaria/atender','PessoaController@iniciarAtendimento');
 Route::get('secretaria/atender/{var}','PessoaController@atender');
 Route::get('pessoa/buscarapida/{var}','PessoaController@liveSearchPessoa');
 
 
+//------------------------------ Login 
+Route::get('/admin/listarusuarios', 'loginController@listarUsuarios_view');
+Route::get('/admin/listarusuarios/{var}', 'loginController@listarUsuarios_view');
+Route::post('/admin/listarusuarios/{var}', 'loginController@listarUsuarios_action');
+Route::get('/admin/alterar/{acao}/{itens}', 'loginController@alterar');
 Route::get('/trocarminhasenha','loginController@trocarMinhaSenha_view');
 Route::post('/trocarminhasenha','loginController@trocarMinhaSenha_exec');
-
 Route::get('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_view');
 Route::post('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_exec');
-
 Route::get('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_view');
 Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec');
-
-Route::get('/admin/listarusuarios', 'loginController@listarUsuarios');
-Route::get('/admin/listarusuarios/{var}', 'loginController@listarUsuarios');
-Route::post('/admin/listarusuarios/{var}', 'loginController@listarUsuarios_action');
-
-
-
-
-//------------------------------ Login 
 Route::get('login', 'loginController@login');
 Route::post('loginCheck', 'loginController@loginCheck');
 Route::get('loginCheck', 'loginController@logout');

@@ -337,7 +337,7 @@ class loginController extends Controller
 		return view('pessoa.trocar-senha-usuario', compact('dados'));
 
 	}
-	public function listarUsuarios(Request $r = Request)
+	public function listarUsuarios_data($r='')
 	{
 		if(!$this->check())
 			return redirect(asset("/"));
@@ -345,36 +345,138 @@ class loginController extends Controller
 		if(!$this->pedirPermissao(10))			
 				return view('error-404-alt')->with(array('error'=>['id'=>'403.10','desc'=>'Desculpe, você não tem autorização para listar os usuários.']));
 
-	if($r->buscar=='')
-		$usuarios=PessoaDadosAcesso::orderBy('usuario','ASC')->paginate(35);
-	else
-		$usuarios=PessoaDadosAcesso::where('usuario', 'like', '%'.$r->buscar.'%')->orderBy('usuario','ASC')->paginate(35);
-	
-	$dados=['usuarios'=> $usuarios];
+		if($r=='')
+			$usuarios=PessoaDadosAcesso::orderBy('usuario','ASC')->paginate(35);
+		else
+			$usuarios=PessoaDadosAcesso::where('usuario', 'like', '%'.$r.'%')->orderBy('usuario','ASC')->paginate(35);
+		
+		$dados=['usuarios'=> $usuarios];
 
-	foreach($dados['usuarios'] as $usuario)
-	{
-		if(strtotime($usuario->validade) < strtotime(date('Y-m-d')))
-			$usuario->status=2;
+		foreach($dados['usuarios'] as $usuario)
+		{
+			if(strtotime($usuario->validade) < strtotime(date('Y-m-d')))
+				$usuario->status=2;
 
-		switch($usuario->status){
-			case 0:
-			$usuario->status="Bloqueado";
-			break;			
-			case 1:
-			$usuario->status="Normal";
-			break;
-			case 2:
-			$usuario->status="Vencido";
-			break;
+			switch($usuario->status){
+				case 0:
+				$usuario->status="Bloqueado";
+				break;			
+				case 1:
+				$usuario->status="Ativado";
+				break;
+				case 2:
+				$usuario->status="Vencido";
+				break;
 
 
+			}
+			$usuario->nome=Pessoa::getNome($usuario->pessoa);
+			$usuario->validade=Data::converteParaUsuario($usuario->validade);
 		}
-		$usuario->nome=Pessoa::getNome($usuario->pessoa);
-		$usuario->validade=Data::converteParaUsuario($usuario->validade);
+		return $dados;
+		
+	}
+
+	public function listarUsuarios_view(Request $r = Request)
+	{
+		$dados=$this->listarUsuarios_data($r->buscar);
+		return view('admin/listarusuarios', compact('dados'));	
+	}
+
+	public function alterar($acao,$itens)
+	{
+		if(!$this->check())
+			return redirect(asset("/"));
+
+		if(!$this->pedirPermissao(9))
+		{
+			$erros_bd= ['Desculpe, você não tem permissão para alterar dados de acesso de outras pessoas.'];
+			return view('admin.listarusuarios', compact('erros_bd'));
+		}
 
 
-	}
-		return view('admin/listarusuarios', compact('dados'));
-	}
+		$logins=explode(',',$itens);
+		//$items=array_pop($logins);
+		
+		$filtered_login=[];
+		foreach($logins as $l){
+			if(is_numeric($l))
+				array_push($filtered_login,$l);
+		}
+
+		switch($acao)
+		{
+			case 1: // Renovar a validade
+				foreach ($filtered_login as $id_acesso){
+					$acesso=PessoaDadosAcesso::find($id_acesso);
+					$pessoa=Pessoa::find($acesso->pessoa);
+					$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
+					if($relacao_institucional && !$this->pedirPermissao(10))
+					{
+						$dados['alert_warning'][]='Desculpe, você não tem permissão para alterar: '.$acesso->usuario.' por ser uma pessoa com relação institucional.';	
+							
+					}
+					$pessoa_restrita=count($pessoa->dadosGerais->where('dado',17));
+					if($pessoa_restrita && !$this->pedirPermissao(11))
+					{
+						$dados['alert_warning'][]='Desculpe, você não tem permissão para alterar: '.$acesso->usuario.' por se tratar de uma pessoa de acesso restrito.';
+						
+					}
+					
+					$acesso->validade=date('Y').'-12-31';
+					$acesso->save();
+					$dados['alert_sucess'][]= $acesso->usuario." alterado com sucesso.";
+
+
+				}
+				$dados=array_merge($dados,$this->listarUsuarios_data());
+				return view('admin.listarusuarios', compact('dados'));
+			break;
+			case 2: // Ativar acesso
+				foreach ($filtered_login as $id_acesso){
+					$acesso=PessoaDadosAcesso::find($id_acesso);
+					$pessoa=Pessoa::find($acesso->pessoa);
+					$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
+					if($relacao_institucional && !$this->pedirPermissao(10))
+					{
+						$dados['alert_warning'][]='Desculpe, você não tem permissão para alterar: '.$acesso->login.' por ser uma pessoa ligada à FESC';	
+					}
+					$pessoa_restrita=count($pessoa->dadosGerais->where('dado',17));
+					if($pessoa_restrita && !$this->pedirPermissao(11))
+					{
+						$dados['alert_warning'][]='Desculpe, você não tem permissão para alterar: '.$acesso->login.' por se tratar de uma pessoa de acesso restrito';
+					}
+					$acesso->status=1;
+					$acesso->save();
+					$dados['alert_sucess'][]=$acesso->usuario." alterado com sucesso";
+				}
+				$dados=array_merge($dados,$this->listarUsuarios_data());
+			
+				return view('admin.listarusuarios', compact('dados'));
+			break;
+			case 3: // desativar acesso
+				foreach ($filtered_login as $id_acesso)
+				{
+					$acesso=PessoaDadosAcesso::find($id_acesso);
+					$pessoa=Pessoa::find($acesso->pessoa);
+					$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
+					if($relacao_institucional && !$this->pedirPermissao(10))
+					{
+						$dados['alert_warning'][]='Desculpe, você não tem permissão para alterar: '.$acesso->login.' por ser uma pessoa ligada à FESC';	
+					}
+					$pessoa_restrita=count($pessoa->dadosGerais->where('dado',17));
+					if($pessoa_restrita && !$this->pedirPermissao(11))
+					{
+						$dados['alert_warning'][]='Desculpe, você não tem permissão para alterar: '.$acesso->login.' por se tratar de uma pessoa de acesso restrito';
+					}
+					$acesso->status=0;
+					$acesso->save();
+					$dados['alert_sucess']=[$acesso->usuario." alterado com sucesso"];
+					}
+				$dados=array_merge($dados,$this->listarUsuarios_data());
+				return view('admin.listarusuarios', compact('dados'));
+				break;
+		}// end switch
+	}//end alterar()
+
 }

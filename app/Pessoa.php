@@ -38,4 +38,28 @@ class Pessoa extends Model
 
 		return $nome;
 	}
+	public static function getArtigoGenero($a)
+	{
+		switch ($a) {
+			case 'h':
+				return "o";
+				break;
+			case 'm':
+				return "a";
+				break;
+			case 'x':
+				return "o";
+				break;
+			case 'y':
+				return "a";
+				break;
+			case 'z':
+				return "o(a)";
+				break;
+			
+			default:
+				return "o(a)";
+				break;
+		}
+	}
 }

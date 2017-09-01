@@ -4,7 +4,7 @@
     <div class="title-block">
         <div class="row">
             <div class="col-md-6">
-                <h3 class="title"> Pessoas <a href="{{asset('/pessoa/cadastrar')}}" class="btn btn-primary btn-sm rounded-s">Adicionar</a>                    
+                <h3 class="title"> Pessoas <a href="{{asset('/pessoa/cadastrar')}}" class="btn btn-primary btn-sm rounded-s">Adicionar</a>    <!--                
 	                <div class="action dropdown"> 
 	                	<button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mais ações...
 	                	</button>
@@ -12,7 +12,7 @@
 	                    	<a class="dropdown-item" href="#"><i class="fa fa-pencil-square-o icon"></i>Enviar e-mail</a> 
 	                    	<a class="dropdown-item" href="#" data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-close icon"></i>Apagar</a>
 	                    </div>
-	                </div>
+	                </div> -->
                 </h3>
                 <p class="title-description"> Lista de pessoas que fazem parte ou interagem com a FESC </p>
             </div>
@@ -105,10 +105,7 @@
                         <div class="item-actions-block">
                             <ul class="item-actions-list">
                                 <li>
-                                    <a class="remove" href="#" title="Relizar atendimento"> <i class="fa fa-th-large "></i> </a>
-                                </li>
-                                <li>
-                                    <a class="edit" href="#" title="Enviar e-mail (se possível)"> <i class="fa fa-envelope"></i> </a>
+                                    <a class="remove" href="{{asset('secretaria/atender').'/'.$pessoa->id}}" title="Relizar atendimento"> <i class="fa fa-th-large "></i> </a>
                                 </li>
                             </ul>
                         </div>

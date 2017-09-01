@@ -9,9 +9,9 @@
 	                	<button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Mais ações...
 	                	</button>
 	                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
-	                    	<a class="dropdown-item" href="#" onclick="FazerCopiaEstabs()"> <i class="fa fa-retweet icon"></i> Renovar </a> 
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-unlock icon"></i> Habilitar</a>
-	                    	<a class="dropdown-item" href="#" data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-lock icon"></i> Desabilitar</a>
+	                    	<a class="dropdown-item" href="#" onclick="renovar()"> <i class="fa fa-retweet icon"></i> Renovar </a> 
+                            <a class="dropdown-item" href="#" onclick="ativar()"data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-unlock icon"></i> Habilitar</a>
+	                    	<a class="dropdown-item" href="#" onclick="desativar()"data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-lock icon"></i> Desabilitar</a>
 	                    </div>
 	                </div>
                 </h3>
@@ -20,9 +20,9 @@
         </div>
     </div>
 
-
+    @include('inc.errors')
     <div class="items-search">
-        <form class="form-inline" method="get">
+        <form class="form-inline" method="get" action="{{asset('/admin/listarusuarios')}}">
         {{csrf_field()}}
             <div class="input-group"> 
             	<input type="text" class="form-control boxed rounded-s" name="buscar" placeholder="Procurar...">
@@ -38,7 +38,7 @@
 @if(isset($queryword))
 <p class="title-description"> Entrontrei essas pessoas na sua procura por <i>{{$queryword}}</i> </p>
 @endif
-@if(count($dados['usuarios']))
+@if(isset($dados['usuarios']) && count($dados['usuarios']))
 <div class="card items">
     <ul class="item-list striped"> <!-- lista com itens encontrados -->
         <li class="item item-list-header hidden-sm-down">
@@ -103,10 +103,16 @@
                         <div class="item-actions-block">
                             <ul class="item-actions-list">
                                 <li>
-                                    <a class="remove" href="#" title="Relizar atendimento"> <i class="fa fa-lock "></i> </a>
+                                    <a class="remove" onclick=alterar(3,{{$pessoa->id}}) href="#" title="Bloquear"> <i class="fa fa-lock "></i> </a>
                                 </li>
                                 <li>
-                                    <a class="edit" href="#" title="Enviar e-mail (se possível)"> <i class="fa fa-unlock"></i> </a>
+                                    <a class="edit"  onclick=alterar(2,{{$pessoa->id}}) href="#" title="Ativar"> <i class="fa fa-unlock"></i> </a>
+                                </li>
+                                <li>
+                                    <a class="edit" href="{{asset('/pessoa/trocarsenha').'/'.$pessoa->pessoa}}" title="Trocar senha"> <i class="fa fa-key "></i> </a>
+                                </li>
+                                <li>
+                                    <a class="edit"  onclick=alterar(1,{{$pessoa->id}}) href="#" title="Renovar"> <i class="fa fa-retweet "></i> </a>
                                 </li>
                             </ul>
                         </div>
@@ -132,7 +138,8 @@
 @section('scripts')
 <script>
 
-function FazerCopiaEstabs() {
+function renovar() 
+{
     var selecionados='';
         $("input:checkbox[name=usuarios]:checked").each(function () {
             selecionados+=this.value+',';
@@ -142,6 +149,39 @@ function FazerCopiaEstabs() {
             alert('Nenhum item selecionado');
         else
         if(confirm('Deseja realmente renovar os selecionados?'))
-            $(location).attr('href','{{asset("/admin/renovaracesso")}}/'+selecionados);
+            $(location).attr('href','{{asset("/admin/alterar")}}/1/'+selecionados);
+}
+function ativar() 
+{
+    var selecionados='';
+        $("input:checkbox[name=usuarios]:checked").each(function () {
+            selecionados+=this.value+',';
+
+        });
+        if(selecionados=='')
+            alert('Nenhum item selecionado');
+        else
+        if(confirm('Deseja realmente ativar os logins selecionados?'))
+            $(location).attr('href','{{asset("/admin/alterar")}}/2/'+selecionados);
+}
+function desativar() 
+{
+    var selecionados='';
+        $("input:checkbox[name=usuarios]:checked").each(function () {
+            selecionados+=this.value+',';
+
+        });
+        if(selecionados=='')
+            alert('Nenhum item selecionado');
+        else
+        if(confirm('Deseja realmente desativar os logins selecionados?'))
+            $(location).attr('href','{{asset("/admin/alterar")}}/3/'+selecionados);
+}
+function alterar(acao,item)
+{
+    if(confirm("Confirma essa alteração ?")){
+        $(location).attr('href','{{asset("/admin/alterar")}}/'+acao+'/'+item);
     }
+}
 </script>
+@endsection

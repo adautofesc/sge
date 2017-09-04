@@ -5,6 +5,7 @@
  <div class="title-block">
     <h3 class="title">Visualização de informações<span ></span> </h3>
 </div> @include('inc.errors')  
+
  @if(isset($pessoa['id']))
 <div class="subtitle-block">
     <h3 class="subtitle"><small>Dados de: </small> {{$pessoa['nome']}}</h3>
@@ -35,9 +36,9 @@
                             
                                 <div class="row"> 
                                     <div class="col-xs-10">
-                                        <a href="pessoas_add.php" class="btn btn-secondary btn-sm rounded-s"> Adicionar dependente </a>
-                                        <a href="pessoas_add.php" class="btn btn-secondary btn-sm rounded-s"> Adicionar responsável</a>
-                                        <a href="pessoas_add.php" class="btn btn-secondary btn-sm rounded-s"> Adicionar responsável financeiro</a>                                         
+                                        <a href="{{asset('/pessoa/adicionardependente').'/'.$pessoa['id']}}" class="btn btn-secondary btn-sm rounded-s"> Adicionar dependente </a>
+                                        <a href="{{asset('/pessoa/adicionarresponsavel').'/'.$pessoa['id']}}" class="btn btn-secondary btn-sm rounded-s"> Adicionar responsável</a>
+                                        <a href="{{asset('/pessoa/financeiro/adicionarresponsavel').'/'.$pessoa['id']}}" class="btn btn-secondary btn-sm rounded-s"> Adicionar responsável financeiro</a>                                         
                                     </div>                                           
                                     <div class="col-xs-2 text-xs-right">                                        
                                         <a href="{{asset('/pessoa/editar/geral').'/'.$pessoa['id']}}" class="btn btn-primary btn-sm rounded-s"> Editar </a>

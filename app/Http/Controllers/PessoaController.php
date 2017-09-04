@@ -49,29 +49,15 @@ class PessoaController extends Controller
  	 */
 	public function mostraFormularioAdicionar($erros='',$sucessos='',$responsavel='')
 	{
-		//posso cadastrar
-		/*
-		$hoje=new Data();
-		$data=$hoje->getData();
-		$user=Session::get('usuario');
-		$usuario= Pessoa::where('id',$user)->first();
-		$array_nome=explode(' ',$usuario->nome);
-		$nome=$array_nome[0].' '.end($array_nome);*/ 
-		
-		
+
 		if(!loginController::check())
 			return redirect(asset("/"));
-
-
-
 
 		if(loginController::pedirPermissao(1))
 		{ // pede permissao para acessar o formulário
 			$bairros=DB::table('bairros_sanca')->get();          
 			$dados=['bairros'=>$bairros,'alert_danger'=>$erros,'alert_sucess'=>$sucessos,'responsavel_por'=>$responsavel];
 			return view('pessoa.cadastrar', compact('dados'));
-			//return $erros;
-			//return $dados;
 
 		}
 		else
@@ -369,6 +355,7 @@ class PessoaController extends Controller
 
 
 		$pessoa->nome=Strings::converteNomeParaUsuario($pessoa->nome);
+		$pessoa->nome_registro=Strings::converteNomeParaUsuario($pessoa->nome_registro);
 		$pessoa->idade=Data::calculaIdade($pessoa->nascimento);
 		//$pessoa->aniversario=$pessoa->nascimento;
 		$pessoa->nascimento=Data::converteParaUsuario($pessoa->nascimento);
@@ -411,7 +398,7 @@ class PessoaController extends Controller
 			$pessoa->end_complemento=$endereco->complemento;
 			$pessoa->cidade=$endereco->cidade;
 			$pessoa->estado=$endereco->estado;
-			$pessoa->cep=$endereco->cep;
+			$pessoa->cep=Strings::mask($endereco->cep,'#####-###');
 		}
 
 		return $pessoa;
@@ -451,16 +438,16 @@ class PessoaController extends Controller
 	 */
 	public function procurarPessoa(Request $r)
 	{		
-		if(isset($r['queryword']))
-			//$pessoas=Pessoa::where('nome', 'like', '%'.$r['queryword']."%")->paginate(35);
-			$pessoas=Pessoa::leftjoin('pessoas_dados_gerais', 'pessoas_dados_gerais.id', '=', 'pessoas.id')
-							->where('pessoas.id',$r['queryword'])
-							->orwhere('nome', 'like', '%'.$r['queryword']."%")
-							->orwhere('valor', 'like', '%'.$r['queryword']."%")
-							->orderby('nome')							
+		if(isset($r->queryword))
+			$pessoas=Pessoa::leftjoin('pessoas_dados_gerais', 'pessoas.id', '=', 'pessoas_dados_gerais.pessoa')
+							->where('pessoas.id',$r->queryword)
+							->orwhere('nome', 'like', '%'.$r->queryword."%")
+							->orwhere('nascimento', 'like', '%'.$r->queryword."%")
+							->orwhere('pessoas_dados_gerais.valor', 'like', '%'.$r->queryword."%")					
+							->orderby('nome')								
+							->groupBy('pessoas.id')							
+							->select('pessoas.id','pessoas.nome','pessoas.nascimento','pessoas.genero')
 							->paginate(35);
-							
-		
 		else
 			return $this->listarTodos();		
 		foreach($pessoas->all() as $pessoa)
@@ -480,13 +467,16 @@ class PessoaController extends Controller
 
 	public function liveSearchPessoa($query='')
 	{
-		$pessoas=Pessoa::leftjoin('pessoas_dados_gerais', 'pessoas_dados_gerais.id', '=', 'pessoas.id')
+		$pessoas=Pessoa::leftjoin('pessoas_dados_gerais', 'pessoas_dados_gerais.pessoa', '=', 'pessoas.id')
 						->where('pessoas.id',$query)
 						->orwhere('nome', 'like', '%'.$query."%")
-						->orwhere('valor', 'like', '%'.$query."%")
+						->orwhere('nascimento', 'like', '%'.$query."%")
+						->orwhere('pessoas_dados_gerais.valor', 'like', '%'.$query."%")
 						->orderby('nome')
-						->limit(20)
+						->groupBy('pessoas.id')
+						->limit(30)
 						->get(['pessoas.id','pessoas.nome','pessoas.nascimento']);
+		
 		foreach($pessoas->all() as $pessoa)
 		{	
 			$pessoa->nome=Strings::converteNomeParaUsuario($pessoa->nome);
@@ -585,7 +575,7 @@ class PessoaController extends Controller
 		$pessoa->nascimento=Data::converteParaBd($request->nascimento);
 		$pessoa->genero=$request->genero;
 		$pessoa->save();
-		$dados['alert_success'][]="Nome, nascimento e gênero gravados com sucesso";
+		$pessoa->alert_sucess=" Nome, nascimento e gênero gravados com sucesso,";
 		if($request->rg!=''){
 
 			$rg=new PessoaDadosGerais;
@@ -593,7 +583,7 @@ class PessoaController extends Controller
 			$rg->dado=4;
 			$rg->valor=$request->rg;
 			$rg->save();
-			$dados['alert_success'][]="RG gravado com sucesso,";
+			$pessoa->alert_sucess.=" RG gravado com sucesso,";
 
 			
 		}
@@ -601,11 +591,11 @@ class PessoaController extends Controller
 		{	
 			if (!Strings::validaCPF($request->cpf)) 
 			{
-				$dados['alert_warning'][]="Erro ao gravar: O CPF informado não é válido,";
+				$pessoa->alert_warning.=" Erro ao gravar: O CPF informado não é válido,";
 				
 			}
 			elseif(PessoaDadosGerais::where('dado',3)->where('valor', $request->cpf)->where('pessoa','!=',$request->pessoa)->first()){
-				$dados['alert_warning'][]="Erro ao gravar: O CPF informado já consta no sistema,";
+				$pessoa->alert_warning.=" Erro ao gravar: O CPF informado já consta no sistema,";
 			}
 			else{
 		
@@ -614,36 +604,54 @@ class PessoaController extends Controller
 				$cpf->dado=3;
 				$cpf->valor=$request->cpf;
 				$cpf->save();
-				$dados['alert_success'][]="Erro ao gravar: CPF gravado com sucesso,";
+				$pessoa->alert_sucess.=" CPF gravado com sucesso,";
 			}
 
 		}
 		if($request->nome_registro!='')
 		{
-		
 			$nome=new PessoaDadosGerais;
 			$nome->pessoa=$pessoa->id;
 			$nome->dado=8;
-			$nome->valor=$request->nome_registro;
+			$nome->valor=mb_convert_case($request->nome_registro, MB_CASE_UPPER, 'UTF-8');
 			$nome->save();
-			$dados['alert_success'][]="Nome de registro gravado com sucesso,";
+			$pessoa->alert_sucess.=" Nome de registro gravado com sucesso,";
 			
 		}
-		$dadospessoa=get_object_vars($this->$pessoa);
+		$pessoa=$this->formataParaMostrar($pessoa);
+		return view('pessoa.mostrar', compact('pessoa'));
+	}
 
-		return $dadospessoa;
-		//$dados=array_merge($dados, );
+	public function addDependente_view($pessoa)
+	{
+		return View('pessoa.adicionar-dependente')->with('pessoa',$pessoa);
 
-		return $pessoa;
+	}
+	public function addDependente_exec(Request $r)
+	{
+		$pessoa=$this->dadosPessoa($r->pessoa);
+		return view('pessoa.mostrar')->with('pessoa',$pessoa)->with('dados',$dados);
 
+	}
+	public function remDependente_exec(Request $r)
+	{
+		$pessoa=$this->dadosPessoa($r->pessoa);
+		return view('pessoa.mostrar')->with('pessoa',$pessoa)->with('dados',$dados);
 
-
-		return view('pessoa.mostrar', compact('dados'));
-			
-
-
-
-
+	}
+	public function addResponsavel_view($pessoa)
+	{
+		return View('pessoa.adicionar-responsavel')->with('pessoa',$pessoa);
+	}
+	public function addResponsavel_exec(Request $r)
+	{
+		$pessoa=$this->dadosPessoa($r->pessoa);
+		return view('pessoa.mostrar')->with('pessoa',$pessoa)->with('dados',$dados);
+	}
+	public function remResponsavel_exec(Request $r)
+	{
+		$pessoa=$this->dadosPessoa($r->pessoa);
+		return view('pessoa.mostrar')->with('pessoa',$pessoa)->with('dados',$dados);
 	}
 
 

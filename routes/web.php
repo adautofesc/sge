@@ -37,6 +37,12 @@ Route::get('/pessoa/editar/contato/{var}','PessoaController@editarContato_view')
 Route::post('/pessoa/editar/contato/{var}','PessoaController@editarContato_exec');
 Route::get('/pessoa/editar/saude/{var}','PessoaController@editarSaude_view');
 Route::post('/pessoa/editar/obs/{var}','PessoaController@editarSaude_exec');
+Route::get('/pessoa/adicionardependente/{var}','PessoaController@addDependente_view');
+Route::post('/pessoa/adicionardependente/{var}','PessoaController@addDependente_exec');
+Route::get('/pessoa/removerdependente/{var}','PessoaController@remDependente_exec');
+Route::get('/pessoa/adicionarresponsavel/{var}','PessoaController@addResponsavel_view');
+Route::post('/pessoa/adicionarresponsavel/{var}','PessoaController@addResponsavel_exec');
+Route::get('/pessoa/removerdependente/{var}','PessoaController@remResponsavel_exec');
 
 
 
@@ -45,6 +51,15 @@ Route::post('/pessoa/editar/obs/{var}','PessoaController@editarSaude_exec');
 Route::get('secretaria/atender','PessoaController@iniciarAtendimento');
 Route::get('secretaria/atender/{var}','PessoaController@atender');
 Route::get('pessoa/buscarapida/{var}','PessoaController@liveSearchPessoa');
+
+
+
+//Pedagógico
+Route::get('pedagogico/disciplinas','DisciplinaController@index');
+Route::get('pedagogico/cadastrardisciplina','DisciplinaController@create');
+Route::post('pedagogico/cadastrardisciplina','DisciplinaController@store');
+Route::get('pedagogico/editardisciplina/{var}','DisciplinaController@edit');
+Route::post('pedagogico/editardisciplina/{var}','DisciplinaController@update');
 
 
 //------------------------------ Login 

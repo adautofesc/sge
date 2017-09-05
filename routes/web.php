@@ -60,6 +60,7 @@ Route::get('pedagogico/cadastrardisciplina','DisciplinaController@create');
 Route::post('pedagogico/cadastrardisciplina','DisciplinaController@store');
 Route::get('pedagogico/editardisciplina/{var}','DisciplinaController@edit');
 Route::post('pedagogico/editardisciplina/{var}','DisciplinaController@update');
+Route::get('pedagogico/apagardisciplina','DisciplinaController@destroy');
 
 
 //------------------------------ Login 

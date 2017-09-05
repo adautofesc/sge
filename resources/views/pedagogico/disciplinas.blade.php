@@ -129,7 +129,7 @@
     {
         if(confirm("Tem certeza que deseja apagar essa disciplina?"))
         {
-            $(location).attr('href','{{asset("/pedagogico/apagardisciplina")}}/'+item);
+            $(location).attr('href','{{asset("/pedagogico/apagardisciplina")}}/?disciplina='+item);
         }
     }
     function editar (item)

@@ -34,7 +34,7 @@
 									Descrição
 								</label>
 								<div class="col-sm-10"> 
-									<textarea rows="4" class="form-control boxed" name="desc"></textarea> 
+									<textarea rows="4" class="form-control boxed" maxlength="300" name="desc">{{$disciplina->desc}}</textarea> 
 								</div>
 							</div>
 							<div class="form-group row"> 
@@ -42,7 +42,7 @@
 									Nº de vagas
 								</label>
 								<div class="col-sm-4"> 
-									<input type="text" class="form-control boxed" name ="vagas" placeholder=""> 
+									<input type="text" class="form-control boxed" name ="vagas" value="{{$disciplina->vagas }}" placeholder=""> 
 								</div>
 							</div>
 							<div class="form-group row"> 
@@ -50,7 +50,7 @@
 									Carga horária
 								</label>
 								<div class="col-sm-4"> 
-									<input type="text" class="form-control boxed" name="carga" placeholder="Horas"> 
+									<input type="text" class="form-control boxed" name="carga" value="{{ $disciplina->carga}}" placeholder="Horas"> 
 								</div>
 							</div>
 							
@@ -58,8 +58,9 @@
                                 
 							<div class="form-group row">
 								<div class="col-sm-10 col-sm-offset-2">
-									<button class="btn btn-primary" type="submit" name="btn" value="1">Cadastrar</button> 
-									<button class="btn btn-secondary" type="submit" name="btn" value="2">Cadastrar próxima</button> 
+									<input type="hidden" name="id" value="{{$disciplina->id}}">
+									<button class="btn btn-primary" type="submit" name="btn" value="1">Salvar</button> 
+								
 									
 									<!-- 
 									<button type="submit" class="btn btn-primary"> Cadastrar</button> 

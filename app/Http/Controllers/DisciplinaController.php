@@ -93,16 +93,16 @@ class DisciplinaController extends Controller
 
         switch($disciplina->programa){
             case "EMG" :
-                $disciplina->emg="checked";
+                $disciplina->emg="selected";
             break;
             case "PID" :
-                $disciplina->pid="checked";
+                $disciplina->pid="selected";
             break;
             case "UATI" :
-                $disciplina->uati="checked";
+                $disciplina->uati="selected";
             break;
             case "UNIT" :
-                $disciplina->unit="checked";
+                $disciplina->unit="selected";
             break;
 
         }
@@ -118,9 +118,19 @@ class DisciplinaController extends Controller
      * @param  \App\Disciplina  $disciplina
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Disciplina $disciplina)
+    public function update(Request $request)
     {
-        //
+        $disciplina=Disciplina::find($request->id);
+        $disciplina->nome=$request->nome;
+        $disciplina->programa=$request->programa;
+        $disciplina->desc=$request->desc;
+        $disciplina->vagas=$request->vagas;
+        $disciplina->carga=$request->carga;
+        $disciplina->save();
+
+        return redirect(asset('/pedagogico/disciplinas'));
+
+
     }
 
     /**
@@ -129,8 +139,10 @@ class DisciplinaController extends Controller
      * @param  \App\Disciplina  $disciplina
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Disciplina $disciplina)
+    public function destroy(Request $r)
     {
-        //
+        $disciplina=Disciplina::find($r->disciplina);
+        $disciplina->delete();
+        return redirect(asset('/pedagogico/disciplinas'));
     }
 }

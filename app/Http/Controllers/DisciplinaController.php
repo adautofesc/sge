@@ -26,7 +26,7 @@ class DisciplinaController extends Controller
     public function disciplinas($nome='')
     {
         if($nome !='')
-            $disciplina=Disciplina::where('nome', 'like', $nome)->orderBy('nome')->paginate(35);
+            $disciplina=Disciplina::where('nome', 'like', '%'.$nome.'%')->orderBy('nome')->paginate(35);
         else
             $disciplina=Disciplina::select()->paginate(35);
 
@@ -53,6 +53,14 @@ class DisciplinaController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'nome'=>'required|min:5',
+            'programa'=>'required',
+            'desc'=>'required',
+            'vagas'=>'required',
+            'carga'=>'required'
+
+            ]);
 
         $disciplina= new Disciplina;
         $disciplina->nome=$request->nome;
@@ -90,6 +98,8 @@ class DisciplinaController extends Controller
     public function edit($id)
     {
         $disciplina=Disciplina::find($id);
+        if(!count($disciplina))
+            return redirect(asset('/pedagogico/disciplinas'));
 
         switch($disciplina->programa){
             case "EMG" :
@@ -120,6 +130,15 @@ class DisciplinaController extends Controller
      */
     public function update(Request $request)
     {
+        $this->validate($request, [
+            'id'=>'required|Integer',
+            'nome'=>'required|min:5',
+            'programa'=>'required',
+            'desc'=>'required',
+            'vagas'=>'required',
+            'carga'=>'required'
+
+            ]);
         $disciplina=Disciplina::find($request->id);
         $disciplina->nome=$request->nome;
         $disciplina->programa=$request->programa;
@@ -141,8 +160,13 @@ class DisciplinaController extends Controller
      */
     public function destroy(Request $r)
     {
+
+        $this->validate($r, [
+            'disciplina'=>'required|Integer'
+            ]);
         $disciplina=Disciplina::find($r->disciplina);
-        $disciplina->delete();
+        if($disciplina)
+            $disciplina->delete();
         return redirect(asset('/pedagogico/disciplinas'));
     }
 }

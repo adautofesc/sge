@@ -4,17 +4,16 @@
     <div class="title-block">
         <div class="row">
             <div class="col-md-6">
-                <h3 class="title"> Disciplinas <a href="{{asset('/pedagogico/cadastrardisciplina')}}" class="btn btn-primary btn-sm rounded-s">Adicionar</a>               
+                <h3 class="title"> Cursos <a href="{{asset('/pedagogico/cadastrarcurso')}}" class="btn btn-primary btn-sm rounded-s">Adicionar</a>               
 	                
 
 
 
                 </h3>
-                <p class="title-description"> Lista de disciplinas dos cursos ofertados </p>
+                <p class="title-description"> Lista de Cursos cadastrados </p>
             </div>
         </div>
     </div>
-
     @include('inc.errors')
     <div class="items-search">
         <form class="form-inline" method="get">
@@ -30,8 +29,7 @@
         </form>
     </div>
 </div>
-
-@if(isset($disciplinas) && count($disciplinas))
+@if(isset($cursos) && count($cursos))
 <div class="card items">
     <ul class="item-list striped"> <!-- lista com itens encontrados -->
         <li class="item item-list-header hidden-sm-down">
@@ -56,18 +54,18 @@
                 <div class="item-col item-col-header fixed item-col-actions-dropdown"> </div>
             </div>
         </li>
-        @foreach($disciplinas as $disciplina)
+        @foreach($cursos as $disciplina)
         <li class="item">
             <div class="item-row">
                 <div class="item-col fixed item-col-check"> 
                 	<label class="item-check" id="select-all-items">
-						<input type="checkbox" class="checkbox" {{ $disciplina->checked }}  name="disciplina[{{ $disciplina->id }}]" value="{{ $disciplina->id }}">
+						<input type="checkbox" class="checkbox" name="usuarios" value="{{ $disciplina->id }}">
 						<span></span>
 					</label> </div>                
                 <div class="item-col fixed pull-left item-col-title">
                     <div class="item-heading">Disciplina</div>
                     <div>                        
-                        <h4 class="item-title">{{ $disciplina->nome }} </h4>
+                        <h4 class="item-title"><a href="{{asset('/pedagogico/curso').'/'.$disciplina->id}}"> {{ $disciplina->nome }} </a> </h4>
                     </div>
                 </div>
                 <div class="item-col item-col-sales">
@@ -113,15 +111,13 @@
 
     </ul>
 </div>
-@if(method_exists($disciplinas, 'links'))
 <nav class="text-xs-right">
-{!! $disciplinas->links()  !!}
+{!! $cursos->links()  !!}
 </nav>
-@endif
 
 
 @else
-<h3 class="title-description"> Nenhuma disciplina encontrada </p>
+<h3 class="title-description"> =( Nenhum curso encontrado. </p>
 @endif
 
 @endsection
@@ -129,14 +125,14 @@
 <script>
     function apagar(item)
     {
-        if(confirm("Tem certeza que deseja apagar essa disciplina?"))
+        if(confirm("Tem certeza que deseja apagar esse curso?"))
         {
-            $(location).attr('href','{{asset("/pedagogico/apagardisciplina")}}/?disciplina='+item);
+            $(location).attr('href','{{asset("/pedagogico/apagarcurso")}}'+'/?curso='+item);
         }
     }
     function editar (item)
     {
-        $(location).attr('href','{{asset("/pedagogico/editardisciplina")}}/'+item);
+        $(location).attr('href','{{asset("/pedagogico/editarcurso")}}/'+item);
     }
 </script>
 @endsection

@@ -42,7 +42,7 @@
                                 <li>
                                     <a href=""> <i class="fa fa-th-large"></i> Institucional <i class="fa arrow"></i> </a>
                                     <ul>
-                                        <li> <a href="#">	Cursos</a> </li>
+                                        <li> <a href="{{ asset('/pedagogico/cursos')}}">	Cursos</a> </li>
                                         <li> <a href="{{ asset('/pedagogico/disciplinas')}}"> Disciplinas </a> </li>
                                         <li> <a href="#"> Unidades </a> </li>
                                         <li> <a href="#"> Salas </a> </li>

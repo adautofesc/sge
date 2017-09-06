@@ -1,5 +1,6 @@
 @extends('layout.app')
 @section('pagina')
+@include('inc.errors')
 @if(count($disciplina))
   <div class="title-block">
                         <h3 class="title"> Edição de disciplina <span class="sparkline bar" data-type="bar"></span> </h3>
@@ -70,4 +71,4 @@
                         </div>
     </form>
 @endif
-@endsection;
+@endsection

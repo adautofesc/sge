@@ -1,0 +1,18 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class CursoRequisito extends Model
+{
+    //
+    protected $table  = 'cursos_requisitos';
+
+    public function curso(){
+    	return $this->belongsTo('App\Curso','curso');
+    }
+    public function requisito(){
+    	return $this->hasMany('App\Requisitos','requisito');
+    }
+}

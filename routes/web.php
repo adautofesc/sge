@@ -69,8 +69,11 @@ Route::get('pedagogico/editarcurso/{var}','CursoController@edit');
 Route::post('pedagogico/editarcurso/{var}','CursoController@update');
 Route::get('pedagogico/apagarcurso','CursoController@destroy');
 Route::get('pedagogico/curso/{var}','CursoController@show');
-Route::get('pedagogico/disciplinasdocurso/{var}','CursoController@addDisciplinas');
-Route::post('pedagogico/disciplinasdocurso/{var}','CursoController@storeDisciplinas');
+Route::get('pedagogico/disciplinasdocurso/{var}','DisciplinaController@editDisciplinasAoCurso');
+Route::post('pedagogico/disciplinasdocurso/{var}','DisciplinaController@storeDisciplinasAoCurso');
+
+Route::get('pedagogico/cursos/requisitos','RequisitosController@index');
+Route::get('pedagogico/cursos/requisitos/add','RequisitosController@create');
 
 //------------------------------ Login 
 Route::get('/admin/listarusuarios', 'loginController@listarUsuarios_view');

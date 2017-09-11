@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Disciplina;
+use App\Grade;
+use App\Curso;
 use Illuminate\Http\Request;
 
 class DisciplinaController extends Controller
@@ -169,4 +171,61 @@ class DisciplinaController extends Controller
             $disciplina->delete();
         return redirect(asset('/pedagogico/disciplinas'));
     }
+    /**
+     * Abre página com as disciplinas obrigatórias sdo curso
+     *
+     * @param  \App\Curso  $curso
+     * @return \Illuminate\Http\Response
+     */
+    public static function editDisciplinasAoCurso($curso) {
+        $cursoexiste=Curso::find($curso);
+        if(!$cursoexiste)
+            return redirect(asset('/pedagogico/cursos'));
+
+        $disciplinas=Disciplina::get();
+        foreach($disciplinas->all() as $disciplina)
+        {
+            $grade=Grade::where('curso', $curso)->where('disciplina',$disciplina->id)->first();
+            if(count($grade)){
+                $disciplina->checked = "checked";
+                if($grade->obrigatoria=='1')
+                    $disciplina->obrigatoria="checked";
+            }
+        }
+        return view('pedagogico.curso-disciplinas', compact('disciplinas'))->with(array('curso'=>['nome'=>$cursoexiste->nome, 'id_curso'=>$cursoexiste->id]));
+    }
+    public static function disciplinasDoCurso($curso){
+        $grade=Grade::where('curso', $curso)->get();
+        if(count($grade)){
+            foreach($grade->all() as $item_grade)            {
+                $disciplina=Disciplina::find($item_grade->disciplina);
+                $disciplinas[]=$disciplina;
+            }
+         }
+        if(isset($disciplinas))
+            return $disciplinas;
+        else
+            return false;
+    }
+
+    public function storeDisciplinasAoCurso(Request $r){
+        $grades=Grade::where('curso',$r->curso)->get();
+        foreach($grades->all() as $grade){
+            $grade->delete();
+        }
+
+        foreach($r->disciplina as $disciplina){
+            $grade= new Grade;
+            $grade->timestamps=false;
+            $grade->curso=$r->curso;
+            $grade->disciplina=$disciplina;
+            if($r->obrigatoria[$disciplina]==1)
+                $grade->obrigatoria=1;
+            $grade->save();
+        }
+
+        return redirect(asset('/pedagogico/curso').'/'.$r->curso);
+
+    }
+
 }

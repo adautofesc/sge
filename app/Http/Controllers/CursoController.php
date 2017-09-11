@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Curso;
-use App\Disciplina;
-use App\Grade;
+
+use App\CursoRequisito;
 use Illuminate\Http\Request;
+use App\Http\Controllers\RequisitosController;
 
 class CursoController extends Controller
 {
@@ -14,8 +15,7 @@ class CursoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $r = Request)
-    {
+    public function index(Request $r = Request)    {
         return view('pedagogico.cursos')->with(array('cursos'=>$this->cursos($r->buscar)));
     }
 
@@ -24,8 +24,7 @@ class CursoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function cursos($nome='')
-    {
+    public function cursos($nome='')    {
         if($nome !='')
             $curso=Curso::where('nome', 'like', '%'.$nome.'%')->orderBy('nome')->paginate(35);
         else
@@ -40,9 +39,9 @@ class CursoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        return view('pedagogico.cadastrar-curso');
+    public function create()    {
+        $requisitos=RequisitosController::listar();
+        return view('pedagogico.cadastrar-curso',compact('requisitos'));
     }
 
     /**
@@ -51,8 +50,7 @@ class CursoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $r)
-    {
+    public function store(Request $r)    {
         $this->validate($r, [
             'nome'=>'required|min:5',
             'programa'=>'required',
@@ -86,8 +84,7 @@ class CursoController extends Controller
      * @param  \App\Curso  $curso
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id)    {
         $curso=Curso::find($id);
         if(!count($curso))
              return redirect(asset('/pedagogico/cursos')); 
@@ -107,6 +104,12 @@ class CursoController extends Controller
             break;
 
         }
+        if(DisciplinaController::disciplinasDoCurso($id))
+            $curso->disciplinas=DisciplinaController::disciplinasDoCurso($id);
+        if($this->requisitos($id))
+            $curso->requisitos=$this->requisitos($id);
+
+        //return $curso;
         
         return view('pedagogico.mostrar-curso', compact('curso'));
     }
@@ -117,8 +120,7 @@ class CursoController extends Controller
      * @param  \App\Curso  $curso
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id)    {
         $curso=Curso::find($id);
         if(!count($curso))
              return redirect(asset('/pedagogico/cursos'));
@@ -148,8 +150,7 @@ class CursoController extends Controller
      * @param  \App\Curso  $curso
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
-    {
+    public function update(Request $request) {
         $this->validate($request, [
             'nome'=>'required|min:5',
             'programa'=>'required',
@@ -177,8 +178,7 @@ class CursoController extends Controller
      * @param  \App\Curso  $curso
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $r)
-    {
+    public function destroy(Request $r) {
         $this->validate($r, [
             'curso'=>'required|Integer'
             ]);
@@ -189,31 +189,19 @@ class CursoController extends Controller
     }
 
 
-    /**
-     * Abre página com as disciplinas obrigatórias sdo curso
-     *
-     * @param  \App\Curso  $curso
-     * @return \Illuminate\Http\Response
-     */
-    public function addDisciplinas($curso)
-    {
-        $disciplinas=Disciplina::get();
-        foreach($disciplinas->all() as $disciplina)
-        {
-            $grade=Grade::where('curso', $curso)->where('disciplina',$disciplina->id)->first();
-            if(count($grade)){
-                $disciplina->checked = "checked";
-                if($grade->obrigatoria=='1')
-                    $disciplina->obrigatoria="checked";
-            }
 
+    public function requisitos($curso)    {
+        $curso_requisitos=CursoRequisito::where('curso',$curso)->get();
+        if(count($curso_requisitos)){
+            foreach($curso_requisitos->all() as $requisito) {
+                $requisito=Requisito::find($requisito->requisito);
+                $requisitos[]=$requisito;
+            }              
         }
-
-
-        return view('pedagogico.curso-disciplinas', compact('disciplinas'));
-
-
-
+        if(isset($requisitos))
+            return $requisitos;
+        else
+            return false;
 
 
     }

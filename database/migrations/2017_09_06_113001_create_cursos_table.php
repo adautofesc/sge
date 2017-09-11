@@ -28,6 +28,7 @@ class CreateCursosTable extends Migration
             $table->increments('id');
             $table->string('nome',150);
 
+
         });
 
         
@@ -53,6 +54,7 @@ class CreateCursosTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('curso');
             $table->unsignedInteger('requisito');
+            $table->boolean('obrigatorio');
             $table->foreign('curso')->
                 references('id')->
                 on('cursos')->

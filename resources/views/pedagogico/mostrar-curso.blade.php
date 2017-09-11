@@ -3,7 +3,7 @@
 @include('inc.errors')
 @if(count($curso))
   <div class="title-block">
-                        <h3 class="title"> Dados do curso <span class="sparkline bar" data-type="bar"></span> </h3>
+                        <h3 class="title"> Dados do Curso / Atividade<span class="sparkline bar" data-type="bar"></span> </h3>
                         
                     </div>
                     <form name="item" method="POST">
@@ -54,26 +54,42 @@
 							</div>
 							<div class="form-group row"> 
 								<label class="col-sm-2 form-control-label text-xs-right">
-									Disciplinas Obrigatórias
+									Disciplinas
 								</label>
 								<div class="col-sm-4"> 
-									<a href="{{ asset("pedagogico/disciplinasdocurso/").'/'.$curso->id}}" class="btn btn-primary rounded-s btn-sm" > Adicionar</a>
+									@if(isset($curso->disciplinas))
+									<a href="{{ asset("pedagogico/disciplinasdocurso/").'/'.$curso->id}}" class="btn btn-secondary rounded-s btn-sm" > Modificar Disciplinas</a>
+									<ul>
+									@foreach($curso->disciplinas as $disciplina)
+										<li>{{ $disciplina->nome}}</li>
+									@endforeach
+									</ul>
+									@else
+									<a href="{{ asset("pedagogico/disciplinasdocurso/").'/'.$curso->id}}" class="btn btn-secondary rounded-s btn-sm" > Adicionar Disciplina(s)</a>
+									@endif
+									
 								</div>
 							</div>
-							<div class="form-group row"> 
-								<label class="col-sm-2 form-control-label text-xs-right">
-									Disciplinas Optativas
-								</label>
-								<div class="col-sm-4"> 
-									<a href="{{ asset("pedagogico/disciplinasopdocurso/").'/'.$curso->id}}" class="btn btn-primary rounded-s btn-sm" > Adicionar</a>
-								</div>
-							</div>
+
 							<div class="form-group row"> 
 								<label class="col-sm-2 form-control-label text-xs-right">
 									Requisitos
 								</label>
 								<div class="col-sm-4"> 
-									<a href="{{ asset("pedagogico/requisitosdocurso/").'/'.$curso->id}}" class="btn btn-primary rounded-s btn-sm" > Adicionar</a>
+									
+									
+									@if(isset($curso->requisitos))
+										<a href="{{ asset("pedagogico/requisitosdocurso/").'/'.$curso->id}}" class="btn btn-secondary rounded-s btn-sm" >Modificar Requisitos</a>
+										<ul>
+									@foreach($curso->requisitos as $requisitos)
+
+										<li><a href="#" title="Remover"><i class="fa fa-cancel"></i></a><span{{ $requitos->nome}}</li>
+									@endforeach
+										</ul>
+									@else
+										<a href="{{ asset("pedagogico/requisitosdocurso/").'/'.$curso->id}}" class="btn btn-secondary rounded-s btn-sm" >Adicionar Requisito(s)</a>
+									@endif
+									
 								</div>
 							</div>
                         </div>

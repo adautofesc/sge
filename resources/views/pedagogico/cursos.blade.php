@@ -4,13 +4,13 @@
     <div class="title-block">
         <div class="row">
             <div class="col-md-6">
-                <h3 class="title"> Cursos <a href="{{asset('/pedagogico/cadastrarcurso')}}" class="btn btn-primary btn-sm rounded-s">Adicionar</a>               
+                <h3 class="title"> Cursos & Atividades <a href="{{asset('/pedagogico/cadastrarcurso')}}" class="btn btn-primary btn-sm rounded-s">Adicionar</a>               
 	                
 
 
 
                 </h3>
-                <p class="title-description"> Lista de Cursos cadastrados </p>
+                <p class="title-description"> Lista de Cursos e Atividades cadastradas </p>
             </div>
         </div>
     </div>

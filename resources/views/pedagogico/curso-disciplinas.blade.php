@@ -82,7 +82,7 @@
 
                 <div class="item-col fixed item-col-check"> 
                     <label class="item-check">
-                        <input type="checkbox" class="checkbox" {{ $disciplina->obrigatoria }}  name="obrigatoria[{{$disciplina->id }}]"  value="1">
+                        <input type="checkbox" class="checkbox" {{ $disciplina->obrigatoria }}  name="obrigatoria[]"  value="{{$disciplina->id }}">
                         <span></span>
                     </label> 
                 </div>  

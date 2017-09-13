@@ -86,6 +86,7 @@
                                 
                             </div>                                
                         </div>
+                        <br>
                         <div class="subtitle-block">
                             <h3 class="subtitle"> Dados de contato </h3>
                         </div>
@@ -112,6 +113,18 @@
                                     </div> 
                                 </div>
                             </div>
+
+
+                    </div>
+                    <br>
+                    <div class="subtitle-block">
+                            <h3 class="subtitle"> Dados de endereço </h3>
+                        </div>
+
+
+
+                    <div class="card card-block">
+                            
                             <div class="form-group row">
                                 <label class="col-sm-2 form-control-label text-xs-right">Logradouro</label>
                                 <div class="col-sm-10"> 
@@ -182,9 +195,19 @@
                                     </select>
                                 </div>  
                             </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 form-control-label text-xs-right">Vincular a</label>
+                                <div class="col-sm-10"> 
+                                    <input type="text" class="form-control boxed" placeholder="Digite o nome da pessoa já cadastrada para vincular, senão deixe em branco."  id="vincular"> 
+                                    <input type="hidden" name="vinculara" >
+                                    <ul class="item-list" id="listapessoas">
+
+                                    </ul>
+                                </div>  
+                            </div>
                         </div>
                     
-
+                        <br>
                         <div class="subtitle-block">
                         <h3 class="subtitle"> Dados Clínicos</h3>
                         </div>
@@ -214,6 +237,7 @@
                                     </div>
                             </div>
                         </div>
+                        <br>
                         <div class="subtitle-block">
                             <h3 class="subtitle">Finalizando cadastro</h3>
                         </div>
@@ -245,4 +269,94 @@
                         </div>
                     </form>
 
+@endsection
+@section('scripts')
+<script>
+    $(document).ready(function() 
+    {
+ 
+   //On pressing a key on "Search box" in "search.php" file. This function will be called.
+ 
+   $("#vincular").keyup(function() {
+       
+ 
+       //Assigning search box value to javascript variable named as "name".
+ 
+       var name = $('#vincular').val();
+       var namelist="";
+
+ 
+       //Validating, if "name" is empty.
+ 
+       if (name == "") {
+            
+
+ 
+           //Assigning empty value to "display" div in "search.php" file.
+ 
+           $("#listapessoas").html("");
+ 
+       }
+ 
+       //If name is not empty.
+ 
+       else {
+            
+ 
+           //AJAX is called.
+            $.get("{{asset('pessoa/buscarapida/')}}"+"/"+name)
+                .done(function(data) 
+                {
+                    $.each(data, function(key, val){
+                        namelist+='<li class="item item-list-header">'
+                                    +'<a href="#" onclick="vincularEndereco('+val.id+',\''+val.nome+'\')">'
+                                        +val.numero+' - '+val.nascimento+' - '+val.nome
+                                    +'</a>'
+                                  +'</li>';
+                    });
+                    
+                    $("#listapessoas").html(namelist).show();
+
+                });
+
+        }
+ 
+    });
+ 
+});
+function vincularEndereco(id,nome) {
+    $.get("{{asset('pessoa/buscarendereco/')}}"+"/"+id)
+                .done(function(data) 
+                {
+                    if(!data.id){
+                        alert('Essa pessoa não tem dados de endereço');
+                        $("#listapessoas").html(''); 
+                        $("#vincular").val('');
+                    }
+                    else {
+                        $('[name=rua]').val(data.logradouro);
+                        $('[name=numero_endereco]').val(data.numero);
+                        $('[name=complemento_endereco]').val(data.complemento);
+                        $('[name=bairro]').val(data.bairro);
+                        $('[name=cep]').val(data.cep);
+                        $('[name=cidade]').val(data.cidade);
+                        $('[name=estado]').val(data.estado);
+                        $('[name=vinculara]').val(id);
+                        $("#listapessoas").html(''); 
+                        $("#vincular").val(nome);
+                    }
+
+                    /*
+                    $.each(data, function(key, val){
+                        $('#rua').val(val.logradouro);
+                        $("#listapessoas").html(''); 
+                        $("#vincular").val()='';
+                        console.log(val.logradouro);                       
+                    });
+                    */
+                  
+
+                });
+}
+</script>
 @endsection

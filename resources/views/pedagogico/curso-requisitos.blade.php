@@ -4,7 +4,7 @@
     <div class="title-block">
         <div class="row">
             <div class="col-md-6">
-                <h3 class="title"> Disciplinas do curso  </h3>
+                <h3 class="title"> Requisitos do curso/atividade  </h3>
                 <p class="title-description "> {{ $curso['nome'] }} </p>
             </div>
         </div>
@@ -13,16 +13,17 @@
 
     @include('inc.errors')
     <div class="items-search">
-        <form class="form-inline" method="post">
-        {{csrf_field()}}<button class="btn btn-primary rounded-s" type="submit">
-                        <i class="fa fa-save"></i> &nbsp;&nbsp;Salvar
-                    </button>
+        <form class="form-inline" method="POST">
+        {{csrf_field()}}
+        <button class="btn btn-primary rounded-s" type="submit">
+            <i class="fa fa-save"></i> &nbsp;&nbsp;Salvar
+        </button>
 
        
     </div>
 </div>
 
-@if(isset($disciplinas) && count($disciplinas))
+@if(isset($requisitos) && count($requisitos))
 <div class="card items">
     <ul class="item-list striped"> <!-- lista com itens encontrados -->
         <li class="item item-list-header hidden-sm-down">
@@ -33,56 +34,33 @@
 					</label>
 				</div>
                 <div class="item-col item-col-header item-col-title">
-                    <div> <span>Disciplina</span> </div>
+                    <div> <span>Requisito</span> </div>
                 </div>
-                <div class="item-col item-col-header item-col-sales">
-                    <div> <span>Programa</span> </div>
-                </div>
-                <div class="item-col item-col-header item-col-sales">
-                    <div> <span>Vagas</span> </div>
-                </div>
-                <div class="item-col item-col-header item-col-sales">
-                    <div> <span>Carga Horária</span> </div>
-                </div>
-                <div class="item-col item-col-header fixed item-col-actions-dropdown "> 
-                <div> <span>Obr</span> </div>
+                
+                <div class="item-col item-col-header fixed"> 
+                <div> <span>Obrigatório</span> </div>
                 </div>
             </div>
         </li>
-        @foreach($disciplinas as $disciplina)
+        @foreach($requisitos as $requisito)
         <li class="item">
             <div class="item-row">
                 <div class="item-col item-col-header fixed item-col-check"> 
                 	<label class="item-check">
-						<input type="checkbox" class="checkbox" {{ $disciplina->checked }}  name="disciplina[{{ $disciplina->id }}]" value="{{ $disciplina->id }}">
+						<input type="checkbox" class="checkbox" {{ $requisito->checked }}  name="requisito[{{ $requisito->id }}]" value="{{ $requisito->id }}">
 						<span></span>
 					</label> 
                 </div>                
                 <div class="item-col fixed pull-left item-col-title">
-                    <div class="item-heading">Disciplina</div>
+                    <div class="item-heading">requisito</div>
                     <div>                        
-                        <h4 class="item-title">{{ $disciplina->nome }} </h4>
+                        <h4 class="item-title">{{ $requisito->nome }} </h4>
                     </div>
                 </div>
-                <div class="item-col item-col-sales">
-                    <div class="item-heading">Programa</div>
-                    <div> {{$disciplina->programa}}</div>
-                </div>
-                <div class="item-col item-col-sales">
-                    <div class="item-heading">Vagas</div>
-                    <div>
-                        {{$disciplina->vagas}}
-
-                    </div>
-                </div> 
-                <div class="item-col item-col-sales">
-                    <div class="item-heading">Carga horária</div>
-                    <div>{{$disciplina->carga}} hs</div>
-                </div> 
-
+            
                 <div class="item-col fixed item-col-check"> 
                     <label class="item-check">
-                        <input type="checkbox" class="checkbox" {{ $disciplina->obrigatoria }}  name="obrigatoria[{{$disciplina->id }}]"  value="1">
+                        <input type="checkbox" class="checkbox" {{ $requisito->obrigatorio }}  name="obrigatorio[]"  value="{{$requisito->id }}">
                         <span></span>
                     </label> 
                 </div>  
@@ -96,15 +74,15 @@
     <input type="hidden" name="curso" value="{{ $curso['id_curso'] }}">
     </form>
 </div>
-@if(method_exists($disciplinas, 'links'))
+@if(method_exists($requisitos, 'links'))
 <nav class="text-xs-right">
-{!! $disciplinas->links()  !!}
+{!! $requisitos->links()  !!}
 </nav>
 @endif
 
 
 @else
-<h3 class="title-description"> Nenhuma disciplina encontrada </p>
+<h3 class="title-description"> Nenhuma requisito encontrada </p>
 @endif
 
 @endsection
@@ -112,14 +90,14 @@
 <script>
     function apagar(item)
     {
-        if(confirm("Tem certeza que deseja apagar essa disciplina?"))
+        if(confirm("Tem certeza que deseja apagar essa requisito?"))
         {
-            $(location).attr('href','{{asset("/pedagogico/apagardisciplina")}}/?disciplina='+item);
+            $(location).attr('href','{{asset("/pedagogico/apagarrequisito")}}/?requisito='+item);
         }
     }
     function editar (item)
     {
-        $(location).attr('href','{{asset("/pedagogico/editardisciplina")}}/'+item);
+        $(location).attr('href','{{asset("/pedagogico/editarrequisito")}}/'+item);
     }
 </script>
 @endsection

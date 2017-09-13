@@ -206,24 +206,59 @@ class PessoaController extends Controller
 				$info->valor=$request->tel3;
 				$pessoa->dadosContato()->save($info);
 			}
+			//se tiver vincular
+			if($request->vincular!=''){
+
+				$vinculo=$this->buscarEndereco($request->vincular);
+				if($vinculo->logradouro==$request->logradouro && $vinculo->numero==$request->numero_endereco){
+					$info=new PessoaDadosContato;					
+					$info->pessoa=$pessoa->id;
+					$info->dado=6; 
+					$info->valor=$vinculo->id;
+					$pessoa->dadosContato()->save($info);
+				}
+			}
 			if($request->rua != '')
 			{
-				$endereco=new Endereco;					
-				$endereco->logradouro =mb_convert_case($request->rua, MB_CASE_UPPER, 'UTF-8'); 
-				$endereco->numero=$request->numero_endereco;
-				$endereco->complemento=mb_convert_case($request->complemento_endereco, MB_CASE_UPPER, 'UTF-8');
-				$endereco->bairro=$request->bairro;
-				$endereco->cidade=mb_convert_case($request->cidade, MB_CASE_UPPER, 'UTF-8');
-				$endereco->estado=$request->estado;
-				$endereco->cep=$request->cep;
-				$endereco->atualizado_por=Session::get('usuario');
-				$endereco->save();
+				if($request->vincular!=''){
+					$vinculo=$this->buscarEndereco($request->vincular);				
+					if($vinculo->logradouro==$request->logradouro && $vinculo->numero==$request->numero_endereco)
+						$id_endereco=$vinculo->id;
+					
+					else
+						$cadastrarend=true;
+				}
+				else
+					$cadastrarend=true;
+				if($cadastrarend){
+					$endereco=new Endereco;					
+					$endereco->logradouro =mb_convert_case($request->rua, MB_CASE_UPPER, 'UTF-8'); 
+					$endereco->numero=$request->numero_endereco;
+					$endereco->complemento=mb_convert_case($request->complemento_endereco, MB_CASE_UPPER, 'UTF-8');
+					$endereco->bairro=$request->bairro;
+					$endereco->cidade=mb_convert_case($request->cidade, MB_CASE_UPPER, 'UTF-8');
+					$endereco->estado=$request->estado;
+					$endereco->cep=$request->cep;
+					$endereco->atualizado_por=Session::get('usuario');
+					$endereco->save();
+					$id_endereco=$endereco->id;
+				}
+
+
 				$info=new PessoaDadosContato;					
 				$info->pessoa=$pessoa->id;
 				$info->dado=6; 
 				$info->valor=$endereco->id;
 				$pessoa->dadosContato()->save($info);
+				
 			}
+
+
+
+
+				
+				
+			
 		//**************** Dados Clinicos
 			if($request->necessidade_especial != '')
 			{
@@ -652,6 +687,21 @@ class PessoaController extends Controller
 	{
 		$pessoa=$this->dadosPessoa($r->pessoa);
 		return view('pessoa.mostrar')->with('pessoa',$pessoa)->with('dados',$dados);
+	}
+
+	public static function buscarEndereco($id){
+		
+		if(!loginController::autorizarDadosPessoais($id))
+			return null;
+		$dado=PessoaDadosContato::where('pessoa',$id)->where('dado',6)->first();
+		if(!$dado)
+			return null;
+		$endereco=Endereco::find($dado->valor);
+		if(!$endereco)
+			return null;
+		else
+			return $endereco;
+
 	}
 
 

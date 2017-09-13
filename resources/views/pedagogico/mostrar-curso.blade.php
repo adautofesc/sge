@@ -81,9 +81,9 @@
 									@if(isset($curso->requisitos))
 										<a href="{{ asset("pedagogico/requisitosdocurso/").'/'.$curso->id}}" class="btn btn-secondary rounded-s btn-sm" >Modificar Requisitos</a>
 										<ul>
-									@foreach($curso->requisitos as $requisitos)
+									@foreach($curso->requisitos as $requisito)
 
-										<li><a href="#" title="Remover"><i class="fa fa-cancel"></i></a><span{{ $requitos->nome}}</li>
+										<li> {{ $requisito->nome}}</li>
 									@endforeach
 										</ul>
 									@else

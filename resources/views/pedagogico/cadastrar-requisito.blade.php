@@ -1,12 +1,14 @@
 @extends('layout.app')
 @section('pagina')
 
+
   <div class="title-block">
         <h3 class="title"> Adicionar novo requisito </h3>
     </div>
     <form name="item" method="POST">
      {{csrf_field()}}
         <div class="card card-block">
+        @include('inc.errors')
 			<div class="form-group row"> 
 				<label class="col-sm-2 form-control-label text-xs-right">
 					Nome

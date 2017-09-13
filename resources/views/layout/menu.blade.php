@@ -33,21 +33,24 @@
 
                                         <li> <a href="{{asset("/pessoa/cadastrar")}}">Cadastrar usuário</a> </li>
                                         <li> <a href="{{asset('/pessoa/listar')}}">Lista de usuários</a> </li>
+                                        <!--
                                         <li> <a href="#">Turmas Abertas	</a> </li>
 										<li> <a href="#">Matrículas</a> </li>
-                                                             
+                                          -->                   
                                         
                                     </ul>
                                 </li>
                                 <li>
                                     <a href=""> <i class="fa fa-th-large"></i> Institucional <i class="fa arrow"></i> </a>
                                     <ul>
-                                        <li> <a href="{{ asset('/pedagogico/cursos')}}">	Cursos</a> </li>
+                                        <li> <a href="{{ asset('/pedagogico/cursos')}}">	Cursos / Atividades</a> </li>
                                         <li> <a href="{{ asset('/pedagogico/disciplinas')}}"> Disciplinas </a> </li>
+                                        <li> <a href="{{ asset('/pedagogico/cursos/requisitos')}}">    Requisitos</a> </li>
+                                        <!--
                                         <li> <a href="#"> Unidades </a> </li>
                                         <li> <a href="#"> Salas </a> </li>
                                         <li> <a href="#"> Ocupação </a> </li>
-    	
+    	                               -->
                                     </ul>
                                 </li>
                                 <!--
@@ -62,8 +65,11 @@
                                 <li>
                                     <a href=""> <i class="fa fa-bar-chart"></i>Pedagógico <i class="fa arrow"></i> </a>
                                     <ul>
-                                    	<li> <a href="#">Turmas Ativas</a> </li>
-										<li> <a href="#">Nova Turma</a> </li>
+                                    	<!--<li> <a href="#">Turmas Ativas</a> </li>
+										<li> <a href="#">Nova Turma</a> </li>-->
+                                        <li> <a href="{{ asset('/pedagogico/cursos')}}">    Cursos / Atividades</a> </li>
+                                        <li> <a href="{{ asset('/pedagogico/disciplinas')}}"> Disciplinas </a> </li>
+                                        <li> <a href="{{ asset('/pedagogico/cursos/requisitos')}}">    Requisitos</a> </li>
                                     </ul>
                                 </li>
                                  <li>
@@ -81,6 +87,7 @@
                                         <li> <a href="./pessoas.php?relacao=ter">Terceirizados</a></li>-->
                                     </ul>
                                 </li>
+                                <!--
                                 <li>
                                     <a href=""> <i class="fa fa-usd"></i>Financeiro <i class="fa arrow"></i> </a>
                                     <ul>
@@ -93,6 +100,7 @@
 										<li> <a href="charts-morris.html"> 	Relatórios</a> </li>
                                     </ul>
                                 </li>
+                                -->
                             </ul>
                         </nav>
                     </div>

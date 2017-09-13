@@ -150,6 +150,35 @@ class loginController extends Controller
             return False;
 
     }
+    public static function autorizarDadosPessoais($pessoa){
+    	$pessoa=Pessoa::find($pessoa);
+		// Verifica se a pessoa existe
+		if(!$pessoa)
+			return False;
+
+		// Verifica se o perfil não é proprio
+		if($pessoa->id != Session::get('usuario'))
+		{
+		//verifica se pode ver outras pessoas
+			if(!loginController::pedirPermissao(4))			
+				return false;	
+		// verifica se a pessoa tem relação institucional
+			$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
+			if($relacao_institucional && !loginController::pedirPermissao(5))
+			{
+				return false;	
+			}
+		// Verifica se a pessoa tem perfil privado.
+			$pessoa_restrita=count($pessoa->dadosGerais->where('dado',17));
+			if($pessoa_restrita && !loginController::pedirPermissao(6))
+				return false;
+		// ja verifiquei tudo pode liberar
+			return True;	
+
+		}
+		else
+			return True;
+    }
 
 	public function trocarMinhaSenha_view()
 	{

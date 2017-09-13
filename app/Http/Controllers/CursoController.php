@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Curso;
-
+use App\Requisito;
 use App\CursoRequisito;
 use Illuminate\Http\Request;
 use App\Http\Controllers\RequisitosController;

@@ -219,8 +219,9 @@ class DisciplinaController extends Controller
             $grade->timestamps=false;
             $grade->curso=$r->curso;
             $grade->disciplina=$disciplina;
-            if($r->obrigatoria[$disciplina]==1)
-                $grade->obrigatoria=1;
+            if(isset($r->obrigatoria))
+                if(in_array($disciplina, $r->obrigatoria))
+                    $grade->obrigatoria=1;    
             $grade->save();
         }
 

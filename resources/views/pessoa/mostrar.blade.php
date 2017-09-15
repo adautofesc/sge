@@ -97,7 +97,7 @@
                                     
                                     <label class="col-sm-2 form-control-label text-xs-right">Senha</label>
                                     <div class="col-sm-3"> 
-                                        <a href="{{asset('/pessoa/acesso-recursos/'.$pessoa['id']) }}" class="btn btn-secondary btn-sm rounded-s"> Redefinir senha </a>
+                                        <a href="{{asset('/pessoa/trocarsenha/'.$pessoa['id']) }}" class="btn btn-secondary btn-sm rounded-s"> Redefinir senha </a>
 
                                     </div>
                                     @else
@@ -164,12 +164,9 @@
                         <!-- // Contato *********************************************************************************** -->
                         <div class="tab-pane fade" id="contato">
                             <div class="row"> 
-                                    <div class="col-xs-6">
-                                        <a href="pessoas_add.php" class="btn btn-secondary btn-sm rounded-s"> Adicionar Informação </a>
-                                        <a href="pessoas_add.php" class="btn btn-secondary btn-sm rounded-s"> Vincular endereço</a>                                        
-                                    </div>                                           
-                                    <div class="col-xs-6 text-xs-right">                                        
-                                        <a href="pessoas_add.php" class="btn btn-primary btn-sm rounded-s"> Editar </a>
+                                                                               
+                                    <div class="col-xs-12 text-xs-right">                                        
+                                        <a href="{{asset("/pessoa/editar/contato/")."/".$pessoa->id}}" class="btn btn-primary btn-sm rounded-s"> Editar </a>
                                     </div>
                                 </div> 
 
@@ -184,7 +181,7 @@
                                 </div>  
                             </div>
                             <div class="form-group row">
-                                <label class="col-sm-2 form-control-label text-xs-right">Telefone alternativo</label>
+                                <label class="col-sm-2 form-control-label text-xs-right">Celular</label>
                                 <div class="col-sm-4"> 
                                     @if(isset($pessoa['telefone_alternativo']))
                                      {{ $pessoa['telefone_alternativo'] }}
@@ -258,11 +255,11 @@
                             <div class="row"> 
                                     <div class="col-xs-6">
                                         <a href="pessoas_add.php" class="btn btn-primary btn-sm rounded-s"> Adicionar Atestado</a>
-                                        <a href="pessoas_add.php" class="btn btn-secondary btn-sm rounded-s"> Adicionar Informação</a>
+                                        
                                                                                
                                     </div>                                           
                                     <div class="col-xs-6 text-xs-right">                                        
-                                        <a href="pessoas_add.php" class="btn btn-primary btn-sm rounded-s"> Editar </a>
+                                        <a href="{{asset('/pessoa/editar/dadosclinicos/').'/'.$pessoa->id}}" class="btn btn-primary btn-sm rounded-s"> Editar </a>
                                     </div>
                                 </div> 
 
@@ -327,6 +324,11 @@
                      
                         </div>
                         <div class="tab-pane fade" id="financeiros">
+                             <div class="row">                     
+                                    <div class="col-xs-12 text-xs-right">                                        
+                                        <a href="{{asset('/pessoa/editar/dadosclinicos/').'/'.$pessoa->id}}" class="btn btn-primary btn-sm rounded-s"> Editar </a>
+                                    </div>
+                                </div> 
                             <section class="card card-block">
                                 <p>Sem dados no momento</p>
                             </section>
@@ -334,12 +336,32 @@
                          
                         </div>
                         <div class="tab-pane fade" id="obs">
+
+
+
+                            <div class="row">                     
+                                <div class="col-xs-12 text-xs-right">                                        
+                                    <a href="{{asset('/pessoa/editar/observacoes/').'/'.$pessoa->id}}" class="btn btn-primary btn-sm rounded-s"> Editar </a>
+                                </div>
+                            </div>
                             <section class="card card-block">
-                                @if(isset($pessoa['obs']))
-                                    {{ $pessoa['obs'] }}
-                                @else
-                                    <p>Sem dados no momento</p>
-                                @endif
+                            <div class="form-group row"> 
+                                <label class="col-sm-2 form-control-label text-xs-right">
+                                    Observações
+                                </label>
+                                <div class="col-sm-10"> 
+                                    <textarea rows="4" class="form-control boxed" name="obs" readonly="true">@if(isset($pessoa['obs'])){{ $pessoa['obs'] }} @else Sem dados no momento
+                                    @endif
+                                    </textarea> 
+                                </div>
+                            </div>
+
+
+
+
+
+
+                                
                                 
 
                             </section>

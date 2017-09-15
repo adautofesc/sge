@@ -35,8 +35,15 @@ Route::get('/pessoa/editar/geral/{var}','PessoaController@editarGeral_view');
 Route::post('/pessoa/editar/geral/{var}','PessoaController@editarGeral_exec');
 Route::get('/pessoa/editar/contato/{var}','PessoaController@editarContato_view');
 Route::post('/pessoa/editar/contato/{var}','PessoaController@editarContato_exec');
-Route::get('/pessoa/editar/saude/{var}','PessoaController@editarSaude_view');
-Route::post('/pessoa/editar/obs/{var}','PessoaController@editarSaude_exec');
+Route::get('/pessoa/editar/dadosclinicos/{var}','PessoaController@editarDadosClinicos_view');
+Route::post('/pessoa/editar/dadosclinicos/{var}','PessoaController@editarDadosClinicos_exec');
+Route::get('/pessoa/editar/observacoes/{var}','PessoaController@editarObservacoes_view');
+Route::post('/pessoa/editar/observacoes/{var}','PessoaController@editarObservacoes_exec');
+
+
+
+
+	//dependentes
 Route::get('/pessoa/adicionardependente/{var}','PessoaController@addDependente_view');
 Route::post('/pessoa/adicionardependente/{var}','PessoaController@addDependente_exec');
 Route::get('/pessoa/removerdependente/{var}','PessoaController@remDependente_exec');
@@ -56,6 +63,7 @@ Route::get('pessoa/buscarapida/{var}','PessoaController@liveSearchPessoa');
 
 
 //Pedagógico
+	//Disciplinas
 Route::get('pedagogico/disciplinas','DisciplinaController@index');
 Route::get('pedagogico/cadastrardisciplina','DisciplinaController@create');
 Route::post('pedagogico/cadastrardisciplina','DisciplinaController@store');
@@ -63,6 +71,7 @@ Route::get('pedagogico/editardisciplina/{var}','DisciplinaController@edit');
 Route::post('pedagogico/editardisciplina/{var}','DisciplinaController@update');
 Route::get('pedagogico/apagardisciplina','DisciplinaController@destroy');
 
+	//Cursos
 Route::get('pedagogico/cursos','CursoController@index');
 Route::get('pedagogico/cadastrarcurso','CursoController@create');
 Route::post('pedagogico/cadastrarcurso','CursoController@store');
@@ -73,6 +82,7 @@ Route::get('pedagogico/curso/{var}','CursoController@show');
 Route::get('pedagogico/disciplinasdocurso/{var}','DisciplinaController@editDisciplinasAoCurso');
 Route::post('pedagogico/disciplinasdocurso/{var}','DisciplinaController@storeDisciplinasAoCurso');
 
+	//Requisitos
 Route::get('pedagogico/cursos/requisitos','RequisitosController@index');
 Route::get('pedagogico/cursos/requisitos/add','RequisitosController@create');
 Route::post('pedagogico/cursos/requisitos/add','RequisitosController@store');
@@ -80,7 +90,7 @@ Route::get('pedagogico/cursos/requisitos/apagar/{itens}','RequisitosController@d
 Route::get('pedagogico/requisitosdocurso/{var}','RequisitosController@editRequisitosAoCurso');
 Route::post('pedagogico/requisitosdocurso/{var}','RequisitosController@storeRequisitosAoCurso');
 
-//------------------------------ Login 
+// Login & Acesso
 Route::get('/admin/listarusuarios', 'loginController@listarUsuarios_view');
 Route::get('/admin/listarusuarios/{var}', 'loginController@listarUsuarios_view');
 Route::post('/admin/listarusuarios/{var}', 'loginController@listarUsuarios_action');

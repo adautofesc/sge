@@ -98,7 +98,7 @@
                                 </div>  
                             </div>
                             <div class="form-group row">
-                                <label class="col-sm-2 form-control-label text-xs-right">Telefone alternativo</label>
+                                <label class="col-sm-2 form-control-label text-xs-right">Celular</label>
                                 <div class="col-sm-4"> 
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-phone"></i></span> 
@@ -215,25 +215,25 @@
                             <div class="form-group row"> 
                                     <label class="col-sm-4 form-control-label text-xs-right">Necesssidades especiais</label>
                                     <div class="col-sm-8"> 
-                                        <input type="text" class="form-control boxed" placeholder="Motora, visual, auditiva, etc. Se não tiver, não preencha." name="necessidade_especial"> 
+                                        <input type="text" class="form-control boxed" placeholder="Motora, visual, auditiva, etc. Se não tiver, não preencha." maxlength="150" name="necessidade_especial"> 
                                     </div>
                             </div>
                             <div class="form-group row"> 
                                     <label class="col-sm-4 form-control-label text-xs-right">Medicamentos uso contínuo</label>
                                     <div class="col-sm-8"> 
-                                        <input type="text" class="form-control boxed" placeholder="Digite os medicamentos de uso contínuo da pessoa. Se não tiver, não preencha." name="medicamentos"> 
+                                        <input type="text" class="form-control boxed" placeholder="Digite os medicamentos de uso contínuo da pessoa. Se não tiver, não preencha." maxlength="150" name="medicamentos"> 
                                     </div>
                             </div>
                             <div class="form-group row"> 
                                     <label class="col-sm-4 form-control-label text-xs-right">Alergias</label>
                                     <div class="col-sm-8"> 
-                                        <input type="text" class="form-control boxed" placeholder="Digite alergias ou reações medicamentosas. Se não tiver, não preencha." name="alergias"> 
+                                        <input type="text" class="form-control boxed" placeholder="Digite alergias ou reações medicamentosas. Se não tiver, não preencha." maxlength="150" name="alergias"> 
                                     </div>
                             </div>
                             <div class="form-group row"> 
                                     <label class="col-sm-4 form-control-label text-xs-right">Doença crônica</label>
                                     <div class="col-sm-8"> 
-                                        <input type="text" class="form-control boxed" placeholder="Se não tiver, não preencha." name="doenca_cronica"> 
+                                        <input type="text" class="form-control boxed" maxlength="150" placeholder="Se não tiver, não preencha." name="doenca_cronica"> 
                                     </div>
                             </div>
                         </div>
@@ -247,7 +247,9 @@
                                     Observações
                                 </label>
                                 <div class="col-sm-10"> 
-                                    <textarea rows="4" class="form-control boxed" name="obs"></textarea> 
+                                    <textarea rows="4" class="form-control boxed" name="obs" maxlength="150">
+                                        
+                                    </textarea> 
                                 </div>
                             </div>  
                             <div class="form-group row">
@@ -324,6 +326,10 @@
     });
  
 });
+/***
+ * Vincula resgata os dados da pessoa clicada e preenche o formulário com eles
+ * @param id - código da pessoa que tem o endereço
+ * @param nome - Nome da pessoa que tem o endereço, para preencher o campo "Vincular a"*/
 function vincularEndereco(id,nome) {
     $.get("{{asset('pessoa/buscarendereco/')}}"+"/"+id)
                 .done(function(data) 

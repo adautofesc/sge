@@ -154,7 +154,7 @@ class PessoaController extends Controller
 				$info->pessoa=$pessoa->id;
 				$info->dado=5;
 				$info->valor=$request->obs;
-				$pessoa->dadosContato()->save($info);
+				$pessoa->dadosGerais()->save($info);
 			}
 			if($request->responsavel_por != '')
 			{
@@ -207,29 +207,20 @@ class PessoaController extends Controller
 				$pessoa->dadosContato()->save($info);
 			}
 			//se tiver vincular
-			if($request->vincular!=''){
-
-				$vinculo=$this->buscarEndereco($request->vincular);
-				if($vinculo->logradouro==$request->logradouro && $vinculo->numero==$request->numero_endereco){
-					$info=new PessoaDadosContato;					
-					$info->pessoa=$pessoa->id;
-					$info->dado=6; 
-					$info->valor=$vinculo->id;
-					$pessoa->dadosContato()->save($info);
-				}
-			}
 			if($request->rua != '')
 			{
-				if($request->vincular!=''){
-					$vinculo=$this->buscarEndereco($request->vincular);				
-					if($vinculo->logradouro==$request->logradouro && $vinculo->numero==$request->numero_endereco)
+				if($request->vinculara!=''){
+					$vinculo=$this->buscarEndereco($request->vinculara);				
+					if($vinculo->logradouro==$request->rua && $vinculo->numero==$request->numero_endereco){
 						$id_endereco=$vinculo->id;
+						$cadastrarend=False;
+					}
 					
 					else
 						$cadastrarend=true;
 				}
 				else
-					$cadastrarend=true;
+					$cadastrarend=True;
 				if($cadastrarend){
 					$endereco=new Endereco;					
 					$endereco->logradouro =mb_convert_case($request->rua, MB_CASE_UPPER, 'UTF-8'); 
@@ -248,7 +239,7 @@ class PessoaController extends Controller
 				$info=new PessoaDadosContato;					
 				$info->pessoa=$pessoa->id;
 				$info->dado=6; 
-				$info->valor=$endereco->id;
+				$info->valor=$id_endereco;
 				$pessoa->dadosContato()->save($info);
 				
 			}
@@ -604,14 +595,17 @@ class PessoaController extends Controller
 			]);
 		$pessoa=Pessoa::find($request->pessoa);
 		if(!$pessoa){
-			return redirect(asset("/pessoa/mostrar/"));
+			return redirect(asset("/pessoa/listar/"));
 		}
+
+		$dados_atuais=$this->dadosPessoa($request->pessoa);
+
 		$pessoa->nome=mb_convert_case($request->nome, MB_CASE_UPPER, 'UTF-8');
 		$pessoa->nascimento=Data::converteParaBd($request->nascimento);
 		$pessoa->genero=$request->genero;
 		$pessoa->save();
 		$pessoa->alert_sucess=" Nome, nascimento e gênero gravados com sucesso,";
-		if($request->rg!=''){
+		if($request->rg!='' || $request->rg!=$dados_atuais->rg){
 
 			$rg=new PessoaDadosGerais;
 			$rg->pessoa=$pessoa->id;
@@ -622,7 +616,7 @@ class PessoaController extends Controller
 
 			
 		}
-		if($request->cpf!='')
+		if($request->cpf!='' || $request->cpf!=$dados_atuais->cpf )
 		{	
 			if (!Strings::validaCPF($request->cpf)) 
 			{
@@ -643,7 +637,7 @@ class PessoaController extends Controller
 			}
 
 		}
-		if($request->nome_registro!='')
+		if($request->nome_registro!='' || $request->nome_registro!=$dados_atuais->nome_registro )
 		{
 			$nome=new PessoaDadosGerais;
 			$nome->pessoa=$pessoa->id;
@@ -656,6 +650,241 @@ class PessoaController extends Controller
 		$pessoa=$this->formataParaMostrar($pessoa);
 		return view('pessoa.mostrar', compact('pessoa'));
 	}
+	public function editarContato_view($id){
+		if(!loginController::check())
+			return redirect(asset("/"));
+		if(!GerenciadorAcesso::pedirPermissao(3))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
+		if(!loginController::autorizarDadosPessoais($id))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
+		
+
+		$bairros=DB::table('bairros_sanca')->get(); 
+		$dados=$this->dadosPessoa($id);
+		$dados->bairros=$bairros;
+
+
+		//return $dados;
+				
+		return view('pessoa.editar-dados-contato', compact('dados'));
+	}
+	public function editarContato_exec(Request $request){
+		if(!loginController::check())
+			return redirect(asset("/"));
+		if(!GerenciadorAcesso::pedirPermissao(3))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Desculpe, você não possui autorização para alterar dados de outras pessoas']));
+
+		if(!loginController::autorizarDadosPessoais($request->pessoa))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
+
+	
+		$pessoa=Pessoa::find($request->pessoa);
+		if(!$pessoa){
+			return redirect(asset("/pessoa/listar/"));
+		}
+		$dadosAtuais=$this->dadosPessoa($request->pessoa);
+
+		if($request->email != '' || $request->email!= $dadosAtuais->email)
+			{
+				$info=new PessoaDadosContato;					
+				$info->pessoa=$pessoa->id;
+				$info->dado=1; 
+				$info->valor=mb_convert_case($request->email, MB_CASE_LOWER, 'UTF-8');
+				$pessoa->dadosContato()->save($info);
+			}
+
+			if($request->telefone != '' || $request->telefone!= $dadosAtuais->telefone)
+			{
+				$info=new PessoaDadosContato;					
+				$info->pessoa=$pessoa->id;
+				$info->dado=2; 
+				$info->valor=$request->telefone;
+				$pessoa->dadosContato()->save($info);
+			}
+
+			if($request->tel2 != '' || $request->tel2 != $dadosAtuais->telefone_alternativo)
+			{
+				$info=new PessoaDadosContato;					
+				$info->pessoa=$pessoa->id;
+				$info->dado=9; 
+				$info->valor=$request->tel2;
+				$pessoa->dadosContato()->save($info);
+			}
+
+			if($request->tel3 != '' || $request->tel3!= $dadosAtuais->telefone_contato)
+			{
+				$info=new PessoaDadosContato;					
+				$info->pessoa=$pessoa->id;
+				$info->dado=10; 
+				$info->valor=$request->tel3;
+				$pessoa->dadosContato()->save($info);
+			}
+			//se tiver vincular
+			if($request->rua != '' || $request->rua!= $dadosAtuais->logradouro)
+			{
+				if($request->vinculara!=''){
+					$vinculo=$this->buscarEndereco($request->vinculara);				
+					if($vinculo->logradouro==$request->rua && $vinculo->numero==$request->numero_endereco){
+						$id_endereco=$vinculo->id;
+						$cadastrarend=False;
+					}
+					
+					else
+						$cadastrarend=true;
+				}
+				else
+					$cadastrarend=True;
+				if($cadastrarend){
+					$endereco=new Endereco;					
+					$endereco->logradouro =mb_convert_case($request->rua, MB_CASE_UPPER, 'UTF-8'); 
+					$endereco->numero=$request->numero_endereco;
+					$endereco->complemento=mb_convert_case($request->complemento_endereco, MB_CASE_UPPER, 'UTF-8');
+					$endereco->bairro=$request->bairro;
+					$endereco->cidade=mb_convert_case($request->cidade, MB_CASE_UPPER, 'UTF-8');
+					$endereco->estado=$request->estado;
+					$endereco->cep=$request->cep;
+					$endereco->atualizado_por=Session::get('usuario');
+					$endereco->save();
+					$id_endereco=$endereco->id;
+				}
+
+
+				$info=new PessoaDadosContato;					
+				$info->pessoa=$pessoa->id;
+				$info->dado=6; 
+				$info->valor=$id_endereco;
+				$pessoa->dadosContato()->save($info);
+				
+			}
+
+		$pessoa=$this->formataParaMostrar($pessoa);
+		return view('pessoa.mostrar', compact('pessoa'));
+	}	
+	public function editarDadosClinicos_view($id){
+		if(!loginController::check())
+			return redirect(asset("/"));
+		if(!GerenciadorAcesso::pedirPermissao(3))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
+		if(!loginController::autorizarDadosPessoais($id))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
+		
+		$dados=$this->dadosPessoa($id);
+
+		//return $dados;
+
+
+
+		return view('pessoa.editar-dados-clinicos', compact('dados'));
+
+
+	}
+	public function editarDadosClinicos_exec(Request $request){
+		if(!loginController::check())
+			return redirect(asset("/"));
+		if(!GerenciadorAcesso::pedirPermissao(3))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
+		if(!loginController::autorizarDadosPessoais($request->pessoa))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
+
+		$pessoa=Pessoa::find($request->pessoa);
+		if(!$pessoa)
+			return redirect(asset("/pessoa/listar/"));
+
+		$dadosAtuais=$this->dadosPessoa($request->pessoa);
+
+
+		if($request->necessidade_especial != '' || $dadosAtuais->necessidade_especial!=$request->necessidade_especial)
+			{
+				$info=new PessoaDadosClinicos;					
+				$info->pessoa=$pessoa->id;
+				$info->dado=11; 
+				$info->valor=mb_convert_case($request->necessidade_especial, MB_CASE_UPPER, 'UTF-8');
+				$pessoa->dadosClinicos()->save($info);
+			}					
+		if($request->medicamentos != '' || $request->medicamentos!= $dadosAtuais->medicamentos)
+			{
+				$info=new PessoaDadosClinicos;					
+				$info->pessoa=$pessoa->id;
+				$info->dado=12; 
+				$info->valor=mb_convert_case($request->medicamentos, MB_CASE_UPPER, 'UTF-8');
+				$pessoa->dadosClinicos()->save($info);
+			}
+		if($request->alergias != '' || $request->alergias !=  $dadosAtuais->alergias)
+			{
+				$info=new PessoaDadosClinicos;					
+				$info->pessoa=$pessoa->id;
+				$info->dado=13; 
+				$info->valor=mb_convert_case($request->alergias, MB_CASE_UPPER, 'UTF-8');
+				$pessoa->dadosClinicos()->save($info);
+			}
+		if($request->doenca_cronica != '' || $request->doenca_cronica !=  $dadosAtuais->doenca_cronica )
+			{
+				$info=new PessoaDadosClinicos;					
+				$info->pessoa=$pessoa->id;
+				$info->dado=14; 
+				$info->valor=mb_convert_case($request->doenca_cronica, MB_CASE_UPPER, 'UTF-8');
+				$pessoa->dadosClinicos()->save($info);
+			}
+
+
+
+		
+		return redirect('/pessoa/mostrar/'.$request->pessoa);
+	}
+
+
+
+	public function editarObservacoes_view($id){
+		if(!loginController::check())
+			return redirect(asset("/"));
+		if(!GerenciadorAcesso::pedirPermissao(3))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
+		if(!loginController::autorizarDadosPessoais($id))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
+
+
+		$dados=$this->dadosPessoa($id);
+
+		return view('pessoa.editar-observacao', compact('dados'));
+
+	}
+	public function editarObservacoes_exec(Request $request){
+		if(!loginController::check())
+			return redirect(asset("/"));
+		if(!GerenciadorAcesso::pedirPermissao(3))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
+		if(!loginController::autorizarDadosPessoais($request->pessoa))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
+
+		$pessoa=Pessoa::find($request->pessoa);
+		if(!$pessoa)
+			return redirect(asset("/pessoa/listar/"));
+
+		$dados=$this->dadosPessoa($pessoa->id);
+
+		if($request->obs != '' || $dados->obs!=$request->obs )
+			{
+				$dado=PessoaDadosGerais::where('dado', 5)->where('pessoa',$pessoa->id)->first();
+				if($dado)
+					$dado->delete();
+				$info=new PessoaDadosGerais;					
+				$info->pessoa=$pessoa->id;
+				$info->dado=5;
+				$info->valor=$request->obs;
+				$pessoa->dadosGerais()->save($info);
+			}
+
+
+
+
+
+		return redirect('/pessoa/mostrar/'.$request->pessoa);
+
+	}
+
+
+
+
 
 	public function addDependente_view($pessoa)
 	{

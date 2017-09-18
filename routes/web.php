@@ -56,21 +56,29 @@ Route::get('/pessoa/buscarendereco/{var}','PessoaController@buscarEndereco');
 
 
 // Secretaria
+Route::get('secretaria','painelController@secretaria');
 Route::get('secretaria/atender','PessoaController@iniciarAtendimento');
 Route::get('secretaria/atender/{var}','PessoaController@atender');
 Route::get('pessoa/buscarapida/{var}','PessoaController@liveSearchPessoa');
 
+// Administrativo
+Route::get('administrativo','painelController@administrativo');
+
+// Financeiro
+Route::get('financeiro','painelController@financeiro');
+
+// Gestão Pessoal
+Route::get('gestaopessoal','painelController@gestaoPessoal');
+Route::get('gestaopessoal/atendimento','painelController@atendimentoPessoal');
+Route::get('gestaopessoal/atender/{var}','painelController@atendimentoPessoalPara');
+
+// Jurídico
+Route::get('juridico','painelController@juridico');
 
 
 //Pedagógico
-	//Disciplinas
-Route::get('pedagogico/disciplinas','DisciplinaController@index');
-Route::get('pedagogico/cadastrardisciplina','DisciplinaController@create');
-Route::post('pedagogico/cadastrardisciplina','DisciplinaController@store');
-Route::get('pedagogico/editardisciplina/{var}','DisciplinaController@edit');
-Route::post('pedagogico/editardisciplina/{var}','DisciplinaController@update');
-Route::get('pedagogico/apagardisciplina','DisciplinaController@destroy');
-
+Route::get('pedagogico','painelController@pedagogico');
+Route::get('docentes','painelController@docentes');
 	//Cursos
 Route::get('pedagogico/cursos','CursoController@index');
 Route::get('pedagogico/cadastrarcurso','CursoController@create');
@@ -81,7 +89,13 @@ Route::get('pedagogico/apagarcurso','CursoController@destroy');
 Route::get('pedagogico/curso/{var}','CursoController@show');
 Route::get('pedagogico/disciplinasdocurso/{var}','DisciplinaController@editDisciplinasAoCurso');
 Route::post('pedagogico/disciplinasdocurso/{var}','DisciplinaController@storeDisciplinasAoCurso');
-
+	//Disciplinas
+Route::get('pedagogico/disciplinas','DisciplinaController@index');
+Route::get('pedagogico/cadastrardisciplina','DisciplinaController@create');
+Route::post('pedagogico/cadastrardisciplina','DisciplinaController@store');
+Route::get('pedagogico/editardisciplina/{var}','DisciplinaController@edit');
+Route::post('pedagogico/editardisciplina/{var}','DisciplinaController@update');
+Route::get('pedagogico/apagardisciplina','DisciplinaController@destroy');
 	//Requisitos
 Route::get('pedagogico/cursos/requisitos','RequisitosController@index');
 Route::get('pedagogico/cursos/requisitos/add','RequisitosController@create');
@@ -90,7 +104,11 @@ Route::get('pedagogico/cursos/requisitos/apagar/{itens}','RequisitosController@d
 Route::get('pedagogico/requisitosdocurso/{var}','RequisitosController@editRequisitosAoCurso');
 Route::post('pedagogico/requisitosdocurso/{var}','RequisitosController@storeRequisitosAoCurso');
 
+
+
 // Login & Acesso
+Route::get('/gestaopessoal/credenciais/{var}', 'loginController@credenciais_view');
+Route::post('/gestaopessoal/credenciais/{var}', 'loginController@credenciais_exec');
 Route::get('/admin/listarusuarios', 'loginController@listarUsuarios_view');
 Route::get('/admin/listarusuarios/{var}', 'loginController@listarUsuarios_view');
 Route::post('/admin/listarusuarios/{var}', 'loginController@listarUsuarios_action');

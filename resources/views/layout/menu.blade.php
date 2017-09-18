@@ -2,105 +2,35 @@
                     <div class="sidebar-container">
                         <div class="sidebar-header">
                             <div class="brand">
-                                <div class="logo"> <span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div> SGE2 <i>FESC</i></div>
+                                <div class="logo"> <span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div>SGE <i>FESC</i></div>
                         </div>
                         <nav class="menu">
                             <ul class="nav metismenu" id="sidebar-menu">
                                 <li  class="active">
                                     <a href="{{asset('/')}}"> <i class="fa fa-home"></i> Home </a>
                                 </li>
-                                <!-- Futuro módulo de Admin
-                                <li>
-                                    <a href="" > <i class="fa fa-th-large"></i> Administração <i class="fa arrow"></i> </a>
-                                    <ul>
-                                        <li> <a href="cursos.php">Acesso ao sistema</a> </li>
-                                        <li> <a href="#"> Compras </a> </li>
-                                        <li> <a href="#"> Licitações </a> </li>
-                                        <li> <a href="#"> Patrimônio </a> </li>
-                                        <li> <a href="disciplinas.php">Processos</a> </li>
-                                        <li> <a href="#">Relações</a> </li>
-                                        <li> <a href="#"> Solicitações </a> </li>
-                                        <li> <a href="#"> Patrimônio </a> </li>
-
-                                    </ul>
+                                <li  >
+                                    <a href="{{asset('/administrativo')}}"> <i class="fa fa-bar-chart-o"></i> Administração </a>
                                 </li>
-                                -->
-                                <li>
-                                    <a href=""> <i class="fa fa-th-large"></i> Secretaria <i class="fa arrow"></i> </a>
-                                    <ul>
-                                        
-                                    	<li> <a href="{{asset('secretaria/atender')}}">Atendimento</a> </li>
-
-                                        <li> <a href="{{asset("/pessoa/cadastrar")}}">Cadastrar usuário</a> </li>
-                                        <li> <a href="{{asset('/pessoa/listar')}}">Lista de usuários</a> </li>
-                                        <!--
-                                        <li> <a href="#">Turmas Abertas	</a> </li>
-										<li> <a href="#">Matrículas</a> </li>
-                                          -->                   
-                                        
-                                    </ul>
+                                <li  >
+                                    <a href="{{asset('/docentes')}}"> <i class="fa fa-th-large"></i> Docentes </a>
                                 </li>
-                                <li>
-                                    <a href=""> <i class="fa fa-th-large"></i> Institucional <i class="fa arrow"></i> </a>
-                                    <ul>
-                                        <li> <a href="{{ asset('/pedagogico/cursos')}}">	Cursos / Atividades</a> </li>
-                                        <li> <a href="{{ asset('/pedagogico/disciplinas')}}"> Disciplinas </a> </li>
-                                        <li> <a href="{{ asset('/pedagogico/cursos/requisitos')}}">    Requisitos</a> </li>
-                                        <!--
-                                        <li> <a href="#"> Unidades </a> </li>
-                                        <li> <a href="#"> Salas </a> </li>
-                                        <li> <a href="#"> Ocupação </a> </li>
-    	                               -->
-                                    </ul>
+                                <li  >
+                                    <a href="{{asset('/financeiro')}}"> <i class="fa fa-usd"></i> Financeiro </a>
                                 </li>
-                                <!--
-                                <li>
-                                    <a href=""> <i class="fa fa-th-large"></i> Manutenção<i class="fa arrow"></i> </a>
-                                    <ul>
-                                        <li> <a href="cursos.php">Chamados</a> </li>
-
-                                    </ul>
+                                <li  >
+                                    <a href="{{asset('/gestaopessoal')}}"> <i class="fa fa-users"></i> Gestão Pessoal </a>
                                 </li>
-                                -->
-                                <li>
-                                    <a href=""> <i class="fa fa-bar-chart"></i>Pedagógico <i class="fa arrow"></i> </a>
-                                    <ul>
-                                    	<!--<li> <a href="#">Turmas Ativas</a> </li>
-										<li> <a href="#">Nova Turma</a> </li>-->
-                                        <li> <a href="{{ asset('/pedagogico/cursos')}}">    Cursos / Atividades</a> </li>
-                                        <li> <a href="{{ asset('/pedagogico/disciplinas')}}"> Disciplinas </a> </li>
-                                        <li> <a href="{{ asset('/pedagogico/cursos/requisitos')}}">    Requisitos</a> </li>
-                                    </ul>
+                                <li  >
+                                    <a href="{{asset('/juridico')}}"> <i class="fa fa-bookmark"></i> Jurídico </a>
                                 </li>
-                                 <li>
-                                    <a href=""> <i class="fa fa-users"></i> Pessoas <i class="fa arrow"></i> </a>
-                                    <ul>
-                                        <li> <a href="{{asset('/pessoa/listar')}}">Lista</a></li>
-                                        <li> <a href="{{asset('/pessoa/cadastrar')}}">Adicionar</a></li>
-                                        <li> <a href="{{asset('/admin/listarusuarios')}}">Usuários sistema</a></li>
-                                    <!--
-                                        <li> <a href="./pessoas.php?relacao=adm">Administrativo</a></li>
-                                        <li> <a href="./pessoas.php?relacao=alu">Alunos</a></li>
-                                        <li> <a href="./pessoas.php?relacao=doc">Docentes</a></li>
-                                        <li> <a href="./pessoas.php?relacao=ope">Operacional</a></li>
-                                        <li> <a href="./pessoas.php?relacao=par">Parceiros</a></li>
-                                        <li> <a href="./pessoas.php?relacao=ter">Terceirizados</a></li>-->
-                                    </ul>
+                                <li  >
+                                    <a href="{{asset('/pedagogico')}}"> <i class="fa fa-th-list"></i> Pedagógico </a>
                                 </li>
-                                <!--
-                                <li>
-                                    <a href=""> <i class="fa fa-usd"></i>Financeiro <i class="fa arrow"></i> </a>
-                                    <ul>
-                                    	<li> <a href="charts-flot.html">Caixa</a> </li>
-                                        <li> <a href="charts-flot.html">Emissão de boleto</a> </li>
-                                        <li> <a href="charts-morris.html">	Situação cadastral	</a> </li>
-										<li> <a href="charts-morris.html">Relação bancária </a> </li>
-										<li> <a href="charts-morris.html"> Descontos </a> </li>
-										<li> <a href="charts-morris.html"> 	Bolsas </a> </li>
-										<li> <a href="charts-morris.html"> 	Relatórios</a> </li>
-                                    </ul>
+                                <li  >
+                                    <a href="{{asset('/secretaria')}}"> <i class="fa fa-stack-overflow"></i> Secretaria </a>
                                 </li>
-                                -->
+                                
                             </ul>
                         </nav>
                     </div>

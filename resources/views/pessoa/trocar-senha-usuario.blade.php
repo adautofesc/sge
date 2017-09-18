@@ -48,7 +48,7 @@
 				<input type="hidden" name="pessoa" value="{{$pessoa->id}}">
 				{{csrf_field()}}
 
-				<button type="submit" class="btn btn-primary"> Cadastrar</button> 
+				<button type="submit" class="btn btn-primary"> Trocar senha</button> 
 				@endif
 			</div>
        </div>

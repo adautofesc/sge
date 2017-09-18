@@ -15,19 +15,22 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Opções</p>
+                        <p class="title" style="color:white">Departamentos disponíveis:</p>
                     </div>
                 </div>
                 <div class="card-block">
                     <div>
                         <a href="/secretaria/atender" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Atendimento</a></div>
+                        <i class=" fa fa-bar-chart-o "></i>
+                        &nbsp;&nbsp;Administrativo</a></div>
                     <div>
                         <a href="/pessoa/cadastrar" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-plus-circle "></i>
-                        &nbsp;&nbsp;Cadastrar</a></div>
-                    <div><a href="/pessoa/listar" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-group"></i>&nbsp;&nbsp;Lista de Cadastrados</a></div>
+                        <i class=" fa fa-th-large "></i>
+                        &nbsp;&nbsp;Docentes</a></div>
+                    <div><a href="/pessoa/listar" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-usd"></i>&nbsp;&nbsp;Financeiro</a></div>
+                    <div><a href="/pessoa/listar" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-users"></i>&nbsp;&nbsp;Gestão Pessoal</a></div>
+                    <div><a href="/pessoa/listar" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-th-list"></i>&nbsp;&nbsp;Pedagógico</a></div>
+                    <div><a href="{{asset("/secretaria")}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-stack-overflow"></i>&nbsp;&nbsp;Secretaria</a></div>
 
                 
             </div>

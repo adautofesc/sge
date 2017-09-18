@@ -367,6 +367,14 @@ class PessoaController extends Controller
 			$tipoDado=TipoDado::find($dado['dado'])->tipo;
 			$pessoa->$tipoDado=$dado['valor'];
 		}
+		foreach( $pessoa->dadosAdministrativos->all() as $dado){
+			$tipoDado=TipoDado::find($dado['dado'])->tipo;
+			$pessoa->$tipoDado=$dado['valor'];
+		}
+		foreach( $pessoa->dadosAcademicos->all() as $dado){
+			$tipoDado=TipoDado::find($dado['dado'])->tipo;
+			$pessoa->$tipoDado=$dado['valor'];
+		}
 		
 		$dependentes= $pessoa->dadosGerais->where('pessoa',$pessoa->id)->where('dado',7);
 		

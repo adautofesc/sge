@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;// coloca classe email
 use App\Pessoa;
+use App\RecursoSistema;
 use App\PessoaDadosAcesso;
 use App\PessoaDadosContato;
 use App\ControleAcessoRecurso;
@@ -438,7 +439,11 @@ class loginController extends Controller
 			case 1: // Renovar a validade
 				foreach ($filtered_login as $id_acesso){
 					$acesso=PessoaDadosAcesso::find($id_acesso);
+					if(!$acesso)
+						return view('error-404-alt')->with(array('error'=>['id'=>'404','desc'=>'Código de pessoa não encontrado. LoginController(442) ']));
 					$pessoa=Pessoa::find($acesso->pessoa);
+					if(!$pessoa)
+						return view('error-404-alt')->with(array('error'=>['id'=>'404','desc'=>'Código de pessoa não encontrado. LoginController(445) ']));
 					$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
 					if($relacao_institucional && !$this->pedirPermissao(10))
 					{
@@ -464,7 +469,11 @@ class loginController extends Controller
 			case 2: // Ativar acesso
 				foreach ($filtered_login as $id_acesso){
 					$acesso=PessoaDadosAcesso::find($id_acesso);
+					if(!$acesso)
+						return view('error-404-alt')->with(array('error'=>['id'=>'404','desc'=>'Código de pessoa não encontrado. LoginController(742) ']));
 					$pessoa=Pessoa::find($acesso->pessoa);
+					if(!$pessoa)
+						return view('error-404-alt')->with(array('error'=>['id'=>'404','desc'=>'Código de pessoa não encontrado. LoginController(475) ']));
 					$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
 					if($relacao_institucional && !$this->pedirPermissao(10))
 					{
@@ -487,7 +496,11 @@ class loginController extends Controller
 				foreach ($filtered_login as $id_acesso)
 				{
 					$acesso=PessoaDadosAcesso::find($id_acesso);
+					if(!$acesso)
+						return view('error-404-alt')->with(array('error'=>['id'=>'404','desc'=>'Código de pessoa não encontrado. LoginController(499) ']));
 					$pessoa=Pessoa::find($acesso->pessoa);
+					if(!$pessoa)
+						return view('error-404-alt')->with(array('error'=>['id'=>'404','desc'=>'Código de pessoa não encontrado. LoginController(502) ']));
 					$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
 					if($relacao_institucional && !$this->pedirPermissao(10))
 					{
@@ -507,5 +520,54 @@ class loginController extends Controller
 				break;
 		}// end switch
 	}//end alterar()
+	public function credenciais_view($id,$msg=''){
+		$pessoa=Pessoa::find($id);
+		if(!$pessoa)
+			return view('error-404-alt')->with(array('error'=>['id'=>'404','desc'=>'Código de pessoa não encontrado. LoginController(525) ']));
+		$recursos_usuario=ControleAcessoRecurso::where('pessoa',$id)->get();
+		$dados=RecursoSistema::all();
+		foreach($dados->all() as $recurso){
+			foreach($recursos_usuario as $recurso_usuario){
+				if($recurso_usuario->recurso==$recurso->id)
+					$recurso->checked='checked';
+			}
+
+		}
+		//return $dados;
+		$pessoa->alert_sucess=$msg;
+
+
+		return view('gestaopessoal.credenciais', compact('dados'))->with('pessoa',$pessoa);
+
+	}
+	public function credenciais_exec(Request $request){
+
+		$login=PessoaDadosAcesso::where('pessoa',$request->pessoa);
+		if(!$login)
+			return view('error-404-alt')->with(array('error'=>['id'=>'404','desc'=>'Nenhum login vinculado à essa pessoa. LoginController(545) ']));
+		$recursos_atuais=ControleAcessoRecurso::where('pessoa', $request->pessoa)->get();
+		foreach($recursos_atuais->all() as $recurso_atual){
+			$recurso_atual->delete();
+		}
+
+		if(is_array($request->recurso)){
+			foreach($request->recurso as $item){
+				$novo_recurso= new ControleAcessoRecurso;
+				$novo_recurso->timestamps=false;
+				$novo_recurso->pessoa=$request->pessoa;
+				$novo_recurso->recurso=$item;
+				$novo_recurso->save();
+			}
+		}
+		
+
+		return $this->credenciais_view($request->pessoa,'Credenciais atualizadas' );
+
+
+
+
+
+
+	}
 
 }

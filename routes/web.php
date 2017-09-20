@@ -20,10 +20,6 @@ Route::get('addacesso','loginController@addPrimeiro');
 
 
 
-
-
-
-
 // Pessoas
 Route::post('pessoa/listar','PessoaController@procurarPessoa');
 Route::get ('/pessoa/cadastrar', 'PessoaController@mostraFormularioAdicionar');
@@ -71,6 +67,8 @@ Route::get('financeiro','painelController@financeiro');
 Route::get('gestaopessoal','painelController@gestaoPessoal');
 Route::get('gestaopessoal/atendimento','painelController@atendimentoPessoal');
 Route::get('gestaopessoal/atender/{var}','painelController@atendimentoPessoalPara');
+Route::get('gestaopessoal/relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_view');
+Route::post('gestaopessoal/relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_exec');
 
 // Jurídico
 Route::get('juridico','painelController@juridico');

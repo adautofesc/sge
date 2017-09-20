@@ -125,7 +125,7 @@
 											<div><a href="#" onclick="cancelarAcesso()" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-times-circle"></i> Cancelar Acesso</a></div>
 											<div><a href="{{asset('gestaopessoal/credenciais').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-times-circle"></i> Credenciais</a></div>
 											@endif
-											<div><a href="pessoas_add.php" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-times-circle"></i> Rel. Institucional</a></div>
+											<div><a href="{{asset('gestaopessoal/relacaoinstitucional').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-times-circle"></i> Rel. Institucional</a></div>
 											
 										</div>
 										

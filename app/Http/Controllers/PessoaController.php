@@ -10,6 +10,7 @@ use App\PessoaDadosGerais;
 use App\PessoaDadosContato;
 use App\PessoaDadosClinicos;
 use App\PessoaDadosAcesso;
+use App\PessoaDadosAdministrativos;
 use App\Endereco;
 use App\TipoDado;
 use App\classes\GerenciadorAcesso;
@@ -938,6 +939,51 @@ class PessoaController extends Controller
 			return null;
 		else
 			return $endereco;
+
+	}
+	public function relacaoInstitucional_view($id){
+		if(!loginController::check())
+			return redirect(asset("/"));
+		if(!GerenciadorAcesso::pedirPermissao(3))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
+		if(!loginController::autorizarDadosPessoais($id))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel. O código de pessoa também pode ser inválido']));
+
+		$nome = Pessoa::getNome($id);
+		if(!$nome)
+			return view('error-404-alt')->with(array('error'=>['id'=>'404','desc'=>'Pessoa não encontrada']));
+
+
+		return view('gestaopessoal.relacao-institucional')->with('nome',$nome)->with('id',$id);
+
+
+
+	}
+	public function relacaoInstitucional_exec(Request $request){
+		if(!loginController::check())
+			return redirect(asset("/"));
+		if(!GerenciadorAcesso::pedirPermissao(3))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
+		if(!loginController::autorizarDadosPessoais($request->pessoa))
+			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional, não está acessivel ou não existe.']));
+
+		$rel_atual=PessoaDadosAdministrativos::where('pessoa',$request->pessoa)->where('dado',16)->first();
+
+		if($rel_atual)
+			$rel_atual->delete();
+		$nova_relacao=new PessoaDadosAdministrativos;
+		//$nova_relacao->timestamps=false;
+		$nova_relacao->dado=16;
+		$nova_relacao->pessoa=$request->pessoa;
+		$nova_relacao->valor=$request->cargo;
+		$nova_relacao->save();
+
+
+
+
+		return redirect(asset('gestaopessoal/atender').'/'.$request->pessoa);
+
+
 
 	}
 

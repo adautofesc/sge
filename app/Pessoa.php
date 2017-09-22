@@ -7,6 +7,7 @@ use App\classes\Strings;
 
 class Pessoa extends Model
 {
+
 	public function dadosAcesso(){
 		return $this->hasOne('App\PessoaDadosAcesso','pessoa');
 	}
@@ -27,6 +28,11 @@ class Pessoa extends Model
 	}
 	public function dadosGerais(){
 		return $this->hasMany('App\PessoaDadosGerais','pessoa');
+	}
+	public function getNomeAttribute($value){
+
+		return Strings::converteNomeParaUsuario($value);
+
 	}
 	public static function getNome($id)
 	{		
@@ -62,4 +68,5 @@ class Pessoa extends Model
 				break;
 		}
 	}
+
 }

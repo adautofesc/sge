@@ -229,19 +229,21 @@ INSERT INTO `bairros_sanca` (`id`, `nome`) VALUES
 CREATE TABLE IF NOT EXISTS `cursos` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `nome` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `programa` enum('PID','UATI','UNIT','EMG') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `programa` int(10) unsigned NOT NULL,
   `desc` varchar(300) COLLATE utf8mb4_unicode_ci NOT NULL,
   `vagas` int(10) unsigned NOT NULL,
   `carga` int(10) unsigned NOT NULL,
   `valor` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `cursos_programa_foreign` (`programa`),
+  CONSTRAINT `cursos_programa_foreign` FOREIGN KEY (`programa`) REFERENCES `programas` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Copiando dados para a tabela sge.cursos: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `cursos` DISABLE KEYS */;
 INSERT INTO `cursos` (`id`, `nome`, `programa`, `desc`, `vagas`, `carga`, `valor`) VALUES
-	(1, 'Gestão de negócios públicos', 'EMG', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec varius dui eu laoreet interdum. Morbi nec lorem ac magna commodo convallis. Morbi non finibus diam. Nam in eros eu metus sodales tincidunt. Mauris porttitor consectetur lacus, non maximus sapien sodales at. Mauris luctus, odio eget tempo', 50, 20, 321.00),
-	(2, 'Manutenção de computadores', 'PID', 'Pellentesque euismod in diam at ullamcorper. Vivamus diam velit, tincidunt convallis nunc vel, vulputate sagittis lorem. Mauris eu dignissim leo. Integer in pharetra dolor, eget sollicitudin enim. Cras suscipit iaculis porta. Fusce at nunc ut augue viverra cursus eu a urna. In tristique purus massa,', 10, 50, 500.00);
+	(1, 'Gestão de negócios públicos', 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec varius dui eu laoreet interdum. Morbi nec lorem ac magna commodo convallis. Morbi non finibus diam. Nam in eros eu metus sodales tincidunt. Mauris porttitor consectetur lacus, non maximus sapien sodales at. Mauris luctus, odio eget tempo', 50, 20, 321.00),
+	(2, 'Manutenção de computadores', 1, 'Pellentesque euismod in diam at ullamcorper. Vivamus diam velit, tincidunt convallis nunc vel, vulputate sagittis lorem. Mauris eu dignissim leo. Integer in pharetra dolor, eget sollicitudin enim. Cras suscipit iaculis porta. Fusce at nunc ut augue viverra cursus eu a urna. In tristique purus massa,', 10, 50, 500.00);
 /*!40000 ALTER TABLE `cursos` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela sge.cursos_requisitos
@@ -308,7 +310,7 @@ CREATE TABLE IF NOT EXISTS `enderecos` (
   CONSTRAINT `enderecos_bairro_foreign` FOREIGN KEY (`bairro`) REFERENCES `bairros_sanca` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Copiando dados para a tabela sge.enderecos: ~3 rows (aproximadamente)
+-- Copiando dados para a tabela sge.enderecos: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `enderecos` DISABLE KEYS */;
 INSERT INTO `enderecos` (`id`, `logradouro`, `numero`, `complemento`, `bairro`, `cidade`, `estado`, `cep`, `atualizado_por`, `deleted_at`, `created_at`, `updated_at`) VALUES
 	(1, 'RUA MARECHAL RONDON', '920', 'RUA RANCHO', 49, 'SÃO CARLOS', 'SP', '13562834', 1, NULL, '2017-08-21 18:26:12', '2017-08-21 18:26:12'),
@@ -336,15 +338,32 @@ INSERT INTO `grades` (`id`, `curso`, `disciplina`, `obrigatoria`) VALUES
 	(19, 1, 4, 1);
 /*!40000 ALTER TABLE `grades` ENABLE KEYS */;
 
+-- Copiando estrutura para tabela sge.locais
+CREATE TABLE IF NOT EXISTS `locais` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `sala` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `unidade` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Copiando dados para a tabela sge.locais: ~3 rows (aproximadamente)
+/*!40000 ALTER TABLE `locais` DISABLE KEYS */;
+INSERT INTO `locais` (`id`, `sala`, `unidade`) VALUES
+	(1, '1', 'FESC 1'),
+	(2, 'Piscina', 'FESC 1'),
+	(3, 'Multiuso', 'FESC 2'),
+	(4, 'Lab. Costura', 'FESC 3');
+/*!40000 ALTER TABLE `locais` ENABLE KEYS */;
+
 -- Copiando estrutura para tabela sge.migrations
 CREATE TABLE IF NOT EXISTS `migrations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Copiando dados para a tabela sge.migrations: ~3 rows (aproximadamente)
+-- Copiando dados para a tabela sge.migrations: ~8 rows (aproximadamente)
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(9, '2014_10_12_000000_create_users_table', 1),
@@ -353,7 +372,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(12, '2017_06_14_122106_create_pessoas', 1),
 	(13, '2017_08_18_111152_create_enderecos_table', 2),
 	(14, '2017_09_04_172719_create_disciplinas_table', 3),
-	(15, '2017_09_06_113001_create_cursos_table', 4);
+	(15, '2017_09_06_113001_create_cursos_table', 4),
+	(23, '2017_09_22_114832_create_turmas_table', 5);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela sge.password_resets
@@ -416,18 +436,23 @@ CREATE TABLE IF NOT EXISTS `pessoas_controle_acessos` (
   KEY `pessoas_controle_acessos_recurso_foreign` (`recurso`),
   CONSTRAINT `pessoas_controle_acessos_pessoa_foreign` FOREIGN KEY (`pessoa`) REFERENCES `pessoas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `pessoas_controle_acessos_recurso_foreign` FOREIGN KEY (`recurso`) REFERENCES `recursos_sistema` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Copiando dados para a tabela sge.pessoas_controle_acessos: ~7 rows (aproximadamente)
+-- Copiando dados para a tabela sge.pessoas_controle_acessos: ~12 rows (aproximadamente)
 /*!40000 ALTER TABLE `pessoas_controle_acessos` DISABLE KEYS */;
 INSERT INTO `pessoas_controle_acessos` (`id`, `pessoa`, `recurso`) VALUES
-	(1, 1, 1),
-	(2, 1, 4),
-	(3, 1, 5),
-	(4, 1, 8),
-	(5, 1, 10),
-	(6, 1, 9),
-	(7, 1, 3);
+	(39, 1, 1),
+	(40, 1, 2),
+	(41, 1, 3),
+	(42, 1, 4),
+	(43, 1, 5),
+	(44, 1, 6),
+	(45, 1, 7),
+	(46, 1, 8),
+	(47, 1, 9),
+	(48, 1, 10),
+	(49, 1, 11),
+	(51, 24, 4);
 /*!40000 ALTER TABLE `pessoas_controle_acessos` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela sge.pessoas_dados_academicos
@@ -469,8 +494,8 @@ CREATE TABLE IF NOT EXISTS `pessoas_dados_acesso` (
 -- Copiando dados para a tabela sge.pessoas_dados_acesso: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `pessoas_dados_acesso` DISABLE KEYS */;
 INSERT INTO `pessoas_dados_acesso` (`id`, `pessoa`, `usuario`, `senha`, `validade`, `status`, `remember_token`, `created_at`, `updated_at`) VALUES
-	(1, 1, 'adauto', '$2y$10$.Z8icu5nrWUb7upaysiMhO5bXkBVfN71QMTBF4vjtdKyZDiaHerNO', '2017-12-31', '1', NULL, '2017-08-10 14:00:03', '2017-09-01 13:31:26'),
-	(2, 24, 'peterson', '$2y$10$XoPhWnkCV/WliZNLb9HHfeuX1nX1/sv6ieUsE/xUuUujeY1VfpoDO', '2017-12-31', '1', NULL, '2017-08-30 13:59:11', '2017-09-01 15:12:55');
+	(1, 1, 'adauto', '$2y$10$.Z8icu5nrWUb7upaysiMhO5bXkBVfN71QMTBF4vjtdKyZDiaHerNO', '2017-12-31', '1', NULL, '2017-08-10 14:00:03', '2017-09-18 17:51:44'),
+	(2, 24, 'peterson', '$2y$10$XoPhWnkCV/WliZNLb9HHfeuX1nX1/sv6ieUsE/xUuUujeY1VfpoDO', '2017-12-31', '0', NULL, '2017-08-30 13:59:11', '2017-09-18 17:29:39');
 /*!40000 ALTER TABLE `pessoas_dados_acesso` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela sge.pessoas_dados_administrativos
@@ -486,12 +511,13 @@ CREATE TABLE IF NOT EXISTS `pessoas_dados_administrativos` (
   KEY `pessoas_dados_administrativos_dado_foreign` (`dado`),
   CONSTRAINT `pessoas_dados_administrativos_dado_foreign` FOREIGN KEY (`dado`) REFERENCES `tipos_dados` (`id`),
   CONSTRAINT `pessoas_dados_administrativos_pessoa_foreign` FOREIGN KEY (`pessoa`) REFERENCES `pessoas` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Copiando dados para a tabela sge.pessoas_dados_administrativos: ~1 rows (aproximadamente)
+-- Copiando dados para a tabela sge.pessoas_dados_administrativos: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `pessoas_dados_administrativos` DISABLE KEYS */;
 INSERT INTO `pessoas_dados_administrativos` (`id`, `pessoa`, `dado`, `valor`, `created_at`, `updated_at`) VALUES
-	(1, 12, 16, 'Docente', '2017-08-25 11:49:13', '2017-08-25 11:49:14');
+	(1, 12, 16, 'Docente', '2017-08-25 11:49:13', '2017-08-25 11:49:14'),
+	(6, 1, 16, 'Educador', '2017-09-20 20:06:49', '2017-09-20 20:06:49');
 /*!40000 ALTER TABLE `pessoas_dados_administrativos` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela sge.pessoas_dados_clinicos
@@ -507,9 +533,9 @@ CREATE TABLE IF NOT EXISTS `pessoas_dados_clinicos` (
   KEY `pessoas_dados_clinicos_dado_foreign` (`dado`),
   CONSTRAINT `pessoas_dados_clinicos_dado_foreign` FOREIGN KEY (`dado`) REFERENCES `tipos_dados` (`id`),
   CONSTRAINT `pessoas_dados_clinicos_pessoa_foreign` FOREIGN KEY (`pessoa`) REFERENCES `pessoas` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Copiando dados para a tabela sge.pessoas_dados_clinicos: ~4 rows (aproximadamente)
+-- Copiando dados para a tabela sge.pessoas_dados_clinicos: ~12 rows (aproximadamente)
 /*!40000 ALTER TABLE `pessoas_dados_clinicos` DISABLE KEYS */;
 INSERT INTO `pessoas_dados_clinicos` (`id`, `pessoa`, `dado`, `valor`, `created_at`, `updated_at`) VALUES
 	(1, 24, 11, 'AUDITIVA', '2017-08-21 18:26:12', '2017-08-21 18:26:12'),
@@ -524,7 +550,8 @@ INSERT INTO `pessoas_dados_clinicos` (`id`, `pessoa`, `dado`, `valor`, `created_
 	(10, 24, 11, 'AUDITIVA', '2017-09-15 19:48:09', '2017-09-15 19:48:09'),
 	(11, 24, 12, 'ATENOLOL', '2017-09-15 19:48:09', '2017-09-15 19:48:09'),
 	(12, 24, 13, 'PICADA DE ABELHAS', '2017-09-15 19:48:09', '2017-09-15 19:48:09'),
-	(13, 24, 14, 'LABERINTITE', '2017-09-15 19:48:09', '2017-09-15 19:48:09');
+	(13, 24, 14, 'LABERINTITE', '2017-09-15 19:48:09', '2017-09-15 19:48:09'),
+	(14, 1, 13, 'ABELHA', '2017-09-22 19:37:28', '2017-09-22 19:37:28');
 /*!40000 ALTER TABLE `pessoas_dados_clinicos` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela sge.pessoas_dados_contato
@@ -593,7 +620,7 @@ CREATE TABLE IF NOT EXISTS `pessoas_dados_gerais` (
   CONSTRAINT `pessoas_dados_gerais_pessoa_foreign` FOREIGN KEY (`pessoa`) REFERENCES `pessoas` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=146 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Copiando dados para a tabela sge.pessoas_dados_gerais: ~98 rows (aproximadamente)
+-- Copiando dados para a tabela sge.pessoas_dados_gerais: ~99 rows (aproximadamente)
 /*!40000 ALTER TABLE `pessoas_dados_gerais` DISABLE KEYS */;
 INSERT INTO `pessoas_dados_gerais` (`id`, `pessoa`, `dado`, `valor`, `created_at`, `updated_at`) VALUES
 	(19, 1, 7, '1', '2017-08-18 17:25:12', '2017-08-18 17:25:12'),
@@ -698,6 +725,26 @@ INSERT INTO `pessoas_dados_gerais` (`id`, `pessoa`, `dado`, `valor`, `created_at
 	(145, 1, 5, NULL, '2017-09-15 18:24:48', '2017-09-15 18:24:48');
 /*!40000 ALTER TABLE `pessoas_dados_gerais` ENABLE KEYS */;
 
+-- Copiando estrutura para tabela sge.programas
+CREATE TABLE IF NOT EXISTS `programas` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `nome` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sigla` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Copiando dados para a tabela sge.programas: ~7 rows (aproximadamente)
+/*!40000 ALTER TABLE `programas` DISABLE KEYS */;
+INSERT INTO `programas` (`id`, `nome`, `sigla`) VALUES
+	(1, 'Centro Esportivo', 'CE'),
+	(2, 'Escola Municipal de Governo', 'EMG'),
+	(3, 'Universidade Aberta do Brasil', 'UAB'),
+	(4, 'Universidade Aberta da Terceira Idade', 'UATI'),
+	(5, 'UniversidadeAberta do Trabalhador ', 'UNIT'),
+	(6, 'Programa de Inclusão Digital', 'PID'),
+	(7, 'TVE ', 'TVE');
+/*!40000 ALTER TABLE `programas` ENABLE KEYS */;
+
 -- Copiando estrutura para tabela sge.recursos_sistema
 CREATE TABLE IF NOT EXISTS `recursos_sistema` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -710,17 +757,17 @@ CREATE TABLE IF NOT EXISTS `recursos_sistema` (
 -- Copiando dados para a tabela sge.recursos_sistema: ~10 rows (aproximadamente)
 /*!40000 ALTER TABLE `recursos_sistema` DISABLE KEYS */;
 INSERT INTO `recursos_sistema` (`id`, `nome`, `desc`, `link`) VALUES
-	(1, 'cadastrar_pessoa', 'Cadastro de pessoas,\r\ncadastro de alunos,\r\ncadastro de professores,\r\ncadastro de colaboradores,\r\nCadastro de funcionários.', '/pessoa/cadastrar'),
-	(2, 'editar_dados_restritos', 'Gerencia  pessoas restritas', '/pessoa/listar'),
-	(3, 'editar_dados_alunos', 'Gerencia pessoas SEM relação Institucional', '/pessoa/listar'),
-	(4, 'ver_alunos', 'Pode visualizar todos perfis', '/pessoa/listar'),
-	(5, 'ver_funcionarios', 'Pode ver a lista de pessoas com relação institucional', '/pessoa/listar'),
-	(6, 'ver_privados', 'Pertite visualizar os dados de pessoas privadas', '/pessoas/'),
-	(7, 'editar_funcionarios', 'Faz parte do quadro de funcionários / colaboradores da FESC', '/pessoas'),
+	(1, 'cadastrar_pessoa', 'Cadastrar e alterar pessoas', '/pessoa/cadastrar'),
+	(2, 'editar_dados_restritos', 'Alterar dados de pessoas restritas', '/pessoa/listar'),
+	(3, 'editar_dados_alunos', 'Alterar dados de pessoas SEM relação Institucional', '/pessoa/listar'),
+	(4, 'ver_alunos', 'Visualizar pefis de pessoas', '/pessoa/listar'),
+	(5, 'ver_funcionarios', 'Visualizar os dados de pessoas com relação institucional', '/pessoa/listar'),
+	(6, 'ver_privados', 'Visualizar os dados de pessoas privadas', '/pessoas/'),
+	(7, 'editar_funcionarios', 'Alterar dados de pessoas COM relação Institucional', '/pessoas'),
 	(8, 'cadastrar_usuarios', 'Criar acesso ao sistema para as pessoas', '/pessoa/$id/cadastrar-acesso'),
-	(9, 'editar_login_alunos', 'Pode alterar senha dos alunos', '/secretaria/atender'),
-	(10, 'editar_login_pri', 'Edita login de pessoas com relação institucional', '/admin/listarusuarios'),
-	(11, 'editar_login_restritos', 'Edita login de pessoas restritas', '/admin/listarusuarios');
+	(9, 'editar_login_alunos', 'Alterar senha dos alunos', '/secretaria/atender'),
+	(10, 'editar_login_pri', 'Alterar  login de pessoas com relação institucional', '/admin/listarusuarios'),
+	(11, 'editar_login_restritos', 'Alterar  login de pessoas restritas', '/admin/listarusuarios');
 /*!40000 ALTER TABLE `recursos_sistema` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela sge.requisitos
@@ -746,7 +793,7 @@ CREATE TABLE IF NOT EXISTS `tipos_dados` (
   `categoria` enum('academico','acesso','administrativo','clinico','contato','financeiro','geral','log') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `desc` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Copiando dados para a tabela sge.tipos_dados: ~16 rows (aproximadamente)
 /*!40000 ALTER TABLE `tipos_dados` DISABLE KEYS */;
@@ -767,8 +814,44 @@ INSERT INTO `tipos_dados` (`id`, `tipo`, `categoria`, `desc`) VALUES
 	(14, 'doenca_cronica', 'clinico', 'Doenças crônicas'),
 	(15, 'responsavel', 'geral', 'Responsável legal'),
 	(16, 'relacao_institucional', 'administrativo', 'Relação Institucional'),
-	(17, 'perfil_privado', 'geral', 'Perfil que só exibe dados para sí.');
+	(17, 'perfil_privado', 'geral', 'Perfil que só exibe dados para sí.'),
+	(18, 'contratado_em', 'administrativo', 'Data de contratação'),
+	(19, 'vencimento_contrato', 'administrativo', 'Vencimento do contrato');
 /*!40000 ALTER TABLE `tipos_dados` ENABLE KEYS */;
+
+-- Copiando estrutura para tabela sge.turmas
+CREATE TABLE IF NOT EXISTS `turmas` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `programa` int(10) unsigned NOT NULL,
+  `curso` int(10) unsigned NOT NULL,
+  `disciplina` int(10) unsigned NOT NULL,
+  `professor` int(10) unsigned NOT NULL,
+  `local` int(10) unsigned NOT NULL,
+  `dias_semana` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `data_inicio` date NOT NULL,
+  `data_termino` date NOT NULL,
+  `hora_inicio` time NOT NULL,
+  `hora_termino` time NOT NULL,
+  `valor` decimal(10,5) NOT NULL,
+  `status` varchar(1) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `turmas_programa_foreign` (`programa`),
+  KEY `turmas_curso_foreign` (`curso`),
+  KEY `turmas_disciplina_foreign` (`disciplina`),
+  KEY `turmas_professor_foreign` (`professor`),
+  KEY `turmas_local_foreign` (`local`),
+  CONSTRAINT `turmas_curso_foreign` FOREIGN KEY (`curso`) REFERENCES `cursos` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `turmas_disciplina_foreign` FOREIGN KEY (`disciplina`) REFERENCES `disciplinas` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `turmas_local_foreign` FOREIGN KEY (`local`) REFERENCES `locais` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `turmas_professor_foreign` FOREIGN KEY (`professor`) REFERENCES `pessoas` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `turmas_programa_foreign` FOREIGN KEY (`programa`) REFERENCES `programas` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Copiando dados para a tabela sge.turmas: ~0 rows (aproximadamente)
+/*!40000 ALTER TABLE `turmas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `turmas` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela sge.users
 CREATE TABLE IF NOT EXISTS `users` (

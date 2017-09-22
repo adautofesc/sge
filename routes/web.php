@@ -59,6 +59,8 @@ Route::get('pessoa/buscarapida/{var}','PessoaController@liveSearchPessoa');
 
 // Administrativo
 Route::get('administrativo','painelController@administrativo');
+Route::get('administrativo/salasdaunidade/{var}','painelController@salasDaUnidade');
+
 
 // Financeiro
 Route::get('financeiro','painelController@financeiro');
@@ -79,6 +81,7 @@ Route::get('pedagogico','painelController@pedagogico');
 Route::get('docentes','painelController@docentes');
 	//Cursos
 Route::get('pedagogico/cursos','CursoController@index');
+Route::get('pedagogico/cursos/listarporprogramajs/{var}','CursoController@listarPorPrograma');
 Route::get('pedagogico/cadastrarcurso','CursoController@create');
 Route::post('pedagogico/cadastrarcurso','CursoController@store');
 Route::get('pedagogico/editarcurso/{var}','CursoController@edit');
@@ -101,6 +104,10 @@ Route::post('pedagogico/cursos/requisitos/add','RequisitosController@store');
 Route::get('pedagogico/cursos/requisitos/apagar/{itens}','RequisitosController@destroy');
 Route::get('pedagogico/requisitosdocurso/{var}','RequisitosController@editRequisitosAoCurso');
 Route::post('pedagogico/requisitosdocurso/{var}','RequisitosController@storeRequisitosAoCurso');
+	//Turmas
+Route::get('pedagogico/turmas/cadastrar','TurmaController@create');
+Route::post('pedagogico/turmas/cadastrar','TurmaController@store');
+
 
 
 

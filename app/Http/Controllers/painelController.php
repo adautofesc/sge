@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\classes\Data;
 use App\Pessoa;
+use App\Local;
 use App\PessoaDadosAcesso;
 use App\Http\Controllers\PessoaController;
 use Session;
@@ -70,6 +71,11 @@ class painelController extends Controller
     }
     public function secretaria(){
         return view('secretaria.home');
+    }
+    public function salasDaUnidade($unidade){
+        $salas=Local::where('unidade', 'like', '%'.$unidade.'%')->get();
+        return $salas;
+
     }
 
 

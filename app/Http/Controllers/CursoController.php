@@ -205,5 +205,10 @@ class CursoController extends Controller
 
 
     }
+    public function listarPorPrograma($programa){
+        $cursos=Curso::where('programa',$programa)->get();
+
+        return $cursos;
+    }
 
 }

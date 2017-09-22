@@ -24,7 +24,7 @@
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Listar</a></div>
                     <div>
-                        <a href="/pessoa/cadastrar" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="{{asset('pedagogico/turmas/cadastrar')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-plus-circle "></i>
                         &nbsp;&nbsp;Cadastrar</a>
                     </div>

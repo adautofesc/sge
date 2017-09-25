@@ -17,7 +17,7 @@ class DisciplinaController extends Controller
     public function index(Request $r = Request)
     {
         //return $disciplinas=$this->disciplinas();
-        return view('pedagogico.disciplinas')->with(array('disciplinas'=>$this->disciplinas($r->buscar)));
+        return view('pedagogico.disciplina.listar')->with(array('disciplinas'=>$this->disciplinas($r->buscar)));
     }
 
     /**
@@ -44,7 +44,7 @@ class DisciplinaController extends Controller
     public function create()
     {
         
-        return view('pedagogico.cadastrar-disciplina');
+        return view('pedagogico.disciplina.cadastrar');
     }
 
     /**
@@ -118,7 +118,7 @@ class DisciplinaController extends Controller
             break;
 
         }
-        return view('pedagogico.editar-disciplina', compact('disciplina'));
+        return view('pedagogico.disciplina.editar', compact('disciplina'));
 
 
     }
@@ -192,7 +192,7 @@ class DisciplinaController extends Controller
                     $disciplina->obrigatoria="checked";
             }
         }
-        return view('pedagogico.curso-disciplinas', compact('disciplinas'))->with(array('curso'=>['nome'=>$cursoexiste->nome, 'id_curso'=>$cursoexiste->id]));
+        return view('pedagogico.curso.curso-disciplinas', compact('disciplinas'))->with(array('curso'=>['nome'=>$cursoexiste->nome, 'id_curso'=>$cursoexiste->id]));
     }
     public static function disciplinasDoCurso($curso){
         $grade=Grade::where('curso', $curso)->get();

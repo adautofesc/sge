@@ -16,7 +16,7 @@ class CursoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $r = Request)    {
-        return view('pedagogico.cursos')->with(array('cursos'=>$this->cursos($r->buscar)));
+        return view('pedagogico.curso.lista')->with(array('cursos'=>$this->cursos($r->buscar)));
     }
 
     /**
@@ -41,7 +41,7 @@ class CursoController extends Controller
      */
     public function create()    {
         $requisitos=RequisitosController::listar();
-        return view('pedagogico.cadastrar-curso',compact('requisitos'));
+        return view('pedagogico.curso.cadastrar',compact('requisitos'));
     }
 
     /**
@@ -111,7 +111,7 @@ class CursoController extends Controller
 
         //return $curso;
         
-        return view('pedagogico.mostrar-curso', compact('curso'));
+        return view('pedagogico.curso.mostrar', compact('curso'));
     }
 
     /**
@@ -140,7 +140,7 @@ class CursoController extends Controller
             break;
 
         }
-        return view('pedagogico.editar-curso', compact('curso'));
+        return view('pedagogico.curso.editar', compact('curso'));
     }
 
     /**

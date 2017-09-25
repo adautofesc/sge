@@ -107,6 +107,7 @@ Route::post('pedagogico/requisitosdocurso/{var}','RequisitosController@storeRequ
 	//Turmas
 Route::get('pedagogico/turmas/cadastrar','TurmaController@create');
 Route::post('pedagogico/turmas/cadastrar','TurmaController@store');
+Route::get('pedagogico/turmas/listar','TurmaController@index');
 
 
 

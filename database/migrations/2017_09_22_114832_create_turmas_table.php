@@ -19,21 +19,24 @@ class CreateTurmasTable extends Migration
             $table->increments('id');
             $table->string('sala', 10);
             $table->string('unidade',30);
+            $table->unsignedInteger('capacidade',3);
         });
         Schema::create('turmas', function (Blueprint $table) {
             $table->increments('id');
              $table->unsignedInteger('programa');
             $table->unsignedInteger('curso');
-            $table->unsignedInteger('disciplina');
+            $table->unsignedInteger('disciplina')->nullable();
             $table->unsignedInteger('professor');
             $table->unsignedInteger('local');            
             $table->string('dias_semana',25);
             $table->date('data_inicio');
-            $table->date('data_termino');
+            $table->date('data_termino')->nullable();
             $table->time('hora_inicio');
             $table->time('hora_termino');
             $table->decimal('valor',10,5);
             $table->string('status',1);
+            $table->string('atributos',20);
+            $table->unsignedInteger('3')->nullable();
             $table->timestampsTz();
             $table->foreign('programa')->references('id')->on('programas')->onDelete('restrict')->onUpdate('cascade');
             $table->foreign('curso')->references('id')->on('cursos')->onDelete('restrict')->onUpdate('cascade');

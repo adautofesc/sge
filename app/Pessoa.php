@@ -7,6 +7,7 @@ use App\classes\Strings;
 
 class Pessoa extends Model
 {
+	protected $appends=['nome_simples'];
 
 	public function dadosAcesso(){
 		return $this->hasOne('App\PessoaDadosAcesso','pessoa');
@@ -34,6 +35,16 @@ class Pessoa extends Model
 		return Strings::converteNomeParaUsuario($value);
 
 	}
+	public function getNomeSimplesAttribute($value){
+
+		$nome=$this->nome;
+		$nome=explode(' ',$nome);
+		$nome_simples = $nome[0].' '.$nome[count($nome)-1];
+		return $nome_simples;
+
+
+	}
+
 	public static function getNome($id)
 	{		
 		$query=Pessoa::find($id);

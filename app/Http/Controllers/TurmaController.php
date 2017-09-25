@@ -17,7 +17,10 @@ class TurmaController extends Controller
      */
     public function index()
     {
-        //
+        $dados=Turma::all();
+
+        //return $dados;
+        return view('pedagogico.turma.listar', compact('dados'));
     }
 
     /**
@@ -51,7 +54,36 @@ class TurmaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            "programa"=>"required|numeric",
+            "curso"=>"required|numeric",
+            "professor"=>"required|numeric",
+            "local"=>"required|numeric",
+            "dias"=>"required",
+            "dt_inicio"=>"required",
+            "hr_inicio"=>"required",
+            "vagas"=>"required",
+            "valor"=>"required"
+
+
+        ]);
+        $turma=new Turma;
+        $turma->programa=$request->programa;
+        $turma->curso=$request->curso;
+        $turma->disciplina=$request->disciplina;
+        $turma->professor=$request->professor;
+        $turma->local=$request->local;
+        $turma->dias_semana=$request->dias;
+        $turma->data_inicio=$request->dt_inicio;
+        $turma->data_termino=$request->dt_termino;
+        $turma->hora_inicio=$request->hr_inicio;
+        $turma->hora_termino=$request->hr_termino;
+        $turma->valor=$request->valor;
+        $turma->vagas=$request->vagas;
+        $turma->atributos=$request->atributo;
+        $turma->status=4;
+        $turma->save();
+        return $turma;
     }
 
     /**
@@ -85,7 +117,7 @@ class TurmaController extends Controller
      */
     public function update(Request $request, Turma $turma)
     {
-        //
+       
     }
 
     /**

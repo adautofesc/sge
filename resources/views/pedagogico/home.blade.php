@@ -20,7 +20,7 @@
                 </div>
                 <div class="card-block">
                     <div>
-                        <a href="/secretaria/atender" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="{{asset('pedagogico/turmas/listar')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Listar</a></div>
                     <div>

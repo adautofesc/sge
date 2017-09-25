@@ -12,7 +12,7 @@
 </div>
 <form name="item" class="form-inline">
 	<section class="section">
-    <div class="row ">
+    <div class="row sameheight-container">
         <div class="col-xl-12">
             <div class="card sameheight-item">
                 <div class="card-block">
@@ -40,7 +40,7 @@
                         </div>
                     </div>
                     
-                    <ul class="nav nav-tabs nav-tabs-bordered ">
+                    <ul class="nav nav-tabs nav-tabs-bordered">
                         <li class="nav-item"> <a href="" class="nav-link active" data-target="#todos" data-toggle="tab" aria-controls="todos" role="tab">Todos</a> </li>
                         <li class="nav-item"> <a href="" class="nav-link" data-target="#ce" aria-controls="ec" data-toggle="tab" role="tab">CE</a> </li>
                         <li class="nav-item"> <a href="" class="nav-link" data-target="#emg" aria-controls="emg" data-toggle="tab" role="tab">EMG</a> </li>
@@ -55,105 +55,44 @@
                         	<h4>Todos os programas</h4>
                             <section class="example">
                         <div class="table-flip-scroll">
-
-
-
-                        <ul class="item-list striped">
-                            <li class="item item-list-header hidden-sm-down">
-                                <div class="item-row">
-                                    <div class="item-col fixed item-col-check">
-                                        <label class="item-check" id="select-all-items">
-                                        <input type="checkbox" class="checkbox">
-                                        <span></span>
-                                        </label> 
-                                    </div>
+                            <table class="table table-striped table-bordered table-hover flip-content">
+                                <thead class="flip-header">
+                                    <tr> 
+                                    	<th> </th>
+                                        <th>Curso</th>
+                                        <th>Professor</th>
+                                        <th>Dia(s)</th>
+                                        <th>Horário</th>
+                                        <th>Local</th>
+                                        <th>Vagas</th>
+                                        <th>Valor</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($dados->all() as $turma)
+                                    <tr class="odd gradeX">
+                                        <td>
+                                        	<div class="item-col fixed item-col-check">
+												<label class="item-check" id="select-all-items">
+													<input type="checkbox" class="checkbox" nome="turma[]" value="{{$turma->id}}">
+													<span></span>
+												</label> 
+											</div>
+										</td>
+                                        <td><a href="#turma_show.php"  target="_blank" title="Clique para ver detalhes em outra guia">{{$turma->curso->nome}}</a></td>
+                                        <td>{{$turma->professor->nome_simples}}</td>
+                                        <td>{{implode(', ',$turma->dias_semana)}}</td>
+                                        <td>{{$turma->hora_inicio}} - {{$turma->hora_termino}}</td>
+                                        <td>{{$turma->local->unidade}}</td>
+                                        <td>{{$turma->vagas}}</td>
+                                        <td>R$ {{$turma->valor}}</td>                                       
+                                    </tr>
+                                    @endforeach
                                     
-                                    <div class="item-col item-col-header item-col-title">
-                                        <div> <span>Curso</span> </div>
-                                    </div>
-                                    <div class="item-col item-col-header item-col-sales">
-                                        <div> <span>Professor</span> </div>
-                                    </div>
-
-                                    <div class="item-col item-col-header item-col-sales">
-                                        <div> <span>Vagas</span> </div>
-                                    </div>
-                                    <div class="item-col item-col-header item-col-sales">
-                                        <div> <span>Valor</span> </div>
-                                    </div>
-
-                                    <div class="item-col item-col-header fixed item-col-actions-dropdown"> </div>
-                                </div>
-                            </li>
-                            @foreach($dados->all() as $turma)
-                            <li class="item">
-                                <div class="item-row">
-                                    <div class="item-col fixed item-col-check"> 
-
-                                        <label class="item-check" id="select-all-items">
-                                        <input type="checkbox" class="checkbox" nome="turma[]" value="{{$turma->id}}">
-                                        <span></span>
-                                        </label>
-                                    </div>
-                                    
-                                    <div class="item-col fixed pull-left item-col-title">
-                                        <div class="item-heading">Curso/atividade</div>
-                                        <div>
-                                            <a href="#"> Turma {{$turma->id}} </a>
-                                            <a href="pessoas_show.php?id=1" class="">
-                                                <h4 class="item-title"> {{$turma->curso->nome}}</h4></a>
-                                             {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}
-                                        </div>
-                                    </div>
-                                    <div class="item-col item-col-sales">
-                                        <div class="item-heading">Professor(a)</div>
-                                        <div> {{$turma->professor->nome_simples}}
-                                            <div>{{$turma->local->unidade}}</div>
-                                        </div>
-                                    </div>
-                                    <div class="item-col item-col-sales">
-                                        <div class="item-heading">Vagas</div>
-                                        <div>{{$turma->vagas}}</div>
-                                    </div>
-                                     
                                    
-                                    <div class="item-col item-col-sales">
-                                        <div class="item-heading">Valor</div>
-                                        <div>R$ {{$turma->valor}} </div>
-                                    </div>
-
-                                    <div class="item-col fixed item-col-actions-dropdown">
-                                        <div class="item-actions-dropdown">
-                                            <a class="item-actions-toggle-btn"> <span class="inactive">
-                                    <i class="fa fa-cog"></i>
-                                </span> <span class="active">
-                                <i class="fa fa-chevron-circle-right"></i>
-                                </span> </a>
-                                            <div class="item-actions-block">
-                                                <ul class="item-actions-list">
-                                                    <li>
-                                                        <a class="remove" href="#" data-toggle="modal" data-target="#confirm-modal"> <i class="fa fa-trash-o "></i> </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="edit" href="item-editor.html"> <i class="fa fa-pencil"></i> </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li> 
-                            @endforeach
-                        </ul>
-
-
-                            
-
-
-
-
-
-
+                                </tbody>
+                            </table>
                         </div>
                     </section>
                         </div>
@@ -166,14 +105,16 @@
                                     <tr> 
                                         <th>S</th>
                                         <th>Curso</th>
-                                        <th>Professor/Unidade</th>
+                                        <th>Professor</th>
+                                        <th>Dia(s)</th>
+                                        <th>Horário</th>
+                                        <th>Local</th>
                                         <th>Vagas</th>
                                         <th>Valor</th>
                                         
                                     </tr>
                                 </thead>
                                 <tbody>
-                                     @foreach($dados->all() as $turma)
                                     <tr class="odd gradeX">
                                         <td>
                                             <div class="item-col fixed item-col-check">
@@ -183,17 +124,48 @@
                                                 </label> 
                                             </div>
                                         </td>
-                                        <td><a href="#"> Turma {{$turma->id}} </a><br>
-                                            <a href="pessoas_show.php?id=1" class="">
-                                                {{$turma->curso->nome}}</a><br>
-                                             {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}</td>
-                                        <td>{{$turma->professor->nome_simples}}
-                                            <div>{{$turma->local->unidade}}</div></td>
-                                        <td>{{$turma->vagas}}</td>
+                                        <td>Yoga para o trabalho</td>
+                                        <td>Adilson</td>
+                                        <td>Seg. Qua. Sex.</td>
+                                        <td>7:00-8:00</td>
+                                        <td>FESC 1</td>
+                                        <td>20</td>
                                         <td>R$ 200,00</td>
                                     </tr>
-                                    @endforeach
-                                    
+                                    <tr class="odd gradeX">
+                                        <td>
+                                            <div class="item-col fixed item-col-check">
+                                                <label class="item-check" id="select-all-items">
+                                                    <input type="checkbox" class="checkbox">
+                                                    <span></span>
+                                                </label> 
+                                            </div>
+                                        </td>
+                                        <td>Dança Chill</td>
+                                        <td>Rita</td>
+                                        <td>Seg. Qua. Sex.</td>
+                                        <td>7:00-8:00</td>
+                                        <td>FESC 1</td>
+                                        <td>20</td>
+                                        <td>R$ 200,00</td>
+                                    </tr>
+                                    <tr class="odd gradeX">
+                                        <td>
+                                            <div class="item-col fixed item-col-check">
+                                                <label class="item-check" id="select-all-items">
+                                                    <input type="checkbox" class="checkbox">
+                                                    <span></span>
+                                                </label> 
+                                            </div>
+                                        </td>
+                                        <td>Yoga para o trabalho</td>
+                                        <td>Adilson</td>
+                                        <td>Seg. Qua. Sex.</td>
+                                        <td>7:00-8:00</td>
+                                        <td>FESC 1</td>
+                                        <td>20</td>
+                                        <td>R$ 200,00</td>
+                                    </tr>
                                    
                                 </tbody>
                             </table>

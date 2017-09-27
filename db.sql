@@ -237,13 +237,14 @@ CREATE TABLE IF NOT EXISTS `cursos` (
   PRIMARY KEY (`id`),
   KEY `cursos_programa_foreign` (`programa`),
   CONSTRAINT `cursos_programa_foreign` FOREIGN KEY (`programa`) REFERENCES `programas` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Copiando dados para a tabela sge.cursos: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `cursos` DISABLE KEYS */;
 INSERT INTO `cursos` (`id`, `nome`, `programa`, `desc`, `vagas`, `carga`, `valor`) VALUES
 	(1, 'Gestão de negócios públicos', 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec varius dui eu laoreet interdum. Morbi nec lorem ac magna commodo convallis. Morbi non finibus diam. Nam in eros eu metus sodales tincidunt. Mauris porttitor consectetur lacus, non maximus sapien sodales at. Mauris luctus, odio eget tempo', 50, 20, 321.00),
-	(2, 'Manutenção de computadores', 1, 'Pellentesque euismod in diam at ullamcorper. Vivamus diam velit, tincidunt convallis nunc vel, vulputate sagittis lorem. Mauris eu dignissim leo. Integer in pharetra dolor, eget sollicitudin enim. Cras suscipit iaculis porta. Fusce at nunc ut augue viverra cursus eu a urna. In tristique purus massa,', 10, 50, 500.00);
+	(2, 'Manutenção de computadores', 6, 'Pellentesque euismod in diam at ullamcorper. Vivamus diam velit, tincidunt convallis nunc vel, vulputate sagittis lorem. Mauris eu dignissim leo. Integer in pharetra dolor, eget sollicitudin enim. Cras suscipit iaculis porta. Fusce at nunc ut augue viverra cursus eu a urna. In tristique purus massa,', 10, 50, 500.00),
+	(3, 'Acessoria Contábil', 5, 'Descrição do curso de acessoria contábil', 30, 200, 500.00);
 /*!40000 ALTER TABLE `cursos` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela sge.cursos_requisitos
@@ -343,16 +344,17 @@ CREATE TABLE IF NOT EXISTS `locais` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `sala` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
   `unidade` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `capacidade` int(3) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Copiando dados para a tabela sge.locais: ~3 rows (aproximadamente)
+-- Copiando dados para a tabela sge.locais: ~4 rows (aproximadamente)
 /*!40000 ALTER TABLE `locais` DISABLE KEYS */;
-INSERT INTO `locais` (`id`, `sala`, `unidade`) VALUES
-	(1, '1', 'FESC 1'),
-	(2, 'Piscina', 'FESC 1'),
-	(3, 'Multiuso', 'FESC 2'),
-	(4, 'Lab. Costura', 'FESC 3');
+INSERT INTO `locais` (`id`, `sala`, `unidade`, `capacidade`) VALUES
+	(1, '1', 'FESC 1', NULL),
+	(2, 'Piscina', 'FESC 1', NULL),
+	(3, 'Multiuso', 'FESC 2', NULL),
+	(4, 'Lab. Costura', 'FESC 3', NULL);
 /*!40000 ALTER TABLE `locais` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela sge.migrations
@@ -363,7 +365,7 @@ CREATE TABLE IF NOT EXISTS `migrations` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Copiando dados para a tabela sge.migrations: ~8 rows (aproximadamente)
+-- Copiando dados para a tabela sge.migrations: ~7 rows (aproximadamente)
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(9, '2014_10_12_000000_create_users_table', 1),
@@ -535,7 +537,7 @@ CREATE TABLE IF NOT EXISTS `pessoas_dados_clinicos` (
   CONSTRAINT `pessoas_dados_clinicos_pessoa_foreign` FOREIGN KEY (`pessoa`) REFERENCES `pessoas` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Copiando dados para a tabela sge.pessoas_dados_clinicos: ~12 rows (aproximadamente)
+-- Copiando dados para a tabela sge.pessoas_dados_clinicos: ~11 rows (aproximadamente)
 /*!40000 ALTER TABLE `pessoas_dados_clinicos` DISABLE KEYS */;
 INSERT INTO `pessoas_dados_clinicos` (`id`, `pessoa`, `dado`, `valor`, `created_at`, `updated_at`) VALUES
 	(1, 24, 11, 'AUDITIVA', '2017-08-21 18:26:12', '2017-08-21 18:26:12'),
@@ -733,7 +735,7 @@ CREATE TABLE IF NOT EXISTS `programas` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Copiando dados para a tabela sge.programas: ~7 rows (aproximadamente)
+-- Copiando dados para a tabela sge.programas: ~6 rows (aproximadamente)
 /*!40000 ALTER TABLE `programas` DISABLE KEYS */;
 INSERT INTO `programas` (`id`, `nome`, `sigla`) VALUES
 	(1, 'Centro Esportivo', 'CE'),
@@ -824,16 +826,18 @@ CREATE TABLE IF NOT EXISTS `turmas` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `programa` int(10) unsigned NOT NULL,
   `curso` int(10) unsigned NOT NULL,
-  `disciplina` int(10) unsigned NOT NULL,
+  `disciplina` int(10) unsigned DEFAULT NULL,
   `professor` int(10) unsigned NOT NULL,
   `local` int(10) unsigned NOT NULL,
-  `dias_semana` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `dias_semana` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
   `data_inicio` date NOT NULL,
-  `data_termino` date NOT NULL,
+  `data_termino` date DEFAULT NULL,
   `hora_inicio` time NOT NULL,
   `hora_termino` time NOT NULL,
-  `valor` decimal(10,5) NOT NULL,
+  `valor` decimal(10,4) NOT NULL,
   `status` varchar(1) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `atributos` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `vagas` int(3) unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -847,10 +851,27 @@ CREATE TABLE IF NOT EXISTS `turmas` (
   CONSTRAINT `turmas_local_foreign` FOREIGN KEY (`local`) REFERENCES `locais` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `turmas_professor_foreign` FOREIGN KEY (`professor`) REFERENCES `pessoas` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `turmas_programa_foreign` FOREIGN KEY (`programa`) REFERENCES `programas` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Copiando dados para a tabela sge.turmas: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela sge.turmas: ~16 rows (aproximadamente)
 /*!40000 ALTER TABLE `turmas` DISABLE KEYS */;
+INSERT INTO `turmas` (`id`, `programa`, `curso`, `disciplina`, `professor`, `local`, `dias_semana`, `data_inicio`, `data_termino`, `hora_inicio`, `hora_termino`, `valor`, `status`, `atributos`, `vagas`, `created_at`, `updated_at`) VALUES
+	(1, 1, 2, NULL, 1, 1, 'seg,qua,sex', '2017-09-08', '2017-09-25', '08:00:00', '10:00:00', 500.0000, '1', 'P', 30, '2017-09-25 13:03:09', '2017-09-25 13:03:09'),
+	(2, 6, 2, NULL, 1, 1, 'ter,qui', '2017-09-25', '2017-09-29', '08:00:00', '18:00:00', 299.2900, '2', 'P,E', 10, '2017-09-25 14:08:15', '2017-09-25 14:08:15'),
+	(3, 1, 2, NULL, 1, 1, 'ter,qui', '2017-09-25', '2017-09-29', '08:00:00', '18:00:00', 299.2900, '3', 'P,E', 10, '2017-09-25 14:08:57', '2017-09-25 14:08:57'),
+	(4, 7, 2, NULL, 1, 1, 'ter,qui', '2017-09-25', '2017-09-29', '08:00:00', '18:00:00', 299.2900, '4', 'P,E', 10, '2017-09-25 14:15:31', '2017-09-25 14:15:31'),
+	(5, 1, 2, NULL, 1, 1, 'ter,qui', '2017-09-25', '2017-09-29', '08:00:00', '18:00:00', 299.2900, '5', 'P,E', 10, '2017-09-25 14:19:30', '2017-09-25 14:19:30'),
+	(6, 1, 2, NULL, 1, 1, 'ter,qui', '2017-09-25', '2017-09-29', '08:00:00', '18:00:00', 299.2900, '6', 'P,E', 10, '2017-09-25 14:20:01', '2017-09-25 14:20:01'),
+	(7, 1, 2, NULL, 1, 1, 'ter,qui', '2017-09-25', '2017-09-29', '08:00:00', '18:00:00', 299.2900, '0', 'P,E', 10, '2017-09-25 14:22:07', '2017-09-25 14:22:07'),
+	(8, 1, 2, NULL, 1, 1, 'ter,qui', '2017-09-25', '2017-09-29', '08:00:00', '18:00:00', 299.2900, '0', 'P,E', 10, '2017-09-25 14:23:23', '2017-09-25 14:23:23'),
+	(9, 1, 2, NULL, 1, 1, 'ter,qui', '2017-09-25', '2017-09-29', '08:00:00', '18:00:00', 299.2900, '0', 'P,E', 10, '2017-09-25 14:26:56', '2017-09-25 14:26:56'),
+	(10, 1, 2, NULL, 1, 1, 'ter,qui', '2017-09-25', '2017-09-29', '08:00:00', '18:00:00', 299.2900, '0', 'P,E', 10, '2017-09-25 14:28:26', '2017-09-25 14:28:26'),
+	(11, 1, 2, NULL, 1, 1, 'ter,qui', '2017-09-25', '2017-09-29', '08:00:00', '18:00:00', 299.2900, '0', 'P,E', 10, '2017-09-25 14:29:04', '2017-09-25 14:29:04'),
+	(12, 1, 2, NULL, 1, 1, 'ter,qui', '2017-09-25', '2017-09-29', '08:00:00', '18:00:00', 299.2900, '0', 'P,E', 10, '2017-09-25 14:30:10', '2017-09-25 14:30:10'),
+	(13, 1, 2, NULL, 1, 1, 'ter,qui', '2017-09-25', '2017-09-29', '08:00:00', '18:00:00', 299.2900, '0', 'P,E', 10, '2017-09-25 14:30:47', '2017-09-25 14:30:47'),
+	(14, 1, 2, NULL, 1, 1, 'ter,qui', '2017-09-25', '2017-09-29', '08:00:00', '18:00:00', 299.2900, '0', 'P,E', 10, '2017-09-25 14:33:03', '2017-09-25 14:33:03'),
+	(15, 1, 2, NULL, 1, 1, 'ter,qui', '2017-09-25', '2017-09-29', '08:00:00', '18:00:00', 299.2900, '0', 'P,E', 10, '2017-09-25 14:35:11', '2017-09-25 14:35:11'),
+	(16, 1, 2, NULL, 1, 1, 'sab', '2017-09-25', '2017-09-29', '10:11:00', '11:10:00', 500.0000, '0', NULL, 10, '2017-09-25 14:49:51', '2017-09-25 14:49:51');
 /*!40000 ALTER TABLE `turmas` ENABLE KEYS */;
 
 -- Copiando estrutura para tabela sge.users

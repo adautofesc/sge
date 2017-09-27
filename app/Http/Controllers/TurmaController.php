@@ -17,10 +17,11 @@ class TurmaController extends Controller
      */
     public function index()
     {
-        $dados=Turma::all();
+        $dados=Turma::orderBy('curso')->get();
+        $programas=Programa::all();
 
         //return $dados;
-        return view('pedagogico.turma.listar', compact('dados'));
+        return view('pedagogico.turma.listar', compact('dados'))->with('programas',$programas);
     }
 
     /**

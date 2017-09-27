@@ -34,13 +34,14 @@ body {
   overflow-y: auto;
   overflow-x: hidden; }
 
-#ref .color-primary {
+
+#ref .color-primary, .color-primary {
   color: #52BCD3; }
 
 #ref .chart .color-primary {
   color: #52BCD3; }
 
-#ref .chart .color-secondary {
+#ref .chart .color-secondary, .color-secondary {
   color: #7bccdd; }
 
 .app {

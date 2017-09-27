@@ -25,7 +25,7 @@
 									Programa
 								</label>
 								<div class="col-sm-10"> 
-									{{$curso->programa}} 
+									{{$curso->programa->nome}} 
 								</div>
 							</div>
 							<div class="form-group row"> 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Curso;
 use App\Requisito;
+use App\Programa;
 use App\CursoRequisito;
 use Illuminate\Http\Request;
 use App\Http\Controllers\RequisitosController;
@@ -41,7 +42,8 @@ class CursoController extends Controller
      */
     public function create()    {
         $requisitos=RequisitosController::listar();
-        return view('pedagogico.curso.cadastrar',compact('requisitos'));
+        $programas=Programa::all();
+        return view('pedagogico.curso.cadastrar',compact('requisitos'))->with('programas',$programas);
     }
 
     /**
@@ -53,7 +55,7 @@ class CursoController extends Controller
     public function store(Request $r)    {
         $this->validate($r, [
             'nome'=>'required|min:5',
-            'programa'=>'required',
+            'programa'=>'required|numeric',
             'desc'=>'required',
             'vagas'=>'required',
             'carga'=>'required'
@@ -124,6 +126,8 @@ class CursoController extends Controller
         $curso=Curso::find($id);
         if(!count($curso))
              return redirect(asset('/pedagogico/cursos'));
+        $programas=Programa::all();
+        $requisitos=RequisitosController::listar();
 
         switch($curso->programa){
             case "EMG" :
@@ -140,7 +144,7 @@ class CursoController extends Controller
             break;
 
         }
-        return view('pedagogico.curso.editar', compact('curso'));
+        return view('pedagogico.curso.editar', compact('curso'))->with('programas',$programas)->with('requisitos',$requisitos);
     }
 
     /**

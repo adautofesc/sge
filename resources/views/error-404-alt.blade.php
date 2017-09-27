@@ -9,7 +9,7 @@
             @endif
     </div>
     <div class="error-container">
-        <p>Que tal procurar outra coisa para fazer:</p>
+        <p>Procurando algum recurso?</p>
         <div class="row">
             <div class="col-xs-12">
                 <div class="input-group"> <input type="text" class="form-control"> <span class="input-group-btn">

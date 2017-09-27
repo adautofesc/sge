@@ -24,10 +24,9 @@
 								<div class="col-sm-10"> 
 									<select name="programa" class="c-select form-control boxed">
 										<option  selected>Selecione um programa</option>
-										<option value="EMG" {{$curso->emg}} >EMG</option>
-										<option value="PID" {{$curso->pid}} >PID</option>
-										<option value="UATI" {{$curso->uati}} >UATI</option>
-										<option value="UNIT" {{$curso->unit}} >UNIT</option>
+										@foreach($programas as $programa)
+										<option value="{{$programa->id}}">{{$programa->nome}}</option>
+										@endforeach
 									</select> 
 								</div>
 							</div>
@@ -71,25 +70,14 @@
                             <div class="form-group row"> 
 								<label class="col-sm-2 form-control-label text-xs-right">Requisitos</label>
                                 <div class="col-sm-10"> 
+									@foreach($requisitos as $requisito)
 									<div>
 										<label>
-										<input class="checkbox" type="checkbox">
-										<span>Atestado saúde</span>
+										<input class="checkbox" type="checkbox" name="requisito" value="{{$requisito->id}}">
+										<span>{{$requisito->nome}}</span>
 										</label>
 									</div>
-									<div>
-										<label>
-										<input class="checkbox" type="checkbox">
-										<span>Ter feito módulo anterior</span>
-										</label>
-									</div>
-									<div>
-										<label>
-										<input class="checkbox" type="checkbox">
-										<span>Smartphone Android 4 ou superior</span>
-										</label>
-									</div>
-			                	</div>
+									@endforeach
                                     
                             </div>
 							<div class="form-group row">

@@ -37,10 +37,10 @@ body {
 #ref .color-primary {
   color: #4bcf99; }
 
-#ref .chart .color-primary {
+#ref .chart .color-primary, .color-primary {
   color: #4bcf99; }
 
-#ref .chart .color-secondary {
+#ref .chart .color-secondary,.color-secondary {
   color: #73dab0; }
 
 .app {

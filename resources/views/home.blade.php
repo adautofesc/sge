@@ -20,16 +20,16 @@
                 </div>
                 <div class="card-block">
                     <div>
-                        <a href="/secretaria/atender" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="/administrativo/" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-bar-chart-o "></i>
                         &nbsp;&nbsp;Administrativo</a></div>
                     <div>
-                        <a href="/pessoa/cadastrar" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="/docentes/" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-th-large "></i>
                         &nbsp;&nbsp;Docentes</a></div>
-                    <div><a href="/pessoa/listar" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-usd"></i>&nbsp;&nbsp;Financeiro</a></div>
-                    <div><a href="/pessoa/listar" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-users"></i>&nbsp;&nbsp;Gestão Pessoal</a></div>
-                    <div><a href="/pessoa/listar" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-th-list"></i>&nbsp;&nbsp;Pedagógico</a></div>
+                    <div><a href="/financeiro" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-usd"></i>&nbsp;&nbsp;Financeiro</a></div>
+                    <div><a href="/gestaopessoal" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-users"></i>&nbsp;&nbsp;Gestão Pessoal</a></div>
+                    <div><a href="/pedagogico" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-th-list"></i>&nbsp;&nbsp;Pedagógico</a></div>
                     <div><a href="{{asset("/secretaria")}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-stack-overflow"></i>&nbsp;&nbsp;Secretaria</a></div>
 
                 

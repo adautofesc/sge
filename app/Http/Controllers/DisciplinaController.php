@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Disciplina;
 use App\Grade;
 use App\Curso;
+use App\Programa;
 use Illuminate\Http\Request;
 
 class DisciplinaController extends Controller
@@ -17,7 +18,7 @@ class DisciplinaController extends Controller
     public function index(Request $r = Request)
     {
         //return $disciplinas=$this->disciplinas();
-        return view('pedagogico.disciplina.listar')->with(array('disciplinas'=>$this->disciplinas($r->buscar)));
+        return view('pedagogico.curso.disciplina.listar')->with(array('disciplinas'=>$this->disciplinas($r->buscar)));
     }
 
     /**
@@ -43,8 +44,9 @@ class DisciplinaController extends Controller
      */
     public function create()
     {
+        $programas=Programa::all();
         
-        return view('pedagogico.disciplina.cadastrar');
+        return view('pedagogico.curso.disciplina.cadastrar', compact('programas'));
     }
 
     /**
@@ -103,22 +105,14 @@ class DisciplinaController extends Controller
         if(!count($disciplina))
             return redirect(asset('/pedagogico/disciplinas'));
 
-        switch($disciplina->programa){
-            case "EMG" :
-                $disciplina->emg="selected";
-            break;
-            case "PID" :
-                $disciplina->pid="selected";
-            break;
-            case "UATI" :
-                $disciplina->uati="selected";
-            break;
-            case "UNIT" :
-                $disciplina->unit="selected";
-            break;
+        $programas=Programa::all();
 
+        foreach($programas as $programa){
+            if($disciplina->programa->id==$programa->id)
+                $programa->selected="selected";
         }
-        return view('pedagogico.disciplina.editar', compact('disciplina'));
+
+        return view('pedagogico.curso.disciplina.editar', compact('disciplina'))->with('programas', $programas);
 
 
     }
@@ -209,6 +203,7 @@ class DisciplinaController extends Controller
     }
 
     public function storeDisciplinasAoCurso(Request $r){
+
         $grades=Grade::where('curso',$r->curso)->get();
         foreach($grades->all() as $grade){
             $grade->delete();

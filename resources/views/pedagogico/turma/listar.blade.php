@@ -24,13 +24,13 @@
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
                                     <a class="dropdown-item" href="#" onclick="renovar()">
-                                        <i class="fa fa-retweet icon"></i>Liberar período de matrículas
+                                        <i class="fa fa-circle-o icon"></i>Abrir Matrículas
                                     </a> 
                                     <a class="dropdown-item" href="#" onclick="ativar()" data-toggle="modal" data-target="#confirm-modal">
-                                        <i class="fa fa-unlock icon"></i> Cancelar período de matrículas
+                                        <i class="fa fa-clock-o icon"></i> Suspender Matrículas
                                     </a>
                                     <a class="dropdown-item" href="#" onclick="desativar()" data-toggle="modal" data-target="#confirm-modal">
-                                        <i class="fa fa-lock icon"></i> Cancelar Matrículas
+                                        <i class="fa fa-check-circle-o icon"></i> Iniciar Turma
                                     </a>
                                 </div>
                              </div>
@@ -80,7 +80,7 @@
                                                 <div class="item-col item-col-header fixed item-col-actions-dropdown"> </div>
                                             </div>
                                         </li>
-                                        @foreach($dados->all() as $turma)
+                                        @foreach($turmas->all() as $turma)
                                         <li class="item">
                                             <div class="item-row ">
                                                 <div class="item-col fixed item-col-check"> 
@@ -98,7 +98,7 @@
                                                              <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->texto_status}}</small></div> 
 
                                                        
-                                                        <a href="pessoas_show.php?id=1" class="">
+                                                        <a href="{{asset('pedagogico/curso').'/'.$turma->curso->id}}" target="_blank"class="">
                                                             <h4 class="item-title"> {{$turma->curso->nome}}</h4></a>
                                                          {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}
                                                     </div>
@@ -128,9 +128,12 @@
                                             <i class="fa fa-chevron-circle-right"></i>
                                             </span> </a>
                                                         <div class="item-actions-block">
-                                                            <ul class="item-actions-list">
+                                                            <ul class="item-actions-list">                                     
                                                                 <li>
-                                                                    <a class="remove" href="#" data-toggle="modal" data-target="#confirm-modal"> <i class="fa fa-trash-o "></i> </a>
+                                                                     <a class="remove" title="Cancelar" href="#" onclick=cancelar({{$turma->id}})> <i class="fa fa-ban "></i> </a>
+                                                                </li>
+                                                                <li>
+                                                                     <a class="remove" href="#" onclick=apagar({{$turma->id}})> <i class="fa fa-trash-o "></i> </a>
                                                                 </li>
                                                                 <li>
                                                                     <a class="edit" href="item-editor.html"> <i class="fa fa-pencil"></i> </a>
@@ -180,7 +183,7 @@
                                                     <div class="item-col item-col-header fixed item-col-actions-dropdown"> </div>
                                                 </div>
                                             </li>
-                                            @foreach($dados->all() as $turma)
+                                            @foreach($turmas->all() as $turma)
                                             @if($turma->programa->id==$programa->id)                                            
                                             <li class="item">
                                                 <div class="item-row">
@@ -233,7 +236,7 @@
                                                             <div class="item-actions-block">
                                                                 <ul class="item-actions-list">
                                                                     <li>
-                                                                        <a class="remove" href="#" data-toggle="modal" data-target="#confirm-modal"> <i class="fa fa-trash-o "></i> </a>
+                                                                        <a class="remove" href="" onclick=apagar({{$turma->id}}) data-toggle="modal" data-target="#confirm-modal"> <i class="fa fa-trash-o "></i> </a>
                                                                     </li>
                                                                     <li>
                                                                         <a class="edit" href="item-editor.html"> <i class="fa fa-pencil"></i> </a>
@@ -277,4 +280,42 @@
 </div>
 
 </form>
+@endsection
+@section('scripts')
+<script>
+function apagar(turma){
+    if(confirm("Deseja mesmo apagar essa turma?"))
+        $(location).attr('href','{{asset('/pedagogico/turmas/apagar/')}}/'+turma);
+
+}
+function abrir(turma){
+    if(confirm("Deseja mesmo apagar essa turma?"))
+        $(location).attr('href','{{asset('/pedagogico/turmas/apagar/')}}/'+turma);
+
+}
+function suspender(turma){
+    if(confirm("Deseja mesmo apagar essa turma?"))
+        $(location).attr('href','{{asset('/pedagogico/turmas/apagar/')}}/'+turma);
+
+}
+function iniciar(turma){
+    if(confirm("Deseja mesmo apagar essa turma?"))
+        $(location).attr('href','{{asset('/pedagogico/turmas/apagar/')}}/'+turma);
+
+}
+function editar(turma){
+    if(confirm("Deseja mesmo apagar essa turma?"))
+        $(location).attr('href','{{asset('/pedagogico/turmas/apagar/')}}/'+turma);
+
+}
+function cancelar(turma){
+    if(confirm("Deseja mesmo apagar essa turma?"))
+        $(location).attr('href','{{asset('/pedagogico/turmas/apagar/')}}/'+turma);
+
+}
+
+</script>
+
+
+
 @endsection

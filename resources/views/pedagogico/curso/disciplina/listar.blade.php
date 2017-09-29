@@ -72,7 +72,7 @@
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Programa</div>
-                    <div> {{$disciplina->programa}}</div>
+                    <div> {{$disciplina->programa->sigla}}</div>
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Vagas</div>

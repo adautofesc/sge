@@ -4,6 +4,7 @@
   <div class="title-block">
         <h3 class="title"> Adicionar nova disciplina <span class="sparkline bar" data-type="bar"></span> </h3>
     </div>
+    @include('inc.errors')
     <form name="item" method="POST">
      {{csrf_field()}}
         <div class="card card-block">
@@ -22,10 +23,9 @@
 				<div class="col-sm-10"> 
 					<select class="c-select form-control boxed" name="programa">
 						<option selected>Selecione um programa</option>
-						<option value="EMG">EMG</option>
-						<option value="PID">PID</option>
-						<option value="UATI">UATI</option>
-						<option value="UNIT">UNIT</option>
+						@foreach($programas as $programa)
+					<option value="{{$programa->id}}">{{$programa->nome}}</option>
+					@endforeach
 					</select> 
 				</div>
 			</div>

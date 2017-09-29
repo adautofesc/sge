@@ -18,7 +18,7 @@ class RequisitosController extends Controller
     public function index()
     {
         $requisitos=$this->listar();
-        return view('pedagogico.requisitos', compact('requisitos'));
+        return view('pedagogico.curso.requisito.lista', compact('requisitos'));
     }
 
     /**
@@ -28,7 +28,7 @@ class RequisitosController extends Controller
      */
     public function create()
     {
-        return view('pedagogico.cadastrar-requisito');    }
+        return view('pedagogico.curso.requisito.cadastrar');    }
 
     /**
      * Store a newly created resource in storage.
@@ -49,7 +49,7 @@ class RequisitosController extends Controller
         if($request->btn==1)
             return redirect(asset('/pedagogico/cursos/requisitos'));
         else
-            return view('pedagogico.cadastrar-requisito')->with(array('dados'=>['alert_sucess'=>['Requisito cadastrado com sucesso.']]));
+            return view('pedagogico.curso.requisito.cadastrar')->with(array('dados'=>['alert_sucess'=>['Requisito cadastrado com sucesso.']]));
     }
 
     /**
@@ -117,7 +117,7 @@ class RequisitosController extends Controller
             }      
         }
         $requisitos=$this->listar();
-        return view('pedagogico.requisitos', compact('requisitos'))->with(array('dados'=>$dados));
+        return view('pedagogico.curso.requisito.lista', compact('requisitos'))->with(array('dados'=>$dados));
     }
 
     public static function listar()
@@ -141,7 +141,7 @@ class RequisitosController extends Controller
         }
 
         //return $requisitos;
-        return view('pedagogico.curso-requisitos', compact('requisitos'))->with(array('curso'=>['nome'=>$cursoexiste->nome, 'id_curso'=>$cursoexiste->id]));
+        return view('pedagogico.curso.curso-requisitos', compact('requisitos'))->with(array('curso'=>['nome'=>$cursoexiste->nome, 'id_curso'=>$cursoexiste->id]));
     }
 
     public function storeRequisitosAoCurso(Request $r){

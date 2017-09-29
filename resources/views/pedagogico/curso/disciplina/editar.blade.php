@@ -22,11 +22,9 @@
 								</label>
 								<div class="col-sm-10"> 
 									<select class="c-select form-control boxed" name="programa">
-										<option Selecione um programa</option>
-										<option value="EMG" {{$disciplina->emg}} >EMG</option>
-										<option value="PID"  {{$disciplina->pid}} >PID</option>
-										<option value="UATI" {{$disciplina->uati}} >UATI</option>
-										<option value="UNIT" {{$disciplina->unit}} >UNIT</option>
+										@foreach($programas as $programa)
+					<option value="{{$programa->id}}" {{$programa->selected}}>{{$programa->nome}}</option>
+					@endforeach
 									</select> 
 								</div>
 							</div>

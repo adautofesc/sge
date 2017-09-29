@@ -15,13 +15,16 @@ class TurmaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($dados='')
     {
-        $dados=Turma::orderBy('curso')->get();
+        $turmas=Turma::orderBy('curso')->get();
+       
         $programas=Programa::all();
 
+
         //return $dados;
-        return view('pedagogico.turma.listar', compact('dados'))->with('programas',$programas);
+        //$dados=['alert_sucess'=>['hello world']];
+        return view('pedagogico.turma.listar', compact('turmas'))->with('programas',$programas)->with('dados',$dados);
     }
 
     /**
@@ -127,8 +130,20 @@ class TurmaController extends Controller
      * @param  \App\Turma  $turma
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Turma $turma)
+    public function destroy($itens_url)
     {
-        //
+        $turmas=explode(',',$itens_url);
+        foreach($turmas as $turma){
+            if(is_numeric($turma)){
+                $turma=Turma::find($turma);
+                if($turma){
+                    // Aqui virá uma verificação que se há matrículas antes de excluir
+                    $msgs=array('alert_sucess'=>["Turma ".$turma->id." excluída com sucesso."]);
+                    $turma->delete();
+                    
+                }
+            }
+        }
+        return $this->index($msgs);
     }
 }

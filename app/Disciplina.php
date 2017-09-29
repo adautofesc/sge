@@ -10,4 +10,8 @@ class Disciplina extends Model
     	return $this->belongsToMany('App\Grade');
     }
 
+    public function getProgramaAttribute($value){
+    	return Programa::find($value);
+    }
+
 }

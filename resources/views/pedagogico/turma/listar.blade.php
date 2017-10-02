@@ -15,7 +15,7 @@
                     <div class="row">
                         <div class="col-xs-6 text-xs">
                             <div class="title-block ">
-                                <h3 class="subtitle">Teste</h3>
+                                <a class="btn btn-primary" href="{{route('turma.cadastrar')}}">Cadastrar</a>
                             </div>
                         </div>
                     	<div class="col-xs-6 text-xs-right">
@@ -23,14 +23,17 @@
                                 <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Com os selecionados...
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
-                                    <a class="dropdown-item" href="#" onclick="renovar()">
+                                    <a class="dropdown-item" href="#" onclick="abrirSelecionadas()">
                                         <i class="fa fa-circle-o icon"></i>Abrir Matrículas
                                     </a> 
-                                    <a class="dropdown-item" href="#" onclick="ativar()" data-toggle="modal" data-target="#confirm-modal">
+                                    <a class="dropdown-item" href="#" onclick="suspenderSelecionadas()" data-toggle="modal" data-target="#confirm-modal">
                                         <i class="fa fa-clock-o icon"></i> Suspender Matrículas
                                     </a>
-                                    <a class="dropdown-item" href="#" onclick="desativar()" data-toggle="modal" data-target="#confirm-modal">
-                                        <i class="fa fa-check-circle-o icon"></i> Iniciar Turma
+                                    <a class="dropdown-item" href="#" onclick="iniciarSelecionadas()" data-toggle="modal" data-target="#confirm-modal">
+                                        <i class="fa fa-check-circle-o icon"></i> Iniciar Turmas
+                                    </a>
+                                    <a class="dropdown-item" href="#" onclick="cancelarSelecionadas()" data-toggle="modal" data-target="#confirm-modal">
+                                        <i class="fa fa-check-circle-o icon"></i> Cancelar/Encerrar Turmas
                                     </a>
                                 </div>
                              </div>
@@ -86,7 +89,7 @@
                                                 <div class="item-col fixed item-col-check"> 
 
                                                     <label class="item-check" id="select-all-items">
-                                                    <input type="checkbox" class="checkbox" nome="turma[]" value="{{$turma->id}}">
+                                                    <input type="checkbox" class="checkbox" name="turma" value="{{$turma->id}}">
                                                     <span></span>
                                                     </label>
                                                 </div>
@@ -103,7 +106,7 @@
                                                          {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}
                                                     </div>
                                                 </div>
-                                                <div class="item-col ">
+                                                <div  class="item-col item-col-sales">
                                                     <div class="item-heading">Professor(a)/local</div>
                                                     <div> {{$turma->professor->nome_simples}}
                                                         <div>{{$turma->local->unidade}}</div>
@@ -133,10 +136,10 @@
                                                                      <a class="remove" title="Cancelar" href="#" onclick=cancelar({{$turma->id}})> <i class="fa fa-ban "></i> </a>
                                                                 </li>
                                                                 <li>
-                                                                     <a class="remove" href="#" onclick=apagar({{$turma->id}})> <i class="fa fa-trash-o "></i> </a>
+                                                                     <a class="remove" href="#" title="Apagar" onclick=apagar({{$turma->id}})> <i class="fa fa-trash-o "></i> </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a class="edit" href="item-editor.html"> <i class="fa fa-pencil"></i> </a>
+                                                                    <a class="edit" title="Editar" href="#" onclick="editar({{$turma->id}})"> <i class="fa fa-pencil"></i> </a>
                                                                 </li>
                                                             </ul>
                                                         </div>
@@ -160,8 +163,8 @@
                                             <li class="item item-list-header hidden-sm-down">
                                                 <div class="item-row">
                                                     <div class="item-col fixed item-col-check">
-                                                        <label class="item-check" id="select-all-items">
-                                                        <input type="checkbox" class="checkbox">
+                                                        <label class="item-check" >
+                                                        <input type="checkbox" class="checkbox" onchange="selectAllItens(this);">
                                                         <span></span>
                                                         </label> 
                                                     </div>
@@ -191,21 +194,23 @@
 
 
                                                         <label class="item-check" id="select-all-items">
-                                                        <input type="checkbox" class="checkbox" nome="turma[]" value="{{$turma->id}}">
+                                                        <input type="checkbox" class="checkbox" name="turma" value="{{$turma->id}}">
                                                         <span></span>
                                                         </label>
                                                     </div>
                                                     
                                                     <div class="item-col fixed pull-left item-col-title">
-                                                        <div class="item-heading">Curso/atividade</div>
-                                                        <div>
-                                                            <a href="#"> Turma {{$turma->id}}  - {{$turma->texto_status}}</a>
-                                                            <br>
-                                                            <a href="pessoas_show.php?id=1" class="">
-                                                                <h4 class="item-title"> {{$turma->curso->nome}}</h4></a>
-                                                             {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}
-                                                        </div>
+                                                    <div class="item-heading">Curso/atividade</div>
+                                                    <div class="">
+                                                        
+                                                             <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->texto_status}}</small></div> 
+
+                                                       
+                                                        <a href="{{asset('pedagogico/curso').'/'.$turma->curso->id}}" target="_blank"class="">
+                                                            <h4 class="item-title"> {{$turma->curso->nome}}</h4></a>
+                                                         {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}
                                                     </div>
+                                                </div>
                                                     <div class="item-col item-col-sales">
                                                         <div class="item-heading">Professor(a)</div>
                                                         <div> {{$turma->professor->nome_simples}}
@@ -236,11 +241,14 @@
                                                             <div class="item-actions-block">
                                                                 <ul class="item-actions-list">
                                                                     <li>
-                                                                        <a class="remove" href="" onclick=apagar({{$turma->id}}) data-toggle="modal" data-target="#confirm-modal"> <i class="fa fa-trash-o "></i> </a>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a class="edit" href="item-editor.html"> <i class="fa fa-pencil"></i> </a>
-                                                                    </li>
+                                                                     <a class="remove" title="Cancelar" href="#" onclick=cancelar({{$turma->id}})> <i class="fa fa-ban "></i> </a>
+                                                                </li>
+                                                                <li>
+                                                                     <a class="remove" href="#" title="Apagar" onclick=apagar({{$turma->id}})> <i class="fa fa-trash-o "></i> </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a class="edit" title="Editar" href="#" onclick="editar({{$turma->id}})"><i class="fa fa-pencil"></i> </a>
+                                                                </li>
                                                                 </ul>
                                                             </div>
                                                         </div>
@@ -254,13 +262,6 @@
                                 </section>
                             </div>
                             @endforeach
-
-                       
-
-
-
-                        
-                     
                     </div>
                 </div>
                 <!-- /.card-block -->
@@ -285,32 +286,84 @@
 <script>
 function apagar(turma){
     if(confirm("Deseja mesmo apagar essa turma?"))
-        $(location).attr('href','{{asset('/pedagogico/turmas/apagar/')}}/'+turma);
+        $(location).attr('href','{{route('turmas')}}/apagar/'+turma);
 
 }
 function abrir(turma){
-    if(confirm("Deseja mesmo apagar essa turma?"))
-        $(location).attr('href','{{asset('/pedagogico/turmas/apagar/')}}/'+turma);
+    if(confirm("Deseja mesmo abrir as matrículas dessa turma?"))
+        $(location).attr('href','{{route('turmas')}}/status/2/'+turma);
 
 }
 function suspender(turma){
-    if(confirm("Deseja mesmo apagar essa turma?"))
-        $(location).attr('href','{{asset('/pedagogico/turmas/apagar/')}}/'+turma);
+    if(confirm("Deseja mesmo suspender as matrículas dessa turma?"))
+      $(location).attr('href','{{route('turmas')}}/status/1/'+turma);
 
 }
 function iniciar(turma){
-    if(confirm("Deseja mesmo apagar essa turma?"))
-        $(location).attr('href','{{asset('/pedagogico/turmas/apagar/')}}/'+turma);
+    if(confirm("Deseja mesmo iniciar o período letivo essa turma?"))
+       $(location).attr('href','{{route('turmas')}}/status/5/'+turma);
 
 }
 function editar(turma){
-    if(confirm("Deseja mesmo apagar essa turma?"))
-        $(location).attr('href','{{asset('/pedagogico/turmas/apagar/')}}/'+turma);
+        $(location).attr('href','{{route('turmas')}}/editar/'+turma);
 
 }
 function cancelar(turma){
-    if(confirm("Deseja mesmo apagar essa turma?"))
-        $(location).attr('href','{{asset('/pedagogico/turmas/apagar/')}}/'+turma);
+    if(confirm("Deseja mesmo cancelar essa turma?"))
+        $(location).attr('href','{{route('turmas')}}/status/0/'+turma);
+
+}
+function abrirSelecionadas(){
+     var selecionados='';
+        $("input:checkbox[name=turma]:checked").each(function () {
+            selecionados+=this.value+',';
+
+        });
+        if(selecionados=='')
+            alert('Nenhum item selecionado');
+        else
+        if(confirm('Deseja realmente abrir as matrículas das turmas selecionadas?'))
+            $(location).attr('href','{{route('turmas')}}/status/2/'+selecionados);
+
+    
+}
+function suspenderSelecionadas(){
+   var selecionados='';
+        $("input:checkbox[name=turma]:checked").each(function () {
+            selecionados+=this.value+',';
+
+        });
+        if(selecionados=='')
+            alert('Nenhum item selecionado');
+        else
+        if(confirm('Deseja realmente abrir as matrículas das turmas selecionadas?'))
+            $(location).attr('href','{{route('turmas')}}/status/1/'+selecionados);
+
+}
+function iniciarSelecionadas(){
+    var selecionados='';
+        $("input:checkbox[name=turma]:checked").each(function () {
+            selecionados+=this.value+',';
+
+        });
+        if(selecionados=='')
+            alert('Nenhum item selecionado');
+        else
+        if(confirm('Deseja realmente abrir as matrículas das turmas selecionadas?'))
+            $(location).attr('href','{{route('turmas')}}/status/4/'+selecionados);
+
+}
+function cancelarSelecionadas(){
+    var selecionados='';
+        $("input:checkbox[name=turma]:checked").each(function () {
+            selecionados+=this.value+',';
+
+        });
+        if(selecionados=='')
+            alert('Nenhum item selecionado');
+        else
+        if(confirm('Deseja realmente abrir as matrículas das turmas selecionadas?'))
+            $(location).attr('href','{{route('turmas')}}/status/0/'+selecionados);
 
 }
 

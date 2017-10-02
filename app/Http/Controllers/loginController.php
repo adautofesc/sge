@@ -24,6 +24,9 @@ class loginController extends Controller
 	/*
 	Metodo de fazer o login - deverá ser futuramente ser trocado pelo Auth
 	*/
+	public function login(){
+		return view('login');
+	}
     public function loginCheck(Request $request)
     {
 		$this->validate($request, [

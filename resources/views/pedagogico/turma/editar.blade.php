@@ -1,7 +1,7 @@
 @extends('layout.app')
 @section('pagina')
 <div class="title-block">
-    <h3 class="title"> Criar nova turma <span class="sparkline bar" data-type="bar"></span> </h3>
+    <h3 class="title"> Edição dos dados da turma {{$turma->id}} <span class="sparkline bar" data-type="bar"></span> </h3>
 </div>
 @include('inc.errors')
 <form name="item" method="POST">
@@ -15,7 +15,7 @@
 					<option >Selecione um programa</option>
 					@if(isset($dados['programas']))
 					@foreach($dados['programas'] as $programa)
-					<option value="{{$programa->id}}">{{$programa->nome}}</option>
+					<option value="{{$programa->id}}" {{$programa->id==$turma->id?'selected':''}}>{{$programa->nome}}</option>
 					@endforeach
 					@endif
 				</select> 

@@ -107,9 +107,15 @@ class TurmaController extends Controller
      * @param  \App\Turma  $turma
      * @return \Illuminate\Http\Response
      */
-    public function edit(Turma $turma)
+    public function edit($id)
     {
-        //
+        $turma=Turma::find($id);
+        if($turma){
+            return view('pedagogico.turma.editar')->with('turma',$turma);
+        }
+        else
+            return $this->index();
+        
     }
 
     /**
@@ -146,4 +152,22 @@ class TurmaController extends Controller
         }
         return $this->index($msgs);
     }
+    public function status($status,$itens_url)
+    {
+        $turmas=explode(',',$itens_url);
+        foreach($turmas as $turma){
+            if(is_numeric($turma)){
+                $turma=Turma::find($turma);
+                if($turma){
+                    // Aqui virá uma verificação que se há matrículas antes de excluir
+                    $msgs=array('alert_sucess'=>["Turma ".$turma->id." modificada com sucesso."]);
+                    $turma->status=$status;
+                    $turma->save();
+                    
+                }
+            }
+        }
+        return $this->index($msgs);
+    }
+
 }

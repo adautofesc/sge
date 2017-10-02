@@ -1108,7 +1108,8 @@ $(function() {
 
 
     $('#select-all-items').on('change', function() {
-        var $this = $(this).children(':checkbox').get(0);    
+        var $this = $(this).children(':checkbox').get(0);   
+         
 
         $(this).parents('li')
             .siblings()
@@ -1116,6 +1117,7 @@ $(function() {
             .prop('checked', $this.checked);
 
     });
+
 
 
     function drawItemsListSparklines(){
@@ -1372,11 +1374,24 @@ $(function () {
 	}
 
 });
+function selectAllItens(objeto){
+        var $this = $(objeto).prop('checked');   
+        //alert($this); 
+        console.log($this);
+
+        $(objeto).parents('li')
+            .siblings()
+            .find(':checkbox')
+            .prop('checked', $this);
+        //console.log( $(this).parents('li').find(':checkbox'));
+
+    }
 $(function() {
 
 	$("body").addClass("loaded");
 
 });
+
 
 
 /***********************************************

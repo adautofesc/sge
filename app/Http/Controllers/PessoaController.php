@@ -25,20 +25,6 @@ use Session;
 class PessoaController extends Controller
 {
     //
-    
-
-
-    public function adicionaPrimeiro()
-    {
-    	$admin= new Pessoa;
-    	$admin->nome = "Adauto";
-    	$admin->genero="h";
-    	$admin->nascimento='1984-11-10';
-    	$admin->save();
-
-    	return "Pessoa registrada";
-	} // end adicionaPrimeiro
-
 
 	/**
 	 * Exibe formulário para cadastrar uma nova pessoa
@@ -48,7 +34,7 @@ class PessoaController extends Controller
 	 * @param   Int $responsavel - retorna formulario com id do dependente dessa pessoa
  	 * @return \Illuminate\Http\Response 
  	 */
-	public function mostraFormularioAdicionar($erros='',$sucessos='',$responsavel='')
+	public function create ($erros='',$sucessos='',$responsavel='')
 	{
 
 		if(!loginController::check())
@@ -354,7 +340,7 @@ class PessoaController extends Controller
 	*
 	* @param Pessoa 
 	*/
-	public function formataParaMostrar(Pessoa $pessoa)
+	public static function formataParaMostrar(Pessoa $pessoa)
 	{
 		foreach( $pessoa->dadosGerais->all() as $dado){
 			$tipoDado=TipoDado::find($dado['dado'])->tipo;			
@@ -494,10 +480,7 @@ class PessoaController extends Controller
 
 	
 
-	public function iniciarAtendimento()
-	{
-		return view('pessoa.inicio-atendimento');
-	}
+	
 
 
 	public function liveSearchPessoa($query='')
@@ -525,8 +508,7 @@ class PessoaController extends Controller
 
 	public function mostrarCadastrarUsuario()
 	{
-		if(!loginController::check())
-			return redirect(asset("/"));
+		
 
 		if(GerenciadorAcesso::pedirPermissao(8))
 			return view('pessoa.cadastrar-acesso');
@@ -544,25 +526,9 @@ class PessoaController extends Controller
 		return "ok";	
 	}
 
-	public function atender($id){
-
-		if(!loginController::check())
-			return redirect(asset("/"));
-
-		$pessoa=Pessoa::find($id);
-		// Verifica se a pessoa existe
-		if(!$pessoa)
-			return $this->listarTodos();
-
-		$pessoa=Pessoa::find($id);
-		$pessoa=$this->formataParaMostrar($pessoa);
-
-
-		return view('pessoa.atendimento', compact('pessoa'));
-	}
+	
 	public function editarGeral_view($id){
-		if(!loginController::check())
-			return redirect(asset("/"));
+		
 		if(!GerenciadorAcesso::pedirPermissao(3))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
 
@@ -592,8 +558,7 @@ class PessoaController extends Controller
 		return view('pessoa.editar-dados-gerais', compact('dados'));
 	}
 	public function editarGeral_exec(Request $request){
-		if(!loginController::check())
-			return redirect(asset("/"));
+		
 		if(!GerenciadorAcesso::pedirPermissao(3))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Desculpe, você não possui autorização para alterar dados de outras pessoas']));
 		$this->validate($request, [
@@ -660,8 +625,7 @@ class PessoaController extends Controller
 		return view('pessoa.mostrar', compact('pessoa'));
 	}
 	public function editarContato_view($id){
-		if(!loginController::check())
-			return redirect(asset("/"));
+		
 		if(!GerenciadorAcesso::pedirPermissao(3))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
 		if(!loginController::autorizarDadosPessoais($id))
@@ -678,8 +642,7 @@ class PessoaController extends Controller
 		return view('pessoa.editar-dados-contato', compact('dados'));
 	}
 	public function editarContato_exec(Request $request){
-		if(!loginController::check())
-			return redirect(asset("/"));
+		
 		if(!GerenciadorAcesso::pedirPermissao(3))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Desculpe, você não possui autorização para alterar dados de outras pessoas']));
 
@@ -770,8 +733,7 @@ class PessoaController extends Controller
 		return view('pessoa.mostrar', compact('pessoa'));
 	}	
 	public function editarDadosClinicos_view($id){
-		if(!loginController::check())
-			return redirect(asset("/"));
+		
 		if(!GerenciadorAcesso::pedirPermissao(3))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
 		if(!loginController::autorizarDadosPessoais($id))
@@ -788,8 +750,6 @@ class PessoaController extends Controller
 
 	}
 	public function editarDadosClinicos_exec(Request $request){
-		if(!loginController::check())
-			return redirect(asset("/"));
 		if(!GerenciadorAcesso::pedirPermissao(3))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
 		if(!loginController::autorizarDadosPessoais($request->pessoa))
@@ -844,8 +804,6 @@ class PessoaController extends Controller
 
 
 	public function editarObservacoes_view($id){
-		if(!loginController::check())
-			return redirect(asset("/"));
 		if(!GerenciadorAcesso::pedirPermissao(3))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
 		if(!loginController::autorizarDadosPessoais($id))
@@ -858,8 +816,6 @@ class PessoaController extends Controller
 
 	}
 	public function editarObservacoes_exec(Request $request){
-		if(!loginController::check())
-			return redirect(asset("/"));
 		if(!GerenciadorAcesso::pedirPermissao(3))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
 		if(!loginController::autorizarDadosPessoais($request->pessoa))
@@ -942,8 +898,6 @@ class PessoaController extends Controller
 
 	}
 	public function relacaoInstitucional_view($id){
-		if(!loginController::check())
-			return redirect(asset("/"));
 		if(!GerenciadorAcesso::pedirPermissao(3))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
 		if(!loginController::autorizarDadosPessoais($id))
@@ -960,8 +914,7 @@ class PessoaController extends Controller
 
 	}
 	public function relacaoInstitucional_exec(Request $request){
-		if(!loginController::check())
-			return redirect(asset("/"));
+		
 		if(!GerenciadorAcesso::pedirPermissao(3))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
 		if(!loginController::autorizarDadosPessoais($request->pessoa))

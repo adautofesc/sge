@@ -15,15 +15,10 @@ class CreateTurmasTable extends Migration
 
     public function up()
     {
-        Schema::create('locais', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('sala', 10);
-            $table->string('unidade',30);
-            $table->unsignedInteger('capacidade',3);
-        });
+        
         Schema::create('turmas', function (Blueprint $table) {
             $table->increments('id');
-             $table->unsignedInteger('programa');
+            $table->unsignedInteger('programa');
             $table->unsignedInteger('curso');
             $table->unsignedInteger('disciplina')->nullable();
             $table->unsignedInteger('professor');

@@ -15,7 +15,7 @@ class CreateEnderecosTable extends Migration
     {
         Schema::create('bairros_sanca', function (Blueprint $table) {
             $table->increments('id');
-            $tabel->string('nome',35);
+            $table->string('nome',35);
 
         });
         Schema::create('enderecos', function (Blueprint $table) {

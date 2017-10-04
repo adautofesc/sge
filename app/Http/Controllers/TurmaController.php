@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Turma;
 use App\Local;
 use App\Programa;
+use App\classes\Data;
 use App\PessoaDadosAdministrativos;
 use Illuminate\Http\Request;
 
@@ -25,6 +26,18 @@ class TurmaController extends Controller
         //return $dados;
         //$dados=['alert_sucess'=>['hello world']];
         return view('pedagogico.turma.listar', compact('turmas'))->with('programas',$programas)->with('dados',$dados);
+    }
+
+    public function listarSecretaria($dados='')
+    {
+        $turmas=Turma::orderBy('curso')->get();
+       
+        $programas=Programa::all();
+
+
+        //return $dados;
+        //$dados=['alert_sucess'=>['hello world']];
+        return view('secretaria.listar-turmas', compact('turmas'))->with('programas',$programas)->with('dados',$dados);
     }
 
     /**
@@ -111,7 +124,21 @@ class TurmaController extends Controller
     {
         $turma=Turma::find($id);
         if($turma){
-            return view('pedagogico.turma.editar')->with('turma',$turma);
+            $programas=Programa::get();
+            //$cursos=Curso::getCursosPrograma(); ok
+            $professores=PessoaDadosAdministrativos::getFuncionarios('Educador');
+            $unidades=Local::getUnidades();
+            //Locais=Local::getLocaisPorUnidade($unidade);
+            $dados=collect();
+            $dados->put('programas',$programas);
+            $dados->put('professores',$professores);
+            $dados->put('unidades',$unidades);
+            $turma->data_iniciov=Data::converteParaBd($turma->data_inicio);
+            $turma->data_terminov=Data::converteParaBd($turma->data_inicio);
+
+            //return $turma;
+
+            return view('pedagogico.turma.editar',compact('dados'))->with('turma',$turma);
         }
         else
             return $this->index();
@@ -127,6 +154,36 @@ class TurmaController extends Controller
      */
     public function update(Request $request, Turma $turma)
     {
+        $this->validate($request, [
+            "turmaid"=>"required|numeric",
+            "programa"=>"required|numeric",
+            "curso"=>"required|numeric",
+            "professor"=>"required|numeric",
+            "local"=>"required|numeric",
+            "dias"=>"required",
+            "dt_inicio"=>"required",
+            "hr_inicio"=>"required",
+            "vagas"=>"required",
+            "valor"=>"required"
+
+
+        ]);
+        $turma=Turma::find($request->turmaid);
+        $turma->programa=$request->programa;
+        $turma->curso=$request->curso;
+        $turma->disciplina=$request->disciplina;
+        $turma->professor=$request->professor;
+        $turma->local=$request->local;
+        $turma->dias_semana=$request->dias;
+        $turma->data_inicio=$request->dt_inicio;
+        $turma->data_termino=$request->dt_termino;
+        $turma->hora_inicio=$request->hr_inicio;
+        $turma->hora_termino=$request->hr_termino;
+        $turma->valor=$request->valor;
+        $turma->vagas=$request->vagas;
+        $turma->atributos=$request->atributo;
+        $turma->update();
+        return $this->index();
        
     }
 
@@ -160,14 +217,15 @@ class TurmaController extends Controller
                 $turma=Turma::find($turma);
                 if($turma){
                     // Aqui virá uma verificação que se há matrículas antes de excluir
-                    $msgs=array('alert_sucess'=>["Turma ".$turma->id." modificada com sucesso."]);
+                    $msgs['alert_sucess'][]="Turma ".$turma->id." modificada com sucesso.";
                     $turma->status=$status;
                     $turma->save();
                     
                 }
             }
         }
-        return $this->index($msgs);
+        //return $msgs;
+        return $this->listarSecretaria($msgs);
     }
 
 }

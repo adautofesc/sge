@@ -17,9 +17,9 @@ class CreatePessoas extends Migration
         Schema::create('pessoas', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nome');
-            $table->char('genero');
+            $table->char('genero',1);
             $table->date('nascimento');
-            $tabel->unsignedInteger('por');
+            $table->unsignedInteger('por');
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('por')->
@@ -93,7 +93,6 @@ class CreatePessoas extends Migration
             $table->unsignedInteger('dado');
             $table->softDeletes();
             $table->string('valor',150);
-            $table->softDeletes();
             $table->timestamps('created');
             //-criação das chaves
             $table->foreign('pessoa')

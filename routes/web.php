@@ -23,10 +23,11 @@ Route::middleware('login') ->group(function(){
 	// Pessoas
 		Route::get ('listar','PessoaController@listarTodos');//->middleware('autorizar:56')
 		Route::post('listar','PessoaController@procurarPessoa');
-		Route::get ('cadastrar', 'PessoaController@mostraFormularioAdicionar');
+		Route::get ('cadastrar', 'PessoaController@create')->name('pessoa.cadastrar');
 		Route::post('cadastrar','PessoaController@gravarPessoa');
 		Route::get ('mostrar','PessoaController@listarTodos');//->middleware(['autorizar:56', 'privacy'])
 		Route::get ('mostrar/{var}','PessoaController@mostrar');
+		Route::get('buscarapida/{var}','PessoaController@liveSearchPessoa');
 		//dependentes
 		Route::get('adicionardependente/{var}','PessoaController@addDependente_view');
 		Route::post('adicionardependente/{var}','PessoaController@addDependente_exec');
@@ -49,11 +50,7 @@ Route::middleware('login') ->group(function(){
 	});
 
 
-	// Secretaria
-	Route::get('secretaria','painelController@secretaria');
-	Route::get('secretaria/atender','PessoaController@iniciarAtendimento');
-	Route::get('secretaria/atender/{var}','PessoaController@atender');
-	Route::get('pessoa/buscarapida/{var}','PessoaController@liveSearchPessoa');
+	
 
 	// Administrativo
 	Route::get('administrativo','painelController@administrativo');
@@ -85,8 +82,26 @@ Route::middleware('login') ->group(function(){
 			Route::get('listar','TurmaController@index');
 			Route::get('apagar/{var}','TurmaController@destroy');
 			Route::get('editar/{var}','TurmaController@edit');
+			Route::post('editar/{var}','TurmaController@update');
 			Route::get('status/{status}/{turma}','TurmaController@status');
 		});
+	});
+
+	// Secretaria
+	Route::prefix('secretaria')->group(function(){
+		
+		Route::get('/','painelController@secretaria')->name('secretaria');
+		Route::get('atender','SecretariaController@iniciarAtendimento')->name('secretaria.atender');
+		Route::get('atender/{var}','SecretariaController@atender');
+		
+		Route::get('turmas', 'TurmaController@listarSecretaria')->name('secretaria.turmas');
+		Route::prefix('matricula')->group(function(){
+			Route::get('/nova/{var}','MatriculaController@novaMatricula');
+
+		});
+
+
+
 	});
 	Route::get('docentes','painelController@docentes');
 		//Cursos

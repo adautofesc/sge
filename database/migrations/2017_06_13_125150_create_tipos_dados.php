@@ -16,13 +16,14 @@ class CreateTiposDados extends Migration
         
         Schema::create('tipos_dados', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('tipo');
-            $table->string('desc');
+            $table->string('tipo',50);
+            $table->string('categoria',20);
+            $table->string('desc',100);
         });
         Schema::create('recursos_sistema', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nome');
-            $table->string('desc');
+            $table->string('nome',50);
+            $table->string('desc', 150);
             $table->string('link');
         });
 
@@ -36,6 +37,6 @@ class CreateTiposDados extends Migration
     public function down()
     {
         Schema::dropIfExists('tipos_dados');
-        Schema::dropIfExists('tipos_dados');
+        Schema::dropIfExists('recursos_sistema');
     }
 }

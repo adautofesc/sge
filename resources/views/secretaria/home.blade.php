@@ -26,8 +26,8 @@
                     </div>
                     <div>
                         <a href="/pessoa/cadastrar" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-plus-circle "></i>
-                        &nbsp;&nbsp;Cadastrar</a>
+                        <i class=" fa fa-user "></i>
+                        &nbsp;&nbsp;Cadastrar Pessoa</a>
                     </div>
                     <div>
                         <a href="/pessoa/listar" class="btn btn-primary-outline col-xs-12 text-xs-left">
@@ -46,7 +46,7 @@
                 </div>
                 <div class="card-block">
                     <div>
-                        <a href="/pedagogico/turmas" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="{{route('secretaria.turmas')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Liberação de Matrículas</a>
                     </div>

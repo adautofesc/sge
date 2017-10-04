@@ -20,18 +20,19 @@
                 </div>
                 <div class="card-block">
                     <div>
-                        <a href="{{asset('pedagogico/turmas/listar')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Listar</a></div>
+                        <a href="{{route('turmas')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-bookmark "></i>
+                        &nbsp;&nbsp;Listar</a>
+                    </div>
                     <div>
-                        <a href="{{asset('pedagogico/turmas/cadastrar')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="{{route('turma.cadastrar')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-plus-circle "></i>
                         &nbsp;&nbsp;Cadastrar</a>
                     </div>
                     <div>
-                        <a href="/pessoa/cadastrar" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-plus-circle "></i>
-                        &nbsp;&nbsp;Relatórios</a>
+                        <p class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-file-text-o "></i>
+                        &nbsp;&nbsp;Relatórios</p>
                     </div>
                                    
                 </div>
@@ -46,27 +47,28 @@
                 </div>
                 <div class="card-block">
                     <div>
-                        <a href="{{asset('pedagogico/cursos')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Listar</a></div>
-                    <div>
                         <a href="{{asset('/pedagogico/cadastrarcurso')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-plus-circle "></i>
                         &nbsp;&nbsp;Cadastrar</a>
                     </div>
                     <div>
+                        <a href="{{asset('pedagogico/cursos')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-toggle-right  "></i>
+                        &nbsp;&nbsp;Cursos/atividades</a></div>
+                    
+                    <div>
                         <a href="{{asset('pedagogico/disciplinas')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-plus-circle "></i>
+                        <i class=" fa fa-toggle-down "></i>
                         &nbsp;&nbsp;Disciplinas</a>
                     </div>
                     <div>
                         <a href="{{asset('pedagogico/cursos/requisitos')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-plus-circle "></i>
+                        <i class=" fa fa-check-square-o "></i>
                         &nbsp;&nbsp;Requisitos</a>
                     </div>
                     <div>
                         <p class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-plus-circle "></i>
+                        <i class=" fa fa-file-text-o "></i>
                         &nbsp;&nbsp;Relatórios</p>
                     </div>
                                
@@ -81,7 +83,7 @@
                     </div>
                 </div>
                 <div class="card-block">
-                    <p>Opções indisponíveis</p>               
+                    <p>Nenhuma opção disponível</p>               
                 </div>
             </div>  
         </div>

@@ -95,6 +95,8 @@ Route::middleware('login') ->group(function(){
 		Route::get('atender/{var}','SecretariaController@atender');
 		
 		Route::get('turmas', 'TurmaController@listarSecretaria')->name('secretaria.turmas');
+		Route::get('turmas-disponiveis/{turmas}/{filtros}', 'TurmaController@turmasDisponiveis');
+
 		Route::prefix('matricula')->group(function(){
 			Route::get('/nova/{var}','MatriculaController@novaMatricula');
 

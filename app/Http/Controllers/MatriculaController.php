@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Matricula;
+use App\Turma;
+use App\Programa;
 use Illuminate\Http\Request;
 
 class MatriculaController extends Controller
@@ -17,7 +19,10 @@ class MatriculaController extends Controller
         //
     }
     public function novaMatricula($pessoa){
-        return view('secretaria.matricula.turmas');
+        $turmas=Turma::orderBy('curso')->get();
+       
+        $programas=Programa::all();
+        return view('secretaria.matricula.turmas',compact('turmas'))->with('programas',$programas);
 
     }
 

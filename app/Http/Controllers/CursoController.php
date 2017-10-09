@@ -17,6 +17,10 @@ class CursoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $r = Request)    {
+
+        $cursos=Curso::all();
+        //return $cursos;
+
         return view('pedagogico.curso.lista')->with(array('cursos'=>$this->cursos($r->buscar)));
     }
 
@@ -57,8 +61,7 @@ class CursoController extends Controller
             'nome'=>'required|min:5',
             'programa'=>'required|numeric',
             'desc'=>'required',
-            'vagas'=>'required',
-            'carga'=>'required'
+            'vagas'=>'required'
 
             ]);
         $curso = new Curso;
@@ -71,10 +74,21 @@ class CursoController extends Controller
         $curso->valor=$r->valor;
         $curso->save();
 
+        if(isset($r->requisito)){
+            foreach($r->requisito as $req){
+                $curso_requisito=new CursoRequisito;
+                $curso_requisito->curso=$curso->id;
+                $curso_requisito->requisito=$req;
+                $curso_requisito->obrigatorio=1;
+                $curso_requisito->timestamps=false;
+                $curso_requisito->save();
+            }
+        }
+
         if($r->btn==1)
-            return redirect(asset('/pedagogico/cursos'));
+            return $this->index();
         if($r->btn==2)
-            return redirect(asset('/pedagogico/cadastrarcurso'));
+            return $this->create();
         if($r->btn==3)
             return redirect(asset('/pedagogico/disciplinascursos'.'/'.$curso->id));
        
@@ -172,7 +186,7 @@ class CursoController extends Controller
         $curso->carga=$request->carga;
         $curso->save();
 
-        return redirect(asset('/pedagogico/cursos'));
+        return $this->index();
 
     }
 

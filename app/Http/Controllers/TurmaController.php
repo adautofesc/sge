@@ -7,6 +7,7 @@ use App\Local;
 use App\Programa;
 use App\classes\Data;
 use App\PessoaDadosAdministrativos;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class TurmaController extends Controller
@@ -98,9 +99,9 @@ class TurmaController extends Controller
         $turma->valor=$request->valor;
         $turma->vagas=$request->vagas;
         $turma->atributos=$request->atributo;
-        $turma->status=4;
+        $turma->status=1;
         $turma->save();
-        return $turma;
+        return $this->index();
     }
 
     /**
@@ -226,6 +227,86 @@ class TurmaController extends Controller
         }
         //return $msgs;
         return $this->listarSecretaria($msgs);
+    }
+    public function turmasDisponiveis($turmas_atuais='0',$ordered_by='')
+    {
+        $turmas_af=collect();
+        $lista=array();
+        $turmas_atuais=explode(',',$turmas_atuais);
+        foreach($turmas_atuais as $turma){
+            if(is_numeric($turma)){
+                if(Turma::find($turma))
+                    $turmas_af->push(Turma::find($turma));
+            }
+        }
+        //return $turmas_af;
+
+
+
+        if(count($turmas_af)==0){
+            $turmas=Turma::all();
+            return $turmas;
+        }
+        else{
+
+            foreach($turmas_af as $turma){
+                        $lista=DB::table('turmas')->select('turmas.id')->where('dias_semana', 'like', '%'.$turma->dias_semana[0].'%')->whereBetween('hora_inicio', [$turma->hora_inicio,$turma->hora_termino])->get();
+                    
+                }
+
+            //return $lista;
+
+            
+            $turmas=Turma::whereNotIn('id', $lista[])->toSql();
+
+        }
+        return $turmas;
+
+       
+
+
+        /*
+        switch(true){
+            case $contagem_turmas==0:
+             $turmas=Turma::all();
+
+            break;
+            case $contagem_turmas>0:
+                foreach($turmas_af as $turma){
+                    foreach($turma->dias_semana as $dia){
+                        $lista->push(Turma::select('id')->where('dias_semana', 'like', '%'.$dia.'%')->whereBetween('hora_inicio', [$turma->hora_inicio,$turma->hora_termino])->get());
+                    }
+                }
+                //return $lista;
+
+
+
+                $turmas=Turma::whereNotIn('id', $lista)->get();
+
+                
+
+            break;
+            /*
+            case $contagem_turmas>2:
+                $turmas=Turma::whereNotIn('id', function($query){    
+                         $query->select('id')->from('turmas')
+                                ->where('dias_semana', 'like', '%seg%')->whereBetween('hora_inicio', ['12:00','18:00'])
+                                ->orWhere('dias_semana', 'like', '%seg%')->whereBetween('hora_inicio', ['10:00','18:00']) 
+                                ->orWhere('dias_semana', 'like', '%seg%')->whereBetween('hora_inicio', ['10:00','18:00']) 
+                                ->orWhere('dias_semana', 'like', '%seg%')->whereBetween('hora_inicio', ['10:00','18:00']) 
+                                ->orWhere('dias_semana', 'like', '%seg%')->whereBetween('hora_inicio', ['10:00','18:00']) 
+                                ->get();
+
+                })->get();
+
+            break;
+
+        };
+
+        */
+    
+       
+        
     }
 
 }

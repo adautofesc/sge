@@ -17,11 +17,16 @@ class CreateCursosTable extends Migration
         Schema::create('cursos', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nome',150);
-            $table->enum('programa',['PID','UATI','UNIT','EMG']);
+            $table->unsignedInteger('programa');
             $table->string('desc',300);
             $table->unsignedInteger('vagas');
-            $table->unsignedInteger('carga');
+            $table->unsignedInteger('carga')->nullable();
             $table->decimal('valor',5,2);
+            $table->foreign('programa')->
+                references('id')->
+                on('programas')->
+                onDelete('restrict')->
+                onUpdate('cascade');
         });
 
         Schema::create('requisitos', function (Blueprint $table) {

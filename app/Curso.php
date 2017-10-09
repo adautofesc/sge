@@ -17,4 +17,10 @@ class Curso extends Model
 	public function getProgramaAttribute($value){
 		return Programa::find($value);
 	}
+	public function setValorAttribute($value){
+		$this->attributes['valor'] = str_replace(',', '.', $value);
+	}
+	public function getValorAttribute($value){
+		return number_format($value,2,',','.');
+	}
 }

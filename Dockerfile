@@ -22,7 +22,7 @@ RUN mv composer.phar /usr/local/bin/composer
 RUN /usr/local/bin/composer create-project sge laravel/laravel /var/www/laravel --prefer-dist "5.4.*"
 
 #install
-WORKDIR /var/www/laravel/sge/public
+WORKDIR /var/www/
 
 VOLUME /home/fesc/sge:/var/www
 COPY apache2.conf /etc/apache2/

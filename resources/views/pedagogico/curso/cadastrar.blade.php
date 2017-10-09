@@ -72,7 +72,7 @@
             	@foreach($requisitos as $requisito)
 				<div>
 					<label>
-					<input class="checkbox" type="checkbox" name="requisito" value="{{$requisito->id}}">
+					<input class="checkbox" type="checkbox" name="requisito[]" value="{{$requisito->id}}">
 					<span>{{$requisito->nome}}</span>
 					</label>
 				</div>

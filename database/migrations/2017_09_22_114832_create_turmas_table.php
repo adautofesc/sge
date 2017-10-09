@@ -29,8 +29,9 @@ class CreateTurmasTable extends Migration
             $table->time('hora_inicio');
             $table->time('hora_termino');
             $table->decimal('valor',10,5);
+            $table->unsignedInteger('vagas');
             $table->string('status',1);
-            $table->string('atributos',20);
+            $table->string('atributos',20)->nullable();
             $table->unsignedInteger('3')->nullable();
             $table->timestampsTz();
             $table->foreign('programa')->references('id')->on('programas')->onDelete('restrict')->onUpdate('cascade');

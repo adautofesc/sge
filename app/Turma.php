@@ -11,7 +11,7 @@ class Turma extends Model
 	protected $appends=['texto_status','icone_status'];
 
 	public function setDiasSemanaAttribute($value){
-		$this->attributes['dias_semana'] = implode(',',$value);
+		$this->dias_semana = implode(',',$value);
 	}
 	public function getDiasSemanaAttribute($value){
 		return explode(',',$value);
@@ -56,7 +56,8 @@ class Turma extends Model
 		return substr($value,0,5);
 	}
 	public function getTextoStatusAttribute($value){
-		switch($this->attributes['status']){
+
+		switch($this->status){
 			case 0:
 				return "Encerrada";
 				break;
@@ -81,7 +82,7 @@ class Turma extends Model
 		}//end switch
 	}
 	public function getIconeStatusAttribute($value){
-		switch($this->attributes['status']){
+		switch($this->status){
 			case 0:
 				return "ban";
 				break;

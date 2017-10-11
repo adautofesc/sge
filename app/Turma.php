@@ -64,18 +64,16 @@ class Turma extends Model
 			case 1:
 				return "Aguardando abrir matrícula";
 				break;
-			case 2:
+			case 2: 
+				return "Turma Completa/Em andamento";
+				break;
+			case 3:
 				return "Matrículas abertas";
 				break;
 			case 4:
 				return "Em andamento, aberta";
 				break;
-			case 5: 
-				return "Em andamento";
-				break;
-			case 6: 
-				return "Turma Completa";
-				break;
+			
 			default:
 				return "Indefinida";
 				break;
@@ -89,17 +87,14 @@ class Turma extends Model
 			case 1:
 				return "clock-o";
 				break;
-			case 2:
+			case 2: 
+				return "check-circle";
+				break;
+			case 3:
 				return "circle-o";
 				break;
 			case 4:
 				return "check-circle-o";
-				break;
-			case 5: 
-				return "check-circle";
-				break;
-			case 6: 
-				return "circle";
 				break;
 			default:
 				return "question-circle";

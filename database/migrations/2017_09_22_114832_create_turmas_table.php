@@ -30,7 +30,7 @@ class CreateTurmasTable extends Migration
             $table->time('hora_termino');
             $table->decimal('valor',10,5);
             $table->unsignedInteger('vagas');
-            $table->string('status',1);
+            $table->unsignedInteger('status');
             $table->string('atributos',20)->nullable();
             $table->unsignedInteger('3')->nullable();
             $table->timestampsTz();

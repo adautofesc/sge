@@ -183,7 +183,7 @@ function apagar(turma){
 }
 function abrir(turma){
     if(confirm("Deseja mesmo abrir as matrículas dessa turma?"))
-        $(location).attr('href','{{route('turmas')}}/status/2/'+turma);
+        $(location).attr('href','{{route('turmas')}}/status/3/'+turma);
 
 }
 function suspender(turma){
@@ -193,7 +193,7 @@ function suspender(turma){
 }
 function iniciar(turma){
     if(confirm("Deseja mesmo iniciar o período letivo essa turma?"))
-       $(location).attr('href','{{route('turmas')}}/status/5/'+turma);
+       $(location).attr('href','{{route('turmas')}}/status/4/'+turma);
 
 }
 function editar(turma){
@@ -215,7 +215,7 @@ function abrirSelecionadas(){
             alert('Nenhum item selecionado');
         else
         if(confirm('Deseja realmente abrir as matrículas das turmas selecionadas?'))
-            $(location).attr('href','{{route('turmas')}}/status/2/'+selecionados);
+            $(location).attr('href','{{route('turmas')}}/status/3/'+selecionados);
 
     
 }

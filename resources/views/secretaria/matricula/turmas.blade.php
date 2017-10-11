@@ -1,41 +1,66 @@
  @extends('layout.app')
 @section('pagina')
 <div class="title-block">
-    <h3 class="title"> Todas as turmas</h3>
+    <h3 class="title"> Nova Matrícula</h3>
 </div>
-@include('inc.errors')
 
+@include('inc.errors')
+<div class="subtitle-block">
+    <h3 class="subtitle"><small>De: </small> Adauto Junior</h3>
+</div>
+<div class="card card-block">
+    <!-- Nav tabs -->
+    <div class="card-title-block">
+        <h3 class="title"> Esta é sua programação atual: </h3>
+    </div>
+    <!-- Tab panes -->
+    <div class="row">
+     
+        <div class="col" >
+            <div class="title">Seg.</div>
+            <div class="box-placeholder">9:00 ~ 9:50<br>Alongamento<br><small>Adilson</small></div>
+            <div class="box-placeholder">9:00 ~ 10:00<br>Alongamento<br><small>Adilson</small></div>
+        </div>
+        <div class="col">
+            <div class="title">Ter.</div>
+            <div class="box-placeholder">9:00<br>Alongamento<br><small>Adilson</small></div>
+        </div>
+        <div class="col">
+            <div class="title">Qua.</div>
+        </div>
+        <div class="col">
+            <div class="title">Qui.</div>
+        </div>
+        <div class="col">
+            <div class="title">Sex.</div>
+        </div>
+        <div class="col">
+            <div class="title">Sab.</div>
+        </div>
+    </div>
+</div>
+<div class="card card-block">
+    <!-- Nav tabs -->
+    <div class="card-title-block">
+        <h3 class="title"> Itens escolhidos </h3>
+    </div>
+    <!-- Tab panes -->
+    <div class="row">
+        <div class="col-xl-12" id="itens_escolhidos" > 
+           
+        </div>
+            
+        
+    </div>
+</div>
+                    
 <form name="item" class="form-inline">
 	<section class="section">
     <div class="row ">
         <div class="col-xl-12">
             <div class="card sameheight-item">
                 <div class="card-block">
-                    <!-- Nav tabs -->
-                    <div class="row">
-                        <div class="col-xs-12 text-xs-right">
-                            <div class="action dropdown pull-right "> 
-                                <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Com os selecionados...
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
-                                    <a class="dropdown-item" href="#" onclick="abrirSelecionadas()">
-                                        <i class="fa fa-circle-o icon"></i>Abrir Matrículas
-                                    </a> 
-                                    <a class="dropdown-item" href="#" onclick="suspenderSelecionadas()" data-toggle="modal" data-target="#confirm-modal">
-                                        <i class="fa fa-clock-o icon"></i> Suspender Matrículas
-                                    </a>
-                                    <a class="dropdown-item" href="#" onclick="iniciarSelecionadas()" data-toggle="modal" data-target="#confirm-modal">
-                                        <i class="fa fa-check-circle-o icon"></i> Iniciar Turmas
-                                    </a>
-                                    <a class="dropdown-item" href="#" onclick="cancelarSelecionadas()" data-toggle="modal" data-target="#confirm-modal">
-                                        <i class="fa fa-check-circle-o icon"></i> Cancelar/Encerrar Turmas
-                                    </a>
-                                </div>
-                             </div>
-                        </div>
-
-                    </div>
-                    
+                    <!-- Nav tabs -->  
                     <ul class="nav nav-tabs nav-tabs-bordered ">
                          @foreach($programas as $programa)
                             <li class="nav-item">
@@ -44,116 +69,11 @@
                          @endforeach
                     </ul>
                     <!-- Tab panes -->
-                    <div class="tab-content tabs-bordered">
+                    <div class="tab-content tabs-bordered" id="turmas">
                         <!-- Tab panes ******************************************************************************** -->
                         
                         
-                        @foreach($programas as $programa)
-                            <!-- tab {{$programa->sigla}} ********************************************************-->
-                            <div class="tab-pane fade in {{$programa->id==1?'active':''}}"  id="{{$programa->sigla}}">
-                                <h4>{{$programa->nome}}</h4>
-                                <section class="example">
-                                    <div class="table-flip-scroll">
 
-                                        <ul class="item-list striped">
-                                            <li class="item item-list-header hidden-sm-down">
-                                                <div class="item-row">
-                                                    <div class="item-col fixed item-col-check">
-                                                        <label class="item-check">
-                                                        <input type="checkbox" class="checkbox" onchange="selectAllItens(this);">
-                                                        <span></span>
-                                                        </label> 
-                                                    </div>
-                                                    
-                                                    <div class="item-col item-col-header item-col-title">
-                                                        <div> <span>Curso</span> </div>
-                                                    </div>
-                                                    <div class="item-col item-col-header item-col-sales">
-                                                        <div> <span>Professor/Unidade</span> </div>
-                                                    </div>
-
-                                                    <div class="item-col item-col-header item-col-sales">
-                                                        <div> <span>Vagas</span> </div>
-                                                    </div>
-                                                    <div class="item-col item-col-header item-col-sales">
-                                                        <div> <span>Valor</span> </div>
-                                                    </div>
-
-                                                    <div class="item-col item-col-header fixed item-col-actions-dropdown"> </div>
-                                                </div>
-                                            </li>
-                                            @foreach($turmas->all() as $turma)
-                                            @if($turma->programa->id==$programa->id)                                            
-                                            <li class="item">
-                                                <div class="item-row">
-                                                    <div class="item-col fixed item-col-check"> 
-
-
-                                                        <label class="item-check" >
-                                                        <input type="checkbox" class="checkbox" name="turma" value="{{$turma->id}}">
-                                                        <span></span>
-                                                        </label>
-                                                    </div>
-                                                    
-                                                    <div class="item-col fixed pull-left item-col-title">
-                                                    <div class="item-heading">Curso/atividade</div>
-                                                    <div class="">
-                                                        
-                                                             <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->texto_status}}</small></div> 
-
-                                                       
-                                                        <a href="{{asset('pedagogico/curso').'/'.$turma->curso->id}}" target="_blank"class="">
-                                                            <h4 class="item-title"> {{$turma->curso->nome}}</h4></a>
-                                                         {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}
-                                                    </div>
-                                                </div>
-                                                    <div class="item-col item-col-sales">
-                                                        <div class="item-heading">Professor(a)</div>
-                                                        <div> {{$turma->professor->nome_simples}}
-                                                            <div>{{$turma->local->unidade}}</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="item-col item-col-sales">
-                                                        <div class="item-heading">Vagas</div>
-                                                        <div>{{$turma->vagas}}</div>
-                                                    </div>
-                                                     
-                                                   
-                                                    <div class="item-col item-col-sales">
-                                                        <div class="item-heading">Valor</div>
-                                                        <div>R$ {{$turma->valor}} </div>
-                                                    </div>
-
-                                                    <div class="item-col fixed item-col-actions-dropdown">
-                                                        <div class="item-actions-dropdown">
-                                                            <a class="item-actions-toggle-btn"> 
-                                                                <span class="inactive">
-                                                                    <i class="fa fa-cog"></i>
-                                                                </span> 
-                                                                <span class="active">
-                                                                    <i class="fa fa-chevron-circle-right"></i>
-                                                                </span>
-                                                            </a>
-                                                            <div class="item-actions-block">
-                                                                <ul class="item-actions-list">
-                                                                    <li>
-                                                                     <a class="remove" title="Cancelar" href="#" onclick=cancelar({{$turma->id}})> <i class="fa fa-ban "></i> </a>
-                                                                </li>
-                                                                
-                                                                </li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            @endif
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                </section>
-                            </div>
-                            @endforeach
                     </div>
                 </div>
                 <!-- /.card-block -->
@@ -176,89 +96,49 @@
 @endsection
 @section('scripts')
 <script>
-function apagar(turma){
-    if(confirm("Deseja mesmo apagar essa turma?"))
-        $(location).attr('href','{{route('turmas')}}/apagar/'+turma);
+var itens;
+$(document).ready(function(){
+    listar(itens=0);
+
+});
+function addItem(turma){
+    itens=itens+','+turma;
+    listar(itens);
 
 }
-function abrir(turma){
-    if(confirm("Deseja mesmo abrir as matrículas dessa turma?"))
-        $(location).attr('href','{{route('turmas')}}/status/2/'+turma);
+function rmItem(turma){
+    var itensAtuais=itens.split(',');
+    for(var i=0; i<itensAtuais.length;i++){
+        if(itensAtuais[i]==turma){
+            itensAtuais.splice(i,1);
+            break;
+        }
+    }
+    itens=itensAtuais.join();
+    listar(itens);
 
 }
-function suspender(turma){
-    if(confirm("Deseja mesmo suspender as matrículas dessa turma?"))
-      $(location).attr('href','{{route('turmas')}}/status/1/'+turma);
+function listar(itens_atuais){
 
+    $('#turmas').load('{{asset('/secretaria/turmas-disponiveis')}}/'+itens_atuais+'/0');
+     $('#itens_escolhidos').load('{{asset('/secretaria/turmas-escolhidas')}}/'+itens_atuais+'');
+
+    /*
+    $.ajax({
+    url:'{{asset('/secretaria/turmas-disponiveis')}}' +
+        '/'+itens_atuais+'/0',
+    type:'GET',
+    success: function(data){
+           $('#turmas').html(data);
+           console.log(data);
+        }
+    });
+    */
 }
-function iniciar(turma){
-    if(confirm("Deseja mesmo iniciar o período letivo essa turma?"))
-       $(location).attr('href','{{route('turmas')}}/status/5/'+turma);
-
+function hoho() {
+    // body...
+    console.log('Hoho');
 }
-function editar(turma){
-        $(location).attr('href','{{route('turmas')}}/editar/'+turma);
-
-}
-function cancelar(turma){
-    if(confirm("Deseja mesmo cancelar essa turma?"))
-        $(location).attr('href','{{route('turmas')}}/status/0/'+turma);
-
-}
-function abrirSelecionadas(){
-     var selecionados='';
-        $("input:checkbox[name=turma]:checked").each(function () {
-            selecionados+=this.value+',';
-
-        });
-        if(selecionados=='')
-            alert('Nenhum item selecionado');
-        else
-        if(confirm('Deseja realmente abrir as matrículas das turmas selecionadas?'))
-            $(location).attr('href','{{route('turmas')}}/status/2/'+selecionados);
-
-    
-}
-function suspenderSelecionadas(){
-   var selecionados='';
-        $("input:checkbox[name=turma]:checked").each(function () {
-            selecionados+=this.value+',';
-
-        });
-        if(selecionados=='')
-            alert('Nenhum item selecionado');
-        else
-        if(confirm('Deseja realmente abrir as matrículas das turmas selecionadas?'))
-            $(location).attr('href','{{route('turmas')}}/status/1/'+selecionados);
-
-}
-function iniciarSelecionadas(){
-    var selecionados='';
-        $("input:checkbox[name=turma]:checked").each(function () {
-            selecionados+=this.value+',';
-
-        });
-        if(selecionados=='')
-            alert('Nenhum item selecionado');
-        else
-        if(confirm('Deseja realmente abrir as matrículas das turmas selecionadas?'))
-            $(location).attr('href','{{route('turmas')}}/status/4/'+selecionados);
-
-}
-function cancelarSelecionadas(){
-    var selecionados='';
-        $("input:checkbox[name=turma]:checked").each(function () {
-            selecionados+=this.value+',';
-
-        });
-        if(selecionados=='')
-            alert('Nenhum item selecionado');
-        else
-        if(confirm('Deseja realmente abrir as matrículas das turmas selecionadas?'))
-            $(location).attr('href','{{route('turmas')}}/status/0/'+selecionados);
-
-}
-
 </script>
 
 

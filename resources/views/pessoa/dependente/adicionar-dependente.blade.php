@@ -80,7 +80,7 @@
  				{
  					$.each(data, function(key, val){
  						namelist+='<li class="item item-list-header hidden-sm-down">'
- 									+'<a href="{{asset('secretaria/atender')}}/'+val.id+'">'
+ 									+'<a href="#" onclick="add(\''+val.id+'\',\''+val.nome+'\');"" >'
  										+val.numero+' - '+val.nascimento+' - '+val.nome
  									+'</a>'
  								  +'</li>';
@@ -106,7 +106,20 @@
        }
  
   	});
+   
  
 });
+
+function add(id,nome){
+
+	if (confirm("Confirmar a adição de "+nome+" como dependente?")){
+
+
+	}
+   $(location).attr('href', '{{asset('/pessoa/gravardependente/'.$pessoa)}}/'+id);
+
+
+
+   }
 </script>
 @endsection

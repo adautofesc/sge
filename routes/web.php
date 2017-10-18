@@ -30,8 +30,8 @@ Route::middleware('login') ->group(function(){
 		Route::get('buscarapida/{var}','PessoaController@liveSearchPessoa');
 		//dependentes
 		Route::get('adicionardependente/{var}','PessoaController@addDependente_view');
-		Route::post('adicionardependente/{var}','PessoaController@addDependente_exec');
-		Route::get('removerdependente/{var}','PessoaController@remDependente_exec');
+		Route::get('gravardependente/{pessoa}/{dependente}','PessoaController@addDependente_exec');
+		Route::get('removervinculo/{var}','PessoaController@remVinculo_exec');
 		Route::get('adicionarresponsavel/{var}','PessoaController@addResponsavel_view');
 		Route::post('adicionarresponsavel/{var}','PessoaController@addResponsavel_exec');
 		Route::get('removerdependente/{var}','PessoaController@remResponsavel_exec');
@@ -100,7 +100,8 @@ Route::middleware('login') ->group(function(){
 
 		Route::prefix('matricula')->group(function(){
 			Route::get('/nova/{var}','MatriculaController@novaMatricula');
-
+			Route::post('/confirmacao', 'MatriculaController@confirmacaoAtividades');
+			Route::post('gravar', 'MatriculaController@gravarMatricula');
 		});
 
 

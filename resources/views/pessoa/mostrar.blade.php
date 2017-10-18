@@ -113,7 +113,7 @@
                                     <div class="col-sm-10"> 
                                         @foreach($pessoa['dependentes'] as $dependente)
                                         <a href="{{asset('/pessoa/mostrar/'.$dependente->valor)}}" target="_blank">{{$dependente->nome}}</a>
-                                        <a href="{{asset('/pessoa/remover-dependente/'.$dependente->valor) }}" class="btn btn-secondary btn-sm rounded-s"> Remover </a><br>
+                                        <a href="#{{$dependente->id}}" onclick="remVinculo({{$dependente->id}});" class="btn btn-secondary btn-sm rounded-s"> Remover </a><br>
                                         @endforeach
                                     </div>
                                 </div>    
@@ -380,6 +380,19 @@
      
     </div><!-- /.row -->
 </section>
+
+
+@endsection
+@section('scripts')
+<script>
+function remVinculo(id){
+    if(confirm("Deseja mesmo apagar esse vínculo?")){
+        $(location).attr('href', '{{asset('/pessoa/removervinculo')}}/'+id);
+    }
+}
+
+</script>
+
 
 
 @endsection

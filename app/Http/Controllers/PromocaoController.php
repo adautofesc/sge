@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Matricula;
-use App\Turma;
-use App\Programa;
+use App\Promocao;
 use Illuminate\Http\Request;
 
-class MatriculaController extends Controller
+class PromocaoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,13 +15,6 @@ class MatriculaController extends Controller
     public function index()
     {
         //
-    }
-    public function novaMatricula($pessoa){
-        $turmas=Turma::orderBy('curso')->get();
-       
-        $programas=Programa::all();
-        return view('secretaria.matricula.turmas',compact('turmas'))->with('programas',$programas);
-
     }
 
     /**
@@ -50,10 +41,10 @@ class MatriculaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Matricula  $matricula
+     * @param  \App\Promocao  $promocao
      * @return \Illuminate\Http\Response
      */
-    public function show(Matricula $matricula)
+    public function show(Promocao $promocao)
     {
         //
     }
@@ -61,10 +52,10 @@ class MatriculaController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Matricula  $matricula
+     * @param  \App\Promocao  $promocao
      * @return \Illuminate\Http\Response
      */
-    public function edit(Matricula $matricula)
+    public function edit(Promocao $promocao)
     {
         //
     }
@@ -73,10 +64,10 @@ class MatriculaController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Matricula  $matricula
+     * @param  \App\Promocao  $promocao
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Matricula $matricula)
+    public function update(Request $request, Promocao $promocao)
     {
         //
     }
@@ -84,24 +75,11 @@ class MatriculaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Matricula  $matricula
+     * @param  \App\Promocao  $promocao
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Matricula $matricula)
+    public function destroy(Promocao $promocao)
     {
         //
-    }
-
-    public function confirmacaoAtividades(Request $request){
-        $valor=0;
-        $turmas=TurmaController::csvTurmas($request->atividades);
-        foreach($turmas as $turma){
-            $valor=$valor+str_replace(',', '.',$turma->valor);
-        }
-
-        //return $turmas;
-
-        return view('secretaria.matricula.confirma-atividades')->with('turmas',$turmas)->with('valor',$valor);
-
     }
 }

@@ -324,6 +324,8 @@ class PessoaController extends Controller
 		if(!loginController::check())
 			return redirect(asset("/"));
 		$pessoa=$this->dadosPessoa($id);
+
+		//return $pessoa;
 		return view('pessoa.mostrar', compact('pessoa'));
 
 	}
@@ -853,13 +855,18 @@ class PessoaController extends Controller
 
 	public function addDependente_view($pessoa)
 	{
-		return View('pessoa.adicionar-dependente')->with('pessoa',$pessoa);
+		return View('pessoa.dependente.adicionar-dependente')->with('pessoa',$pessoa);
 
 	}
-	public function addDependente_exec(Request $r)
+	public function addDependente_exec($pessoa,$dependente)
 	{
-		$pessoa=$this->dadosPessoa($r->pessoa);
-		return view('pessoa.mostrar')->with('pessoa',$pessoa)->with('dados',$dados);
+		$pessoa=$this->dadosPessoa($pessoa);
+		$dado= new PessoaDadosGerais;
+		$dado->pessoa=$pessoa->id;
+		$dado->dado=7;
+		$dado->valor=$dependente;
+		$dado->save();
+		return redirect(asset('/pessoa/mostrar/'.$pessoa->id));
 
 	}
 	public function remDependente_exec(Request $r)

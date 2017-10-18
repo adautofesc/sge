@@ -85,6 +85,9 @@ class TurmaController extends Controller
 
 
         ]);
+
+
+
         $turma=new Turma;
         $turma->programa=$request->programa;
         $turma->curso=$request->curso;
@@ -100,6 +103,8 @@ class TurmaController extends Controller
         $turma->vagas=$request->vagas;
         $turma->atributos=$request->atributo;
         $turma->status=1;
+        //return $turma->dias_semana;
+
         $turma->save();
         return $this->index();
     }
@@ -289,6 +294,19 @@ class TurmaController extends Controller
 
         return view('secretaria.matricula.turmas-escolhidas', compact('turmas'))->with('valor',$valor)->with('parcelas',$parcelas);
 
+    }
+    public static function csvTurmas($lista='0'){
+        $turmas=collect();
+        $valor=0;
+        $parcelas=4;
+        $lista=explode(',',$lista);
+        foreach($lista as $turma){
+            if(is_numeric($turma)){
+                if(Turma::find($turma))
+                    $turmas->push(Turma::find($turma));
+            }
+        }
+        return $turmas->sortBy('hora_inicio');
 
     }
 

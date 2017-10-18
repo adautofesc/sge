@@ -54,7 +54,7 @@
     </div>
 </div>
                     
-<form name="item" class="form-inline">
+<form name="item" class="form-inline" method="post" action="../confirmacao">
 	<section class="section">
     <div class="row ">
         <div class="col-xl-12">
@@ -71,9 +71,6 @@
                     <!-- Tab panes -->
                     <div class="tab-content tabs-bordered" id="turmas">
                         <!-- Tab panes ******************************************************************************** -->
-                        
-                        
-
                     </div>
                 </div>
                 <!-- /.card-block -->
@@ -85,13 +82,14 @@
         <!-- /.col-xl-6 -->
     </div>
 </section>
+<input type="hidden" name="atividades" value="" id="idatividades">
 
 <div class="card-block">
-	<a class="btn btn-primary" href="matricula_confirma_cursos.php">Avançar</a>
+	<button type="submit" class="btn btn-primary" href="matricula_confirma_cursos.php">Avançar</button>
 	
-	<button class="btn btn-secondary">Limpar</button>
+	<button type="reset" class="btn btn-secondary" onclick="recomecar();" >Limpar</button>
 </div>
-
+{{ csrf_field() }}
 </form>
 @endsection
 @section('scripts')
@@ -122,6 +120,7 @@ function listar(itens_atuais){
 
     $('#turmas').load('{{asset('/secretaria/turmas-disponiveis')}}/'+itens_atuais+'/0');
      $('#itens_escolhidos').load('{{asset('/secretaria/turmas-escolhidas')}}/'+itens_atuais+'');
+     $('#idatividades').val(itens_atuais);
 
     /*
     $.ajax({
@@ -135,9 +134,10 @@ function listar(itens_atuais){
     });
     */
 }
-function hoho() {
+function recomecar() {
     // body...
-    console.log('Hoho');
+    itens=0;
+    listar(0);
 }
 </script>
 

@@ -16,7 +16,7 @@ class CreateDisciplinasTable extends Migration
         Schema::create('disciplinas', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nome',150);
-            $table->enum('programa',['PID','UATI','UNIT','EMG']);
+            $table->unsignedInteger('programa');
             $table->string('desc',300);
             $table->unsignedInteger('vagas');
             $table->unsignedInteger('carga');

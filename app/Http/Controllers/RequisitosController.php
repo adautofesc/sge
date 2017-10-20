@@ -158,6 +158,8 @@ class RequisitosController extends Controller
             if(isset($r->obrigatorio))
                 if(in_array($requisito, $r->obrigatorio))
                     $reqcur->obrigatorio=1;
+                else
+                    $reqcur->obrigatorio=0;
             /*
             if($r->obrigatorio[$requisito]==1)
                 $reqcur->obrigatorio=1;

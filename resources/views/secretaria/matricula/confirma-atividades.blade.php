@@ -69,6 +69,45 @@
 </div>
 <br>
 <div class="title-block center">
+    <h3 class="title">
+        Requisitos para realização das atividades selecionadas
+    </h3>
+</div>
+
+<div class="card card-block">
+
+        <p> Para sua segurança e para melhor aproveitamento e andamento das atividades propostas, precisamos que os seguintes requisitos sejam atendidos:</p>
+
+
+        <div class="form-group row"> 
+            <label class="col-sm-2 form-control-label text-xs-right">Requisitos</label>
+            <div class="col-sm-10"> 
+                @foreach($turmas as $turma)
+                    <p>{{$turma->curso->nome}}</p>
+                    @foreach($turma->curso->requisitos as $requisito)
+                            
+                            <div>
+                                <label>
+                                <input class="checkbox" name="atributo[]" value="P" type="checkbox">
+                                <span>{{$requisito->requisito}}
+                                @if($requisito->obrigatorio)
+                                 (Obrigatório)
+                                 @endif
+
+                                </span>
+                                </label>
+                            </div>
+                        
+                       
+                     
+                    @endforeach
+                @endforeach
+                 
+            </div>
+        </div>
+</div>
+<br>
+<div class="title-block center">
                         <h3 class="title"> Plano financeiro & Descontos <span class="sparkline bar" data-type="bar"></span> </h3>
                     </div>
                     <div class="subtitle-block">
@@ -83,15 +122,13 @@
                                     Desconto
                                 </label>
                                 <div class="col-sm-6"> 
-                                    <select class="c-select form-control boxed">
-                                        <option selected>Selecione para ativar</option>
-                                        <option value="3">Bolsa de estudos</option>
-                                        <option value="1">Convide um amigo e ganhe 10% na matrícula</option>
-                                        <option value="2">Piscina com 10% para alunos de outros cursos</option>
-                                        <option value="3">Rematrícula</option>
-                                        <option value="1">Aluno da EMG (precisa estar no cadastro)</option>
-                                        <option value="2">Parceria (precisa estar autorizado pela parceria)</option>
-                                        <option value="3">Encaminhamento (será verificado pela administração)</option>
+                                    <select class="c-select form-control boxed" onchange="desconto(this);">
+                                        <option value="0" selected>Selecione para ativar</option>
+                                        @foreach($descontos as $desconto)
+                                        <option value="{{$desconto->id}}">{{$desconto->nome}}</option>
+                                        @endforeach
+                                       
+
                                     </select> 
                                 </div>
                             </div>
@@ -105,7 +142,7 @@
                                 <div class="col-sm-2"> 
                                     <div class="input-group">
                                         <span class="input-group-addon">% </span> 
-                                        <input type="number" class="form-control boxed" placeholder=""> 
+                                        <input type="number" class="form-control boxed" placeholder="" id="porcentagem" readonly> 
                                     </div>
                                 </div>
                                 <label class="col-sm-1 form-control-label text-xs-right">
@@ -114,7 +151,7 @@
                                 <div class="col-sm-2"> 
                                     <div class="input-group">
                                         <span class="input-group-addon">R$</span> 
-                                        <input type="number" class="form-control boxed" placeholder=""> 
+                                        <input type="number" class="form-control boxed" placeholder="" id="valor" readonly> 
                                     </div>
                                 </div>
                                 
@@ -127,7 +164,7 @@
                                 <div class="col-sm-2"> 
                                     <div class="input-group">
                                         
-                                        <input type="number" class="form-control boxed" placeholder=""> 
+                                        <input type="number" class="form-control boxed" value='1' name='nparcelas' id="nparcelas"> 
                                         <span class="input-group-addon">Vezes</span> 
                                     </div>
                                 </div>
@@ -135,14 +172,14 @@
                                    
                                 </div>
                                 <div class="col-sm-2">
-                                    <buttom class="btn btn-primary" >Aplicar</buttom>
+                                    <buttom class="btn btn-primary" onclick="aplicarPlano();" >Aplicar</buttom>
                                 </div>
    
                             </div>
                             <div class="subtitle-block">
                             </div>
                             <div class="subtitle-block">
-                                <p>Saldo total: <b>5</b> parcela(s) de <small>R$</small> <b>100,00</b> = <small>R$</small> <b>500,00</b></p>
+                                <p>Saldo total: <b id="parcelas">1</b> parcela(s) de <small>R$</small> <b><span id="saldo_final_parcelado">{{$valor}}</span></b> = <small>R$</small> <b><span id="saldo_final">{{$valor}}</span></b></p>
                             </div>
                                 
                             <div class="form-group row">
@@ -157,4 +194,56 @@
                            </div>
                         </div>
                     </form>
+@endsection
+@section('scripts')
+<script>
+
+function desconto(item){
+    console.log(item.value);
+
+    if(item.value==0){
+       $('#porcentagem').val(0)
+        $('#valor').val(0);
+        valor_desc=0;
+
+    }
+    @foreach($descontos as $desconto)
+    if(item.value=={{$desconto->id}}){
+        tipo='{{$desconto->tipo}}';
+        valor_desc={{$desconto->valor}};
+    }
+    @endforeach
+
+    if(tipo=="p"){
+        $('#porcentagem').val(valor_desc);
+        $('#valor').val(0);}
+    else{
+        $('#porcentagem').val(0)
+        $('#valor').val(valor_desc);
+    }
+
+
+}
+function aplicarPlano(){
+    if($('#nparcelas').val()<1){
+        alert('Numero de parcelas inválido.');
+        
+    }
+    else{
+        saldo={{$valor}};
+        saldo=saldo-(saldo*$('#porcentagem').val()/100);
+        saldo=saldo-$('#valor').val();
+        $('#saldo_final_parcelado').html(parseFloat(Math.round(saldo/$('#nparcelas').val() * 100) / 100).toFixed(2)); 
+        $('#saldo_final').html(saldo+',00'); 
+        $('#parcelas').html($('#nparcelas').val());
+    }
+
+    
+    
+
+
+}
+
+</script>
+
 @endsection

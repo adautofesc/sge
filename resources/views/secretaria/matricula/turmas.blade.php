@@ -6,7 +6,7 @@
 
 @include('inc.errors')
 <div class="subtitle-block">
-    <h3 class="subtitle"><small>De: </small> Adauto Junior</h3>
+    <h3 class="subtitle"><small>De: </small> {{$pessoa->nome}}</h3>
 </div>
 <div class="card card-block">
     <!-- Nav tabs -->

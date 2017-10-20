@@ -869,10 +869,13 @@ class PessoaController extends Controller
 		return redirect(asset('/pessoa/mostrar/'.$pessoa->id));
 
 	}
-	public function remDependente_exec(Request $r)
+	public function remVinculo_exec($vinculo)
 	{
-		$pessoa=$this->dadosPessoa($r->pessoa);
-		return view('pessoa.mostrar')->with('pessoa',$pessoa)->with('dados',$dados);
+		$vinculo=PessoaDadosGerais::find($vinculo);
+		$pessoa=$vinculo->pessoa;
+		$vinculo->delete();
+		
+		return redirect(asset('/pessoa/mostrar/'.$pessoa));
 
 	}
 	public function addResponsavel_view($pessoa)

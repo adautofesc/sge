@@ -44,6 +44,7 @@ class Turma extends Model
 	}
 	public function getCursoAttribute($value){
 		$curso=Curso::where('id',$value)->get(['id','nome','carga'])->first();
+		$curso->requisito();
 		return $curso;
 	}
 	public function getLocalAttribute($value){	

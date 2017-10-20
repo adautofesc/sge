@@ -105,25 +105,10 @@ class CursoController extends Controller
         if(!count($curso))
              return redirect(asset('/pedagogico/cursos')); 
 
-        switch($curso->programa){
-            case "EMG" :
-                $curso->emg="selected";
-            break;
-            case "PID" :
-                $curso->pid="selected";
-            break;
-            case "UATI" :
-                $curso->uati="selected";
-            break;
-            case "UNIT" :
-                $curso->unit="selected";
-            break;
-
-        }
         if(DisciplinaController::disciplinasDoCurso($id))
             $curso->disciplinas=DisciplinaController::disciplinasDoCurso($id);
-        if($this->requisitos($id))
-            $curso->requisitos=$this->requisitos($id);
+        //if($this->requisitos($id))
+           // $curso->requisitos=$this->requisitos($id);
 
         //return $curso;
         

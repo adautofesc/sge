@@ -15,4 +15,8 @@ class CursoRequisito extends Model
     public function requisito(){
     	return $this->hasMany('App\Requisitos','requisito');
     }
+	public function getRequisitoAttribute($value){
+		$requisito=Requisito::find($value);
+		return $requisito->nome;
+	}
 }

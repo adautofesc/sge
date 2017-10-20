@@ -18,6 +18,8 @@ class DisciplinaController extends Controller
     public function index(Request $r = Request)
     {
         //return $disciplinas=$this->disciplinas();
+
+        //return $this->disciplinas();
         return view('pedagogico.curso.disciplina.listar')->with(array('disciplinas'=>$this->disciplinas($r->buscar)));
     }
 

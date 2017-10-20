@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Matricula;
 use App\Turma;
 use App\Programa;
+use App\Desconto;
+use App\Pessoa;
 use Illuminate\Http\Request;
 
 class MatriculaController extends Controller
@@ -18,11 +20,12 @@ class MatriculaController extends Controller
     {
         //
     }
-    public function novaMatricula($pessoa){
+    public function novaMatricula($id_pessoa){
         $turmas=Turma::orderBy('curso')->get();
+        $pessoa=Pessoa::find($id_pessoa);
        
         $programas=Programa::all();
-        return view('secretaria.matricula.turmas',compact('turmas'))->with('programas',$programas);
+        return view('secretaria.matricula.turmas',compact('turmas'))->with('programas',$programas)->with('pessoa',$pessoa);
 
     }
 
@@ -98,10 +101,11 @@ class MatriculaController extends Controller
         foreach($turmas as $turma){
             $valor=$valor+str_replace(',', '.',$turma->valor);
         }
+        $descontos=Desconto::all();
 
         //return $turmas;
 
-        return view('secretaria.matricula.confirma-atividades')->with('turmas',$turmas)->with('valor',$valor);
+        return view('secretaria.matricula.confirma-atividades')->with('turmas',$turmas)->with('valor',$valor)->with('descontos',$descontos);
 
     }
 }

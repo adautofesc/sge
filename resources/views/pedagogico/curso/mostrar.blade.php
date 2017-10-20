@@ -83,7 +83,7 @@
 										<ul>
 									@foreach($curso->requisitos as $requisito)
 
-										<li> {{ $requisito->nome}}</li>
+										<li> {{ $requisito->requisito}}</li>
 									@endforeach
 										</ul>
 									@else

@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\PessoaDadosAcesso;
 
 class recuperarSenha extends Mailable
 {
@@ -18,10 +19,10 @@ class recuperarSenha extends Mailable
      *
      * @return void
      */
-    public function __construct($senha)
+    public function __construct($id_pessoa)
     {
         //
-        $this->senha_nova = $senha;
+        $this->pessoa =$id_pessoa;
     }
 
     /**
@@ -31,7 +32,17 @@ class recuperarSenha extends Mailable
      */
     public function build()
     {
-        $senha_nova=['senha'=>$this->senha_nova]
-        return $this->view('emails.recuperasenha', compact('senha_nova'));
+        $acesso=PessoaDadosAcesso::where('pessoa', $this->pessoa)->first();
+        if($acesso->remember_token==''){
+            $custo=15;
+            $salt='BpuKl267TczRgPlkm7R6VB';
+            $hash=crypt($usuario->login,'$2a$'.$custo.'$'.$salt.'$');
+            $acesso->remember_token=$hash;
+            $acesso->save();
+        }
+
+        $token=urlencode($acesso->remember_token);
+
+        return $this->view('emails.recuperasenha', compact('token'));
     }
 }

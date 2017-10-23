@@ -59,19 +59,9 @@
     <div class="row ">
         <div class="col-xl-12">
             <div class="card sameheight-item">
-                <div class="card-block">
+                <div class="card-block" id="turmas">
                     <!-- Nav tabs -->  
-                    <ul class="nav nav-tabs nav-tabs-bordered ">
-                         @foreach($programas as $programa)
-                            <li class="nav-item">
-                                <a href="" class="nav-link {{$programa->id==1?'active':''}}" data-target="#{{$programa->sigla}}" aria-controls="{{$programa->sigla}}" data-toggle="tab" role="tab">{{$programa->sigla}}</a> 
-                            </li>
-                         @endforeach
-                    </ul>
-                    <!-- Tab panes -->
-                    <div class="tab-content tabs-bordered" id="turmas">
-                        <!-- Tab panes ******************************************************************************** -->
-                    </div>
+                    
                 </div>
                 <!-- /.card-block -->
             </div>

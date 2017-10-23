@@ -44,10 +44,18 @@
                             <div class="form-group"> <label for="username">Login</label> <input type="text" class="form-control underlined" name="login" id="username" placeholder="Digite aqui seu nome de usuário" required> </div>
                             <div class="form-group"> <label for="password">Senha</label> <input type="password" class="form-control underlined" name="senha" id="password" placeholder="Sua senha" required> </div>
                             <div class="form-group"> <label for="remember">
-            <input class="checkbox" id="remember" type="checkbox"> 
+            <input class="checkbox" name="lembrar_senha" id="remember" type="checkbox"> 
             <span>Lembrar</span>
           </label> <a href="/esqueciasenha" class="forgot-btn pull-right">Esqueci a senha</a> </div>
-                            <div class="form-group"> <button type="submit" class="btn btn-block btn-primary">Entrar</button> </div>
+                            <div class="form-group"> <button type="submit" class="btn btn-block btn-primary">Entrar</button>
+                            @if(isset($nome))
+                            <br>
+                            <p>Entrar com login salvo:</p>
+                            <button type="button" onclick="location.replace('/loginSaved');"class="btn btn-block btn-secondary">{{$nome}}</button> 
+                            @endif
+
+
+                            </div>
                             <div class="form-group">
                                 <p class="text-muted text-xs-center">Não tem cadastro? Solicite na FESC 1</p>
                             </div>

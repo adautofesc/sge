@@ -13,6 +13,8 @@
 
 Route::get('/', 'painelController@index');
 Route::get('login', 'loginController@login')->name('login');
+Route::get('loginSaved', 'loginController@loginSaved')->name('loginSaved');
+Route::get('recuperarconta/{var}','loginController@recuperarConta');
 
 
 

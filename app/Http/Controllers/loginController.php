@@ -24,8 +24,36 @@ class loginController extends Controller
 	/*
 	Metodo de fazer o login - deverá ser futuramente ser trocado pelo Auth
 	*/
-	public function login(){
+	public static function login(){
+		
+		if(isset($_COOKIE['sge_token'])){
+			$usuario=PessoaDadosAcesso::where('remember_token',$_COOKIE['sge_token'])->first();
+			if(count($usuario)==1){
+				$usuario= Pessoa::where('id',$usuario->pessoa)->first();
+				return view('login')->with('nome', $usuario->nome_simples);
+			}
+
+		}
 		return view('login');
+	}
+	public function loginSaved(){
+		$usuario=PessoaDadosAcesso::where('remember_token',$_COOKIE['sge_token'])->first();
+		Session::put('sge_fesc_logged','yes');
+		Session::put('usuario',$usuario->pessoa);
+		$pessoa=Pessoa::where('id',$usuario->pessoa)->first();
+		Session::put('nome_usuario', $pessoa->nome_simples);	
+		return redirect(asset('/'));
+
+	}
+
+	public function recuperarConta($given_token){
+		$usuario=PessoaDadosAcesso::where('remember_token', urldecode($given_token))->first();
+		if($usuario)
+			return view('pessoa.trocar-senha');
+		else
+			return "Token inválida";
+
+
 	}
     public function loginCheck(Request $request)
     {
@@ -38,6 +66,7 @@ class loginController extends Controller
 		/*
 		Session::put('sge_fesc_logged','yes');
 		return redirect('/');*/
+
 
 		$usuario=PessoaDadosAcesso::where('usuario',$request->login)->first();
 
@@ -63,6 +92,19 @@ class loginController extends Controller
 
 					}
 					else{
+						if(isset($request->lembrar_senha)){
+							$custo=11;
+							$salt='BpuKl267TczRgPlkm7R6VV';
+							$hash=crypt($usuario->login,'$2a$'.$custo.'$'.$salt.'$');
+							setcookie('sge_token',$hash,time()+3600*24*7);
+							$usuario->remember_token=$hash;
+							$usuario->save();
+
+						}
+						else{
+							if(isset($_COOKIE['sge_token']))
+								setcookie('sge_token');
+						}
 						Session::put('sge_fesc_logged','yes');
 						Session::put('usuario',$usuario->pessoa);	
 						$usuario= Pessoa::where('id',$usuario->pessoa)->first();
@@ -104,8 +146,8 @@ class loginController extends Controller
 		else{
 
 			$novasenha = keyGen::generate();
-			//Mail::to($usuario->valor)->send(new recuperarSenha($senha)); //Envia email
-			$erros_bd= ['Desculpe, este recurso ainda está em desenvolvimento. Contate a FESC para reiniciar sua senha.'];
+			Mail::to($usuario->valor)->send(new recuperarSenha($usuario->pessoa)); //Envia email
+			$erros_bd= ['Acesse seu email para recuperar o acesso à sua conta.'];
 			return view('login_esqueci_senha', compact('erros_bd'));
 		}		
 	}

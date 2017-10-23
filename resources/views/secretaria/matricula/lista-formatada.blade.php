@@ -1,4 +1,14 @@
-@foreach($programas as $programa)
+<ul class="nav nav-tabs nav-tabs-bordered ">
+                         @foreach($programas as $programa)
+                            <li class="nav-item">
+                                <a href="" class="nav-link {{$programa->id==1?'active':''}}" data-target="#{{$programa->sigla}}" aria-controls="{{$programa->sigla}}" data-toggle="tab" role="tab">{{$programa->sigla}}</a> 
+                            </li>
+                         @endforeach
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content tabs-bordered">
+                        <!-- Tab panes ******************************************************************************** -->
+                    @foreach($programas as $programa)
 <!-- tab {{$programa->sigla}} ********************************************************-->
 <div class="tab-pane fade in {{$programa->id==1?'active':''}}"  id="{{$programa->sigla}}">
     <h4>{{$programa->nome}}</h4>
@@ -84,4 +94,6 @@
     </section>
 </div>
 @endforeach
+</div>
+
 

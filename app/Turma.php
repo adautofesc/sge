@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Turma extends Model
 {
 
-	protected $appends=['texto_status','icone_status'];
+	protected $appends=['texto_status','icone_status','tempo_curso'];
 
 	public function setDiasSemanaAttribute($value){
 		$this->attributes['dias_semana']= implode(',',$value);
@@ -101,6 +101,14 @@ class Turma extends Model
 				return "question-circle";
 				break;
 		}//end switch
+	}
+	public function getTempoCursoAttribute($value){
+		$dt_i=Carbon::createFromFormat('d/m/Y', $this->data_inicio);
+		$dt_t=Carbon::createFromFormat('d/m/Y', $this->data_termino);
+		$diference=$dt_i->diffInMonths($dt_t);
+		$diference++;
+		return $diference;
+
 	}
 
 

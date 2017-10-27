@@ -18,22 +18,35 @@
      
         <div class="col" >
             <div class="title">Seg.</div>
-            <div class="box-placeholder">9:00 ~ 9:50<br>Alongamento<br><small>Adilson</small></div>
-            <div class="box-placeholder">9:00 ~ 10:00<br>Alongamento<br><small>Adilson</small></div>
-        </div>
+            <div class="box-placeholder">
+                9:00 ~ 09:50 - Alongamento - <small>Adilson</small><br>
+                9:00 ~ 10:00 - Alongamento - <small>Adilson</small>
+            </div>
+            </div>
+        
+    </div>
+    <div class="row">
         <div class="col">
             <div class="title">Ter.</div>
             <div class="box-placeholder">9:00<br>Alongamento<br><small>Adilson</small></div>
         </div>
+    </div>
+    <div class="row">
         <div class="col">
             <div class="title">Qua.</div>
         </div>
+    </div>
+    <div class="row">
         <div class="col">
             <div class="title">Qui.</div>
         </div>
+    </div>
+    <div class="row">
         <div class="col">
             <div class="title">Sex.</div>
         </div>
+    </div>
+    <div class="row">
         <div class="col">
             <div class="title">Sab.</div>
         </div>

@@ -140,7 +140,7 @@ class TurmaController extends Controller
             $dados->put('professores',$professores);
             $dados->put('unidades',$unidades);
             $turma->data_iniciov=Data::converteParaBd($turma->data_inicio);
-            $turma->data_terminov=Data::converteParaBd($turma->data_inicio);
+            $turma->data_terminov=Data::converteParaBd($turma->data_termino);
 
             //return $turma;
 

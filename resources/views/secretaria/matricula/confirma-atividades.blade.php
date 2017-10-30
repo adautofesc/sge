@@ -20,7 +20,7 @@
             <div class="title">Seg.</div>
             @foreach($turmas as $turma)
             @if(in_array('seg',$turma->dias_semana))
-            <div class="box-placeholder" href="#{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            <div class="box-placeholder turma{{$turma->id}}" href="#{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
             @endforeach
         </div>
@@ -30,7 +30,7 @@
             <div class="title">Ter.</div>
             @foreach($turmas as $turma)
             @if(in_array('ter',$turma->dias_semana))
-            <div class="box-placeholder">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
             @endforeach
             
@@ -41,7 +41,7 @@
             <div class="title">Qua.</div>
             @foreach($turmas as $turma)
             @if(in_array('qua',$turma->dias_semana))
-            <div class="box-placeholder">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
             @endforeach
         </div>
@@ -51,7 +51,7 @@
             <div class="title">Qui.</div>
             @foreach($turmas as $turma)
             @if(in_array('qui',$turma->dias_semana))
-            <div class="box-placeholder">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
             @endforeach
         </div>
@@ -61,7 +61,7 @@
             <div class="title">Sex.</div>
             @foreach($turmas as $turma)
             @if(in_array('sex',$turma->dias_semana))
-            <div class="box-placeholder">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
             @endforeach
         </div>
@@ -71,14 +71,14 @@
             <div class="title">Sab.</div>
             @foreach($turmas as $turma)
             @if(in_array('sab',$turma->dias_semana))
-            <div class="box-placeholder">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
             @endforeach
         </div>
     </div>
 </div>
 <br>
-<form name="item" method="POST">
+<form name="item" method="POST" action="gravar">
 <div class="card card-danger">
 
     <div class="card-header">
@@ -140,7 +140,7 @@
             @foreach($turma->curso->requisitos as $requisito)          
                 <div>
                     <label>
-                    <input class="checkbox" name="atributo[]" value="P" type="checkbox">
+                    <input class="checkbox" name="atributo[]" value="P" type="checkbox" required>
                     <span>{{$requisito->requisito}}
                     @if($requisito->obrigatorio)
                      (Obrigatório)
@@ -192,7 +192,7 @@
             <div class="col-sm-2"> 
                 <div class="input-group">
                     
-                    <input type="number" class="form-control boxed" value='{{$turma->tempo_curso}}' name='nparcelas{{$turma->id}}' id="nparcelas{{$turma->id}}"> 
+                    <input type="number" class="form-control boxed" value='{{$turma->tempo_curso}}' name='nparcelas{{$turma->id}}' id="nparcelas{{$turma->id}}" required> 
                     <span class="input-group-addon">Vezes</span> 
                 </div>
             </div>
@@ -200,7 +200,7 @@
                 Dia de vencimento
             </label>
             <div class="col-sm-2"> 
-                <input type="number" class="form-control boxed" value='7' name='dvencimento{{$turma->id}}'>  
+                <input type="number" class="form-control boxed" value='7' name='dvencimento{{$turma->id}}' required>  
             </div>
 
             <div class="col-sm-2">
@@ -211,12 +211,13 @@
         <div class="subtitle-block">
         </div>
         <div class="subtitle-block">
-            <p>Saldo: <b id="parcelas{{$turma->id}}">{{$turma->tempo_curso}}</b> parcela(s) de <small>R$</small> <b><span id="saldo_final_parcelado{{$turma->id}}">{{$valor/$turma->tempo_curso}}</span></b> = <small>R$</small> <b><span id="saldo_final{{$turma->id}}">{{$valor}}</span></b></p>
+            <p>Saldo: <b id="parcelas{{$turma->id}}">{{$turma->tempo_curso}}</b> parcela(s) de <small>R$</small> <b><span id="saldo_final_parcelado{{$turma->id}}">{{str_replace(',', '.', $turma->valor)/$turma->tempo_curso}}</span></b> = <small>R$</small> <b><span id="saldo_final{{$turma->id}}">{{$turma->valor}}</span></b></p>
         </div>
 </div>
 </div>
+<input type="hidden" id="turma{{$turma->id}}" name="turmas[]" value="{{$turma->id}}">
 @endforeach
-
+{{ csrf_field() }}
 
 
                     
@@ -227,8 +228,8 @@
                                 
                             <div class="form-group row">
                                 <div class="col-sm-10 col-sm-offset-2">
-                                    <a href="disciplinas_show.php?" class="btn btn-primary">Finalizar Matrícula</a> 
-                                    <a href="pessoas_aluno_atendimento.php" class="btn btn-secondary">Cancelar</a> 
+                                    <button type="submit" onclick="valida();"class="btn btn-primary">Finalizar Matrícula</button> 
+                                    <a href="{{asset('/secretaria/atender')}}" class="btn btn-secondary">Cancelar</a> 
                                     <!-- 
                                     <button type="submit" class="btn btn-primary"> Cadastrar</button> 
                                     -->
@@ -287,7 +288,9 @@ function aplicarPlano(id,valor){
 
 }
 function rmItem(id){
-    console.log("hello");
+    //console.log("hello");
+    $('#turma'+id).val('0');
+    $('.turma'+id).hide();
     var node=$("#"+id);
     if (node.parentNode) {
         node.parentNode.removeChild(node);
@@ -298,6 +301,17 @@ function rmItem(id){
     }
 
 
+}
+function valida(){
+    
+    //event.preventDefault();
+    if($("input[type=checkbox]:checked").length!=$("input[type=checkbox]").length){
+        alert("Todos requisitos devem ser marcados para confirmar a matrícula");
+        return false;
+    }    
+    document.forms[0].submit();
+ 
+    return false;
 }
 
 </script>

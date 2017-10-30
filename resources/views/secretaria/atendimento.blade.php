@@ -72,7 +72,7 @@
 											</div>
 										</div>
 										<div class="card-block">
-											<div><a href="{{asset('/secretaria/matricula/nova'.'/'.$pessoa->id)}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-plus-circle "></i>  Nova Matrícula</a></div>
+											<div><a href="{{asset('/secretaria/matricula/nova')}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-plus-circle "></i>  Nova Matrícula</a></div>
 											<div><a href="pessoas_add.php" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-check-square-o"></i> Efetivar Matrícula</a></div>
 											<div><a href="pessoas_add.php" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-times-circle"></i> Cancelar Matrícula</a></div>
 											<div><a href="pessoas_add.php" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-times"></i> Cancelar curso</a></div>

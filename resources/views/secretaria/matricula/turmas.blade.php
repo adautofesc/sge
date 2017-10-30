@@ -67,7 +67,7 @@
     </div>
 </div>
                     
-<form name="item" class="form-inline" method="post" action="../confirmacao">
+<form name="item" class="form-inline" method="post" action="./confirmacao">
 	<section class="section">
     <div class="row ">
         <div class="col-xl-12">
@@ -86,7 +86,6 @@
     </div>
 </section>
 <input type="hidden" name="atividades" value="" id="idatividades">
-
 <div class="card-block">
 	<button type="submit" class="btn btn-primary" href="matricula_confirma_cursos.php">Avançar</button>
 	

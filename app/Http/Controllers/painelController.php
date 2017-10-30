@@ -70,7 +70,10 @@ class painelController extends Controller
         return view('pedagogico.home');
     }
     public function secretaria(){
-        return view('secretaria.home');
+        if(isset($_COOKIE['pessoa_atendimento']))
+            $pessoa=$_COOKIE['pessoa_atendimento'];
+
+        return view('secretaria.home')->with('pessoa',$pessoa);
     }
     public function salasDaUnidade($unidade){
         $salas=Local::where('unidade', 'like', '%'.$unidade.'%')->get();

@@ -17,10 +17,13 @@ class CreateMatriculasTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('pessoa');
             $table->unsignedInteger('atendente');
-            $table->string('status',2);
+            $table->string('status',2)->default('p');
             $table->string('forma_pgto',1);
             $table->unsignedInteger('parcelas');
+            $table->unsignedInteger('dia_venc');
             $table->unsignedInteger('resp_financeiro')->nullable();
+            $table->string('contrato',1);
+            $table->string('termo',1);
             $table->timestamps();
             $table->foreign('pessoa')->references('id')->on('pessoas')->onDelete('restrict')->onUpdate('cascade');
             $table->foreign('atendente')->references('id')->on('pessoas')->onDelete('restrict')->onUpdate('cascade');

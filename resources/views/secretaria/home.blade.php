@@ -19,10 +19,17 @@
                     </div>
                 </div>
                 <div class="card-block">
+                    @if(isset($pessoa))
                     <div>
                         <a href="/secretaria/atender" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Atendimento</a>
+                        &nbsp;&nbsp;Retomar Atendimento</a>
+                    </div>
+                    @endif
+                    <div>
+                        <a href="/secretaria/pre-atendimento" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Novo Atendimento</a>
                     </div>
                     <div>
                         <a href="/pessoa/cadastrar" class="btn btn-primary-outline col-xs-12 text-xs-left">

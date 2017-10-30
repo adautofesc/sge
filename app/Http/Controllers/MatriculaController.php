@@ -8,6 +8,7 @@ use App\Programa;
 use App\Desconto;
 use App\Pessoa;
 use Illuminate\Http\Request;
+use App\Atendimento;
 
 class MatriculaController extends Controller
 {
@@ -20,7 +21,11 @@ class MatriculaController extends Controller
     {
         //
     }
-    public function novaMatricula($id_pessoa){
+    public function novaMatricula(){
+        if(isset($_COOKIE['pessoa_atendimento']))
+            $id_pessoa=$_COOKIE['pessoa_atendimento'];
+        else
+            return redirect(asset('/secretaria/pre-atendimento'));
         $turmas=Turma::orderBy('curso')->get();
         $pessoa=Pessoa::find($id_pessoa);
        
@@ -45,9 +50,39 @@ class MatriculaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function gravar(Request $request)
     {
-        //
+        if(!isset($_COOKIE['pessoa_atendimento']))
+            return redirect(asset('/secretaria/pre-atendimento'));
+        $matriculas=collect();
+        foreach($request->turmas as $turma){
+            $matricula=new Matricula();
+            $matricula->pessoa=$_COOKIE['pessoa_atendimento'];
+            $matricula->atendimento=$_COOKIE['atendimento'];
+            $matricula->forma_pgto="b";
+            $parcelas="nparcelas".$turma;
+            $matricula->parcelas=$request->$parcelas;
+            $venc="dvencimento".$turma;
+            $matricula->dia_venc=$request->$venc;
+            $matricula->save();
+            $matriculas->push($matricula);
+
+        }
+
+        $atendimento=Atendimento::find($_COOKIE['atendimento']);
+        $atendimento->descricao="Matricula(s)";
+        $atendimento->save();
+
+        if(isset($_COOKIE['atendimento'])){
+            
+            setcookie('atendimento',null,time()-3600,"/atendimento");
+            unset($_COOKIE['atendimento']);
+        }
+
+
+
+        return $matriculas;
+
     }
 
     /**
@@ -96,7 +131,13 @@ class MatriculaController extends Controller
     }
 
     public function confirmacaoAtividades(Request $request){
-        $valor=0;
+        if(!isset($_COOKIE['pessoa_atendimento'])){
+            return redirect(asset('/secretaria/pre-atendimento'));
+
+        }
+        $pessoa=Pessoa::find($_COOKIE['pessoa_atendimento']);
+        $valor=0; 
+
         $turmas=TurmaController::csvTurmas($request->atividades);
         foreach($turmas as $turma){
             $valor=$valor+str_replace(',', '.',$turma->valor);

@@ -15,6 +15,12 @@ Route::get('/', 'painelController@index');
 Route::get('login', 'loginController@login')->name('login');
 Route::get('loginSaved', 'loginController@loginSaved')->name('loginSaved');
 Route::get('recuperarconta/{var}','loginController@recuperarConta');
+Route::post('loginCheck', 'loginController@loginCheck');
+Route::get('loginCheck', 'loginController@logout');
+Route::get('esqueciasenha', 'loginController@viewPwdRescue');
+Route::get('logout','loginController@logout');
+Route::post('recuperaSenha','loginController@pwdRescue');
+Route::get('recuperaSenha','loginController@viewPwdRescue');
 
 
 
@@ -93,17 +99,19 @@ Route::middleware('login') ->group(function(){
 	Route::prefix('secretaria')->group(function(){
 		
 		Route::get('/','painelController@secretaria')->name('secretaria');
-		Route::get('atender','SecretariaController@iniciarAtendimento')->name('secretaria.atender');
+		Route::get('pre-atendimento','SecretariaController@iniciarAtendimento');
+		Route::get('atendimento','SecretariaController@atender');
+		Route::get('atender','SecretariaController@atender')->name('secretaria.atender');
 		Route::get('atender/{var}','SecretariaController@atender');
-		
 		Route::get('turmas', 'TurmaController@listarSecretaria')->name('secretaria.turmas');
 		Route::get('turmas-disponiveis/{turmas}/{filtros}', 'TurmaController@turmasDisponiveis');
 		Route::get('turmas-escolhidas/{turmas}/', 'TurmaController@turmasEscolhidas');
 
 		Route::prefix('matricula')->group(function(){
-			Route::get('/nova/{var}','MatriculaController@novaMatricula');
+			Route::get('/nova','MatriculaController@novaMatricula');
+			Route::get('/confirmacao', function(){ return redirect(asset('/secretaria/atender')); });
 			Route::post('/confirmacao', 'MatriculaController@confirmacaoAtividades');
-			Route::post('gravar', 'MatriculaController@gravarMatricula');
+			Route::post('gravar', 'MatriculaController@gravar');
 		});
 
 
@@ -156,12 +164,7 @@ Route::middleware('login') ->group(function(){
 	Route::get('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_view');
 	Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec');
 });//end middleware login
-Route::post('loginCheck', 'loginController@loginCheck');
-Route::get('loginCheck', 'loginController@logout');
-Route::get('esqueciasenha', 'loginController@viewPwdRescue');
-Route::get('logout','loginController@logout');
-Route::post('recuperaSenha','loginController@pwdRescue');
-Route::get('recuperaSenha','loginController@viewPwdRescue');
+
 
 
 //----------------------------- Errors treatment

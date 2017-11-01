@@ -1,83 +1,14 @@
-@extends('layout.app')
+ @extends('layout.app')
 @section('pagina')
 <div class="title-block">
-    <h3 class="title"> Confirmação de horários de matrícula</h3>
+    <h3 class="title"> Matrículas gravadas com sucesso</h3>
 </div>
 
 @include('inc.errors')
 <div class="subtitle-block">
     <h3 class="subtitle"><small>De: </small> {{$nome}}</h3>
 </div>
-<div class="card card-block">
-    <!-- Nav tabs -->
-    <div class="card-title-block">
-        <h3 class="title"> Esta será sua programação semanal </h3>
-    </div>
-    <!-- Tab panes -->
-    <div class="row">
-     
-        <div class="col" >
-            <div class="title">Seg.</div>
-            @foreach($turmas as $turma)
-            @if(in_array('seg',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}" href="#{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
-            @endif
-            @endforeach
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="title">Ter.</div>
-            @foreach($turmas as $turma)
-            @if(in_array('ter',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
-            @endif
-            @endforeach
-            
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="title">Qua.</div>
-            @foreach($turmas as $turma)
-            @if(in_array('qua',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
-            @endif
-            @endforeach
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="title">Qui.</div>
-            @foreach($turmas as $turma)
-            @if(in_array('qui',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
-            @endif
-            @endforeach
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="title">Sex.</div>
-            @foreach($turmas as $turma)
-            @if(in_array('sex',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
-            @endif
-            @endforeach
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="title">Sab.</div>
-            @foreach($turmas as $turma)
-            @if(in_array('sab',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
-            @endif
-            @endforeach
-        </div>
-    </div>
-</div>
-<br>
+
 <form name="item" method="POST" action="gravar">
 <div class="card card-danger">
 
@@ -88,11 +19,11 @@
     </div>
 
 
-<div class="card-block">
-    <p>Todos os dados aqui serão analisados pelo setor competente.</p>
-    <p> O(a) tendente se responsabiliza pela veracidade das informações fornecidas.</p>
-    <p> Para sua segurança e para melhor aproveitamento e andamento das atividades propostas, precisamos que os requisitos sejam atendidos</p> </div></div>
-@foreach($turmas as $turma)
+    <div class="card-block">
+        <p>A matrícula foi gravada, agora fudeu manolo.</p>
+    </div>
+</div>
+@foreach($matriculas as $turma)
 <br>
 
 
@@ -228,7 +159,7 @@
                                 
                             <div class="form-group row">
                                 <div class="col-sm-10 col-sm-offset-2">
-                                    <button type="submit" onclick="valida();"class="btn btn-primary">Gravar Matrícula</button> 
+                                    <button type="submit" onclick="valida();"class="btn btn-primary">Finalizar Matrícula</button> 
                                     <a href="{{asset('/secretaria/atender')}}" class="btn btn-secondary">Cancelar</a> 
                                     <!-- 
                                     <button type="submit" class="btn btn-primary"> Cadastrar</button> 
@@ -238,82 +169,4 @@
                            </div>
                         </div>
                     </form>
-@endsection
-@section('scripts')
-<script>
-
-function desconto(id,item){
-    console.log(item.value);
-
-    if(item.value==0){
-       $('#porcentagem'+id).val(0)
-        $('#valor'+id).val(0);
-        valor_desc=0;
-
-    }
-    @foreach($descontos as $desconto)
-    if(item.value=={{$desconto->id}}){
-        tipo='{{$desconto->tipo}}';
-        valor_desc={{$desconto->valor}};
-    }
-    @endforeach
-
-    if(tipo=="p"){
-        $('#porcentagem'+id).val(valor_desc);
-        $('#valor'+id).val(0);}
-    else{
-        $('#porcentagem'+id).val(0)
-        $('#valor'+id).val(valor_desc);
-    }
-
-
-}
-function aplicarPlano(id,valor){
-    if($('#nparcelas'+id).val()<1){
-        alert('Numero de parcelas inválido.');
-        
-    }
-    else{
-        saldo=valor;
-        saldo=saldo-(saldo*$('#porcentagem'+id).val()/100);
-        saldo=saldo-$('#valor'+id).val();
-        $('#saldo_final_parcelado'+id).html(parseFloat(Math.round(saldo/$('#nparcelas'+id).val() * 100) / 100).toFixed(2)); 
-        $('#saldo_final'+id).html(saldo+',00'); 
-        $('#parcelas'+id).html($('#nparcelas'+id).val());
-    }
-
-    
-    
-
-
-}
-function rmItem(id){
-    //console.log("hello");
-    $('#turma'+id).val('0');
-    $('.turma'+id).hide();
-    var node=$("#"+id);
-    if (node.parentNode) {
-        node.parentNode.removeChild(node);
-    }
-    else{
-        console.log(node);
-        node.remove();
-    }
-
-
-}
-function valida(){
-    
-    //event.preventDefault();
-    if($("input[type=checkbox]:checked").length!=$("input[type=checkbox]").length){
-        alert("Todos requisitos devem ser marcados para confirmar a matrícula");
-        return false;
-    }    
-    document.forms[0].submit();
- 
-    return false;
-}
-
-</script>
-
 @endsection

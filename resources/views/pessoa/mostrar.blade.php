@@ -36,9 +36,7 @@
                             
                                 <div class="row"> 
                                     <div class="col-xs-10">
-                                        <a href="{{asset('/pessoa/adicionardependente').'/'.$pessoa['id']}}" class="btn btn-secondary btn-sm rounded-s"> Adicionar dependente </a>
-                                        <a href="{{asset('/pessoa/adicionarresponsavel').'/'.$pessoa['id']}}" class="btn btn-secondary btn-sm rounded-s"> Adicionar responsável</a>
-                                        <a href="{{asset('/pessoa/financeiro/adicionarresponsavel').'/'.$pessoa['id']}}" class="btn btn-secondary btn-sm rounded-s"> Adicionar responsável financeiro</a>                                         
+                                        <a href="{{asset('/pessoa/adicionardependente').'/'.$pessoa['id']}}" class="btn btn-secondary btn-sm rounded-s"> Adicionar dependente </a>                                         
                                     </div>                                           
                                     <div class="col-xs-2 text-xs-right">                                        
                                         <a href="{{asset('/pessoa/editar/geral').'/'.$pessoa['id']}}" class="btn btn-primary btn-sm rounded-s"> Editar </a>
@@ -92,7 +90,7 @@
                                      @if(isset($pessoa['username']))
                                     <label class="col-sm-2 form-control-label text-xs-right">Usuário</label>
                                     <div class="col-sm-3"> 
-                                        {{$pessoa['username']}} <a href="{{asset('/pessoa/redefinir-senha/'.$pessoa['id']) }}" class="btn btn-primary btn-sm rounded-s"> Ver Credenciais </a>
+                                        {{$pessoa['username']}}
                                     </div>                                 
                                     
                                     <label class="col-sm-2 form-control-label text-xs-right">Senha</label>

@@ -17,7 +17,7 @@ class CreateClassesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('matricula');
             $table->unsignedInteger('turma');
-            $table->unsignedInteger('status');
+            $table->enum('status', ['Regular','Evadido','Nunca Frequentou','Aprovado','Retido','Suspenso','Expulso']);
             $table->timestamps();
             $table->foreign('matricula')->references('id')->on('matriculas')->onDelete('restrict')->onUpdate('cascade');
             $table->foreign('turma')->references('id')->on('turmas')->onDelete('restrict')->onUpdate('cascade');

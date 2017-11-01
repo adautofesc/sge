@@ -15,24 +15,32 @@ class SecretariaController extends Controller
 		return view('secretaria.inicio-atendimento');
 	}
 	public function atender($id=0){
-		if($id==0 && isset($_COOKIE['pessoa_atendimento'])){
-			$id=$_COOKIE['pessoa_atendimento'];
+
+		if($id>0){
+			session('pessoa_atendimento',$id);
 		}
+		else{
+			$id=session('pessoa_atendimento');
+		}
+		
 		$pessoa=Pessoa::find($id);
 		// Verifica se a pessoa existe
 		if(!$pessoa)
 			return redirect(asset('/secretaria/pre-atendimento'));
-		setcookie('pessoa_atendimento',$pessoa->id,time()+3600,'/');
+		else
+			Session::put('pessoa_atendimento',$id);
 		
-		if($_COOKIE['pessoa_atendimento']!=$id || !isset($_COOKIE['atendimento'])){
+		$pessoa=PessoaController::formataParaMostrar($pessoa);
+		if(!Session::get('atendimento')){
 			$atendimento=new Atendimento();
-			$atendimento->atendente=Session::GET('usuario');
+			$atendimento->atendente=Session::get('usuario');
 			$atendimento->usuario=$pessoa->id;
 			$atendimento->save();
-			setcookie('atendimento',$atendimento->id,time()+3600,"/atendimento");
+			Session::put('atendimento', $atendimento->id);
+			
 			
 		}
-		$pessoa=PessoaController::formataParaMostrar($pessoa);
+		
 		return view('secretaria.atendimento', compact('pessoa'));
 	}
 }

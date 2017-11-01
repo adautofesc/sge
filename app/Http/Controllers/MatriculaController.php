@@ -9,6 +9,8 @@ use App\Desconto;
 use App\Pessoa;
 use Illuminate\Http\Request;
 use App\Atendimento;
+use App\Classe;
+use Session;
 
 class MatriculaController extends Controller
 {
@@ -22,10 +24,12 @@ class MatriculaController extends Controller
         //
     }
     public function novaMatricula(){
-        if(isset($_COOKIE['pessoa_atendimento']))
-            $id_pessoa=$_COOKIE['pessoa_atendimento'];
+        if(Session::get('pessoa_atendimento'))
+            $id_pessoa=Session::get('pessoa_atendimento');
         else
             return redirect(asset('/secretaria/pre-atendimento'));
+        if(!Session::get('atendimento'))
+            return redirect(asset('/secretaria/atender'));
         $turmas=Turma::orderBy('curso')->get();
         $pessoa=Pessoa::find($id_pessoa);
        
@@ -52,36 +56,60 @@ class MatriculaController extends Controller
      */
     public function gravar(Request $request)
     {
-        if(!isset($_COOKIE['pessoa_atendimento']))
+        if(!Session::get('pessoa_atendimento'))
             return redirect(asset('/secretaria/pre-atendimento'));
+        if(!Session::get('atendimento'))
+            return redirect(asset('/secretaria/atender'));
         $matriculas=collect();
-        foreach($request->turmas as $turma){
+        foreach($request->turmas as $turma_id){
             $matricula=new Matricula();
-            $matricula->pessoa=$_COOKIE['pessoa_atendimento'];
-            $matricula->atendimento=$_COOKIE['atendimento'];
+            $matricula->pessoa=Session::get('pessoa_atendimento');
+            $matricula->atendimento=Session::get('atendimento');
             $matricula->forma_pgto="b";
-            $parcelas="nparcelas".$turma;
+            $parcelas="nparcelas".$turma_id;
             $matricula->parcelas=$request->$parcelas;
-            $venc="dvencimento".$turma;
+            $venc="dvencimento".$turma_id;
             $matricula->dia_venc=$request->$venc;
             $matricula->save();
             $matriculas->push($matricula);
 
-        }
+            /*foreach($parcelas as $parcela){
+                // grava cada parcela em lançamentos
+                //grava dados financeiros
+            }-*/
 
-        $atendimento=Atendimento::find($_COOKIE['atendimento']);
+            // Coloca nome do aluno na lista de chamada
+            $classe= new Classe();
+            $classe->matricula=$matricula->id;
+            $classe->turma=$turma_id;
+            $classe->save();
+
+            // Reduz o numero de vagas
+            $turma=Turma::find($turma_id);
+            $turma->vagas=$turma->vagas-1;
+            $turma->save();
+
+
+
+
+
+           
+
+
+
+        }// fim foreach turmas
+
+        $atendimento=Atendimento::find(Session::get('atendimento'));
         $atendimento->descricao="Matricula(s)";
         $atendimento->save();
 
-        if(isset($_COOKIE['atendimento'])){
-            
-            setcookie('atendimento',null,time()-3600,"/atendimento");
-            unset($_COOKIE['atendimento']);
-        }
+        Session::forget('atendimento');
+        $pessoa=Pessoa::find(session('pessoa_atendimento'));
 
 
 
         return $matriculas;
+        return view("secretaria.matricula.gravar")->with('matriculas',$matriculas)->with('nome',$pessoa->nome_simples);
 
     }
 
@@ -131,11 +159,13 @@ class MatriculaController extends Controller
     }
 
     public function confirmacaoAtividades(Request $request){
-        if(!isset($_COOKIE['pessoa_atendimento'])){
-            return redirect(asset('/secretaria/pre-atendimento'));
 
-        }
-        $pessoa=Pessoa::find($_COOKIE['pessoa_atendimento']);
+        if(!Session::get('pessoa_atendimento'))
+            return redirect(asset('/secretaria/pre-atendimento'));
+        if(!Session::get('atendimento'))
+            return redirect(asset('/secretaria/atender'));
+        
+        $pessoa=Pessoa::find(Session::get('pessoa_atendimento'));
         $valor=0; 
 
         $turmas=TurmaController::csvTurmas($request->atividades);
@@ -144,9 +174,11 @@ class MatriculaController extends Controller
         }
         $descontos=Desconto::all();
 
+
+
         //return $turmas;
 
-        return view('secretaria.matricula.confirma-atividades')->with('turmas',$turmas)->with('valor',$valor)->with('descontos',$descontos);
+        return view('secretaria.matricula.confirma-atividades')->with('turmas',$turmas)->with('valor',$valor)->with('descontos',$descontos)->with('nome',$pessoa->nome_simples);
 
     }
 }

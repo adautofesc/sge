@@ -11,6 +11,59 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
+-- Copiando dados para a tabela sge.atendimentos: ~30 rows (aproximadamente)
+/*!40000 ALTER TABLE `atendimentos` DISABLE KEYS */;
+INSERT INTO `atendimentos` (`id`, `atendente`, `usuario`, `descricao`, `created_at`, `updated_at`) VALUES
+	(1, 1, 1, 'Matricula(s)', '2017-10-30 17:32:48', '2017-10-30 18:06:50'),
+	(2, 1, 30, NULL, '2017-10-30 18:26:13', '2017-10-30 18:26:13'),
+	(3, 1, 28, 'Matricula(s)', '2017-10-30 18:32:31', '2017-10-30 18:37:21'),
+	(4, 1, 28, 'Matricula(s)', '2017-10-30 18:49:36', '2017-10-30 18:49:55'),
+	(5, 1, 1, NULL, '2017-11-01 10:17:25', '2017-11-01 10:17:25'),
+	(6, 1, 1, NULL, '2017-11-01 10:58:04', '2017-11-01 10:58:04'),
+	(7, 1, 1, NULL, '2017-11-01 11:04:38', '2017-11-01 11:04:38'),
+	(8, 1, 1, NULL, '2017-11-01 09:05:04', '2017-11-01 09:05:04'),
+	(9, 1, 31, NULL, '2017-11-01 09:05:46', '2017-11-01 09:05:46'),
+	(10, 1, 31, NULL, '2017-11-01 09:13:43', '2017-11-01 09:13:43'),
+	(11, 1, 31, NULL, '2017-11-01 09:29:16', '2017-11-01 09:29:16'),
+	(12, 1, 31, NULL, '2017-11-01 09:29:55', '2017-11-01 09:29:55'),
+	(13, 1, 31, NULL, '2017-11-01 09:31:01', '2017-11-01 09:31:01'),
+	(14, 1, 31, NULL, '2017-11-01 09:31:45', '2017-11-01 09:31:45'),
+	(15, 1, 31, NULL, '2017-11-01 09:32:14', '2017-11-01 09:32:14'),
+	(16, 1, 31, NULL, '2017-11-01 09:32:15', '2017-11-01 09:32:15'),
+	(17, 1, 31, 'Matricula(s)', '2017-11-01 09:33:45', '2017-11-01 09:34:58'),
+	(18, 1, 31, 'Matricula(s)', '2017-11-01 09:56:02', '2017-11-01 10:19:00'),
+	(19, 1, 21, 'Matricula(s)', '2017-11-01 10:29:04', '2017-11-01 10:55:12'),
+	(20, 1, 24, 'Matricula(s)', '2017-11-01 16:15:53', '2017-11-01 16:17:55'),
+	(21, 1, 24, NULL, '2017-11-01 16:18:04', '2017-11-01 16:18:04'),
+	(22, 1, 30, NULL, '2017-11-06 11:26:29', '2017-11-06 11:26:29'),
+	(23, 1, 35, NULL, '2017-11-08 08:11:47', '2017-11-08 08:11:47'),
+	(24, 1, 32, NULL, '2017-11-08 14:17:10', '2017-11-08 14:17:10'),
+	(25, 1, 23, 'Matricula(s)', '2017-11-13 09:04:12', '2017-11-13 09:37:54'),
+	(26, 1, 23, 'Matricula(s)', '2017-11-13 10:01:55', '2017-11-13 10:02:29'),
+	(27, 1, 23, NULL, '2017-11-13 10:05:00', '2017-11-13 10:05:00'),
+	(28, 1, 24, 'Matricula(s)', '2017-11-13 13:38:28', '2017-11-13 13:43:29'),
+	(29, 1, 24, 'Matricula(s)', '2017-11-13 13:45:18', '2017-11-13 13:45:32'),
+	(30, 1, 24, 'Matricula(s)', '2017-11-13 13:46:14', '2017-11-13 15:11:50'),
+	(31, 1, 24, 'Matricula(s)', '2017-11-13 15:12:25', '2017-11-13 15:30:57'),
+	(32, 1, 24, 'Matricula(s)', '2017-11-13 15:31:23', '2017-11-13 15:56:06'),
+	(33, 1, 32, 'Matricula(s)', '2017-11-13 15:58:14', '2017-11-13 15:58:27'),
+	(34, 1, 33, 'Matricula(s)', '2017-11-13 16:01:22', '2017-11-13 16:01:34'),
+	(35, 1, 33, 'Matricula(s)', '2017-11-13 16:02:49', '2017-11-13 16:03:17'),
+	(36, 1, 33, 'Matricula(s)', '2017-11-13 16:04:10', '2017-11-13 16:06:31'),
+	(37, 1, 33, 'Matricula(s)', '2017-11-13 16:07:38', '2017-11-13 16:09:23'),
+	(38, 1, 23, 'Matricula(s)', '2017-11-13 16:10:12', '2017-11-13 16:10:23'),
+	(39, 1, 23, 'Matricula(s)', '2017-11-13 16:10:31', '2017-11-13 16:10:44'),
+	(40, 1, 23, 'Matricula(s)', '2017-11-13 16:11:20', '2017-11-13 16:15:00'),
+	(41, 1, 23, 'Matricula(s)', '2017-11-13 16:15:09', '2017-11-13 16:15:25'),
+	(42, 1, 23, 'Matricula(s)', '2017-11-13 16:17:05', '2017-11-13 16:17:20'),
+	(43, 1, 23, 'Matricula(s)', '2017-11-13 16:18:55', '2017-11-13 16:19:07'),
+	(44, 1, 23, 'Matricula(s)', '2017-11-13 16:22:55', '2017-11-13 16:26:01'),
+	(45, 1, 23, 'Matricula(s)', '2017-11-13 16:29:01', '2017-11-13 16:29:14'),
+	(46, 1, 23, 'Matricula(s)', '2017-11-13 16:29:27', '2017-11-13 16:29:59'),
+	(47, 1, 23, 'Matricula(s)', '2017-11-13 16:30:51', '2017-11-13 16:31:03'),
+	(48, 1, 23, 'Matricula(s)', '2017-11-13 16:31:17', '2017-11-13 16:31:29');
+/*!40000 ALTER TABLE `atendimentos` ENABLE KEYS */;
+
 -- Copiando dados para a tabela sge.bairros_sanca: ~201 rows (aproximadamente)
 /*!40000 ALTER TABLE `bairros_sanca` DISABLE KEYS */;
 INSERT INTO `bairros_sanca` (`id`, `nome`) VALUES
@@ -217,7 +270,7 @@ INSERT INTO `bairros_sanca` (`id`, `nome`) VALUES
 	(201, ' Waldomiro Lobbe Sobrinho');
 /*!40000 ALTER TABLE `bairros_sanca` ENABLE KEYS */;
 
--- Copiando dados para a tabela sge.classes: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela sge.classes: ~1 rows (aproximadamente)
 /*!40000 ALTER TABLE `classes` DISABLE KEYS */;
 /*!40000 ALTER TABLE `classes` ENABLE KEYS */;
 
@@ -244,7 +297,7 @@ INSERT INTO `cursos_requisitos` (`id`, `curso`, `requisito`, `obrigatorio`) VALU
 	(71, 6, 22, 0);
 /*!40000 ALTER TABLE `cursos_requisitos` ENABLE KEYS */;
 
--- Copiando dados para a tabela sge.descontos: ~0 rows (aproximadamente)
+-- Copiando dados para a tabela sge.descontos: ~4 rows (aproximadamente)
 /*!40000 ALTER TABLE `descontos` DISABLE KEYS */;
 INSERT INTO `descontos` (`id`, `nome`, `descricao`, `tipo`, `valor`, `validade`, `status`) VALUES
 	(1, 'Bolsa Integral', 'Bolsa de estudos Integral', 'p', 100, '2017-12-20', '0'),
@@ -288,10 +341,16 @@ INSERT INTO `locais` (`id`, `sala`, `unidade`, `capacidade`) VALUES
 
 -- Copiando dados para a tabela sge.matriculas: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `matriculas` DISABLE KEYS */;
+INSERT INTO `matriculas` (`id`, `pessoa`, `atendimento`, `status`, `dia_venc`, `forma_pgto`, `parcelas`, `resp_financeiro`, `contrato`, `turma`, `created_at`, `updated_at`) VALUES
+	(50, 23, 46, 'regular', 7, 'boleto', 3, NULL, NULL, 2, '2017-11-13 16:29:59', '2017-11-13 16:29:59'),
+	(51, 23, 47, 'regular', 7, 'boleto', 1, NULL, NULL, 4, '2017-11-13 16:31:02', '2017-11-13 16:31:02'),
+	(52, 23, 48, 'regular', 7, 'boleto', 1, NULL, NULL, 3, '2017-11-13 16:31:29', '2017-11-13 16:31:29');
 /*!40000 ALTER TABLE `matriculas` ENABLE KEYS */;
 
 -- Copiando dados para a tabela sge.migrations: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
+	(1, '2017_10_30_165836_create_atendimentos_table', 1);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 
 -- Copiando dados para a tabela sge.password_resets: ~0 rows (aproximadamente)
@@ -317,7 +376,7 @@ INSERT INTO `pessoas` (`id`, `nome`, `genero`, `nascimento`, `por`, `created_at`
 	(32, 'RODRIGO CARVALHO', 'h', '1972-02-10', 1, '2017-09-15 11:51:53', '2017-09-15 11:51:53', NULL),
 	(33, 'FELIPE MASSA', 'h', '1976-04-28', 1, '2017-09-15 11:53:26', '2017-09-15 11:53:26', NULL),
 	(34, 'JOSE', 'h', '2017-09-15', 1, '2017-09-15 11:55:13', '2017-09-15 11:55:13', NULL),
-	(35, 'MAURICIO', 'h', '2017-09-11', 1, '2017-09-15 11:57:37', '2017-09-15 11:57:37', NULL),
+	(35, 'MAURICIO', 'h', '1997-09-11', 1, '2017-09-15 11:57:37', '2017-11-08 08:12:18', NULL),
 	(36, 'SIMONE', 'm', '2017-09-21', 1, '2017-09-15 11:59:39', '2017-09-15 11:59:39', NULL),
 	(37, 'MARIA RITA', 'm', '2017-09-08', 1, '2017-09-15 12:05:37', '2017-09-15 12:05:37', NULL);
 /*!40000 ALTER TABLE `pessoas` ENABLE KEYS */;
@@ -346,7 +405,7 @@ INSERT INTO `pessoas_controle_acessos` (`id`, `pessoa`, `recurso`, `deleted_at`)
 -- Copiando dados para a tabela sge.pessoas_dados_acesso: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `pessoas_dados_acesso` DISABLE KEYS */;
 INSERT INTO `pessoas_dados_acesso` (`id`, `pessoa`, `usuario`, `senha`, `validade`, `status`, `remember_token`, `deleted_at`, `created_at`, `updated_at`) VALUES
-	(1, 1, 'adauto', '$2y$10$.Z8icu5nrWUb7upaysiMhO5bXkBVfN71QMTBF4vjtdKyZDiaHerNO', '2017-12-31', '1', NULL, NULL, '2017-08-10 14:00:03', '2017-09-18 17:51:44'),
+	(1, 1, 'adauto', '$2y$10$.Z8icu5nrWUb7upaysiMhO5bXkBVfN71QMTBF4vjtdKyZDiaHerNO', '2017-12-31', '1', '$2a$11$BpuKl267TczRgPlkm7R6VOnU/wVGv1PaZMYF4utO069kh2t1uK6Cm', NULL, '2017-08-10 14:00:03', '2017-10-23 12:51:52'),
 	(2, 24, 'peterson', '$2y$10$XoPhWnkCV/WliZNLb9HHfeuX1nX1/sv6ieUsE/xUuUujeY1VfpoDO', '2017-12-31', '0', NULL, NULL, '2017-08-30 13:59:11', '2017-09-18 17:29:39');
 /*!40000 ALTER TABLE `pessoas_dados_acesso` ENABLE KEYS */;
 
@@ -354,7 +413,8 @@ INSERT INTO `pessoas_dados_acesso` (`id`, `pessoa`, `usuario`, `senha`, `validad
 /*!40000 ALTER TABLE `pessoas_dados_administrativos` DISABLE KEYS */;
 INSERT INTO `pessoas_dados_administrativos` (`id`, `pessoa`, `dado`, `deleted_at`, `valor`, `created_at`, `updated_at`) VALUES
 	(1, 12, 16, NULL, 'Docente', '2017-08-25 11:49:13', '2017-08-25 11:49:14'),
-	(6, 1, 16, NULL, 'Educador', '2017-09-20 20:06:49', '2017-09-20 20:06:49');
+	(6, 1, 16, NULL, 'Educador', '2017-09-20 20:06:49', '2017-09-20 20:06:49'),
+	(7, 27, 16, NULL, 'Assistente', '2017-11-01 10:36:05', '2017-11-01 10:36:05');
 /*!40000 ALTER TABLE `pessoas_dados_administrativos` ENABLE KEYS */;
 
 -- Copiando dados para a tabela sge.pessoas_dados_clinicos: ~14 rows (aproximadamente)
@@ -373,7 +433,8 @@ INSERT INTO `pessoas_dados_clinicos` (`id`, `pessoa`, `dado`, `valor`, `deleted_
 	(11, 24, 12, 'ATENOLOL', NULL, '2017-09-15 19:48:09', '2017-09-15 19:48:09'),
 	(12, 24, 13, 'PICADA DE ABELHAS', NULL, '2017-09-15 19:48:09', '2017-09-15 19:48:09'),
 	(13, 24, 14, 'LABERINTITE', NULL, '2017-09-15 19:48:09', '2017-09-15 19:48:09'),
-	(14, 1, 13, 'ABELHA', NULL, '2017-09-22 19:37:28', '2017-09-22 19:37:28');
+	(14, 1, 13, 'ABELHA', NULL, '2017-09-22 19:37:28', '2017-09-22 19:37:28'),
+	(15, 1, 13, 'PICADA DE ABELHA', NULL, '2017-11-01 10:06:04', '2017-11-01 10:06:04');
 /*!40000 ALTER TABLE `pessoas_dados_clinicos` ENABLE KEYS */;
 
 -- Copiando dados para a tabela sge.pessoas_dados_contato: ~12 rows (aproximadamente)
@@ -397,11 +458,10 @@ INSERT INTO `pessoas_dados_contato` (`id`, `pessoa`, `dado`, `valor`, `deleted_a
 /*!40000 ALTER TABLE `pessoas_dados_financeiros` DISABLE KEYS */;
 /*!40000 ALTER TABLE `pessoas_dados_financeiros` ENABLE KEYS */;
 
--- Copiando dados para a tabela sge.pessoas_dados_gerais: ~97 rows (aproximadamente)
+-- Copiando dados para a tabela sge.pessoas_dados_gerais: ~100 rows (aproximadamente)
 /*!40000 ALTER TABLE `pessoas_dados_gerais` DISABLE KEYS */;
 INSERT INTO `pessoas_dados_gerais` (`id`, `pessoa`, `dado`, `valor`, `deleted_at`, `created_at`, `updated_at`) VALUES
 	(19, 1, 7, '1', NULL, '2017-08-18 17:25:12', '2017-08-18 17:25:12'),
-	(20, 1, 7, '12', NULL, '2017-08-18 17:27:13', '2017-08-18 17:27:13'),
 	(21, 12, 15, '1', NULL, '2017-08-18 17:41:56', '2017-08-18 17:41:56'),
 	(22, 24, 4, '123123', NULL, '2017-08-21 18:26:12', '2017-08-21 18:26:12'),
 	(23, 24, 3, '456789', NULL, '2017-08-21 18:26:12', '2017-08-21 18:26:12'),
@@ -567,10 +627,10 @@ INSERT INTO `tipos_dados` (`id`, `tipo`, `categoria`, `desc`) VALUES
 /*!40000 ALTER TABLE `turmas` DISABLE KEYS */;
 INSERT INTO `turmas` (`id`, `programa`, `curso`, `disciplina`, `professor`, `local`, `dias_semana`, `data_inicio`, `data_termino`, `hora_inicio`, `hora_termino`, `valor`, `vagas`, `status`, `atributos`, `created_at`, `updated_at`) VALUES
 	(1, 6, 4, NULL, 1, 1, 'seg,qua', '2017-10-09', '2017-11-29', '08:00:00', '10:00:00', 164.00000, 10, 3, NULL, '2017-10-09 13:26:31', '2017-10-11 12:04:08'),
-	(2, 1, 6, NULL, 1, 6, 'seg', '2017-10-09', '2017-10-10', '08:00:00', '10:00:00', 300.00000, 50, 4, NULL, '2017-10-09 16:28:27', '2017-10-09 16:28:27'),
-	(3, 4, 12, NULL, 1, 4, 'ter', '2017-10-09', '2017-10-09', '08:00:00', '10:00:00', 120.00000, 30, 4, 'D', '2017-10-09 16:48:59', '2017-10-09 16:48:59'),
-	(4, 1, 6, NULL, 1, 6, 'seg', '2017-10-18', '2017-10-19', '13:00:00', '15:00:00', 600.00000, 50, 3, NULL, '2017-10-18 13:38:13', '2017-10-18 13:38:47'),
-	(5, 6, 4, NULL, 1, 1, 'ter,qui', '2017-10-20', '2017-11-30', '13:00:00', '15:00:00', 120.00000, 30, 3, NULL, '2017-10-20 17:58:21', '2017-10-20 18:38:48');
+	(2, 1, 6, NULL, 1, 6, 'seg', '2017-10-09', '2017-12-09', '08:00:00', '10:00:00', 300.00000, 42, 3, NULL, '2017-10-09 16:28:27', '2017-11-13 16:29:59'),
+	(3, 4, 12, NULL, 1, 4, 'ter', '2017-10-09', '2017-10-09', '08:00:00', '10:00:00', 120.00000, 23, 4, 'D', '2017-10-09 16:48:59', '2017-11-13 16:31:29'),
+	(4, 1, 6, NULL, 1, 6, 'seg', '2017-10-18', '2017-10-19', '13:00:00', '15:00:00', 600.00000, 42, 3, NULL, '2017-10-18 13:38:13', '2017-11-13 16:31:03'),
+	(5, 6, 4, NULL, 1, 1, 'ter,qui', '2017-10-20', '2017-11-30', '13:00:00', '15:00:00', 120.00000, 29, 3, NULL, '2017-10-20 17:58:21', '2017-11-13 15:10:43');
 /*!40000 ALTER TABLE `turmas` ENABLE KEYS */;
 
 -- Copiando dados para a tabela sge.users: ~0 rows (aproximadamente)

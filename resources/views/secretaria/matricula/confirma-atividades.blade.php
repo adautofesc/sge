@@ -18,7 +18,7 @@
      
         <div class="col" >
             <div class="title">Seg.</div>
-            @foreach($turmas as $turma)
+            @foreach($todas_turmas as $turma)
             @if(in_array('seg',$turma->dias_semana))
             <div class="box-placeholder turma{{$turma->id}}" href="#{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col">
             <div class="title">Ter.</div>
-            @foreach($turmas as $turma)
+            @foreach($todas_turmas as $turma)
             @if(in_array('ter',$turma->dias_semana))
             <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
@@ -39,7 +39,7 @@
     <div class="row">
         <div class="col">
             <div class="title">Qua.</div>
-            @foreach($turmas as $turma)
+            @foreach($todas_turmas as $turma)
             @if(in_array('qua',$turma->dias_semana))
             <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
@@ -49,7 +49,7 @@
     <div class="row">
         <div class="col">
             <div class="title">Qui.</div>
-            @foreach($turmas as $turma)
+            @foreach($todas_turmas as $turma)
             @if(in_array('qui',$turma->dias_semana))
             <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
@@ -59,7 +59,7 @@
     <div class="row">
         <div class="col">
             <div class="title">Sex.</div>
-            @foreach($turmas as $turma)
+            @foreach($todas_turmas as $turma)
             @if(in_array('sex',$turma->dias_semana))
             <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
@@ -69,7 +69,7 @@
     <div class="row">
         <div class="col">
             <div class="title">Sab.</div>
-            @foreach($turmas as $turma)
+            @foreach($todas_turmas as $turma)
             @if(in_array('sab',$turma->dias_semana))
             <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
@@ -79,6 +79,8 @@
 </div>
 <br>
 <form name="item" method="POST" action="gravar">
+    <input type="hidden" name="pendente" value="false">
+
 <div class="card card-danger">
 
     <div class="card-header">
@@ -220,6 +222,7 @@
 {{ csrf_field() }}
 
 
+
                     
                         <div class="card card-block">
                             
@@ -306,12 +309,16 @@ function valida(){
     
     //event.preventDefault();
     if($("input[type=checkbox]:checked").length!=$("input[type=checkbox]").length){
-        alert("Todos requisitos devem ser marcados para confirmar a matrícula");
-        return false;
+        if(confirm('Existem requisitos não marcados, o que fará com que a matrícula seja feita, porém fique como pendente. Após 1 dia útil se a matrícula não for regularizada, será automaticamente cancelada.')){
+            $("input[name=pendente]").val(true);
+            document.forms[0].submit();
+
+        }
+        else
+            return false;
     }    
     document.forms[0].submit();
  
-    return false;
 }
 
 </script>

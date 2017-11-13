@@ -30,23 +30,63 @@ class MatriculaController extends Controller
             return redirect(asset('/secretaria/pre-atendimento'));
         if(!Session::get('atendimento'))
             return redirect(asset('/secretaria/atender'));
-        $turmas=Turma::orderBy('curso')->get();
+        $str_turmas='';
+        $turmas=collect();
+        $matriculas_atuais=Matricula::where('pessoa',Session::get('pessoa_atendimento'))->where('status', '<>','finalizado')->get();
+        foreach($matriculas_atuais as $matricula){
+            $str_turmas=$str_turmas.','.$matricula->turma;
+            $turma=Turma::find($matricula->turma);
+            $turmas->push($turma);
+
+        }
+
+        
+
+        //return $turmas;
+
         $pessoa=Pessoa::find($id_pessoa);
        
         $programas=Programa::all();
-        return view('secretaria.matricula.turmas',compact('turmas'))->with('programas',$programas)->with('pessoa',$pessoa);
+        return view('secretaria.matricula.turmas',compact('turmas'))->with('programas',$programas)->with('pessoa',$pessoa)->with('str_turmas',$str_turmas);
 
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Verifica se a pessoa está matriculada em um curso
      *
+     * @param App\Pessoa $pessoa
+     * @param App\Turma $turma
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function verificaSeMatriculado($pessoa,$turma)
     {
-        //
+        $existe=Matricula::where('turma',$turma)->where('pessoa',$pessoa)->get();
+        if(count($existe)>0)
+            return True;
+        else
+            return False;
+
     }
+    /**
+     * Mostra Turmas em que a pessoa está matriculada
+     *
+     * @param App\Pessoa $pessoa
+     * @param App\Turma $turma
+     * @return \App\Turma
+     */
+    public function verTurmasAtuais($pessoa)
+    {
+        $turmas=collect();
+        $matriculas_atuais=Matricula::where('pessoa', $pessoa )->where('status', '<>','finalizado')->get();
+        foreach($matriculas_atuais as $matricula){
+            $turma=Turma::find($matricula->turma);
+            $turmas->push($turma);
+
+        }
+        return $turmas;
+
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -56,20 +96,32 @@ class MatriculaController extends Controller
      */
     public function gravar(Request $request)
     {
+        //return $request->pendente;
         if(!Session::get('pessoa_atendimento'))
             return redirect(asset('/secretaria/pre-atendimento'));
         if(!Session::get('atendimento'))
             return redirect(asset('/secretaria/atender'));
         $matriculas=collect();
+        if($request->pendente=='true'){
+            $status='pendente';
+        }
+        else
+            $status='regular';
+        //return $status.'-'.$request->pendente;
+        
         foreach($request->turmas as $turma_id){
+            if($this->verificaSeMatriculado(Session::get('pessoa_atendimento'),$turma_id))
+                continue;
+
             $matricula=new Matricula();
             $matricula->pessoa=Session::get('pessoa_atendimento');
             $matricula->atendimento=Session::get('atendimento');
-            $matricula->forma_pgto="b";
             $parcelas="nparcelas".$turma_id;
             $matricula->parcelas=$request->$parcelas;
             $venc="dvencimento".$turma_id;
             $matricula->dia_venc=$request->$venc;
+            $matricula->turma=$turma_id;
+            $matricula->status=$status;
             $matricula->save();
             $matriculas->push($matricula);
 
@@ -78,28 +130,15 @@ class MatriculaController extends Controller
                 //grava dados financeiros
             }-*/
 
-            // Coloca nome do aluno na lista de chamada
-            $classe= new Classe();
-            $classe->matricula=$matricula->id;
-            $classe->turma=$turma_id;
-            $classe->save();
-
             // Reduz o numero de vagas
             $turma=Turma::find($turma_id);
             $turma->vagas=$turma->vagas-1;
             $turma->save();
 
 
-
-
-
-           
-
-
-
         }// fim foreach turmas
 
-        $atendimento=Atendimento::find(Session::get('atendimento'));
+       $atendimento=Atendimento::find(Session::get('atendimento'));
         $atendimento->descricao="Matricula(s)";
         $atendimento->save();
 
@@ -108,7 +147,7 @@ class MatriculaController extends Controller
 
 
 
-        return $matriculas;
+        //return $matriculas;
         return view("secretaria.matricula.gravar")->with('matriculas',$matriculas)->with('nome',$pessoa->nome_simples);
 
     }
@@ -167,7 +206,7 @@ class MatriculaController extends Controller
         
         $pessoa=Pessoa::find(Session::get('pessoa_atendimento'));
         $valor=0; 
-
+        $todas_turmas=TurmaController::csvTurmas($request->atividades.$request->turmas_anteriores);
         $turmas=TurmaController::csvTurmas($request->atividades);
         foreach($turmas as $turma){
             $valor=$valor+str_replace(',', '.',$turma->valor);
@@ -178,7 +217,7 @@ class MatriculaController extends Controller
 
         //return $turmas;
 
-        return view('secretaria.matricula.confirma-atividades')->with('turmas',$turmas)->with('valor',$valor)->with('descontos',$descontos)->with('nome',$pessoa->nome_simples);
+        return view('secretaria.matricula.confirma-atividades')->with('turmas',$turmas)->with('valor',$valor)->with('descontos',$descontos)->with('nome',$pessoa->nome_simples)->with('todas_turmas',$todas_turmas);
 
     }
 }

@@ -13,42 +13,67 @@
     <div class="card-title-block">
         <h3 class="title"> Esta é sua programação atual: </h3>
     </div>
-    <!-- Tab panes -->
+   <!-- Tab panes -->
     <div class="row">
      
         <div class="col" >
             <div class="title">Seg.</div>
-            <div class="box-placeholder">
-                9:00 ~ 09:50 - Alongamento - <small>Adilson</small><br>
-                9:00 ~ 10:00 - Alongamento - <small>Adilson</small>
-            </div>
-            </div>
-        
+            @foreach($turmas as $turma)
+            @if(in_array('seg',$turma->dias_semana))
+            <div class="box-placeholder turma{{$turma->id}}" href="#{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            @endif
+            @endforeach
+        </div>
     </div>
     <div class="row">
         <div class="col">
             <div class="title">Ter.</div>
-            <div class="box-placeholder">9:00<br>Alongamento<br><small>Adilson</small></div>
+            @foreach($turmas as $turma)
+            @if(in_array('ter',$turma->dias_semana))
+            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            @endif
+            @endforeach
+            
         </div>
     </div>
     <div class="row">
         <div class="col">
             <div class="title">Qua.</div>
+            @foreach($turmas as $turma)
+            @if(in_array('qua',$turma->dias_semana))
+            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            @endif
+            @endforeach
         </div>
     </div>
     <div class="row">
         <div class="col">
             <div class="title">Qui.</div>
+            @foreach($turmas as $turma)
+            @if(in_array('qui',$turma->dias_semana))
+            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            @endif
+            @endforeach
         </div>
     </div>
     <div class="row">
         <div class="col">
             <div class="title">Sex.</div>
+            @foreach($turmas as $turma)
+            @if(in_array('sex',$turma->dias_semana))
+            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            @endif
+            @endforeach
         </div>
     </div>
     <div class="row">
         <div class="col">
             <div class="title">Sab.</div>
+            @foreach($turmas as $turma)
+            @if(in_array('sab',$turma->dias_semana))
+            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            @endif
+            @endforeach
         </div>
     </div>
 </div>
@@ -86,6 +111,7 @@
     </div>
 </section>
 <input type="hidden" name="atividades" value="" id="idatividades">
+<input type="hidden" name="turmas_anteriores" value="{{$str_turmas}}">
 <div class="card-block">
 	<button type="submit" class="btn btn-primary" href="matricula_confirma_cursos.php">Avançar</button>
 	
@@ -120,7 +146,7 @@ function rmItem(turma){
 }
 function listar(itens_atuais){
 
-    $('#turmas').load('{{asset('/secretaria/turmas-disponiveis')}}/'+itens_atuais+'/0');
+    $('#turmas').load('{{asset('/secretaria/turmas-disponiveis')}}/'+itens_atuais+'{{$str_turmas}}/0');
      $('#itens_escolhidos').load('{{asset('/secretaria/turmas-escolhidas')}}/'+itens_atuais+'');
      $('#idatividades').val(itens_atuais);
 

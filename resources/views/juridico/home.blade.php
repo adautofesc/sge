@@ -89,6 +89,25 @@
             </div>  
         </div>
     </div>
+    <div class="row">
+        <div class="col-xl-4 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Recursos de sistema</p>
+                    </div>
+                </div>
+                <div class="card-block">
+                    <div>                        
+                        <a href="/juridico/documentos" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-file"></i>
+                        &nbsp;&nbsp;Contratos e Termos</a>
+                    </div>
+                 
+                </div>
+            </div>  
+        </div>
+    </div>
 </section>
 
 @endsection

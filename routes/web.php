@@ -76,7 +76,16 @@ Route::middleware('login') ->group(function(){
 	Route::post('gestaopessoal/relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_exec');
 
 	// Jurídico
-	Route::get('juridico','painelController@juridico');
+	Route::prefix('juridico')->group(function(){
+		Route::get('/','painelController@juridico');
+		//Documentos
+		Route::prefix('documentos')->group(function(){
+			Route::get('/','DocumentoController@index');
+			Route::get('cadastrar','DocumentoController@cadastrar');
+
+		});
+
+	});
 
 
 	//Pedagógico

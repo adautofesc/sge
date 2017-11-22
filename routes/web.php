@@ -82,6 +82,9 @@ Route::middleware('login') ->group(function(){
 		Route::prefix('documentos')->group(function(){
 			Route::get('/','DocumentoController@index');
 			Route::get('cadastrar','DocumentoController@cadastrar');
+			Route::get('apagar/{var}','DocumentoController@apagar');
+			Route::get('editar/{var}','DocumentoController@editar');
+			Route::post('cadastrar','DocumentoController@store');
 
 		});
 

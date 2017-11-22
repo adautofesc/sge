@@ -56,23 +56,23 @@
             <div class="item-row">
                 <div class="item-col fixed item-col-check"> 
                 	<label class="item-check" id="select-all-items">
-						<input type="checkbox" class="checkbox" name="documento" value="{{ $disciplina->id }}">
+						<input type="checkbox" class="checkbox" name="documento" value="{{ $documento->id }}">
 						<span></span>
 					</label> </div>                
                 <div class="item-col fixed pull-left item-col-title">
                     <div class="item-heading">Tipo</div>
                     <div>                        
-                        <h4 class="item-title"> {{ $disciplina->nome }} </h4>
+                        <h4 class="item-title"> {{ $documento->tipo_documento }} </h4>
                     </div>
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Tipo de Objeto</div>
-                    <div> {{$disciplina->programa->sigla}}</div>
+                    <div> {{$documento->tipo_objeto}}</div>
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Objeto</div>
                     <div>
-                        {{$disciplina->vagas}}
+                        {{$documento->objeto}}
 
                     </div>
                 </div> 
@@ -86,10 +86,10 @@
                         <div class="item-actions-block">
                             <ul class="item-actions-list">
                                 <li>
-                                    <a class="remove" onclick="apagar({{$disciplina->id}})" href="#" title="Apagar"> <i class="fa fa-trash "></i> </a>
+                                    <a class="remove" onclick="apagar({{$documento->id}})" href="#" title="Apagar"> <i class="fa fa-trash "></i> </a>
                                 </li>
                                 <li>
-                                    <a class="edit" onclick="editar({{$disciplina->id}})" href="#" title="Editar"> <i class="fa fa-pencil "></i> </a>
+                                    <a class="edit" onclick="editar({{$documento->id}})" href="#" title="Editar"> <i class="fa fa-pencil "></i> </a>
                                 </li>
 
                             </ul>
@@ -104,7 +104,7 @@
     </ul>
 </div>
 <nav class="text-xs-right">
-{!! $cursos->links()  !!}
+{!! $documentos->links()  !!}
 </nav>
 
 
@@ -117,9 +117,9 @@
 <script>
     function apagar(item)
     {
-        if(confirm("Tem certeza que deseja apagar esse curso?"))
+        if(confirm("Tem certeza que deseja apagar esse modelo?"))
         {
-            $(location).attr('href','{{asset("/juridico/documentos/apagar")}}'+'/?curso='+item);
+            $(location).attr('href','{{asset("/juridico/documentos/apagar")}}'+'/'+item);
         }
     }
     function editar (item)

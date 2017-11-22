@@ -231,7 +231,7 @@
                                 
                             <div class="form-group row">
                                 <div class="col-sm-10 col-sm-offset-2">
-                                    <button type="submit" onclick="valida();"class="btn btn-primary">Gravar Matrícula</button> 
+                                    <button type="submit" onclick="valida();" class="btn btn-primary">Gravar Matrícula</button> 
                                     <a href="{{asset('/secretaria/atender')}}" class="btn btn-secondary">Cancelar</a> 
                                     <!-- 
                                     <button type="submit" class="btn btn-primary"> Cadastrar</button> 

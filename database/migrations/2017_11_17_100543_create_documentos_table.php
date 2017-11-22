@@ -15,6 +15,10 @@ class CreateDocumentosTable extends Migration
     {
         Schema::create('documentos', function (Blueprint $table) {
             $table->increments('id');
+            $table->enum('tipo_documento',['Termo de matrícula','Contrato','Cessão de Imagem','Atestado de matrícula']);
+            $table->enum('tipo_objeto',['Aluno','Turma','Curso','Programa','Parceria','Global']);
+            $table->unsignedInteger('objeto');
+            $table->text('conteudo')->nullable();
             $table->timestamps();
         });
     }

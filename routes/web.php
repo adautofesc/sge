@@ -66,7 +66,11 @@ Route::middleware('login') ->group(function(){
 
 
 	// Financeiro
-	Route::get('financeiro','painelController@financeiro');
+	Route::prefix('financeiro')->group(function(){
+		Route::get('boletos','BoletoController@gerar');
+
+	});
+
 
 	// Gestão Pessoal
 	Route::get('gestaopessoal','painelController@gestaoPessoal');

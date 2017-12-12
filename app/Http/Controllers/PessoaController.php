@@ -49,7 +49,7 @@ class PessoaController extends Controller
 		}
 		else
 			return redirect(asset('/403'));
-	} // end mostraFormularioAdicionar()
+	} // end create()
 
 
 /**
@@ -76,7 +76,7 @@ class PessoaController extends Controller
 		// Verifica se já tem alguem com mesmo nome e data de nascimento.
 			$pessoanobd=Pessoa::where('nome', $request->nome)->where('nascimento',$request->nascimento)->get();
 			if(count($pessoanobd)) 
-				return $this->mostraFormularioAdicionar(['Ops, parece que essa pessoa já está cadastrada no sistema. Encontrado alguém com o mesmo nome e mesma data de nascimento. Pode confirmar isso?']);
+				return $this->create(['Ops, parece que essa pessoa já está cadastrada no sistema. Encontrado alguém com o mesmo nome e mesma data de nascimento. Pode confirmar isso?']);
 		// se preencheu o CPF
 			if(isset($request->cpf))		 
 			{
@@ -86,14 +86,14 @@ class PessoaController extends Controller
 				{
 					$erros_bd=["Desculpe, CPF já cadastrado no sistema."];
 				;
-					return $this->mostraFormularioAdicionar($erros_bd);
+					return $this->create($erros_bd);
 				}
 			//se o cpf é valido
 				elseif (!Strings::validaCPF($request->cpf)) 
 				{
 				 	$erros_bd=["Desculpe, o CPF fornecido é inválido."];
 					//return $cpf_no_sistema;
-					return $this->mostraFormularioAdicionar($erros_bd);
+					return $this->create($erros_bd);
 				}		
 			}	    
 		// Apertou a opção de cadastro com CPF?
@@ -101,7 +101,7 @@ class PessoaController extends Controller
 				if($request->cpf=='')
 				{
 				$erros_bd=["Desculpe, mas o preenchimento de CPF é obrigatório. Porém você pode clicar em cadastrar responsável"];
-				return $this->mostraFormularioAdicionar($erros_bd); // volta pro form com erro
+				return $this->create($erros_bd); // volta pro form com erro
 				}
 			$pessoa = new Pessoa;
 			$pessoa->nome=mb_convert_case($request->nome, MB_CASE_UPPER, 'UTF-8');
@@ -273,11 +273,11 @@ class PessoaController extends Controller
 		//**************** Redireciona para o setor responsável
 
 			if($request->btn_sub==2)
-				return $this->mostraFormularioAdicionar('',['Dependente inserido com sucesso'],$pessoa->id);
+				return $this->create('',['Dependente inserido com sucesso'],$pessoa->id);
 			if($request->btn_sub==3)
-				return $this->mostraFormularioAdicionar('',['Pessoa cadastrada com sucesso.'],'');
+				return $this->create('',['Pessoa cadastrada com sucesso.'],'');
 			else
-				return redirect(asset('/pessoa/mostrar/'.$pessoa->id)); 
+				return redirect(asset('/secretaria/atender/'.$pessoa->id)); 
 	}//end gravarPessoa
 
 

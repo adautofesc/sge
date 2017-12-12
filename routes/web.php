@@ -55,7 +55,7 @@ Route::middleware('login') ->group(function(){
 			Route::get('observacoes/{var}','PessoaController@editarObservacoes_view');
 			Route::post('observacoes/{var}','PessoaController@editarObservacoes_exec');
 		});//prfix editar
-	});
+	});//prefix pessoa
 
 
 	
@@ -67,6 +67,8 @@ Route::middleware('login') ->group(function(){
 
 	// Financeiro
 	Route::prefix('financeiro')->group(function(){
+		Route::get('/','painelController@financeiro');
+
 		Route::get('boletos','BoletoController@gerar');
 
 	});

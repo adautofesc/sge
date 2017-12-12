@@ -11,7 +11,7 @@
 </div>
 <section class="section">
     <div class="row">
-        <div class="col-xl-4 center-block">
+        <div class="col-md-4 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
@@ -44,7 +44,7 @@
                 </div>                
             </div>
         </div>
-        <div class="col-xl-4 center-block">
+        <div class="col-md-4 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">

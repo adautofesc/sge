@@ -95,7 +95,7 @@ class loginController extends Controller
 						if(isset($request->lembrar_senha)){
 							$custo=11;
 							$salt='BpuKl267TczRgPlkm7R6VV';
-							$hash=crypt($usuario->login,'$2a$'.$custo.'$'.$salt.'$');
+							$hash=crypt($request->login,'$2a$'.$custo.'$'.$salt.'$');
 							setcookie('sge_token',$hash,time()+3600*24*7);
 							$usuario->remember_token=$hash;
 							$usuario->save();
@@ -569,7 +569,7 @@ class loginController extends Controller
 		$pessoa=Pessoa::find($id);
 		if(!$pessoa)
 			return view('error-404-alt')->with(array('error'=>['id'=>'404','desc'=>'Código de pessoa não encontrado. LoginController(525) ']));
-		$recursos_usuario=ControleAcessoRecurso::where('pessoa',$id)->get();
+		//$recursos_usuario=ControleAcessoRecurso::where('pessoa',$id)->get();
 		$dados=RecursoSistema::all();
 		foreach($dados->all() as $recurso){
 			foreach($recursos_usuario as $recurso_usuario){

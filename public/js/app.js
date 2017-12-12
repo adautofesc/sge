@@ -1296,10 +1296,10 @@ $(function () {
 		// set theme type
         
 		if (themeSettings.themeName) {
-			$styleLink.attr('href', 'http://'+ window.location.hostname +'/css/app-' + themeSettings.themeName + '.css');
+			$styleLink.attr('href', window.location.protocol+'//'+ window.location.hostname +':'+window.location.port+'/css/app-' + themeSettings.themeName + '.css');
 		}
 		else {
-			$styleLink.attr('href', 'http://' + window.location.hostname + '/css/app.css');
+			$styleLink.attr('href', window.location.protocol+'//'+ window.location.hostname +':'+window.location.port+'/css/app.css');
 		}
         
 

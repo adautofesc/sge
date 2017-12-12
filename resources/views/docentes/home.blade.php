@@ -11,7 +11,7 @@
 </div>
 <section class="section">
     <div class="row">
-        <div class="col-xl-12 center-block">
+        <div class="col-md-12 center-block">
             <div class="card card-primary">
                <p>Nenhuma opção no momento</p>
                 * Futuro espaço para Grade semanal
@@ -19,7 +19,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xl-6 center-block">
+        <div class="col-md-6 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
@@ -54,7 +54,7 @@
                 </div>   
             </div>
         </div>
-        <div class="col-xl-6 center-block">
+        <div class="col-md-6 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">

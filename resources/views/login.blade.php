@@ -9,7 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
         <!-- Place favicon.ico in the root directory -->
-        <link rel="stylesheet" href="css/vendor.css">
+        <link rel="stylesheet" href="{{asset('css/vendor.css')}}">
         <!-- Theme initialization -->
         <script>
             var themeSettings = (localStorage.getItem('themeSettings')) ? JSON.parse(localStorage.getItem('themeSettings')) :
@@ -89,8 +89,8 @@
             ga('create', 'UA-80463319-2', 'auto');
             ga('send', 'pageview');
         </script>
-        <script src="js/vendor.js"></script>
-        <script src="js/app.js"></script>
+        <script src="{{asset('js/vendor.js')"></script>
+        <script src="{{asset('js/app.js')"></script>
     </body>
 
 </html>

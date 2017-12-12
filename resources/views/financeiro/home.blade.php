@@ -3,7 +3,7 @@
 
 <div class="title-block">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-7">
             <h3 class="title">Departamento de Tesouraria da FESC</h3>
             <p class="title-description">Receitas, despesas, balancetes e relatórios</p>
         </div>
@@ -11,7 +11,7 @@
 </div>
 <section class="section">
     <div class="row">
-        <div class="col-xl-6 center-block">
+        <div class="col-md-6 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
@@ -23,7 +23,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-6 center-block">
+        <div class="col-md-6 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">

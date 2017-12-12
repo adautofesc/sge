@@ -61,7 +61,7 @@ class CursoController extends Controller
             'nome'=>'required|min:5',
             'programa'=>'required|numeric',
             'desc'=>'required',
-            'vagas'=>'required'
+            'vagas'=>'sometimes|nullable|numeric'
 
             ]);
         $curso = new Curso;
@@ -90,7 +90,7 @@ class CursoController extends Controller
         if($r->btn==2)
             return $this->create();
         if($r->btn==3)
-            return redirect(asset('/pedagogico/disciplinascursos'.'/'.$curso->id));
+            return redirect(asset('/pedagogico/disciplinasdocurso'.'/'.$curso->id));
        
 
     }

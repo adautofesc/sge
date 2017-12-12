@@ -21,5 +21,7 @@
         {
             document.write('<link rel="stylesheet" id="theme-style" href="{{asset('css/app.css')}}">');
         }
+
     </script>
+  
 </head>

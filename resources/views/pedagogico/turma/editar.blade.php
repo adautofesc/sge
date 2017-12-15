@@ -11,6 +11,7 @@
 				Programa 
 			</label>
 			<div class="col-sm-6"> 
+
 				<select class="c-select form-control boxed" name="programa" required>
 					<option >Selecione um programa</option>
 					@if(isset($dados['programas']))
@@ -26,13 +27,19 @@
 				Curso/Atividade
 			</label>
 			<div class="col-sm-6"> 
+				<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
+					<input type="text" class="form-control boxed" name="dt_inicio" value="{{$turma->data_iniciov}}" placeholder="dd/mm/aaaa" required> 
+					<input type="hidden" name="curso">
+				</div>
+				{{--
 				<select class="c-select form-control boxed" name="curso" required>
 					<option >Selecione um programa antes</option>
 					@if(isset($turma->curso))
 					<option value="{{$turma->curso->id}}" selected>{{$turma->curso->nome}}</option>
 					@endif
 
-				</select> 
+				</select> --}}
 			</div>
 		</div>
 		<div class="form-group row"> 

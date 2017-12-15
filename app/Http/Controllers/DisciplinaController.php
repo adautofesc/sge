@@ -178,7 +178,7 @@ class DisciplinaController extends Controller
         if(!$cursoexiste)
             return redirect(asset('/pedagogico/cursos'));
 
-        $disciplinas=Disciplina::get();
+        $disciplinas=Disciplina::select()->orderBy('nome')->get();
         foreach($disciplinas->all() as $disciplina)
         {
             $grade=Grade::where('curso', $curso)->where('disciplina',$disciplina->id)->first();
@@ -190,18 +190,26 @@ class DisciplinaController extends Controller
         }
         return view('pedagogico.curso.curso-disciplinas', compact('disciplinas'))->with(array('curso'=>['nome'=>$cursoexiste->nome, 'id_curso'=>$cursoexiste->id]));
     }
-    public static function disciplinasDoCurso($curso){
-        $grade=Grade::where('curso', $curso)->get();
+    public static function disciplinasDoCurso($curso,$str=''){
+        $grade=Grade::select('disciplina')->where('curso', $curso)->get();
         if(count($grade)){
+
+            $disciplinas=Disciplina::whereIn('id', $grade)->where('nome','like','%'.$str.'%')->get();
+            /*
             foreach($grade->all() as $item_grade)            {
-                $disciplina=Disciplina::find($item_grade->disciplina);
-                $disciplinas[]=$disciplina;
-            }
+                array_push($disciplinas,Disciplina::where('id',$item_grade->disciplina)
+                
+            }*/
+            if(count($disciplinas))
+                return $disciplinas;
+            else
+                return "";
          }
-        if(isset($disciplinas))
-            return $disciplinas;
-        else
-            return false;
+         else{
+            return "";
+         }
+
+        
     }
 
     public function storeDisciplinasAoCurso(Request $r){

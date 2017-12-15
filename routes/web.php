@@ -12,6 +12,8 @@
 */
 
 Route::get('/', 'painelController@index');
+Route::get('/turmascursosnavka', 'painelController@verTurmasAnterioresCursos');
+Route::get('/turmasaulasnavka', 'painelController@verTurmasAnterioresAulas');
 Route::get('login', 'loginController@login')->name('login');
 Route::get('loginSaved', 'loginController@loginSaved')->name('loginSaved');
 Route::get('recuperarconta/{var}','loginController@recuperarConta');
@@ -75,8 +77,9 @@ Route::middleware('login') ->group(function(){
 
 
 	// Gestão Pessoal
-	Route::get('gestaopessoal','painelController@gestaoPessoal');
-	Route::get('gestaopessoal/atendimento','painelController@atendimentoPessoal');
+	Route::get('gestaopessoal','painelController@atendimentoPessoal');
+	Route::get('gestaopessoal/atendimento','painelController@gestaoPessoal');
+	Route::get('gestaopessoal/atender/','painelController@atendimentoPessoalPara');
 	Route::get('gestaopessoal/atender/{var}','painelController@atendimentoPessoalPara');
 	Route::get('gestaopessoal/relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_view');
 	Route::post('gestaopessoal/relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_exec');
@@ -147,6 +150,9 @@ Route::middleware('login') ->group(function(){
 	Route::get('pedagogico/curso/{var}','CursoController@show');
 	Route::get('pedagogico/disciplinasdocurso/{var}','DisciplinaController@editDisciplinasAoCurso');
 	Route::post('pedagogico/disciplinasdocurso/{var}','DisciplinaController@storeDisciplinasAoCurso');
+	Route::get('pedagogico/curso/disciplinas/{var}','DisciplinaController@disciplinasDoCurso');
+	Route::get('pedagogico/curso/disciplinas/{curso}/{str}','DisciplinaController@disciplinasDoCurso');
+	Route::get('pedagogico/curso/modulos/{var}','CursoController@qndeModulos');
 		//Disciplinas
 	Route::get('pedagogico/disciplinas','DisciplinaController@index');
 	Route::get('pedagogico/cadastrardisciplina','DisciplinaController@create');

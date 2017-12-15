@@ -31,7 +31,7 @@ class CursoController extends Controller
      */
     public function cursos($nome='')    {
         if($nome !='')
-            $curso=Curso::where('nome', 'like', '%'.$nome.'%')->orderBy('nome')->paginate(35);
+            $curso=Curso::where('nome', 'like', '%'.$nome.'%')->orWhere('id',$nome)->orderBy('nome')->paginate(35);
         else
             $curso=Curso::select()->paginate(35);
 
@@ -209,9 +209,16 @@ class CursoController extends Controller
 
     }
     public function listarPorPrograma($programa){
-        $cursos=Curso::where('programa',$programa)->get();
+        $cursos=Curso::where('nome','like', '%'.$programa.'%')->orWhere('id', $programa)->get();
 
         return $cursos;
+    }
+    public function qndeModulos($curso){
+        $curso=Curso::select('modulos')->where('id',$curso)->get();
+        if ($curso)
+            return $curso[0]->modulos;
+        else
+            return "";
     }
 
 }

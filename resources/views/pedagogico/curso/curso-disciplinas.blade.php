@@ -28,8 +28,8 @@
         <li class="item item-list-header hidden-sm-down">
             <div class="item-row">
                 <div class="item-col item-col-header fixed item-col-check"> 
-                	<label class="item-check" id="select-all-items">
-                		<input type="checkbox" class="checkbox" value="0"><span></span>
+                	<label class="item-check" id="select_disciplinas">
+                		<input type="checkbox" class="checkbox" onclick="selectAllDisciplines()" value="0"><span></span>
 					</label>
 				</div>
                 <div class="item-col item-col-header item-col-title">
@@ -54,7 +54,7 @@
             <div class="item-row">
                 <div class="item-col item-col-header fixed item-col-check"> 
                 	<label class="item-check">
-						<input type="checkbox" class="checkbox" {{ $disciplina->checked }}  name="disciplina[{{ $disciplina->id }}]" value="{{ $disciplina->id }}">
+						<input type="checkbox" class="checkbox disciplina" {{ $disciplina->checked }}  name="disciplina[{{ $disciplina->id }}]" value="{{ $disciplina->id }}">
 						<span></span>
 					</label> 
                 </div>                
@@ -110,6 +110,18 @@
 @endsection
 @section('scripts')
 <script>
+    function selectAllDisciplines(){
+        $(".disciplina").each(
+            function() {
+                if ($(this).prop("checked")) {
+                    $(this).prop("checked", false);
+                } else {
+                    $(this).prop("checked", true);
+                }
+            }
+        );
+    }
+
     function apagar(item)
     {
         if(confirm("Tem certeza que deseja apagar essa disciplina?"))

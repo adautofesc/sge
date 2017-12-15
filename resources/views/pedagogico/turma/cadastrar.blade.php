@@ -6,30 +6,48 @@
 @include('inc.errors')
 <form name="item" method="POST">
     <div class="card card-block">
-		<div class="form-group row"> 
-			<label class="col-sm-2 form-control-label text-xs-right">
-				Programa 
-			</label>
-			<div class="col-sm-6"> 
-				<select class="c-select form-control boxed" name="programa" required>
-					<option >Selecione um programa</option>
-					@if(isset($dados['programas']))
-					@foreach($dados['programas'] as $programa)
-					<option value="{{$programa->id}}">{{$programa->nome}}</option>
-					@endforeach
-					@endif
-				</select> 
-			</div>
-		</div>
+		
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Curso/Atividade
 			</label>
 			<div class="col-sm-6"> 
-				<select class="c-select form-control boxed" name="curso" required>
-					<option >Selecione um programa antes</option>
+				<div class="input-group">
+					<span class="input-group-addon"><i class=" fa fa-toggle-right  "></i></span> 
+					<input type="text" class="form-control boxed" id="fcurso" name="fcurso" placeholder="Digite e selecione. Cód. 307 para UATI" required> 
+					<input type="hidden" name="curso">
+				</div>
+				<div class="col-sm-12"> 
+				 <ul class="item-list" id="listacursos">
+				 </ul>
+				</div> 
+			</div>
+		</div>
 
-				</select> 
+		<div class="form-group row" id="row_modulos" style="display:none"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Modulo
+			</label>
+			<div class="col-sm-4"> 
+				<input type="number" id="fmodulo" class="form-control boxed" name="modulo" min="1" placeholder="" > 
+			</div>
+			
+		</div>
+
+		<div class="form-group row" id="row_disciplina" style="display:none"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Disciplina
+			</label>
+			<div class="col-sm-6"> 
+				<div class="input-group">
+					<span class="input-group-addon"><i class=" fa fa-toggle-down "></i></span> 
+					<input type="text" class="form-control boxed" id="fdisciplina" name="fdisciplina" placeholder="Digite e selecione" > 
+					<input type="hidden" name="disciplina">
+				</div>
+				<div class="col-sm-12"> 
+				 <ul class="item-list" id="listadisciplinas">
+				 </ul>
+				</div> 
 			</div>
 		</div>
 		<div class="form-group row"> 
@@ -190,20 +208,151 @@
 @endsection
 @section('scripts')
 <script type="text/javascript">
-$("select[name=programa]").change( function(){
-	var cursos='<option selected>Selecione o curso/atividade</option>';
-	$("select[name=curso]").html('').show();
-	$.get("{{asset('pedagogico/cursos/listarporprogramajs/')}}"+"/"+$("select[name=programa]").val())
+$(document).ready(function() 
+	{
+ 
+   //On pressing a key on "Search box" in "search.php" file. This function will be called.
+ 
+   $("#fcurso").keyup(function() {
+   		
+   		$('#fmodulo').val('1');
+   		$('#row_modulos').hide();
+   		var disciplina = $("input[name=disciplina]").val('');
+   		$("#fdisciplina").val('');
+   		$('#row_disciplina').hide();
+
+ 
+       //Assigning search box value to javascript variable named as "name".
+ 
+       var name = $('#fcurso').val();
+       var namelist="";
+
+ 
+       //Validating, if "name" is empty.
+ 
+       if (name == "") {
+ 
+           //Assigning empty value to "display" div in "search.php" file.
+ 
+           $("#listacursos").html("");
+ 
+       }
+ 
+       //If name is not empty.
+ 
+       else {
+ 
+           //AJAX is called.
+ 			$.get("{{asset('pedagogico/cursos/listarporprogramajs/')}}"+"/"+name)
  				.done(function(data) 
  				{
  					$.each(data, function(key, val){
- 						cursos+='<option value="'+val.id+'">'+val.nome+'</option>';
+ 						namelist+='<li class="item item-list-header hidden-sm-down">'
+ 									+'<a href="#" onClick="cursoEscolhido(\''+val.id+'\',\''+val.nome+'\')">'
+ 										+val.id+' - '+val.nome
+ 									+'</a>'
+ 								  +'</li>';
  					});
  					//console.log(namelist);
- 					$("select[name=curso]").html(cursos).show();
- 				})
+ 					$("#listacursos").html(namelist).show();
+ 				});
+       }
+ 
+  	});
+   $("#fdisciplina").keyup(function() {
+  
+   		
+   	
+ 
+       //Assigning search box value to javascript variable named as "name".
+ 
+       var name = $('#fdisciplina').val();
+       var namelist="";
+       var curso = $("input[name=curso]").val();
+       var disciplina = $("input[name=disciplina]").val('');
 
-	});
+
+
+       if (curso<=0){
+       	alert("escolha um curso");
+       }
+       	
+
+ 
+       //Validating, if "name" is empty.
+ 
+       if (name == "") {
+ 
+           //Assigning empty value to "display" div in "search.php" file.
+ 
+           $("#listadisciplinas").html("");
+ 
+       }
+ 
+       //If name is not empty.
+ 
+       else {
+ 
+           //AJAX is called.
+ 			$.get("{{asset('pedagogico/curso/disciplinas/')}}"+"/"+curso+"/"+name)
+ 				.done(function(data) 
+ 				{
+ 					$.each(data, function(key, val){
+ 						namelist+='<li class="item item-list-header hidden-sm-down">'
+ 									+'<a href="#" onClick="disciplinaEscolhida(\''+val.id+'\',\''+val.nome+'\')">'
+ 										+val.id+' - '+val.nome
+ 									+'</a>'
+ 								  +'</li>';
+ 					
+
+ 					});
+ 					//console.log(namelist);
+ 					$("#listadisciplinas").html(namelist).show();
+
+
+
+ 				});
+
+ 				/*
+ 				<option value="324000000000 Adauto Junior 10/11/1984 id:0000014">
+					<option value="326500000000 Fulano 06/07/1924 id:0000015">
+					<option value="3232320000xx Beltrano 20/02/1972 id:0000016">
+					<option value="066521200010 Ciclano 03/08/1945 id:0000017">
+					*/
+ 			
+ 			
+ 
+       }
+ 
+  	});
+ 
+});
+function cursoEscolhido(id,nome){
+	$("#listacursos").hide();
+	$("#fcurso").val(id +' - '+nome);
+	$("input[name=curso]").val(id);
+	$.get("{{asset('/pedagogico/curso/modulos/')}}"+"/"+id)
+		.done(function(data) {
+			if(data.length>1){
+				$('#row_modulos').show();
+				$('#fmodulo').attr('max',data);
+			}
+		});
+	$.get("{{asset('pedagogico/curso/disciplinas')}}"+"/"+id)
+		.done(function(data) {
+			
+			if(data.length>1){
+				$('#row_disciplina').show();
+			}
+		});
+
+}
+function disciplinaEscolhida(id,nome){
+	$("#fdisciplina").val(id +' - '+nome);
+	$("input[name=curso]").val(id);
+	$('#listadisciplinas').hide();
+
+}
 $("select[name=unidade]").change( function(){
 	var salas='<option selected>Selecione a Sala</option>';
 	$("select[name=local]").html('');

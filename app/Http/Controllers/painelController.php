@@ -9,6 +9,7 @@ use App\Local;
 use App\PessoaDadosAcesso;
 use App\Http\Controllers\PessoaController;
 use Session;
+use Illuminate\Support\Facades\DB;
 
 class painelController extends Controller
 {
@@ -26,6 +27,33 @@ class painelController extends Controller
     	}
 	
     }
+    public function verTurmasAnterioresCursos(){
+        
+        $db_turmas=DB::table('tb_turmas')->join('tb_cursos', 'tb_turmas.CurCod','=','tb_cursos.CurCod')->where('tb_turmas.TurDatIni','>','2017-06-01')->get(['tb_turmas.TurCod','tb_turmas.TurDatIni','tb_cursos.CurDsc','tb_turmas.TurDsc']);
+
+        return $db_turmas;
+       
+    }
+    public function verTurmasAnterioresAulas(){
+        // listar as turmas
+        $db_aulas=DB::select("select distinct(AulCod) from tb_matriculas m join tb_matriculas_aulas a on a.MatCod = m.MatCod where MatDat > '2017-06-01' order by AulCod");
+  
+        foreach($db_aulas as $aula){
+
+            //para cada turma, verificar as matriculas daquela turma no periodo fornecido
+            $db_turma=DB::select("select AluCod from tb_matriculas m join tb_matriculas_aulas a on a.MatCod = m.MatCod where MatDat > '2017-06-01' and AulCod = ".$aula->AulCod);
+            
+                       
+            if(count($db_aulas)){
+                foreach($db_turma as $turma){
+                    $alunos[$aula->AulCod][] = $turma->AluCod;
+                }
+            }
+        }
+
+        return $alunos;
+    }
+
 
     public function administrativo(){
         return view('admin.home');
@@ -37,14 +65,37 @@ class painelController extends Controller
         return view('financeiro.home');
     }
     public function gestaoPessoal(){
-        return view('gestaopessoal.home');
-    }
-    public function atendimentoPessoal(){
+
         return view('gestaopessoal.inicio-atendimento');
     }
-    public function atendimentoPessoalPara($id){
-        if(!loginController::check())
-            return redirect(asset("/"));
+    public function atendimentoPessoal(){
+        if(session('rh_atendimento')){            
+            $pessoa=session('rh_atendimento');
+            return view('gestaopessoal.home')->with('pessoa',$pessoa);
+        }
+
+        return view('gestaopessoal.home');
+    }
+
+
+
+       
+    
+    public function atendimentoPessoalPara($id=0){
+        if($id>0){
+            session('rh_atendimento',$id);
+        }
+        else{
+            $id=session('rh_atendimento');
+        }
+        
+        $pessoa=Pessoa::find($id);
+        // Verifica se a pessoa existe
+        if(!$pessoa)
+            return redirect(asset('/gestaopessoal/inicio-atendimento'));
+        else
+            Session::put('rh_atendimento',$id);
+        
 
         $pessoa=Pessoa::find($id);
         // Verifica se a pessoa existe

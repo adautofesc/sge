@@ -76,10 +76,17 @@ class painelController extends Controller
 
         return view('gestaopessoal.home');
     }
+    public function importarLocais(){
+        $db_locais=DB::select('select * from tb_localizacoes order by LocDsc');
 
-
-
-       
+        foreach($db_locais as $db_local){
+            $local=new Local();
+            $local->nome=$db_local->LocDsc;
+            $local->sigla=$db_local->LocSig;
+            $local->save();
+        }
+        return "Locais importados com sucesso.";
+    }       
     
     public function atendimentoPessoalPara($id=0){
         if($id>0){

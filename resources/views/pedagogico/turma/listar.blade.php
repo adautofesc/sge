@@ -81,14 +81,14 @@
 
                                                        
                                                         <a href="{{asset('pedagogico/curso').'/'.$turma->curso->id}}" target="_blank"class="">
-                                                            <h4 class="item-title"> {{$turma->curso->nome}}</h4></a>
+                                                            <h4 class="item-title"> {{$turma->curso->nome}}</h4><small>{{$turma->disciplina->nome}}</small></a>
                                                          {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}
                                                     </div>
                                                 </div>
                                                 <div  class="item-col item-col-sales">
                                                     <div class="item-heading">Professor(a)/local</div>
                                                     <div> {{$turma->professor->nome_simples}}
-                                                        <div>{{$turma->local->unidade}}</div>
+                                                        <div>{{$turma->local->sigla}}</div>
                                                     </div>
                                                 </div>
                                                 <div class="item-col item-col-sales">
@@ -186,14 +186,14 @@
 
                                                        
                                                         <a href="{{asset('pedagogico/curso').'/'.$turma->curso->id}}" target="_blank"class="">
-                                                            <h4 class="item-title"> {{$turma->curso->nome}}</h4></a>
+                                                            <h4 class="item-title"> {{$turma->curso->nome}}</h4><small>{{$turma->disciplina->nome}}</small></a>
                                                          {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}
                                                     </div>
                                                 </div>
                                                     <div class="item-col item-col-sales">
                                                         <div class="item-heading">Professor(a)</div>
                                                         <div> {{$turma->professor->nome_simples}}
-                                                            <div>{{$turma->local->unidade}}</div>
+                                                            <div>{{$turma->local->sigla}}</div>
                                                         </div>
                                                     </div>
                                                     <div class="item-col item-col-sales">

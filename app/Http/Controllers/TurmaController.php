@@ -7,6 +7,7 @@ use App\Local;
 use App\Programa;
 use App\classes\Data;
 use App\PessoaDadosAdministrativos;
+use App\Parceria;
 //use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -24,7 +25,7 @@ class TurmaController extends Controller
         $programas=Programa::all();
 
 
-        //return $dados;
+        //return $turmas;
         //$dados=['alert_sucess'=>['hello world']];
         return view('pedagogico.turma.listar', compact('turmas'))->with('programas',$programas)->with('dados',$dados);
     }
@@ -38,6 +39,7 @@ class TurmaController extends Controller
 
         //return $dados;
         //$dados=['alert_sucess'=>['hello world']];
+        //return $turmas;
         return view('secretaria.listar-turmas', compact('turmas'))->with('programas',$programas)->with('dados',$dados);
     }
 
@@ -52,12 +54,14 @@ class TurmaController extends Controller
         $programas=Programa::get();
         //$cursos=Curso::getCursosPrograma(); ok
         $professores=PessoaDadosAdministrativos::getFuncionarios('Educador');
-        $unidades=Local::getUnidades();
+        $unidades=Local::get(['id' ,'nome']);
+        $parcerias=Parceria::orderBy('nome')->get();
         //Locais=Local::getLocaisPorUnidade($unidade);
         $dados=collect();
         $dados->put('programas',$programas);
         $dados->put('professores',$professores);
         $dados->put('unidades',$unidades);
+        $dados->put('parcerias',$parcerias);
 
         //return $dados;
 
@@ -76,7 +80,7 @@ class TurmaController extends Controller
             "programa"=>"required|numeric",
             "curso"=>"required|numeric",
             "professor"=>"required|numeric",
-            "local"=>"required|numeric",
+            "unidade"=>"required|numeric",
             "dias"=>"required",
             "dt_inicio"=>"required",
             "hr_inicio"=>"required",
@@ -93,12 +97,14 @@ class TurmaController extends Controller
         $turma->curso=$request->curso;
         $turma->disciplina=$request->disciplina;
         $turma->professor=$request->professor;
-        $turma->local=$request->local;
+        $turma->local=$request->unidade;
         $turma->dias_semana=$request->dias;
         $turma->data_inicio=$request->dt_inicio;
         $turma->data_termino=$request->dt_termino;
         $turma->hora_inicio=$request->hr_inicio;
         $turma->hora_termino=$request->hr_termino;
+        $turma->parceria=$request->parceria;
+        $turma->periodicidade=$request->periodicidade;
         $turma->valor=$request->valor;
         $turma->vagas=$request->vagas;
         $turma->atributos=$request->atributo;
@@ -131,14 +137,16 @@ class TurmaController extends Controller
         $turma=Turma::find($id);
         if($turma){
             $programas=Programa::get();
+            $parcerias=Parceria::orderBy('nome')->get();
             //$cursos=Curso::getCursosPrograma(); ok
             $professores=PessoaDadosAdministrativos::getFuncionarios('Educador');
-            $unidades=Local::getUnidades();
+            $unidades=Local::get();
             //Locais=Local::getLocaisPorUnidade($unidade);
             $dados=collect();
             $dados->put('programas',$programas);
             $dados->put('professores',$professores);
             $dados->put('unidades',$unidades);
+            $dados->put('parcerias', $parcerias);
             $turma->data_iniciov=Data::converteParaBd($turma->data_inicio);
             $turma->data_terminov=Data::converteParaBd($turma->data_termino);
 
@@ -165,12 +173,13 @@ class TurmaController extends Controller
             "programa"=>"required|numeric",
             "curso"=>"required|numeric",
             "professor"=>"required|numeric",
-            "local"=>"required|numeric",
+            "unidade"=>"required|numeric",
             "dias"=>"required",
             "dt_inicio"=>"required",
             "hr_inicio"=>"required",
             "vagas"=>"required",
-            "valor"=>"required"
+            "valor"=>"required",
+            "periodicidade"=>"required"
 
 
         ]);
@@ -179,7 +188,7 @@ class TurmaController extends Controller
         $turma->curso=$request->curso;
         $turma->disciplina=$request->disciplina;
         $turma->professor=$request->professor;
-        $turma->local=$request->local;
+        $turma->local=$request->unidade;
         $turma->dias_semana=$request->dias;
         $turma->data_inicio=$request->dt_inicio;
         $turma->data_termino=$request->dt_termino;
@@ -188,6 +197,7 @@ class TurmaController extends Controller
         $turma->valor=$request->valor;
         $turma->vagas=$request->vagas;
         $turma->atributos=$request->atributo;
+        $turma->periodicidade=$request->periodicidade;
         $turma->update();
         return $this->index();
        
@@ -273,6 +283,7 @@ class TurmaController extends Controller
 
         }
         $programas=Programa::get();
+        //return $turmas;
         return view('secretaria.matricula.lista-formatada', compact('turmas'))->with('programas',$programas);
         
     }

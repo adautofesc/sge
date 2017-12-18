@@ -8,7 +8,7 @@ class Local extends Model
 {
     protected $table  = 'locais';
 
-    public static function getUnidades(){
+    /*public static function getUnidades(){
     	$unidades=Local::distinct('unidade')->get(['unidade']);
 
     	return $unidades;
@@ -22,7 +22,7 @@ class Local extends Model
     	return $salas;
 
     }
-
+*/
 
 
 

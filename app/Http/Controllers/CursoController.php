@@ -209,7 +209,7 @@ class CursoController extends Controller
 
     }
     public function listarPorPrograma($programa){
-        $cursos=Curso::where('nome','like', '%'.$programa.'%')->orWhere('id', $programa)->get();
+        $cursos=Curso::where('nome','like', '%'.$programa.'%')->orWhere('id', $programa)->get(['id','nome']);
 
         return $cursos;
     }

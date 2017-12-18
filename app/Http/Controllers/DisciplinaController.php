@@ -194,7 +194,7 @@ class DisciplinaController extends Controller
         $grade=Grade::select('disciplina')->where('curso', $curso)->get();
         if(count($grade)){
 
-            $disciplinas=Disciplina::whereIn('id', $grade)->where('nome','like','%'.$str.'%')->get();
+            $disciplinas=Disciplina::whereIn('id', $grade)->where('nome','like','%'.$str.'%')->orWhere('id',$str)->get(['id','nome']);
             /*
             foreach($grade->all() as $item_grade)            {
                 array_push($disciplinas,Disciplina::where('id',$item_grade->disciplina)

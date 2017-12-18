@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `atendimentos` (
   KEY `atendimentos_usuario_foreign` (`usuario`),
   CONSTRAINT `atendimentos_atendente_foreign` FOREIGN KEY (`atendente`) REFERENCES `pessoas` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `atendimentos_usuario_foreign` FOREIGN KEY (`usuario`) REFERENCES `pessoas` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Exportação de dados foi desmarcado.
 -- Copiando estrutura para tabela sge.bairros_sanca
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `disciplinas` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=631 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=627 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Exportação de dados foi desmarcado.
 -- Copiando estrutura para tabela sge.documentos
@@ -154,17 +154,20 @@ CREATE TABLE IF NOT EXISTS `grades` (
   KEY `grades_disciplina_foreign` (`disciplina`),
   CONSTRAINT `grades_curso_foreign` FOREIGN KEY (`curso`) REFERENCES `cursos` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `grades_disciplina_foreign` FOREIGN KEY (`disciplina`) REFERENCES `disciplinas` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=255 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Exportação de dados foi desmarcado.
 -- Copiando estrutura para tabela sge.locais
 CREATE TABLE IF NOT EXISTS `locais` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `sala` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `unidade` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `capacidade` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nome` varchar(200) NOT NULL,
+  `sigla` varchar(20) DEFAULT NULL,
+  `endereco` int(11) DEFAULT NULL,
+  `coord` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=latin1;
 
 -- Exportação de dados foi desmarcado.
 -- Copiando estrutura para tabela sge.matriculas
@@ -210,7 +213,7 @@ CREATE TABLE IF NOT EXISTS `parcerias` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 -- Exportação de dados foi desmarcado.
 -- Copiando estrutura para tabela sge.password_resets
@@ -235,7 +238,7 @@ CREATE TABLE IF NOT EXISTS `pessoas` (
   PRIMARY KEY (`id`),
   KEY `pessoas_por_foreign` (`por`),
   CONSTRAINT `pessoas_por_foreign` FOREIGN KEY (`por`) REFERENCES `pessoas` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30739 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30740 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Exportação de dados foi desmarcado.
 -- Copiando estrutura para tabela sge.pessoas_controle_acessos
@@ -303,7 +306,7 @@ CREATE TABLE IF NOT EXISTS `pessoas_dados_administrativos` (
   KEY `pessoas_dados_administrativos_dado_foreign` (`dado`),
   CONSTRAINT `pessoas_dados_administrativos_dado_foreign` FOREIGN KEY (`dado`) REFERENCES `tipos_dados` (`id`),
   CONSTRAINT `pessoas_dados_administrativos_pessoa_foreign` FOREIGN KEY (`pessoa`) REFERENCES `pessoas` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Exportação de dados foi desmarcado.
 -- Copiando estrutura para tabela sge.pessoas_dados_clinicos
@@ -399,6 +402,16 @@ CREATE TABLE IF NOT EXISTS `requisitos` (
   `nome` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Exportação de dados foi desmarcado.
+-- Copiando estrutura para tabela sge.salas
+CREATE TABLE IF NOT EXISTS `salas` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `sala` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `unidade` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `capacidade` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Exportação de dados foi desmarcado.
 -- Copiando estrutura para tabela sge.tb_alunos
@@ -684,7 +697,7 @@ CREATE TABLE IF NOT EXISTS `turmas` (
   CONSTRAINT `turmas_local_foreign` FOREIGN KEY (`local`) REFERENCES `locais` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `turmas_professor_foreign` FOREIGN KEY (`professor`) REFERENCES `pessoas` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `turmas_programa_foreign` FOREIGN KEY (`programa`) REFERENCES `programas` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Exportação de dados foi desmarcado.
 -- Copiando estrutura para tabela sge.users

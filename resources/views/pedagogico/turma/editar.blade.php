@@ -28,18 +28,30 @@
 			</label>
 			<div class="col-sm-6"> 
 				<div class="input-group">
-					<span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
-					<input type="text" class="form-control boxed" name="dt_inicio" value="{{$turma->data_iniciov}}" placeholder="dd/mm/aaaa" required> 
-					<input type="hidden" name="curso">
+					<span class="input-group-addon"><i class=" fa fa-toggle-right  "></i></span> 
+					<input type="text" class="form-control boxed" id="fcurso" name="fcurso" placeholder="Digite e selecione. Cód. 307 para UATI" required value="{{$turma->curso->nome}}"> 
+					<input type="hidden" name="curso" value="{{$turma->curso->id}}">
 				</div>
-				{{--
-				<select class="c-select form-control boxed" name="curso" required>
-					<option >Selecione um programa antes</option>
-					@if(isset($turma->curso))
-					<option value="{{$turma->curso->id}}" selected>{{$turma->curso->nome}}</option>
-					@endif
-
-				</select> --}}
+				<div class="col-sm-12"> 
+				 <ul class="item-list" id="listacursos">
+				 </ul>
+				</div> 
+			</div>
+		</div>
+		<div class="form-group row" id="row_disciplina" style="display:none"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Disciplina
+			</label>
+			<div class="col-sm-6"> 
+				<div class="input-group">
+					<span class="input-group-addon"><i class=" fa fa-toggle-down "></i></span> 
+					<input type="text" class="form-control boxed" id="fdisciplina" name="fdisciplina" placeholder="Digite e selecione" value="{{isset($turma->disciplina)?$turma->disciplina->nome:''}}" > 
+					<input type="hidden" name="disciplina" value="{{isset($turma->disciplina)?$turma->disciplina->id:''}}">
+				</div>
+				<div class="col-sm-12"> 
+				 <ul class="item-list" id="listadisciplinas">
+				 </ul>
+				</div> 
 			</div>
 		</div>
 		<div class="form-group row"> 
@@ -66,7 +78,7 @@
 					<option>Selecione ums unidade de atendimento</option>
 					@if(isset($dados['unidades']))
 					@foreach($dados['unidades'] as $unidade)
-					<option value="{{$unidade->unidade}}" {{$unidade->unidade==$turma->local->unidade?'selected':''}}>{{$unidade->unidade}}</option>
+					<option value="{{$unidade->id}}" {{$unidade->id==$turma->local->id?'selected':''}}>{{$unidade->nome}}</option>
 					@endforeach
 					@endif
 				</select> 
@@ -74,14 +86,34 @@
 		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Sala/Local
+				Parceria 
 			</label>
 			<div class="col-sm-6"> 
-				<select class="c-select form-control boxed" name="local" required>
-					<option>Selecione a sala/local</option>
-					@if(isset($turma->local))
-					<option value="{{$turma->local->id}}" selected>{{$turma->local->sala}}</option>
+				<select class="c-select form-control boxed" name="parceria" required>
+					<option value="0" >Selecione parceria, se houver</option>
+					@if(isset($dados['parcerias']))
+					@foreach($dados['parcerias'] as $parceria)
+					<option value="{{$parceria->id}}" {{isset($turma->parceria->id) && $parceria->id==$turma->parceria->id?'selected':''}}>{{$parceria->nome}}</option>
+					@endforeach
 					@endif
+				</select> 
+			</div>
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Periodicidade
+			</label>
+			<div class="col-sm-6"> 
+				<select class="c-select form-control boxed" name="periodicidade" required>
+					<option>Selecione o período da turma</option>
+					<option value="mensal" {{$turma->periodicidade=="mensal"?"selected":"" }}>Mensal</option>
+					<option value="bimestral" {{$turma->periodicidade=="bimestral"?"selected":"" }}>Bimestral</option>
+					<option value="trimestral" {{$turma->periodicidade=="trimestral"?"selected":"" }}>Trimestral</option>
+					<option value="semestral" {{$turma->periodicidade=="semestral"?"selected":"" }}>Semestral</option>
+					<option value="anual" {{$turma->periodicidade=="mensal"?"selected":"anual" }}>Anual</option>
+					<option value="eventual" {{$turma->periodicidade=="eventual"?"selected":"" }}>Eventual</option>
+					<option value="ND" {{$turma->periodicidade=="ND"?"selected":"" }}>Não Definido</option>
+		
 				</select> 
 			</div>
 		</div>
@@ -109,6 +141,8 @@
 					<input type="date" class="form-control boxed" name="dt_inicio" value="{{$turma->data_iniciov}}" placeholder="dd/mm/aaaa" required> 
 				</div>
 			</div>
+		</div>
+		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Data do termino
 			</label>
@@ -121,11 +155,13 @@
 		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Horário de início
+				Horário Inicio
 			</label>
 			<div class="col-sm-2"> 
-				<input type="time" class="form-control boxed" name="hr_inicio" value="{{$turma->hora_inicio}}"  placeholder="00:00" required > 
+				<input type="time" class="form-control boxed" name="hr_inicio" value="{{$turma->hora_inicio}}"  placeholder="00:00" required> 
 			</div>
+		</div>
+		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Horário Termino
 			</label>
@@ -154,7 +190,7 @@
 			
 		</div>
 		
-		
+	<!--	
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">Opções</label>
             <div class="col-sm-10"> 
@@ -185,7 +221,7 @@
         	</div>
                 
         </div>
-            
+            -->
 		<div class="form-group row">
 			<div class="col-sm-10 col-sm-offset-2">
 				<button type="submit" name="btn" value="1" class="btn btn-primary">Salvar</button> 
@@ -203,20 +239,157 @@
 @endsection
 @section('scripts')
 <script type="text/javascript">
-$("select[name=programa]").change( function(){
-	var cursos='<option selected>Selecione o curso/atividade</option>';
-	$("select[name=curso]").html('').show();
-	$.get("{{asset('pedagogico/cursos/listarporprogramajs/')}}"+"/"+$("select[name=programa]").val())
+$(document).ready(function() 
+	{
+		@if(isset($turma->disciplina))
+			$('#row_disciplina').show();
+		@endif
+ 
+   //On pressing a key on "Search box" in "search.php" file. This function will be called.
+ 
+   $("#fcurso").keyup(function() {
+   		
+   		$('#fmodulo').val('1');
+   		$('#row_modulos').hide();
+   		var disciplina = $("input[name=disciplina]").val('');
+   		$("#fdisciplina").val('');
+   		$('#row_disciplina').hide();
+
+ 
+       //Assigning search box value to javascript variable named as "name".
+ 
+       var name = $('#fcurso').val();
+       var namelist="";
+
+ 
+       //Validating, if "name" is empty.
+ 
+       if (name == "") {
+ 
+           //Assigning empty value to "display" div in "search.php" file.
+ 
+           $("#listacursos").html("");
+ 
+       }
+ 
+       //If name is not empty.
+ 
+       else {
+ 
+           //AJAX is called.
+ 			$.get("{{asset('pedagogico/cursos/listarporprogramajs/')}}"+"/"+name)
  				.done(function(data) 
  				{
  					$.each(data, function(key, val){
- 						cursos+='<option value="'+val.id+'">'+val.nome+'</option>';
+ 						namelist+='<li class="item item-list-header hidden-sm-down">'
+ 									+'<a href="#" onClick="cursoEscolhido(\''+val.id+'\',\''+val.nome+'\')">'
+ 										+val.id+' - '+val.nome
+ 									+'</a>'
+ 								  +'</li>';
  					});
  					//console.log(namelist);
- 					$("select[name=curso]").html(cursos).show();
- 				})
+ 					$("#listacursos").html(namelist).show();
+ 				});
+       }
+ 
+  	});
+   $("#fdisciplina").keyup(function() {
+  
+   		
+   	
+ 
+       //Assigning search box value to javascript variable named as "name".
+ 
+       var name = $('#fdisciplina').val();
+       var namelist="";
+       var curso = $("input[name=curso]").val();
+       var disciplina = $("input[name=disciplina]").val('');
 
-	});
+
+
+       if (curso<=0){
+       	alert("escolha um curso");
+       }
+       	
+
+ 
+       //Validating, if "name" is empty.
+ 
+       if (name == "") {
+ 
+           //Assigning empty value to "display" div in "search.php" file.
+ 
+           $("#listadisciplinas").html("");
+ 
+       }
+ 
+       //If name is not empty.
+ 
+       else {
+ 
+           //AJAX is called.
+ 			$.get("{{asset('pedagogico/curso/disciplinas/')}}"+"/"+curso+"/"+name)
+ 				.done(function(data) 
+ 				{
+ 					$.each(data, function(key, val){
+ 						namelist+='<li class="item item-list-header hidden-sm-down">'
+ 									+'<a href="#" onClick="disciplinaEscolhida(\''+val.id+'\',\''+val.nome+'\')">'
+ 										+val.id+' - '+val.nome
+ 									+'</a>'
+ 								  +'</li>';
+ 					
+
+ 					});
+ 					//console.log(namelist);
+ 					$("#listadisciplinas").html(namelist).show();
+
+
+
+ 				});
+
+ 				/*
+ 				<option value="324000000000 Adauto Junior 10/11/1984 id:0000014">
+					<option value="326500000000 Fulano 06/07/1924 id:0000015">
+					<option value="3232320000xx Beltrano 20/02/1972 id:0000016">
+					<option value="066521200010 Ciclano 03/08/1945 id:0000017">
+					*/
+ 			
+ 			
+ 
+       }
+ 
+  	});
+ 
+});
+function cursoEscolhido(id,nome){
+	$("#listacursos").hide();
+	$("#fcurso").val(id +' - '+nome);
+	$("input[name=curso]").val(id);
+/* -- Curso em módulos
+	$.get("{{asset('/pedagogico/curso/modulos/')}}"+"/"+id)
+		.done(function(data) {
+			//console.log(data);
+			if(data>1){
+				$('#row_modulos').show();
+				$('#fmodulo').attr('max',data);
+			}
+		});*/
+	$.get("{{asset('pedagogico/curso/disciplinas')}}"+"/"+id)
+		.done(function(data) {
+			
+			if(data.length>1){
+				$('#row_disciplina').show();
+			}
+		});
+
+}
+function disciplinaEscolhida(id,nome){
+	$("#fdisciplina").val(id +' - '+nome);
+	$("input[name=disciplina]").val(id);
+	$('#listadisciplinas').hide();
+
+}
+/* ao selecionar a unidade mostra as salas
 $("select[name=unidade]").change( function(){
 	var salas='<option selected>Selecione a Sala</option>';
 	$("select[name=local]").html('');
@@ -232,9 +405,11 @@ $("select[name=unidade]").change( function(){
 	
 
 	
-	});
+	});*/
 
 	
+
+
 </script>
 
 

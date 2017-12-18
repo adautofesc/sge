@@ -14,6 +14,7 @@
 Route::get('/', 'painelController@index');
 Route::get('/turmascursosnavka', 'painelController@verTurmasAnterioresCursos');
 Route::get('/turmasaulasnavka', 'painelController@verTurmasAnterioresAulas');
+Route::get('importarLocais','painelController@importarLocais');
 Route::get('login', 'loginController@login')->name('login');
 Route::get('loginSaved', 'loginController@loginSaved')->name('loginSaved');
 Route::get('recuperarconta/{var}','loginController@recuperarConta');

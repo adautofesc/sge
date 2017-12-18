@@ -6,7 +6,21 @@
 @include('inc.errors')
 <form name="item" method="POST">
     <div class="card card-block">
-		
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Programa 
+			</label>
+			<div class="col-sm-6"> 
+				<select class="c-select form-control boxed" name="programa" required>
+					<option >Selecione um programa</option>
+					@if(isset($dados['programas']))
+					@foreach($dados['programas'] as $programa)
+					<option value="{{$programa->id}}">{{$programa->nome}}</option>
+					@endforeach
+					@endif
+				</select> 
+			</div>
+		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Curso/Atividade
@@ -23,7 +37,6 @@
 				</div> 
 			</div>
 		</div>
-
 		<div class="form-group row" id="row_modulos" style="display:none"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Modulo
@@ -33,7 +46,6 @@
 			</div>
 			
 		</div>
-
 		<div class="form-group row" id="row_disciplina" style="display:none"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Disciplina
@@ -74,12 +86,46 @@
 					<option>Selecione ums unidade de atendimento</option>
 					@if(isset($dados['unidades']))
 					@foreach($dados['unidades'] as $unidade)
-					<option value="{{$unidade->unidade}}">{{$unidade->unidade}}</option>
+					<option value="{{$unidade->id}}">{{$unidade->nome}}</option>
 					@endforeach
 					@endif
 				</select> 
 			</div>
 		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Parceria 
+			</label>
+			<div class="col-sm-6"> 
+				<select class="c-select form-control boxed" name="parceria" required>
+					<option value="0" >Selecione parceria, se houver</option>
+					@if(isset($dados['parcerias']))
+					@foreach($dados['parcerias'] as $parceria)
+					<option value="{{$parceria->id}}">{{$parceria->nome}}</option>
+					@endforeach
+					@endif
+				</select> 
+			</div>
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Periodicidade
+			</label>
+			<div class="col-sm-6"> 
+				<select class="c-select form-control boxed" name="periodicidade" required>
+					<option>Selecione o período da turma</option>
+					<option value="mensal">Mensal</option>
+					<option value="bimestral">Bimestral</option>
+					<option value="trimestral">Trimestral</option>
+					<option value="semestral" selected="selected">Semestral</option>
+					<option value="anual">Anual</option>
+					<option value="eventual">Eventual</option>
+					<option value="ND">Não Definido</option>
+		
+				</select> 
+			</div>
+		</div>
+<!--
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Sala/Local
@@ -91,6 +137,7 @@
 				</select> 
 			</div>
 		</div>
+-->
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Dia(s) semana.
@@ -115,6 +162,8 @@
 					<input type="date" class="form-control boxed" name="dt_inicio" placeholder="dd/mm/aaaa" required> 
 				</div>
 			</div>
+		</div>
+		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Data do termino
 			</label>
@@ -132,6 +181,8 @@
 			<div class="col-sm-2"> 
 				<input type="time" class="form-control boxed" name="hr_inicio" placeholder="00:00" required > 
 			</div>
+		</div>
+		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Horário Termino
 			</label>
@@ -143,7 +194,7 @@
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Nº de vagas
 			</label>
-			<div class="col-sm-4"> 
+			<div class="col-sm-2"> 
 				<input type="number" class="form-control boxed" name="vagas" placeholder="Recomendado: 30 vagas"> 
 			</div>
 		</div>
@@ -151,7 +202,7 @@
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Valor
 			</label>
-			<div class="col-sm-4"> 
+			<div class="col-sm-2"> 
 				<div class="input-group">
 					<span class="input-group-addon">R$ </span> 
 					<input type="text" class="form-control boxed" name="valor" placeholder=""> 
@@ -160,7 +211,7 @@
 			
 		</div>
 		
-		
+<!--		
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">Opções</label>
             <div class="col-sm-10"> 
@@ -191,6 +242,7 @@
         	</div>
                 
         </div>
+    -->
             
 		<div class="form-group row">
 			<div class="col-sm-10 col-sm-offset-2">
@@ -331,13 +383,15 @@ function cursoEscolhido(id,nome){
 	$("#listacursos").hide();
 	$("#fcurso").val(id +' - '+nome);
 	$("input[name=curso]").val(id);
+/*
 	$.get("{{asset('/pedagogico/curso/modulos/')}}"+"/"+id)
 		.done(function(data) {
-			if(data.length>1){
+			//console.log(data);
+			if(data>1){
 				$('#row_modulos').show();
 				$('#fmodulo').attr('max',data);
 			}
-		});
+		});*/
 	$.get("{{asset('pedagogico/curso/disciplinas')}}"+"/"+id)
 		.done(function(data) {
 			
@@ -349,10 +403,11 @@ function cursoEscolhido(id,nome){
 }
 function disciplinaEscolhida(id,nome){
 	$("#fdisciplina").val(id +' - '+nome);
-	$("input[name=curso]").val(id);
+	$("input[name=disciplina]").val(id);
 	$('#listadisciplinas').hide();
 
 }
+/* ao selecionar a unidade mostra as salas
 $("select[name=unidade]").change( function(){
 	var salas='<option selected>Selecione a Sala</option>';
 	$("select[name=local]").html('');
@@ -368,7 +423,7 @@ $("select[name=unidade]").change( function(){
 	
 
 	
-	});
+	});*/
 
 	
 

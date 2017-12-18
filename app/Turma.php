@@ -47,6 +47,14 @@ class Turma extends Model
 		$curso->requisito();
 		return $curso;
 	}
+	public function getDisciplinaAttribute($value){
+		$disciplina=Disciplina::where('id',$value)->get(['id','nome','carga'])->first();
+		//$disciplina->requisito();
+		return $disciplina;
+	}
+	public function getParceriaAttribute($value){	
+		return Parceria::find($value);
+	}
 	public function getLocalAttribute($value){	
 		return Local::find($value);
 	}

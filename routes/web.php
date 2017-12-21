@@ -13,6 +13,7 @@
 
 Route::get('/', 'painelController@index');
 Route::get('/turmascursosnavka', 'painelController@verTurmasAnterioresCursos');
+Route::post('/turmascursosnavka', 'painelController@gravarMigracao');
 Route::get('/turmasaulasnavka', 'painelController@verTurmasAnterioresAulas');
 Route::get('importarLocais','painelController@importarLocais');
 Route::get('login', 'loginController@login')->name('login');
@@ -114,6 +115,8 @@ Route::middleware('login') ->group(function(){
 			Route::get('editar/{var}','TurmaController@edit');
 			Route::post('editar/{var}','TurmaController@update');
 			Route::get('status/{status}/{turma}','TurmaController@status');
+			Route::get('turmasjson','TurmaController@turmasJSON');
+
 		});
 	});
 
@@ -159,6 +162,7 @@ Route::middleware('login') ->group(function(){
 	Route::get('pedagogico/cadastrardisciplina','DisciplinaController@create');
 	Route::post('pedagogico/cadastrardisciplina','DisciplinaController@store');
 	Route::get('pedagogico/editardisciplina/{var}','DisciplinaController@edit');
+	Route::get('pedagogico/disciplina/mostrar/{var}','DisciplinaController@show');
 	Route::post('pedagogico/editardisciplina/{var}','DisciplinaController@update');
 	Route::get('pedagogico/apagardisciplina','DisciplinaController@destroy');
 		//Requisitos

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\classes\Data;
 use App\Pessoa;
 use App\Local;
+use App\Turma;
+use App\Matricula;
 use App\PessoaDadosAcesso;
 use App\Http\Controllers\PessoaController;
 use Session;
@@ -29,10 +31,38 @@ class painelController extends Controller
     }
     public function verTurmasAnterioresCursos(){
         
-        $db_turmas=DB::table('tb_turmas')->join('tb_cursos', 'tb_turmas.CurCod','=','tb_cursos.CurCod')->where('tb_turmas.TurDatIni','>','2017-06-01')->get(['tb_turmas.TurCod','tb_turmas.TurDatIni','tb_cursos.CurDsc','tb_turmas.TurDsc']);
+        $db_turmas=DB::table('tb_turmas')->join('tb_cursos', 'tb_turmas.CurCod','=','tb_cursos.CurCod')->where('tb_turmas.TurDatIni','>','2017-06-01')->where('tb_cursos.CurCod','!=','1416')->whereIn('tb_turmas.LocCod', [1,2,69])->get(['tb_turmas.TurCod','tb_turmas.TurDatIni','tb_cursos.CurDsc','tb_turmas.TurDsc','tb_turmas.LocCod','tb_turmas.ProCod']);
 
-        return $db_turmas;
+        //return $db_turmas;
+        $turmas_novas=Turma::where('curso','!=','307')->orderBy('programa','dias_semana','hora_inicio')->get();
+        return view('admin.migrarturmas',compact('db_turmas'))->with('nova',$turmas_novas);
        
+    }
+    public function gravarMigracao(Request $r){
+        foreach($r->turma as $navka=>$sge){
+            if($sge>0){
+                $turma[$navka]=array();
+                $alunos_navka=DB::table('tb_matriculas')->where('TurCod',$navka)->get(['AluCod']);
+                foreach($alunos_navka as $aluno){
+                    $matricula= new Matricula;
+                    $matricula->pessoa = $aluno->AluCod;
+                    $matricula->atendimento=51;
+                    $matricula->status="pendente";
+                    $matricula->dia_venc=7;
+                    $matricula->forma_pgto="boleto";
+                    $matricula->parcelas=5;
+                    $matricula->turma=$sge;
+                    $matricula->save();
+
+                    array_push($turma[$navka], $matricula);
+                }
+            }
+        }
+
+ 
+
+        return $turma;
+   
     }
     public function verTurmasAnterioresAulas(){
         // listar as turmas
@@ -46,12 +76,13 @@ class painelController extends Controller
                        
             if(count($db_aulas)){
                 foreach($db_turma as $turma){
-                    $alunos[$aula->AulCod][] = $turma->AluCod;
+                    $alunos[$aula->AulCod][] = $turma->AluCod;                    
+
                 }
             }
         }
 
-        return $alunos;
+        return count($alunos);
     }
 
 

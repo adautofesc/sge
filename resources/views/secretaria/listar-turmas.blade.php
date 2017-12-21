@@ -101,16 +101,23 @@
                                                         
                                                              <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->texto_status}}</small></div> 
 
-                                                       
-                                                        <a href="{{asset('pedagogico/curso').'/'.$turma->curso->id}}" target="_blank"class="">
-                                                            <h4 class="item-title"> {{$turma->curso->nome}}</h4></a>
+                                                       @if(isset($turma->disciplina))
+                                                        <a href="{{asset('pedagogico/disciplina/mostrar').'/'.$turma->disciplina->id}}" target="_blank" class="" title="Ver descrição em outra janela">
+                                                            <h4 class="item-title"> {{$turma->disciplina->nome}}</h4>       
+                                                            <small>{{$turma->curso->nome}}</small>
+                                                        </a>
+                                                       @else
+                                                        <a href="{{asset('pedagogico/curso').'/'.$turma->curso->id}}" target="_blank" class="" title="Ver descrição em outra janela">
+                                                            <h4 class="item-title"> {{$turma->curso->nome}}</h4>           
+                                                        </a>
+                                                        @endif
                                                          {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}
                                                     </div>
                                                 </div>
                                                     <div class="item-col item-col-sales">
                                                         <div class="item-heading">Professor(a)</div>
                                                         <div> {{$turma->professor->nome_simples}}
-                                                            <div>{{$turma->local->unidade}}</div>
+                                                            <div>{{$turma->local->sigla}}</div>
                                                         </div>
                                                     </div>
                                                     <div class="item-col item-col-sales">
@@ -166,11 +173,6 @@
     </div>
 </section>
 
-<div class="card-block">
-	<a class="btn btn-primary" href="matricula_confirma_cursos.php">Avançar</a>
-	
-	<button class="btn btn-secondary">Limpar</button>
-</div>
 
 </form>
 @endsection

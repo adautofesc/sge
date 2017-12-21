@@ -130,9 +130,10 @@ class MatriculaController extends Controller
                 //grava dados financeiros
             }-*/
 
-            // Reduz o numero de vagas
+            // aumenta matriculados
+
             $turma=Turma::find($turma_id);
-            $turma->vagas=$turma->vagas-1;
+            $turma->matriculados=$turma->matriculados+1;
             $turma->save();
 
 

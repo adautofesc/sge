@@ -112,7 +112,11 @@ class TurmaController extends Controller
         //return $turma->dias_semana;
 
         $turma->save();
-        return $this->index();
+        if($request->btn==1)
+            return redirect(asset('/pedagogico/turmas'));
+        else
+            return redirect(asset('/pedagogico/turmas/cadastrar'));
+        
     }
 
     /**
@@ -211,6 +215,7 @@ class TurmaController extends Controller
      */
     public function destroy($itens_url)
     {
+        $msgs=Array();
         $turmas=explode(',',$itens_url);
         foreach($turmas as $turma){
             if(is_numeric($turma)){
@@ -257,15 +262,27 @@ class TurmaController extends Controller
         }
         //return $turmas_af;
         if(count($turmas_af)==0){
-            $turmas=Turma::where('status', '>', 2)->get();
+            $turmas=Turma::select('*', 'turmas.id as id' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
+                -> where('status', '>', 2)
+                ->join('cursos', 'turmas.curso','=','cursos.id')
+                ->join('disciplinas', 'turmas.disciplina','=','disciplinas.id')
+                ->whereNotIn('turmas.id', $lst)
+                ->orderBy('cursos.nome')
+                ->orderBy('disciplinas.nome')
+                ->get();
+
+            
+            //return $turmas;
             $programas=Programa::get();
+            //return $turmas;
             return view('secretaria.matricula.lista-formatada', compact('turmas'))->with('programas',$programas);
         }
         else{
 
             foreach($turmas_af as $turma){
+                    $hora_fim=date("H:i",strtotime($turma->hora_termino." - 1 minutes"));
                     foreach($turma->dias_semana as $turm){
-                        $lista[]=Turma::where('dias_semana', 'like', '%'.$turm.'%')->whereBetween('hora_inicio', [$turma->hora_inicio,$turma->hora_termino])->get(['id']);
+                        $lista[]=Turma::where('dias_semana', 'like', '%'.$turm.'%')->whereBetween('hora_inicio', [$turma->hora_inicio,$hora_fim])->get(['id']);
                     }
                     
                 }
@@ -279,10 +296,19 @@ class TurmaController extends Controller
             //return $lst;
 
             
-            $turmas=Turma::where('status', '>', 2)->whereNotIn('id', $lst)->get();
+            $turmas=Turma::select('*', 'turmas.id as id' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
+                ->where('status', '>', 2)
+                ->join('cursos', 'turmas.curso','=','cursos.id')
+                ->join('disciplinas', 'turmas.disciplina','=','disciplinas.id')
+                ->whereNotIn('turmas.id', $lst)
+                ->orderBy('cursos.nome')
+                ->orderBy('disciplinas.nome')
+                ->get();
+
 
         }
         $programas=Programa::get();
+        //return $turmas;
         //return $turmas;
         return view('secretaria.matricula.lista-formatada', compact('turmas'))->with('programas',$programas);
         
@@ -294,9 +320,11 @@ class TurmaController extends Controller
         $lista=explode(',',$lista);
         foreach($lista as $turma){
             if(is_numeric($turma)){
-                if(Turma::find($turma))
-                    $turmas->push(Turma::find($turma));
+                $db_turma=Turma::find($turma);
+                if(count($db_turma)>0)
+                    $turmas->push($db_turma);
             }
+
         }
 
         foreach($turmas as $turma){
@@ -319,6 +347,20 @@ class TurmaController extends Controller
         }
         return $turmas->sortBy('hora_inicio');
 
+    }
+
+    public function turmasJSON(){
+        $programas=Programa::get();
+        foreach($programas as $programa){
+            $turmas=Turma::where('turmas.programa',$programa->id)
+                                        ->join('cursos','turmas.curso','=','cursos.id')
+                                        ->join('disciplinas','turmas.disciplina','=','disciplinas.id')
+                                        ->get();
+            foreach($turmas as $turma){
+                $dados[$programa->sigla][$turma->id]=$turmas;
+            }
+        }
+        return $dados;
     }
 
 }

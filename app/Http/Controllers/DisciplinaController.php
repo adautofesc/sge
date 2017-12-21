@@ -90,9 +90,14 @@ class DisciplinaController extends Controller
      * @param  \App\Disciplina  $disciplina
      * @return \Illuminate\Http\Response
      */
-    public function show(Disciplina $disciplina)
+    public function show($id)
     {
-        //
+        $disciplina=Disciplina::find($id);
+        if(!count($disciplina))
+            return redirect(asset('/pedagogico/disciplinas'));
+
+        return view('pedagogico.curso.disciplina.mostrar', compact('disciplina'));
+
     }
 
     /**

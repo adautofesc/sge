@@ -294,8 +294,8 @@ class loginController extends Controller
 		if(!$this->check())
 			return redirect(asset("/"));
 		$this->validate($request, [
-			'nome_usuario'=>'required|between:4,10|alpha_num',
-			'senha'=>'required|between:6,10|alpha_num',
+			'nome_usuario'=>'required|between:4,20|alpha_num',
+			'senha'=>'required|between:6,20|alpha_num',
 			'repetir_senha'=>'required|same:senha',
 			]);
 		$acesso=PessoaDadosAcesso::where('usuario', $request->nome_usuario)->get();

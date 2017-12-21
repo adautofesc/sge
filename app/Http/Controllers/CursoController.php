@@ -16,12 +16,14 @@ class CursoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $r = Request)    {
+    public function index(Request $r)    {
 
         $cursos=Curso::all();
         //return $cursos;
-
-        return view('pedagogico.curso.lista')->with(array('cursos'=>$this->cursos($r->buscar)));
+        if(isset($r->buscar))
+            return view('pedagogico.curso.lista')->with(array('cursos'=>$this->cursos($r->buscar)));
+        else
+            return view('pedagogico.curso.lista')->with('cursos',$this->cursos());
     }
 
     /**
@@ -86,7 +88,7 @@ class CursoController extends Controller
         }
 
         if($r->btn==1)
-            return $this->index();
+            return redirect(asset('/pedagogico/cursos'));
         if($r->btn==2)
             return $this->create();
         if($r->btn==3)

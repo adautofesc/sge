@@ -80,8 +80,17 @@
                                                              <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->texto_status}}</small></div> 
 
                                                        
-                                                        <a href="{{asset('pedagogico/curso').'/'.$turma->curso->id}}" target="_blank"class="">
-                                                            <h4 class="item-title"> {{$turma->curso->nome}}</h4><small>{{$turma->disciplina->nome}}</small></a>
+                                                        @if(isset($turma->disciplina))
+                                                        <a href="{{asset('pedagogico/disciplina/mostrar').'/'.$turma->disciplina->id}}" target="_blank" class="" title="Ver descrição em outra janela">
+                                                            <h4 class="item-title"> {{$turma->disciplina->nome}}</h4>       
+                                                            <small>{{$turma->curso->nome}}</small>
+                                                        </a>
+                                                       @else
+                                                        <a href="{{asset('pedagogico/curso').'/'.$turma->curso->id}}" target="_blank" class="" title="Ver descrição em outra janela">
+                                                            <h4 class="item-title"> {{$turma->curso->nome}}</h4>           
+                                                        </a>
+                                                        @endif
+
                                                          {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}
                                                     </div>
                                                 </div>
@@ -184,9 +193,16 @@
                                                         
                                                              <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->texto_status}}</small></div> 
 
-                                                       
-                                                        <a href="{{asset('pedagogico/curso').'/'.$turma->curso->id}}" target="_blank"class="">
-                                                            <h4 class="item-title"> {{$turma->curso->nome}}</h4><small>{{$turma->disciplina->nome}}</small></a>
+                                                       @if(isset($turma->disciplina))
+                                                         <a href="{{asset('pedagogico/disciplina/mostrar').'/'.$turma->disciplina->id}}" target="_blank" class="" title="Ver descrição em outra janela">
+                                                            <h4 class="item-title"> {{$turma->disciplina->nome}}</h4>       
+                                                            <small>{{$turma->curso->nome}}</small>
+                                                        </a>
+                                                       @else
+                                                        <a href="{{asset('pedagogico/curso').'/'.$turma->curso->id}}" target="_blank" class="" title="Ver descrição em outra janela">
+                                                            <h4 class="item-title"> {{$turma->curso->nome}}</h4>           
+                                                        </a>
+                                                        @endif
                                                          {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}
                                                     </div>
                                                 </div>

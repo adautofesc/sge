@@ -36,7 +36,7 @@ class recuperarSenha extends Mailable
         if($acesso->remember_token==''){
             $custo=15;
             $salt='BpuKl267TczRgPlkm7R6VB';
-            $hash=crypt($usuario->login,'$2a$'.$custo.'$'.$salt.'$');
+            $hash=crypt($acesso->login,'$2a$'.$custo.'$'.$salt.'$');
             $acesso->remember_token=$hash;
             $acesso->save();
         }

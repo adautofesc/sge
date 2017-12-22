@@ -25,6 +25,11 @@ Route::get('esqueciasenha', 'loginController@viewPwdRescue');
 Route::get('logout','loginController@logout');
 Route::post('recuperaSenha','loginController@pwdRescue');
 Route::get('recuperaSenha','loginController@viewPwdRescue');
+Route::get('cursos-disponiveis', 'TurmaController@turmasSite');
+Route::get('turmas-professor', 'TurmaController@listarProfessores');
+Route::post('turmas-professor', 'TurmaController@turmasProfessor');
+
+
 
 
 

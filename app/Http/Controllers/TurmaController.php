@@ -8,6 +8,7 @@ use App\Programa;
 use App\classes\Data;
 use App\PessoaDadosAdministrativos;
 use App\Parceria;
+use App\Pessoa;
 //use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -32,7 +33,14 @@ class TurmaController extends Controller
 
     public function listarSecretaria($dados='')
     {
-        $turmas=Turma::orderBy('curso')->get();
+        $turmas=Turma::select('*', 'turmas.id as id' ,'disciplinas.id as disciplinaid','cursos.id as cursoid','turmas.programa as programaid')
+                ->join('cursos', 'turmas.curso','=','cursos.id')
+                ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
+                ->orderBy('cursos.nome')
+                ->orderBy('disciplinas.nome')
+                ->get();
+
+        //return $turmas;
        
         $programas=Programa::all();
 
@@ -361,6 +369,40 @@ class TurmaController extends Controller
             }
         }
         return $dados;
+    }
+
+    public function turmasSite(){
+
+        $turmas=Turma::select('*', 'turmas.id as id')
+                ->where('turmas.status','>',0)
+                ->join('cursos', 'turmas.curso','=','cursos.id')
+                ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
+                ->orderBy('cursos.nome')
+                ->orderBy('disciplinas.nome')
+                ->get();
+        //return $turmas;
+        return view('pedagogico.turma.turmas-site',compact('turmas'));
+    }
+
+    public function listarProfessores(){
+
+        $professores=PessoaDadosAdministrativos::getFuncionarios('Educador');
+        return view('docentes.lista-professores',compact('professores'));
+
+    }
+    public function turmasProfessor(Request $r){
+        $turmas=Turma::select('*', 'turmas.id as id')
+                ->where('turmas.status','>',0)
+                ->where('professor',$r->professor)
+                ->join('cursos', 'turmas.curso','=','cursos.id')
+                ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
+                ->orderBy('cursos.nome')
+                ->orderBy('disciplinas.nome')
+                ->get();
+        $professor=Pessoa::find($r->professor);
+
+        return view('pedagogico.turma.turmas-site',compact('turmas'))->with('professor',$professor->nomeSimples);
+
     }
 
 }

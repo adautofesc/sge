@@ -82,8 +82,10 @@
                                                     <div class="item-col item-col-header fixed item-col-actions-dropdown"> </div>
                                                 </div>
                                             </li>
-                                            @foreach($turmas->all() as $turma)
-                                            @if($turma->programa->id==$programa->id)                                            
+                                            @foreach($turmas as $turma)
+
+
+                                        @if($turma->programaid==$programa->id)                                            
                                             <li class="item">
                                                 <div class="item-row">
                                                     <div class="item-col fixed item-col-check"> 

@@ -53,7 +53,7 @@
                                                 </div>
 
                                                 <div class="item-col item-col-header item-col-sales">
-                                                    <div> <span>Vagas</span> </div>
+                                                    <div> <span>Vagas/Ocup.</span> </div>
                                                 </div>
                                                 <div class="item-col item-col-header item-col-sales">
                                                     <div> <span>Valor</span> </div>
@@ -81,12 +81,12 @@
 
                                                        
                                                         @if(isset($turma->disciplina))
-                                                        <a href="{{asset('pedagogico/disciplina/mostrar').'/'.$turma->disciplina->id}}" target="_blank" class="" title="Ver descrição em outra janela">
+                                                        <a href="{{asset('pedagogico/turmas/inscritos').'/'.$turma->id}}" target="_blank"class="">
                                                             <h4 class="item-title"> {{$turma->disciplina->nome}}</h4>       
                                                             <small>{{$turma->curso->nome}}</small>
                                                         </a>
                                                        @else
-                                                        <a href="{{asset('pedagogico/curso').'/'.$turma->curso->id}}" target="_blank" class="" title="Ver descrição em outra janela">
+                                                        <a href="{{asset('pedagogico/turmas/inscritos').'/'.$turma->id}}" target="_blank" class="">
                                                             <h4 class="item-title"> {{$turma->curso->nome}}</h4>           
                                                         </a>
                                                         @endif
@@ -102,7 +102,7 @@
                                                 </div>
                                                 <div class="item-col item-col-sales">
                                                     <div class="item-heading">Vagas</div>
-                                                    <div>{{$turma->vagas}}</div>
+                                                    <div>{{$turma->vagas}}/{{$turma->matriculados}}</div>
                                                 </div>
                                                  
                                                
@@ -165,7 +165,7 @@
                                                     </div>
 
                                                     <div class="item-col item-col-header item-col-sales">
-                                                        <div> <span>Vagas</span> </div>
+                                                        <div> <span>Vagas/Ocup.</span> </div>
                                                     </div>
                                                     <div class="item-col item-col-header item-col-sales">
                                                         <div> <span>Valor</span> </div>
@@ -194,12 +194,12 @@
                                                              <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->texto_status}}</small></div> 
 
                                                        @if(isset($turma->disciplina))
-                                                         <a href="{{asset('pedagogico/disciplina/mostrar').'/'.$turma->disciplina->id}}" target="_blank" class="" title="Ver descrição em outra janela">
+                                                         <a href="{{asset('pedagogico/turmas/inscritos').'/'.$turma->id}}" target="_blank"class="">
                                                             <h4 class="item-title"> {{$turma->disciplina->nome}}</h4>       
                                                             <small>{{$turma->curso->nome}}</small>
                                                         </a>
                                                        @else
-                                                        <a href="{{asset('pedagogico/curso').'/'.$turma->curso->id}}" target="_blank" class="" title="Ver descrição em outra janela">
+                                                        <a href="{{asset('pedagogico/turmas/inscritos').'/'.$turma->id}}" target="_blank"class="">
                                                             <h4 class="item-title"> {{$turma->curso->nome}}</h4>           
                                                         </a>
                                                         @endif
@@ -214,7 +214,7 @@
                                                     </div>
                                                     <div class="item-col item-col-sales">
                                                         <div class="item-heading">Vagas</div>
-                                                        <div>{{$turma->vagas}}</div>
+                                                        <div>{{$turma->vagas}}/{{$turma->matriculados}}</div>
                                                     </div>
                                                      
                                                    

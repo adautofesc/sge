@@ -10,215 +10,113 @@ use App\Pessoa;
 use Illuminate\Http\Request;
 use App\Atendimento;
 use App\Classe;
+use App\Inscricao;
 use Session;
 
 class MatriculaController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
+     *it
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
         //
     }
-    public function novaMatricula(){
-        if(Session::get('pessoa_atendimento'))
-            $id_pessoa=Session::get('pessoa_atendimento');
-        else
-            return redirect(asset('/secretaria/pre-atendimento'));
-        if(!Session::get('atendimento'))
-            return redirect(asset('/secretaria/atender'));
-        $str_turmas='';
-        $turmas=collect();
-        $matriculas_atuais=Matricula::where('pessoa',Session::get('pessoa_atendimento'))->where('status', '<>','finalizado')->get();
-        foreach($matriculas_atuais as $matricula){
-            $str_turmas=$str_turmas.','.$matricula->turma;
-            $turma=Turma::find($matricula->turma);
-            $turmas->push($turma);
-
-        }
-
-        
-
-        //return $turmas;
-
-        $pessoa=Pessoa::find($id_pessoa);
-       
-        $programas=Programa::all();
-        return view('secretaria.matricula.turmas',compact('turmas'))->with('programas',$programas)->with('pessoa',$pessoa)->with('str_turmas',$str_turmas);
-
-    }
-
-    /**
-     * Verifica se a pessoa está matriculada em um curso
-     *
-     * @param App\Pessoa $pessoa
-     * @param App\Turma $turma
-     * @return \Illuminate\Http\Response
-     */
-    public function verificaSeMatriculado($pessoa,$turma)
-    {
-        $existe=Matricula::where('turma',$turma)->where('pessoa',$pessoa)->get();
-        if(count($existe)>0)
-            return True;
-        else
-            return False;
-
-    }
-    /**
-     * Mostra Turmas em que a pessoa está matriculada
-     *
-     * @param App\Pessoa $pessoa
-     * @param App\Turma $turma
-     * @return \App\Turma
-     */
-    public function verTurmasAtuais($pessoa)
-    {
-        $turmas=collect();
-        $matriculas_atuais=Matricula::where('pessoa', $pessoa )->where('status', '<>','finalizado')->get();
-        foreach($matriculas_atuais as $matricula){
-            $turma=Turma::find($matricula->turma);
-            $turmas->push($turma);
-
-        }
-        return $turmas;
-
-    }
-
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function gravar(Request $request)
-    {
-        //return $request->pendente;
+    public function gravar(Request $r){
+        $matriculas=collect();
+        $cursos=collect();
         if(!Session::get('pessoa_atendimento'))
             return redirect(asset('/secretaria/pre-atendimento'));
         if(!Session::get('atendimento'))
             return redirect(asset('/secretaria/atender'));
-        $matriculas=collect();
-        if($request->pendente=='true'){
-            $status='pendente';
-        }
-        else
-            $status='regular';
-        //return $status.'-'.$request->pendente;
-        
-        foreach($request->turmas as $turma_id){
-            if($this->verificaSeMatriculado(Session::get('pessoa_atendimento'),$turma_id))
-                continue;
 
+        $turmas=TurmaController::csvTurmas($r->turmas);
+        foreach($turmas as $turma){
+            if($turma->disciplina==null)
+                $cursos->push($turma->curso);
+            else{
+                if(!$cursos->contains($turma->curso))
+                    $cursos->push($turma->curso);
+            }
+        }
+        foreach($cursos as $curso){
+            $curso->turmas=collect();
+            foreach($turmas as $turma){
+                if($turma->curso->id==$curso->id)
+                    $curso->turmas->push($turma);
+            } 
             $matricula=new Matricula();
             $matricula->pessoa=Session::get('pessoa_atendimento');
             $matricula->atendimento=Session::get('atendimento');
-            $parcelas="nparcelas".$turma_id;
-            $matricula->parcelas=$request->$parcelas;
-            $venc="dvencimento".$turma_id;
-            $matricula->dia_venc=$request->$venc;
-            $matricula->turma=$turma_id;
-            $matricula->status=$status;
+            $matricula->data=date('Y-m-d');
+            $valor="valorcursointegral".$curso->id;
+            $matricula->valor=$r->$valor*1;
+            $parcelas="nparcelas".$curso->id;
+            $matricula->parcelas=$r->$parcelas;
+            $dia_vencimento="dvencimento".$curso->id;
+            $matricula->dia_venc=$r->$dia_vencimento;
+            $matricula->status="ativa";
+            $desconto="fdesconto".$curso->id;
+            $matricula->desconto=$r->$desconto;
+            $valordesconto="valordesconto".$curso->id;
+            $matricula->valor_desconto=$r->$valordesconto*1;
             $matricula->save();
             $matriculas->push($matricula);
 
-            /*foreach($parcelas as $parcela){
-                // grava cada parcela em lançamentos
-                //grava dados financeiros
-            }-*/
+            foreach($curso->turmas as $cturma){
+                if(InscricaoController::inscreverAluno(Session::get('pessoa_atendimento'),$cturma->id,$matricula->id)==null)
+                    die("Erro ao increver ".Session::get('pessoa_atendimento')." em ".$cturma->id);
+               
+            }
+   
+        }
+       
 
-            // aumenta matriculados
-
-            $turma=Turma::find($turma_id);
-            $turma->matriculados=$turma->matriculados+1;
-            $turma->save();
-
-
-        }// fim foreach turmas
-
-       $atendimento=Atendimento::find(Session::get('atendimento'));
-        $atendimento->descricao="Matricula(s)";
+        $atendimento=Atendimento::find(Session::get('atendimento'));
+        $atendimento->descricao="Matricula ";
         $atendimento->save();
 
         Session::forget('atendimento');
         $pessoa=Pessoa::find(session('pessoa_atendimento'));
 
-
-
-        //return $matriculas;
-        return view("secretaria.matricula.gravar")->with('matriculas',$matriculas)->with('nome',$pessoa->nome_simples);
+        //return $Inscricaos;
+        return view("secretaria.inscricao.gravar")->with('matriculas',$matriculas)->with('nome',$pessoa->nome_simples);
 
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Matricula  $matricula
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Matricula $matricula)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Matricula  $matricula
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Matricula $matricula)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Matricula  $matricula
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Matricula $matricula)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Matricula  $matricula
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Matricula $matricula)
-    {
-        //
-    }
-
-    public function confirmacaoAtividades(Request $request){
-
-        if(!Session::get('pessoa_atendimento'))
-            return redirect(asset('/secretaria/pre-atendimento'));
-        if(!Session::get('atendimento'))
-            return redirect(asset('/secretaria/atender'));
+    public function termo($matricula){
+        $matricula=Matricula::find($matricula);
+        if(!$matricula)
+            return view("error-404");
+        $pessoa=Pessoa::find($matricula->pessoa);
+        $pessoa=PessoaController::formataParaMostrar($pessoa);
         
-        $pessoa=Pessoa::find(Session::get('pessoa_atendimento'));
-        $valor=0; 
-        $todas_turmas=TurmaController::csvTurmas($request->atividades.$request->turmas_anteriores);
-        $turmas=TurmaController::csvTurmas($request->atividades);
-        foreach($turmas as $turma){
-            $valor=$valor+str_replace(',', '.',$turma->valor);
+        $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->get();
+        foreach($inscricoes as $inscricao){
+            $inscricao->turmac=Turma::find($inscricao->turma->id);
         }
-        $descontos=Desconto::all();
 
+        //return $pessoa;
 
+        return view("juridico.documentos.termo",compact('matricula'))->with('pessoa',$pessoa)->with('inscricoes',$inscricoes);
 
-        //return $turmas;
+    }
+    public function declaracao($matricula){
+        $matricula=Matricula::find($matricula);
+        if(!$matricula)
+            return view("error-404");
+        $pessoa=Pessoa::find($matricula->pessoa);
+        $pessoa=PessoaController::formataParaMostrar($pessoa);
+        
+        $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->get();
+        foreach($inscricoes as $inscricao){
+            $inscricao->turmac=Turma::find($inscricao->turma->id);
+        }
 
-        return view('secretaria.matricula.confirma-atividades')->with('turmas',$turmas)->with('valor',$valor)->with('descontos',$descontos)->with('nome',$pessoa->nome_simples)->with('todas_turmas',$todas_turmas);
+        //return $pessoa;
 
+        return view("juridico.documentos.declaracao",compact('matricula'))->with('pessoa',$pessoa)->with('inscricoes',$inscricoes);
+        
     }
 }

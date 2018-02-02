@@ -9,6 +9,7 @@ use App\classes\Data;
 use App\PessoaDadosAdministrativos;
 use App\Parceria;
 use App\Pessoa;
+use App\Inscricao;
 //use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -33,7 +34,7 @@ class TurmaController extends Controller
 
     public function listarSecretaria($dados='')
     {
-        $turmas=Turma::select('*', 'turmas.id as id' ,'disciplinas.id as disciplinaid','cursos.id as cursoid','turmas.programa as programaid')
+        $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.vagas as vagas','disciplinas.id as disciplinaid','cursos.id as cursoid','turmas.programa as programaid')
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
                 ->orderBy('cursos.nome')
@@ -270,10 +271,10 @@ class TurmaController extends Controller
         }
         //return $turmas_af;
         if(count($turmas_af)==0){
-            $turmas=Turma::select('*', 'turmas.id as id' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
+            $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
                 -> where('status', '>', 2)
                 ->join('cursos', 'turmas.curso','=','cursos.id')
-                ->join('disciplinas', 'turmas.disciplina','=','disciplinas.id')
+                ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
                 ->whereNotIn('turmas.id', $lst)
                 ->orderBy('cursos.nome')
                 ->orderBy('disciplinas.nome')
@@ -283,7 +284,7 @@ class TurmaController extends Controller
             //return $turmas;
             $programas=Programa::get();
             //return $turmas;
-            return view('secretaria.matricula.lista-formatada', compact('turmas'))->with('programas',$programas);
+            return view('secretaria.inscricao.lista-formatada', compact('turmas'))->with('programas',$programas);
         }
         else{
 
@@ -304,10 +305,10 @@ class TurmaController extends Controller
             //return $lst;
 
             
-            $turmas=Turma::select('*', 'turmas.id as id' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
-                ->where('status', '>', 2)
+            $turmas=Turma::select('*', 'turmas.id as id', 'turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
+                ->where('turmas.status', '>', 2)
                 ->join('cursos', 'turmas.curso','=','cursos.id')
-                ->join('disciplinas', 'turmas.disciplina','=','disciplinas.id')
+                ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
                 ->whereNotIn('turmas.id', $lst)
                 ->orderBy('cursos.nome')
                 ->orderBy('disciplinas.nome')
@@ -316,14 +317,15 @@ class TurmaController extends Controller
 
         }
         $programas=Programa::get();
+
         //return $turmas;
-        //return $turmas;
-        return view('secretaria.matricula.lista-formatada', compact('turmas'))->with('programas',$programas);
+        return view('secretaria.inscricao.lista-formatada', compact('turmas'))->with('programas',$programas);
         
     }
     public function turmasEscolhidas($lista='0'){
         $turmas=collect();
         $valor=0;
+        $uati=0;
         $parcelas=4;
         $lista=explode(',',$lista);
         foreach($lista as $turma){
@@ -336,10 +338,32 @@ class TurmaController extends Controller
         }
 
         foreach($turmas as $turma){
+            if($turma->curso->id==307)
+                $uati++;
+            else
             $valor=$valor+str_replace(',', '.',$turma->valor);
         }
+        switch ($uati) {
+            case '1':
+                $valor=$valor+30;
+                break;
+            case '2':
+            case '3':
+                $valor=$valor+50;
+                break;
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+                $valor=$valor+80;
+                break;
+            
+        }
 
-        return view('secretaria.matricula.turmas-escolhidas', compact('turmas'))->with('valor',$valor)->with('parcelas',$parcelas);
+        return view('secretaria.inscricao.turmas-escolhidas', compact('turmas'))->with('valor',$valor)->with('parcelas',$parcelas);
 
     }
     public static function csvTurmas($lista='0'){
@@ -362,7 +386,7 @@ class TurmaController extends Controller
         foreach($programas as $programa){
             $turmas=Turma::where('turmas.programa',$programa->id)
                                         ->join('cursos','turmas.curso','=','cursos.id')
-                                        ->join('disciplinas','turmas.disciplina','=','disciplinas.id')
+                                        ->leftjoin('disciplinas','turmas.disciplina','=','disciplinas.id')
                                         ->get();
             foreach($turmas as $turma){
                 $dados[$programa->sigla][$turma->id]=$turmas;
@@ -373,7 +397,7 @@ class TurmaController extends Controller
 
     public function turmasSite(){
 
-        $turmas=Turma::select('*', 'turmas.id as id')
+        $turmas=Turma::select('*', 'turmas.vagas as vagas','turmas.id as id')
                 ->where('turmas.status','>',0)
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
@@ -402,6 +426,72 @@ class TurmaController extends Controller
         $professor=Pessoa::find($r->professor);
 
         return view('pedagogico.turma.turmas-site',compact('turmas'))->with('professor',$professor->nomeSimples);
+
+    }
+    //secretaria
+    public function verInscricoes($turma){
+        $turma=Turma::find($turma);
+        if (empty($turma))
+            return redirect(asset('/secretaria/turmas'));
+        $inscricoes=Inscricao::where('turma','=', $turma->id)->where('status','<>','cancelado')->get();
+        //return $inscricoes;
+        return view('pedagogico.turma.dados',compact('turma'))->with('inscricoes',$inscricoes);
+
+
+    }
+    //pedagogico
+    public function verInscritos($turma){
+        $turma=Turma::find($turma);
+        if (empty($turma))
+            return redirect(asset('/secretaria/turmas'));
+        $inscricoes=Inscricao::where('turma','=', $turma->id)->where('status','<>','cancelado')->get();
+        //return $inscricoes;
+        return view('pedagogico.turma.inscritos',compact('turma'))->with('inscricoes',$inscricoes);
+
+
+    }
+    /**
+     * Modifica a quantidade de pessoas inscritas na turma
+     *
+     * @param  \App\Turma  $turma
+     * @param  $operaçao - 0 reduz, 1 aumenta
+     * @param  $qnde - numero para adicionar ou reduzir
+     * @return \Illuminate\Http\Response
+     */
+    public static function modInscritos($turma,$operacao,$qnde){
+        $turma=Turma::find($turma);
+        if($turma){
+            switch ($operacao) {
+                case '1':
+                    $turma->matriculados=$turma->matriculados+$qnde;
+                    break;
+                case '0':
+                    $turma->matriculados=$turma->matriculados-$qnde;
+                    break;
+                default:
+                    $turma->matriculados=$turma->matriculados+$qnde;
+                    break;
+            }
+            $turma->save();
+        }
+    }
+    public function atualizarInscritos(){
+        $linha="";
+        $turmas=Turma::all();
+        foreach($turmas as $turma){
+            $inscricoes=Inscricao::where('turma',$turma->id)->where('status','<>','cancelado')->get();
+            $turma->matriculados=count($inscricoes);
+            $turma->save();
+            $linha.=  " <br> turma ".$turma->id. "inscritos: ".count($inscricoes);
+        }
+        return $linha;
+
+
+
+
+
+
+
 
     }
 

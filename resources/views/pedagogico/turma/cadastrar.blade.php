@@ -247,7 +247,7 @@
 		<div class="form-group row">
 			<div class="col-sm-10 col-sm-offset-2">
 				<button type="submit" name="btn" value="1" class="btn btn-primary">Cadastrar</button> 
-				<button type="submit" name="btn" value="2" class="btn btn-secondary">Cadastrar a próxima</button> 
+				<button type="submit" name="btn" value="2" href="disciplinas_show.php?" class="btn btn-secondary">Cadastrar a próxima</button> 
 				<!-- 
 				<button type="submit" class="btn btn-primary"> Cadastrar</button> 
 				-->

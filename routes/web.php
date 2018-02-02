@@ -12,10 +12,20 @@
 */
 
 Route::get('/', 'painelController@index');
+
+//temporárias
 Route::get('/turmascursosnavka', 'painelController@verTurmasAnterioresCursos');
 Route::post('/turmascursosnavka', 'painelController@gravarMigracao');
 Route::get('/turmasaulasnavka', 'painelController@verTurmasAnterioresAulas');
+Route::get('cursos-disponiveis', 'TurmaController@turmasSite');
+Route::get('turmas-professor', 'TurmaController@listarProfessores');
+Route::post('turmas-professor', 'TurmaController@turmasProfessor');
 Route::get('importarLocais','painelController@importarLocais');
+Route::get('atualizar-inscritos','TurmaController@atualizarInscritos');
+
+
+
+//Login
 Route::get('login', 'loginController@login')->name('login');
 Route::get('loginSaved', 'loginController@loginSaved')->name('loginSaved');
 Route::get('recuperarconta/{var}','loginController@recuperarConta');
@@ -25,15 +35,13 @@ Route::get('esqueciasenha', 'loginController@viewPwdRescue');
 Route::get('logout','loginController@logout');
 Route::post('recuperaSenha','loginController@pwdRescue');
 Route::get('recuperaSenha','loginController@viewPwdRescue');
-Route::get('cursos-disponiveis', 'TurmaController@turmasSite');
-Route::get('turmas-professor', 'TurmaController@listarProfessores');
-Route::post('turmas-professor', 'TurmaController@turmasProfessor');
 
 
 
 
 
 
+//Areas restritas para cadastrados
 Route::middleware('login') ->group(function(){
 	Route::get('home', 'painelController@index');
 	Route::prefix('pessoa')->group(function(){
@@ -121,8 +129,39 @@ Route::middleware('login') ->group(function(){
 			Route::post('editar/{var}','TurmaController@update');
 			Route::get('status/{status}/{turma}','TurmaController@status');
 			Route::get('turmasjson','TurmaController@turmasJSON');
+			Route::get('inscritos/{turma}','TurmaController@verInscritos');
+
 
 		});
+		//Cursos
+		Route::get('cursos','CursoController@index');
+		Route::get('cursos/listarporprogramajs/{var}','CursoController@listarPorPrograma');
+		Route::get('cadastrarcurso','CursoController@create');
+		Route::post('cadastrarcurso','CursoController@store');
+		Route::get('editarcurso/{var}','CursoController@edit');
+		Route::post('editarcurso/{var}','CursoController@update');
+		Route::get('apagarcurso','CursoController@destroy');
+		Route::get('curso/{var}','CursoController@show');
+		Route::get('disciplinasdocurso/{var}','DisciplinaController@editDisciplinasAoCurso');
+		Route::post('disciplinasdocurso/{var}','DisciplinaController@storeDisciplinasAoCurso');
+		Route::get('curso/disciplinas/{var}','DisciplinaController@disciplinasDoCurso');
+		Route::get('curso/disciplinas/{curso}/{str}','DisciplinaController@disciplinasDoCurso');
+		Route::get('curso/modulos/{var}','CursoController@qndeModulos');
+			//Disciplinas
+		Route::get('disciplinas','DisciplinaController@index');
+		Route::get('cadastrardisciplina','DisciplinaController@create');
+		Route::post('cadastrardisciplina','DisciplinaController@store');
+		Route::get('pedagogico/editardisciplina/{var}','DisciplinaController@edit');
+		Route::get('disciplina/mostrar/{var}','DisciplinaController@show');
+		Route::post('editardisciplina/{var}','DisciplinaController@update');
+		Route::get('apagardisciplina','DisciplinaController@destroy');
+			//Requisitos
+		Route::get('cursos/requisitos','RequisitosController@index');
+		Route::get('cursos/requisitos/add','RequisitosController@create');
+		Route::post('cursos/requisitos/add','RequisitosController@store');
+		Route::get('cursos/requisitos/apagar/{itens}','RequisitosController@destroy');
+		Route::get('requisitosdocurso/{var}','RequisitosController@editRequisitosAoCurso');
+		Route::post('requisitosdocurso/{var}','RequisitosController@storeRequisitosAoCurso');
 	});
 
 	// Secretaria
@@ -136,47 +175,30 @@ Route::middleware('login') ->group(function(){
 		Route::get('turmas', 'TurmaController@listarSecretaria')->name('secretaria.turmas');
 		Route::get('turmas-disponiveis/{turmas}/{filtros}', 'TurmaController@turmasDisponiveis');
 		Route::get('turmas-escolhidas/{turmas}/', 'TurmaController@turmasEscolhidas');
+		Route::get('turma/{turma}', 'TurmaController@verInscricoes');
+		Route::post('turma/{turma}', 'InscricaoController@inscreverAlunoLote');
+
 
 		Route::prefix('matricula')->group(function(){
-			Route::get('/nova','MatriculaController@novaMatricula');
+			Route::get('/nova','InscricaoController@novaInscricao');
 			Route::get('/confirmacao', function(){ return redirect(asset('/secretaria/atender')); });
-			Route::post('/confirmacao', 'MatriculaController@confirmacaoAtividades');
+			Route::post('/confirmacao', 'InscricaoController@confirmacaoAtividades');
 			Route::post('gravar', 'MatriculaController@gravar');
+			Route::get('termo/{id}','MatriculaController@termo');
+			Route::get('declaracao/{id}','MatriculaController@declaracao');
+			Route::prefix('inscricao')->group(function(){
+				Route::get('apagar/{id}', 'InscricaoController@apagar');
+			});
+
 		});
+
+
 
 
 
 	});
 	Route::get('docentes','painelController@docentes');
-		//Cursos
-	Route::get('pedagogico/cursos','CursoController@index');
-	Route::get('pedagogico/cursos/listarporprogramajs/{var}','CursoController@listarPorPrograma');
-	Route::get('pedagogico/cadastrarcurso','CursoController@create');
-	Route::post('pedagogico/cadastrarcurso','CursoController@store');
-	Route::get('pedagogico/editarcurso/{var}','CursoController@edit');
-	Route::post('pedagogico/editarcurso/{var}','CursoController@update');
-	Route::get('pedagogico/apagarcurso','CursoController@destroy');
-	Route::get('pedagogico/curso/{var}','CursoController@show');
-	Route::get('pedagogico/disciplinasdocurso/{var}','DisciplinaController@editDisciplinasAoCurso');
-	Route::post('pedagogico/disciplinasdocurso/{var}','DisciplinaController@storeDisciplinasAoCurso');
-	Route::get('pedagogico/curso/disciplinas/{var}','DisciplinaController@disciplinasDoCurso');
-	Route::get('pedagogico/curso/disciplinas/{curso}/{str}','DisciplinaController@disciplinasDoCurso');
-	Route::get('pedagogico/curso/modulos/{var}','CursoController@qndeModulos');
-		//Disciplinas
-	Route::get('pedagogico/disciplinas','DisciplinaController@index');
-	Route::get('pedagogico/cadastrardisciplina','DisciplinaController@create');
-	Route::post('pedagogico/cadastrardisciplina','DisciplinaController@store');
-	Route::get('pedagogico/editardisciplina/{var}','DisciplinaController@edit');
-	Route::get('pedagogico/disciplina/mostrar/{var}','DisciplinaController@show');
-	Route::post('pedagogico/editardisciplina/{var}','DisciplinaController@update');
-	Route::get('pedagogico/apagardisciplina','DisciplinaController@destroy');
-		//Requisitos
-	Route::get('pedagogico/cursos/requisitos','RequisitosController@index');
-	Route::get('pedagogico/cursos/requisitos/add','RequisitosController@create');
-	Route::post('pedagogico/cursos/requisitos/add','RequisitosController@store');
-	Route::get('pedagogico/cursos/requisitos/apagar/{itens}','RequisitosController@destroy');
-	Route::get('pedagogico/requisitosdocurso/{var}','RequisitosController@editRequisitosAoCurso');
-	Route::post('pedagogico/requisitosdocurso/{var}','RequisitosController@storeRequisitosAoCurso');
+	
 
 	
 	

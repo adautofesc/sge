@@ -17,7 +17,7 @@
 		@endif
 		dias: {{implode(', ',$turma->dias_semana)}} - 
 		das {{$turma->hora_inicio}} às {{$turma->hora_termino}} Local: 
-		{{$turma->local->sigla}} Cod.({{$turma->id}})
+		{{$turma->local->sigla}} Cod.({{$turma->id}}). Prof.{{$turma->professor->nome_simples}} - {{$turma->vagas}} Vagas
 
 		</li>
 		@endforeach

@@ -119,4 +119,88 @@ class MatriculaController extends Controller
         return view("juridico.documentos.declaracao",compact('matricula'))->with('pessoa',$pessoa)->with('inscricoes',$inscricoes);
         
     }
+    // Pega todas inscrições sem matricula e atribui matriculas pra elas
+    public function autoMatriculas(){
+        $resultado=array();
+        $inscricoes=Inscricao::where('status','<>','cancelado')->where('matricula', null)->orWhere('matricula','=','0')->get();
+        foreach($inscricoes as $inscricao){
+            if($inscricao->turma->curso->id == 307){
+                $insc_com_mat=Inscricao::select('*', 'inscricoes.id as id', 'turmas.id as turmaid')
+                    ->leftjoin('turmas', 'inscricoes.turma','=','turmas.id')
+                    ->where('inscricoes.pessoa',$inscricao->pessoa->id)
+                    ->where('turmas.curso','307')
+                    ->where('inscricoes.matricula','>',0)
+                    ->get();
+                if(count($insc_com_mat)==0){
+                    
+                    $matricula=new Matricula();
+                    $matricula->pessoa=$inscricao->pessoa->id;
+                    $matricula->atendimento=1;
+                    $matricula->data=date('Y-m-d');
+                    $matricula->parcelas=5;
+                    $matricula->dia_venc=20;
+                    $matricula->status="ativa";
+                    $matricula->valor=100;
+                    $matricula->save();
+
+                    //adiciona ela na inscrição
+                    $inscricao->matricula=$matricula->id;
+                    $inscricao->save();
+                    //
+                    $resultado[]= "Criada nova matrúcula: ". $matricula->id;
+                }
+                else{
+                    //atualiza valor da matricula
+                    $matricula=Matricula::find($insc_com_mat->first()->matricula);
+                    switch (count($insc_com_mat)) {
+                        case 1:
+                            $matricula->valor=100;
+                            break;
+                        case 2:
+                        case 3:
+                        case 4:
+                            $matricula->valor=250;
+                            break;
+                        case 5:
+                        case 6:
+                        case 7:
+                        case 8:
+                        case 9:
+                        case 10:
+                            $matricula->valor=400;
+                            break;;
+                    }
+                    $matricula->save();
+
+                    //adiciona ela na inscrição
+                    $inscricao->matricula=$matricula->id;
+                    $inscricao->save();
+                    //
+                     $resultado[]= "Matricula ".$matricula->id." atualizada";
+                }
+
+
+            }
+            else{
+                $turma=Turma::find($inscricao->turma->id);
+                $matricula=new Matricula();
+                $matricula->pessoa=$inscricao->pessoa->id;
+                $matricula->atendimento=1;
+                $matricula->data=date('Y-m-d');
+                $matricula->parcelas=5;
+                $matricula->dia_venc=20;
+                $matricula->status="ativa";
+                $matricula->valor=$turma->valor;
+                $matricula->save();
+                $inscricao->matricula=$matricula->id;
+                $resultado[]= "Criada matricula ".$matricula." para a inscricao de cursos id ".$inscricao->id;
+            }
+
+        }
+
+        return $resultado;
+
+
+
+    }
 }

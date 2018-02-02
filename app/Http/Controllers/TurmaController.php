@@ -345,20 +345,20 @@ class TurmaController extends Controller
         }
         switch ($uati) {
             case '1':
-                $valor=$valor+30;
+                $valor=$valor+100;
                 break;
             case '2':
             case '3':
-                $valor=$valor+50;
+            case '4':
+                $valor=$valor+250;
                 break;
-            case 4:
             case 5:
             case 6:
             case 7:
             case 8:
             case 9:
             case 10:
-                $valor=$valor+80;
+                $valor=$valor+400;
                 break;
             
         }

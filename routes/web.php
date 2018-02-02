@@ -22,6 +22,7 @@ Route::get('turmas-professor', 'TurmaController@listarProfessores');
 Route::post('turmas-professor', 'TurmaController@turmasProfessor');
 Route::get('importarLocais','painelController@importarLocais');
 Route::get('atualizar-inscritos','TurmaController@atualizarInscritos');
+Route::get('auto-matriculas', 'MatriculaController@autoMatriculas');
 
 
 

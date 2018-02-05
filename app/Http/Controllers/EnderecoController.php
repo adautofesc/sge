@@ -90,4 +90,35 @@ class EnderecoController extends Controller
         else
             return "Não definido";
     }
+    public function importarBairros(){
+        $enderecos=Endereco::where('bairro',0)->orWhere("bairro", null)->get();
+        foreach($enderecos as $end){
+            $bairro_str=$end->bairro_str;
+            $bairro_arr=explode(' ',$bairro_str);
+            switch(count($bairro_arr)){
+                case 0:
+                    break;
+                case 1:
+                   $bairro_id=DB::table('bairros_sanca')->where('nome','like','%'.$bairro_arr[0].'%')->get();
+                   break;
+                case 2:
+                    $bairro_id=DB::table('bairros_sanca')->where('nome','like','%'.$bairro_arr[1].'%')->get();
+                    break;
+                case 3;
+                    $bairro_id=DB::table('bairros_sanca')->where('nome','like','%'.$bairro_arr[1].' '.$bairro_arr[2].'%')->get();
+                    break;
+                default :
+                    break;
+
+            }
+
+
+            if (count($bairro_id)==1)
+                $end->bairro=$bairro_id;
+
+        }
+        return $enderecos;
+
+
+    }
 }

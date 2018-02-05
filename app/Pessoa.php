@@ -58,10 +58,10 @@ class Pessoa extends Model
 	public static function getArtigoGenero($a)
 	{
 		switch ($a) {
-			case 'h':
+			case 'm':
 				return "o";
 				break;
-			case 'm':
+			case 'f':
 				return "a";
 				break;
 			case 'x':

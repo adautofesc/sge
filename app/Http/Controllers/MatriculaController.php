@@ -13,6 +13,15 @@ use App\Classe;
 use App\Inscricao;
 use Session;
 
+
+use App\PessoaDadosGerais;
+use App\PessoaDadosContato;
+use App\Endereco;
+
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class MatriculaController extends Controller
 {
     /**
@@ -190,7 +199,7 @@ class MatriculaController extends Controller
                 $matricula->parcelas=5;
                 $matricula->dia_venc=20;
                 $matricula->status="ativa";
-                $matricula->valor=$turma->valor;
+                $matricula->valor=str_replace(',','.',$turma->valor)*1;
                 $matricula->save();
                 $inscricao->matricula=$matricula->id;
                 $resultado[]= "Criada matricula ".$matricula." para a inscricao de cursos id ".$inscricao->id;
@@ -201,6 +210,66 @@ class MatriculaController extends Controller
         return $resultado;
 
 
+
+    }
+    public function importarMatriculas(){
+        $registros=collect();
+        
+
+        $input='./matriculas.xlsx';
+        //$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($input);
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $spreadsheet = $reader->load($input);
+        for($i=2;$i<=919;$i++){
+            $insc= (object)[];
+            $insc->cpfAlu=$spreadsheet->getActiveSheet()->getCell('G'.$i)->getValue();
+            $pessoa_db=PessoaDadosGerais::where('valor', $insc->cpfAlu)->first();
+            if(count($pessoa_db)==0){
+                $pessoa=new Pessoa();
+                $pessoa->nome=$spreadsheet->getActiveSheet()->getCell('D'.$i)->getValue();
+                $pessoa->genero=$spreadsheet->getActiveSheet()->getCell('E'.$i)->getValue();
+                $pessoa->nascimento=$spreadsheet->getActiveSheet()->getCell('J'.$i)->getFormattedValue();
+                $pessoa->por=0;
+                $pessoa->save();
+                $dados_gerais= new PessoaDadosGerais;
+                $dados_gerais->pessoa=$pessoa->id;
+                $dados_gerais->dado=3; //cpf
+                $dados_gerais->valor=$insc->cpfAlu;
+                $dados_gerais->save();
+                $pessoa_db=$dados_gerais;
+                $dados_gerais= new PessoaDadosGerais;
+                $dados_gerais->pessoa=$pessoa->id;
+                $dados_gerais->dado=4; //rg
+                $dados_gerais->valor=$spreadsheet->getActiveSheet()->getCell('F'.$i)->getValue();
+                $dados_gerais->save();
+                $endereco=new Endereco;
+                $endereco->logradouro=$spreadsheet->getActiveSheet()->getCell('K'.$i)->getValue();
+                $endereco->cidade="São Carlos";
+                $endereco->estado="SP";
+                $endereco->bairro=0;
+                $endereco->cep=$spreadsheet->getActiveSheet()->getCell('L'.$i)->getValue();
+                $endereco->save();
+                $dados_contato= new PessoaDadosContato;
+                $dados_contato->pessoa=$pessoa->id;
+                $dados_contato->dado=6;
+                $dados_contato->valor=$endereco->id;
+                $dados_contato->save();
+                $dados_contato= new PessoaDadosContato;
+                $dados_contato->pessoa=$pessoa->id;
+                $dados_contato->dado=2;
+                $dados_contato->valor=$spreadsheet->getActiveSheet()->getCell('H'.$i)->getValue().$spreadsheet->getActiveSheet()->getCell('I'.$i)->getValue();
+                $dados_contato->save();
+            }
+            if(InscricaoController::inscreverAluno($pessoa_db->pessoa,$spreadsheet->getActiveSheet()->getCell('S'.$i)->getValue())==null)
+                $registros->push($insc);
+                  
+
+   
+            
+        }
+
+
+        return  $registros;
 
     }
 }

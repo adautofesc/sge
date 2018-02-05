@@ -716,7 +716,7 @@ class PessoaController extends Controller
 					$endereco->bairro=$request->bairro;
 					$endereco->cidade=mb_convert_case($request->cidade, MB_CASE_UPPER, 'UTF-8');
 					$endereco->estado=$request->estado;
-					$endereco->cep=$request->cep;
+					$endereco->cep=str_replace('-', '', $request->cep);
 					$endereco->atualizado_por=Session::get('usuario');
 					$endereco->save();
 					$id_endereco=$endereco->id;

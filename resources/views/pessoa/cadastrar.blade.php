@@ -44,11 +44,11 @@
                                 <label class="col-sm-2 form-control-label text-xs-right">Gênero*</label>
                                 <div class="col-sm-10"> 
                                     <label>
-                                        <input class="radio" name="genero" type="radio" value="h" >
+                                        <input class="radio" name="genero" type="radio" value="M" >
                                         <span>Masculino</span>
                                     </label>
                                     <label>
-                                        <input class="radio" name="genero" type="radio" value="m" >
+                                        <input class="radio" name="genero" type="radio" value="F" >
                                         <span>Feminino</span>
                                     </label>
                                     <label>
@@ -56,11 +56,11 @@
                                         <span>Trans Masculino</span>
                                     </label>
                                     <label>
-                                        <input class="radio" name="genero" type="radio" value=y >
+                                        <input class="radio" name="genero" type="radio" value="Y" >
                                         <span>Trans Feminino</span>
                                     </label>
                                     <label>
-                                        <input class="radio" name="genero" type="radio" value="z" >
+                                        <input class="radio" name="genero" type="radio" value="Z" >
                                         <span>Não Classificar</span>
                                     </label>
                                 </div>

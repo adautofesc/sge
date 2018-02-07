@@ -34,7 +34,7 @@ class TurmaController extends Controller
 
     public function listarSecretaria($dados='')
     {
-        $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.vagas as vagas','disciplinas.id as disciplinaid','cursos.id as cursoid','turmas.programa as programaid')
+        $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.vagas as vagas','disciplinas.id as disciplinaid','cursos.id as cursoid','turmas.programa as programaid','turmas.valor as valor')
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
                 ->orderBy('cursos.nome')
@@ -428,71 +428,6 @@ class TurmaController extends Controller
         return view('pedagogico.turma.turmas-site',compact('turmas'))->with('professor',$professor->nomeSimples);
 
     }
-    //secretaria
-    public function verInscricoes($turma){
-        $turma=Turma::find($turma);
-        if (empty($turma))
-            return redirect(asset('/secretaria/turmas'));
-        $inscricoes=Inscricao::where('turma','=', $turma->id)->where('status','<>','cancelado')->get();
-        //return $inscricoes;
-        return view('pedagogico.turma.dados',compact('turma'))->with('inscricoes',$inscricoes);
 
-
-    }
-    //pedagogico
-    public function verInscritos($turma){
-        $turma=Turma::find($turma);
-        if (empty($turma))
-            return redirect(asset('/secretaria/turmas'));
-        $inscricoes=Inscricao::where('turma','=', $turma->id)->where('status','<>','cancelado')->get();
-        //return $inscricoes;
-        return view('pedagogico.turma.inscritos',compact('turma'))->with('inscricoes',$inscricoes);
-
-
-    }
-    /**
-     * Modifica a quantidade de pessoas inscritas na turma
-     *
-     * @param  \App\Turma  $turma
-     * @param  $operaçao - 0 reduz, 1 aumenta
-     * @param  $qnde - numero para adicionar ou reduzir
-     * @return \Illuminate\Http\Response
-     */
-    public static function modInscritos($turma,$operacao,$qnde){
-        $turma=Turma::find($turma);
-        if($turma){
-            switch ($operacao) {
-                case '1':
-                    $turma->matriculados=$turma->matriculados+$qnde;
-                    break;
-                case '0':
-                    $turma->matriculados=$turma->matriculados-$qnde;
-                    break;
-                default:
-                    $turma->matriculados=$turma->matriculados+$qnde;
-                    break;
-            }
-            $turma->save();
-        }
-    }
-    public function atualizarInscritos(){
-        $linha="";
-        $turmas=Turma::all();
-        foreach($turmas as $turma){
-            $inscricoes=Inscricao::where('turma',$turma->id)->where('status','<>','cancelado')->get();
-            $turma->matriculados=count($inscricoes);
-            $turma->save();
-            $linha.=  " <br> turma ".$turma->id. "inscritos: ".count($inscricoes);
-        }
-        return $linha;
-
-
-
-
-
-
-
-
-    }
 
 }

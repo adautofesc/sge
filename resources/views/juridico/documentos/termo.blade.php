@@ -90,7 +90,7 @@
                     <strong>2. VALOR E CONDIÇÕES DE PAGAMENTO:</strong>
                     <br />
                     <strong>2.1</strong> O ALUNO pagará à FESC, pela prestação dos serviços ora ajustados, o valor total de
-                    <span id="FormView1_MatVlrPag">R$ {{number_format($matricula->valor, 2, ',', '.')}}</span>, dividido em
+                    <span id="FormView1_MatVlrPag">R$ {{number_format($matricula->valor-$matricula->valor_desconto, 2, ',', '.')}}</span>, dividido em
                     <span id="FormView1_CPACod">{{$matricula->parcelas}}</span>
                     parcelas de
                     <span id="FormView1_parcela"></span>

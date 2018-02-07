@@ -326,7 +326,7 @@ class PessoaController extends Controller
 		$pessoa=$this->dadosPessoa($id);
 
 		//return $pessoa;
-		return view('pessoa.mostrar', compact('pessoa'));
+		return redirect(asset('/secretaria/atender/'.$id)); 
 
 	}
 	public function edita($id){
@@ -387,19 +387,19 @@ class PessoaController extends Controller
 		$pessoa->cadastro=Data::converteParaUsuario($pessoa->created_at). "  Cadastrad".Pessoa::getArtigoGenero($pessoa->genero).' por '. Pessoa::getNome($pessoa->por);
 
 		switch ($pessoa->genero) {
-			case 'h':
+			case 'M':
 				$pessoa->genero="Masculino";
 				break;
-			case 'm':
+			case 'F':
 				$pessoa->genero="Feminino";
 				break;
-			case 'x':
+			case 'X':
 				$pessoa->genero="Trans Masculino";
 				break;
-			case 'y':
+			case 'Y':
 				$pessoa->genero="Trans Feminino";
 				break;
-			case 'z':
+			case 'Z':
 				$pessoa->genero="Não especificado";
 				break;
 			
@@ -423,6 +423,7 @@ class PessoaController extends Controller
 			$pessoa->estado=$endereco->estado;
 			$pessoa->cep=Strings::mask($endereco->cep,'#####-###');
 		}
+		
 
 		return $pessoa;
 
@@ -732,7 +733,7 @@ class PessoaController extends Controller
 			}
 
 		$pessoa=$this->formataParaMostrar($pessoa);
-		return view('pessoa.mostrar', compact('pessoa'));
+		return redirect(asset("/secretaria/atender/"));
 	}	
 	public function editarDadosClinicos_view($id){
 		
@@ -800,7 +801,7 @@ class PessoaController extends Controller
 
 
 		
-		return redirect('/pessoa/mostrar/'.$request->pessoa);
+		return redirect(asset("/secretaria/atender/"));
 	}
 
 
@@ -845,7 +846,7 @@ class PessoaController extends Controller
 
 
 
-		return redirect('/pessoa/mostrar/'.$request->pessoa);
+		return redirect(asset("/secretaria/atender/"));
 
 	}
 
@@ -866,7 +867,7 @@ class PessoaController extends Controller
 		$dado->dado=7;
 		$dado->valor=$dependente;
 		$dado->save();
-		return redirect(asset('/pessoa/mostrar/'.$pessoa->id));
+		return redirect(asset("/secretaria/atender/"));
 
 	}
 	public function remVinculo_exec($vinculo)
@@ -875,7 +876,7 @@ class PessoaController extends Controller
 		$pessoa=$vinculo->pessoa;
 		$vinculo->delete();
 		
-		return redirect(asset('/pessoa/mostrar/'.$pessoa));
+		return redirect(asset("/secretaria/atender/"));
 
 	}
 	public function addResponsavel_view($pessoa)

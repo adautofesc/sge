@@ -20,9 +20,9 @@
 
 
     <div class="card-block">
-       <ul>
+       <ul class="list-group">
            <li><a class="btn btn-primary small" href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}" target="_blank">Imprimir Termos de Matrícula</a></li>
-           <li><a class="btn btn-primary small" href="{{asset('/secretaria/matricula/contrato/').'/'.$matricula->id}}" target="_blank">Imprimir Contrato/a></li>
+           <li><a class="btn btn-primary small" href="{{asset('/secretaria/matricula/contrato/').'/'.$matricula->id}}" target="_blank">Imprimir Contrato</a></li>
            <li><a class="btn btn-primary small" href="#" target="_blank">Marcar como pendente</a></li>
            
        </ul>

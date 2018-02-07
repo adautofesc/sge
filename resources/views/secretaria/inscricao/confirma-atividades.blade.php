@@ -185,7 +185,7 @@
             <div class="col-sm-2"> 
                 <div class="input-group">
                     
-                    <input type="number" class="form-control boxed" value='{{$turma->tempo_curso}}' name='nparcelas{{$curso->id}}' id="nparcelas{{$curso->id}}" required> 
+                    <input type="number" class="form-control boxed" value='{{$turma->tempo_curso}}' name='nparcelas{{$curso->id}}' id="nparcelas{{$curso->id}}" required onchange="aplicarPlano('{{$curso->id}}',{{ str_replace(',', '.', $curso->valor) }});"> 
                     <span class="input-group-addon">Vezes</span> 
                 </div>
             </div>
@@ -204,7 +204,7 @@
         <div class="subtitle-block">
         </div>
         <div class="subtitle-block">
-            <p>Saldo: <b id="parcelas{{$curso->id}}">{{$turma->tempo_curso}}</b> parcela(s) de <small>R$</small> <b><span id="saldo_final_parcelado{{$curso->id}}">{{str_replace(',', '.', $curso->valor/$turma->tempo_curso)}}</span></b> = <small>R$</small> <b><span id="saldo_final{{$curso->id}}">{{$curso->valor}}</span></b></p>
+            <p>Saldo: <b id="parcelas{{$curso->id}}">{{$turma->tempo_curso}}</b> parcela(s) de <small>R$</small> <b><span id="saldo_final_parcelado{{$curso->id}}">{{str_replace(',', '.', $curso->valor)/$turma->tempo_curso}}</span></b> = <small>R$</small> <b><span id="saldo_final{{$curso->id}}">{{$curso->valor}}</span></b></p>
         </div>
         <input type="hidden" name="valorcursointegral{{$curso->id}}" value="{{$curso->valor}}" >
         <input type="hidden" name="valordesconto{{$curso->id}}" value="0" >
@@ -263,6 +263,7 @@ function desconto(id,item){
         $('#porcentagem'+id).val(0)
         $('#valor'+id).val(valor_desc);
     }
+    aplicarPlano('{{$curso->id}}',{{ str_replace(',', '.', $curso->valor) }});
 
 
 }

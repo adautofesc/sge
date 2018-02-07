@@ -49,6 +49,7 @@ class MatriculaController extends Controller
                 if(!$cursos->contains($turma->curso))
                     $cursos->push($turma->curso);
             }
+            
         }
         foreach($cursos as $curso){
             $curso->turmas=collect();
@@ -56,41 +57,46 @@ class MatriculaController extends Controller
                 if($turma->curso->id==$curso->id)
                     $curso->turmas->push($turma);
             } 
-            $matricula=new Matricula();
-            $matricula->pessoa=Session::get('pessoa_atendimento');
-            $matricula->atendimento=Session::get('atendimento');
-            $matricula->data=date('Y-m-d');
-            $valor="valorcursointegral".$curso->id;
-            $matricula->valor=$r->$valor*1;
-            $parcelas="nparcelas".$curso->id;
-            $matricula->parcelas=$r->$parcelas;
-            $dia_vencimento="dvencimento".$curso->id;
-            $matricula->dia_venc=$r->$dia_vencimento;
-            $matricula->status="ativa";
-            $desconto="fdesconto".$curso->id;
-            $matricula->desconto=$r->$desconto;
-            $valordesconto="valordesconto".$curso->id;
-            $matricula->valor_desconto=$r->$valordesconto*1;
-            $matricula->save();
-            $matriculas->push($matricula);
+            if($this->verificaSeMatriculado(Session::get('pessoa_atendimento'),$curso->id)==false){
+                $matricula=new Matricula();
+                $matricula->pessoa=Session::get('pessoa_atendimento');
+                $matricula->atendimento=Session::get('atendimento');
+                $matricula->data=date('Y-m-d');
+                $valor="valorcursointegral".$curso->id;
+                $matricula->valor=str_replace(',', '.', $r->$valor);
+                $parcelas="nparcelas".$curso->id;
+                $matricula->parcelas=$r->$parcelas;
+                $dia_vencimento="dvencimento".$curso->id;
+                $matricula->dia_venc=$r->$dia_vencimento;
+                $matricula->status="ativa";
+                $desconto="fdesconto".$curso->id;
+                $matricula->desconto=$r->$desconto;
+                $valordesconto="valordesconto".$curso->id;
+                $matricula->valor_desconto=$r->$valordesconto*1;
+                $matricula->save();
+                $matriculas->push($matricula);
+            }
 
             foreach($curso->turmas as $cturma){
-                if(InscricaoController::inscreverAluno(Session::get('pessoa_atendimento'),$cturma->id,$matricula->id)==null)
-                    die("Erro ao increver ".Session::get('pessoa_atendimento')." em ".$cturma->id);
-               
+                //return $cturma;
+                $insc=InscricaoController::inscreverAluno(Session::get('pessoa_atendimento'),$cturma->id);
+                $matricula=Matricula::find($insc->matricula);
+                MatriculaController::modificaMatricula($insc->matricula);
+                $matriculas->push($matricula);
+                
             }
    
         }
        
 
         $atendimento=Atendimento::find(Session::get('atendimento'));
-        $atendimento->descricao="Matricula ";
+        $atendimento->descricao="Matricula/Inscrição ";
         $atendimento->save();
 
         Session::forget('atendimento');
         $pessoa=Pessoa::find(session('pessoa_atendimento'));
 
-        //return $Inscricaos;
+        //return $matriculas;
         return view("secretaria.inscricao.gravar")->with('matriculas',$matriculas)->with('nome',$pessoa->nome_simples);
 
     }
@@ -196,7 +202,7 @@ class MatriculaController extends Controller
                 $matricula->pessoa=$inscricao->pessoa->id;
                 $matricula->atendimento=1;
                 $matricula->data=date('Y-m-d');
-                $matricula->parcelas=5;
+                $matricula->parcelas=$turma->tempo_curso;
                 $matricula->dia_venc=20;
                 $matricula->status="ativa";
                 $matricula->valor=str_replace(',','.',$turma->valor)*1;
@@ -213,6 +219,7 @@ class MatriculaController extends Controller
 
     }
     public function importarMatriculas(){
+        //importava matriculas de um aquuivo XLSX
         $registros=collect();
         
 
@@ -261,15 +268,86 @@ class MatriculaController extends Controller
                 $dados_contato->save();
             }
             if(InscricaoController::inscreverAluno($pessoa_db->pessoa,$spreadsheet->getActiveSheet()->getCell('S'.$i)->getValue())==null)
-                $registros->push($insc);
-                  
-
-   
-            
+                $registros->push($insc);   
         }
-
-
         return  $registros;
 
     }
+    public function listarPorPessoa(){
+        if(!Session::get('pessoa_atendimento'))
+            return redirect(asset('/secretaria/pre-atendimento'));
+        if(!Session::get('atendimento'))
+            return redirect(asset('/secretaria/atender'));
+        $matriculas=Matricula::where('pessoa', Session::get('pessoa_atendimento'))->get();
+        //return $matriculas;
+        $nome=Pessoa::getNome(Session::get('pessoa_atendimento'));
+
+        return view('secretaria.matricula.lista-por-pessoa',compact('matriculas'))->with('nome',$nome);
+
+    }
+    public static function verificaSeMatriculado($pessoa,$curso){
+        $matriculas_ativas=Matricula::where('pessoa',Session::get('pessoa_atendimento'))->where('status','like','ativa')->get();
+        foreach($matriculas_ativas as $matricula){
+            foreach($matricula->inscricoes as $inscricao){
+                if($inscricao->turma->curso->id==$curso)
+                    return $matricula->id;
+
+            }
+        }
+        return false;
+            
+
+    }
+    public static function gerarMatricula($pessoa,$turma_id){
+        $turma=Turma::find($turma_id);
+        if($turma==null)
+            redirect($_SERVER['HTTP_REFERER']);
+        AtendimentoController::novoAtendimento("Matrícula automática por inscrição direta.", $pessoa, Session::get('usuario'));
+        $matricula=new Matricula();
+        $matricula->pessoa=$pessoa;
+        $matricula->atendimento=1;
+        $matricula->data=date('Y-m-d');
+        $matricula->parcelas=$turma->tempo_curso;
+        $matricula->dia_venc=20;
+        $matricula->status="ativa";
+        $matricula->valor=str_replace(',','.',$turma->valor);
+        $matricula->save();
+
+        return $matricula;
+
+
+
+
+    }
+    public static function modificaMatricula($id){
+        $matricula=Matricula::find($id);
+        if($matricula->inscricoes->first()->turma->curso->id==307){
+            $inscricoes=Inscricao::where('matricula')->get();
+            switch (count($inscricoes)) {
+                        case 1:
+                            $matricula->valor=100;
+                            break;
+                        case 2:
+                        case 3:
+                        case 4:
+                            $matricula->valor=250;
+                            break;
+                        case 5:
+                        case 6:
+                        case 7:
+                        case 8:
+                        case 9:
+                        case 10:
+                            $matricula->valor=400;
+                            break;;
+                    }
+                    $matricula->save();
+
+        }
+        
+
+    }
+        
+
+
 }

@@ -32,7 +32,7 @@ class InscricaoController extends Controller
             return redirect(asset('/secretaria/atender'));
         $str_turmas='';
         $turmas=collect();
-        $incricoes_atuais=Inscricao::where('pessoa',Session::get('pessoa_atendimento'))->where('status', 'like','regular')->get();
+        $incricoes_atuais=Inscricao::where('pessoa',Session::get('pessoa_atendimento'))->where('status', '<>','cancelado')->get();
         //->where('status','<>','cancelado')
 
         foreach($incricoes_atuais as $inscricao){
@@ -63,8 +63,8 @@ class InscricaoController extends Controller
     public static function verificaSeInscrito($pessoa,$turma)
     {
         $existe=Inscricao::where('turma',$turma)->where('pessoa',$pessoa)->where('status','<>','cancelado')->get();
-        if(count($existe)>0)
-            return True;
+        if(count($existe))
+            return $existe->first()->id;
         else
             return False;
 
@@ -95,7 +95,7 @@ class InscricaoController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     */
+     
     public function gravar(Request $request)
     {
         //return $request->pendente;
@@ -132,7 +132,7 @@ class InscricaoController extends Controller
         //return $Inscricaos;
         return view("secretaria.inscricao.gravar")->with('inscricoes',$inscricoes)->with('nome',$pessoa->nome_simples);
 
-    }
+    }*/
 
     /**
      * Display the specified resource.
@@ -277,15 +277,26 @@ class InscricaoController extends Controller
 
     }
     public static function inscreverAluno($aluno,$turma,$matricula=0){
-        if(InscricaoController::verificaSeInscrito($aluno,$turma))
-                return null;
+        $turma=Turma::find($turma);
+        if(InscricaoController::verificaSeInscrito($aluno,$turma->id))
+                return Inscricao::find(InscricaoController::verificaSeInscrito($aluno,$turma->id));
+        if($matricula==0){
+            if(MatriculaController::verificaSeMatriculado($aluno,$turma->curso->id)==false){
+                $matricula_obj=MatriculaController::gerarMatricula($aluno,$turma->id);
+                $matricula=$matricula_obj->id;
+            }
+            else{
+                $matricula_obj=MatriculaController::verificaSeMatriculado($aluno,$turma->curso->id);
+                $matricula=$matricula_obj;
+            }
+        }
         $inscricao=new Inscricao();
         $inscricao->pessoa=$aluno;
         if (Session::get('atendimento')>0)
             $inscricao->atendimento=Session::get('atendimento');
         else
             $inscricao->atendimento=1;
-        $inscricao->turma=$turma;
+        $inscricao->turma=$turma->id;
         $inscricao->status='regular';
         $inscricao->matricula=$matricula;
         $inscricao->save();
@@ -293,14 +304,15 @@ class InscricaoController extends Controller
 
         // aumenta Inscricaodos
 
-        $turma=Turma::find($turma);
-        TurmaController::modInscritos($turma->id,1,1);
+        //$turma=Turma::find($turma);
+        InscricaoController::modInscritos($turma->id,1,1);
 
         return $inscricao;
 
     }
     public function inscreverAlunoLote($turma,Request $r){
-        $this->inscreverAluno($r->id_pessoa,$turma);
+        //return "função temporareamente bloqueada";
+        InscricaoController::inscreverAluno($r->id_pessoa,$turma);
         return redirect(asset('/secretaria/turma/'.$turma));
     }
     public function apagar($id){
@@ -308,10 +320,68 @@ class InscricaoController extends Controller
         if($insc==null)
             return die("Inscrição não encontrada");
         //return $insc->turma->id."teste";
-        TurmaController::modInscritos($insc->turma->id,0,1);
+        InscricaoController::modInscritos($insc->turma->id,0,1);
         $insc->status='cancelado';
         $insc->save();
-        return redirect(asset('/secretaria/turma/'.$insc->turma->id));
+        return redirect($_SERVER['HTTP_REFERER']); //volta pra pagina anterior, atualizando ela.
+
+    }
+    /**
+     * Modifica a quantidade de pessoas inscritas na turma
+     *
+     * @param  \App\Turma  $turma
+     * @param  $operaçao - 0 reduz, 1 aumenta
+     * @param  $qnde - numero para adicionar ou reduzir
+     * @return \Illuminate\Http\Response
+     */
+    public static function modInscritos($turma,$operacao,$qnde){
+        $turma=Turma::find($turma);
+        if($turma){
+            switch ($operacao) {
+                case '1':
+                    $turma->matriculados=$turma->matriculados+$qnde;
+                    break;
+                case '0':
+                    $turma->matriculados=$turma->matriculados-$qnde;
+                    break;
+                default:
+                    $turma->matriculados=$turma->matriculados+$qnde;
+                    break;
+            }
+            $turma->save();
+        }
+    }
+    public function atualizarInscritos(){
+        $linha="";
+        $turmas=Turma::all();
+        foreach($turmas as $turma){
+            $inscricoes=Inscricao::where('turma',$turma->id)->where('status','<>','cancelado')->get();
+            $turma->matriculados=count($inscricoes);
+            $turma->save();
+            $linha.=  " <br> turma ".$turma->id. "inscritos: ".count($inscricoes);
+        }
+    return $linha;
+    }
+        //secretaria
+    public function verInscricoes($turma){
+        $turma=Turma::find($turma);
+        if (empty($turma))
+            return redirect(asset('/secretaria/turmas'));
+        $inscricoes=Inscricao::where('turma','=', $turma->id)->where('status','<>','cancelado')->get();
+        //return $inscricoes;
+        return view('pedagogico.turma.dados',compact('turma'))->with('inscricoes',$inscricoes);
+
+
+    }
+    //pedagogico
+    public function verInscritos($turma){
+        $turma=Turma::find($turma);
+        if (empty($turma))
+            return redirect(asset('/secretaria/turmas'));
+        $inscricoes=Inscricao::where('turma','=', $turma->id)->where('status','<>','cancelado')->get();
+        //return $inscricoes;
+        return view('pedagogico.turma.inscritos',compact('turma'))->with('inscricoes',$inscricoes);
+
 
     }
 }

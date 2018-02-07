@@ -40,23 +40,23 @@
                                 <label class="col-sm-2 form-control-label text-xs-right">Gênero*</label>
                                 <div class="col-sm-10"> 
                                     <label>
-                                        <input class="radio" name="genero" type="radio" {{ $dados['generom']}} value="h" >
+                                        <input class="radio" name="genero" type="radio" {{ $dados['generom']}} value="M" >
                                         <span>Masculino</span>
                                     </label>
                                     <label>
-                                        <input class="radio" name="genero" type="radio" {{ $dados['generof']}} value="m" >
+                                        <input class="radio" name="genero" type="radio" {{ $dados['generof']}} value="F" >
                                         <span>Feminino</span>
                                     </label>
                                     <label>
-                                        <input class="radio" name="genero" type="radio" {{ $dados['generox']}} value="x" >
+                                        <input class="radio" name="genero" type="radio" {{ $dados['generox']}} value="X" >
                                         <span>Trans Masculino</span>
                                     </label>
                                     <label>
-                                        <input class="radio" name="genero" type="radio" {{ $dados['generoy']}} value=y >
+                                        <input class="radio" name="genero" type="radio" {{ $dados['generoy']}} value="Y" >
                                         <span>Trans Feminino</span>
                                     </label>
                                     <label>
-                                        <input class="radio" name="genero" type="radio" {{ $dados['generoz']}} value="z" >
+                                        <input class="radio" name="genero" type="radio" {{ $dados['generoz']}} value="Z" >
                                         <span>Não Classificar</span>
                                     </label>
                                 </div>

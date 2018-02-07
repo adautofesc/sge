@@ -76,6 +76,7 @@ Route::middleware('login') ->group(function(){
 			Route::get('observacoes/{var}','PessoaController@editarObservacoes_view');
 			Route::post('observacoes/{var}','PessoaController@editarObservacoes_exec');
 		});//prfix editar
+		Route::get('matriculas', 'MatriculaController@listarPorPessoa');
 	});//prefix pessoa
 
 
@@ -133,7 +134,7 @@ Route::middleware('login') ->group(function(){
 			Route::post('editar/{var}','TurmaController@update');
 			Route::get('status/{status}/{turma}','TurmaController@status');
 			Route::get('turmasjson','TurmaController@turmasJSON');
-			Route::get('inscritos/{turma}','TurmaController@verInscritos');
+			Route::get('inscritos/{turma}','InscricaoController@verInscritos');
 
 
 		});
@@ -179,7 +180,7 @@ Route::middleware('login') ->group(function(){
 		Route::get('turmas', 'TurmaController@listarSecretaria')->name('secretaria.turmas');
 		Route::get('turmas-disponiveis/{turmas}/{filtros}', 'TurmaController@turmasDisponiveis');
 		Route::get('turmas-escolhidas/{turmas}/', 'TurmaController@turmasEscolhidas');
-		Route::get('turma/{turma}', 'TurmaController@verInscricoes');
+		Route::get('turma/{turma}', 'InscricaoController@verInscricoes');
 		Route::post('turma/{turma}', 'InscricaoController@inscreverAlunoLote');
 
 

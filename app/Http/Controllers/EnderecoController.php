@@ -91,7 +91,36 @@ class EnderecoController extends Controller
             return "Não definido";
     }
     public function importarBairros(){
-        $enderecos=Endereco::where('bairro',0)->orWhere("bairro", null)->get();
+        $col_enderecos=collect();
+        $nomes_comuns=[ 
+            'felicia'=>'138'
+
+        ];
+
+
+        $bairros=DB::table('bairros_sanca')->get();
+        foreach($bairros as $bairro){
+            $enderecos=Endereco::where('bairro_str','like','%'.$bairro->nome.'%')->where('bairro',0)->orWhere("bairro", null)->get();
+            if(count($enderecos)>0){
+                foreach ($enderecos as $endereco){   
+                        $endereco->bairro=$bairro->id;
+                        $endereco->save();
+                }
+            }
+
+        }
+        $enderecos=Endereco::where('bairro_str','like','%felicia%')->where('bairro',0)->orWhere("bairro", null)->get();
+            if(count($enderecos)>0){
+                foreach ($enderecos as $endereco){   
+                        $endereco->bairro=138;
+                        $endereco->save();
+                        $col_enderecos->push($endereco);
+                }
+            }
+
+        return $col_enderecos;
+        /*
+        $enderecos=Endereco::where('bairro',0)->orWhere("bairro", null)->limit(100)->get();
         foreach($enderecos as $end){
             $bairro_str=$end->bairro_str;
             $bairro_arr=explode(' ',$bairro_str);
@@ -118,6 +147,7 @@ class EnderecoController extends Controller
 
         }
         return $enderecos;
+        */
 
 
     }

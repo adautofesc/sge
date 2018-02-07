@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Pessoa;
 use App\Atendimento;
 use Session;
+use App\classes\Strings;
 
 class SecretariaController extends Controller
 {
@@ -31,6 +32,13 @@ class SecretariaController extends Controller
 			Session::put('pessoa_atendimento',$id);
 		
 		$pessoa=PessoaController::formataParaMostrar($pessoa);
+		if(isset($pessoa->telefone))
+			$pessoa->telefone=Strings::formataTelefone($pessoa->telefone);
+		if(isset($pessoa->telefone_alternativo))
+			$pessoa->telefone_alternativo=Strings::formataTelefone($pessoa->telefone_alternativo);
+		if(isset($pessoa->telefone_contato))
+			$pessoa->telefone_contato=Strings::formataTelefone($pessoa->telefone_contato);
+
 		if(!Session::get('atendimento')){
 			$atendimento=new Atendimento();
 			$atendimento->atendente=Session::get('usuario');

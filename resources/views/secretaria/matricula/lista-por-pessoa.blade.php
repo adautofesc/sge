@@ -10,11 +10,17 @@
 </div>
 
 @foreach($matriculas as $matricula)
+@if($matricula->status=='ativa')
 <div class="card card-success">
+@elseif($matricula->status=='pendente')
+<div class="card card-danger">
+@elseif($matricula->status=='cancelada')
+<div class="card card-warning">
+@endif
 
     <div class="card-header">
         <div class="header-block">
-        <p class="title" style="color:white"> {{$matricula->id}} -
+        <p class="title" style="color:white"> Matrícula: {{$matricula->id}} Realizada em {{date('d/m/Y - H:i ', strtotime($matricula->created_at))}}.
         @if(count($matricula->inscricoes)>0) 
         {{$matricula->inscricoes->first()->turma->curso->nome}}
         @else
@@ -46,6 +52,9 @@
           @foreach($matricula->inscricoes as $inscricao)
           @if($inscricao->status!='cancelado')
           <tr>
+          @else
+          <tr class="text-danger">
+          @endif
             <td scope="row" title="Número da inscrição" >{{$inscricao->id}}</td>
             @if($inscricao->turma->disciplina==null)
             <td>{{$inscricao->turma->curso->nome}}</td>
@@ -59,7 +68,7 @@
             <td>{{$inscricao->turma->data_inicio}}</td>
             <td><a href=# class="btn btn-danger-outline col-xs-12" onclick="remover('{{$inscricao->id}}')" title="Cancelar Atividade"> X </a></td>
           </tr>
-         @endif
+         
           @endforeach
           @endif
         </tbody>
@@ -69,7 +78,7 @@
       <div class="row">
         <div class="col-md-3"><a href=# class="btn btn-primary-outline col-xs-12">Editar</a></div>
         <div class="col-md-3"><a href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}" target="_blank" class="btn btn-info-outline col-xs-12">Imprimir Termo</a></div>
-        <div class="col-md-3"><a href=# class="btn btn-warning-outline col-xs-12" title="Cancelar Matrícula">Cancelar Matrícula</a></div>
+        <div class="col-md-3"><a href="#" onclick="cancelar({{$matricula->id}});" class="btn btn-warning-outline col-xs-12" title="Cancelar Matrícula">Cancelar Matrícula</a></div>
         <div class="col-md-3"><a href="{{asset('/secretaria/matricula/nova')}}" class="btn btn-success-outline col-xs-12">Adicionar disciplinas</a></div>
       </div>
 
@@ -81,8 +90,12 @@
 @section('scripts')
 <script>
   function remover(inscricao){
-    if(confirm('Tem certeza que deseja remover esta inscrição?'))
+    if(confirm('Tem certeza que deseja cancelar esta inscrição?'))
         window.location.replace("{{asset('secretaria/matricula/inscricao/apagar')}}/"+inscricao);
+  }
+  function cancelar(matricula){
+    if(confirm('Tem certeza que deseja cancelar esta matrícula?'))
+        window.location.replace("{{asset('/secretaria/matricula/cancelar/')}}/"+matricula);
   }
 </script>
 @endsection

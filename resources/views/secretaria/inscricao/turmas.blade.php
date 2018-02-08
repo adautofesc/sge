@@ -20,7 +20,7 @@
             <div class="title">Seg.</div>
             @foreach($turmas as $turma)
             @if(in_array('seg',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}" href="#{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            <div class="box-placeholder turma{{$turma->id}}" href="#{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{ $turma->disciplina===null? $turma->curso->nome : $turma->curso->nome.' - '.$turma->disciplina->nome}} em {{$turma->local->sigla}} com <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
             @endforeach
         </div>
@@ -30,7 +30,7 @@
             <div class="title">Ter.</div>
             @foreach($turmas as $turma)
             @if(in_array('ter',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{ $turma->disciplina===null? $turma->curso->nome : $turma->curso->nome.' - '.$turma->disciplina->nome}} em {{$turma->local->sigla}} com <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
             @endforeach
             
@@ -41,7 +41,7 @@
             <div class="title">Qua.</div>
             @foreach($turmas as $turma)
             @if(in_array('qua',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{ $turma->disciplina===null? $turma->curso->nome : $turma->curso->nome.' - '.$turma->disciplina->nome}} em {{$turma->local->sigla}} com <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
             @endforeach
         </div>
@@ -51,7 +51,7 @@
             <div class="title">Qui.</div>
             @foreach($turmas as $turma)
             @if(in_array('qui',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{ $turma->disciplina===null? $turma->curso->nome : $turma->curso->nome.' - '.$turma->disciplina->nome}} em {{$turma->local->sigla}} com <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
             @endforeach
         </div>
@@ -61,7 +61,7 @@
             <div class="title">Sex.</div>
             @foreach($turmas as $turma)
             @if(in_array('sex',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{ $turma->disciplina===null? $turma->curso->nome : $turma->curso->nome.' - '.$turma->disciplina->nome}} em {{$turma->local->sigla}} com <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
             @endforeach
         </div>
@@ -71,7 +71,7 @@
             <div class="title">Sab.</div>
             @foreach($turmas as $turma)
             @if(in_array('sab',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{$turma->curso->nome}} - <small>{{$turma->professor->nome_simples}}</small></div>
+            <div class="box-placeholder turma{{$turma->id}}">{{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{ $turma->disciplina===null? $turma->curso->nome : $turma->curso->nome.' - '.$turma->disciplina->nome}} em {{$turma->local->sigla}} com <small>{{$turma->professor->nome_simples}}</small></div>
             @endif
             @endforeach
         </div>

@@ -312,7 +312,9 @@ class InscricaoController extends Controller
     }
     public function inscreverAlunoLote($turma,Request $r){
         //return "função temporareamente bloqueada";
-        InscricaoController::inscreverAluno($r->id_pessoa,$turma);
+        $inscricao=InscricaoController::inscreverAluno($r->id_pessoa,$turma);
+        MatriculaController::modificaMatricula($inscricao->matricula);
+
         return redirect(asset('/secretaria/turma/'.$turma));
     }
     public function apagar($id){
@@ -321,8 +323,11 @@ class InscricaoController extends Controller
             return die("Inscrição não encontrada");
         //return $insc->turma->id."teste";
         InscricaoController::modInscritos($insc->turma->id,0,1);
+        MatriculaController::modificaMatricula($insc->matricula);
         $insc->status='cancelado';
         $insc->save();
+        if(count(InscricaoController::inscricoesPorMatricula($insc->matricula))==0)
+            MatriculaController::cancelarMatricula($insc->matricula);
         return redirect($_SERVER['HTTP_REFERER']); //volta pra pagina anterior, atualizando ela.
 
     }
@@ -351,6 +356,7 @@ class InscricaoController extends Controller
             $turma->save();
         }
     }
+    /* Metodo para atualizar numero de vagas das turmas de acordo com as inscrições efetuadas
     public function atualizarInscritos(){
         $linha="";
         $turmas=Turma::all();
@@ -360,8 +366,9 @@ class InscricaoController extends Controller
             $turma->save();
             $linha.=  " <br> turma ".$turma->id. "inscritos: ".count($inscricoes);
         }
+       
     return $linha;
-    }
+    } */
         //secretaria
     public function verInscricoes($turma){
         $turma=Turma::find($turma);
@@ -384,4 +391,20 @@ class InscricaoController extends Controller
 
 
     }
+    public static function cancelarInscricao($inscricao){
+        $inscricao->status='cancelado';
+        $inscricao->save();
+        InscricaoController::modInscritos($inscricao->turma->id,0,1);
+        MatriculaController::modificaMatricula($inscricao->matricula);
+        if(count(InscricaoController::inscricoesPorMatricula($inscricao->matricula))==0)
+            MatriculaController::cancelarMatricula($inscricao->matricula);
+
+        return $inscricao;
+    }
+    public static function inscricoesPorMatricula($matricula){
+        $inscricoes=Inscricao::where('matricula', $matricula)->where('status','ativa')->get();
+        return $inscricoes;
+    }
+
+
 }

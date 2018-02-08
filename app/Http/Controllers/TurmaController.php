@@ -398,7 +398,7 @@ class TurmaController extends Controller
     public function turmasSite(){
 
         $turmas=Turma::select('*', 'turmas.vagas as vagas','turmas.id as id')
-                ->where('turmas.status','>',0)
+                ->where('turmas.status','>',2)
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
                 ->orderBy('cursos.nome')
@@ -415,8 +415,8 @@ class TurmaController extends Controller
 
     }
     public function turmasProfessor(Request $r){
-        $turmas=Turma::select('*', 'turmas.id as id')
-                ->where('turmas.status','>',0)
+        $turmas=Turma::select('*', 'turmas.vagas as vagas','turmas.id as id','turmas.matriculados as matriculados')
+                ->where('turmas.status','>',2)
                 ->where('professor',$r->professor)
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
@@ -424,6 +424,8 @@ class TurmaController extends Controller
                 ->orderBy('disciplinas.nome')
                 ->get();
         $professor=Pessoa::find($r->professor);
+
+        //return $turmas;
 
         return view('pedagogico.turma.turmas-site',compact('turmas'))->with('professor',$professor->nomeSimples);
 

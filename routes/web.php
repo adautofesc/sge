@@ -18,11 +18,12 @@ Route::get('/turmascursosnavka', 'painelController@verTurmasAnterioresCursos');
 Route::post('/turmascursosnavka', 'painelController@gravarMigracao');
 Route::get('/turmasaulasnavka', 'painelController@verTurmasAnterioresAulas');
 Route::get('cursos-disponiveis', 'TurmaController@turmasSite');
+Route::get('vagas', 'TurmaController@turmasSite');
 Route::get('turmas-professor', 'TurmaController@listarProfessores');
 Route::post('turmas-professor', 'TurmaController@turmasProfessor');
 Route::get('importarLocais','painelController@importarLocais');
 Route::get('atualizar-inscritos','TurmaController@atualizarInscritos');
-Route::get('auto-matriculas', 'MatriculaController@autoMatriculas');
+//Route::get('auto-matriculas', 'MatriculaController@autoMatriculas');
 //Route::get('importar-matriculas', 'MatriculaController@importarMatriculas');
 Route::get('importar-bairros', 'EnderecoController@importarBairros');
 
@@ -191,6 +192,7 @@ Route::middleware('login') ->group(function(){
 			Route::post('gravar', 'MatriculaController@gravar');
 			Route::get('termo/{id}','MatriculaController@termo');
 			Route::get('declaracao/{id}','MatriculaController@declaracao');
+			Route::get('cancelar/{id}','MatriculaController@cancelarMatricula');
 			Route::prefix('inscricao')->group(function(){
 				Route::get('apagar/{id}', 'InscricaoController@apagar');
 			});

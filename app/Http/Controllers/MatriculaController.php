@@ -208,7 +208,8 @@ class MatriculaController extends Controller
                 $matricula->valor=str_replace(',','.',$turma->valor)*1;
                 $matricula->save();
                 $inscricao->matricula=$matricula->id;
-                $resultado[]= "Criada matricula ".$matricula." para a inscricao de cursos id ".$inscricao->id;
+                $inscricao->save();
+                $resultado[]= "Criada matricula ".$matricula->id." para a inscricao de cursos id ".$inscricao->id;
             }
 
         }
@@ -278,7 +279,7 @@ class MatriculaController extends Controller
             return redirect(asset('/secretaria/pre-atendimento'));
         if(!Session::get('atendimento'))
             return redirect(asset('/secretaria/atender'));
-        $matriculas=Matricula::where('pessoa', Session::get('pessoa_atendimento'))->get();
+        $matriculas=Matricula::where('pessoa', Session::get('pessoa_atendimento'))->where('status','<>','expirada')->get();
         //return $matriculas;
         $nome=Pessoa::getNome(Session::get('pessoa_atendimento'));
 
@@ -322,7 +323,7 @@ class MatriculaController extends Controller
     public static function modificaMatricula($id){
         $matricula=Matricula::find($id);
         if($matricula->inscricoes->first()->turma->curso->id==307){
-            $inscricoes=Inscricao::where('matricula')->get();
+            $inscricoes=Inscricao::where('matricula',$matricula->id)->get();
             switch (count($inscricoes)) {
                         case 1:
                             $matricula->valor=100;
@@ -342,11 +343,30 @@ class MatriculaController extends Controller
                             break;;
                     }
                     $matricula->save();
-
         }
         
-
     }
+    public static function cancelarMatricula($id){
+        $matricula=Matricula::find($id);
+        $matricula->status='cancelada';
+        $matricula->save();
+        $inscricoes=Inscricao::where('matricula',$matricula->id)->where('status','<>','cancelado')->get();
+        foreach($inscricoes as $inscricao){
+            $insc=InscricaoController::cancelarInscricao($inscricao);
+        }
+        AtendimentoController::novoAtendimento("Cancelamento da matricula ".$id, Session::get('pessoa_atendimento'), Session::get('usuario'));
+        return redirect($_SERVER['HTTP_REFERER']);
+    }
+    public function ativarMatricula($id){
+        $matricula=Matricula::find($id);
+        $matricula->status='ativa';
+        $matricula->save();
+        AtendimentoController::novoAtendimento("Ativação de matrícula com pendencia ou cancelada.", $pessoa, Session::get('usuario'));
+    }
+    public function matCE(){
+        $turmas=Turma::where('programa');
+    }
+
         
 
 

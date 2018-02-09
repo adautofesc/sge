@@ -107,7 +107,7 @@ class MatriculaController extends Controller
         $pessoa=Pessoa::find($matricula->pessoa);
         $pessoa=PessoaController::formataParaMostrar($pessoa);
         
-        $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->get();
+        $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->where('status','<>','cancelado')->get();
         foreach($inscricoes as $inscricao){
             $inscricao->turmac=Turma::find($inscricao->turma->id);
         }
@@ -124,7 +124,7 @@ class MatriculaController extends Controller
         $pessoa=Pessoa::find($matricula->pessoa);
         $pessoa=PessoaController::formataParaMostrar($pessoa);
         
-        $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->get();
+        $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->where('status','<>','cancelado')->get();
         foreach($inscricoes as $inscricao){
             $inscricao->turmac=Turma::find($inscricao->turma->id);
         }
@@ -154,7 +154,8 @@ class MatriculaController extends Controller
                     $matricula->data=date('Y-m-d');
                     $matricula->parcelas=5;
                     $matricula->dia_venc=20;
-                    $matricula->status="ativa";
+                    $matricula->status="pendente";
+                    $matricula->obs="Falta assinar termo e eventual atestado.";
                     $matricula->valor=100;
                     $matricula->save();
 
@@ -310,7 +311,8 @@ class MatriculaController extends Controller
         $matricula->data=date('Y-m-d');
         $matricula->parcelas=$turma->tempo_curso;
         $matricula->dia_venc=20;
-        $matricula->status="ativa";
+        $matricula->status="pendente";
+        $matricula->obs="Falta assinar termo e eventual atestado.";
         $matricula->valor=str_replace(',','.',$turma->valor);
         $matricula->save();
 
@@ -363,8 +365,49 @@ class MatriculaController extends Controller
         $matricula->save();
         AtendimentoController::novoAtendimento("Ativação de matrícula com pendencia ou cancelada.", $pessoa, Session::get('usuario'));
     }
-    public function matCE(){
-        $turmas=Turma::where('programa');
+    public function editar($id){
+        $matricula=Matricula::find($id);
+        $nome=Pessoa::getNome($matricula->pessoa);
+        $descontos=Desconto::all();
+        return view('secretaria.matricula.editar',compact('matricula'))->with('nome',$nome)->with('descontos',$descontos);
+
+    }
+    public function revitaliza(){
+        $turmas=[88,89,99,100];
+        $inscricoes=Inscricao::select('*','inscricoes.id as id')
+                                 ->join('turmas', 'inscricoes.turma','=','turmas.id')
+                                 ->whereIn('inscricoes.turma',$turmas)
+                                 ->get();
+        foreach($inscricoes as $inscricao){
+            if($this->numeroInscritos($inscricao->matricula)==1){
+                $matricula=Matricula::find($inscricao->matricula);
+                $matricula->valor=25;
+                $matricula->status='pendente';
+                $matricula->obs='Falta assinar termo.';
+                $matricula->save();
+            }
+            else{
+                $matricula=new Matricula();
+                $matricula->pessoa=$inscricao->pessoa->id;
+                $matricula->atendimento=1;
+                $matricula->data=date('Y-m-d');
+                $matricula->parcelas=5;
+                $matricula->dia_venc=20;
+                $matricula->status="pendente";
+                $matricula->obs="Falta assinar termo e eventual atestado.";
+                $matricula->valor=25;
+                $matricula->save();
+                $inscricao->matricula=$matricula->id;
+                $inscricao->save();
+            }
+
+        }
+        return "Procedimento executado.";
+
+    }
+    public static function numeroInscritos($matricula){
+        $insctritos=Inscricao::where('matricula',$matricula)->count();
+        return $inscritos;
     }
 
         

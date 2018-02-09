@@ -405,6 +405,22 @@ class InscricaoController extends Controller
         $inscricoes=Inscricao::where('matricula', $matricula)->where('status','ativa')->get();
         return $inscricoes;
     }
+    public function incricoesPorPosto(){
+        $vagas=['Fesc 1'=>0,'Fesc 2'=>0,'Fesc 3'=>0];
+        $locais= array(84 =>'Fesc 1',
+                       85 =>'Fesc 2',
+                       86 =>'Fesc 3');
+        foreach($locais as $local_id => $local_nome){
+            $qnde=Inscricao::join('turmas', 'inscricoes.turma','=','turmas.id')
+                            ->where('local',$local_id)
+                            ->where('inscricoes.status','<>','cancelado')
+                            ->count('pessoa');
+            $vagas[$local_nome]=$qnde;
+
+        }
+
+        return $vagas;
+    }
 
 
 }

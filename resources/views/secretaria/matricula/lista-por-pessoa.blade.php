@@ -12,15 +12,22 @@
 @foreach($matriculas as $matricula)
 @if($matricula->status=='ativa')
 <div class="card card-success">
-@elseif($matricula->status=='pendente')
-<div class="card card-danger">
-@elseif($matricula->status=='cancelada')
-<div class="card card-warning">
-@endif
-
-    <div class="card-header">
+  <div class="card-header">
         <div class="header-block">
         <p class="title" style="color:white"> Matrícula: {{$matricula->id}} Realizada em {{date('d/m/Y - H:i ', strtotime($matricula->created_at))}}.
+@elseif($matricula->status=='pendente')
+<div class="card card-warning"> 
+  <div class="card-header">
+        <div class="header-block">
+        <p class="title" style="color:white"> !!! Pendente !!! Matrícula: {{$matricula->id}} Realizada em {{date('d/m/Y - H:i ', strtotime($matricula->created_at))}}. 
+@elseif($matricula->status=='cancelada')
+<div class="card card-danger"> 
+  <div class="card-header">
+        <div class="header-block">
+        <p class="title" style="color:white"> !!! Cancelada !!! Matrícula: {{$matricula->id}} Realizada em {{date('d/m/Y - H:i ', strtotime($matricula->created_at))}}. - 
+@endif
+
+    
         @if(count($matricula->inscricoes)>0) 
         {{$matricula->inscricoes->first()->turma->curso->nome}}
         @else
@@ -76,7 +83,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-3"><a href=# class="btn btn-primary-outline col-xs-12">Editar</a></div>
+        <div class="col-md-3"><a href="{{asset('/secretaria/matricula/editar/').'/'.$matricula->id}}" class="btn btn-primary-outline col-xs-12">Editar</a></div>
         <div class="col-md-3"><a href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}" target="_blank" class="btn btn-info-outline col-xs-12">Imprimir Termo</a></div>
         <div class="col-md-3"><a href="#" onclick="cancelar({{$matricula->id}});" class="btn btn-warning-outline col-xs-12" title="Cancelar Matrícula">Cancelar Matrícula</a></div>
         <div class="col-md-3"><a href="{{asset('/secretaria/matricula/nova')}}" class="btn btn-success-outline col-xs-12">Adicionar disciplinas</a></div>

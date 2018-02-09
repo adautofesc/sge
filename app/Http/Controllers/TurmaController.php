@@ -230,10 +230,15 @@ class TurmaController extends Controller
             if(is_numeric($turma)){
                 $turma=Turma::find($turma);
                 if($turma){
-                    // Aqui virá uma verificação que se há matrículas antes de excluir
-                    $msgs=array('alert_sucess'=>["Turma ".$turma->id." excluída com sucesso."]);
-                    $turma->delete();
-                    
+                    // verificação que se há matrículas antes de cancelar
+                    $inscricoes=Inscricao::where('turma',$turma->id)->get();
+                    if(count($inscricoes)==0){
+                        $msgs=array('alert_sucess'=>["Turma ".$turma->id." excluída com sucesso."]);
+                        $turma->delete();
+                    }
+                    else{
+                        $msgs=array('alert_warning'=>["Turma ".$turma->id." não pôde ser excluída pois possui alunos inscritos. Caso não apareça, a inscrição pode ter sido cancelada, mesmo assim precisamos preservar o histórico das inscrições."]);
+                    }
                 }
             }
         }

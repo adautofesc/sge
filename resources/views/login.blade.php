@@ -39,7 +39,7 @@
                         @include('inc.errors')
 
                         <p class="text-xs-center">Preencha os dados para acessar:</p>
-                        <form id="login-form" action="/loginCheck" method="POST" novalidate="">
+                        <form id="login-form" action="./loginCheck" method="POST" novalidate="">
                         {{csrf_field()}}
                             <div class="form-group"> <label for="username">Login</label> <input type="text" class="form-control underlined" name="login" id="username" placeholder="Digite aqui seu nome de usuário" required> </div>
                             <div class="form-group"> <label for="password">Senha</label> <input type="password" class="form-control underlined" name="senha" id="password" placeholder="Sua senha" required> </div>

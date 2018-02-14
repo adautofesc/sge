@@ -194,6 +194,7 @@ Route::middleware('login') ->group(function(){
 			Route::post('gravar', 'MatriculaController@gravar');
 			Route::get('termo/{id}','MatriculaController@termo');
 			Route::get('editar/{id}', 'MatriculaController@editar');
+			Route::post('editar/{id}','MatriculaController@update');
 			Route::get('declaracao/{id}','MatriculaController@declaracao');
 			Route::get('cancelar/{id}','MatriculaController@cancelarMatricula');
 			Route::prefix('inscricao')->group(function(){

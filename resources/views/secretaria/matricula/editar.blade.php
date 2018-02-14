@@ -9,8 +9,8 @@
     <h3 class="subtitle"><small>De: </small> {{$nome}}</h3>
 </div>
 
-<form name="item" method="POST" action="gravar">
-<div class="card card-success">
+<form name="item" method="post">
+<div class="card card-primary">
 
     <div class="card-header">
         <div class="header-block">
@@ -26,9 +26,14 @@
             </label>
             <div class="col-sm-6"> 
                 <select name="fdesconto" class="c-select form-control boxed" onchange="desconto(this);">
-                    <option value="0" selected>Selecione para ativar</option>
+                    <option value="0" selected>Sem Bolsa (Valor Integral) </option>
                     @foreach($descontos as $desconto)
+                    @if($desconto->id==$matricula->desconto)
+                    <option value="{{$desconto->id}}" selected="selected">{{$desconto->nome}}</option>
+                    @else
                     <option value="{{$desconto->id}}">{{$desconto->nome}}</option>
+                    @endif
+
                     @endforeach
                    
 
@@ -43,7 +48,7 @@
             <div class="col-sm-2">
                 <div class="inline-form input-group">
                     <span class="input-group-addon">R$</span> 
-                    <input type="number" class="form-control boxed" placeholder="" name="valor" id="valor" readonly> 
+                    <input type="number" class="form-control boxed" placeholder="" name="valor" id="valor" readonly value="{{$matricula->valor_desconto}}"> 
                 </div>
             </div>
         </div>
@@ -67,19 +72,50 @@
                 <input type="number" class="form-control boxed" value='7' name='dvencimento' required>  
             </div>
 
-            <div class="col-sm-2">
-                <buttom class="btn btn-primary" onclick="aplicarPlano('',{{ str_replace(',', '.', $matricula->valor) }});" >Aplicar</buttom>
+        </div>
+        <div class="form-group row"> 
+            <label class="col-sm-2 form-control-label text-xs-right"></label>
+            <div class="col-sm-10"> 
+                
+                <div>
+                    <label>
+                    <input class="checkbox" type="checkbox" name="pendente" value="true" {{ $matricula->status === "pendente" ? 'Checked="checked"' : "" }}>
+                    <span>Pendente</span>
+                    </label>
+                </div>
+            </div>
+                
+                
+        </div>
+        <div class="form-group row"> 
+            <label class="col-sm-2 form-control-label text-xs-right">
+                Observações
+            </label>
+            <div class="col-sm-4"> 
+                <textarea rows="4" class="form-control boxed" name="obs" maxlength="150">{{$matricula->obs}}</textarea> 
+            </div>
+            <div class="col-sm-6 ">
+            <p class="subtitle-block"> Saldo: <b id="parcelas">{{$matricula->parcelas}}</b> parcela(s) de <small>R$</small> <b><span id="saldo_final_parcelado">{{number_format(($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas,2,',','.')}}</span></b> = <small>R$</small> <b><span id="saldo_final">{{number_format(($matricula->valor-$matricula->valor_desconto),2,',','.')}}</span></b></p>
             </div>
 
-        </div>
-        <div class="subtitle-block">
-        </div>
-        <div class="subtitle-block">
-            <p>Saldo: <b id="parcelas">{{$matricula->parcelas}}</b> parcela(s) de <small>R$</small> <b><span id="saldo_final_parcelado">{{number_format($matricula->valor/$matricula->parcelas,2,',','.')}}</span></b> = <small>R$</small> <b><span id="saldo_final">{{number_format($matricula->valor,2,',','.')}}</span></b></p>
-        </div>
+        </div> 
         <input type="hidden" name="valorcursointegral" value="{{$matricula->valor}}" >
-        <input type="hidden" name="valordesconto" value="0" >
+        <input type="hidden" name="valordesconto" value="{{$matricula->valor_desconto}}" >
+        <div class="form-group row">
+            <label class="col-sm-2 form-control-label text-xs-right"></label>
+            <div class="col-sm-10 col-sm-offset-2"> 
+                <input type="hidden" name="id" value="{{$matricula->id}}">
+                <button type="submit" name="btn"  class="btn btn-primary">Salvar</button>
+                <button type="reset" name="btn"  class="btn btn-primary">Restaurar</button>
+                <button type="cancel" name="btn" class="btn btn-primary" onclick="history.back(-2);return false;">Cancelar</button>
+                {{csrf_field()}}
 
+            
+                <!--
+                <button type="submit" class="btn btn-primary">Cadastrar e escolher disciplinas obrigatórias</button> 
+                -->
+            </div>
+       </div>
     </div>
 </div>
 
@@ -92,8 +128,10 @@ function desconto(item){
 
     if(item.value==0){
        $('#porcentagem').val(0)
+       tipo=0;
         $('#valor').val(0);
         valor_desc=0;
+        $("input[name=valordesconto]").val(0);
 
     }
     @foreach($descontos as $desconto)
@@ -138,5 +176,4 @@ function aplicarPlano(valor){
 
 
 </script>
-
 @endsection

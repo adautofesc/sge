@@ -233,6 +233,7 @@ class InscricaoController extends Controller
 
         //coloca turma dento da lista de curso atribui valor de cada curso
         foreach($cursos as $curso){
+            
             $curso->turmas=collect();
             foreach($turmas as $turma){
                 if($turma->curso->id==$curso->id)

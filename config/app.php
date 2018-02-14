@@ -51,7 +51,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost/sge'),
+    'url' => env('APP_URL', 'http://localhost/sge/public/'),
 
     /*
     |--------------------------------------------------------------------------

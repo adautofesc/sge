@@ -33,6 +33,11 @@ class MatriculaController extends Controller
     {
         //
     }
+    /**
+     * Grava a Matricula e gera as inscrições
+     * @param  Request $r Proveniente de formulário
+     * @return View     secretaria.inscricao.gravar
+     */
     public function gravar(Request $r){
         $matriculas=collect();
         $cursos=collect();
@@ -41,23 +46,25 @@ class MatriculaController extends Controller
         if(!Session::get('atendimento'))
             return redirect(asset('/secretaria/atender'));
 
-        $turmas=TurmaController::csvTurmas($r->turmas);
+        $turmas=TurmaController::csvTurmas($r->turmas); // recebe lista de turmas csv
         foreach($turmas as $turma){
-            if($turma->disciplina==null)
-                $cursos->push($turma->curso);
+            if($turma->disciplina==null) // verifica se é curso ou disciplina
+                $cursos->push($turma->curso);//adiciona na lista de cursos escolhidos
             else{
                 if(!$cursos->contains($turma->curso))
-                    $cursos->push($turma->curso);
+                    $cursos->push($turma->curso); //adiciona Curso da disciplina na lista de cursos escolhidos
             }
             
         }
-        foreach($cursos as $curso){
-            $curso->turmas=collect();
+        foreach($cursos as $curso){ 
+            $matriculado=MatriculaController::verificaSeMatriculado(Session::get('pessoa_atendimento'),$curso->id);
+            $curso->turmas=collect();//cria lista de turmas de cada curso
             foreach($turmas as $turma){
                 if($turma->curso->id==$curso->id)
-                    $curso->turmas->push($turma);
+                    $curso->turmas->push($turma);// adiciona turma ao curso
             } 
-            if($this->verificaSeMatriculado(Session::get('pessoa_atendimento'),$curso->id)==false){
+            //verifica se já possui matricula no curso
+            if($matriculado==false){
                 $matricula=new Matricula();
                 $matricula->pessoa=Session::get('pessoa_atendimento');
                 $matricula->atendimento=Session::get('atendimento');
@@ -76,11 +83,13 @@ class MatriculaController extends Controller
                 $matricula->save();
                 $matriculas->push($matricula);
             }
+            else{ // ja esta matriculada
+                $matricula=Matricula::find($matriculado);
+            }
 
             foreach($curso->turmas as $cturma){
                 //return $cturma;
-                $insc=InscricaoController::inscreverAluno(Session::get('pessoa_atendimento'),$cturma->id);
-                $matricula=Matricula::find($insc->matricula);
+                $insc=InscricaoController::inscreverAluno(Session::get('pessoa_atendimento'),$cturma->id,$matricula->id);
                 MatriculaController::modificaMatricula($insc->matricula);
                 $matriculas->push($matricula);
                 
@@ -96,10 +105,33 @@ class MatriculaController extends Controller
         Session::forget('atendimento');
         $pessoa=Pessoa::find(session('pessoa_atendimento'));
 
-        //return $matriculas;
+        return redirect(asset("/pessoa/matriculas"));
+        /*
         return view("secretaria.inscricao.gravar")->with('matriculas',$matriculas)->with('nome',$pessoa->nome_simples);
+         */
+        
 
     }
+    public function update(Request $r){
+        $matricula=Matricula::find($r->id);
+        $matricula->desconto=$r->fdesconto;
+        $matricula->valor_desconto=$r->valordesconto;
+        $matricula->parcelas=$r->nparcelas;
+        $matricula->dia_venc=$r->dvencimento;
+        if($r->pendente==true)
+            $matricula->status='pendente';
+        else
+            $matricula->status='ativa';
+        $matricula->obs=$r->obs;
+        $matricula->save();
+
+        return redirect(asset("/pessoa/matriculas"));
+    }
+    /**
+     * [termo description]
+     * @param  [type] $matricula [description]
+     * @return [type]            [description]
+     */
     public function termo($matricula){
         $matricula=Matricula::find($matricula);
         if(!$matricula)
@@ -278,9 +310,7 @@ class MatriculaController extends Controller
     public function listarPorPessoa(){
         if(!Session::get('pessoa_atendimento'))
             return redirect(asset('/secretaria/pre-atendimento'));
-        if(!Session::get('atendimento'))
-            return redirect(asset('/secretaria/atender'));
-        $matriculas=Matricula::where('pessoa', Session::get('pessoa_atendimento'))->where('status','<>','expirada')->get();
+        $matriculas=Matricula::where('pessoa', Session::get('pessoa_atendimento'))->where('status','<>','expirada')->orderBy('id','desc')->get();
         //return $matriculas;
         $nome=Pessoa::getNome(Session::get('pessoa_atendimento'));
 

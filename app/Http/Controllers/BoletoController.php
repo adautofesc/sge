@@ -4,10 +4,36 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\classes\BarCodeGenrator;
+use App\Lancamento;
 
 class BoletoController extends Controller
 {
+	public function cadastrar(){
+		$lancamentos_sintetizados=Lancamento::select(\DB::raw('distinct(matriculas.pessoa), sum(lancamentos.valor) as valor'))
+							->join('matriculas','lancamentos.matricula','matriculas.id')
+							->groupBy('matriculas.pessoa')
+							->where('boleto',null)
+							->get();
+
+		/*
+		$lancamentos_sintetizados=Lancamento::
+							join('matriculas','lancamentos.matricula','matriculas.id')
+							->distinct('matriculas.pessoa')
+							->sum('lancamentos.valor')
+							->groupBy('matriculas.pessoa')
+							->limit(10)
+							->toSql();*/
+		foreach($lancamentos_sintetizados as $ls){
+
+			//gerar boleto
+		}
+
+		return $lancamentos_sintetizados;
+
+
+	}
 	public function gerar(){
+
 		$dias_de_prazo_para_pagamento = 5;
 		$taxa_boleto = 0;
 		$data_venc = date("d/m/Y", time() + ($dias_de_prazo_para_pagamento * 86400));  // Prazo de X dias OU informe data: "13/04/2006"; 
@@ -163,35 +189,6 @@ class BoletoController extends Controller
 		$dadosboleto["codigo_banco_com_dv"] = $codigo_banco_com_dv;
 
 		//$dadosboleto["codebar"] = BoletoController::fbarcode($dadosboleto["codigo_barras"]);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

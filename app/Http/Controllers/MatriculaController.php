@@ -124,11 +124,12 @@ class MatriculaController extends Controller
             $matricula->status='ativa';
         $matricula->obs=$r->obs;
         $matricula->save();
-
+        AtendimentoController::novoAtendimento("Matrícula atualizada.", $matricula->pessoa, Session::get('usuario'));
         return redirect(asset("/pessoa/matriculas"));
     }
+
     /**
-     * [termo description]
+     * [Grador do termo de Matrícula]
      * @param  [type] $matricula [description]
      * @return [type]            [description]
      */
@@ -166,6 +167,7 @@ class MatriculaController extends Controller
         return view("juridico.documentos.declaracao",compact('matricula'))->with('pessoa',$pessoa)->with('inscricoes',$inscricoes);
         
     }
+    /*
     // Pega todas inscrições sem matricula e atribui matriculas pra elas
     public function autoMatriculas(){
         $resultado=array();
@@ -252,6 +254,7 @@ class MatriculaController extends Controller
 
 
     }
+    */
     public function importarMatriculas(){
         //importava matriculas de um aquuivo XLSX
         $registros=collect();
@@ -384,9 +387,9 @@ class MatriculaController extends Controller
         $matricula->save();
         $inscricoes=Inscricao::where('matricula',$matricula->id)->where('status','<>','cancelado')->get();
         foreach($inscricoes as $inscricao){
-            $insc=InscricaoController::cancelarInscricao($inscricao);
+            $insc=InscricaoController::apagar($inscricao->id);
         }
-        AtendimentoController::novoAtendimento("Cancelamento da matricula ".$id, Session::get('pessoa_atendimento'), Session::get('usuario'));
+        AtendimentoController::novoAtendimento("Cancelamento da matricula ".$id, $matricula->pessoa, Session::get('usuario'));
         return redirect($_SERVER['HTTP_REFERER']);
     }
     public function ativarMatricula($id){
@@ -399,9 +402,11 @@ class MatriculaController extends Controller
         $matricula=Matricula::find($id);
         $nome=Pessoa::getNome($matricula->pessoa);
         $descontos=Desconto::all();
+
         return view('secretaria.matricula.editar',compact('matricula'))->with('nome',$nome)->with('descontos',$descontos);
 
     }
+    /*
     public function revitaliza(){
         $turmas=[88,89,99,100];
         $inscricoes=Inscricao::select('*','inscricoes.id as id')
@@ -434,7 +439,7 @@ class MatriculaController extends Controller
         }
         return "Procedimento executado.";
 
-    }
+    }*/
     public static function numeroInscritos($matricula){
         $insctritos=Inscricao::where('matricula',$matricula)->count();
         return $inscritos;

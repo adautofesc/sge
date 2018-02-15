@@ -207,7 +207,9 @@ class TurmaController extends Controller
         $turma->data_termino=$request->dt_termino;
         $turma->hora_inicio=$request->hr_inicio;
         $turma->hora_termino=$request->hr_termino;
+        //se valor mudar, mudar valor das matriculas
         $turma->valor=$request->valor;
+        //----------------------------------------
         $turma->vagas=$request->vagas;
         $turma->atributos=$request->atributo;
         $turma->periodicidade=$request->periodicidade;

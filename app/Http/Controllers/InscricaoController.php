@@ -318,7 +318,7 @@ class InscricaoController extends Controller
 
         return redirect(asset('/secretaria/turma/'.$turma));
     }
-    public function apagar($id){
+    public static function apagar($id){
         $insc=Inscricao::find($id);
         if($insc==null)
             return die("Inscrição não encontrada");
@@ -327,8 +327,10 @@ class InscricaoController extends Controller
         MatriculaController::modificaMatricula($insc->matricula);
         $insc->status='cancelado';
         $insc->save();
-        if(count(InscricaoController::inscricoesPorMatricula($insc->matricula))==0)
+        $num_inscricoes=count(InscricaoController::inscricoesPorMatricula($insc->matricula));
+        if($num_inscricoes==0)
             MatriculaController::cancelarMatricula($insc->matricula);
+        AtendimentoController::novoAtendimento("Inscrição ".$insc->id." da matrícula ".$insc->matricula." cancelada.", $insc->pessoa->id, Session::get('usuario'));
         return redirect($_SERVER['HTTP_REFERER']); //volta pra pagina anterior, atualizando ela.
 
     }
@@ -392,6 +394,7 @@ class InscricaoController extends Controller
 
 
     }
+    /*
     public static function cancelarInscricao($inscricao){
         $inscricao->status='cancelado';
         $inscricao->save();
@@ -399,11 +402,10 @@ class InscricaoController extends Controller
         MatriculaController::modificaMatricula($inscricao->matricula);
         if(count(InscricaoController::inscricoesPorMatricula($inscricao->matricula))==0)
             MatriculaController::cancelarMatricula($inscricao->matricula);
-
         return $inscricao;
-    }
+    }*/
     public static function inscricoesPorMatricula($matricula){
-        $inscricoes=Inscricao::where('matricula', $matricula)->where('status','ativa')->get();
+        $inscricoes=Inscricao::where('matricula', $matricula)->where('status','regular')->get();
         return $inscricoes;
     }
     public function incricoesPorPosto(){
@@ -415,12 +417,27 @@ class InscricaoController extends Controller
             $qnde=Inscricao::join('turmas', 'inscricoes.turma','=','turmas.id')
                             ->where('local',$local_id)
                             ->where('inscricoes.status','<>','cancelado')
-                            ->count('pessoa');
+                            ->groupBy('inscricoes.pessoa')
+                            ->count('inscricoes.pessoa');
+            return $qnde;//
+        // select count(i.pessoa) from inscricoes i join turmas t on i.turma = t.id where t.`local`=86 group by pessoa                    
             $vagas[$local_nome]=$qnde;
 
         }
 
         return $vagas;
+    }
+    public function recuperarInscricoes(){
+        $inscricoes=array('3380','3381','3382','4711');
+        foreach($inscricoes as $id){
+            $inscricao=Inscricao::find($id);
+            $inscricao->status='regular';
+            $inscricao->save();
+            InscricaoController::modInscritos($inscricao->turma->id,1,1);
+        }
+        return redirect(asset('/pessoa/matriculas'));
+
+
     }
 
 

@@ -24,9 +24,13 @@ Route::post('turmas-professor', 'TurmaController@turmasProfessor');
 Route::get('importarLocais','painelController@importarLocais');
 Route::get('atualizar-inscritos','TurmaController@atualizarInscritos');
 Route::get('inscricoes','InscricaoController@incricoesPorPosto');
-Route::get('revitaliza', 'MatriculaController@revitaliza');
+//Route::get('revitaliza', 'MatriculaController@revitaliza');
 //Route::get('auto-matriculas', 'MatriculaController@autoMatriculas');
+//Route::get('recupera-inscricoes', 'InscricaoController@recuperarInscricoes');
 //Route::get('importar-matriculas', 'MatriculaController@importarMatriculas');
+Route::get('gerar-lancamentos/{parcela}', 'LancamentoController@gerarLancamentos');
+Route::get('gerar-boletos', 'BoletoController@cadastrar');
+Route::get('imprimir-boletos', 'BoletoController@imprimirLote');
 Route::get('importar-bairros', 'EnderecoController@importarBairros');
 Route::get('chamada', function(){ return view('pedagogico.turma.chamada');});
 

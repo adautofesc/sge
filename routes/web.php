@@ -28,6 +28,7 @@ Route::get('revitaliza', 'MatriculaController@revitaliza');
 //Route::get('auto-matriculas', 'MatriculaController@autoMatriculas');
 //Route::get('importar-matriculas', 'MatriculaController@importarMatriculas');
 Route::get('importar-bairros', 'EnderecoController@importarBairros');
+Route::get('chamada', function(){ return view('pedagogico.turma.chamada');});
 
 
 

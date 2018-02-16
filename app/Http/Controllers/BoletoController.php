@@ -5,64 +5,95 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\classes\BarCodeGenrator;
 use App\Lancamento;
+use App\Boleto;
+use App\Pessoa;
+use Carbon\Carbon;
+//use App\Http\Controllers\LancamentoController;
 
 class BoletoController extends Controller
 {
-	public function cadastrar(){
+	public function cadastrar(){ //$parcela/mes/ano
+		$parcela=0;
 		$lancamentos_sintetizados=Lancamento::select(\DB::raw('distinct(matriculas.pessoa), sum(lancamentos.valor) as valor'))
 							->join('matriculas','lancamentos.matricula','matriculas.id')
 							->groupBy('matriculas.pessoa')
 							->where('boleto',null)
 							->get();
 
-		/*
-		$lancamentos_sintetizados=Lancamento::
-							join('matriculas','lancamentos.matricula','matriculas.id')
-							->distinct('matriculas.pessoa')
-							->sum('lancamentos.valor')
-							->groupBy('matriculas.pessoa')
-							->limit(10)
-							->toSql();*/
+		
 		foreach($lancamentos_sintetizados as $ls){
-
+			//verifica se já não foi gerado
+			if(!$this->verificaSeCadastrado($ls->pessoa,$ls->valor,"2018-02-28 23:59:59")){
 			//gerar boleto
+			$boleto=new Boleto;
+			$boleto->pessoa=$ls->pessoa;
+			$boleto->vencimento="2018-02-28 23:59:59";
+			$boleto->valor=$ls->valor;
+
+			$boleto->save();
+			LancamentoController::atualizaLancamentos($ls->pessoa,0,$boleto->id);
+			}
+
+
+			
+			
+			//LancamentosController::atualizaLancamentos(22563,0,$boleto->id);
 		}
 
 		return $lancamentos_sintetizados;
 
 
 	}
-	public function gerar(){
+	public function imprimirLote(){
+
+		$boletos=Boleto::where('status','gravado')->limit(100)->get();
+		foreach($boletos as $boleto){
+			$this->gerar($boleto);
+		}
+		//return $boletos;
+
+		return view('financeiro.boletos.lote')->with('boletos',$boletos);
+	}
+	public function verificaSeCadastrado($pessoa,$valor,$vencimento){
+		$cadastrado=Boleto::where('pessoa',$pessoa)->where('valor',$valor)->where('vencimento',$vencimento)->first();
+		return $cadastrado;
+
+	}
+	public function gerar(Boleto $boleto){
+		$cliente=Pessoa::find($boleto->pessoa);
+		$cliente=PessoaController::formataParaMostrar($cliente);
+		
 
 		$dias_de_prazo_para_pagamento = 5;
 		$taxa_boleto = 0;
-		$data_venc = date("d/m/Y", time() + ($dias_de_prazo_para_pagamento * 86400));  // Prazo de X dias OU informe data: "13/04/2006"; 
-		$valor_cobrado = "54,00"; // Valor - REGRA: Sem pontos na milhar e tanto faz com "." ou "," ou com 1 ou 2 ou sem casa decimal
+		$data_venc =Carbon::parse($boleto->vencimento)->format('d/m/Y');;  // Prazo de X dias OU informe data: "13/04/2006"; 
+		$valor_cobrado = $boleto->valor; // Valor - REGRA: Sem pontos na milhar e tanto faz com "." ou "," ou com 1 ou 2 ou sem casa decimal
 		$valor_cobrado = str_replace(",", ".",$valor_cobrado);
 		$valor_boleto=number_format($valor_cobrado+$taxa_boleto, 2, ',', '');
 
-		$dadosboleto["nosso_numero"] = "6164210154"; //numero de identificaçao no sistema interno SEM convenio (7)
-		$dadosboleto["numero_documento"] = "6164210154";	// Num do pedido ou do documento
+		$dadosboleto["nosso_numero"] = $boleto->id; //numero de identificaçao no sistema interno SEM convenio (7)
+		$dadosboleto["numero_documento"] = $boleto->id;	// Num do pedido ou do documento
 		$dadosboleto["data_vencimento"] = $data_venc; // Data de Vencimento do Boleto - REGRA: Formato DD/MM/AAAA
 		$dadosboleto["data_documento"] = date("d/m/Y"); // Data de emissão do Boleto
 		$dadosboleto["data_processamento"] = date("d/m/Y"); // Data de processamento do boleto (opcional)
 		$dadosboleto["valor_boleto"] = $valor_boleto; 	// Valor do Boleto - REGRA: Com vírgula e sempre com duas casas depois da virgula
 
 		// DADOS DO SEU CLIENTE
-		$dadosboleto["sacado"] = "Nome do seu Cliente";
-		$dadosboleto["endereco1"] = "Endereço do seu Cliente";
-		$dadosboleto["endereco2"] = "Cidade - Estado -  CEP: 00000-000";
+		$dadosboleto["sacado"] = $cliente->nome;
+
+		$dadosboleto["endereco1"] = $cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->complemento.''. ($cliente->bairro=='Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro) ;
+		$dadosboleto["endereco2"] = $cliente->cidade.' '.$cliente->estado.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CEP '.$cliente->cep;
 
 		// INFORMACOES PARA O CLIENTE
-		$dadosboleto["demonstrativo1"] = "Pagamento Piscina";
-		$dadosboleto["demonstrativo2"] = "Mensalidade referente a nonon nonooon nononon<br>Taxa bancária - R$ ".number_format($taxa_boleto, 2, ',', '');
-		$dadosboleto["demonstrativo3"] = "BoletoPhp - http://www.boletophp.com.br";
+		$dadosboleto["demonstrativo1"] = "Pagamento FESC";
+		$dadosboleto["demonstrativo2"] = "";
+		$dadosboleto["demonstrativo3"] = "Mensalidade referente a parcelas de todas as suas atividade na FESC";
 
 		// INSTRUÇÕES PARA O CAIXA
 		$dadosboleto["instrucoes1"] = "- Sr. Caixa, cobrar multa de 2% após o vencimento";
-		$dadosboleto["instrucoes2"] = "- Receber até 10 dias após o vencimento";
-		$dadosboleto["instrucoes3"] = "- Em caso de dúvidas entre em contato conosco: 3372-1308";
-		$dadosboleto["instrucoes4"] = "&nbsp; Emitido pelo sistema Projeto BoletoPhp - www.boletophp.com.br";
+		$dadosboleto["instrucoes2"] = "- Cobrar juros de 1% ao mês por atraso.";
+		$dadosboleto["instrucoes3"] = "- Pagável em qualquer agência bancária ou lotérica até o vencimento";
+		$dadosboleto["instrucoes4"] = "- Em caso de dúvidas entre em contato conosco: 3372-1308";
 
 		// DADOS OPCIONAIS DE ACORDO COM O BANCO OU CLIENTE
 		$dadosboleto["quantidade"] = "1";
@@ -189,10 +220,10 @@ class BoletoController extends Controller
 		$dadosboleto["codigo_banco_com_dv"] = $codigo_banco_com_dv;
 
 		//$dadosboleto["codebar"] = BoletoController::fbarcode($dadosboleto["codigo_barras"]);
+		$boleto->dados=$dadosboleto;
 
 
-
-		return view('financeiro.boletos.boleto', compact('dadosboleto'));	
+		return $boleto;	
 	}
 
 	public static function formata_numero($numero,$loop,$insert,$tipo = "geral") {

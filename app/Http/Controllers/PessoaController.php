@@ -422,6 +422,7 @@ class PessoaController extends Controller
 			$pessoa->cidade=$endereco->cidade;
 			$pessoa->estado=$endereco->estado;
 			$pessoa->cep=Strings::mask($endereco->cep,'#####-###');
+			$pessoa->bairro_alt=$endereco->bairro_str;
 		}
 		
 

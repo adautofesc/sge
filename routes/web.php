@@ -30,6 +30,7 @@ Route::get('inscricoes','InscricaoController@incricoesPorPosto');
 //Route::get('importar-matriculas', 'MatriculaController@importarMatriculas');
 Route::get('gerar-lancamentos/{parcela}', 'LancamentoController@gerarLancamentos');
 Route::get('gerar-boletos', 'BoletoController@cadastrar');
+Route::get('imprimir-boletos', 'BoletoController@imprimirLote');
 Route::get('importar-bairros', 'EnderecoController@importarBairros');
 
 

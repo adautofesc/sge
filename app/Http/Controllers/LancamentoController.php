@@ -27,6 +27,19 @@ class LancamentoController extends Controller
 		return "lancamentos efetuados com sucesso";
 
 	}
+	public static function atualizaLancamentos($pessoa,$parcela,$boleto){
+		$lancamentos=Lancamento::select('lancamentos.id as id')
+								->join('matriculas','lancamentos.matricula','matriculas.id')
+								->where('pessoa',$pessoa)
+								->where('boleto',null)
+								->get();
+
+		foreach($lancamentos as $lancamento){
+			$lancamento->boleto=$boleto;
+			$lancamento->save();
+		}
+		return $lancamentos;
+	}
 
 	public function verificaSeLancada($matricula,$parcela){
 		$lancamentos=Lancamento::where('matricula',$matricula)->where('parcela',$parcela)->get();

@@ -8,3 +8,4 @@ class Boleto extends Model
 {
     //
     public $timestamps = false;
+}

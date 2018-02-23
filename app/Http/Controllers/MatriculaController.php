@@ -455,7 +455,7 @@ class MatriculaController extends Controller
 
     }*/
     public static function numeroInscritos($matricula){
-        $insctritos=Inscricao::where('matricula',$matricula)->count();
+        $inscritos=Inscricao::where('matricula',$matricula)->count();
         return $inscritos;
     }
     public function regularizarCancelamentos(){

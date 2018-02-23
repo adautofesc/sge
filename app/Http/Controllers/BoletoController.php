@@ -8,10 +8,15 @@ use App\Lancamento;
 use App\Boleto;
 use App\Pessoa;
 use Carbon\Carbon;
-//use App\Http\Controllers\LancamentoController;
+use DateTime;
+use Cnab;
+//require '../vendor/autoload.php';
 
+
+//use App\Http\Controllers\LancamentoController;
+//clude 'vendor/autoload.php';
 class BoletoController extends Controller
-{
+{	
 	public function cadastrar(){ //$parcela/mes/ano
 		$parcela=0;
 		$lancamentos_sintetizados=Lancamento::select(\DB::raw('distinct(matriculas.pessoa), sum(lancamentos.valor) as valor'))
@@ -46,15 +51,17 @@ class BoletoController extends Controller
 	}
 	public function imprimirLote(){
 
-		$boletos=Boleto::where('status','gravado')->limit(100)->get();
+		$boletos=Boleto::where('status','gravado')->limit(200)->get();
 		foreach($boletos as $boleto){
+			$boleto->status='impresso';
+			$boleto->save();
 			$this->gerar($boleto);
 		}
 		//return $boletos;
 
 		return view('financeiro.boletos.lote')->with('boletos',$boletos);
 	}
-	public function verificaSeCadastrado($pessoa,$valor,$vencimento){
+	public static function verificaSeCadastrado($pessoa,$valor,$vencimento){
 		$cadastrado=Boleto::where('pessoa',$pessoa)->where('valor',$valor)->where('vencimento',$vencimento)->first();
 		return $cadastrado;
 
@@ -80,6 +87,11 @@ class BoletoController extends Controller
 
 		// DADOS DO SEU CLIENTE
 		$dadosboleto["sacado"] = $cliente->nome;
+		$dadosboleto["cpf_sacado"]=$cliente->cpf;
+		$dadosboleto["logradouro_sacado"]=$cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->complemento;
+		$dadosboleto["bairro_sacado"] = ($cliente->bairro=='Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro);
+		$dadosboleto["cep_sacado"]= str_replace('-', '',$cliente->cep);
+
 
 		$dadosboleto["endereco1"] = $cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->complemento.''. ($cliente->bairro=='Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro) ;
 		$dadosboleto["endereco2"] = $cliente->cidade.' '.$cliente->estado.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CEP '.$cliente->cep;
@@ -224,6 +236,78 @@ class BoletoController extends Controller
 
 
 		return $boleto;	
+	}
+	public function gerarRemessa(){
+		$boletos=Boleto::where('status','<>','gravado')->orWhere('status','<>','cancelar')->limit(1)->get();
+		$codigo_banco = Cnab\Banco::BANCO_DO_BRASIL;
+		$arquivo = new Cnab\Remessa\Cnab240\Arquivo($codigo_banco);
+		$arquivo->configure(array(
+		    'data_geracao'  => new DateTime(),
+		    'data_gravacao' => new DateTime(), 
+		    'nome_fantasia' => 'FESC', // seu nome de empresa
+		    'razao_social'  => 'FUNDAÇÃO EDUCACIONAL SÃO CARLOS',  // sua razão social
+		    'cnpj'          => '45361904000180', // seu cnpj completo
+		    'banco'         => $codigo_banco, //código do banco
+		    'logradouro'    => 'Rua São Sebastiao ',
+		    'numero'        => '2828',
+		    'bairro'        => 'Vila Nery', 
+		    'cidade'        => 'São Carlos',
+		    'uf'            => 'SP',
+		    'cep'           => '13560230',
+		    'agencia'       => '0295', 
+		    'conta'         => '52822', // número da conta
+		    'conta_dac'     => '6', // digito da conta
+		    'codigo_convenio'=>'2838669',
+		    'codigo_carteira'=>'1',//cobrança simples
+		    'variacao_carteira'=>'019',
+		    'conta_dv'=>'6',
+		    'agencia_dv'=>'0',
+		    'operacao'=>'0',
+		    'numero_sequencial_arquivo'=>'1',
+
+
+		));
+
+		foreach($boletos as $boleto){
+			$boleto=$this->gerar($boleto);
+			$arquivo->insertDetalhe(array(
+			    'codigo_de_ocorrencia' => 1, // 1 = Entrada de título, futuramente poderemos ter uma constante
+			    'nosso_numero'      => $boleto->id,
+			    'numero_documento'  => $boleto->id,
+			    'carteira'          => '17',//109
+			    'especie'           => Cnab\Especie::BB_CHEQUE, // Você pode consultar as especies Cnab\Especie
+			    'valor'             => $boleto->valor, // Valor do boleto
+			    'instrucao1'        => 2, // 1 = Protestar com (Prazo) dias, 2 = Devolver após (Prazo) dias, futuramente poderemos ter uma constante
+			    'instrucao2'        => 0, // preenchido com zeros
+			    'sacado_nome'       => $boleto->dados['sacado'], // O Sacado é o cliente, preste atenção nos campos abaixo
+			    'sacado_tipo'       => 'cpf', //campo fixo, escreva 'cpf' (sim as letras cpf) se for pessoa fisica, cnpj se for pessoa juridica
+			    'sacado_cpf'        => $boleto->dados['cpf_sacado'],
+			    'sacado_logradouro' => $boleto->dados['logradouro_sacado'],
+			    'sacado_bairro'     => $boleto->dados['bairro_sacado'],
+			    'sacado_cep'        => $boleto->dados['cep_sacado'], // sem hífem
+			    'sacado_cidade'     => 'São Carlos',
+			    'sacado_uf'         => 'SP',
+			    'data_vencimento'   => new DateTime($boleto->vencimento),
+			    'data_cadastro'     => new DateTime('2018-02-19'),
+			    'juros_de_um_dia'     => 0.10, // Valor do juros de 1 dia'
+			    'data_desconto'       => new DateTime('2014-06-01'),
+			    'valor_desconto'      => 10.0, // Valor do desconto
+			    'prazo'               => 10, // prazo de dias para o cliente pagar após o vencimento
+			    'taxa_de_permanencia' => '0', //00 = Acata Comissão por Dia (recomendável), 51 Acata Condições de Cadastramento na CAIXA
+			    'mensagem'            => 'Mensalidade referente a parcelas de todas as suas atividade na FESC',
+			    'data_multa'          => new DateTime('2018-02-28'), // data da multa
+			    'valor_multa'         => 10.0, // valor da multa
+			    'codigo_carteira'=>'1', //cobrança simples
+			    'registrado'=>'1', // 1 boleto com registro 2 sem registro
+			    'aceite'=>'2'
+
+			));
+
+		}
+		return $arquivo->save('meunomedearquivo.txt');
+
+
+
 	}
 
 	public static function formata_numero($numero,$loop,$insert,$tipo = "geral") {
@@ -536,5 +620,44 @@ class BoletoController extends Controller
 		  
 		return $barcodeline;
 		} //Fim da função
+		public static function proximoMes(){
+			$mes = str_pad(date('m')+1,2,"0",STR_PAD_LEFT);
+			return date('Y') . '-' . $mes .'-20 23:59:59';
+		}
+
+		public static function relancarBoleto($id){
+			$boleto_antigo=Boleto::find($id);
+			$lancamentos = Lancamento::select('matricula')->distinct('matricula')->where('boleto',$id)->get();
+			$lancamentos_sintetizados=Lancamento::select(\DB::raw('distinct(matriculas.pessoa), sum(lancamentos.valor) as valor'))
+							->join('matriculas','lancamentos.matricula','matriculas.id')
+							->groupBy('matriculas.pessoa')
+							->whereIn('lancamentos.matricula',$lancamentos)
+							->where(function($query){
+								$query->where('lancamentos.status','!=','cancelado')->orwhere('lancamentos.status', null);
+							})							
+							->get(); //soma todas parcelas em aberto e agrupa por pessoa
+			$proxvencimento= BoletoController::proximoMes();//pega proxima data de vencimento
+			foreach($lancamentos_sintetizados as $ls){// para cada lancamento sintetizado _acho que sí vai rolar um mesmo.
+				if($ls->valor>0){
+				if(!BoletoController::verificaSeCadastrado($ls->pessoa,$ls->valor,$proxvencimento) ) {//verifica se já não foi gerado
+				//gerar boleto
+					
+						$boleto = new Boleto;
+						$boleto->pessoa=$ls->pessoa;
+						$boleto->vencimento=$proxvencimento;
+						$boleto->valor=$ls->valor;
+
+						//return $boleto;
+
+						$boleto->save();
+						return $boleto->id;
+						
+					}
+				}
+				else return 0;
+				//LancamentosController::atualizaLancamentos(22563,0,$boleto->id);
+			}
+
+		}
 
 }

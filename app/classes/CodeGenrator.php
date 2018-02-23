@@ -45,7 +45,8 @@ private $digitArray = array(0=>"00110",1=>"10001",2=>"01001",3=>"11000",4=>"0010
 	if(substr_count(strtoupper($_SERVER['SERVER_SOFTWARE']),"WIN64")){
  		$wide = 3;
 	} else {
-			$wide = 2.72;
+			$wide = 3;
+			//$wide = 2.72;
 	   }
 	$pos   = 9 ; 
 	$text = $value ; 

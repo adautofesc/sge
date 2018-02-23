@@ -14,6 +14,9 @@
 @media screen,print {
 
 /* *** TIPOGRAFIA BASICA *** */
+.page-break { 
+page-break-before: always; 
+}
 
 * {
 	font-family: Arial;
@@ -462,13 +465,12 @@ div.barcode {
 </HEAD>
 <BODY>
 	@foreach($boletos as $boleto)
-	<div id="container">
+	<div id="container" class="page-break">
 		<div id="">
 	<!--
   Use no lugar do <div id=""> caso queira imprimir sem o logotipo e instruções 
   <div id="instructions">-->
 
-		
 		<div id="instr_content">
 			<p>
 				O pagamento deste boleto tamb&eacute;m poder&aacute; ser efetuado 

@@ -30,8 +30,11 @@ Route::get('inscricoes','InscricaoController@incricoesPorPosto');
 //Route::get('importar-matriculas', 'MatriculaController@importarMatriculas');
 Route::get('gerar-lancamentos/{parcela}', 'LancamentoController@gerarLancamentos');
 Route::get('gerar-boletos', 'BoletoController@cadastrar');
+Route::get('gerar-remessa', 'BoletoController@gerarRemessa');
 Route::get('imprimir-boletos', 'BoletoController@imprimirLote');
 Route::get('importar-bairros', 'EnderecoController@importarBairros');
+Route::get('testar-classe', 'painelController@testarClasse');
+
 
 
 
@@ -201,6 +204,7 @@ Route::middleware('login') ->group(function(){
 			Route::post('editar/{id}','MatriculaController@update');
 			Route::get('declaracao/{id}','MatriculaController@declaracao');
 			Route::get('cancelar/{id}','MatriculaController@cancelarMatricula');
+			Route::get('cancelamento', 'MatriculaController@regularizarCancelamentos');
 			Route::prefix('inscricao')->group(function(){
 				Route::get('apagar/{id}', 'InscricaoController@apagar');
 			});

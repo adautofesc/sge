@@ -125,6 +125,7 @@ class MatriculaController extends Controller
         $matricula->obs=$r->obs;
         $matricula->save();
         AtendimentoController::novoAtendimento("Matrícula atualizada.", $matricula->pessoa, Session::get('usuario'));
+        LancamentoController::atualizaMatricula($matricula->id);
         return redirect(asset("/pessoa/matriculas"));
     }
 
@@ -355,10 +356,16 @@ class MatriculaController extends Controller
 
 
     }
+    /**
+     * Modifica valor da matrícula em caso de alteração.
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
     public static function modificaMatricula($id){
         $matricula=Matricula::find($id);
+        //$inscricoes=Inscricao::where('matricula',$matricula->id)->where('status','regular')->count();
         if($matricula->inscricoes->first()->turma->curso->id==307){
-            $inscricoes=Inscricao::where('matricula',$matricula->id)->get();
+            $inscricoes=Inscricao::where('matricula',$matricula->id)->where('status','regular')->get();
             switch (count($inscricoes)) {
                         case 1:
                             $matricula->valor=100;
@@ -377,7 +384,9 @@ class MatriculaController extends Controller
                             $matricula->valor=400;
                             break;;
                     }
-                    $matricula->save();
+            $matricula->save();
+            LancamentoController::atualizaMatricula($matricula->id);
+            return $matricula->valor;
         }
         
     }
@@ -389,7 +398,12 @@ class MatriculaController extends Controller
         foreach($inscricoes as $inscricao){
             $insc=InscricaoController::apagar($inscricao->id);
         }
+        LancamentoController::cancelamentoMatricula($id);
         AtendimentoController::novoAtendimento("Cancelamento da matricula ".$id, $matricula->pessoa, Session::get('usuario'));
+
+        //verifica numero de parcelas existentes  se <=2 e cancela os boletos atuais se for o caso
+
+
         return redirect($_SERVER['HTTP_REFERER']);
     }
     public function ativarMatricula($id){
@@ -443,6 +457,22 @@ class MatriculaController extends Controller
     public static function numeroInscritos($matricula){
         $insctritos=Inscricao::where('matricula',$matricula)->count();
         return $inscritos;
+    }
+    public function regularizarCancelamentos(){
+        /*$matriculas = Matricula::select( '*', 'matriculas.status as status', 'matriculas.id as id')
+                    ->join('inscricoes','inscricoes.matricula','matriculas.id')
+                    ->where('matriculas.status','ativa')
+                    ->where('inscricoes.status','cancelado')
+                    ->get();*/
+        $matriculas = Matricula::select( '*', 'matriculas.status as status', 'matriculas.id as id')
+                    ->join('inscricoes','inscricoes.matricula','matriculas.id')
+                    ->where('matriculas.status','ativa')
+                    ->where('matriculas.valor', 100)
+                    ->get();
+
+    return view('secretaria.matricula.lista-geral', compact('matriculas'));
+
+
     }
 
         

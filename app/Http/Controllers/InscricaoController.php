@@ -289,6 +289,7 @@ class InscricaoController extends Controller
             else{
                 $matricula_obj=MatriculaController::verificaSeMatriculado($aluno,$turma->curso->id);
                 $matricula=$matricula_obj;
+
             }
         }
         $inscricao=new Inscricao();
@@ -301,12 +302,14 @@ class InscricaoController extends Controller
         $inscricao->status='regular';
         $inscricao->matricula=$matricula;
         $inscricao->save();
+
         
 
         // aumenta Inscricaodos
 
         //$turma=Turma::find($turma);
         InscricaoController::modInscritos($turma->id,1,1);
+        MatriculaController::modificaMatricula($matricula);
 
         return $inscricao;
 
@@ -318,15 +321,20 @@ class InscricaoController extends Controller
 
         return redirect(asset('/secretaria/turma/'.$turma));
     }
+    /**
+     * Cancelamento de Inscrição
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
     public static function apagar($id){
         $insc=Inscricao::find($id);
         if($insc==null)
             return die("Inscrição não encontrada");
         //return $insc->turma->id."teste";
         InscricaoController::modInscritos($insc->turma->id,0,1);
-        MatriculaController::modificaMatricula($insc->matricula);
         $insc->status='cancelado';
         $insc->save();
+        MatriculaController::modificaMatricula($insc->matricula);
         $num_inscricoes=count(InscricaoController::inscricoesPorMatricula($insc->matricula));
         if($num_inscricoes==0)
             MatriculaController::cancelarMatricula($insc->matricula);

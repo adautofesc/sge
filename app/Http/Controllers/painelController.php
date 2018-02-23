@@ -12,6 +12,8 @@ use App\PessoaDadosAcesso;
 use App\Http\Controllers\PessoaController;
 use Session;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\LancamentoContoller;
+use App\Http\Controllers\MatriculaContoller;
 
 class painelController extends Controller
 {
@@ -171,6 +173,11 @@ class painelController extends Controller
         return $salas;
 
     }
+    public function testarClasse(){
+
+        return LancamentoController::atualizaMatricula('2051');
+    }
+
 
 
     	

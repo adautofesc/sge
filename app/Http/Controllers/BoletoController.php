@@ -238,7 +238,7 @@ class BoletoController extends Controller
 		return $boleto;	
 	}
 	public function gerarRemessa(){
-		$boletos=Boleto::where('status','<>','gravado')->orWhere('status','<>','cancelar')->limit(1)->get();
+		$boletos=Boleto::where('status','=','gravado')->orWhere('status','=','cancelar')->limit(1)->get();
 		$codigo_banco = Cnab\Banco::BANCO_DO_BRASIL;
 		$arquivo = new Cnab\Remessa\Cnab240\Arquivo($codigo_banco);
 		$arquivo->configure(array(
@@ -261,7 +261,7 @@ class BoletoController extends Controller
 		    'codigo_carteira'=>'1',//cobrança simples
 		    'variacao_carteira'=>'019',
 		    'conta_dv'=>'6',
-		    'agencia_dv'=>'0',
+		    'agencia_dv'=>'X',
 		    'operacao'=>'0',
 		    'numero_sequencial_arquivo'=>'1',
 

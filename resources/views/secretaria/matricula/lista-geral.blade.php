@@ -1,5 +1,6 @@
 @extends('layout.app')
 @section('pagina')
+<form method="post">
 <div class="title-block">
     <h3 class="title"> Relação de Matrículas</h3>
 </div>
@@ -14,17 +15,17 @@
 <div class="card card-success">
   <div class="card-header">
         <div class="header-block">
-        <p class="title" style="color:white"> Matrícula: {{$matricula->id}} Realizada em {{date('d/m/Y - H:i ', strtotime($matricula->created_at))}}.
+        <p class="title" style="color:white"> <input type="checkbox" name="matricula[]" value="{{$matricula->id}}"> Matrícula: {{$matricula->id}} Realizada em {{date('d/m/Y - H:i ', strtotime($matricula->created_at))}}.
 @elseif($matricula->status=='pendente')
 <div class="card card-warning"> 
   <div class="card-header">
         <div class="header-block">
-        <p class="title" style="color:white"> !!! Pendente !!! Matrícula: {{$matricula->id}} Realizada em {{date('d/m/Y - H:i ', strtotime($matricula->created_at))}}. 
+        <p class="title" style="color:white"> <input type="checkbox" name="matricula[]" value="{{$matricula->id}}">!!! Pendente !!! Matrícula: {{$matricula->id}} Realizada em {{date('d/m/Y - H:i ', strtotime($matricula->created_at))}}. 
 @elseif($matricula->status=='cancelada')
 <div class="card card-danger"> 
   <div class="card-header">
         <div class="header-block">
-        <p class="title" style="color:white"> !!! Cancelada !!! Matrícula: {{$matricula->id}} Realizada em {{date('d/m/Y - H:i ', strtotime($matricula->created_at))}}. - 
+        <p class="title" style="color:white"> <input type="checkbox" name="matricula[]" value="{{$matricula->id}}">!!! Cancelada !!! Matrícula: {{$matricula->id}} Realizada em {{date('d/m/Y - H:i ', strtotime($matricula->created_at))}}. - 
 @endif
 
     
@@ -91,8 +92,11 @@
 
     </div>
 </div>
-@endforeach
 
+@endforeach
+{{csrf_field()}}
+<input type="submit" name="x" value="Enviar">
+</form>
 @endsection
 @section('scripts')
 <script>

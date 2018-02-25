@@ -318,11 +318,11 @@ class MatriculaController extends Controller
         //return $matriculas;
         $nome=Pessoa::getNome(Session::get('pessoa_atendimento'));
 
-        return view('secretaria.matricula.lista-por-pessoa',compact('matriculas'))->with('nome',$nome);
+        return view('secretaria.matricula.lista-por-pessoa',compact('matriculas'))->with('nome',$nome)->with('pessoa_id',Session::get('pessoa_atendimento'));
 
     }
     public static function verificaSeMatriculado($pessoa,$curso){
-        $matriculas_ativas=Matricula::where('pessoa',Session::get('pessoa_atendimento'))->where('status','like','ativa')->get();
+        $matriculas_ativas=Matricula::where('pessoa',Session::get('pessoa_atendimento'))->where('status','=','ativa')->orWhere('status','=','pendente')->get();
         foreach($matriculas_ativas as $matricula){
             foreach($matricula->inscricoes as $inscricao){
                 if($inscricao->turma->curso->id==$curso)
@@ -334,6 +334,7 @@ class MatriculaController extends Controller
             
 
     }
+
     public static function gerarMatricula($pessoa,$turma_id){
         $turma=Turma::find($turma_id);
         if($turma==null)
@@ -458,19 +459,71 @@ class MatriculaController extends Controller
         $inscritos=Inscricao::where('matricula',$matricula)->count();
         return $inscritos;
     }
-    public function regularizarCancelamentos(){
-        /*$matriculas = Matricula::select( '*', 'matriculas.status as status', 'matriculas.id as id')
+    public static function regularizarCancelamentos(){
+        //pega todas matriculas com status de ativo sem inscricoes regulares
+        $matriculas = Matricula::select( '*', 'matriculas.status as status', 'matriculas.id as id')
                     ->join('inscricoes','inscricoes.matricula','matriculas.id')
                     ->where('matriculas.status','ativa')
                     ->where('inscricoes.status','cancelado')
-                    ->get();*/
+                    ->get();
+        /*pega todas matriculas com valor de 100
         $matriculas = Matricula::select( '*', 'matriculas.status as status', 'matriculas.id as id')
                     ->join('inscricoes','inscricoes.matricula','matriculas.id')
                     ->where('matriculas.status','ativa')
                     ->where('matriculas.valor', 100)
-                    ->get();
+                    ->get();*/
 
     return view('secretaria.matricula.lista-geral', compact('matriculas'));
+
+
+    }
+    // primeiro passo para corrigir mas matriculas erradas é atribuir curso as matriculas
+    public function modMatriculas(){
+         $matriculas = Matricula::select( '*', 'matriculas.status as status', 'matriculas.id as id', 'inscricoes.id as inscId', 'turmas.id as turmaId','matriculas.curso as curso', 'turmas.curso as tcurso')
+                    ->join('inscricoes','inscricoes.matricula','matriculas.id')
+                    ->join('turmas','inscricoes.turma','turmas.id')
+                    ->where('matriculas.status','ativa')
+                    ->get();
+         foreach($matriculas as $matricula){
+            $matricula_origin = Matricula::find($matricula->id);
+            $matricula_origin->curso = $matricula->tcurso;
+            $matricula_origin->save();
+         }
+
+    }
+    //seleciona pessoas que tem mais de uma matricula no curso da uati
+    public function arrumarMultiplasUati(){
+        $pessoas=\DB::select('select pessoa, matricula from (
+select distinct(pessoa),count(id)as matricula from matriculas where curso = 307 group by pessoa)as nt
+where nt.matricula>1');
+
+        foreach($pessoas as $pessoa ){
+            $matriculap = '';
+            $matriculas = Matricula::where('pessoa',$pessoa->pessoa)->where('curso',307)->get();
+            foreach($matriculas as $matricula){
+                if($matricula->status != 'cancelada'){
+                    if($matriculap == ''){
+                        $matriculap = $matricula->id;
+                    }
+                    else{
+                        $matricula->status = 'cancelada';
+                        $matricula->save();
+                        $inscricoes = Inscricao::where('matricula',$matricula->id)->get();
+                        foreach($inscricoes as $inscricao){
+                            $inscricao->matricula = $matriculap;
+                            $inscricao->save();
+                        }
+
+
+                    }
+
+                }
+
+            }
+
+        }
+        return "metodo executado";
+
 
 
     }

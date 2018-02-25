@@ -6,7 +6,7 @@
 
 @include('inc.errors')
 <div class="subtitle-block">
-    <h3 class="subtitle">{{$nome}}</h3>
+    <h3 class="subtitle">{{$nome}}  <small> Cod. {{$pessoa_id}}</small> </h3>
 </div>
 
 @foreach($matriculas as $matricula)

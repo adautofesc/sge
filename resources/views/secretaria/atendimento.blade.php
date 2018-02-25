@@ -1,7 +1,7 @@
 @extends('layout.app')
 @section('pagina')
 <div class="title-block">
-    <h3 class="title"> {{$pessoa->nome}} 
+    <h3 class="title">{{$pessoa->nome}} <small> Cod. {{$pessoa->id}}</small> 
     	@if(isset($pessoa->nome_resgistro))
     		({{$pessoa->nome_resgistro}})
     	@endif

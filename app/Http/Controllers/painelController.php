@@ -12,8 +12,7 @@ use App\PessoaDadosAcesso;
 use App\Http\Controllers\PessoaController;
 use Session;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\LancamentoContoller;
-use App\Http\Controllers\MatriculaContoller;
+use LancamentoContoller;
 
 class painelController extends Controller
 {
@@ -175,7 +174,29 @@ class painelController extends Controller
     }
     public function testarClasse(){
 
-        return LancamentoController::atualizaMatricula('2051');
+        //return LancamentoController::atualizaMatricula('2051');
+        //
+        //return LancamentoController::relancarPorBoleto('2199');
+        /*$inst = new BoletoController;
+        return $inst->gerarRemessa();*/
+        //$inst= new MatriculaController;
+        //return MatriculaController::regularizarCancelamentos();
+        //return $inst->modMatriculas();
+        //return $inst->verificaSeMatriculado(13977,307);
+        //return $inst->arrumarMultiplasUati();
+        $inst = new LancamentoController;
+        return $inst->atualizarLMC();
+        //return $inst->cancelamentoMatricula(2004);
+    }
+    public function testarClassePost(Request $r){
+        
+        foreach($r->matricula as $id){
+            $inst= new MatriculaController;
+            $inst->cancelarMatricula($id);
+        }
+        return $r->matricula;
+
+
     }
 
 

@@ -33,12 +33,10 @@ Route::get('gerar-boletos', 'BoletoController@cadastrar');
 Route::get('gerar-remessa', 'BoletoController@gerarRemessa');
 Route::get('imprimir-boletos', 'BoletoController@imprimirLote');
 Route::get('importar-bairros', 'EnderecoController@importarBairros');
-<<<<<<< HEAD
 Route::get('testar-classe', 'painelController@testarClasse');
-
-=======
+Route::post('testar-classe', 'painelController@testarClassePost');
 Route::get('chamada', function(){ return view('pedagogico.turma.chamada');});
->>>>>>> 2c1fccd4a1fc1bd8cb9d175b4743968214795b02
+
 
 
 

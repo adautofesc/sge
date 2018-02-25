@@ -13,13 +13,17 @@ class LancamentoController extends Controller
     //
 	public function gerarLancamentos($parcela){
 		$matriculas=Matricula::where('status','ativa')->orWhere('status','pendente')->where('valor','>',0)->where('parcelas','>=',$parcela)->get();
+
+//OBS: tem que tratar os bolsistas, tem que analizar o que ja foi pago, e o quanto falta pagar pelas parcelas restantes. Ex.: pessoa pagou 2 parcelas e na terceira quer pagar tudo o que falta.
+
+
 		foreach($matriculas as $matricula){
 			if(!$this->verificaSeLancada($matricula->id,$parcela,$matricula->valor)){
 				$lancamento=new Lancamento;
 				$lancamento->matricula=$matricula->id;
 				$lancamento->parcela=$parcela;
 				$lancamento->valor=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas;
-				if($lancamento->valor>0)
+				if($lancamento->valor>0)//se for bolsista integral
 					$lancamento->save();
 			}
 		}
@@ -70,15 +74,11 @@ class LancamentoController extends Controller
 	 * @return [type]            [description]
 	 */
 	public static function retornarBoletos($matricula){
-		$lancamentos=Lancamento::distinct('boleto')->where('matricula',$matricula)->where(function($query){
-								$query->where('lancamentos.status','!=','cancelado')->orwhere('lancamentos.status', null);
-							})->get();
+		$lancamentos=Lancamento::distinct('boleto')->where('matricula',$matricula)->where('lancamentos.status', null)->where('boleto','<>',null)->get();
 		return $lancamentos;
 	}
 	public static function listarMatriculasporBoleto($boleto){
-		$matriculas=Lancamento::distinct('matricula')->where('boleto',$boleto)->where(function($query){
-								$query->where('lancamentos.status','!=','cancelado')->orwhere('lancamentos.status', null);
-							})->get();
+		$matriculas=Lancamento::distinct('matricula')->where('boleto',$boleto)->where('lancamentos.status', null)->get();
 		return $matriculas;
 	}
 
@@ -98,11 +98,11 @@ class LancamentoController extends Controller
 			return "0";
 	}
 	public static function relancarPorBoleto($anterior){
-		$lancamentos = Lancamento::where('boleto',$anterior)->where(function($query){
-								$query->where('lancamentos.status','!=','cancelado')->orwhere('lancamentos.status', null);
-							})->get();
+		$lancamentos = Lancamento::where('boleto',$anterior)
+						->where('status',null)
+						->get();
+		//return $lancamentos;
 		foreach($lancamentos as $lancamento){
-			if($novo>0){
 				$novo_lancamento = new Lancamento;
 				$novo_lancamento->matricula = $lancamento->matricula;
 				$novo_lancamento->parcela = $lancamento->parcela;
@@ -110,7 +110,7 @@ class LancamentoController extends Controller
 				$novo_lancamento->save();
 				$lancamento->status='cancelado';
 				$lancamento->save();
-			}
+			
 		}
 	}
 	public static function relancarLancamento($id){
@@ -122,7 +122,7 @@ class LancamentoController extends Controller
 		return $novo_lancamento;
 
 	}
-	public static function apagarLancamentos($matricula){
+	public static function cancelarLancamentos($matricula){
 		$lancamentos=Lancamento::where('matricula',$matricula)->get();
 		foreach($lancamentos as $lancamento){
 			$lancamento->status='cancelado';
@@ -139,7 +139,6 @@ class LancamentoController extends Controller
 			if(count($l_boletos)>0){ // se tiver boletos
 				foreach($l_boletos as $boleto_id){ //para cada um dos boletos
 					$boleto=Boleto::find($boleto_id->boleto); //instancia boleto
-************************************************************************************************************
 					if($boleto->status == 'impresso' || $boleto->status == 'gravado'){	// ele ja foi impresso/entregue?	
 						$lancamentos=LancamentoController::listarMatriculasporBoleto($boleto->id); //listar todas matriculas vinculadas e esse boleto
 						//die($lancamentos);
@@ -213,13 +212,18 @@ class LancamentoController extends Controller
 
 						}
 					}
+					if($boleto->status == 'cancelar' || $boleto->status == 'cancelado'){
+						LancamentoController::cancelarLancamentos($matricula);
+					}
+
+
 
 
 				}
 
 			}
 			else{
-				LancamentoController::apagarLancamentos($matricula);
+				LancamentoController::cancelarLancamentos($matricula);
 			}
 	
 
@@ -325,29 +329,63 @@ class LancamentoController extends Controller
 
 								}
 							}
+							if($boleto->status == 'cancelar' || $boleto->status == 'cancelado'){
+								LancamentoController::cancelarLancamentos($matricula);
+							}
 
+
+						}//end foreach boleto
+
+					}//end if se tem boleto
+					else{//não tem boleto lançado.
+						$lancamentos = Lancamento::where('matricula',$matricula)->get();//seleciona os lancamentos
+						foreach($lancamentos as $lancamento){ //para cada lancamento
+							if($lancamento->parcela>0){//se a parcela nao for de diferenca (=0)
+								$lancamento->valor= $valor_parcela_matricula;//atualiza valor parcela
+								$lancamento->save(); //salvar
+							}
 
 						}
-
-					}
-					else{
-						//LancamentoController::apagarLancamentos($matricula); apagar lançamentos
-						//não tem boleto lançado.
+						
 						return "não tem boletos";
+							
 					}	
 				}
 				else{ // o valor da matricula é igual ao da ultima parcela. 
 					return "valor igual";
 				}
-			}
+			}// end if se o lancamento for >0
 			return "Nao tem lancamentos";
+		}//end if se tem lancamentos
+	}//end metodo
 
-
-
-
-
-
+	/**
+	 * Cancelar Lancamentos de Matriculas Canceladas (antes do metodo de cancelar lancamentos)]
+	 * @return [type] [description]
+	 */
+	public function cancelarLMC(){
+		$alteradas=array();
+		$matriculas=Matricula::where('status','cancelada')->get();
+		//return $matriculas;
+		foreach($matriculas as $matricula){
+			$this->cancelamentoMatricula($matricula->id);
+			$alteradas[] = $matricula->id;
 		}
+		return $alteradas;
+
+
+	}
+	public function atualizarLMC(){
+		$alteradas=array();
+		$matriculas=Matricula::where('status','ativa')->orWhere('status','pendente')->get();
+		//return $matriculas;
+		foreach($matriculas as $matricula){
+			$this->atualizaMatricula($matricula->id);
+			$alteradas[] = $matricula->id;
+		}
+		return $alteradas;
+
+
 	}
 
 

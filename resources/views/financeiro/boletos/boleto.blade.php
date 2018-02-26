@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<title>{{ $dadosboleto["identificacao"] }}</title>
+<title>Boletos em Lote</title>
 <META http-equiv=Content-Type content=text/html charset=ISO-8859-1>
 <meta name="Generator" content="Projeto BoletoPHP - www.boletophp.com.br - Licença GPL" />
 	
@@ -14,6 +14,9 @@
 @media screen,print {
 
 /* *** TIPOGRAFIA BASICA *** */
+.page-break { 
+page-break-before: always; 
+}
 
 * {
 	font-family: Arial;
@@ -178,7 +181,12 @@ table.line tr.campos td.vencimento2,
 table.line tr.campos td.ag_cod_cedente2,
 table.line tr.campos td.nosso_numero2,
 table.line tr.campos td.xvalor,
-table.line tr.campos td.valor_doc2
+table.line tr.campos td.valor_doc2,
+table.line tr.campos td.desconto2,
+table.line tr.campos td.outros_acrescimos2,
+table.line tr.campos td.valor_cobrado,
+table.line tr.campos td.valor_cobrado2
+
 {
 	text-align: right;
 }
@@ -401,8 +409,11 @@ table.line td.valor_cobrado2 {
 	background-color: #ffc ;
 }
 
-table.line td.sacado2 {
+table.line td.sacado2 p {
 	width: 659px;
+	padding-left: 10%;
+	margin-left: 10%;
+	font-size: 14px;
 }
 
 table.line td.sacador_avalista {
@@ -458,37 +469,30 @@ div.barcode {
 </STYLE>
 </HEAD>
 <BODY>
-	<div id="container">
+	<div id="container" class="page-break">
 		<div id="">
 	<!--
   Use no lugar do <div id=""> caso queira imprimir sem o logotipo e instruções 
   <div id="instructions">-->
 
-		
 		<div id="instr_content">
 			<p>
 				O pagamento deste boleto tamb&eacute;m poder&aacute; ser efetuado 
 				nos terminais de Auto-Atendimento BB.
 			</p>
 			
-			<h2>Instru&ccedil;&otilde;es</h2>
+			<h2>Observações:</h2>
 			<ol>
 			<li>
-				Imprima em impressora jato de tinta (ink jet) ou laser, em 
-				qualidade normal ou alta. N&atilde;o use modo econ&ocirc;mico. 
-				<p class="notice">Por favor, configure margens esquerda e direita
-				para 17mm.</p>
+				Em caso de desistência é obrigatório o preenchimento do Pedido de Cancelamento na secretaria da FESC
 			</li>
 			<li>
-				Utilize folha A4 (210 x 297 mm) ou Carta (216 x 279 mm) e margens
-				m&iacute;nimas &agrave; esquerda e &agrave; direita do 
-				formul&aacute;rio.
+				Aos servidores públicos municipais da ativa, apresentar holerite atualizado para desconto na mensalidade
 			</li>
-			<li>
-				Corte na linha indicada. N&atilde;o rasure, risque, fure ou dobre 
-				a regi&atilde;o onde se encontra o c&oacute;digo de barras
-			</li>
-			</ol>
+		
+			</ol>	
+			
+
 		</div>	<!-- id="instr_content" -->
 	</div>	<!-- id="instructions" -->
 	
@@ -510,9 +514,9 @@ div.barcode {
 		<tr>
 			<td width=150><IMG SRC="{{asset('img/logobb.gif')}}" with="150px" height="40"></td>
 			<td width=50>
-        <div class="field_cod_banco">{{ $dadosboleto["codigo_banco_com_dv"]}}</div>
+        <div class="field_cod_banco">{{ $boleto->dados["codigo_banco_com_dv"]}}</div>
 			</td>
-			<td class="linha_digitavel">{{ $dadosboleto["linha_digitavel"]}}</td>
+			<td class="linha_digitavel">{{ $boleto->dados["linha_digitavel"]}}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -528,11 +532,11 @@ div.barcode {
 		</tr>
 
 		<tr class="campos">
-			<td class="cedente">{{ $dadosboleto["cedente"]}}&nbsp;</td>
-			<td class="ag_cod_cedente">{{ $dadosboleto["agencia_codigo"]}} &nbsp;</td>
-			<td class="especie">{{ $dadosboleto["especie"]}}&nbsp;</td>
-			<TD class="qtd">{{ $dadosboleto["quantidade"]}}&nbsp;</td>
-			<TD class="nosso_numero">{{ $dadosboleto["nosso_numero"]}}&nbsp;</td>
+			<td class="cedente">{{ $boleto->dados["cedente"]}}&nbsp;</td>
+			<td class="ag_cod_cedente">{{ $boleto->dados["agencia_codigo"]}} &nbsp;</td>
+			<td class="especie">{{ $boleto->dados["especie"]}}&nbsp;</td>
+			<TD class="qtd">{{ $boleto->dados["quantidade"]}}&nbsp;</td>
+			<TD class="nosso_numero">{{ $boleto->dados["nosso_numero"]}}&nbsp;</td>
 		</tr>
 		</tbody>
 		</table>
@@ -547,11 +551,11 @@ div.barcode {
 			<td class="valor_doc">Valor documento</TD>
 		</tr>
 		<tr class="campos">
-			<td class="num_doc">{{ $dadosboleto["numero_documento"]}}</td>
-			<td class="contrato">{{ $dadosboleto["contrato"]}}</td>
-			<td class="cpf_cei_cnpj">{{ $dadosboleto["cpf_cnpj"]}}</td>
-			<td class="vencimento">{{ $dadosboleto["data_vencimento"]}}</td>
-			<td class="valor_doc">{{ $dadosboleto["valor_boleto"]}}</td>
+			<td class="num_doc">{{ $boleto->dados["numero_documento"]}}</td>
+			<td class="contrato">{{ $boleto->dados["contrato"]}}</td>
+			<td class="cpf_cei_cnpj">{{ $boleto->dados["cpf_cnpj"]}}</td>
+			<td class="vencimento">{{ $boleto->dados["data_vencimento"]}}</td>
+			<td class="valor_doc">{{ $boleto->dados["valor_boleto"]}}</td>
 		</tr>
       </tbody>
       </table>
@@ -570,7 +574,7 @@ div.barcode {
 			<td class="outras_deducoes">&nbsp;</td>
 			<td class="mora_multa">&nbsp;</td>
 			<td class="outros_acrescimos">&nbsp;</td>
-			<td class="valor_cobrado">&nbsp;</td>
+			<td class="valor_cobrado">{{$boleto->valor_cobrado}}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -582,7 +586,7 @@ div.barcode {
 			<td class="sacado">Sacado</td>
 		</tr>
 		<tr class="campos">
-			<td class="sacado">{{ $dadosboleto["sacado"]}}</td>
+			<td class="sacado">{{ $boleto->dados["sacado"]}}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -592,10 +596,12 @@ div.barcode {
 		</div>
 
 		
-		
+		<br>
+		<br>
 		<div class="cut">
-			<p>Corte na linha pontilhada</p>
+			<p>Dobre/Corte na linha pontilhada</p>
 		</div>
+
 
 
 		<table class="header" border=0 cellspacing="0" cellpadding="0">
@@ -603,9 +609,9 @@ div.barcode {
 		<tr>
 			<td width=150><IMG SRC="{{asset('img/logobb.gif')}}" with="150px" height="40"></td>
 			<td width=50>
-        <div class="field_cod_banco">{{ $dadosboleto["codigo_banco_com_dv"]}}</div>
+        <div class="field_cod_banco">{{ $boleto->dados["codigo_banco_com_dv"]}}</div>
 			</td>
-			<td class="linha_digitavel">{{ $dadosboleto["linha_digitavel"]}}</td>
+			<td class="linha_digitavel">{{ $boleto->dados["linha_digitavel"]}}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -618,7 +624,7 @@ div.barcode {
 		</tr>
 		<tr class="campos">
 			<td class="local_pagto">QUALQUER BANCO AT&Eacute; O VENCIMENTO</td>
-			<td class="vencimento2">{{ $dadosboleto["data_vencimento"]}}</td>
+			<td class="vencimento2">{{ $boleto->dados["data_vencimento"]}}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -630,8 +636,8 @@ div.barcode {
 			<td class="ag_cod_cedente2">Ag&ecirc;ncia/C&oacute;digo cedente</td>
 		</tr>
 		<tr class="campos">
-			<td class="cedente2">{{ $dadosboleto["cedente"]}}</td>
-			<td class="ag_cod_cedente2">{{ $dadosboleto["agencia_codigo"]}}</td>
+			<td class="cedente2">{{ $boleto->dados["cedente"]}}</td>
+			<td class="ag_cod_cedente2">{{ $boleto->dados["agencia_codigo"]}}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -647,12 +653,12 @@ div.barcode {
 			<td class="nosso_numero2">Nosso n&uacute;mero</td>
 		</tr>
 		<tr class="campos">
-			<td class="data_doc">{{ $dadosboleto["data_documento"]}}</td>
-			<td class="num_doc2">{{ $dadosboleto["numero_documento"]}}</td>
-			<td class="especie_doc">{{ $dadosboleto["especie_doc"]}}</td>
-			<td class="aceite">{{ $dadosboleto["aceite"]}}</td>
-			<td class="data_process">{{ $dadosboleto["data_processamento"]}}</td>
-			<td class="nosso_numero2">{{ $dadosboleto["nosso_numero"]}}</td>
+			<td class="data_doc">{{ $boleto->dados["data_documento"]}}</td>
+			<td class="num_doc2">{{ $boleto->dados["numero_documento"]}}</td>
+			<td class="especie_doc">{{ $boleto->dados["especie_doc"]}}</td>
+			<td class="aceite">{{ $boleto->dados["aceite"]}}</td>
+			<td class="data_process">{{ $boleto->dados["data_processamento"]}}</td>
+			<td class="nosso_numero2">{{ $boleto->dados["nosso_numero"]}}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -669,11 +675,11 @@ div.barcode {
 		</tr>
 		<tr class="campos">
 			<td class="reservado">&nbsp;</td>
-			<td class="carteira">{{ $dadosboleto["carteira"]}} {{ isset($dadosboleto["variacao_carteira"]) ? $dadosboleto["variacao_carteira"] : '&nbsp;' }}</td>
-			<td class="especie2">{{ $dadosboleto["especie"]}}</td>
-			<td class="qtd2">{{ $dadosboleto["quantidade"]}}</td>
-			<td class="xvalor">{{ $dadosboleto["valor_unitario"]}}</td>
-			<td class="valor_doc2">{{ $dadosboleto["valor_boleto"]}}</td>
+			<td class="carteira">{{ $boleto->dados["carteira"]}} {{ isset($boleto->dados["variacao_carteira"]) ? $boleto->dados["variacao_carteira"] : '&nbsp;' }}</td>
+			<td class="especie2">{{ $boleto->dados["especie"]}}</td>
+			<td class="qtd2">{{ $boleto->dados["quantidade"]}}</td>
+			<td class="xvalor">{{ $boleto->dados["valor_unitario"]}}</td>
+			<td class="valor_doc2">{{ $boleto->dados["valor_boleto"]}}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -691,15 +697,15 @@ div.barcode {
 			</tr>
 			<tr class="campos">
 				<td class="instrucoes" rowspan="5">
-					<p>{{ $dadosboleto["demonstrativo1"] }}</p>		
-					<p>{{ $dadosboleto["demonstrativo2"]}}</p>
-					<p>{{ $dadosboleto["demonstrativo3"] }}</p>
+					<p>{{ $boleto->dados["demonstrativo1"] }}</p>		
+					<p>{{ $boleto->dados["demonstrativo2"]}}</p>
+					<p>{{ $boleto->dados["demonstrativo3"] }}</p>
 					<p>&nbsp;</p>
 					<p>&nbsp;</p>
-					<p>{{ $dadosboleto["instrucoes1"] }}</p>
-					<p>{{ $dadosboleto["instrucoes2"] }}</p>
-					<p>{{ $dadosboleto["instrucoes3"] }}</p>
-					<p>{{ $dadosboleto["instrucoes4"] }}</p>
+					<p>{{ $boleto->dados["instrucoes1"] }}</p>
+					<p>{{ $boleto->dados["instrucoes2"] }}</p>
+					<p>{{ $boleto->dados["instrucoes3"] }}</p>
+					<p>{{ $boleto->dados["instrucoes4"] }}</p>
 				</td>
 			</tr>
 			</tbody>
@@ -713,7 +719,7 @@ div.barcode {
 				<td class="desconto2">(-) Desconto / Abatimento</td>
 			</tr>
 			<tr class="campos">
-				<td class="desconto2">&nbsp;</td>
+				<td class="desconto2">{{$boleto->valor_desconto}}</td>
 			</tr>
 			</tbody>
 			</table>
@@ -752,7 +758,7 @@ div.barcode {
 				<td class="outros_acrescimos2">(+) Outros Acr&eacute;scimos</td>
 			</tr>
 			<tr class="campos">
-				<td class="outros_acrescimos2">&nbsp;</td>
+				<td class="outros_acrescimos2">{{$boleto->valor_encargo}}</td>
 			</tr>
 			</tbody>
 			</table>
@@ -765,7 +771,7 @@ div.barcode {
 				<td class="valor_cobrado2">(=) Valor cobrado</td>
 			</tr>
 			<tr class="campos">
-				<td class="valor_cobrado2">&nbsp;</td>
+				<td class="valor_cobrado2">{{$boleto->valor_cobrado}}</td>
 			</tr>
 			</tbody>
 			</table>
@@ -774,21 +780,53 @@ div.barcode {
 		</table>
 		
 		
+				
+	    <table cellspacing=0 cellpadding=0 width=666 border=0>
+	    	<TBODY>
+	    		<TR>
+	    			<TD width=666 align=right >
+	    				<font style="font-size: 10px;">Autentica&ccedil;&atilde;o mec&acirc;nica - Ficha de Compensação</font>
+	    			</TD>
+	    		</tr>
+	    	</tbody>
+	    
+	   	</table>
+	   	<br><br><br><br><br>
+	   	<div class="cut">
+			<p>dobre na linha pontilhada</p>
+		</div>
+		<br>
+		
+		<div class="barcode">
+			<img src="{{asset('./img/barcode.php').'?code='. $boleto->dados["codigo_barras"]}}"  with="600" height="50">		
+		</div>
+		<br><br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+
+		
 		<table class="line" cellspacing="0" cellPadding="0">
 		<tbody>
 		<tr class="titulos">
 			<td class="sacado2">Sacado</td>
 		</tr>
 		<tr class="campos">
-			<td class="sacado2">
-				<p>{{ $dadosboleto["sacado"]}}</p>
-				<p>{{ $dadosboleto["endereco1"]}}</p>
-				<p>{{ $dadosboleto["endereco2"]}}</p>
+			<td class="sacado2" >
+				<p style="font-weight: bolder;">{{ $boleto->dados["sacado"]}}</p>
+				<p>{{ $boleto->dados["endereco1"]}}</p>
+				<p>{{ $boleto->dados["endereco2"]}}</p>
 			</td>
 		</tr>
 		</tbody>
-		</table>		
-		
+		</table>
 		<table class="line" cellspacing="0" cellpadding="0">
 		<tbody>
 		<tr class="titulos">
@@ -799,27 +837,12 @@ div.barcode {
 			<td class="cod_baixa">C&oacute;d. baixa</td>
 		</tr>
 		</tbody>
-		</table>		
-	    <table cellspacing=0 cellpadding=0 width=666 border=0>
-	    	<TBODY>
-	    		<TR>
-	    			<TD width=666 align=right >
-	    				<font style="font-size: 10px;">Autentica&ccedil;&atilde;o mec&acirc;nica - Ficha de Compensação</font>
-	    			</TD>
-	    		</tr>
-	    	</tbody>
-	   	</table>
-		<div class="barcode">
-			<img src="{{asset('./img/barcode.php').'?code='. $dadosboleto["codigo_barras"]}}"  with="600" height="50">
-			
-		</div>
-		<div class="cut">
-			<p>Corte na linha pontilhada</p>
-		</div>
+		</table>
 
 	</div>
 
 </div>
+
 
 </body>
 

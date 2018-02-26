@@ -179,13 +179,15 @@ class painelController extends Controller
         //return LancamentoController::relancarPorBoleto('2199');
         /*$inst = new BoletoController;
         return $inst->gerarRemessa();*/
-        //$inst= new MatriculaController;
+        $inst= new MatriculaController;
         //return MatriculaController::regularizarCancelamentos();
+        //$inst->atualizaTodasMatriculas();
+        return $inst->verificaSeMatriculado(23234,307);
         //return $inst->modMatriculas();
         //return $inst->verificaSeMatriculado(13977,307);
         //return $inst->arrumarMultiplasUati();
-        $inst = new LancamentoController;
-        return $inst->atualizarLMC();
+        //$inst = new LancamentoController;
+        //return $inst->atualizarLMC();
         //return $inst->cancelamentoMatricula(2004);
     }
     public function testarClassePost(Request $r){

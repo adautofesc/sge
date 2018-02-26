@@ -182,6 +182,10 @@ table.line tr.campos td.ag_cod_cedente2,
 table.line tr.campos td.nosso_numero2,
 table.line tr.campos td.xvalor,
 table.line tr.campos td.valor_doc2
+table.line tr.campos td.desconto2,
+table.line tr.campos td.outros_acrescimos2,
+table.line tr.campos td.valor_cobrado,
+table.line tr.campos td.valor_cobrado2
 {
 	text-align: right;
 }
@@ -570,7 +574,7 @@ div.barcode {
 			<td class="outras_deducoes">&nbsp;</td>
 			<td class="mora_multa">&nbsp;</td>
 			<td class="outros_acrescimos">&nbsp;</td>
-			<td class="valor_cobrado">&nbsp;</td>
+			<td class="valor_cobrado">{{$boleto->valor_cobrado}}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -715,7 +719,7 @@ div.barcode {
 				<td class="desconto2">(-) Desconto / Abatimento</td>
 			</tr>
 			<tr class="campos">
-				<td class="desconto2">&nbsp;</td>
+				<td class="desconto2">{{$boleto->valor_desconto}}</td>
 			</tr>
 			</tbody>
 			</table>
@@ -754,7 +758,7 @@ div.barcode {
 				<td class="outros_acrescimos2">(+) Outros Acr&eacute;scimos</td>
 			</tr>
 			<tr class="campos">
-				<td class="outros_acrescimos2">&nbsp;</td>
+				<td class="outros_acrescimos2">{{$boleto->valor_encargo}}</td>
 			</tr>
 			</tbody>
 			</table>
@@ -767,7 +771,7 @@ div.barcode {
 				<td class="valor_cobrado2">(=) Valor cobrado</td>
 			</tr>
 			<tr class="campos">
-				<td class="valor_cobrado2">&nbsp;</td>
+				<td class="valor_cobrado2">{{$boleto->valor_cobrado}}</td>
 			</tr>
 			</tbody>
 			</table>

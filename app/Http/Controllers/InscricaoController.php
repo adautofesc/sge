@@ -33,6 +33,7 @@ class InscricaoController extends Controller
         $str_turmas='';
         $turmas=collect();
         $incricoes_atuais=Inscricao::where('pessoa',Session::get('pessoa_atendimento'))->where('status', '<>','cancelado')->get();
+        //return $incricoes_atuais;
         //->where('status','<>','cancelado')
 
         foreach($incricoes_atuais as $inscricao){
@@ -206,6 +207,8 @@ class InscricaoController extends Controller
                         $valor=$valor+str_replace(',', '.',$turma->valor);
 
                     switch ($uati) {
+                        case '0':
+                            $valor=$valor+0;
                         case '1':
                             $valor=$valor+100;
                             break;

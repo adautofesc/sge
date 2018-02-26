@@ -10,6 +10,8 @@ use App\Pessoa;
 use Carbon\Carbon;
 use DateTime;
 use Cnab;
+use Session;
+
 //require '../vendor/autoload.php';
 
 
@@ -74,9 +76,13 @@ class BoletoController extends Controller
 		$dias_de_prazo_para_pagamento = 5;
 		$taxa_boleto = 0;
 		$data_venc =Carbon::parse($boleto->vencimento)->format('d/m/Y');;  // Prazo de X dias OU informe data: "13/04/2006"; 
-		$valor_cobrado = $boleto->valor; // Valor - REGRA: Sem pontos na milhar e tanto faz com "." ou "," ou com 1 ou 2 ou sem casa decimal
+		$valor_documento = $boleto->valor;
+		$valor_cobrado = $boleto->valor+$boleto->encargos-$boleto->descontos; // Valor - REGRA: Sem pontos na milhar e tanto faz com "." ou "," ou com 1 ou 2 ou sem casa decimal
 		$valor_cobrado = str_replace(",", ".",$valor_cobrado);
 		$valor_boleto=number_format($valor_cobrado+$taxa_boleto, 2, ',', '');
+        $boleto->valor_desconto=number_format($boleto->descontos, 2, ',', '');
+        $boleto->valor_encargo=number_format($boleto->encargos, 2, ',', '');
+        $boleto->valor_cobrado= number_format($valor_cobrado, 2, ',', '');
 
 		$dadosboleto["nosso_numero"] = $boleto->id; //numero de identificaçao no sistema interno SEM convenio (7)
 		$dadosboleto["numero_documento"] = $boleto->id;	// Num do pedido ou do documento
@@ -98,7 +104,7 @@ class BoletoController extends Controller
 
 		// INFORMACOES PARA O CLIENTE
 		$dadosboleto["demonstrativo1"] = "Pagamento FESC";
-		$dadosboleto["demonstrativo2"] = "";
+		$dadosboleto["demonstrativo2"] = "Acréscimos ou descontos são diferenças de valores entre a parcela anterior e a atual.";
 		$dadosboleto["demonstrativo3"] = "Mensalidade referente a parcelas de todas as suas atividade na FESC";
 
 		// INSTRUÇÕES PARA O CAIXA
@@ -270,38 +276,50 @@ class BoletoController extends Controller
 
 		foreach($boletos as $boleto){
 			$boleto=$this->gerar($boleto);
-			$arquivo->insertDetalhe(array(
-			    'codigo_de_ocorrencia' => 1, // 1 = Entrada de título, futuramente poderemos ter uma constante
-			    'nosso_numero'      => $boleto->id,
-			    'numero_documento'  => $boleto->id,
-			    'carteira'          => '17',//109
-			    'especie'           => Cnab\Especie::BB_CHEQUE, // Você pode consultar as especies Cnab\Especie
-			    'valor'             => $boleto->valor, // Valor do boleto
-			    'instrucao1'        => 2, // 1 = Protestar com (Prazo) dias, 2 = Devolver após (Prazo) dias, futuramente poderemos ter uma constante
-			    'instrucao2'        => 0, // preenchido com zeros
-			    'sacado_nome'       => $boleto->dados['sacado'], // O Sacado é o cliente, preste atenção nos campos abaixo
-			    'sacado_tipo'       => 'cpf', //campo fixo, escreva 'cpf' (sim as letras cpf) se for pessoa fisica, cnpj se for pessoa juridica
-			    'sacado_cpf'        => $boleto->dados['cpf_sacado'],
-			    'sacado_logradouro' => $boleto->dados['logradouro_sacado'],
-			    'sacado_bairro'     => $boleto->dados['bairro_sacado'],
-			    'sacado_cep'        => $boleto->dados['cep_sacado'], // sem hífem
-			    'sacado_cidade'     => 'São Carlos',
-			    'sacado_uf'         => 'SP',
-			    'data_vencimento'   => new DateTime($boleto->vencimento),
-			    'data_cadastro'     => new DateTime('2018-02-19'),
-			    'juros_de_um_dia'     => 0.10, // Valor do juros de 1 dia'
-			    'data_desconto'       => new DateTime('2014-06-01'),
-			    'valor_desconto'      => 10.0, // Valor do desconto
-			    'prazo'               => 10, // prazo de dias para o cliente pagar após o vencimento
-			    'taxa_de_permanencia' => '0', //00 = Acata Comissão por Dia (recomendável), 51 Acata Condições de Cadastramento na CAIXA
-			    'mensagem'            => 'Mensalidade referente a parcelas de todas as suas atividade na FESC',
-			    'data_multa'          => new DateTime('2018-02-28'), // data da multa
-			    'valor_multa'         => 10.0, // valor da multa
-			    'codigo_carteira'=>'1', //cobrança simples
-			    'registrado'=>'1', // 1 boleto com registro 2 sem registro
-			    'aceite'=>'2'
+			//return $boleto->dados['cpf_sacado'];
+			if(\App\classes\Strings::validaCPF($boleto->dados['cpf_sacado'])){
+				$arquivo->insertDetalhe(array(
+				    'codigo_de_ocorrencia' => '1', // 1 = Entrada de título, futuramente poderemos ter uma constante
+				    'nosso_numero'      => $boleto->id,
+				    'numero_documento'  => $boleto->id,
+				    'carteira'          => '17',//109
+				    'especie'           => Cnab\Especie::BB_CHEQUE, // Você pode consultar as especies Cnab\Especie
+				    'valor'             => $boleto->valor, // Valor do boleto
+				    'instrucao1'        => 2, // 1 = Protestar com (Prazo) dias, 2 = Devolver após (Prazo) dias, futuramente poderemos ter uma constante
+				    'instrucao2'        => 0, // preenchido com zeros
+				    'sacado_nome'       => $boleto->dados['sacado'], // O Sacado é o cliente, preste atenção nos campos abaixo
+				    'sacado_tipo'       => 'cpf', //campo fixo, escreva 'cpf' (sim as letras cpf) se for pessoa fisica, cnpj se for pessoa juridica
+				    'sacado_cpf'        => $boleto->dados['cpf_sacado'],
+				    'sacado_logradouro' => $boleto->dados['logradouro_sacado'],
+				    'sacado_bairro'     => $boleto->dados['bairro_sacado'],
+				    'sacado_cep'        => $boleto->dados['cep_sacado'], // sem hífem
+				    'sacado_cidade'     => 'São Carlos',
+				    'sacado_uf'         => 'SP',
+				    'data_vencimento'   => new DateTime($boleto->vencimento),
+				    'data_cadastro'     => new DateTime('2018-02-19'),
+				    'juros_de_um_dia'     => 0.10, // Valor do juros de 1 dia'
+				    'data_desconto'       => new DateTime('2014-06-01'),
+				    'valor_desconto'      => 10.0, // Valor do desconto
+				    'prazo'               => 10, // prazo de dias para o cliente pagar após o vencimento
+				    'taxa_de_permanencia' => '0', //00 = Acata Comissão por Dia (recomendável), 51 Acata Condições de Cadastramento na CAIXA
+				    'mensagem'            => 'Mensalidade referente a parcelas de todas as suas atividade na FESC',
+				    'data_multa'          => new DateTime('2018-02-28'), // data da multa
+				    'valor_multa'         => 10.0, // valor da multa
+				    'codigo_carteira'=>'1', //cobrança simples
+				    'registrado'=>'1', // 1 boleto com registro 2 sem registro
+				    'movimento'=>'02',
+				    'aceite'=>'1'
 
-			));
+				));
+				$boleto_bd=Boleto::find($boleto->id);
+				$boleto_bd->status = 'enviado';
+				$boleto_bd->save();
+			}// endif de validação do cpf
+			else{
+				$boleto_bd=Boleto::find($boleto->id);
+				$boleto_bd->status = 'erro_CPF';
+				$boleto_bd->save();
+			}
 
 		}
 		return $arquivo->save('meunomedearquivo.txt');
@@ -658,6 +676,27 @@ class BoletoController extends Controller
 				//LancamentosController::atualizaLancamentos(22563,0,$boleto->id);
 			}
 
+		}
+		public function imprimir($boleto){
+			$boleto = Boleto::find($boleto);
+			if($boleto == null)
+				throw new Exception("Boleto Inexistente", 1);
+			if($boleto->status == 'gravado'){
+				$boleto->status = 'impresso';
+				$boleto->save();
+			}
+			$boleto = $this->gerar($boleto);
+
+			return view('financeiro.boletos.boleto',compact('boleto'));
+			
+		}
+		public function listarPorPessoa(){
+			if(!Session::get('pessoa_atendimento'))
+            return redirect(asset('/secretaria/pre-atendimento'));
+            $nome = \App\Pessoa::getNome(Session::get('pessoa_atendimento'));
+            $boletos=Boleto::where('pessoa',Session::get('pessoa_atendimento'))->paginate(50);
+
+            return view('financeiro.boletos.lista-por-pessoa',compact('boletos'))->with('nome',$nome);
 		}
 
 }

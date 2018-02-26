@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Matricula;
 use App\Boleto;
 use App\Lancamento;
+use Session;
 
 
 class LancamentoController extends Controller
@@ -230,133 +231,135 @@ class LancamentoController extends Controller
 		}
 	}
 	public static function atualizaMatricula($matricula){
-		$parcela_atual=LancamentoController::ultimaParcelaLancada($matricula);
-		if( $parcela_atual <= 2){ //ultima parcela < 2
-			$ultimo_lancamento = Lancamento::where('matricula',$matricula)->where('parcela',$parcela_atual)->orderBy('id','DESC')->first();
-			if(count($ultimo_lancamento)>0){
-				$matricula_ins=Matricula::find($matricula);
-				$valor_parcela_matricula = ($matricula_ins->valor-$matricula_ins->valor_desconto)/$matricula_ins->parcelas;
-				//verificar se o valor da parcela é diferente do valor da matricula
-				if( $valor_parcela_matricula  != $ultimo_lancamento->valor){
-					/**
-					 * ***********************************************************************************
-					 */
+		$matricula_ins=Matricula::find($matricula);
+		if($matricula_ins->status != 'cancelada'){
+			$parcela_atual=LancamentoController::ultimaParcelaLancada($matricula);
+			if( $parcela_atual <= 2){ //ultima parcela < 2
+				$ultimo_lancamento = Lancamento::where('matricula',$matricula)->where('parcela',$parcela_atual)->orderBy('id','DESC')->first();
+				if(count($ultimo_lancamento)>0){				
+					$valor_parcela_matricula = ($matricula_ins->valor-$matricula_ins->valor_desconto)/$matricula_ins->parcelas;
+					//verificar se o valor da parcela é diferente do valor da matricula
+					if( $valor_parcela_matricula  != $ultimo_lancamento->valor){
+						/**
+						 * ***********************************************************************************
+						 */
 
-					$l_boletos=LancamentoController::retornarBoletos($matricula); //selecionas todos boletos dessa matricula com boleto em aberto
-					//return $l_boletos;
-					if(count($l_boletos)>0){ // se tiver boletos
-						foreach($l_boletos as $boleto_id){ //para cada um dos boletos
-							$boleto=Boleto::find($boleto_id->boleto); //instancia boleto
-							//die($boleto);
-							if($boleto->status == 'impresso' || $boleto->status == 'gravado'){	// ele ja foi impresso/entregue?	
-								$lancamentos=LancamentoController::listarMatriculasporBoleto($boleto->id); //listar todas matriculas vinculadas e esse boleto
-								//die($lancamentos);
-								if(count($lancamentos) == 1){ //só tem a matricula que vai ser cancelada
-									$lancamentos->first()->status = 'cancelado';
+						$l_boletos=LancamentoController::retornarBoletos($matricula); //selecionas todos boletos dessa matricula com boleto em aberto
+						//return $l_boletos;
+						if(count($l_boletos)>0){ // se tiver boletos
+							foreach($l_boletos as $boleto_id){ //para cada um dos boletos
+								$boleto=Boleto::find($boleto_id->boleto); //instancia boleto
+								//die($boleto);
+								if($boleto->status == 'impresso' || $boleto->status == 'gravado'){	// ele ja foi impresso/entregue?	
+									$lancamentos=LancamentoController::listarMatriculasporBoleto($boleto->id); //listar todas matriculas vinculadas e esse boleto
 									//die($lancamentos);
-									$lancamentos->first()->save();
-									if($boleto->status == 'impresso')
-										$boleto->status = 'cancelar';//cancelar boleto impresso
-									else
-										$boleto->status = 'cancelado';//cancelar boleto gravado
-									$boleto->save();// salva cancelamento
+									if(count($lancamentos) == 1){ //só tem a matricula que vai ser cancelada
+										$lancamentos->first()->status = 'cancelado';
+										//die($lancamentos);
+										$lancamentos->first()->save();
+										if($boleto->status == 'impresso')
+											$boleto->status = 'cancelar';//cancelar boleto impresso
+										else
+											$boleto->status = 'cancelado';//cancelar boleto gravado
+										$boleto->save();// salva cancelamento
 
-									$novo_lancamento = new Lancamento;
-									$novo_lancamento->matricula = $lancamentos->first()->matricula;
-									$novo_lancamento->valor = $valor_parcela_matricula;
-									$novo_lancamento->parcela = $lancamentos->first()->parcela;
-									$novo_lancamento->save();
+										$novo_lancamento = new Lancamento;
+										$novo_lancamento->matricula = $lancamentos->first()->matricula;
+										$novo_lancamento->valor = $valor_parcela_matricula;
+										$novo_lancamento->parcela = $lancamentos->first()->parcela;
+										$novo_lancamento->save();
 
-								}
-								else{ // se tem outras matriculas vinculadas e esse boleto
-									//$lancamentos = LancamentoController::listarPorBoleto($boleto->id);//coleção de lançamentos desse boleto
-									foreach($lancamentos as $lancamento){ //para cadas lançamento desse boleto
-
-										if($lancamento->matricula == $matricula){ // se o lançamento  for da matricula
-											//LancamentoController::relancarlancamento($lancamento->id);
-											$lancamento->status = 'cancelado'; //cancela lancamento
-											if($boleto->status == 'impresso')
-												$boleto->status = 'cancelar';//cancelar boleto impresso
-											else
-												$boleto->status = 'cancelado';//cancelar boleto gravado
-											$lancamento->save();	
-										}		
 									}
-									$boleto->status = 'cancelar';
-									$boleto->save();
+									else{ // se tem outras matriculas vinculadas e esse boleto
+										//$lancamentos = LancamentoController::listarPorBoleto($boleto->id);//coleção de lançamentos desse boleto
+										foreach($lancamentos as $lancamento){ //para cadas lançamento desse boleto
 
-									//relança boleto com os lancamentos em aberto
-									//$novo_boleto = BoletoController::relancarBoleto($boleto->id);
-									//refaz os lancamentos caso valor do boleto seja maior que 0, senao atribui cancelado ao lancamento 
-									LancamentoController::relancarPorBoleto($boleto->id);
+											if($lancamento->matricula == $matricula){ // se o lançamento  for da matricula
+												//LancamentoController::relancarlancamento($lancamento->id);
+												$lancamento->status = 'cancelado'; //cancela lancamento
+												if($boleto->status == 'impresso')
+													$boleto->status = 'cancelar';//cancelar boleto impresso
+												else
+													$boleto->status = 'cancelado';//cancelar boleto gravado
+												$lancamento->save();	
+											}		
+										}
+										$boleto->status = 'cancelar';
+										$boleto->save();
 
-								}
-							}
-							if($boleto->status == 'pago'){ // ele ja foi pago?
-								$lancamentos=LancamentoController::listarMatriculasporBoleto($boleto->id); //listar todas matriculas vinculadas e esse boleto
-								//die($lancamentos);
-								if(count($lancamentos) == 1){ //só tem a matricula que vai ser cancelada
-									$lancamentos->first()->status = 'cancelado';
-									$lancamentos->first()->save();
-									$novo_lancamento = new Lancamento;
-									$novo_lancamento->matricula = $matricula;
-									$novo_lancamento->valor = ($lancamentos->first()->valor-$valor_parcela_matricula) *-1;
-									$novo_lancamento->parcela = 0;
-									$novo_lancamento->status = 'reembolsar';
-									$novo_lancamento->save();
-								}
-								else{ // se tem outras matriculas vinculadas e esse boleto
-									//$lancamentos = LancamentoController::listarPorBoleto($boleto->id);//coleção de lançamentos desse boleto
-									foreach($lancamentos as $lancamento){ //para cadas lançamento desse boleto
+										//relança boleto com os lancamentos em aberto
+										//$novo_boleto = BoletoController::relancarBoleto($boleto->id);
+										//refaz os lancamentos caso valor do boleto seja maior que 0, senao atribui cancelado ao lancamento 
+										LancamentoController::relancarPorBoleto($boleto->id);
 
-										if($lancamento->matricula == $matricula){ // se o lançamento não for da matricula
-											
-											$lancamento->status = 'cancelado'; //cancela lancamento
-											$lancamento->save();
-											$novo_lancamento = new Lancamento;
-											$novo_lancamento->matricula = $matricula;
-											$novo_lancamento->valor = ($lancamento->valor-$valor_parcela_matricula)*-1;
-											$novo_lancamento->parcela = 0;
-											$novo_lancamento->status = 'reembolsar';
-											$novo_lancamento->save();
-
-										}		
 									}
-									//relança boleto com os lancamentos em aberto
-									//$novo_boleto = BoletoController::relancarBoleto($boleto->id);
-									//refaz os lancamentos caso valor do boleto seja maior que 0, senao atribui cancelado ao lancamento 
-									//LancamentoController::relancarPorBoleto($boleto->id);
-
 								}
+								if($boleto->status == 'pago'){ // ele ja foi pago?
+									$lancamentos=LancamentoController::listarMatriculasporBoleto($boleto->id); //listar todas matriculas vinculadas e esse boleto
+									//die($lancamentos);
+									if(count($lancamentos) == 1){ //só tem a matricula que vai ser cancelada
+										$lancamentos->first()->status = 'cancelado';
+										$lancamentos->first()->save();
+										$novo_lancamento = new Lancamento;
+										$novo_lancamento->matricula = $matricula;
+										$novo_lancamento->valor = ($lancamentos->first()->valor-$valor_parcela_matricula) *-1;
+										$novo_lancamento->parcela = 0;
+										$novo_lancamento->status = 'reembolsar';
+										$novo_lancamento->save();
+									}
+									else{ // se tem outras matriculas vinculadas e esse boleto
+										//$lancamentos = LancamentoController::listarPorBoleto($boleto->id);//coleção de lançamentos desse boleto
+										foreach($lancamentos as $lancamento){ //para cadas lançamento desse boleto
+
+											if($lancamento->matricula == $matricula){ // se o lançamento não for da matricula
+												
+												$lancamento->status = 'cancelado'; //cancela lancamento
+												$lancamento->save();
+												$novo_lancamento = new Lancamento;
+												$novo_lancamento->matricula = $matricula;
+												$novo_lancamento->valor = ($lancamento->valor-$valor_parcela_matricula)*-1;
+												$novo_lancamento->parcela = 0;
+												$novo_lancamento->status = 'reembolsar';
+												$novo_lancamento->save();
+
+											}		
+										}
+										//relança boleto com os lancamentos em aberto
+										//$novo_boleto = BoletoController::relancarBoleto($boleto->id);
+										//refaz os lancamentos caso valor do boleto seja maior que 0, senao atribui cancelado ao lancamento 
+										//LancamentoController::relancarPorBoleto($boleto->id);
+
+									}
+								}
+								if($boleto->status == 'cancelar' || $boleto->status == 'cancelado'){
+									LancamentoController::cancelarLancamentos($matricula);
+								}
+
+
+							}//end foreach boleto
+
+						}//end if se tem boleto
+						else{//não tem boleto lançado.
+							$lancamentos = Lancamento::where('matricula',$matricula)->get();//seleciona os lancamentos
+							foreach($lancamentos as $lancamento){ //para cada lancamento
+								if($lancamento->parcela>0){//se a parcela nao for de diferenca (=0)
+									$lancamento->valor= $valor_parcela_matricula;//atualiza valor parcela
+									$lancamento->save(); //salvar
+								}
+
 							}
-							if($boleto->status == 'cancelar' || $boleto->status == 'cancelado'){
-								LancamentoController::cancelarLancamentos($matricula);
-							}
-
-
-						}//end foreach boleto
-
-					}//end if se tem boleto
-					else{//não tem boleto lançado.
-						$lancamentos = Lancamento::where('matricula',$matricula)->get();//seleciona os lancamentos
-						foreach($lancamentos as $lancamento){ //para cada lancamento
-							if($lancamento->parcela>0){//se a parcela nao for de diferenca (=0)
-								$lancamento->valor= $valor_parcela_matricula;//atualiza valor parcela
-								$lancamento->save(); //salvar
-							}
-
-						}
-						
-						return "não tem boletos";
 							
-					}	
-				}
-				else{ // o valor da matricula é igual ao da ultima parcela. 
-					return "valor igual";
-				}
-			}// end if se o lancamento for >0
-			return "Nao tem lancamentos";
-		}//end if se tem lancamentos
+							return "não tem boletos";
+								
+						}	
+					}
+					else{ // o valor da matricula é igual ao da ultima parcela. 
+						return "valor igual";
+					}
+				}// end if se o lancamento for >0
+				return "Nao tem lancamentos";
+			}//end if se tem lancamentos
+		}//fim se matricula não estiver cancelada
 	}//end metodo
 
 	/**
@@ -385,6 +388,26 @@ class LancamentoController extends Controller
 		}
 		return $alteradas;
 
+
+	}
+	public function listarPorPessoa(){
+
+		if(!Session::get('pessoa_atendimento'))
+            return redirect(asset('/secretaria/pre-atendimento'));
+        $nome = \App\Pessoa::getNome(Session::get('pessoa_atendimento'));
+        $matriculas=Matricula::select('id')->where('pessoa',Session::get('pessoa_atendimento'))->get();
+        $lancamentos=Lancamento::whereIn('matricula',$matriculas)->paginate(30);
+        //return $lancamentos;
+        foreach($lancamentos as $lancamento){
+        	$curso=\App\Inscricao::where('matricula',$lancamento->matricula)->first();
+        	$lancamento->nome_curso = $curso->turma->curso->nome;
+        	$boleto=Boleto::find($lancamento->boleto);
+        	if($boleto !=null)
+        		$lancamento->boleto_status = $boleto->status;
+        	$lancamento->valor=number_format($lancamento->valor,2,',','.');
+
+        }
+        return view('financeiro.lancamentos.lista-por-pessoa',compact('lancamentos'))->with('nome',$nome);
 
 	}
 

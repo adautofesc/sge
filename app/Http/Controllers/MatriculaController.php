@@ -12,6 +12,7 @@ use App\Atendimento;
 use App\Classe;
 use App\Inscricao;
 use Session;
+use App\Lancamento;
 
 
 use App\PessoaDadosGerais;
@@ -39,12 +40,12 @@ class MatriculaController extends Controller
      * @return View     secretaria.inscricao.gravar
      */
     public function gravar(Request $r){
+        //throw new \Exception("Matricula temporariamente suspensa. Tente novamente em instantes.", 1);
+        
         $matriculas=collect();
         $cursos=collect();
         if(!Session::get('pessoa_atendimento'))
             return redirect(asset('/secretaria/pre-atendimento'));
-        if(!Session::get('atendimento'))
-            return redirect(asset('/secretaria/atender'));
 
         $turmas=TurmaController::csvTurmas($r->turmas); // recebe lista de turmas csv
         foreach($turmas as $turma){
@@ -322,15 +323,15 @@ class MatriculaController extends Controller
 
     }
     public static function verificaSeMatriculado($pessoa,$curso){
-        $matriculas_ativas=Matricula::where('pessoa',Session::get('pessoa_atendimento'))->where('status','=','ativa')->orWhere('status','=','pendente')->get();
-        foreach($matriculas_ativas as $matricula){
-            foreach($matricula->inscricoes as $inscricao){
-                if($inscricao->turma->curso->id==$curso)
-                    return $matricula->id;
-
-            }
-        }
-        return false;
+        $matriculas_ativas=Matricula::where('pessoa',Session::get('pessoa_atendimento'))
+            ->where('curso',$curso)
+            ->Where(function($query) {
+                $query->where('status','ativa')->orWhere('status','pendente');
+            })->get();
+        if(count($matriculas_ativas) > 0)
+            return $matriculas_ativas->first()->id;  
+        else
+            return false;
             
 
     }
@@ -349,6 +350,7 @@ class MatriculaController extends Controller
         $matricula->status="pendente";
         $matricula->obs="Falta assinar termo e eventual atestado.";
         $matricula->valor=str_replace(',','.',$turma->valor);
+        $matricula->curso = $turma->curso->id;
         $matricula->save();
 
         return $matricula;
@@ -365,9 +367,12 @@ class MatriculaController extends Controller
     public static function modificaMatricula($id){
         $matricula=Matricula::find($id);
         //$inscricoes=Inscricao::where('matricula',$matricula->id)->where('status','regular')->count();
-        if($matricula->inscricoes->first()->turma->curso->id==307){
+        if($matricula->curso == 307){
             $inscricoes=Inscricao::where('matricula',$matricula->id)->where('status','regular')->get();
             switch (count($inscricoes)) {
+                        case 0:
+                            $matricula->valor=0;
+                            break;
                         case 1:
                             $matricula->valor=100;
                             break;
@@ -383,7 +388,7 @@ class MatriculaController extends Controller
                         case 9:
                         case 10:
                             $matricula->valor=400;
-                            break;;
+                            break;
                     }
             $matricula->save();
             LancamentoController::atualizaMatricula($matricula->id);
@@ -527,6 +532,14 @@ where nt.matricula>1');
 
 
     }
+    public function atualizaTodasMatriculas(){
+        $matriculas=Matricula::all();
+        foreach($matriculas as $matricula){
+            $this->modificaMatricula($matricula->id);
+            LancamentoController::atualizaMatricula($matricula->id);
+        }
+    }
+
 
         
 

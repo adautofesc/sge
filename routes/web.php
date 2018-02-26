@@ -102,8 +102,14 @@ Route::middleware('login') ->group(function(){
 	// Financeiro
 	Route::prefix('financeiro')->group(function(){
 		Route::get('/','painelController@financeiro');
-
 		Route::get('boletos','BoletoController@gerar');
+		Route::prefix('lancamentos')->group(function(){
+			Route::get('listar-por-pessoa','LancamentoController@listarPorPessoa');
+		});
+		Route::prefix('boletos')->group(function(){
+			Route::get('imprimir/{id}','BoletoController@imprimir');
+			Route::get('listar-por-pessoa','BoletoController@listarPorPessoa');
+		});
 
 	});
 

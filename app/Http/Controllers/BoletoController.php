@@ -7,6 +7,7 @@ use App\classes\BarCodeGenrator;
 use App\Lancamento;
 use App\Boleto;
 use App\Pessoa;
+use App\Matricula;
 use Carbon\Carbon;
 use DateTime;
 use Cnab;
@@ -20,7 +21,8 @@ use Session;
 class BoletoController extends Controller
 {	
 	public function cadastrar(){ //$parcela/mes/ano
-		$parcela=0;
+		$vencimento=date('Y-m-20 23:59:59');
+
 		$lancamentos_sintetizados=Lancamento::select(\DB::raw('distinct(matriculas.pessoa), sum(lancamentos.valor) as valor'))
 							->join('matriculas','lancamentos.matricula','matriculas.id')
 							->groupBy('matriculas.pessoa')
@@ -30,11 +32,11 @@ class BoletoController extends Controller
 		
 		foreach($lancamentos_sintetizados as $ls){
 			//verifica se já não foi gerado
-			if(!$this->verificaSeCadastrado($ls->pessoa,$ls->valor,"2018-02-28 23:59:59")){
+			if(!$this->verificaSeCadastrado($ls->pessoa,$ls->valor,$vencimento)){
 			//gerar boleto
 			$boleto=new Boleto;
 			$boleto->pessoa=$ls->pessoa;
-			$boleto->vencimento="2018-02-28 23:59:59";
+			$boleto->vencimento=$vencimento;
 			$boleto->valor=$ls->valor;
 
 			$boleto->save();
@@ -68,6 +70,69 @@ class BoletoController extends Controller
 		return $cadastrado;
 
 	}
+	public function cadastarIndividualmente(){
+		if(!Session::get('pessoa_atendimento'))
+            return redirect(asset('/secretaria/pre-atendimento'));
+		$vencimento = date('Y-m-d 23:23:59', strtotime("+5 days",strtotime(date('Y-m-d')))); 
+		$matriculas = Matricula::select('id')
+			->where('pessoa',Session::get('pessoa_atendimento'))
+			->where(function($query){
+				$query->where('status','ativa')->orwhere('status', 'pendente');
+			})
+			->get();
+
+		$ids=array();
+		foreach($matriculas as $matricula){
+			$ids[]=$matricula->id;
+		}
+
+
+		$lancamentos = Lancamento::whereIn('matricula',$ids)
+			->where('boleto',null)
+			->get();
+
+		if(count($lancamentos) > 0){
+				
+			//gerar boleto
+			$boleto=new Boleto;
+			$boleto->pessoa=Session::get('pessoa_atendimento');
+			$boleto->vencimento=$vencimento;
+			$boleto->save();
+
+			$total=0;
+			$descontos=0;
+			$acrescimos=0;
+
+			foreach($lancamentos as $lancamento){
+				if($lancamento->status != 'cancelado'){
+					if($lancamento->parcela == 0){
+						if($lancamento->valor > 0)
+							$acrescimos=$acrescimos+$lancamento->valor;
+						else
+							$descontos = $descontos + $lancamento->valor;	
+					}
+					else
+						$total = $total + $lancamento->valor;
+					$total = $total + $descontos + $acrescimos;
+					$lancamento->boleto=$boleto->id;
+					$lancamento->save();
+				}
+			}
+			$boleto->valor = $total;
+			$boleto->descontos = $descontos;
+			$boleto->encargos = $acrescimos;
+			$boleto->save();
+			if($boleto->valor <=0){
+				$boleto->status = 'cancelado';
+				$boleto->save();
+			}
+	
+			
+		}//fim se qnde de lancamentos = 0
+		return redirect($_SERVER['HTTP_REFERER']);
+	}
+
+
 	public function gerar(Boleto $boleto){
 		$cliente=Pessoa::find($boleto->pessoa);
 		$cliente=PessoaController::formataParaMostrar($cliente);
@@ -244,7 +309,7 @@ class BoletoController extends Controller
 		return $boleto;	
 	}
 	public function gerarRemessa(){
-		$boletos=Boleto::where('status','=','gravado')->orWhere('status','=','cancelar')->limit(1)->get();
+		$boletos=Boleto::where('status','=','gravado')->orWhere('status','=','cancelar')->limit(5)->get();
 		$codigo_banco = Cnab\Banco::BANCO_DO_BRASIL;
 		$arquivo = new Cnab\Remessa\Cnab240\Arquivo($codigo_banco);
 		$arquivo->configure(array(
@@ -312,7 +377,7 @@ class BoletoController extends Controller
 
 				));
 				$boleto_bd=Boleto::find($boleto->id);
-				$boleto_bd->status = 'enviado';
+				$boleto_bd->status = 'emitido';
 				$boleto_bd->save();
 			}// endif de validação do cpf
 			else{
@@ -680,7 +745,7 @@ class BoletoController extends Controller
 		public function imprimir($boleto){
 			$boleto = Boleto::find($boleto);
 			if($boleto == null)
-				throw new Exception("Boleto Inexistente", 1);
+				throw new \Exception("Boleto Inexistente", 1);
 			if($boleto->status == 'gravado'){
 				$boleto->status = 'impresso';
 				$boleto->save();
@@ -697,6 +762,18 @@ class BoletoController extends Controller
             $boletos=Boleto::where('pessoa',Session::get('pessoa_atendimento'))->paginate(50);
 
             return view('financeiro.boletos.lista-por-pessoa',compact('boletos'))->with('nome',$nome);
+		}
+		public function cancelar($id){
+			$boleto=Boleto::find($id);
+
+			if($boleto != null){
+				$boleto->status = 'cancelar';
+				$boleto->save();
+				LancamentoController::cancelarPorBoleto($id);
+			}
+			return redirect($_SERVER['HTTP_REFERER']);
+			
+
 		}
 
 }

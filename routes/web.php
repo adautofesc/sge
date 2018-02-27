@@ -105,10 +105,14 @@ Route::middleware('login') ->group(function(){
 		Route::get('boletos','BoletoController@gerar');
 		Route::prefix('lancamentos')->group(function(){
 			Route::get('listar-por-pessoa','LancamentoController@listarPorPessoa');
+			Route::get('gerar-individual/{parcela}','LancamentoController@gerarLancamentosPorPessoa');
 		});
 		Route::prefix('boletos')->group(function(){
 			Route::get('imprimir/{id}','BoletoController@imprimir');
 			Route::get('listar-por-pessoa','BoletoController@listarPorPessoa');
+			Route::get('cancelar/{id}','BoletoController@cancelar');
+			Route::get('gerar-individual','BoletoController@cadastarIndividualmente');
+
 		});
 
 	});

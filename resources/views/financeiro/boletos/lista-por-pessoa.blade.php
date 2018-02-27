@@ -84,10 +84,10 @@
                         <div class="item-actions-block">
                             <ul class="item-actions-list">
                                 <li>
-                                    <a class="remove" onclick="" href="#" title="Visualizar"> <i class="fa fa-danger "></i> </a>
+                                    <a class="remove" onclick="cancelar({{$boleto->id}})" href="#" title="Cancelar"> <i class="fa fa-ban "></i> </a>
                                 </li>
                                 <li>
-                                    <a class="remove" onclick="" href="#" title="Atualizar"> <i class="fa fa-lock "></i> </a>
+                                    <a  class="edit" target="_blank" href="{{asset('financeiro/boletos/imprimir').'/'.$boleto->id}}" title="Imprimir"> <i class="fa fa-print " ></i> </a>
                                 </li>
                               
                             </ul>
@@ -153,10 +153,10 @@ function desativar()
         if(confirm('Deseja realmente desativar os logins selecionados?'))
             $(location).attr('href','{{asset("/admin/alterar")}}/3/'+selecionados);
 }
-function alterar(acao,item)
+function cancelar(item)
 {
-    if(confirm("Confirma essa alteração ?")){
-        $(location).attr('href','{{asset("/admin/alterar")}}/'+acao+'/'+item);
+    if(confirm("Deseja mesmo solicitar o cancelamento desse boleto?")){
+        $(location).attr('href','{{asset("/financeiro/boletos/cancelar")}}/'+item);
     }
 }
 </script>

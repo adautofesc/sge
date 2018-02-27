@@ -174,19 +174,23 @@ class painelController extends Controller
     }
     public function testarClasse(){
 
-        //return LancamentoController::atualizaMatricula('2051');
-        //
-        //return LancamentoController::relancarPorBoleto('2199');
-        /*$inst = new BoletoController;
-        return $inst->gerarRemessa();*/
-        $inst= new MatriculaController;
-        //return MatriculaController::regularizarCancelamentos();
+      
+        //$inst = new BoletoController;
         //$inst->atualizaTodasMatriculas();
-        return $inst->verificaSeMatriculado(23234,307);
+       // $inst = new LancamentoController;
+        //return date('Y-m-20 23:59:59');
+
+        //return $inst->gerarRemessa();*/
+        //$inst= new MatriculaController;
+        //return MatriculaController::regularizarCancelamentos();
+        
+        //return $inst->verificaSeMatriculado(23234,307);
         //return $inst->modMatriculas();
         //return $inst->verificaSeMatriculado(13977,307);
         //return $inst->arrumarMultiplasUati();
-        //$inst = new LancamentoController;
+          //return LancamentoController::atualizaMatricula('2051');
+        //
+        //return LancamentoController::relancarPorBoleto('2199');
         //return $inst->atualizarLMC();
         //return $inst->cancelamentoMatricula(2004);
     }

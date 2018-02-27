@@ -105,6 +105,28 @@
 
     </ul>
 </div>
+<div class="card card-block">                                      
+    <div class="form-group row">
+        <div class="col-sm-10">
+             <a href="#" onclick="gerarLancamentos({{date('m')-1}});" class="btn btn-primary" title="Gera novos lançamentos com base na parcela {{date('m')-1}}.">Gerar Lançamentos</a> 
+             <a href="#" onclick="mostrarBoletos();" class="btn btn-primary" title="Gera um novo boleto com todos lancamentos em aberto, com vencimento em 5 dias.">Gerar Boleto</a>
+            <a href="#" onclick="gerarBoletos();" class="btn btn-primary" title="Gera um novo boleto com todos lancamentos em aberto, com vencimento em 5 dias.">Gerar Boleto</a> 
+           
+            
+            <!-- 
+            <button type="submit" class="btn btn-primary"> Cadastrar</button> 
+            -->
+        </div>
+
+   </div>
+</div>
+
+
+
+
+
+
+
 <nav class="text-xs-right">
 {!! $lancamentos->links()  !!}
 </nav>
@@ -157,10 +179,16 @@ function desativar()
         if(confirm('Deseja realmente desativar os logins selecionados?'))
             $(location).attr('href','{{asset("/admin/alterar")}}/3/'+selecionados);
 }
-function alterar(acao,item)
+function gerarLancamentos(item)
 {
-    if(confirm("Confirma essa alteração ?")){
-        $(location).attr('href','{{asset("/admin/alterar")}}/'+acao+'/'+item);
+    if(confirm("Tem certeza que deseja gerar os lancamentos da parcela " + item + " e anteriores?")){
+        $(location).attr('href','{{asset("/financeiro/lancamentos/gerar-individual")}}/'+item);
+    }
+}
+function gerarBoletos()
+{
+    if(confirm("Tem certeza que deseja gerar um boleto com os lancamentos em aberto? OBS: O vencimento será em 5 dias.")){
+        $(location).attr('href','{{asset("/financeiro/boletos/gerar-individual")}}');
     }
 }
 </script>

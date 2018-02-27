@@ -387,9 +387,9 @@
 											</div>
 										</div>
 										<div class="card-block">
-											<div><a href="{{asset('/financeiro/lancamentos/listar-por-pessoa')}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-usd "></i>  Extrato</a></div>
-											<div><a href="{{asset('/financeiro/boletos/listar-por-pessoa')}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-barcode"></i> 2a Via de Boleto</a></div>
-											<div><a href="#" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-money"></i> Pagamento</a></div>
+											<div><a href="{{asset('/financeiro/lancamentos/listar-por-pessoa')}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-usd "></i>  Parcelas</a></div>
+											<div><a href="{{asset('/financeiro/boletos/listar-por-pessoa')}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-barcode"></i> Boletos</a></div>
+											<div><a href="#" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-money"></i> Boleto Atualizado</a></div>
 											<div><a href="#" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-fire-extinguisher"></i> Res. problemas</a></div>
 											<div><a href="#" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-reply"></i> Estorno</a></div>
 										</div>

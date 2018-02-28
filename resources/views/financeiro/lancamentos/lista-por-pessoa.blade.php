@@ -91,7 +91,7 @@
                         <div class="item-actions-block">
                             <ul class="item-actions-list">
                                 <li>
-                                    <a class="remove" onclick="" href="#" title="Cancelar"> <i class="fa fa-lock "></i> </a>
+                                    <a class="remove" onclick="cancelar({{$lancamento->id}})" href="#" title="Cancelar"> <i class="fa fa-ban "></i> </a>
                                 </li>
                               
                             </ul>
@@ -104,21 +104,6 @@
 
 
     </ul>
-</div>
-<div class="card card-block">                                      
-    <div class="form-group row">
-        <div class="col-sm-10">
-             <a href="#" onclick="gerarLancamentos({{date('m')-1}});" class="btn btn-primary" title="Gera novos lançamentos com base na parcela {{date('m')-1}}.">Gerar Lançamentos</a> 
-             <a href="#" onclick="mostrarBoletos();" class="btn btn-primary" title="Gera um novo boleto com todos lancamentos em aberto, com vencimento em 5 dias.">Gerar Boleto</a>
-            <a href="#" onclick="gerarBoletos();" class="btn btn-primary" title="Gera um novo boleto com todos lancamentos em aberto, com vencimento em 5 dias.">Gerar Boleto</a> 
-           
-            
-            <!-- 
-            <button type="submit" class="btn btn-primary"> Cadastrar</button> 
-            -->
-        </div>
-
-   </div>
 </div>
 
 
@@ -135,6 +120,23 @@
 @else
 <h3 class="title-description"> Nenhum lançamento para exibir. </p>
 @endif
+<div class="card card-block">                                      
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <a href="{{asset("/secretaria/atendimento")}}" class="btn btn-primary" title="Gera um novo boleto com todos lancamentos em aberto, com vencimento em 5 dias.">Voltar ao atendimento</a> 
+             <a href="#" onclick="gerarLancamentos({{date('m')-1}});" class="btn btn-primary" title="Gera novos lançamentos com base na parcela {{date('m')-1}}.">Gerar Lançamentos</a> 
+             <a href="{{asset("/financeiro/boletos/listar-por-pessoa")}}"  class="btn btn-primary" title="Gera um novo boleto com todos lancamentos em aberto, com vencimento em 5 dias.">Ver boletos</a>
+            <a href="#" onclick="gerarBoletos();" class="btn btn-danger-outline" title="Gera um novo boleto com todos lancamentos em aberto, com vencimento em 5 dias.">Gerar Boleto</a> 
+           
+            
+            <!-- 
+            <button type="submit" class="btn btn-primary"> Cadastrar</button> 
+            -->
+        </div>
+
+   </div>
+</div>
+
 
 @endsection
 @section('scripts')
@@ -189,6 +191,12 @@ function gerarBoletos()
 {
     if(confirm("Tem certeza que deseja gerar um boleto com os lancamentos em aberto? OBS: O vencimento será em 5 dias.")){
         $(location).attr('href','{{asset("/financeiro/boletos/gerar-individual")}}');
+    }
+}
+function cancelar(item)
+{
+    if(confirm("Tem certeza que deseja cancelar esse lancamento?")){
+        $(location).attr('href','{{asset("/financeiro/lancamentos/cancelar")}}/'+item);
     }
 }
 </script>

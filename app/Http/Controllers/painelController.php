@@ -181,11 +181,11 @@ class painelController extends Controller
         //return date('Y-m-20 23:59:59');
 
         //return $inst->gerarRemessa();*/
-        //$inst= new MatriculaController;
+        $inst= new MatriculaController;
         //return MatriculaController::regularizarCancelamentos();
         
         //return $inst->verificaSeMatriculado(23234,307);
-        //return $inst->modMatriculas();
+        return $inst->modMatriculas();
         //return $inst->verificaSeMatriculado(13977,307);
         //return $inst->arrumarMultiplasUati();
           //return LancamentoController::atualizaMatricula('2051');
@@ -203,6 +203,11 @@ class painelController extends Controller
         return $r->matricula;
 
 
+    }
+    public function chamada($id){
+        $inscritos=\App\Inscricao::where('turma',$id)->where('status','<>','cancelado')->get();
+        $inscritos= $inscritos->sortBy('pessoa.nome');
+        return view('pedagogico.frequencia.index',compact('inscritos'))->with('i',1);
     }
 
 

@@ -81,6 +81,7 @@ class MatriculaController extends Controller
                 $matricula->desconto=$r->$desconto;
                 $valordesconto="valordesconto".$curso->id;
                 $matricula->valor_desconto=$r->$valordesconto*1;
+                $matricula->curso = $curso->id;
                 $matricula->save();
                 $matriculas->push($matricula);
             }
@@ -488,12 +489,14 @@ class MatriculaController extends Controller
                     ->join('inscricoes','inscricoes.matricula','matriculas.id')
                     ->join('turmas','inscricoes.turma','turmas.id')
                     ->where('matriculas.status','ativa')
+                    ->where('matriculas.curso',null)
                     ->get();
          foreach($matriculas as $matricula){
             $matricula_origin = Matricula::find($matricula->id);
             $matricula_origin->curso = $matricula->tcurso;
             $matricula_origin->save();
          }
+         return $matriculas;
 
     }
     //seleciona pessoas que tem mais de uma matricula no curso da uati

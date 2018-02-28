@@ -35,7 +35,6 @@ Route::get('imprimir-boletos', 'BoletoController@imprimirLote');
 Route::get('importar-bairros', 'EnderecoController@importarBairros');
 Route::get('testar-classe', 'painelController@testarClasse');
 Route::post('testar-classe', 'painelController@testarClassePost');
-Route::get('chamada', function(){ return view('pedagogico.turma.chamada');});
 
 
 
@@ -106,6 +105,7 @@ Route::middleware('login') ->group(function(){
 		Route::prefix('lancamentos')->group(function(){
 			Route::get('listar-por-pessoa','LancamentoController@listarPorPessoa');
 			Route::get('gerar-individual/{parcela}','LancamentoController@gerarLancamentosPorPessoa');
+			Route::get('cancelar/{lancamento}','LancamentoController@cancelar');
 		});
 		Route::prefix('boletos')->group(function(){
 			Route::get('imprimir/{id}','BoletoController@imprimir');
@@ -157,7 +157,7 @@ Route::middleware('login') ->group(function(){
 			Route::get('status/{status}/{turma}','TurmaController@status');
 			Route::get('turmasjson','TurmaController@turmasJSON');
 			Route::get('inscritos/{turma}','InscricaoController@verInscritos');
-
+			Route::get('lista/{id}','painelController@chamada');
 
 		});
 		//Cursos

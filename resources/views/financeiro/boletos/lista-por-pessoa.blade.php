@@ -109,7 +109,21 @@
 @else
 <h3 class="title-description"> Nenhum lançamento para exibir. </p>
 @endif
+<div class="card card-block">                                      
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <a href="{{asset("/secretaria/atendimento")}}" class="btn btn-primary" title="Gera um novo boleto com todos lancamentos em aberto, com vencimento em 5 dias.">Voltar ao atendimento</a> 
+             <a href="{{asset("/financeiro/lancamentos/listar-por-pessoa")}}"  class="btn btn-primary" title="Gera novos lançamentos com base na parcela {{date('m')-1}}.">Ver Lançamentos</a> 
+            <a href="#" onclick="gerarBoletos();" class="btn btn-danger-outline" title="Gera um novo boleto com todos lancamentos em aberto, com vencimento em 5 dias.">Gerar Boleto</a> 
+           
+            
+            <!-- 
+            <button type="submit" class="btn btn-primary"> Cadastrar</button> 
+            -->
+        </div>
 
+   </div>
+</div>
 @endsection
 @section('scripts')
 <script>

@@ -1,4 +1,4 @@
-@if(count($errors) !=0)
+@if($errors->any())
     @foreach($errors->all() as $erro)
         <p class="alert alert-warning .alert-dismissible">{{ $erro }}</p>
     @endforeach

@@ -309,7 +309,7 @@ class BoletoController extends Controller
 		return $boleto;	
 	}
 	public function gerarRemessa(){
-		$boletos=Boleto::where('status','=','gravado')->orWhere('status','=','cancelar')->limit(5)->get();
+		$boletos=Boleto::where('status','=','gravado')->orWhere('status','=','impresso')->get();
 		$codigo_banco = Cnab\Banco::BANCO_DO_BRASIL;
 		$arquivo = new Cnab\Remessa\Cnab240\Arquivo($codigo_banco);
 		$arquivo->configure(array(
@@ -329,7 +329,7 @@ class BoletoController extends Controller
 		    'conta'         => '52822', // número da conta
 		    'conta_dac'     => '6', // digito da conta
 		    'codigo_convenio'=>'2838669',
-		    'codigo_carteira'=>'1',//cobrança simples
+		    'codigo_carteira'=>'17',//cobrança simples
 		    'variacao_carteira'=>'019',
 		    'conta_dv'=>'6',
 		    'agencia_dv'=>'X',
@@ -345,7 +345,7 @@ class BoletoController extends Controller
 			if(\App\classes\Strings::validaCPF($boleto->dados['cpf_sacado'])){
 				$arquivo->insertDetalhe(array(
 				    'codigo_de_ocorrencia' => '1', // 1 = Entrada de título, futuramente poderemos ter uma constante
-				    'nosso_numero'      => $boleto->id,
+				    'nosso_numero'      => '',
 				    'numero_documento'  => $boleto->id,
 				    'carteira'          => '17',//109
 				    'especie'           => Cnab\Especie::BB_CHEQUE, // Você pode consultar as especies Cnab\Especie
@@ -357,7 +357,7 @@ class BoletoController extends Controller
 				    'sacado_cpf'        => $boleto->dados['cpf_sacado'],
 				    'sacado_logradouro' => $boleto->dados['logradouro_sacado'],
 				    'sacado_bairro'     => $boleto->dados['bairro_sacado'],
-				    'sacado_cep'        => $boleto->dados['cep_sacado'], // sem hífem
+				    'sacado_cep'        => '13500000', // sem hífem
 				    'sacado_cidade'     => 'São Carlos',
 				    'sacado_uf'         => 'SP',
 				    'data_vencimento'   => new DateTime($boleto->vencimento),
@@ -373,7 +373,7 @@ class BoletoController extends Controller
 				    'codigo_carteira'=>'1', //cobrança simples
 				    'registrado'=>'1', // 1 boleto com registro 2 sem registro
 				    'movimento'=>'02',
-				    'aceite'=>'1'
+				    'aceite'=>'A'
 
 				));
 				$boleto_bd=Boleto::find($boleto->id);
@@ -387,7 +387,7 @@ class BoletoController extends Controller
 			}
 
 		}
-		return $arquivo->save('meunomedearquivo.txt');
+		return $arquivo->save(date('Y-m_d').'.txt');
 
 
 

@@ -86,7 +86,7 @@ class LancamentoController extends Controller
 	public function verificaSeLancada($matricula,$parcela,$valor){
 		$lancamentos=Lancamento::where('matricula',$matricula)
 			->where('parcela',$parcela)
-			->where('valor',$valor)
+			->where('valor',number_format($valor,2))
 			->where('status', null)
 			->get();
 		if (count($lancamentos)>0)
@@ -431,19 +431,38 @@ class LancamentoController extends Controller
         {
         	$lista_matriculas[]=$matricula->id;
         }
-        $lancamentos=Lancamento::whereIn('matricula',$lista_matriculas)->paginate(30);
+        $lancamentos=Lancamento::whereIn('matricula',$lista_matriculas)->orderBy('id','DESC')->paginate(30);
         //return $lancamentos;
-        foreach($lancamentos as $lancamento){
-        	$curso=\App\Inscricao::where('matricula',$lancamento->matricula)->first();
-        	$lancamento->nome_curso = $curso->turma->curso->nome;
-        	$boleto=Boleto::find($lancamento->boleto);
-        	if($boleto !=null)
-        		$lancamento->boleto_status = $boleto->status;
-        	$lancamento->valor=number_format($lancamento->valor,2,',','.');
-        }
+        //return $lancamentos;
+        if(count($lancamentos)>0){
+	        foreach($lancamentos as $lancamento){
+	        	$curso=\App\Inscricao::where('matricula',$lancamento->matricula)->first();
+	        	if(isset($curso->turma->curso->nome))
+	        		$lancamento->nome_curso = $curso->turma->curso->nome;
+	        	$boleto=Boleto::find($lancamento->boleto);
+	        	if($boleto !=null)
+	        		$lancamento->boleto_status = $boleto->status;
+	        	$lancamento->valor=number_format($lancamento->valor,2,',','.');
+	        }
+    	}
         
         return view('financeiro.lancamentos.lista-por-pessoa',compact('lancamentos'))->with('nome',$nome);
 
+	}
+	public function cancelar($id){
+		$lancamento = Lancamento::find($id);
+		if($lancamento != null){
+			if($lancamento->boleto = null){ //só apaga lancamento se não tiver boleto gerado
+				$lancamento->status = 'cancelado';
+				$lancamento->save();	
+			}else
+			return redirect(asset("financeiro/lancamentos/listar-por-pessoa"))->withErrors(['Cancele o boleto para cancelar lancamentos']);
+			
+
+
+				
+		}
+		return redirect($_SERVER['HTTP_REFERER']);
 	}
 
 

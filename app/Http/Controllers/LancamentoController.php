@@ -46,6 +46,7 @@ class LancamentoController extends Controller
 		if(!Session::get('pessoa_atendimento'))
             return redirect(asset('/secretaria/pre-atendimento'));
            // colocar um if de parcela, se for menor que 6,  fazer recursivo
+           
 		$matriculas=Matricula::where('pessoa',Session::get('pessoa_atendimento'))//pega mas matriculas ativas e pendentes da pessoa
 			->where(function($query){
 				$query->where('status','ativa')->orwhere('status', 'pendente');
@@ -53,19 +54,21 @@ class LancamentoController extends Controller
 			->where('valor','>',0)
 			->where('parcelas','>=',$parcela_atual)
 			->get();
+		if($parcela_atual>5 && $matricula->parcelas<6)//se parcelamento < parcela atual
+					$parcela_atual=$parcela_atual-7; //começa parcela novamente
 
 		foreach($matriculas as $matricula){ //para cada matricula
 
-			$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas; //calcula valor parcela
-			//return $this->verificaSeLancada($matricula->id,$parcela_atual,$valor_parcela);
-			//return $this->verificaSeLancada($matricula->id,$parcela_atual,$valor_parcela);
-			if(!$this->verificaSeLancada($matricula->id,$parcela_atual,$valor_parcela) && $valor_parcela > 0  ){ //se não tiver ou for 0
-				$lancamento=new Lancamento; //gera novo lançamento
-				$lancamento->matricula=$matricula->id;
-				$lancamento->parcela=$parcela_atual;
-				$lancamento->valor=$valor_parcela;
-				if($lancamento->valor>0)//se for bolsista integral
-					$lancamento->save();
+			for($i=$parcela_atual;$i>0;$i--){
+				$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas; //calcula valor parcela
+				if(!$this->verificaSeLancada($matricula->id,$i,$valor_parcela) && $valor_parcela > 0  ){ //se não tiver ou for 0
+					$lancamento=new Lancamento; //gera novo lançamento
+					$lancamento->matricula=$matricula->id;
+					$lancamento->parcela=$i;
+					$lancamento->valor=$valor_parcela;
+					if($lancamento->valor>0)//se for bolsista integral
+						$lancamento->save();
+				}
 			}
 		}
 		return redirect($_SERVER['HTTP_REFERER']);
@@ -452,7 +455,7 @@ class LancamentoController extends Controller
 	public function cancelar($id){
 		$lancamento = Lancamento::find($id);
 		if($lancamento != null){
-			if($lancamento->boleto = null){ //só apaga lancamento se não tiver boleto gerado
+			if($lancamento->boleto == null){ //só apaga lancamento se não tiver boleto gerado
 				$lancamento->status = 'cancelado';
 				$lancamento->save();	
 			}else

@@ -309,20 +309,20 @@ class BoletoController extends Controller
 		return $boleto;	
 	}
 	public function gerarRemessa(){
-		$boletos=Boleto::where('status','=','gravado')->orWhere('status','=','impresso')->get();
+		$boletos=Boleto::where('status','=','gravado')->orWhere('status','=','emitido')->limit(500)->get();
 		$codigo_banco = Cnab\Banco::BANCO_DO_BRASIL;
 		$arquivo = new Cnab\Remessa\Cnab240\Arquivo($codigo_banco);
 		$arquivo->configure(array(
 		    'data_geracao'  => new DateTime(),
 		    'data_gravacao' => new DateTime(), 
 		    'nome_fantasia' => 'FESC', // seu nome de empresa
-		    'razao_social'  => 'FUNDAÇÃO EDUCACIONAL SÃO CARLOS',  // sua razão social
+		    'razao_social'  => 'FUNDACAO EDUCACIONAL SAO CARLOS',  // sua razão social
 		    'cnpj'          => '45361904000180', // seu cnpj completo
 		    'banco'         => $codigo_banco, //código do banco
-		    'logradouro'    => 'Rua São Sebastiao ',
+		    'logradouro'    => 'Rua Sao Sebastiao ',
 		    'numero'        => '2828',
 		    'bairro'        => 'Vila Nery', 
-		    'cidade'        => 'São Carlos',
+		    'cidade'        => 'Sao Carlos',
 		    'uf'            => 'SP',
 		    'cep'           => '13560230',
 		    'agencia'       => '0295', 
@@ -333,7 +333,7 @@ class BoletoController extends Controller
 		    'variacao_carteira'=>'019',
 		    'conta_dv'=>'6',
 		    'agencia_dv'=>'X',
-		    'operacao'=>'0',
+		    'operacao'=>'R',
 		    'numero_sequencial_arquivo'=>'1',
 
 

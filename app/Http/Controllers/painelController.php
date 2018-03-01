@@ -173,19 +173,25 @@ class painelController extends Controller
 
     }
     public function testarClasse(){
+        $recurso_desejado = 99;
 
-      
+        foreach(unserialize(Session('recursos_usuario')) as $controle){
+            if($controle->recurso == $recurso_desejado)
+                return "true";
+        }
+        return redirect()->route('403');
+
         //$inst = new BoletoController;
         //$inst->atualizaTodasMatriculas();
        // $inst = new LancamentoController;
         //return date('Y-m-20 23:59:59');
 
         //return $inst->gerarRemessa();*/
-        $inst= new MatriculaController;
+        //$inst= new MatriculaController;
         //return MatriculaController::regularizarCancelamentos();
         
         //return $inst->verificaSeMatriculado(23234,307);
-        return $inst->modMatriculas();
+        //return $inst->modMatriculas();
         //return $inst->verificaSeMatriculado(13977,307);
         //return $inst->arrumarMultiplasUati();
           //return LancamentoController::atualizaMatricula('2051');

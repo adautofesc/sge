@@ -50,6 +50,12 @@ Route::get('esqueciasenha', 'loginController@viewPwdRescue');
 Route::get('logout','loginController@logout');
 Route::post('recuperaSenha','loginController@pwdRescue');
 Route::get('recuperaSenha','loginController@viewPwdRescue');
+Route::get('/trocarminhasenha','loginController@trocarMinhaSenha_view');
+Route::post('/trocarminhasenha','loginController@trocarMinhaSenha_exec');
+Route::get('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_view');
+Route::post('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_exec');
+Route::get('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_view');
+Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec');
 
 
 
@@ -59,6 +65,7 @@ Route::get('recuperaSenha','loginController@viewPwdRescue');
 //Areas restritas para cadastrados
 Route::middleware('login') ->group(function(){
 	Route::get('home', 'painelController@index');
+
 	Route::prefix('pessoa')->group(function(){
 	// Pessoas
 		Route::get ('listar','PessoaController@listarTodos');//->middleware('autorizar:56')
@@ -94,12 +101,14 @@ Route::middleware('login') ->group(function(){
 	
 
 	// Administrativo
-	Route::get('administrativo','painelController@administrativo');
-	Route::get('administrativo/salasdaunidade/{var}','painelController@salasDaUnidade');
+	Route::middleware('liberar.recurso:12')->prefix('administrativo')->group(function(){
+		Route::get('/','painelController@administrativo');
+		Route::get('salasdaunidade/{var}','painelController@salasDaUnidade');
+	});
 
 
 	// Financeiro
-	Route::prefix('financeiro')->group(function(){
+	Route::middleware('liberar.recurso:14')->prefix('financeiro')->group(function(){
 		Route::get('/','painelController@financeiro');
 		Route::get('boletos','BoletoController@gerar');
 		Route::prefix('lancamentos')->group(function(){
@@ -119,18 +128,21 @@ Route::middleware('login') ->group(function(){
 
 
 	// Gestão Pessoal
-	Route::get('gestaopessoal','painelController@atendimentoPessoal');
-	Route::get('gestaopessoal/atendimento','painelController@gestaoPessoal');
-	Route::get('gestaopessoal/atender/','painelController@atendimentoPessoalPara');
-	Route::get('gestaopessoal/atender/{var}','painelController@atendimentoPessoalPara');
-	Route::get('gestaopessoal/relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_view');
-	Route::post('gestaopessoal/relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_exec');
+	Route::middleware('liberar.recurso:15')->prefix('gestaopessoal')->group(function(){
+		Route::get('/','painelController@atendimentoPessoal');
+		Route::get('atendimento','painelController@gestaoPessoal');
+		Route::get('atender/','painelController@atendimentoPessoalPara');
+		Route::get('atender/{var}','painelController@atendimentoPessoalPara');
+		Route::get('relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_view');
+		Route::post('relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_exec');
+	});
 
 	// Jurídico
 	Route::prefix('juridico')->group(function(){
 		Route::get('/','painelController@juridico');
 		//Documentos
-		Route::prefix('documentos')->group(function(){
+		//
+		Route::middleware('liberar.recurso:16')->prefix('documentos')->group(function(){
 			Route::get('/','DocumentoController@index');
 			Route::get('cadastrar','DocumentoController@cadastrar');
 			Route::get('apagar/{var}','DocumentoController@apagar');
@@ -143,7 +155,7 @@ Route::middleware('login') ->group(function(){
 
 
 	//Pedagógico
-	Route::prefix('pedagogico')->group(function(){
+	Route::middleware('liberar.recurso:17')->prefix('pedagogico')->group(function(){
 		Route::get('/','painelController@pedagogico');
 		//Turmas
 		Route::prefix('turmas')->group(function(){
@@ -192,7 +204,7 @@ Route::middleware('login') ->group(function(){
 	});
 
 	// Secretaria
-	Route::prefix('secretaria')->group(function(){
+	Route::middleware('liberar.recurso:18')->prefix('secretaria')->group(function(){
 		
 		Route::get('/','painelController@secretaria')->name('secretaria');
 		Route::get('pre-atendimento','SecretariaController@iniciarAtendimento');
@@ -228,7 +240,9 @@ Route::middleware('login') ->group(function(){
 
 
 	});
-	Route::get('docentes','painelController@docentes');
+	Route::middleware('liberar.recurso:15')->prefix('docentes')->group(function(){
+		Route::get('/','painelController@docentes');
+	});
 	
 
 	
@@ -237,19 +251,16 @@ Route::middleware('login') ->group(function(){
 
 
 
-	// Login & Acesso
-	Route::get('/gestaopessoal/credenciais/{var}', 'loginController@credenciais_view');
-	Route::post('/gestaopessoal/credenciais/{var}', 'loginController@credenciais_exec');
-	Route::get('/admin/listarusuarios', 'loginController@listarUsuarios_view');
-	Route::get('/admin/listarusuarios/{var}', 'loginController@listarUsuarios_view');
-	Route::post('/admin/listarusuarios/{var}', 'loginController@listarUsuarios_action');
-	Route::get('/admin/alterar/{acao}/{itens}', 'loginController@alterar');
-	Route::get('/trocarminhasenha','loginController@trocarMinhaSenha_view');
-	Route::post('/trocarminhasenha','loginController@trocarMinhaSenha_exec');
-	Route::get('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_view');
-	Route::post('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_exec');
-	Route::get('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_view');
-	Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec');
+	Route::middleware('liberar.recurso:15')->prefix('admin')->group(function(){
+		Route::get('credenciais/{var}', 'loginController@credenciais_view');
+		Route::post('credenciais/{var}', 'loginController@credenciais_exec');
+		Route::get('listarusuarios', 'loginController@listarUsuarios_view');
+		Route::get('listarusuarios/{var}', 'loginController@listarUsuarios_view');
+		Route::post('listarusuarios/{var}', 'loginController@listarUsuarios_action');
+		Route::get('alterar/{acao}/{itens}', 'loginController@alterar');
+	});
+
+
 });//end middleware login
 
 
@@ -258,7 +269,7 @@ Route::middleware('login') ->group(function(){
 
 Route::get('403',function(){
    return view('error-403');
-});
+})->name('403');
 Route::get('404',function(){
    return view('error-404');
 });

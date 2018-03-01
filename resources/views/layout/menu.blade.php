@@ -9,27 +9,41 @@
                                 <li  class="active">
                                     <a href="{{asset('/')}}"> <i class="fa fa-home"></i> Home </a>
                                 </li>
+                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','12'))
                                 <li  >
                                     <a href="{{asset('/administrativo')}}"> <i class="fa fa-bar-chart-o"></i> Administração </a>
                                 </li>
+                                @endif
+                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','13'))
                                 <li  >
                                     <a href="{{asset('/docentes')}}"> <i class="fa fa-th-large"></i> Docentes </a>
                                 </li>
+                                @endif
+                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','14'))
                                 <li  >
                                     <a href="{{asset('/financeiro')}}"> <i class="fa fa-usd"></i> Financeiro </a>
                                 </li>
+                                @endif
+                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','15'))
                                 <li  >
                                     <a href="{{asset('/gestaopessoal')}}"> <i class="fa fa-users"></i> Gestão Pessoal </a>
                                 </li>
+                                @endif
+                            
                                 <li  >
                                     <a href="{{asset('/juridico')}}"> <i class="fa fa-bookmark"></i> Jurídico </a>
                                 </li>
+                        
+                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','17'))
                                 <li  >
                                     <a href="{{asset('/pedagogico')}}"> <i class="fa fa-th-list"></i> Pedagógico </a>
                                 </li>
+                                @endif
+                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','18'))
                                 <li  >
                                     <a href="{{asset('/secretaria')}}"> <i class="fa fa-stack-overflow"></i> Secretaria </a>
                                 </li>
+                                @endif
                                 
                             </ul>
                         </nav>

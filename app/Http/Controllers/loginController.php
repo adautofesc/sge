@@ -49,10 +49,26 @@ class loginController extends Controller
 	public function recuperarConta($given_token){
 		$usuario=PessoaDadosAcesso::where('remember_token', urldecode($given_token))->first();
 		if($usuario)
-			return view('pessoa.trocar-senha');
+			return view('change-password')->with('token',urldecode($given_token));
 		else
 			return "Token inválida";
 
+
+	}
+	public function recuperarContaExec(Request $r){
+		$this->validate($request, [
+			'senha'=>'required|between:6,30|alpha_num',
+			'contrasenha'=>'required|same:senha'
+
+		]);
+		$usuario=PessoaDadosAcesso::where('remember_token', $r->token)->first();
+		if($usuario){
+			$usuario->senha=Hash::make($r->novasenha);
+			$usuario->save();
+			return $this->logout();
+		}
+		else
+			return "Token inválida";
 
 	}
     public function loginCheck(Request $request)
@@ -106,11 +122,16 @@ class loginController extends Controller
 								setcookie('sge_token');
 						}
 						Session::put('sge_fesc_logged','yes');
-						Session::put('usuario',$usuario->pessoa);	
-						$usuario= Pessoa::where('id',$usuario->pessoa)->first();
-            			$array_nome=explode(' ',$usuario->nome);
+						Session::put('usuario',$usuario->pessoa);
+
+						$usuario = Pessoa::where('id',$usuario->pessoa)->first();
+            			$array_nome = explode(' ',$usuario->nome);
             			$nome=$array_nome[0].' '.end($array_nome);
 						Session::put('nome_usuario', $nome);
+
+						$recursos = ControleAcessoRecurso::where('pessoa', $usuario->id)->get();
+						Session::put('recursos_usuario', serialize($recursos));
+
 						return redirect(asset('/'));
 
 					}

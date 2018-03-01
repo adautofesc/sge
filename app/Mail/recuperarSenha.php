@@ -33,15 +33,9 @@ class recuperarSenha extends Mailable
     public function build()
     {
         $acesso=PessoaDadosAcesso::where('pessoa', $this->pessoa)->first();
-        if($acesso->remember_token==''){
-            $custo=15;
-            $salt='BpuKl267TczRgPlkm7R6VB';
-            $hash=crypt($acesso->login,'$2a$'.$custo.'$'.$salt.'$');
-            $acesso->remember_token=$hash;
-            $acesso->save();
-        }
-
-        $token=urlencode($acesso->remember_token);
+        $acesso->remember_token=date('rtk4u4vxnWu');
+        $acesso->save();
+        $token=$acesso->remember_token;
 
         return $this->view('emails.recuperasenha', compact('token'));
     }

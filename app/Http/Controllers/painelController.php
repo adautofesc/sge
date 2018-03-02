@@ -173,6 +173,7 @@ class painelController extends Controller
 
     }
     public function testarClasse(){
+        /*
         $recurso_desejado = 99;
 
         foreach(unserialize(Session('recursos_usuario')) as $controle){
@@ -180,8 +181,9 @@ class painelController extends Controller
                 return "true";
         }
         return redirect()->route('403');
-
-        //$inst = new BoletoController;
+    */
+        $inst = new BoletoController;
+        return $inst->gerarBoleto();
         //$inst->atualizaTodasMatriculas();
        // $inst = new LancamentoController;
         //return date('Y-m-20 23:59:59');

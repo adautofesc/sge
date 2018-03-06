@@ -7,6 +7,7 @@ use App\classes\BarCodeGenrator;
 use App\Lancamento;
 use App\Boleto;
 use App\Pessoa;
+use App\Retorno;
 use App\Matricula;
 use Carbon\Carbon;
 use DateTime;
@@ -53,7 +54,7 @@ class BoletoController extends Controller
 
 
 	}
-	public function imprimirLote(){
+	public function imprimirLotex(){
 
 		$boletos=Boleto::where('status','gravado')->limit(200)->get();
 		foreach($boletos as $boleto){
@@ -172,6 +173,55 @@ class BoletoController extends Controller
 		}
 
 	}
+	public function imprimirLote(){
+		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
+		$boletos = Boleto::where('status','gravado')->limit(500)->get();
+		foreach($boletos as $boleto){
+			$boleto_completo = $this->gerarBoleto($boleto);
+			$boleto->status = 'impresso';
+			$boleto->save();
+			$html->addBoleto($boleto_completo);
+		}
+		$html->hideInstrucoes();
+		$html->showPrint();
+		
+		return $html->gerarBoleto();
+
+	}
+	public function gerarRemessa(){
+		$beneficiario = new \Eduardokum\LaravelBoleto\Pessoa([
+		    'documento' => '45.361.904/0001-80',
+		    'nome'      => 'Fundação Educacional São Carlos',
+		    'cep'       => '13560-230',
+		    'endereco'  => 'Rua São Sebastiao, 2828, ',
+		    'bairro' => ' Vila Nery',
+		    'uf'        => 'SP',
+		    'cidade'    => 'São Carlos',
+		]);
+		$remessa = new \Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab240\Banco\Bb(
+		    [
+		        'agencia'      => '0295',
+		        'carteira'     => 17,
+		        'conta'        => 52822,
+		        'convenio'     => 2838669,
+		        'variacaoCarteira' => '019',
+		        'beneficiario' => $beneficiario,
+		    ]
+		);
+		
+		$boletos =Boleto::where('status','impresso')->limit(1)->get();
+		foreach($boletos as $boleto){
+			$boleto_completo = $this->gerarBoleto($boleto);
+			$remessa->addBoleto($boleto_completo);
+			$boleto->status='emitido';
+			$boleto->save();
+
+		}
+		$remessa->save( 'remessas/'.date('YmdHi').'.rem');
+		return 'remessas/'.date('YmdHi').'.rem gravado com sucesso.';
+
+	}
+
 	public function imprimir($boleto){
 		$boleto = Boleto::find($boleto);
 		if($boleto == null)
@@ -180,9 +230,9 @@ class BoletoController extends Controller
 			$boleto->status = 'impresso';
 			$boleto->save();
 		}
-		$boleto = $this->gerar($boleto);
+		$boleto_completo = $this->gerarBoleto($boleto);
 
-		return view('financeiro.boletos.boleto',compact('boleto'));
+		return $boleto_completo->renderHTML();
 		
 	}
 	public function listarPorPessoa(){
@@ -205,7 +255,10 @@ class BoletoController extends Controller
 		
 
 	}
-	public function gerarBoleto(){
+	public function gerarBoleto(Boleto $boleto){
+		$cliente=Pessoa::find($boleto->pessoa);
+		$cliente=PessoaController::formataParaMostrar($cliente);
+
 		$beneficiario = new \Eduardokum\LaravelBoleto\Pessoa([
 		    'documento' => '45.361.904/0001-80',
 		    'nome'      => 'Fundação Educacional São Carlos',
@@ -216,40 +269,101 @@ class BoletoController extends Controller
 		    'cidade'    => 'São Carlos',
 		]);
 		$pagador = new \Eduardokum\LaravelBoleto\Pessoa([
-		    'documento' => '00.000.000/0000-00',
-		    'nome'      => 'Company co.',
-		    'cep'       => '00000-000',
-		    'endereco'  => 'Street name, 123',
-		    'bairro' => 'district',
-		    'uf'        => 'UF',
-		    'cidade'    => 'City',
+		    'documento' => $cliente->cpf,
+		    'nome'      => $cliente->nome,
+		    'cep'       => $cliente->cep,
+		    'endereco'  => $cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->complemento,
+		    'bairro' => ($cliente->bairro=='Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro),
+		    'uf'        => $cliente->estado,
+		    'cidade'    => $cliente->cidade,
 		]);
 		$bb = new \Eduardokum\LaravelBoleto\Boleto\Banco\Bb([
-		    'logo' => '',
-		    'dataVencimento' => Carbon::parse('2018-03-21'),
-		    'valor' => 100,
-		    'numero' => 1,
-		    'numeroDocumento' => 1,
+		    'logo' => asset('/').'/img/logo-small.png',
+		    'dataVencimento' => Carbon::parse($boleto->vencimento),
+		    'valor' => $boleto->valor,
+		    'numero' =>$boleto->id,
+		    'numeroDocumento' => $boleto->id,
 		    'pagador' => $pagador,
 		    'beneficiario' => $beneficiario,
 		    'carteira' => 17,
+		    'variacaoCarteira' =>'019',
 		    'agencia' => '0295-X',
-		    'convenio' => 1231237,
-		    'conta' => 22222,
+		    'convenio' => 2838669,
+		    'conta' => 52822,
 		    'descricaoDemonstrativo' => [
-		    	'demonstrativo 1',
-		    	'demonstrativo 2', 
-		    	'demonstrativo 3'
+		    	'Pagamento FESC',
+		    	'Descontos: R$'.number_format($boleto->desconto,2,',','.').' e Acréscimos: R$'.number_format($boleto->acrescimo,2,',','.') , 
+		    	'Boleto único referente a parcelas de todas as suas atividade na FESC',
+		    	'Em caso de dúvidas entre em contato conosco: 3372-1308'
 		    ],
 		    'instrucoes' => [
-		    	'instrucao 1', 
-		    	'instrucao 2', 
-		    	'instrucao 3'
+		    	'Sr. Caixa, cobrar multa de 2% após o vencimento', 
+		    	'Cobrar juros de 1% ao mês por atraso.', 
+		    	'Pagável em qualquer agência bancária ou lotérica até o vencimento'
 		    ],
 		]);
 			
-		    return $bb->renderHTML();
+		    return $bb;
 
 		}
+		public function processarRetornos(){
+			$pasta = 'retornos/';
+			$arquivos = glob("$pasta{*.ret}", GLOB_BRACE);
+			$processamento = array();
+
+			foreach($arquivos as $arquivo){
+			   $bd_retorno = Retorno::where('nome_arquivo', 'like', $arquivo)->get();
+			   if(count($bd_retorno) == 0){
+				   	try{   		
+				   		$processamento[] = $this->processarArquivo($arquivo);
+				   	} 
+				   	catch(\Exception $e){
+				   		rename($arquivo, $arquivo.'_ERRO');
+						continue;
+					}
+					rename($arquivo, $arquivo.'_processado');
+					$retorno = new Retorno;
+			   		$retorno->nome_arquivo = $arquivo;
+			   		$retorno->timestamps=false;
+			   		$retorno->save();
+			   } 
+			   else
+			   	rename($arquivo, $arquivo.'_processado');
+			
+
+			}
+
+			return $processamento;
+		}
+		public function processarArquivo($arquivo){
+			$titulos_baixados=array();
+			$retorno = new \Eduardokum\LaravelBoleto\Cnab\Retorno\Cnab240\Banco\Bb($arquivo);
+			$retorno->processar();
+			$detalhes = $retorno->getDetalhes();
+
+			foreach($detalhes as $linha){
+				//dd($linha);
+
+				if(substr($linha->nossoNumero, 0,7) == '2838669' && $linha->valorRecebido > 0 ){ // se o começo é o da carteira de boletos
+					$titulos_baixados[str_replace('2838669','',$linha->nossoNumero)*1] = $linha->dataCredito;
+					$boleto= Boleto::find(str_replace('2838669','',$linha->nossoNumero)*1);//procura o boleto no banco
+					if($boleto != null){ //se o boleto estiver no sistema
+						if($boleto->status == 'pago' || $boleto->status == 'cancelar' || $boleto->status == 'cancelado'){
+							// se o boleto já tiver sido pago, ou estivesse programado pra ser cancelado, reembolsar na proxima parcela
+							$lancamento=LancamentoController::lancarDesconto($boleto->id,$boleto->valor);
+							$boleto->status = 'pago';
+							$boleto->save();
+						}else{
+							$boleto->pagamento = $linha->dataCredito;
+							$boleto->status = 'pago';
+							$boleto->save();
+						}
+					}
+				}		
+			}
+
+			return $titulos_baixados ;
+		}
+		
 
 }

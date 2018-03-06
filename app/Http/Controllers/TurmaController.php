@@ -279,7 +279,7 @@ class TurmaController extends Controller
         //return $turmas_af;
         if(count($turmas_af)==0){
             $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
-                -> where('status', '>', 2)
+                -> where('turmas.status', '>', 2)
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
                 ->whereNotIn('turmas.id', $lst)

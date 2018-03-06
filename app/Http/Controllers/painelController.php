@@ -183,9 +183,11 @@ class painelController extends Controller
         return redirect()->route('403');
     */
         $inst = new BoletoController;
-        return $inst->gerarBoleto();
+        //return fopen('retornos/IEDCBR921502201814938.ret',"r");
+        return $inst->processarArquivo('retornos/IEDCBR7481902201823856.ret_processado');
         //$inst->atualizaTodasMatriculas();
-       // $inst = new LancamentoController;
+        //$inst = new LancamentoController;
+        //return $inst->lancarDesconto(1542,60);
         //return date('Y-m-20 23:59:59');
 
         //return $inst->gerarRemessa();*/
@@ -211,6 +213,11 @@ class painelController extends Controller
         return $r->matricula;
 
 
+    }
+    public function apiChamada($id){
+    $inscritos=\App\Inscricao::where('turma',$id)->where('status','<>','cancelado')->get();
+    $inscritos= $inscritos->sortBy('pessoa.nome');
+    return $inscritos;
     }
     public function chamada($id){
         $inscritos=\App\Inscricao::where('turma',$id)->where('status','<>','cancelado')->get();

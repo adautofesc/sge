@@ -59,7 +59,7 @@ class LancamentoController extends Controller
 
 		foreach($matriculas as $matricula){ //para cada matricula
 
-			for($i=$parcela_atual;$i>0;$i--){
+			for($i=$parcela_atual;$i>0;$i--){ //gerador recursivo de parcela
 				$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas; //calcula valor parcela
 				if(!$this->verificaSeLancada($matricula->id,$i,$valor_parcela) && $valor_parcela > 0  ){ //se não tiver ou for 0
 					$lancamento=new Lancamento; //gera novo lançamento
@@ -466,6 +466,19 @@ class LancamentoController extends Controller
 				
 		}
 		return redirect($_SERVER['HTTP_REFERER']);
+	}
+
+	public static function lancarDesconto(Int $boleto,Float  $valor){
+		$lancamento=Lancamento::where('boleto',$boleto)->first();
+		if($lancamento != null){
+			$reembolso = new Lancamento;
+			$reembolso->matricula = $lancamento->matricula;
+			$reembolso->valor = $valor;
+			$reembolso->parcela = 0;
+			$reembolso->save();
+			return $reembolso->id;
+		}else
+			return false;
 	}
 
 

@@ -36,6 +36,8 @@ Route::get('importar-bairros', 'EnderecoController@importarBairros');
 Route::get('testar-classe', 'painelController@testarClasse');
 Route::post('testar-classe', 'painelController@testarClassePost');
 
+Route::get('lista/{id}','painelController@chamada');
+
 
 
 
@@ -121,6 +123,7 @@ Route::middleware('login') ->group(function(){
 			Route::get('listar-por-pessoa','BoletoController@listarPorPessoa');
 			Route::get('cancelar/{id}','BoletoController@cancelar');
 			Route::get('gerar-individual','BoletoController@cadastarIndividualmente');
+			Route::get('processar-retornos','BoletoController@processarRetornos');
 
 		});
 
@@ -263,7 +266,7 @@ Route::middleware('login') ->group(function(){
 
 });//end middleware login
 
-
+Route::get('api/chamada/{id}','painelController@apiChamada');
 
 //----------------------------- Errors treatment
 

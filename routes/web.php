@@ -13,30 +13,13 @@
 
 Route::get('/', 'painelController@index');
 
-//temporárias
-Route::get('/turmascursosnavka', 'painelController@verTurmasAnterioresCursos');
-Route::post('/turmascursosnavka', 'painelController@gravarMigracao');
-Route::get('/turmasaulasnavka', 'painelController@verTurmasAnterioresAulas');
+//Publicos
+
 Route::get('cursos-disponiveis', 'TurmaController@turmasSite');
 Route::get('vagas', 'TurmaController@turmasSite');
-Route::get('turmas-professor', 'TurmaController@listarProfessores');
-Route::post('turmas-professor', 'TurmaController@turmasProfessor');
-Route::get('importarLocais','painelController@importarLocais');
-Route::get('atualizar-inscritos','TurmaController@atualizarInscritos');
-Route::get('inscricoes','InscricaoController@incricoesPorPosto');
-//Route::get('revitaliza', 'MatriculaController@revitaliza');
-//Route::get('auto-matriculas', 'MatriculaController@autoMatriculas');
-//Route::get('recupera-inscricoes', 'InscricaoController@recuperarInscricoes');
-//Route::get('importar-matriculas', 'MatriculaController@importarMatriculas');
-Route::get('gerar-lancamentos/{parcela}', 'LancamentoController@gerarLancamentos');
-Route::get('gerar-boletos', 'BoletoController@cadastrar');
-Route::get('gerar-remessa', 'BoletoController@gerarRemessa');
-Route::get('imprimir-boletos', 'BoletoController@imprimirLote');
-Route::get('importar-bairros', 'EnderecoController@importarBairros');
 Route::get('testar-classe', 'painelController@testarClasse');
 Route::post('testar-classe', 'painelController@testarClassePost');
-
-Route::get('lista/{id}','painelController@chamada');
+Route::get('lista/{id}','painelController@chamada'); //lista de chamada aberta
 
 
 
@@ -112,20 +95,45 @@ Route::middleware('login') ->group(function(){
 	// Financeiro
 	Route::middleware('liberar.recurso:14')->prefix('financeiro')->group(function(){
 		Route::get('/','painelController@financeiro');
-		Route::get('boletos','BoletoController@gerar');
+
 		Route::prefix('lancamentos')->group(function(){
+			Route::get('home',  function(){ return view('financeiro.lancamentos.home'); });
 			Route::get('listar-por-pessoa','LancamentoController@listarPorPessoa');
 			Route::get('gerar-individual/{parcela}','LancamentoController@gerarLancamentosPorPessoa');
 			Route::get('cancelar/{lancamento}','LancamentoController@cancelar');
+			Route::middleware('liberar.recurso:00')->get('gerar-lancamentos', 'LancamentoController@gerarLancamentos');
 		});
+
 		Route::prefix('boletos')->group(function(){
+			Route::get('home',  function(){ return view('financeiro.boletos.home'); });
 			Route::get('imprimir/{id}','BoletoController@imprimir');
 			Route::get('listar-por-pessoa','BoletoController@listarPorPessoa');
 			Route::get('cancelar/{id}','BoletoController@cancelar');
 			Route::get('gerar-individual','BoletoController@cadastarIndividualmente');
-			Route::get('processar-retornos','BoletoController@processarRetornos');
+			Route::get('gerar','BoletoController@gerar');
+			Route::get('gerar-boletos', 'BoletoController@cadastrar');//precisa de middleware
+			Route::get('imprimir-lote', 'BoletoController@imprimirLote');
+			Route::get('confirmar-impressao', 'BoletoController@confirmarImpressao');//precisa de middleware
+			
+
+			Route::prefix('remessa')->group(function(){
+				Route::get('home',  function(){ return view('financeiro.remessa.home'); });
+				Route::get('gerar', 'BoletoController@gerarRemessa');//precisa de middleware
+				Route::get('download/{file}', 'BoletoController@downloadRemessa');//precisa de middleware
+				Route::get('listar-arquivos', 'BoletoController@listarRemessas');
+			});
+
+			Route::prefix('retorno')->group(function(){
+				Route::get('home',  function(){ return view('financeiro.retorno.home'); });
+				Route::get('upload',  function(){ return view('financeiro.retorno.upload'); });
+				Route::post('upload',  'BoletoController@upload');
+				Route::get('escolha-arquivo', 'BoletoController@listarRetornos');
+				Route::get('processar/{arquivo}','BoletoController@analisarArquivo');//precisa de middleware
+
+			});
 
 		});
+
 
 	});
 
@@ -245,6 +253,8 @@ Route::middleware('login') ->group(function(){
 	});
 	Route::middleware('liberar.recurso:15')->prefix('docentes')->group(function(){
 		Route::get('/','painelController@docentes');
+		Route::get('turmas-professor', 'TurmaController@listarProfessores');
+		Route::post('turmas-professor', 'TurmaController@turmasProfessor');
 	});
 	
 
@@ -261,6 +271,17 @@ Route::middleware('login') ->group(function(){
 		Route::get('listarusuarios/{var}', 'loginController@listarUsuarios_view');
 		Route::post('listarusuarios/{var}', 'loginController@listarUsuarios_action');
 		Route::get('alterar/{acao}/{itens}', 'loginController@alterar');
+		Route::get('/turmascursosnavka', 'painelController@verTurmasAnterioresCursos');
+		Route::post('/turmascursosnavka', 'painelController@gravarMigracao');
+		Route::get('/turmasaulasnavka', 'painelController@verTurmasAnterioresAulas');
+		Route::get('importarLocais','painelController@importarLocais');
+		Route::get('atualizar-inscritos','TurmaController@atualizarInscritos');
+		Route::get('inscricoes','InscricaoController@incricoesPorPosto');
+		//Route::get('revitaliza', 'MatriculaController@revitaliza');
+		//Route::get('auto-matriculas', 'MatriculaController@autoMatriculas');
+		//Route::get('recupera-inscricoes', 'InscricaoController@recuperarInscricoes');
+		//Route::get('importar-matriculas', 'MatriculaController@importarMatriculas');
+		//Route::get('importar-bairros', 'EnderecoController@importarBairros');
 	});
 
 

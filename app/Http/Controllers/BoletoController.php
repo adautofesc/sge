@@ -175,17 +175,26 @@ class BoletoController extends Controller
 	}
 	public function imprimirLote(){
 		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
-		$boletos = Boleto::where('status','gravado')->limit(500)->get();
+		$boletos = Boleto::where('status','gravado')->get();
 		foreach($boletos as $boleto){
 			$boleto_completo = $this->gerarBoleto($boleto);
 			$boleto->status = 'impresso';
-			$boleto->save();
+			//$boleto->save();
 			$html->addBoleto($boleto_completo);
 		}
 		$html->hideInstrucoes();
 		$html->showPrint();
 		
 		return $html->gerarBoleto();
+
+	}
+	public function confirmarImpressao(){
+		$boletos = Boleto::where('status','gravado')->get();
+		foreach($boletos as $boleto){
+			$boleto->status = 'impresso';
+			$boleto->save();
+		}
+		return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Confirmação gravada em '.count($boletos).' boletos']);
 
 	}
 	public function gerarRemessa(){
@@ -209,7 +218,7 @@ class BoletoController extends Controller
 		    ]
 		);
 		
-		$boletos =Boleto::where('status','impresso')->limit(1)->get();
+		$boletos =Boleto::where('status','impresso')->get();
 		foreach($boletos as $boleto){
 			$boleto_completo = $this->gerarBoleto($boleto);
 			$remessa->addBoleto($boleto_completo);
@@ -218,8 +227,21 @@ class BoletoController extends Controller
 
 		}
 		$remessa->save( 'remessas/'.date('YmdHi').'.rem');
-		return 'remessas/'.date('YmdHi').'.rem gravado com sucesso.';
+		$arquivo = date('YmdHi').'.rem';
+		return view('financeiro.remessa.arquivo',compact('arquivo'));
 
+	}
+	public function downloadRemessa($arquivo){
+		$arquivo='remessas/'.$arquivo;
+		return \App\classes\Arquivo::download($arquivo);
+
+	}
+	public function listarRemessas(){
+		chdir( 'remessas/' );
+		$arquivos = glob("{*.rem}", GLOB_BRACE);
+		rsort($arquivos);
+		//return $arquivos;
+		return view('financeiro.remessa.lista')->with('arquivos',$arquivos);
 	}
 
 	public function imprimir($boleto){
@@ -306,6 +328,28 @@ class BoletoController extends Controller
 		    return $bb;
 
 		}
+		public function upload(Request $r){
+			$arquivos = $r->file('arquivos');
+			foreach($arquivos as $arquivo){
+				//dd($arquivo);
+				if (!empty($arquivo)) {
+		            $arquivo->move('retornos',$arquivo->getClientOriginalName());
+		        }
+
+			}
+			return redirect(asset('/financeiro/boletos/retorno/escolha-arquivo'));
+
+		}
+
+		public function listarRetornos(){
+			chdir( 'retornos/' );
+			$arquivos = glob("{*.ret}", GLOB_BRACE);
+			rsort($arquivos);
+			//return $arquivos;
+			return view('financeiro.retorno.lista')->with('arquivos',$arquivos);
+		}
+
+
 		public function processarRetornos(){
 			$pasta = 'retornos/';
 			$arquivos = glob("$pasta{*.ret}", GLOB_BRACE);
@@ -334,6 +378,29 @@ class BoletoController extends Controller
 			}
 
 			return $processamento;
+		}
+		public function analisarArquivo($arquivo){
+			$arquivo='retornos/'.$arquivo;
+			//return $arquivo;
+			$titulos_baixados=array();
+			$retorno = new \Eduardokum\LaravelBoleto\Cnab\Retorno\Cnab240\Banco\Bb($arquivo);
+			$retorno->processar();
+			$detalhes = $retorno->getDetalhes();
+
+			foreach($detalhes as $linha){
+				//dd($linha);
+				$total=0;
+				if(substr($linha->nossoNumero, 0,7) == '2838669' && $linha->valorRecebido > 0 ){ // se o começo é o da carteira de boletos
+					$titulos_baixados[str_replace('2838669','',$linha->nossoNumero)*1]['id'] = str_replace('2838669','',$linha->nossoNumero)*1;
+					$titulos_baixados[str_replace('2838669','',$linha->nossoNumero)*1]['data'] = $linha->dataCredito;
+					$titulos_baixados[str_replace('2838669','',$linha->nossoNumero)*1]['valor'] = 'R$ '.number_format($linha->valorRecebido+$linha->valorTarifa+$linha->valorMulta+$linha->valorMora,2,',','.');
+					$total=$total+$linha->valorRecebido+$linha->valorTarifa+$linha->valorMulta+$linha->valorMora;
+				}		
+			}
+
+			return $titulos_baixados ;
+
+
 		}
 		public function processarArquivo($arquivo){
 			$titulos_baixados=array();

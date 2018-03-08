@@ -5,7 +5,9 @@ use Session;
 use App\Pessoa;
 
 
-
+/**
+ * Função para pegar primeiro e ultimo nome
+ */
 Class Hdr{
 
 

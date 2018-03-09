@@ -22,7 +22,7 @@ use Session;
 class BoletoController extends Controller
 {	
 	public function cadastrar(){ //$parcela/mes/ano
-		$vencimento=date('Y-m-20 23:59:59');
+		$vencimento=date('Y-m-28 23:59:59');
 
 		$lancamentos_sintetizados=Lancamento::select(\DB::raw('distinct(matriculas.pessoa), sum(lancamentos.valor) as valor'))
 							->join('matriculas','lancamentos.matricula','matriculas.id')
@@ -50,7 +50,7 @@ class BoletoController extends Controller
 			//LancamentosController::atualizaLancamentos(22563,0,$boleto->id);
 		}
 
-		return $lancamentos_sintetizados;
+		return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Boletos Gerados']);
 
 
 	}
@@ -183,10 +183,24 @@ class BoletoController extends Controller
 			$html->addBoleto($boleto_completo);
 		}
 		$html->hideInstrucoes();
-		$html->showPrint();
+		//$html->showPrint();
 		
-		return $html->gerarBoleto();
+		return $html->gerarBoleto(false,false);
 
+	}
+	public function imprimir($boleto){
+		$boleto = Boleto::find($boleto);
+		if($boleto == null)
+			throw new \Exception("Boleto Inexistente", 1);
+		if($boleto->status == 'gravado'){
+			$boleto->status = 'impresso';
+			$boleto->save();
+		}
+		$boleto_completo = $this->gerarBoleto($boleto);
+		
+
+		return $boleto_completo->renderHTML();
+		
 	}
 	public function confirmarImpressao(){
 		$boletos = Boleto::where('status','gravado')->get();
@@ -244,19 +258,7 @@ class BoletoController extends Controller
 		return view('financeiro.remessa.lista')->with('arquivos',$arquivos);
 	}
 
-	public function imprimir($boleto){
-		$boleto = Boleto::find($boleto);
-		if($boleto == null)
-			throw new \Exception("Boleto Inexistente", 1);
-		if($boleto->status == 'gravado'){
-			$boleto->status = 'impresso';
-			$boleto->save();
-		}
-		$boleto_completo = $this->gerarBoleto($boleto);
 
-		return $boleto_completo->renderHTML();
-		
-	}
 	public function listarPorPessoa(){
 		if(!Session::get('pessoa_atendimento'))
         return redirect(asset('/secretaria/pre-atendimento'));
@@ -300,7 +302,7 @@ class BoletoController extends Controller
 		    'cidade'    => $cliente->cidade,
 		]);
 		$bb = new \Eduardokum\LaravelBoleto\Boleto\Banco\Bb([
-		    'logo' => asset('/').'/img/logo-small.png',
+		    'logo' =>'img/logo-small.png',
 		    'dataVencimento' => Carbon::parse($boleto->vencimento),
 		    'valor' => $boleto->valor,
 		    'numero' =>$boleto->id,
@@ -348,11 +350,25 @@ class BoletoController extends Controller
 			//return $arquivos;
 			return view('financeiro.retorno.lista')->with('arquivos',$arquivos);
 		}
+		public function listarRetornosProcessados(){
+			chdir( 'retornos/' );
+			$arquivos = glob("{*.ret_processado}", GLOB_BRACE);
+			rsort($arquivos);
+			//return $arquivos;
+			return view('financeiro.retorno.lista')->with('arquivos',$arquivos);
+		}
+		public function listarRetornosComErro(){
+			chdir( 'retornos/' );
+			$arquivos = glob("{*.ret_ERRO}", GLOB_BRACE);
+			rsort($arquivos);
+			//return $arquivos;
+			return view('financeiro.retorno.lista')->with('arquivos',$arquivos);
+		}
 
 
-		public function processarRetornos(){
-			$pasta = 'retornos/';
-			$arquivos = glob("$pasta{*.ret}", GLOB_BRACE);
+		public function processarRetornos(Request $request){
+			$arquivos = glob($request->arquivo, GLOB_BRACE);
+			//return $arquivos;
 			$processamento = array();
 
 			foreach($arquivos as $arquivo){
@@ -377,33 +393,52 @@ class BoletoController extends Controller
 
 			}
 
-			return $processamento;
+			return redirect(asset('/financeiro/boletos/retorno/processados'));
 		}
 		public function analisarArquivo($arquivo){
 			$arquivo='retornos/'.$arquivo;
 			//return $arquivo;
 			$titulos_baixados=array();
-			$retorno = new \Eduardokum\LaravelBoleto\Cnab\Retorno\Cnab240\Banco\Bb($arquivo);
-			$retorno->processar();
+			try{
+				$retorno = new \Eduardokum\LaravelBoleto\Cnab\Retorno\Cnab240\Banco\Bb($arquivo);
+			}
+			catch(\Exception $e){
+				   		rename($arquivo, $arquivo.'_ERRO');
+				   		return redirect($_SERVER['HTTP_REFERER'])->withErrors([$arquivo.' foi descartado pois apresentou erro ao ser analisado. Faça o upload novamente ou gere um novo arquivo de retorno no BB e tente novamente.']);
+					}
+			try{
+				$retorno->processar();
+			}
+			catch(\Exception $e){
+				   		rename($arquivo, $arquivo.'_ERRO');
+				   		return redirect($_SERVER['HTTP_REFERER'])->withErrors([$arquivo.' foi descartado pois apresentou erro ao ser analisado. Faça o upload novamente ou gere um novo arquivo de retorno no BB e tente novamente.']);
+					}
 			$detalhes = $retorno->getDetalhes();
-
+			$total=0;
+			$acrescimos=0;
+			$taxas=0;
+			$descontos=0;
+			$liquidado=0;
 			foreach($detalhes as $linha){
-				//dd($linha);
-				$total=0;
+				//dd($linha);$linha->dataCredito
+				
 				if(substr($linha->nossoNumero, 0,7) == '2838669' && $linha->valorRecebido > 0 ){ // se o começo é o da carteira de boletos
 					$titulos_baixados[str_replace('2838669','',$linha->nossoNumero)*1]['id'] = str_replace('2838669','',$linha->nossoNumero)*1;
-					$titulos_baixados[str_replace('2838669','',$linha->nossoNumero)*1]['data'] = $linha->dataCredito;
+					$titulos_baixados[str_replace('2838669','',$linha->nossoNumero)*1]['data'] = date('Y-m-d 23:23:59', strtotime("-1 days",strtotime($linha->dataCredito))); 
 					$titulos_baixados[str_replace('2838669','',$linha->nossoNumero)*1]['valor'] = 'R$ '.number_format($linha->valorRecebido+$linha->valorTarifa+$linha->valorMulta+$linha->valorMora,2,',','.');
-					$total=$total+$linha->valorRecebido+$linha->valorTarifa+$linha->valorMulta+$linha->valorMora;
+					$total = $total + $linha->valorRecebido+$linha->valorTarifa;
+					$liquidado = $liquidado + $linha->valorRecebido+$linha->valorTarifa+$linha->valorDesconto-($linha->valorMulta + $linha->valorMora);
+					$acrescimos = $acrescimos + $linha->valorMulta + $linha->valorMora;
+					$taxas = $taxas+$linha->valorTarifa;
+					$descontos = $descontos+$linha->valorDesconto;
 				}		
 			}
 
-			return $titulos_baixados ;
+			return view('financeiro.retorno.titulos')->with('titulos',$titulos_baixados)->with('total',$total)->with('acrescimos',$acrescimos)->with('taxas',$taxas)->with('descontos',$descontos)->with('liquidado',$liquidado)->with('arquivo',$arquivo);
 
 
 		}
 		public function processarArquivo($arquivo){
-			$titulos_baixados=array();
 			$retorno = new \Eduardokum\LaravelBoleto\Cnab\Retorno\Cnab240\Banco\Bb($arquivo);
 			$retorno->processar();
 			$detalhes = $retorno->getDetalhes();
@@ -429,7 +464,23 @@ class BoletoController extends Controller
 				}		
 			}
 
-			return $titulos_baixados ;
+			return True;
+		}
+		public function consultarBoletosCPF(Request $request){
+			$dados_pessoa = PessoaDadosGerais::where('dado',3)->where('valor',$requent->cpf)->get();
+			if(count($dados_pessoa) == 0){
+				return "CPF não encontrado.";
+			}
+			foreach($dados_pessoa as $dado){
+				$pessoa = Pessoa::where('id',$dado->pessoa)->where('nascimento',$request->nascimento)->get();
+				if (count($pessoa)>0){
+					echo "hi";
+				}
+
+			}
+			
+
+
 		}
 		
 

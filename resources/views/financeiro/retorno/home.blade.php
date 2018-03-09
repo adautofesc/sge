@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-md-7">
             <h3 class="title">Retorno Bancário</h3>
-            <p class="title-description">Receitas, despesas, balancetes e relatórios</p>
+            <p class="title-description">Envio, análise e processamento de arquivos</p>
         </div>
     </div>
 </div>
@@ -26,17 +26,17 @@
                         &nbsp;&nbsp;Fazer upload de arquivos</a>
                     </div>
                     <div>
-                        <a href="{{asset('/')}}financeiro/boletos/home" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="{{asset('/')}}financeiro/boletos/retorno/escolha-arquivo" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-bolt "></i>
                         &nbsp;&nbsp;Processar arquivos</a>
                     </div>
                     <div>
-                        <a href="{{asset('/')}}financeiro/boletos/remessa/home" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="{{asset('/')}}financeiro/boletos/retorno/processados" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-thumbs-o-up "></i>
                         &nbsp;&nbsp;Arquivos processados</a>
                     </div>
                     <div>
-                        <a href="{{asset('/')}}financeiro/boletos/retorno/home" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="{{asset('/')}}financeiro/boletos/retorno/com-erro" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-thumbs-o-down "></i>
                         &nbsp;&nbsp;Arquivos com erro</a>
                     </div>          

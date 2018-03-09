@@ -12,7 +12,9 @@ use Session;
 class LancamentoController extends Controller
 {
     //
-	public function gerarLancamentos($parcela){
+	public function gerarLancamentos(Request $request){
+		$parcela_atual = $request->parcela;
+		$parcela=$request->parcela;
 		// colocar um if de parcela, se for menor que 6,  fazer recursivo
 		$matriculas=Matricula::where(function($query){
 				$query->where('status','ativa')->orwhere('status', 'pendente');
@@ -20,7 +22,7 @@ class LancamentoController extends Controller
 			->where('valor','>',0)
 			->where('parcelas','>=',$parcela_atual)
 			->get();
-
+		//return $matriculas;
 //OBS: tem que tratar os bolsistas, tem que analizar o que ja foi pago, e o quanto falta pagar pelas parcelas restantes. Ex.: pessoa pagou 2 parcelas e na terceira quer pagar tudo o que falta.
 
 
@@ -39,7 +41,7 @@ class LancamentoController extends Controller
 			}
 		}
 		//gerar os boletos.
-		return "lancamentos efetuados com sucesso";
+		return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Lançamentos efetuados']);
 
 	}
 	public function gerarLancamentosPorPessoa($parcela_atual){

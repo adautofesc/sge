@@ -1,6 +1,7 @@
 @extends('layout.app')
 @section('titulo')Parcelas / Lançamentos @endsection
 @section('pagina')
+@include('inc.errors')
 
 <div class="title-block">
     <div class="row">
@@ -25,16 +26,21 @@
                     <p><b>Antes de gerar a parcela do mês atual, processar todos arquivos de retorno de datas anteriores.</b></p>
                     <p>Não há problemas em gerar mais de uma vez a mesma parcela, uma vez que o sistema verifica se a parcela já foi lançada antes de gerar uma nova. Porém não é uma pratica recomendada.</p>
                     <p><b>Após gerar as parcelas, deve-se gerar os boletos.</b></p>
-                    <div>
-                        <a href="#" onclick="gerarParcelas();" class="btn btn-danger-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-arrow-circle-right "></i>
-                        &nbsp;&nbsp;Gerar somente as Parcelas</a>
-                    </div>
-                    <div>
-                        <a href="#" onclick="gerarParcelasComBoletos();" class="btn btn-danger-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-arrow-circle-right "></i>
-                        &nbsp;&nbsp;Gerar Parcelas Com os Boletos</a>
-                    </div>
+                    <form method="POST">
+                        {{csrf_field()}}
+                   <div class="form-group row" id="row_modulos" > 
+                        <label class="col-sm-2 form-control-label text-xs-right">
+                            Parcela
+                        </label>
+                        <div class="col-sm-4"> 
+                            <input type="number" name="parcela" required="required" class="form-control boxed" name="modulo" min="1" max="11" placeholder="" > 
+                        </div>
+                        <div class="col-sm-4"> 
+                            <button type="submit" onclick="gerarParcelas();return false;" class="btn btn-danger" > Gerar</button>
+                        </div>
+                        
+                    </div> 
+                    </form>
                          
                 </div>
             </div>
@@ -48,7 +54,7 @@
 <script type="text/javascript">
     function gerarParcelas(){
         if(confirm("Tem certeza que deseja gerar as parcelas desse mês?")){
-            window.location.replace("{{asset('financeiro/lancamentos/gerar-parcelas')}}");
+            $(form).submit();
         }
     }
     function gerarParcelasComBoletos(){

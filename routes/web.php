@@ -20,6 +20,7 @@ Route::get('vagas', 'TurmaController@turmasSite');
 Route::get('testar-classe', 'painelController@testarClasse');
 Route::post('testar-classe', 'painelController@testarClassePost');
 Route::get('lista/{id}','painelController@chamada'); //lista de chamada aberta
+Route::get('meuboleto', function(){ return view('financeiro.boletos.consulta-cpf');});
 
 
 
@@ -101,7 +102,7 @@ Route::middleware('login') ->group(function(){
 			Route::get('listar-por-pessoa','LancamentoController@listarPorPessoa');
 			Route::get('gerar-individual/{parcela}','LancamentoController@gerarLancamentosPorPessoa');
 			Route::get('cancelar/{lancamento}','LancamentoController@cancelar');
-			Route::middleware('liberar.recurso:00')->get('gerar-lancamentos', 'LancamentoController@gerarLancamentos');
+			Route::post('home', 'LancamentoController@gerarLancamentos' );
 		});
 
 		Route::prefix('boletos')->group(function(){
@@ -128,7 +129,10 @@ Route::middleware('login') ->group(function(){
 				Route::get('upload',  function(){ return view('financeiro.retorno.upload'); });
 				Route::post('upload',  'BoletoController@upload');
 				Route::get('escolha-arquivo', 'BoletoController@listarRetornos');
-				Route::get('processar/{arquivo}','BoletoController@analisarArquivo');//precisa de middleware
+				Route::get('processar/{arquivo}','BoletoController@analisarArquivo');
+				Route::post('processar/{arquivo}','BoletoController@processarRetornos');//precisa de middleware
+				Route::get('processados','BoletoController@listarRetornosProcessados');
+
 
 			});
 

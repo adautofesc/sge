@@ -20,6 +20,11 @@
                 </div>
                 <div class="card-block">
                     <div>
+                        <a href="{{asset('/')}}financeiro/boletos/retorno/home" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-file-text "></i>
+                        &nbsp;&nbsp;Retornos</a>
+                    </div>
+                    <div>
                         <a href="{{asset('/')}}financeiro/lancamentos/home" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-calendar "></i>
                         &nbsp;&nbsp;Parcelas (lançamentos)</a>
@@ -34,11 +39,7 @@
                         <i class=" fa fa-file-text-o "></i>
                         &nbsp;&nbsp;Remessas</a>
                     </div>
-                    <div>
-                        <a href="{{asset('/')}}financeiro/boletos/retorno/home" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-file-text "></i>
-                        &nbsp;&nbsp;Retornos</a>
-                    </div>          
+                              
                 </div>
             </div>
         </div>

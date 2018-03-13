@@ -48,6 +48,8 @@ class LancamentoController extends Controller
 		if(!Session::get('pessoa_atendimento'))
             return redirect(asset('/secretaria/pre-atendimento'));
            // colocar um if de parcela, se for menor que 6,  fazer recursivo
+           // 
+          
            
 		$matriculas=Matricula::where('pessoa',Session::get('pessoa_atendimento'))//pega mas matriculas ativas e pendentes da pessoa
 			->where(function($query){
@@ -86,6 +88,23 @@ class LancamentoController extends Controller
 			$lancamento->save();
 		}
 		return $lancamentos;
+	}
+	public static function registrarBoletos($pessoa,$boleto){
+		$matriculas=Matricula::select('id')->where('pessoa',$pessoa)->get();
+        //return $matriculas;
+        $lista_matriculas=array();
+        foreach($matriculas as $matricula)
+        {
+        	$lista_matriculas[]=$matricula->id;
+        }
+        $lancamentos=Lancamento::whereIn('matricula',$lista_matriculas)->where('boleto',null)->get();
+        foreach($lancamentos as $lancamento){
+        	$lancamento->boleto = $boleto;
+        	$lancamento->save();
+        }
+
+        return true;
+
 	}
 
 	public function verificaSeLancada($matricula,$parcela,$valor){
@@ -457,7 +476,7 @@ class LancamentoController extends Controller
 	public function cancelar($id){
 		$lancamento = Lancamento::find($id);
 		if($lancamento != null){
-			if($lancamento->boleto == null){ //só apaga lancamento se não tiver boleto gerado
+			if($lancamento->boleto != 'pago'){ //só apaga lancamento se não tiver boleto gerado
 				$lancamento->status = 'cancelado';
 				$lancamento->save();	
 			}else
@@ -470,17 +489,51 @@ class LancamentoController extends Controller
 		return redirect($_SERVER['HTTP_REFERER']);
 	}
 
-	public static function lancarDesconto(Int $boleto,Float  $valor){
+	public static function lancarDesconto($boleto,$valor){
 		$lancamento=Lancamento::where('boleto',$boleto)->first();
 		if($lancamento != null){
 			$reembolso = new Lancamento;
 			$reembolso->matricula = $lancamento->matricula;
-			$reembolso->valor = $valor;
+			$reembolso->valor = $valor*-1;
 			$reembolso->parcela = 0;
 			$reembolso->save();
 			return $reembolso->id;
 		}else
 			return false;
+	}
+	public function gerarLancamentosAtrasados(){
+		$parcela_atual = 1;
+		$parcela=1;
+		// colocar um if de parcela, se for menor que 6,  fazer recursivo
+		$matriculas=Matricula::where(function($query){
+				$query->where('status','ativa')->orwhere('status', 'pendente');
+			})	
+			->where('valor','>',0)
+			->where('parcelas','>=',$parcela_atual)
+			->where('created_at','<','2018-02-17')
+			->get();
+		//return $matriculas;
+//OBS: tem que tratar os bolsistas, tem que analizar o que ja foi pago, e o quanto falta pagar pelas parcelas restantes. Ex.: pessoa pagou 2 parcelas e na terceira quer pagar tudo o que falta.
+			$lancamentos=collect();
+
+		foreach($matriculas as $matricula){
+			if($parcela>5 && $matricula->parcelas<6)
+				$parcela=$parcela-7;
+			//for($i=$parcela;$i<=$matricula->parcelas;$i--)
+			$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas;
+			if(!$this->verificaSeLancada($matricula->id,$parcela,$valor_parcela)){
+				$lancamento=new Lancamento;
+				$lancamento->matricula=$matricula->id;
+				$lancamento->parcela=$parcela;
+				$lancamento->valor=$valor_parcela;
+				if($lancamento->valor>0)//se for bolsista integral
+					//$lancamentos->push($lancamento);
+					$lancamento->save();
+			}
+		}
+		return $lancamentos;
+		return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Lançamentos efetuados']);
+
 	}
 
 

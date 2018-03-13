@@ -26,7 +26,7 @@
                         &nbsp;&nbsp;Fazer upload de arquivos</a>
                     </div>
                     <div>
-                        <a href="{{asset('/')}}financeiro/boletos/retorno/escolha-arquivo" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="{{asset('/')}}financeiro/boletos/retorno/arquivos" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-bolt "></i>
                         &nbsp;&nbsp;Processar arquivos</a>
                     </div>

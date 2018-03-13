@@ -182,12 +182,19 @@ class painelController extends Controller
         }
         return redirect()->route('403');
     */
-        $inst = new BoletoController;
+        //$instance = new BoletoController;
+        //return $instance->cancelarGravados();
         //return fopen('retornos/IEDCBR921502201814938.ret',"r");
-        return $inst->processarArquivo('retornos/IEDCBR7481902201823856.ret_processado');
+        //return $inst->cadastrar();
         //$inst->atualizaTodasMatriculas();
-        //$inst = new LancamentoController;
-        //return $inst->lancarDesconto(1542,60);
+        //
+        //
+        //
+        //
+        //
+        //
+        $inst = new LancamentoController; /// esse cara vai fazer os lancamentos atrasados
+        $inst->gerarLancamentosAtrasados();
         //return date('Y-m-20 23:59:59');
 
         //return $inst->gerarRemessa();*/

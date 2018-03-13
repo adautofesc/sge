@@ -13,24 +13,47 @@
 <section class="section">
     <div class="row">
         <div class="col-md-8 center-block">
+            @if(isset($processado))
+            <div class="card card-warning">
+            @elseif(isset($erro))
+            <div class="card card-danger">
+            @else
             <div class="card card-primary">
+            @endif
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Arquivos</p>
+                        <p class="title" style="color:white">Arquivos 
+                            @if(isset($processado))
+                                PROCESSADOS
+                                @elseif(isset($erro))
+                                COM ERROS
+                                @endif
+
+                        </p>
                     </div>
                 </div>
                 <div class="card-block">
-                    <p>O dia não pode ser verificado com precisão. Verifique na análise do arquivo.</p>
                     @foreach($arquivos as $arquivo)
-    
+
+                    @if(isset($arquivo->id))
                     <div>
-                        <a href="{{asset('/financeiro/boletos/retorno/processar/')}}/{{$arquivo}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-sign-in "></i>
-                        &nbsp;&nbsp;{{   '"'.substr($arquivo,strpos($arquivo, date('Y'))-4,2).'" /'
-                                        .substr($arquivo,strpos($arquivo, date('Y'))-2,2).'/'
-                                        .substr($arquivo,strpos($arquivo, date('Y')),4). ' -    '
-                                        .$arquivo}}</a>
+                        <a href="{{asset('/financeiro/boletos/retorno/analisar/')}}/{{$arquivo->nome}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-sign-in "></i>                         
+                            ID:{{$arquivo->id}} {{$arquivo->data}} <small> {{$arquivo->nome}} </small> </a>
                     </div>
+                    @else
+                    <div>
+                        <div class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="{{asset('/financeiro/boletos/retorno/original/')}}/{{$arquivo->nome}}">
+                        <i class=" fa fa-sign-in "></i>                         
+                            Arquivo com erro <small> {{$arquivo->nome}} </small> </a> 
+                            @if(isset($erro)==false) 
+                            <a href="#" onclick="removerArquivo('{{$arquivo->nome}}');"title="Remover" style="float:right;"><i class=" fa fa-remove text-danger"></i></a> 
+                            @endif
+
+                        </div>
+                    </div>
+                    @endif
                     @endforeach
                     <!--
                     <div>
@@ -57,9 +80,9 @@
                         &nbsp;&nbsp;Fazer upload de arquivos</a>
                     </div>
                     <div>
-                        <a href="{{asset('/')}}financeiro/boletos/retorno/escolha-arquivo" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="{{asset('/')}}financeiro/boletos/retorno/arquivos" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-bolt "></i>
-                        &nbsp;&nbsp;Processar arquivos</a>
+                        &nbsp;&nbsp;Arquivos pendentes</a>
                     </div>
                     <div>
                         <a href="{{asset('/')}}financeiro/boletos/retorno/processados" class="btn btn-primary-outline col-xs-12 text-xs-left">
@@ -86,4 +109,12 @@
     </div>
 </section>
 
+@endsection
+@section('scripts')
+<script type="text/javascript">
+    function removerArquivo(item){
+        if(confirm("Deseja realmente marcar esse arquivo como erro?"))
+            window.location.replace("{{asset('/financeiro/boletos/retorno/marcar-erro/')}}/"+item);
+    }
+</script>
 @endsection

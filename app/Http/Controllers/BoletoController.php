@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\classes\BarCodeGenrator;
+use App\classes\BoletoFuncional;
 use App\Lancamento;
 use App\Boleto;
 use App\Pessoa;
@@ -54,7 +55,7 @@ class BoletoController extends Controller
 						else{
 							//desconto
 							$boleto->descontos = $boleto->descontos + $lancamento->valor;
-							$boleto->valor=$boleto->valor-$lancamento->valor;
+							$boleto->valor=$boleto->valor+$lancamento->valor;
 						}
 					}
 					else{
@@ -77,15 +78,25 @@ class BoletoController extends Controller
 	}
 	public function imprimirLotex(){
 
-		$boletos=Boleto::where('status','gravado')->limit(200)->get();
+		$boletos=Boleto::where('status','gravado')->paginate(200)->get();
 		foreach($boletos as $boleto){
 			$boleto->status='impresso';
-			$boleto->save();
+			//$boleto->save();
 			$this->gerar($boleto);
 		}
 		//return $boletos;
 
 		return view('financeiro.boletos.lote')->with('boletos',$boletos);
+	}
+	public function imprimirx($boleto){
+		$boleto = Boleto::find($boleto);
+		//return $boleto;
+		$inst = new BoletoFuncional;
+		$boleto_completo = $inst->gerar($boleto);
+
+		//return $boleto_completo; 
+		return view('financeiro.boletos.boleto')->with('boleto',$boleto_completo);
+
 	}
 	public static function verificaSeCadastrado($pessoa,$valor,$vencimento){
 		$cadastrado=Boleto::where('pessoa',$pessoa)->where('valor',$valor)->where('vencimento',$vencimento)->first();
@@ -396,6 +407,21 @@ class BoletoController extends Controller
 			}
 			return "boletos cancelados";
 
+		}
+		public function corrigirBoletos(){
+			$boletos = \DB::select("select distinct boleto from lancamentos l join boletos b on l.boleto = b.id where vencimento like '2018-03-28 23:59:00' and parcela = 0 group by b.id");
+			foreach($boletos as $boleto){
+				$lancamentos=Lancamento::where('boleto',$boleto->boleto)
+								->get();
+
+				foreach($lancamentos as $lancamento){
+					$lancamento->boleto=null;
+					$lancamento->save();
+				}
+				$boletao = Boleto::find($boleto->boleto);
+				$boletao->delete();
+
+			}
 		}
 		
 

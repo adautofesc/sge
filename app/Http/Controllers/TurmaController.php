@@ -437,6 +437,10 @@ class TurmaController extends Controller
         return view('pedagogico.turma.turmas-site',compact('turmas'))->with('professor',$professor->nomeSimples);
 
     }
+    public function apiTurmas(){
+        $turmas = Turma::where('status','>',0)->get();
+        return $turmas;
+    }
 
 
 }

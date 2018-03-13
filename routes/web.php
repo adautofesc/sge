@@ -21,6 +21,8 @@ Route::get('testar-classe', 'painelController@testarClasse');
 Route::post('testar-classe', 'painelController@testarClassePost');
 Route::get('lista/{id}','painelController@chamada'); //lista de chamada aberta
 Route::get('meuboleto', function(){ return view('financeiro.boletos.consulta-cpf');});
+Route::get('boleto/{id}','BoletoController@imprimirx');
+
 
 
 
@@ -292,6 +294,7 @@ Route::middleware('login') ->group(function(){
 });//end middleware login
 
 Route::get('api/chamada/{id}','painelController@apiChamada');
+Route::get('api/turmas','TurmaController@apiTurmas');
 
 //----------------------------- Errors treatment
 

@@ -1,17 +1,24 @@
-<? php
+<?php
+namespace App\classes;
+use App\Pessoa;
+use App\Http\Controllers\PessoaController;
+use App\Http\Controllers\BoletoController;
+use Carbon\Carbon;
+
 
 class BoletoFuncional {
 
-public function gerar(Boleto $boleto){
+public function gerar($boleto){
 		$cliente=Pessoa::find($boleto->pessoa);
 		$cliente=PessoaController::formataParaMostrar($cliente);
+
 		
 
 		$dias_de_prazo_para_pagamento = 5;
 		$taxa_boleto = 0;
 		$data_venc =Carbon::parse($boleto->vencimento)->format('d/m/Y');;  // Prazo de X dias OU informe data: "13/04/2006"; 
 		$valor_documento = $boleto->valor;
-		$valor_cobrado = $boleto->valor+$boleto->encargos-$boleto->descontos; // Valor - REGRA: Sem pontos na milhar e tanto faz com "." ou "," ou com 1 ou 2 ou sem casa decimal
+		$valor_cobrado = $boleto->valor+$boleto->encargos+$boleto->descontos; // Valor - REGRA: Sem pontos na milhar e tanto faz com "." ou "," ou com 1 ou 2 ou sem casa decimal
 		$valor_cobrado = str_replace(",", ".",$valor_cobrado);
 		$valor_boleto=number_format($valor_cobrado+$taxa_boleto, 2, ',', '');
         $boleto->valor_desconto=number_format($boleto->descontos, 2, ',', '');
@@ -135,7 +142,7 @@ public function gerar(Boleto $boleto){
 			$convenio = $this->formata_numero($dadosboleto["convenio"],7,0,"convenio");
 			// Nosso número de até 10 dígitos
 			$nossonumero = $this->formata_numero($dadosboleto["nosso_numero"],10,0);
-			$dv=BoletoController::modulo_11("$codigobanco$nummoeda$fator_vencimento$valor$livre_zeros$convenio$nossonumero$carteira");
+			$dv=BoletoFuncional::modulo_11("$codigobanco$nummoeda$fator_vencimento$valor$livre_zeros$convenio$nossonumero$carteira");
 			$linha="$codigobanco$nummoeda$dv$fator_vencimento$valor$livre_zeros$convenio$nossonumero$carteira";
 		  $nossonumero = $convenio.$nossonumero;
 			//Não existe DV na composição do nosso-número para convênios de sete posições
@@ -166,12 +173,12 @@ public function gerar(Boleto $boleto){
 		}
 
 		$dadosboleto["codigo_barras"] = $linha;
-		$dadosboleto["linha_digitavel"] = BoletoController::monta_linha_digitavel($linha);
+		$dadosboleto["linha_digitavel"] = BoletoFuncional::monta_linha_digitavel($linha);
 		$dadosboleto["agencia_codigo"] = $agencia_codigo;
 		$dadosboleto["nosso_numero"] = $nossonumero;
 		$dadosboleto["codigo_banco_com_dv"] = $codigo_banco_com_dv;
 
-		//$dadosboleto["codebar"] = BoletoController::fbarcode($dadosboleto["codigo_barras"]);
+		//$dadosboleto["codebar"] = BoletoFuncional::fbarcode($dadosboleto["codigo_barras"]);
 		$boleto->dados=$dadosboleto;
 
 
@@ -217,7 +224,7 @@ public function gerar(Boleto $boleto){
 		$ano = $data[2];
 		$mes = $data[1];
 		$dia = $data[0];
-	    return(abs((BoletoController::_dateToDays("1997","10","07")) - (BoletoController::_dateToDays($ano, $mes, $dia))));
+	    return(abs((BoletoFuncional::_dateToDays("1997","10","07")) - (BoletoFuncional::_dateToDays($ano, $mes, $dia))));
 	}
 
 	public static function _dateToDays($year,$month,$day) {
@@ -370,7 +377,7 @@ public function gerar(Boleto $boleto){
 	    // do campo livre e DV (modulo10) deste campo
 	    $p1 = substr($linha, 0, 4);
 	    $p2 = substr($linha, 19, 5);
-	    $p3 = BoletoController::modulo_10("$p1$p2");
+	    $p3 = BoletoFuncional::modulo_10("$p1$p2");
 	    $p4 = "$p1$p2$p3";
 	    $p5 = substr($p4, 0, 5);
 	    $p6 = substr($p4, 5);
@@ -379,7 +386,7 @@ public function gerar(Boleto $boleto){
 	    // 2. Campo - composto pelas posiçoes 6 a 15 do campo livre
 	    // e livre e DV (modulo10) deste campo
 	    $p1 = substr($linha, 24, 10);
-	    $p2 = BoletoController::modulo_10($p1);
+	    $p2 = BoletoFuncional::modulo_10($p1);
 	    $p3 = "$p1$p2";
 	    $p4 = substr($p3, 0, 5);
 	    $p5 = substr($p3, 5);
@@ -388,7 +395,7 @@ public function gerar(Boleto $boleto){
 	    // 3. Campo composto pelas posicoes 16 a 25 do campo livre
 	    // e livre e DV (modulo10) deste campo
 	    $p1 = substr($linha, 34, 10);
-	    $p2 = BoletoController::modulo_10($p1);
+	    $p2 = BoletoFuncional::modulo_10($p1);
 	    $p3 = "$p1$p2";
 	    $p4 = substr($p3, 0, 5);
 	    $p5 = substr($p3, 5);
@@ -407,7 +414,7 @@ public function gerar(Boleto $boleto){
 
 	public static function geraCodigoBanco($numero) {
 	    $parte1 = substr($numero, 0, 3);
-	    $parte2 = BoletoController::modulo_11($parte1);
+	    $parte2 = BoletoFuncional::modulo_11($parte1);
 	    return $parte1 . "-" . $parte2;
 	}
 
@@ -458,8 +465,8 @@ public function gerar(Boleto $boleto){
 
 		// Draw dos dados
 		while (strlen($texto) > 0) {
-		  $i = round(BoletoController::esquerda($texto,2));
-		  $texto = BoletoController::direita($texto,strlen($texto)-2);
+		  $i = round(BoletoFuncional::esquerda($texto,2));
+		  $texto = BoletoFuncional::direita($texto,strlen($texto)-2);
 		  $f = $barcodes[$i];
 		  for($i=1;$i<11;$i+=2){
 		    if (substr($f,($i-1),1) == "0") {
@@ -495,5 +502,4 @@ public function gerar(Boleto $boleto){
 
 
 }
-
 ?>

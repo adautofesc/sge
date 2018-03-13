@@ -182,7 +182,8 @@ class painelController extends Controller
         }
         return redirect()->route('403');
     */
-        //$instance = new BoletoController;
+        $instance = new BoletoController;
+        $instance->corrigirBoletos();
         //return $instance->cancelarGravados();
         //return fopen('retornos/IEDCBR921502201814938.ret',"r");
         //return $inst->cadastrar();
@@ -193,8 +194,8 @@ class painelController extends Controller
         //
         //
         //
-        $inst = new LancamentoController; /// esse cara vai fazer os lancamentos atrasados
-        $inst->gerarLancamentosAtrasados();
+        //$inst = new LancamentoController; /// esse cara vai fazer os lancamentos atrasados
+        //$inst->gerarLancamentosAtrasados();
         //return date('Y-m-20 23:59:59');
 
         //return $inst->gerarRemessa();*/

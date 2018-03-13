@@ -719,7 +719,7 @@ div.barcode {
 				<td class="desconto2">(-) Desconto / Abatimento</td>
 			</tr>
 			<tr class="campos">
-				<td class="desconto2">{{$boleto->valor_desconto}}</td>
+				<td class="desconto2">&nbsp;</td>
 			</tr>
 			</tbody>
 			</table>
@@ -758,7 +758,7 @@ div.barcode {
 				<td class="outros_acrescimos2">(+) Outros Acr&eacute;scimos</td>
 			</tr>
 			<tr class="campos">
-				<td class="outros_acrescimos2">{{$boleto->valor_encargo}}</td>
+				<td class="outros_acrescimos2">&nbbsp;</td>
 			</tr>
 			</tbody>
 			</table>

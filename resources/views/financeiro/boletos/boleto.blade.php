@@ -758,7 +758,7 @@ div.barcode {
 				<td class="outros_acrescimos2">(+) Outros Acr&eacute;scimos</td>
 			</tr>
 			<tr class="campos">
-				<td class="outros_acrescimos2">&nbbsp;</td>
+				<td class="outros_acrescimos2">&nbsp;</td>
 			</tr>
 			</tbody>
 			</table>

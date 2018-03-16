@@ -20,7 +20,8 @@ Route::get('vagas', 'TurmaController@turmasSite');
 Route::get('testar-classe', 'painelController@testarClasse');
 Route::post('testar-classe', 'painelController@testarClassePost');
 Route::get('lista/{id}','painelController@chamada'); //lista de chamada aberta
-Route::get('meuboleto', function(){ return view('financeiro.boletos.consulta-cpf');});
+Route::get('meuboleto', function(){ return view('financeiro.boletos.meuboleto');});
+Route::post('meuboleto', 'BoletoController@segundaVia');
 Route::get('boleto/{id}','BoletoController@imprimirx');
 
 
@@ -126,14 +127,22 @@ Route::middleware('login') ->group(function(){
 				Route::get('listar-arquivos', 'BoletoController@listarRemessas');
 			});
 
-			Route::prefix('retorno')->group(function(){
+			Route::prefix('retorno')->group(function(){//precisa de middleware
 				Route::get('home',  function(){ return view('financeiro.retorno.home'); });
 				Route::get('upload',  function(){ return view('financeiro.retorno.upload'); });
-				Route::post('upload',  'BoletoController@upload');
-				Route::get('escolha-arquivo', 'BoletoController@listarRetornos');
-				Route::get('processar/{arquivo}','BoletoController@analisarArquivo');
-				Route::post('processar/{arquivo}','BoletoController@processarRetornos');//precisa de middleware
-				Route::get('processados','BoletoController@listarRetornosProcessados');
+				Route::post('upload',  'RetornoController@upload');
+				Route::get('arquivos', 'RetornoController@listarRetornos');
+				Route::get('analisar/{arquivo}','RetornoController@analisarArquivo');
+				Route::get('processar/{arquivo}','RetornoController@processarArquivo');
+				Route::get('reprocessar/{arquivo}','RetornoController@reProcessarArquivo');
+				Route::get('marcar-processado/{arquivo}','RetornoController@marcarProcessado');
+				Route::get('marcar-erro/{arquivo}','RetornoController@marcarErro');
+				Route::get('com-erro','RetornoController@listarRetornosComErro');
+				Route::get('processados','RetornoController@listarRetornosProcessados');
+
+
+				//Route::post('processar/{arquivo}','RetornoController@processarRetornos');
+				
 
 
 			});

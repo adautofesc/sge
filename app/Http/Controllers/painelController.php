@@ -173,6 +173,9 @@ class painelController extends Controller
 
     }
     public function testarClasse(){
+
+        $cpf='123.456.789-10';
+        return str_replace(['.','-'], '', $cpf);
         /*
         $recurso_desejado = 99;
 
@@ -182,8 +185,8 @@ class painelController extends Controller
         }
         return redirect()->route('403');
     */
-        $instance = new BoletoController;
-        $instance->corrigirBoletos();
+        //$instance = new BoletoController;
+        //$instance->corrigirBoletos();
         //return $instance->cancelarGravados();
         //return fopen('retornos/IEDCBR921502201814938.ret',"r");
         //return $inst->cadastrar();

@@ -16,9 +16,9 @@ public function gerar($boleto){
 
 		$dias_de_prazo_para_pagamento = 5;
 		$taxa_boleto = 0;
-		$data_venc =Carbon::parse($boleto->vencimento)->format('d/m/Y');;  // Prazo de X dias OU informe data: "13/04/2006"; 
+		$data_venc =Carbon::parse($boleto->vencimento)->format('d/m/Y');  // Prazo de X dias OU informe data: "13/04/2006"; 
 		$valor_documento = $boleto->valor;
-		$valor_cobrado = $boleto->valor+$boleto->encargos+$boleto->descontos; // Valor - REGRA: Sem pontos na milhar e tanto faz com "." ou "," ou com 1 ou 2 ou sem casa decimal
+		$valor_cobrado = $boleto->valor; // Valor - REGRA: Sem pontos na milhar e tanto faz com "." ou "," ou com 1 ou 2 ou sem casa decimal
 		$valor_cobrado = str_replace(",", ".",$valor_cobrado);
 		$valor_boleto=number_format($valor_cobrado+$taxa_boleto, 2, ',', '');
         $boleto->valor_desconto=number_format($boleto->descontos, 2, ',', '');

@@ -412,6 +412,14 @@ class PessoaController extends Controller
 		if($username)
 			$pessoa->username=$username->usuario;
 
+		if(isset($pessoa->cpf)){
+			$pessoa->cpf = str_replace(['.','-'], '', $pessoa->cpf);
+			if(!Strings::validaCPF($pessoa->cpf)){
+				$pessoa->cpf ='';
+			}
+		}	
+
+
 
 		if(isset($pessoa->endereco)){
 			$endereco=Endereco::find($pessoa->endereco);
@@ -947,6 +955,15 @@ class PessoaController extends Controller
 
 
 		return redirect(asset('gestaopessoal/atender').'/'.$request->pessoa);
+
+
+
+	}
+	public static function notificarCPFInvalido($pessoa){
+		// abre um protocolo de correção de dados
+		// 
+		return '45.361.904/0001-80';
+
 
 
 

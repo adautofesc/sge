@@ -269,9 +269,10 @@ class BoletoController extends Controller
 			$boleto_completo = $this->gerarBoleto($boleto);
 			$remessa->addBoleto($boleto_completo);
 			$boleto->status='emitido';
-			$boleto->save();
+			//$boleto->save();
 
 		}
+		//dd($remessa);
 		$remessa->save( 'remessas/'.date('YmdHi').'.rem');
 		$arquivo = date('YmdHi').'.rem';
 		return view('financeiro.remessa.arquivo',compact('arquivo'));
@@ -336,12 +337,16 @@ class BoletoController extends Controller
 		    'uf'        => 'SP',
 		    'cidade'    => 'São Carlos',
 		]);
+		if(empty($cliente->cpf)){
+			$cliente->cpf = PessoaController::notificarCPFInvalido($cliente->id);
+		}
 		$pagador = new \Eduardokum\LaravelBoleto\Pessoa([
-		    'documento' => $cliente->cpf,
-		    'nome'      => $cliente->nome,
-		    'cep'       => $cliente->cep,
-		    'endereco'  => $cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->complemento,
-		    'bairro' => ($cliente->bairro=='Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro),
+			'documento' => $cliente->cpf,
+		    //'documento' => $cliente->cpf > 0 ? $cliente->cpf : PessoaController::notificarCPFInvalido($cliente->id), //verificar cpf
+		    'nome'      => substr($cliente->nome,0,37), //nome até x cara
+		    'cep'       => preg_match('/^[0-9]{5,5}([- ]?[0-9]{3,3})?$/', $cliente->cep) ? $cliente->cep : '15900-000' ,
+		    'endereco'  => str_replace(['º','ª','°'], '',$cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->complemento),
+		    'bairro' => substr(($cliente->bairro=='Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro),0,15),
 		    'uf'        => $cliente->estado,
 		    'cidade'    => $cliente->cidade,
 		]);
@@ -370,7 +375,7 @@ class BoletoController extends Controller
 		    	'Pagável em qualquer agência bancária ou lotérica até o vencimento'
 		    ],
 		]);
-			
+			//dd($pagador);
 		    return $bb;
 
 		}
@@ -408,6 +413,7 @@ class BoletoController extends Controller
 			return "boletos cancelados";
 
 		}
+		/*
 		public function corrigirBoletos(){
 			$boletos = \DB::select("select distinct boleto from lancamentos l join boletos b on l.boleto = b.id where vencimento like '2018-03-28 23:59:00' and parcela = 0 group by b.id");
 			foreach($boletos as $boleto){
@@ -422,6 +428,36 @@ class BoletoController extends Controller
 				$boletao->delete();
 
 			}
+		}*/
+		public function segundaVia(Request $request){
+			$this->validate($request, [
+				'cpf'=>'required|numeric',
+				'nascimento'=>'required|date'			
+
+			]);
+			$cpf_alt = str_pad($request->cpf,11,'0');
+			$cpf_alt = \App\classes\Strings::mask($cpf_alt,"###.###.###-##");
+			$dados_pessoa = \App\PessoaDadosGerais::where('valor','like',$request->cpf)->orWhere('valor','like',$cpf_alt)->get();
+			if(count($dados_pessoa) == 1){
+				$pessoa = Pessoa::find($dados_pessoa->first()->pessoa);
+				if($pessoa->nascimento == $request->nascimento){
+					$boletos = Boleto::where('pessoa',$pessoa->id)
+						->where(function($query){ $query
+							->where('status','impresso')
+							->orwhere('status', 'emitido');
+					})->get();
+					return view('financeiro.boletos.meuboleto-lista',compact('boletos'))->with('nome',$pessoa->nome);
+
+
+				}
+
+				else
+					return redirect('/meuboleto')->withErrors(["Desculpe, os dados estão incorretos. Verifique e tente novamente."]);
+			}
+			else
+				return redirect('/meuboleto')->withErrors(["Desculpe, não encontramos registro com os dados informados."]);
+
+
 		}
 		
 

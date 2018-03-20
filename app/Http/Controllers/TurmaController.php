@@ -441,6 +441,48 @@ class TurmaController extends Controller
         $turmas = Turma::where('status','>',0)->get();
         return $turmas;
     }
+    public function uploadImportaTurma(Request $request){
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $spreadsheet = $reader->load($request->arquivo);
+        $worksheet = $spreadsheet->getActiveSheet();
+        $highestRow = $worksheet->getHighestRow();
+        //dd($spreadsheet);
+        $pessoas = collect();
+        for($i=2;$i<=$highestRow;$i++){
+            if($spreadsheet->getActiveSheet()->getCell('D'.$i)->getValue() != null){
+                $insc= (object)[];
+                $insc->id = $i;
+                $insc->nome=$spreadsheet->getActiveSheet()->getCell('D'.$i)->getValue();
+                $insc->nascimento=$spreadsheet->getActiveSheet()->getCell('J'.$i)->getFormattedValue();
+                $insc->nascimento = \Carbon\Carbon::createFromFormat('n/d/Y', $insc->nascimento)->format('d/m/Y');
+                $insc->genero=$spreadsheet->getActiveSheet()->getCell('E'.$i)->getValue();
+                $insc->fone=$spreadsheet->getActiveSheet()->getCell('I'.$i)->getValue();
+                $insc->turma=$spreadsheet->getActiveSheet()->getCell('S'.$i)->getValue();
+                $cadastrado = Pessoa::where('nome','like',$insc->nome)->where('nascimento', $insc->nascimento)->get();
+                if(count($cadastrado) == 0)
+                     $insc->cadastrar="true";
+
+                $pessoas->push($insc);
+            }
+        }
+        $pessoas = $pessoas->sortBy('nome');
+        return view('pedagogico.turma.listar-importados')->with('pessoas',$pessoas)->with('arquivo',$request->arquivo);
+    }
+    public function processarImportacao(Request $request){
+        foreach ($request->pessoa as $id=>$key){
+            if($key == true)
+                return $request->nome[$id];
+            else
+                return "nao cadastrar";
+        }
+    
+
+
+
+
+
+    }
+
 
 
 }

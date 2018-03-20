@@ -55,7 +55,7 @@
 
                             </div>
                             <div class="form-group">
-                                <p class="text-muted text-xs-center">Após vencimento pagar no diretamente no Banco do Brasil.</p>
+                                <p class="text-muted text-xs-center">Após vencimento pagar diretamente no Banco do Brasil.</p>
                             </div>
                         </form>
                     </div>

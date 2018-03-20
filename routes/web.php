@@ -196,6 +196,10 @@ Route::middleware('login') ->group(function(){
 			Route::get('turmasjson','TurmaController@turmasJSON');
 			Route::get('inscritos/{turma}','InscricaoController@verInscritos');
 			Route::get('lista/{id}','painelController@chamada');
+			Route::get('importar', function(){ return view('pedagogico.turma.upload');});
+			Route::post('importar', 'TurmaController@uploadImportaTurma' );
+			Route::post('processar-importacao', 'TurmaController@processarImportacao');
+
 
 		});
 		//Cursos

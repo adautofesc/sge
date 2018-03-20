@@ -30,9 +30,9 @@
                         &nbsp;&nbsp;Cadastrar</a>
                     </div>
                     <div>
-                        <p class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-file-text-o "></i>
-                        &nbsp;&nbsp;Relatórios</p>
+                        <a href="{{asset('pedagogico/turmas/importar')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-file-text "></i>
+                        &nbsp;&nbsp;Importar Xlsx</a>
                     </div>
                                    
                 </div>

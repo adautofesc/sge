@@ -31,7 +31,7 @@ class LancamentoController extends Controller
 				$parcela=$parcela-7;
 			//for($i=$parcela;$i<=$matricula->parcelas;$i--)
 			$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas;
-			if(!$this->verificaSeLancada($matricula->id,$parcela,$valor_parcela)){
+			if(!$this->verificaSeLancada($matricula->id,$parcela)){
 				$lancamento=new Lancamento;
 				$lancamento->matricula=$matricula->id;
 				$lancamento->parcela=$parcela;
@@ -65,7 +65,7 @@ class LancamentoController extends Controller
 
 			for($i=$parcela_atual;$i>0;$i--){ //gerador recursivo de parcela
 				$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas; //calcula valor parcela
-				if(!$this->verificaSeLancada($matricula->id,$i,$valor_parcela) && $valor_parcela > 0  ){ //se não tiver ou for 0
+				if(!$this->verificaSeLancada($matricula->id,$i) && $valor_parcela > 0  ){ //se não tiver ou for 0
 					$lancamento=new Lancamento; //gera novo lançamento
 					$lancamento->matricula=$matricula->id;
 					$lancamento->parcela=$i;
@@ -107,10 +107,9 @@ class LancamentoController extends Controller
 
 	}
 
-	public function verificaSeLancada($matricula,$parcela,$valor){
+	public function verificaSeLancada($matricula,$parcela){
 		$lancamentos=Lancamento::where('matricula',$matricula)
 			->where('parcela',$parcela)
-			->where('valor',number_format($valor,2))
 			->where('status', null)
 			->get();
 		if (count($lancamentos)>0)

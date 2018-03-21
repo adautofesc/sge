@@ -194,12 +194,12 @@
                                                              <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->texto_status}}</small></div> 
 
                                                        @if(isset($turma->disciplina))
-                                                         <a href="{{asset('pedagogico/turmas/inscritos').'/'.$turma->id}}" target="_blank"class="">
+                                                         <a href="{{asset('lista').'/'.$turma->id}}" target="_blank"class="">
                                                             <h4 class="item-title"> {{$turma->disciplina->nome}}</h4>       
                                                             <small>{{$turma->curso->nome}}</small>
                                                         </a>
                                                        @else
-                                                        <a href="{{asset('pedagogico/turmas/inscritos').'/'.$turma->id}}" target="_blank"class="">
+                                                        <a href="{{asset('lista').'/'.$turma->id}}" target="_blank"class="">
                                                             <h4 class="item-title"> {{$turma->curso->nome}}</h4>           
                                                         </a>
                                                         @endif

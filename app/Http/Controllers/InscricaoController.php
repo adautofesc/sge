@@ -317,6 +317,29 @@ class InscricaoController extends Controller
         return $inscricao;
 
     }
+        public static function inscreverAlunoSemMatricula($aluno,$turma){
+        $turma=Turma::find($turma);
+        if($turma == null)
+            return false;
+        if(InscricaoController::verificaSeInscrito($aluno,$turma->id))
+                return Inscricao::find(InscricaoController::verificaSeInscrito($aluno,$turma->id));
+        $inscricao=new Inscricao();
+        $inscricao->pessoa=$aluno;
+        if (Session::get('atendimento')>0)
+            $inscricao->atendimento=Session::get('atendimento');
+        else
+            $inscricao->atendimento=1;
+        $inscricao->turma=$turma->id;
+        $inscricao->status='regular';
+        $inscricao->save();
+
+        // aumenta Inscricaodos
+        InscricaoController::modInscritos($turma->id,1,1);
+  
+
+        return $inscricao;
+
+    }
     public function inscreverAlunoLote($turma,Request $r){
         //return "função temporareamente bloqueada";
         $inscricao=InscricaoController::inscreverAluno($r->id_pessoa,$turma);

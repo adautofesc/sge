@@ -458,9 +458,7 @@ class TurmaController extends Controller
                 $insc->genero=$spreadsheet->getActiveSheet()->getCell('E'.$i)->getValue();
                 $insc->fone=$spreadsheet->getActiveSheet()->getCell('I'.$i)->getValue();
                 $insc->turma=$spreadsheet->getActiveSheet()->getCell('S'.$i)->getValue();
-                $cadastrado = Pessoa::where('nome','like',$insc->nome)->where('nascimento', $insc->nascimento)->get();
-                if(count($cadastrado) == 0)
-                     $insc->cadastrar="true";
+                
 
                 $pessoas->push($insc);
             }
@@ -469,12 +467,54 @@ class TurmaController extends Controller
         return view('pedagogico.turma.listar-importados')->with('pessoas',$pessoas)->with('arquivo',$request->arquivo);
     }
     public function processarImportacao(Request $request){
+        $cadastrados = array();
+
         foreach ($request->pessoa as $id=>$key){
-            if($key == true)
-                return $request->nome[$id];
-            else
-                return "nao cadastrar";
+            $nascimento = \Carbon\Carbon::createFromFormat('d/m/Y', $request->nascimento[$id])->format('Y-m-d');
+            
+            if($key == 'on'){
+                $cadastrado = Pessoa::where('nome','like',$request->nome[$id])->where('nascimento',$nascimento)->get();
+                
+                if(count($cadastrado) > 0 ){
+                    // ja ta cadastrado
+                    $pessoa = $cadastrado->first();
+                }
+                else{
+                    $pessoa = new Pessoa;
+                    $pessoa->nome = $request->nome[$id];
+                    $pessoa->nascimento = $nascimento;
+                    $pessoa->genero = $request->genero[$id];
+                    $pessoa->por = \Session::get('usuario');
+                    $pessoa->save();
+
+
+                }
+
+                if(isset($request->telefone[$id])){
+                    $dado = PessoaDadosContato::where('dado','2')->where('pessoa',$pessoa->id)->where('valor', $request->telefone[$id]);
+                    if(count($dado) == 0){
+                        $telefone = new PessoaDadosContato;
+                        $telefone->pessoa = $pessoa->id;
+                        $telefone->dado = '2';
+                        $telefone->valor = $request->telefone[$id];
+                        $telefone->save();
+
+                    }
+                }
+                $turma = Turma::find($request->turma[$id]);
+                //return $pessoa;
+                if($turma != null){
+                    if(InscricaoController::inscreverAlunoSemMatricula($pessoa->id,$turma->id)){
+                        $cadastrados[]=$id;
+                    }
+                }
+
+
+            }
+            
         }
+        //return $cadastrados;
+        return view('pedagogico.turma.confirmar-importados')->with('cadastrados',$cadastrados)->with('pessoas',$request->nome);
     
 
 

@@ -174,46 +174,16 @@ class painelController extends Controller
     }
     public function testarClasse(){
 
-        $cpf='123.456.789-10';
-        return str_replace(['.','-'], '', $cpf);
-        /*
-        $recurso_desejado = 99;
-
-        foreach(unserialize(Session('recursos_usuario')) as $controle){
-            if($controle->recurso == $recurso_desejado)
-                return "true";
-        }
-        return redirect()->route('403');
-    */
+     
+       
         //$instance = new BoletoController;
-        //$instance->corrigirBoletos();
-        //return $instance->cancelarGravados();
-        //return fopen('retornos/IEDCBR921502201814938.ret',"r");
-        //return $inst->cadastrar();
-        //$inst->atualizaTodasMatriculas();
-        //
-        //
-        //
-        //
-        //
-        //
-        //$inst = new LancamentoController; /// esse cara vai fazer os lancamentos atrasados
-        //$inst->gerarLancamentosAtrasados();
-        //return date('Y-m-20 23:59:59');
-
-        //return $inst->gerarRemessa();*/
+        $inst = new LancamentoController; /// esse cara vai fazer os lancamentos atrasados
         //$inst= new MatriculaController;
-        //return MatriculaController::regularizarCancelamentos();
+
+        //return $inst->addPessoaLancamentos();
+        return $inst->devincularBoleto(999999);
         
-        //return $inst->verificaSeMatriculado(23234,307);
-        //return $inst->modMatriculas();
-        //return $inst->verificaSeMatriculado(13977,307);
-        //return $inst->arrumarMultiplasUati();
-          //return LancamentoController::atualizaMatricula('2051');
-        //
-        //return LancamentoController::relancarPorBoleto('2199');
-        //return $inst->atualizarLMC();
-        //return $inst->cancelamentoMatricula(2004);
+        
     }
     public function testarClassePost(Request $r){
         

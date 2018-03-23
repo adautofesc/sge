@@ -36,6 +36,8 @@ class LancamentoController extends Controller
 				$lancamento->matricula=$matricula->id;
 				$lancamento->parcela=$parcela;
 				$lancamento->valor=$valor_parcela;
+				$lancamento->pessoa = $matricula->pessoa;
+				$lancamento->referencia = "Parcela ".$parcela." do curso";
 				if($lancamento->valor>0)//se for bolsista integral
 					$lancamento->save();
 			}
@@ -70,6 +72,7 @@ class LancamentoController extends Controller
 					$lancamento->matricula=$matricula->id;
 					$lancamento->parcela=$i;
 					$lancamento->valor=$valor_parcela;
+					$lancamento->pessoa = Session::get('pessoa_atendimento');
 					if($lancamento->valor>0)//se for bolsista integral
 						$lancamento->save();
 				}
@@ -445,16 +448,7 @@ class LancamentoController extends Controller
             return redirect(asset('/secretaria/pre-atendimento'));
         $nome = \App\Pessoa::getNome(Session::get('pessoa_atendimento'));
 
-        //$this->gerarLancamentosPorPessoa(Session::get('pessoa_atendimento'),date('m')-1);
-
-        $matriculas=\DB::table('matriculas')->select('id')->where('pessoa',Session::get('pessoa_atendimento'))->get();
-        //return $matriculas;
-        $lista_matriculas=array();
-        foreach($matriculas as $matricula)
-        {
-        	$lista_matriculas[]=$matricula->id;
-        }
-        $lancamentos=Lancamento::whereIn('matricula',$lista_matriculas)->orderBy('id','DESC')->paginate(30);
+        $lancamentos=Lancamento::where('pessoa',Session::get('pessoa_atendimento'))->where('status', null)->orderBy('matricula','DESC')->orderBy('parcela','DESC')->paginate(30);
         //return $lancamentos;
         //return $lancamentos;
         if(count($lancamentos)>0){
@@ -475,7 +469,7 @@ class LancamentoController extends Controller
 	public function cancelar($id){
 		$lancamento = Lancamento::find($id);
 		if($lancamento != null){
-			if($lancamento->boleto != 'pago'){ //só apaga lancamento se não tiver boleto gerado
+			if($lancamento->boleto != 'pago'){ //só apaga lancamento se não tiver boleto gerado !!!!!!!oi? donde vc ta pegando status do boleto maluco?
 				$lancamento->status = 'cancelado';
 				$lancamento->save();	
 			}else
@@ -500,40 +494,32 @@ class LancamentoController extends Controller
 		}else
 			return false;
 	}
-	public function gerarLancamentosAtrasados(){
-		$parcela_atual = 1;
-		$parcela=1;
-		// colocar um if de parcela, se for menor que 6,  fazer recursivo
-		$matriculas=Matricula::where(function($query){
-				$query->where('status','ativa')->orwhere('status', 'pendente');
-			})	
-			->where('valor','>',0)
-			->where('parcelas','>=',$parcela_atual)
-			->where('created_at','<','2018-02-17')
-			->get();
-		//return $matriculas;
-//OBS: tem que tratar os bolsistas, tem que analizar o que ja foi pago, e o quanto falta pagar pelas parcelas restantes. Ex.: pessoa pagou 2 parcelas e na terceira quer pagar tudo o que falta.
-			$lancamentos=collect();
-
-		foreach($matriculas as $matricula){
-			if($parcela>5 && $matricula->parcelas<6)
-				$parcela=$parcela-7;
-			//for($i=$parcela;$i<=$matricula->parcelas;$i--)
-			$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas;
-			if(!$this->verificaSeLancada($matricula->id,$parcela,$valor_parcela)){
-				$lancamento=new Lancamento;
-				$lancamento->matricula=$matricula->id;
-				$lancamento->parcela=$parcela;
-				$lancamento->valor=$valor_parcela;
-				if($lancamento->valor>0)//se for bolsista integral
-					//$lancamentos->push($lancamento);
-					$lancamento->save();
-			}
-		}
-		return $lancamentos;
-		return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Lançamentos efetuados']);
+	
 
 	}
+	public function addPessoaLancamentos(){
+		$lancamentos = Lancamento::all();
+		foreach($lancamentos as $lancamento){
+			$matricula = Matricula::find($lancamento->matricula);
+			if($matricula != null){
+				$lancamento->pessoa = $matricula->pessoa;
+				$lancamento->save();
+			}
+		}
+		return "Códigos de pessoa importados para Lançamentos";
+	}
+	public function devincularBoleto($lancamento){
+		$lancamento = Lancamento::find($lancamento);
+		if($lancamento != null){
+			$lancamento->boleto = null;
+			$lancamentos->save();
+			return redirect($_SERVER['HTTP_REFERER']);
+		}
+		else
+			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Lançamentos não encontrado']);
+
+	}
+
 
 
 

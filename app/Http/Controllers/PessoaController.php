@@ -326,7 +326,8 @@ class PessoaController extends Controller
 		$pessoa=$this->dadosPessoa($id);
 
 		//return $pessoa;
-		return redirect(asset('/secretaria/atender/'.$id)); 
+		//return redirect(asset('/secretaria/atender/'.$id));
+		return view('pessoa.mostrar',compact('pessoa'));
 
 	}
 	public function edita($id){

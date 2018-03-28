@@ -258,9 +258,11 @@ Route::middleware('login') ->group(function(){
 			Route::post('editar/{id}','MatriculaController@update');
 			Route::get('declaracao/{id}','MatriculaController@declaracao');
 			Route::get('cancelar/{id}','MatriculaController@cancelarMatricula');
+			Route::get('reativar/{id}','MatriculaController@reativarMatricula');
 			Route::get('cancelamento', 'MatriculaController@regularizarCancelamentos');
 			Route::prefix('inscricao')->group(function(){
-				Route::get('apagar/{id}', 'InscricaoController@apagar');
+				Route::get('apagar/{id}', 'InscricaoController@cancelar');
+				Route::get('reativar/{id}', 'InscricaoController@reativar');
 			});
 
 		});
@@ -306,8 +308,8 @@ Route::middleware('login') ->group(function(){
 
 });//end middleware login
 
-Route::get('api/chamada/{id}','painelController@apiChamada');
-Route::get('api/turmas','TurmaController@apiTurmas');
+Route::get('api/chamada/{id}','WebServicesController@apiChamada');
+Route::get('api/turmas','WebServicesController@apiTurmas');
 
 //----------------------------- Errors treatment
 

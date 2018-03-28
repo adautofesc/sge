@@ -46,4 +46,8 @@ class AtendimentoController extends Controller
 			
 		}
 	}
+	public function atender($id=0){
+		
+
+	}
 }

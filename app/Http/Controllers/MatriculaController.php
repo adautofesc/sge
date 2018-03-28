@@ -120,15 +120,12 @@ class MatriculaController extends Controller
         $matricula->valor_desconto=$r->valordesconto;
         $matricula->parcelas=$r->nparcelas;
         $matricula->dia_venc=$r->dvencimento;
-        if($r->pendente==true)
-            $matricula->status='pendente';
-        else
-            $matricula->status='ativa';
+        $matricula->status = $r->status;
         $matricula->obs=$r->obs;
         $matricula->save();
         AtendimentoController::novoAtendimento("Matrícula atualizada.", $matricula->pessoa, Session::get('usuario'));
-        LancamentoController::atualizaMatricula($matricula->id);
-        return redirect(asset("/pessoa/matriculas"));
+        //LancamentoController::atualizaMatricula($matricula->id);
+        return redirect(asset('secretaria/atender'));
     }
 
     /**
@@ -392,7 +389,7 @@ class MatriculaController extends Controller
                             break;
                     }
             $matricula->save();
-            LancamentoController::atualizaMatricula($matricula->id);
+            //LancamentoController::atualizaMatricula($matricula->id);
             return $matricula->valor;
         }
         
@@ -403,9 +400,9 @@ class MatriculaController extends Controller
         $matricula->save();
         $inscricoes=Inscricao::where('matricula',$matricula->id)->where('status','<>','cancelado')->get();
         foreach($inscricoes as $inscricao){
-            $insc=InscricaoController::apagar($inscricao->id);
+            $insc=InscricaoController::cancelar($inscricao->id);
         }
-        LancamentoController::cancelamentoMatricula($id);
+        //LancamentoController::cancelamentoMatricula($id);
         AtendimentoController::novoAtendimento("Cancelamento da matricula ".$id, $matricula->pessoa, Session::get('usuario'));
 
         //verifica numero de parcelas existentes  se <=2 e cancela os boletos atuais se for o caso
@@ -541,6 +538,22 @@ where nt.matricula>1');
             $this->modificaMatricula($matricula->id);
             LancamentoController::atualizaMatricula($matricula->id);
         }
+    }
+    public function reativarMatricula($id){
+        $matricula = Matricula::find($id);
+        $matricula->status = 'ativa';
+        $inscricoes = Inscricao::where('matricula',$id)->get();
+        foreach($inscricoes as $inscricao){
+            InscricaoController::reativar($inscricao->id);  
+        }
+
+        $insc = Inscricao::where('matricula',$id)->where('status','regular')->get();
+        if(count($insc)>0){
+            $matricula->save();
+            return redirect($_SERVER['HTTP_REFERER']);
+        }
+        else
+            return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Nenhuma inscrição REGULAR para a matrícula']);
     }
 
 

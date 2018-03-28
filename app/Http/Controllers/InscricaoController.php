@@ -352,14 +352,17 @@ class InscricaoController extends Controller
      * @param  [type] $id [description]
      * @return [type]     [description]
      */
-    public static function apagar($id){
+    public static function cancelar($id){
         $insc=Inscricao::find($id);
         if($insc==null)
             return die("Inscrição não encontrada");
         //return $insc->turma->id."teste";
+        if($insc->status == 'cancelado')
+            return redirect($_SERVER['HTTP_REFERER']);
         InscricaoController::modInscritos($insc->turma->id,0,1);
         $insc->status='cancelado';
         $insc->save();
+
         MatriculaController::modificaMatricula($insc->matricula);
         $num_inscricoes=count(InscricaoController::inscricoesPorMatricula($insc->matricula));
         if($num_inscricoes==0)
@@ -368,6 +371,8 @@ class InscricaoController extends Controller
         return redirect($_SERVER['HTTP_REFERER']); //volta pra pagina anterior, atualizando ela.
 
     }
+
+
     /**
      * Modifica a quantidade de pessoas inscritas na turma
      *
@@ -461,15 +466,28 @@ class InscricaoController extends Controller
 
         return $vagas;
     }
-    public function recuperarInscricoes(){
-        $inscricoes=array('3380','3381','3382','4711');
-        foreach($inscricoes as $id){
-            $inscricao=Inscricao::find($id);
-            $inscricao->status='regular';
-            $inscricao->save();
-            InscricaoController::modInscritos($inscricao->turma->id,1,1);
-        }
-        return redirect(asset('/pessoa/matriculas'));
+    public static function reativar($insc){
+        $curso = '';
+        $inscricao = Inscricao::find($insc);
+        $turma = Turma::find($inscricao->turma->id);
+        if(isset($turma->disciplina->nome))
+            $curso = $turma->disciplina->nome;
+        else
+            $curso = $turma->curso->nome;
+
+        if($turma->vagas >= $turma->matriculados){
+            if($inscricao->status == 'cancelado'){
+                $inscricao->status = 'regular';
+                $inscricao->save();
+                InscricaoController::modInscritos($inscricao->turma->id,1,1);
+                return redirect($_SERVER['HTTP_REFERER']);
+            }
+            else
+                return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Inscrição na turma '.$turma->id.' - '.$curso.' não está cancelada :'.$inscricao->status]);
+        } else
+            return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Turma '.$turma->id.' - '.$curso.' não possui vagas.']);
+        
+        
 
 
     }

@@ -438,7 +438,7 @@ class BoletoController extends Controller
 			$cpf_alt = str_pad($request->cpf,11,'0');
 			$cpf_alt = \App\classes\Strings::mask($cpf_alt,"###.###.###-##");
 			$dados_pessoa = \App\PessoaDadosGerais::where('valor','like',$request->cpf)->orWhere('valor','like',$cpf_alt)->get();
-			if(count($dados_pessoa) == 1){
+			if(count($dados_pessoa) > 0){
 				$pessoa = Pessoa::find($dados_pessoa->first()->pessoa);
 				if($pessoa->nascimento == $request->nascimento){
 					$boletos = Boleto::where('pessoa',$pessoa->id)

@@ -437,10 +437,7 @@ class TurmaController extends Controller
         return view('pedagogico.turma.turmas-site',compact('turmas'))->with('professor',$professor->nomeSimples);
 
     }
-    public function apiTurmas(){
-        $turmas = Turma::where('status','>',0)->get();
-        return $turmas;
-    }
+    
     public function uploadImportaTurma(Request $request){
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         $spreadsheet = $reader->load($request->arquivo);
@@ -469,17 +466,18 @@ class TurmaController extends Controller
     public function processarImportacao(Request $request){
         $cadastrados = array();
 
-        foreach ($request->pessoa as $id=>$key){
+        foreach ($request->pessoa as $id=>$key){ // para cada elemento do array pessoa (campo checkbox)
             $nascimento = \Carbon\Carbon::createFromFormat('d/m/Y', $request->nascimento[$id])->format('Y-m-d');
             
-            if($key == 'on'){
+            if($key == 'on'){ //se o checkbox estiver marcado
+                //verifica se já está cadastrado
                 $cadastrado = Pessoa::where('nome','like',$request->nome[$id])->where('nascimento',$nascimento)->get();
-                
                 if(count($cadastrado) > 0 ){
                     // ja ta cadastrado
                     $pessoa = $cadastrado->first();
                 }
                 else{
+                    //não cadastrado, cadastrar a pessoa
                     $pessoa = new Pessoa;
                     $pessoa->nome = $request->nome[$id];
                     $pessoa->nascimento = $nascimento;
@@ -489,9 +487,11 @@ class TurmaController extends Controller
 
 
                 }
-
+                // se tiver o campo telefone estiver preenchido
                 if(isset($request->telefone[$id])){
+                    //procura pra ver se telefone já existe
                     $dado = PessoaDadosContato::where('dado','2')->where('pessoa',$pessoa->id)->where('valor', $request->telefone[$id]);
+                    //cadastra se nao tiver
                     if(count($dado) == 0){
                         $telefone = new PessoaDadosContato;
                         $telefone->pessoa = $pessoa->id;
@@ -501,9 +501,10 @@ class TurmaController extends Controller
 
                     }
                 }
+                //verifica se a turma existe
                 $turma = Turma::find($request->turma[$id]);
-                //return $pessoa;
                 if($turma != null){
+                    //Inscreve a pessoa (ele verifica antes se a pessoa está inscrita)
                     if(InscricaoController::inscreverAlunoSemMatricula($pessoa->id,$turma->id)){
                         $cadastrados[]=$id;
                     }

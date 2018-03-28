@@ -17,11 +17,10 @@ class Matricula extends Model
 
 
 	}
-	 public static function inscricoes($matricula){
-		$inscricoes=Inscricao::where('matricula',$matricula)->get();
+	 public function getInscricoes(){
+		$inscricoes=Inscricao::where('matricula',$this->id)->get();
+		$this->inscricoes = $inscricoes;
 		return $inscricoes;
-
-
 	}
 
 }

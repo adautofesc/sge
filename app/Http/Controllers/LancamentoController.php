@@ -496,7 +496,7 @@ class LancamentoController extends Controller
 	}
 	
 
-	}
+	
 	public function addPessoaLancamentos(){
 		$lancamentos = Lancamento::all();
 		foreach($lancamentos as $lancamento){

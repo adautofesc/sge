@@ -387,28 +387,6 @@ class PessoaController extends Controller
 
 		$pessoa->cadastro=Data::converteParaUsuario($pessoa->created_at). "  Cadastrad".Pessoa::getArtigoGenero($pessoa->genero).' por '. Pessoa::getNome($pessoa->por);
 
-		switch ($pessoa->genero) {
-			case 'M':
-				$pessoa->genero="Masculino";
-				break;
-			case 'F':
-				$pessoa->genero="Feminino";
-				break;
-			case 'X':
-				$pessoa->genero="Trans Masculino";
-				break;
-			case 'Y':
-				$pessoa->genero="Trans Feminino";
-				break;
-			case 'Z':
-				$pessoa->genero="Não especificado";
-				break;
-			
-			default:
-				$pessoa->genero="Não especificado";
-				break;
-		}
-
 		$username=PessoaDadosAcesso::where('pessoa',$pessoa->id)->first();
 		if($username)
 			$pessoa->username=$username->usuario;

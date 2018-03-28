@@ -39,6 +39,12 @@
 
                 </select>
             </div>
+        </div>
+        <div class="form-group row"> 
+            <label class="col-sm-2 form-control-label text-xs-right">
+                Valor
+            </label>
+
             <div class="col-sm-2">
                 <div class="input-group">
                     <span class="input-group-addon">% </span> 
@@ -65,25 +71,40 @@
                     <span class="input-group-addon">Vezes</span> 
                 </div>
             </div>
-            <label class="col-sm-2 form-control-label text-xs-right">
-                Dia de vencimento
-            </label>
-            <div class="col-sm-2"> 
-                <input type="number" class="form-control boxed" value='7' name='dvencimento' required>  
-            </div>
 
         </div>
         <div class="form-group row"> 
             <label class="col-sm-2 form-control-label text-xs-right"></label>
-            <div class="col-sm-10"> 
+            <div class="col-sm-2"> 
                 
                 <div>
                     <label>
-                    <input class="checkbox" type="checkbox" name="pendente" value="true" {{ $matricula->status === "pendente" ? 'Checked="checked"' : "" }}>
+                    <input class="radio" type="radio" name="status" value="ativa" {{ $matricula->status === "ativa" ? 'Checked="checked"' : "" }}>
+                    <span>Ativa</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-2"> 
+                
+                <div>
+                    <label>
+                    <input class="radio" type="radio" name="status" value="pendente" {{ $matricula->status === "pendente" ? 'Checked="checked"' : "" }}>
                     <span>Pendente</span>
                     </label>
                 </div>
             </div>
+            <div class="col-sm-2"> 
+                
+                <div>
+                    <label>
+                    <input class="radio" type="radio" name="status" value="cancelada" {{ $matricula->status === "cancelada" ? 'Checked="checked"' : "" }}>
+                    <span>Cancelada</span>
+                    </label>
+                </div>
+            </div>
+                
+                
+
                 
                 
         </div>

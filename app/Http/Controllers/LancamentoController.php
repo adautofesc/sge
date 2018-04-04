@@ -181,6 +181,16 @@ class LancamentoController extends Controller
 			
 		}
 	}
+	public static function reativarPorBoleto($boleto){
+		$lancamentos = Lancamento::where('boleto',$boleto)
+						->get();
+		//return $lancamentos;
+		foreach($lancamentos as $lancamento){	
+				$lancamento->status = null;
+				$lancamento->save();			
+		}
+		return $lancamentos;
+	}
 	public static function relancarLancamento($id){
 		$lancamento = Lancamento :: find($id);
 		$novo_lancamento = new  Lancamento;
@@ -518,6 +528,19 @@ class LancamentoController extends Controller
 		else
 			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Lançamentos não encontrado']);
 
+	}
+	public function novo($id){
+		$matriculas = Matricula::where('pessoa', Session::get('pessoa_atendimento'))
+			 	->where(function($query){ $query
+							->where('status','ativa')
+							->orwhere('status', 'pendente');
+					})
+			 	->orderBy('id','desc')->get();
+		
+
+
+
+		return view('financeiro.lancamentos.novo')->with('pessoa',$id)->with('matriculas',$matriculas);
 	}
 
 

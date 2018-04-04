@@ -137,10 +137,7 @@ class RetornoController extends Controller
 			   } 
 			   else
 			   	rename($arquivo, $arquivo.'_processado');
-			
-
 			}
-
 			return redirect(asset('/financeiro/boletos/retorno/processados'));
 		}
 

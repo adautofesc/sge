@@ -115,6 +115,7 @@ class SecretariaController extends Controller
 
 
 		}
+		//return $matriculas;
 		return view('secretaria.atendimento', compact('pessoa'))->with('matriculas',$matriculas)->with('boletos',$boletos)->with('lancamentos',$lancamentos)->with('inscricoes',$inscricoes);
 	}
 }

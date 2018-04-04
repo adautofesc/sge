@@ -35,10 +35,13 @@
                                 <ol>
                                     @foreach($inscricoes as $inscricao)
                                     <li>
-                                        <button class="btn btn-danger btn-sm" title="Remover esta pessoa da turma" onclick="remover('{{$inscricao->id}}')">
-                                            X
-                                        </button>
-                                        {{$inscricao->pessoa->nome}} 
+                                        <a hrfe="#" class="btn btn-danger btn-sm" title="Remover esta pessoa da turma" onclick="remover('{{$inscricao->id}}')">
+                                            <i class=" fa fa-times text-white"></i>
+                                        </a>
+                                        <a href="{{asset('/secretaria/atender').'/'.$inscricao->pessoa->id}}" target="_blank" class="btn btn-primary btn-sm" title="Abrir tela de atendimento desta pessoa">
+                                            <i class=" fa fa-user text-white"></i></a>
+                                        
+                                         <b>{{$inscricao->pessoa->nome}}</b> Tel.{{$inscricao->telefone}} <small>Cod.{{$inscricao->pessoa->id}} </small>
                                     </li>
                                     @endforeach
                                 </ol>

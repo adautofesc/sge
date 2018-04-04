@@ -103,6 +103,8 @@ Route::middleware('login') ->group(function(){
 		Route::prefix('lancamentos')->group(function(){
 			Route::get('home',  function(){ return view('financeiro.lancamentos.home'); });
 			Route::get('listar-por-pessoa','LancamentoController@listarPorPessoa');
+			Route::get('novo/{id}','LancamentoController@novo');
+			Route::post('novo/{id}','LancamentoController@create');
 			Route::get('gerar-individual/{parcela}','LancamentoController@gerarLancamentosPorPessoa');
 			Route::get('cancelar/{lancamento}','LancamentoController@cancelar');
 			Route::post('home', 'LancamentoController@gerarLancamentos' );
@@ -110,14 +112,20 @@ Route::middleware('login') ->group(function(){
 
 		Route::prefix('boletos')->group(function(){
 			Route::get('home',  function(){ return view('financeiro.boletos.home'); });
+			Route::get('editar/{id}','BoletoController@editar');
+			Route::post('editar/{id}','BoletoController@update');
 			Route::get('imprimir/{id}','BoletoController@imprimir');
 			Route::get('listar-por-pessoa','BoletoController@listarPorPessoa');
 			Route::get('cancelar/{id}','BoletoController@cancelar');
+			Route::get('reativar/{id}','BoletoController@reativar');
 			Route::get('gerar-individual','BoletoController@cadastarIndividualmente');
 			Route::get('gerar','BoletoController@gerar');
 			Route::get('gerar-boletos', 'BoletoController@cadastrar');//precisa de middleware
 			Route::get('imprimir-lote', 'BoletoController@imprimirLote');
 			Route::get('confirmar-impressao', 'BoletoController@confirmarImpressao');//precisa de middleware
+			Route::get('novo/{pesssoa}', 'BoletoController@novo');//precisa de middleware
+			Route::post('novo/{pesssoa}', 'BoletoController@create');//precisa de middleware
+
 			
 
 			Route::prefix('remessa')->group(function(){
@@ -261,6 +269,8 @@ Route::middleware('login') ->group(function(){
 			Route::get('reativar/{id}','MatriculaController@reativarMatricula');
 			Route::get('cancelamento', 'MatriculaController@regularizarCancelamentos');
 			Route::prefix('inscricao')->group(function(){
+				Route::get('editar/{id}', 'InscricaoController@editar');
+				Route::post('editar/{id}', 'InscricaoController@update');
 				Route::get('apagar/{id}', 'InscricaoController@cancelar');
 				Route::get('reativar/{id}', 'InscricaoController@reativar');
 			});

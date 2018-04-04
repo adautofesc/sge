@@ -269,7 +269,7 @@ class BoletoController extends Controller
 			$boleto_completo = $this->gerarBoleto($boleto);
 			$remessa->addBoleto($boleto_completo);
 			$boleto->status='emitido';
-			//$boleto->save();
+			$boleto->save();
 
 		}
 		//dd($remessa);
@@ -317,10 +317,11 @@ class BoletoController extends Controller
 			if($boleto->status == 'emitido'){
 				$boleto->status = 'cancelar';
 				$boleto->save();
-				LancamentoController::atualizaLancamentos($id,null);
+				LancamentoController::cancelarPorBoleto($id);
 			}
 		}
 		return redirect($_SERVER['HTTP_REFERER']);
+
 		
 
 	}
@@ -396,23 +397,7 @@ class BoletoController extends Controller
 
 
 		}
-		public function cancelarGravados(){
-			$boletos = Boleto::where('status','gravado')->get();
-			foreach($boletos as $boleto){
-				$boleto->status = 'cancelado';
-				$boleto->save();
-				$lancamentos=Lancamento::where('boleto',$boleto->id)
-								->get();
 
-				foreach($lancamentos as $lancamento){
-					$lancamento->boleto=null;
-					$lancamento->save();
-				}
-				
-			}
-			return "boletos cancelados";
-
-		}
 		/*
 		public function corrigirBoletos(){
 			$boletos = \DB::select("select distinct boleto from lancamentos l join boletos b on l.boleto = b.id where vencimento like '2018-03-28 23:59:00' and parcela = 0 group by b.id");
@@ -429,6 +414,65 @@ class BoletoController extends Controller
 
 			}
 		}*/
+		public function novo($pessoa){
+			$lancamentos = Lancamento::where('pessoa',$pessoa)->where('boleto',null)->where('status',null)->get();
+			return view('financeiro.boletos.novo')->with('lancamentos',$lancamentos)->with('pessoa',$pessoa);
+
+		}
+		public function create(Request $r){
+			if($r->valor >0){
+				$boleto = new Boleto;
+				$boleto->vencimento = $r->vencimento;
+				$boleto->pessoa = $r->pessoa;
+				$boleto->valor = $r->valor;
+				$boleto->status = 'gravado';
+				$boleto->save();
+				
+				foreach ($r->lancamentos as $lancamento){
+					$lancamento_bd = Lancamento::find($lancamento);
+					if($lancamento_bd != null){
+						$lancamento_bd->boleto = $boleto->id;
+						$lancamento_bd->save();
+					}
+
+				}
+			}
+			return redirect(asset('secretaria/atender/'.$r->pessoa));
+
+
+
+		}
+		public function reativar($id){
+			$boleto=Boleto::find($id);
+			$boleto->status = 'impresso';
+			$boleto->save();
+			LancamentoController::reativarPorBoleto($id);
+			return redirect($_SERVER['HTTP_REFERER']);
+
+
+
+		}
+		public function editar($id){
+			$boleto = Boleto::find($id);
+			if($boleto != null){
+				$boleto->vencimento = \Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y');
+				return view('financeiro.boletos.editar')->with('boleto',$boleto);
+			}
+			else 
+				return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Boleto '.$id.' não encontrado.']);
+		}
+		public function update(Request $r){
+			if($r->boleto > 0){
+				$boleto = Boleto::find($r->id);
+				$boleto->vencimento = \Carbon\Carbon::createFromFormat('d/m/Y', $r->vencimento, 'Europe/London')->format('Y-m-d 23:59:59');
+				$boleto->valor = str_replace(',','.',$r->valor);
+				$boleto->status = $r->status;
+				$boleto->save();
+				
+			}
+			return redirect(asset('secretaria/atendimento'));
+
+		}
 		public function segundaVia(Request $request){
 			$this->validate($request, [
 				'cpf'=>'required|numeric',

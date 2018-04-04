@@ -364,35 +364,35 @@ class MatriculaController extends Controller
      */
     public static function modificaMatricula($id){
         $matricula=Matricula::find($id);
-        //$inscricoes=Inscricao::where('matricula',$matricula->id)->where('status','regular')->count();
-        if($matricula->curso == 307){
-            $inscricoes=Inscricao::where('matricula',$matricula->id)->where('status','regular')->get();
-            switch (count($inscricoes)) {
-                        case 0:
-                            $matricula->valor=0;
-                            break;
-                        case 1:
-                            $matricula->valor=100;
-                            break;
-                        case 2:
-                        case 3:
-                        case 4:
-                            $matricula->valor=250;
-                            break;
-                        case 5:
-                        case 6:
-                        case 7:
-                        case 8:
-                        case 9:
-                        case 10:
-                            $matricula->valor=400;
-                            break;
-                    }
-            $matricula->save();
-            //LancamentoController::atualizaMatricula($matricula->id);
-            return $matricula->valor;
+        if($matricula!=null){
+            if($matricula->curso == 307){
+                $inscricoes=Inscricao::where('matricula',$matricula->id)->where('status','regular')->get();
+                switch (count($inscricoes)) {
+                            case 0:
+                                $matricula->valor=0;
+                                break;
+                            case 1:
+                                $matricula->valor=100;
+                                break;
+                            case 2:
+                            case 3:
+                            case 4:
+                                $matricula->valor=250;
+                                break;
+                            case 5:
+                            case 6:
+                            case 7:
+                            case 8:
+                            case 9:
+                            case 10:
+                                $matricula->valor=400;
+                                break;
+                        }
+                $matricula->save();
+                //LancamentoController::atualizaMatricula($matricula->id);
+                return $matricula->valor;
+            }
         }
-        
     }
     public static function cancelarMatricula($id){
         $matricula=Matricula::find($id);

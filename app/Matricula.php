@@ -22,5 +22,13 @@ class Matricula extends Model
 		$this->inscricoes = $inscricoes;
 		return $inscricoes;
 	}
+	public function getNomeCurso(){
+		$curso = Curso::find($this->curso);
+		if($curso != null)
+			return $curso->nome;
+		else
+			return "Erro: numero de curso não consta na matrícula";
+
+	}
 
 }

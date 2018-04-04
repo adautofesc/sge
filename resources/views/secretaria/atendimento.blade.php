@@ -119,7 +119,22 @@
                         @else
                         <li>
                         @endif
-                            @if(count($matricula->inscricoes) == 1 && $matricula->curso != 307 ) 
+                            @if(count($matricula->inscricoes) == 0)
+                             <div class="row alert-danger">                                                
+                                  
+                                <div class="col-xl-11 text-secondary " style="line-height:40px !important; padding-left: 30px;" >
+                                    
+                                    <div><i class=" fa fa-exclamation-circle "></i> &nbsp;<small><b>M{{$matricula->id}}  - SEM INSCRIÇÕES </b></small></div> 
+                                </div>
+                                <div class="col-xl-1" style="line-height:40px !important;">
+                                     @if($matricula->status != 'cancelada')
+                                    <a a href="#" onclick="cancelar({{$matricula->id}});" title="Cancelar Matrícula"><i class=" fa fa-times "></i></a>
+                                    @endif
+                                    
+                                </div>
+                            </div>
+
+                            @elseif(count($matricula->inscricoes) == 1 && $matricula->curso != 307 ) 
                             <div class="row"> 
                                                  
                                     @if($matricula->inscricoes->first()->turma->programa->id == 12)
@@ -221,7 +236,7 @@
                             <div class="row">
                             @endif
                                                              
-                                <div class="col-xl-4" title="{{$inscricao->turma->id}} - {{ isset($inscricao->turma->disciplina->nome) ? $inscricao->turma->disciplina->nome: $inscricao->turma->curso->nome}} " style="line-height:40px !important; padding-left: 50px;">
+                                <div class="col-xl-4" title="Turma {{$inscricao->turma->id}} - {{ isset($inscricao->turma->disciplina->nome) ? $inscricao->turma->disciplina->nome: $inscricao->turma->curso->nome}} " style="line-height:40px !important; padding-left: 50px;">
                                      <div><i class=" fa fa-caret-right"></i>&nbsp;<small>&nbsp;i{{$inscricao->id}} - 
                                         {{ isset($inscricao->turma->disciplina->nome) ? substr($inscricao->turma->disciplina->nome,0,30) : substr($inscricao->turma->curso->nome,0,35)}}</small></div>
                                 </div>
@@ -241,11 +256,10 @@
                                     <div>
                                         @if($inscricao->status != 'cancelado')
                                         <a a href="#" onclick="remover({{$inscricao->id}});" title="Cancelar disciplina"><i class=" fa fa-times "></i></a>
+                                        <a href="{{asset('/secretaria/matricula/inscricao/editar/').'/'.$inscricao->id}}" target="_blank" title="Editar Inscrição"><i class=" fa fa-pencil-square-o "></i></a>
                                         @else
                                         <a a href="#" onclick="recolocar({{$inscricao->id}});" title="Reativar disciplina"><i class=" fa fa-undo "></i></a>
                                         @endif
-                                        
-                                   
                                     </div>
                                 </div>
                          
@@ -290,9 +304,12 @@
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div>
-                                        <a href="#" title="Cancelar Matrícula"><i class=" fa fa-times "></i></a>
-                                        <a href="#" title="Editar Matrícula"><i class=" fa fa-pencil-square-o "></i></a>
-                                        <a href="#" title="Imprimir Termo de Matrícula"><i class=" fa fa-print "></i></a>
+                                        @if($inscricao_livre->status != 'cancelado')
+                                        <a a href="#" onclick="remover({{$inscricao_livre->id}});" title="Cancelar disciplina"><i class=" fa fa-times "></i></a>
+                                        @else
+                                        <a a href="#" onclick="recolocar({{$inscricao_livre->id}});" title="Reativar disciplina"><i class=" fa fa-undo "></i></a>
+                                        @endif
+                                        <a href="#" title="Imprimir inscrição"><i class=" fa fa-print "></i></a>
                                         
                                     </div>
                                 </div>
@@ -310,9 +327,14 @@
         <div class="col-xl-12 center-block">
             <div class="card card-primary">
                 <div class="card-header">
-                    <div class="header-block">
-                        <p class="title" style="color:white">Boletos</p>
+                    <div class="header-block">                       
+                         <p class="title" style="color:white">Boletos</p>
+                         &nbsp;
+                         <a href="{{asset('financeiro/boletos/novo'.'/'.session('pessoa_atendimento'))}}" title="Gerar novo boleto individual" class="text-white te" style="" ><i class=" fa fa-plus-circle "></i></a>
+                         &nbsp;
+                         <a href="{{asset('financeiro/boletos/novo'.'/'.session('pessoa_atendimento'))}}" title="Gerar boleto com todas parcelas em aberto para daqui 5 dias úteis." class="text-white te" style="" ><i class=" fa fa-cogs "></i></a>
                     </div>
+
 
                 </div>
 
@@ -370,9 +392,22 @@
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div>
-                                        <i class=" fa fa-times "></i>
-                                        <i class=" fa fa-pencil-square-o "></i>
-                                        <i class=" fa fa-print "></i>
+                                        @if($boleto->status == 'impresso' || $boleto->status == 'gravado')
+                                        <a a href="{{asset('financeiro/boletos/imprimir/').'/'.$boleto->id}}" target="_blank" title="Imprimir Boleto"><i class=" fa fa-print "></i></a>
+                                        <a a href="{{asset('financeiro/boletos/editar/').'/'.$boleto->id}}" target="_blank"  title="Editar Boleto"><i class=" fa fa-pencil-square-o "></i></a>
+                                        <a a href="#" onclick="cancelarBoleto({{$boleto->id}});" title="Cancelar Boleto"><i class=" fa fa-times "></i></a>
+                                        @elseif($boleto->status == 'emitido')
+                                        <a a href="{{asset('financeiro/boletos/imprimir/').'/'.$boleto->id}}" target="_blank" title="Imprimir Boleto"><i class=" fa fa-print "></i></a>
+                                        <a a href="#" onclick="cancelarBoleto({{$boleto->id}});" title="Cancelar Boleto"><i class=" fa fa-times "></i></a>
+                                        
+                                        @elseif($boleto->status == 'cancelar')
+                                        
+                                        <a a href="{{asset('financeiro/boletos/imprimir').'/'.$boleto->id}}" target="_blank" title="Imprimir"><i class=" fa fa-print "></i></a>
+                                        <a a href="#" onclick="reativarBoleto({{$boleto->id}});" title="Reativar Boleto"><i class=" fa fa-undo "></i></a>
+                                        @elseif($boleto->status == 'pago' || $boleto->status == 'cancelado')
+                                        <a a href="{{asset('financeiro/boletos/imprimir').'/'.$boleto->id}}" target="_blank" title="Imprimir"><i class=" fa fa-print "></i></a>
+                                        @endif
+                                        
                                        
                                     </div>
                                 </div>
@@ -399,9 +434,9 @@
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div>
-                                        <i class=" fa fa-times "></i>
-                                    
-                                       
+                                        @if($lancamento->status == 'cancelado')
+                                        <a a href="#" onclick="relancarParcela({{$lancamento->id}});" title="Relançar Parcela"><i class=" fa fa-external-link-square "></i></a>
+                                        @endif
                                     </div>
                                 </div>
                          
@@ -422,6 +457,10 @@
                 <div class="card-header">
                     <div class="header-block">
                         <p class="title" style="color:white">Parcelas em aberto</p>
+                        &nbsp;
+                        <a href="{{asset('financeiro/lancamentos/novo'.'/'.session('pessoa_atendimento'))}}" title="Gerar parcela individual" class="text-white te" style="" ><i class=" fa fa-plus-circle "></i></a>
+                        &nbsp;
+                         <a href="{{asset('financeiro/lancamentos/novo'.'/'.session('pessoa_atendimento'))}}" title="Gerar parcela atual das matriculas ativas" class="text-white te" style="" ><i class=" fa fa-cogs "></i></a>
                     </div>
                 </div>
                 <div class="card-block">
@@ -509,6 +548,14 @@
   function reativar(matricula){
     if(confirm('Tem certeza que deseja reativar esta matrícula?'))
         window.location.replace("{{asset('/secretaria/matricula/reativar/')}}/"+matricula);
+  }
+  function cancelarBoleto(boleto){
+    if(confirm('Tem certeza que deseja cancelar este boleto? Todos lançamentos deste serão cancelados.'))
+        window.location.replace("{{asset('/financeiro/boletos/cancelar/')}}/"+boleto);
+  }
+  function reativarBoleto(boleto){
+    if(confirm('Tem certeza que deseja cancelar este boleto? Todos lançamentos deste serão cancelados.'))
+        window.location.replace("{{asset('/financeiro/boletos/reativar/')}}/"+boleto);
   }
 </script>
 @endsection

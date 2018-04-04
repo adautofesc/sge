@@ -23,6 +23,10 @@ class InscricaoController extends Controller
     {
         //
     }
+    public function editar($id){
+        $inscricao = Inscricao::find($id);
+        return view('secretaria.inscricao.editar',compact('inscricao'));
+    }
     public function novaInscricao(){
         if(Session::get('pessoa_atendimento'))
             $id_pessoa=Session::get('pessoa_atendimento');
@@ -164,9 +168,19 @@ class InscricaoController extends Controller
      * @param  \App\Inscricao  $Inscricao
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Inscricao $Inscricao)
-    {
-        //
+    public function update(Request $request)
+    {   
+        $inscricao = $request->inscricao;
+        $inscricao = Inscricao::find($inscricao);
+        if($inscricao != null){
+            $inscricao->matricula = $request->matricula;
+            $inscricao->save();
+            AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id." modificada para matrícula ".$inscricao->matricula.".", $inscricao->pessoa->id, Session::get('usuario'));
+            return redirect(asset('/secretaria/atender/'));
+        }
+        else
+            return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Matricula inválida.']);
+
     }
 
     /**
@@ -417,6 +431,10 @@ class InscricaoController extends Controller
         if (empty($turma))
             return redirect(asset('/secretaria/turmas'));
         $inscricoes=Inscricao::where('turma','=', $turma->id)->where('status','<>','cancelado')->get();
+        foreach ($inscricoes as $inscricao) {
+            $inscricao->telefone = \App\PessoaDadosContato::getTelefone($inscricao->pessoa->id);
+            
+        }
         //return $inscricoes;
         return view('pedagogico.turma.dados',compact('turma'))->with('inscricoes',$inscricoes);
 

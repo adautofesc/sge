@@ -21,7 +21,7 @@
                 <div class="card-block">
                     @if(isset($pessoa))
                     <div>
-                        <a href="/secretaria/atender" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="/secretaria/atender/{{$pessoa}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Retomar Atendimento</a>
                     </div>

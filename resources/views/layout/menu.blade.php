@@ -41,7 +41,16 @@
                                 @endif
                                 @if(unserialize(Session('recursos_usuario'))->contains('recurso','18'))
                                 <li  >
-                                    <a href="{{asset('/secretaria')}}"> <i class="fa fa-stack-overflow"></i> Secretaria </a>
+                                    <a href=""> <i class="fa fa-stack-overflow"></i> Secretaria </a>
+                                    <ul>
+                                        <li>
+                                        <a href="{{asset('/secretaria')}}"> <i class="fa fa-stack-overflow"></i> Home </a>
+                                        </li>
+                                        <li>
+                                        <a href="{{asset('secretaria/pre-atendimento')}}"> <i class="fa fa-stack-overflow"></i> Novo atendimento</a>
+                                        </li>
+                                    
+                                    </ul>
                                 </li>
                                 @endif
                                 

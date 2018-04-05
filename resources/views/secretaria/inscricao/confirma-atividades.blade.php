@@ -6,7 +6,7 @@
 
 @include('inc.errors')
 <div class="subtitle-block">
-    <h3 class="subtitle"><small>De: </small> {{$nome}}</h3>
+    <h3 class="subtitle"><small>De: </small> {{$pessoa->nome_simples}}</h3>
 </div>
 <div class="card card-block">
     <!-- Nav tabs -->
@@ -208,6 +208,7 @@
         </div>
         <input type="hidden" name="valorcursointegral{{$curso->id}}" value="{{$curso->valor}}" >
         <input type="hidden" name="valordesconto{{$curso->id}}" value="0" >
+        <input type="hidden" name="pessoa" value="{{$pessoa->id}}" >
 
 </div>
 </div>

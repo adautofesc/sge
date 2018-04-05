@@ -28,16 +28,11 @@ class BoletoController extends Controller
 		$pessoas = \DB::select("select distinct pessoa from matriculas where status like 'ativa' or status like 'pendente'group by pessoa"); //seleciona pessoas com matriculas ativas/pendentes
 
 		foreach($pessoas as $pessoa){
-			$matriculas = \DB::select("select id from matriculas where pessoa = ".$pessoa->pessoa." and (status like 'ativa' or status like 'pendente') ");//lista matriculas de cada uma dessas pessoas
 
-			$array_matriculas = array(); //cria array para selecionar os lancamentos na query
-			foreach($matriculas as  $matricula){
-				$array_matriculas[] = $matricula->id;//adiciona cada matricula na array
-			}
-			//seleciona lancamentos sem boleto que nao estejam cancelados
+	
 			$lancamentos = Lancamento::where('status',null)
 				->where('boleto',null)
-				->whereIn('matricula',$array_matriculas)
+				->where('pessoa',$pessoa->pessoa)
 				->get();
 			if(count($lancamentos)>0){// tem lancamentos?
 				$boleto = new Boleto; //cria boleto
@@ -46,22 +41,7 @@ class BoletoController extends Controller
 				$boleto->status = 'gravado';
 				$boleto->save();
 				foreach($lancamentos as $lancamento){ //para cada lancamento
-					if($lancamento->parcela == 0){ //verifica se o lancamento eh de correcao = 0
-						if($lancamento->valor>0){ 
-							//acrescimo
-							$boleto->encargos = $boleto->encargos + $lancamento->valor;//adiciona n
-							$boleto->valor=$boleto->valor+$lancamento->valor;
-						}
-						else{
-							//desconto
-							$boleto->descontos = $boleto->descontos + $lancamento->valor;
-							$boleto->valor=$boleto->valor+$lancamento->valor;
-						}
-					}
-					else{
-						$boleto->valor=$boleto->valor+$lancamento->valor;
-
-					}
+					$boleto->valor=$boleto->valor+$lancamento->valor;
 					$lancamento->boleto = $boleto->id;
 					$lancamento->save();
 
@@ -103,25 +83,11 @@ class BoletoController extends Controller
 		return $cadastrado;
 
 	}
-	public function cadastarIndividualmente(){
-		if(!Session::get('pessoa_atendimento'))
-            return redirect(asset('/secretaria/pre-atendimento'));
+	public function cadastarIndividualmente($pessoa){
 		$vencimento = date('Y-m-d 23:23:59', strtotime("+5 days",strtotime(date('Y-m-d')))); 
-		$matriculas = Matricula::select('id')
-			->where('pessoa',Session::get('pessoa_atendimento'))
-			->where(function($query){
-				$query->where('status','ativa')->orwhere('status', 'pendente');
-			})
-			->get();
 
-		$ids=array();
-		foreach($matriculas as $matricula){
-			$ids[]=$matricula->id;
-		}
-
-
-		$lancamentos = Lancamento::whereIn('matricula',$ids)
-			->where('boleto',null)
+		$lancamentos = Lancamento::where('boleto',null)
+			->where('pessoa',$pessoa)
 			->get();
 
 		if(count($lancamentos) > 0){
@@ -503,6 +469,7 @@ class BoletoController extends Controller
 
 
 		}
+
 		
 
 }

@@ -1,41 +1,42 @@
 @extends('layout.app')
 @section('pagina')
 <div class="title-block">
-    <h3 class="title"> Edição do boleto {{$boleto->id}} <span class="sparkline bar" data-type="bar"></span> </h3>
+    <h3 class="title"> Edição da parcela {{$lancamento->id}} <span class="sparkline bar" data-type="bar"></span> </h3>
 </div>
 @include('inc.errors')
 <form name="item" method="POST">
     <div class="card card-block">
     	<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Estado
+				Matrícula
 			</label>
-			<div class="col-sm-6"> 
-				<select class="c-select form-control boxed" name="status" required>
-					<option >Selecione uma opção</option>
-					<option value="gravado" {{$boleto->status == 'gravado' ? "selected" : ""}} >Gravado</option>
-					<option value="impresso" {{$boleto->status == 'impresso' ? "selected" : ""}} >Impresso</option>
-					<option value="emitido" {{$boleto->status == 'emitido' ? "selected" : ""}}>Enviado ao banco</option>
-					<!--
-					<option value="cancelar" {{$boleto->status == 'cancelar' ? "selected" : ""}}>Cancelar</option>
-					<option value="cancelado" {{$boleto->status == 'cancelado' ? "selected" : ""}}>Cancelado</option>
-					-->
-					
-					
-				</select> 
+			<div class="col-sm-3"> 
+				<div class="input-group">
+					<input type="text" class="form-control boxed" name="matricula" value="{{$lancamento->matricula}}" required> 
+				</div>
 			</div>
 		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Vencimento
+				Parcela
 			</label>
 			<div class="col-sm-3"> 
 				<div class="input-group">
-					<span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
-					<input type="text" class="form-control boxed" name="vencimento" value="{{$boleto->vencimento}}" required> 
+					<input type="number" class="form-control boxed" name="parcela" value="{{$lancamento->parcela}}" required> 
 				</div>
 			</div>
 		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Refencia
+			</label>
+			<div class="col-sm-3"> 
+				<div class="input-group">
+					<input type="text" class="form-control boxed" name="referencia" value="{{$lancamento->referencia}}" maxlength="50" required> 
+				</div>
+			</div>
+		</div>
+	
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Valor
@@ -43,7 +44,7 @@
 			<div class="col-sm-3"> 
 				<div class="input-group">
 					<span class="input-group-addon">R$ </span> 
-					<input type="text" class="form-control boxed" name="valor" value="{{str_replace('.',',',$boleto->valor)}}" required> 
+					<input type="text" class="form-control boxed" name="valor" value="{{str_replace('.',',',$lancamento->valor)}}" required> 
 				</div>
 			</div>
 		</div>
@@ -51,7 +52,7 @@
 		            
 		<div class="form-group row">
 			<div class="col-sm-10 col-sm-offset-2">
-				<input type="hidden" name="boleto" value="{{$boleto->id}}">
+				<input type="hidden" name="lancamento" value="{{$lancamento->id}}">
 				<button type="submit" name="btn"  class="btn btn-primary">Salvar</button>
                 <button type="reset" name="btn"  class="btn btn-primary">Restaurar</button>
                 <button type="cancel" name="btn" class="btn btn-primary" onclick="history.back(-2);return false;">Cancelar</button>

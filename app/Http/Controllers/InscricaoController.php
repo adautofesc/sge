@@ -27,16 +27,13 @@ class InscricaoController extends Controller
         $inscricao = Inscricao::find($id);
         return view('secretaria.inscricao.editar',compact('inscricao'));
     }
-    public function novaInscricao(){
-        if(Session::get('pessoa_atendimento'))
-            $id_pessoa=Session::get('pessoa_atendimento');
-        else
-            return redirect(asset('/secretaria/pre-atendimento'));
+    public function novaInscricao($id_pessoa){
+
         if(!Session::get('atendimento'))
             return redirect(asset('/secretaria/atender'));
         $str_turmas='';
         $turmas=collect();
-        $incricoes_atuais=Inscricao::where('pessoa',Session::get('pessoa_atendimento'))->where('status', '<>','cancelado')->get();
+        $incricoes_atuais=Inscricao::where('pessoa',$id_pessoa)->where('status', '<>','cancelado')->get();
         //return $incricoes_atuais;
         //->where('status','<>','cancelado')
 
@@ -196,12 +193,11 @@ class InscricaoController extends Controller
 
     public function confirmacaoAtividades(Request $request){
 
-        if(!Session::get('pessoa_atendimento'))
-            return redirect(asset('/secretaria/pre-atendimento'));
+       
         if(!Session::get('atendimento'))
-            return redirect(asset('/secretaria/atender'));
+            return redirect(asset('/secretaria/inicio-atendimento'));
         
-        $pessoa=Pessoa::find(Session::get('pessoa_atendimento'));
+        $pessoa=Pessoa::find($request->pessoa);
         $valor=0; 
         $todas_turmas=TurmaController::csvTurmas($request->atividades.$request->turmas_anteriores);
         $turmas=TurmaController::csvTurmas($request->atividades);
@@ -291,7 +287,7 @@ class InscricaoController extends Controller
 
         //return $cursos;
 
-        return view('secretaria.inscricao.confirma-atividades')->with('cursos',$cursos)->with('turmas',$turmas)->with('valor',$valor)->with('descontos',$descontos)->with('nome',$pessoa->nome_simples)->with('todas_turmas',$todas_turmas)->with('turmas_str',$request->atividades);
+        return view('secretaria.inscricao.confirma-atividades')->with('cursos',$cursos)->with('turmas',$turmas)->with('valor',$valor)->with('descontos',$descontos)->with('pessoa',$pessoa)->with('todas_turmas',$todas_turmas)->with('turmas_str',$request->atividades);
 
     }
     public static function inscreverAluno($aluno,$turma,$matricula=0){

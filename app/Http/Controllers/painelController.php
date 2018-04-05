@@ -180,8 +180,8 @@ class painelController extends Controller
         $inst = new LancamentoController; /// esse cara vai fazer os lancamentos atrasados
         //$inst= new MatriculaController;
 
-        //return $inst->addPessoaLancamentos();
-        return $inst->devincularBoleto(999999);
+        return $inst->addPessoaLancamentos();
+       
         
         
     }

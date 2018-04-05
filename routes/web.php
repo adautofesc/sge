@@ -105,8 +105,12 @@ Route::middleware('login') ->group(function(){
 			Route::get('listar-por-pessoa','LancamentoController@listarPorPessoa');
 			Route::get('novo/{id}','LancamentoController@novo');
 			Route::post('novo/{id}','LancamentoController@create');
-			Route::get('gerar-individual/{parcela}','LancamentoController@gerarLancamentosPorPessoa');
+			Route::get('gerar-individual/{pessoa}','LancamentoController@gerarLancamentosPorPessoa');
 			Route::get('cancelar/{lancamento}','LancamentoController@cancelar');
+			Route::get('reativar/{lancamento}','LancamentoController@reativar');
+			Route::get('relancar/{lancamento}','LancamentoController@relancarParcela');
+			Route::get('editar/{lancamento}','LancamentoController@editar');
+			Route::post('editar/{lancamento}','LancamentoController@update');
 			Route::post('home', 'LancamentoController@gerarLancamentos' );
 		});
 
@@ -118,7 +122,7 @@ Route::middleware('login') ->group(function(){
 			Route::get('listar-por-pessoa','BoletoController@listarPorPessoa');
 			Route::get('cancelar/{id}','BoletoController@cancelar');
 			Route::get('reativar/{id}','BoletoController@reativar');
-			Route::get('gerar-individual','BoletoController@cadastarIndividualmente');
+			Route::get('gerar-individual/{pessoa}','BoletoController@cadastarIndividualmente');
 			Route::get('gerar','BoletoController@gerar');
 			Route::get('gerar-boletos', 'BoletoController@cadastrar');//precisa de middleware
 			Route::get('imprimir-lote', 'BoletoController@imprimirLote');
@@ -257,10 +261,11 @@ Route::middleware('login') ->group(function(){
 
 
 		Route::prefix('matricula')->group(function(){
-			Route::get('/nova','InscricaoController@novaInscricao');
-			Route::get('/confirmacao', function(){ return redirect(asset('/secretaria/atender')); });
-			Route::post('/confirmacao', 'InscricaoController@confirmacaoAtividades');
-			Route::post('gravar', 'MatriculaController@gravar');
+			Route::get('/nova/{pessoa}','InscricaoController@novaInscricao');
+
+
+			Route::post('nova/confirmacao', 'InscricaoController@confirmacaoAtividades');
+			Route::post('nova/gravar', 'MatriculaController@gravar');
 			Route::get('termo/{id}','MatriculaController@termo');
 			Route::get('editar/{id}', 'MatriculaController@editar');
 			Route::post('editar/{id}','MatriculaController@update');

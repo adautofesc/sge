@@ -34,7 +34,7 @@
                     </div>
                 </div>
                 <div class="card-block">
-                    <div><a href="{{asset('/secretaria/matricula/nova')}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-plus-circle "></i>  <small>Nova Matrícula</small></a></div>
+                    <div><a href="{{asset('/secretaria/matricula/nova').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-plus-circle "></i>  <small>Nova Matrícula</small></a></div>
                     <div><a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left"><i class="fa fa-check-square-o"></i> <small>Entrega de Atestado</small> </a></div>
                   
 
@@ -133,57 +133,6 @@
                                     
                                 </div>
                             </div>
-
-                            @elseif(count($matricula->inscricoes) == 1 && $matricula->curso != 307 ) 
-                            <div class="row"> 
-                                                 
-                                    @if($matricula->inscricoes->first()->turma->programa->id == 12)
-                                            <div class="col-xl-4 text-success " title="CE -  Turma {{$matricula->inscricoes->first()->turma->id}} - {{$matricula->inscricoes->first()->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
-                                    @elseif($matricula->inscricoes->first()->turma->programa->id == 2)
-                                            <div class="col-xl-4 text-primary " title="PID - Turma {{$matricula->inscricoes->first()->turma->id}} - {{$matricula->inscricoes->first()->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
-                                    @elseif($matricula->inscricoes->first()->turma->programa->id == 3)
-                                            <div class="col-xl-4 text-warning " title="UATI - Turma {{$matricula->inscricoes->first()->turma->id}} - {{$matricula->inscricoes->first()->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
-                                    @elseif($matricula->inscricoes->first()->turma->programa->id == 1)
-                                            <div class="col-xl-4 text-danger " title="UNIT - Turma {{$matricula->inscricoes->first()->turma->id}} - {{$matricula->inscricoes->first()->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
-                                    @else
-                                            <div class="col-xl-4 text-secondary " style="line-height:40px !important; padding-left: 30px;" >
-                                    @endif
-                                    <div><i class=" fa fa-circle "></i> &nbsp;<small><b>M{{$matricula->id}}  - {{substr($matricula->inscricoes->first()->turma->curso->nome,0,25)}}</b></small></div> 
-                                </div>
-                                <div class="col-xl-2" style="line-height:40px !important;">
-                                    <div><small>{{$matricula->inscricoes->first()->turma->professor->nome_simples}} </small></div>
-                                </div>
-                                <div class="col-xl-2" style="line-height:40px !important;">
-                                    <div><small>{{implode($matricula->inscricoes->first()->turma->dias_semana,', ').' '.$matricula->inscricoes->first()->turma->hora_inicio. '-'.$matricula->inscricoes->first()->turma->hora_termino}}</small></div>
-                                </div>
-                                <div class="col-xl-1" style="line-height:40px !important;">
-                                    <div><small>{{$matricula->inscricoes->first()->turma->local->sigla}}</small></div>
-                                </div>
-                                <div class="col-xl-1" style="line-height:40px !important;">
-                                    <div><small>{{\Carbon\Carbon::parse($matricula->updated_at)->format('d/m/y')}}</small></div>
-                                </div>
-                                <div class="col-xl-2" style="line-height:40px !important;">
-                                    <div>
-                                        @if($matricula->status != 'cancelada')
-                                        <a a href="#" onclick="cancelar({{$matricula->id}});" title="Cancelar Matrícula"><i class=" fa fa-times "></i></a>
-                                        @else
-                                        <a a href="#" onclick="reativar({{$matricula->id}});" title="Reativar Matrícula"><i class=" fa fa-undo "></i></a>
-                                        @endif
-                                        <a href="{{asset('/secretaria/matricula/editar/').'/'.$matricula->id}}" title="Editar Matrícula"><i class=" fa fa-pencil-square-o "></i></a>
-                                        <a href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}" target="_blank" title="Imprimir Termo de Matrícula"><i class=" fa fa-print "></i></a>
-                                        @if($matricula->desconto > 0)
-                                        &nbsp;&nbsp;<span><i class=" fa fa-flag " title="Esta matrícula possui bolsa."></i></span>
-                                        @endif
-                                        @if($matricula->status == 'pendente' && $matricula->obs!='')
-                                        &nbsp;&nbsp;<span><i class=" fa fa-exclamation-triangle "  title="{{$matricula->obs}}"></i></span>
-                                        @elseif($matricula->status == 'ativa' && $matricula->obs!='')
-                                        &nbsp;&nbsp;<span><i class=" fa fa-info "  title="{{$matricula->obs}}"></i></span>
-                                        @endif
-
-                                    </div>
-                                </div>
-                         
-                            </div>
                             @else
                             <div class="row">                          
                                     @if($matricula->inscricoes->first()->turma->programa->id == 12)
@@ -216,7 +165,7 @@
                                         @endif
                                         <a href="{{asset('/secretaria/matricula/editar/').'/'.$matricula->id}}" title="Editar Matrícula"><i class=" fa fa-pencil-square-o "></i></a>
                                         <a href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}" target="_blank" title="Imprimir Termo de Matrícula"><i class=" fa fa-print "></i></a>
-                                        <a href="{{asset('/secretaria/matricula/nova')}}" target="_blank" title="Adicionar Disciplina"><i class=" fa fa-plus-circle "></i></a>
+                                        <a href="{{asset('/secretaria/matricula/nova').'/'.$pessoa->id}}"  title="Adicionar Disciplina"><i class=" fa fa-plus-circle "></i></a>
                                         @if($matricula->desconto > 0)
                                         &nbsp;&nbsp;<span><i class=" fa fa-flag " title="Esta matrícula possui bolsa."></i></span>
                                         @endif
@@ -238,7 +187,7 @@
                                                              
                                 <div class="col-xl-4" title="Turma {{$inscricao->turma->id}} - {{ isset($inscricao->turma->disciplina->nome) ? $inscricao->turma->disciplina->nome: $inscricao->turma->curso->nome}} " style="line-height:40px !important; padding-left: 50px;">
                                      <div><i class=" fa fa-caret-right"></i>&nbsp;<small>&nbsp;i{{$inscricao->id}} - 
-                                        {{ isset($inscricao->turma->disciplina->nome) ? substr($inscricao->turma->disciplina->nome,0,30) : substr($inscricao->turma->curso->nome,0,35)}}</small></div>
+                                        {{ isset($inscricao->turma->disciplina->nome) ? substr($inscricao->turma->disciplina->nome,0,30) : substr($inscricao->turma->curso->nome,0,30)}}</small></div>
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div><small>{{$inscricao->turma->professor->nome_simples}} </small></div>
@@ -332,7 +281,7 @@
                          &nbsp;
                          <a href="{{asset('financeiro/boletos/novo'.'/'.session('pessoa_atendimento'))}}" title="Gerar novo boleto individual" class="text-white te" style="" ><i class=" fa fa-plus-circle "></i></a>
                          &nbsp;
-                         <a href="{{asset('financeiro/boletos/novo'.'/'.session('pessoa_atendimento'))}}" title="Gerar boleto com todas parcelas em aberto para daqui 5 dias úteis." class="text-white te" style="" ><i class=" fa fa-cogs "></i></a>
+                         <a href="#"  onclick="gerarBoletos();" title="Gerar boleto com todas parcelas em aberto para daqui 5 dias úteis." class="text-white te" style="" ><i class=" fa fa-cogs "></i></a>
                     </div>
 
 
@@ -415,7 +364,11 @@
 
                             <!-- foreach lancamentos do boleto -->
                             @foreach($boleto->lancamentos as $lancamento)
+                             @if($lancamento->status == 'cancelado')
+                             <div class="row alert-danger">
+                            @else
                              <div class="row">
+                            @endif
                                                          
                                 <div class="col-xl-4" style="line-height:40px !important; padding-left: 50px;">
                                     <div></i> &nbsp;<small>{{$lancamento->referencia}} {{$lancamento->matricula}}</small></div>
@@ -436,7 +389,9 @@
                                     <div>
                                         @if($lancamento->status == 'cancelado')
                                         <a a href="#" onclick="relancarParcela({{$lancamento->id}});" title="Relançar Parcela"><i class=" fa fa-external-link-square "></i></a>
+                                         <a href="#" onclick="reativarParcela({{$lancamento->id}})" title="Reativar parcela"> <i class="fa fa-undo "></i></a> 
                                         @endif
+                                        <a href="{{asset('financeiro/lancamentos/editar').'/'.$lancamento->id}}" title="Editar parcela"> <i class="fa fa-pencil-square-o "></i></a>
                                     </div>
                                 </div>
                          
@@ -460,7 +415,7 @@
                         &nbsp;
                         <a href="{{asset('financeiro/lancamentos/novo'.'/'.session('pessoa_atendimento'))}}" title="Gerar parcela individual" class="text-white te" style="" ><i class=" fa fa-plus-circle "></i></a>
                         &nbsp;
-                         <a href="{{asset('financeiro/lancamentos/novo'.'/'.session('pessoa_atendimento'))}}" title="Gerar parcela atual das matriculas ativas" class="text-white te" style="" ><i class=" fa fa-cogs "></i></a>
+                         <a href="#" onclick="gerarLancamentos();"  title="Gerar parcela atual das matriculas ativas" class="text-white te" style="" ><i class=" fa fa-cogs "></i></a>
                     </div>
                 </div>
                 <div class="card-block">
@@ -490,7 +445,11 @@
                             </div>
                         </li>
                         @foreach($lancamentos as $lancamento)
+                        @if($lancamento->status == 'cancelado')
+                        <li class="alert-danger" style="background-color: #F2DEDE;">
+                        @else
                         <li>
+                        @endif
                             <div class="row">
                                                          
                                 <div class="col-xl-4" style="line-height:40px !important; padding-left: 50px;">
@@ -510,9 +469,14 @@
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div>
-                                        <i class=" fa fa-times "></i>
-                                        <i class=" fa fa-pencil-square-o "></i>
-                                        <i class=" fa fa-print "></i>
+                                        @if($lancamento->status == null)
+                                        <a class="remove" onclick="cancelarParcela({{$lancamento->id}})" href="#" title="Cancelar parcela"> <i class="fa fa-times "></i></a>
+                                        <a href="{{asset('financeiro/lancamentos/editar').'/'.$lancamento->id}}" title="Editar parcela"> <i class="fa fa-pencil-square-o "></i></a>
+                                        @else
+                                        <a href="#" onclick="reativarParcela({{$lancamento->id}})" title="Reativar parcela"> <i class="fa fa-undo "></i></a>
+                                        @endif
+                                        
+                                        
                                     
                                        
                                     </div>
@@ -557,5 +521,35 @@
     if(confirm('Tem certeza que deseja cancelar este boleto? Todos lançamentos deste serão cancelados.'))
         window.location.replace("{{asset('/financeiro/boletos/reativar/')}}/"+boleto);
   }
+  function cancelarParcela(item)
+  {
+    if(confirm("Tem certeza que deseja cancelar esse lancamento?")){
+        $(location).attr('href','{{asset("/financeiro/lancamentos/cancelar")}}/'+item);
+    }
+  }
+  function reativarParcela(item)
+  {
+    if(confirm("Tem certeza que deseja reativar essa parcela?")){
+        $(location).attr('href','{{asset("/financeiro/lancamentos/reativar")}}/'+item);
+    }
+  }
+  function relancarParcela(item)
+  {
+    if(confirm("Tem certeza que deseja relançar essa parcela?")){
+        $(location).attr('href','{{asset("/financeiro/lancamentos/relancar")}}/'+item);
+    }
+  }
+  function gerarLancamentos()
+{
+    if(confirm("Tem certeza que deseja gerar os lancamentos da parcela " + item + " e anteriores?")){
+        $(location).attr('href','{{asset("/financeiro/lancamentos/gerar-individual").'/'.$pessoa->id}}/'+item);
+    }
+}
+function gerarBoletos()
+{
+    if(confirm("Tem certeza que deseja gerar um boleto com os lancamentos em aberto? OBS: O vencimento será em 5 dias.")){
+        $(location).attr('href','{{asset("/financeiro/boletos/gerar-individual").'/'.$pessoa->id}}');
+    }
+}
 </script>
 @endsection

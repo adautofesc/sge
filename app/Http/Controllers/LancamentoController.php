@@ -37,7 +37,7 @@ class LancamentoController extends Controller
 				$lancamento->parcela=$parcela;
 				$lancamento->valor=$valor_parcela;
 				$lancamento->pessoa = $matricula->pessoa;
-				$lancamento->referencia = "Parcela ".$parcela." do curso";
+				$lancamento->referencia = "Parcela ".$parcela.' - '.$matricula->getNomeCurso();
 				if($lancamento->valor>0)//se for bolsista integral
 					$lancamento->save();
 			}
@@ -46,14 +46,13 @@ class LancamentoController extends Controller
 		return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Lançamentos efetuados']);
 
 	}
-	public function gerarLancamentosPorPessoa($parcela_atual){
-		if(!Session::get('pessoa_atendimento'))
-            return redirect(asset('/secretaria/pre-atendimento'));
+	public function gerarLancamentosPorPessoa($pessoa){
+	
            // colocar um if de parcela, se for menor que 6,  fazer recursivo
            // 
           
-           
-		$matriculas=Matricula::where('pessoa',Session::get('pessoa_atendimento'))//pega mas matriculas ativas e pendentes da pessoa
+        $parcela_atual = date('m')-1;   
+		$matriculas=Matricula::where('pessoa',$pessoa)//pega mas matriculas ativas e pendentes da pessoa
 			->where(function($query){
 				$query->where('status','ativa')->orwhere('status', 'pendente');
 			})	
@@ -72,7 +71,8 @@ class LancamentoController extends Controller
 					$lancamento->matricula=$matricula->id;
 					$lancamento->parcela=$i;
 					$lancamento->valor=$valor_parcela;
-					$lancamento->pessoa = Session::get('pessoa_atendimento');
+					$lancamento->pessoa = $pessoa;
+					$lancamento->referencia = "Parcela ".$i.' - '.$matricula->getNomeCurso();
 					if($lancamento->valor>0)//se for bolsista integral
 						$lancamento->save();
 				}
@@ -111,6 +111,8 @@ class LancamentoController extends Controller
 	}
 
 	public function verificaSeLancada($matricula,$parcela){
+		if($matricula == '' || $matricula == null)
+			return false;
 		$lancamentos=Lancamento::where('matricula',$matricula)
 			->where('parcela',$parcela)
 			->where('status', null)
@@ -152,7 +154,7 @@ class LancamentoController extends Controller
 		return $matriculas;
 	}
 
-
+	/*
 	public static function relancar($matricula_id,$parcela,$valor){
 		$matricula=Matricula::find($matricula_id);
 		return $matricula;
@@ -166,6 +168,21 @@ class LancamentoController extends Controller
 		}
 		else
 			return "0";
+	}*/
+	public function relancarParcela($parcela){
+		$anterior = Lancamento::find($parcela);
+		if(!$this->verificaSeLancada($anterior->matricula,$anterior->parcela)){	
+			$lancamento = new Lancamento;
+			$lancamento->matricula = $anterior->matricula;
+			$lancamento->parcela = $anterior->parcela;
+			$lancamento->valor = $anterior->valor;
+			$lancamento->pessoa = $anterior->pessoa;
+			$lancamento->referencia = $anterior->rerencia;
+			$lancamento->save();
+			return redirect($_SERVER['HTTP_REFERER']);
+		}
+		else
+			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Parcela já ativa']);
 	}
 	public static function cancelarPorBoleto($anterior){
 		$lancamentos = Lancamento::where('boleto',$anterior)
@@ -193,10 +210,13 @@ class LancamentoController extends Controller
 	}
 	public static function relancarLancamento($id){
 		$lancamento = Lancamento :: find($id);
+		if($lancamento != null && !$this->verificaSeLancada($lancamento->matricula,$lancamento->parcela)){
 		$novo_lancamento = new  Lancamento;
 		$novo_lancamento = $lancamento;
 		$novo_lancamento->boleto = null;
 		$novo_lancamento->save();
+
+		}
 		return $novo_lancamento;
 
 	}
@@ -207,6 +227,27 @@ class LancamentoController extends Controller
 			$lancamento->save();
 			;
 		}
+	}
+	public function editar($lancamento){
+		$lancamento = Lancamento::find($lancamento);
+		return view('financeiro.lancamentos.editar',compact('lancamento'));
+	}
+	public function update(Request $r){
+		$lancamento = Lancamento::find($r->lancamento);
+		if($lancamento == null)
+			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Parcela não encontrada']);
+
+		$lancamento->matricula = $r->matricula;
+		$lancamento->parcela = $r->parcela;
+		$lancamento->referencia = $r->referencia;
+		$lancamento->valor =  str_replace(',','.',$r->valor);
+		$lancamento->save();
+
+		return redirect(asset('secretaria/atender/').'/'.$lancamento->pessoa);
+
+
+
+
 	}
 
 
@@ -491,6 +532,16 @@ class LancamentoController extends Controller
 		}
 		return redirect($_SERVER['HTTP_REFERER']);
 	}
+	public function reativar($id){
+		$lancamento = Lancamento::find($id);
+		if($lancamento != null){
+		$lancamento->status = null;
+		$lancamento->save();
+		}	
+
+		return redirect($_SERVER['HTTP_REFERER']);
+
+	}
 
 	public static function lancarDesconto($boleto,$valor){
 		$lancamento=Lancamento::where('boleto',$boleto)->first();
@@ -513,6 +564,7 @@ class LancamentoController extends Controller
 			$matricula = Matricula::find($lancamento->matricula);
 			if($matricula != null){
 				$lancamento->pessoa = $matricula->pessoa;
+				$lancamento->referencia = 'Parcela '.$lancamento->parcela.' - '.$matricula->getNomeCurso();
 				$lancamento->save();
 			}
 		}
@@ -541,6 +593,48 @@ class LancamentoController extends Controller
 
 
 		return view('financeiro.lancamentos.novo')->with('pessoa',$id)->with('matriculas',$matriculas);
+	}
+	public function create(Request $r){
+		if(count($r->matriculas) && $r->parcela*1>=0){
+			foreach($r->matriculas as $matricula){
+				$matricula = Matricula::find($matricula);
+				if($r->retroativas > 0){
+					for($i=1;$i <= $r->parcela;$i++){
+						$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas;
+						if(!$this->verificaSeLancada($matricula->id,$i) && $valor_parcela > 0  ){ //se não tiver ou for 0
+						$lancamento=new Lancamento; //gera novo lançamento
+						$lancamento->matricula=$matricula->id;
+						$lancamento->parcela=$i;
+						$lancamento->valor=$valor_parcela;
+						$lancamento->pessoa = $r->pessoa;
+						$lancamento->referencia = "Parcela ".$i.' - '.$matricula->getNomeCurso();
+						if($lancamento->valor>0)//se for bolsista integral
+							$lancamento->save();
+						}
+
+					}
+				}
+				else{
+					$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas;
+					//return $matricula->valor;
+					if(!$this->verificaSeLancada($matricula->id,$r->parcela) && $valor_parcela > 0  ){ //se não tiver ou for 0
+						$lancamento=new Lancamento; //gera novo lançamento
+						$lancamento->matricula=$matricula->id;
+						$lancamento->parcela=$r->parcela;
+						$lancamento->valor=$valor_parcela;
+						$lancamento->pessoa = $r->pessoa;
+						$lancamento->referencia = "Parcela ".$r->parcela.' - '.$matricula->getNomeCurso();
+						if($lancamento->valor>0)//se for bolsista integral
+							$lancamento->save();
+						}
+						else
+							return redirect(asset('secretaria/atender'.'/'.$r->pessoa))->withErrors(['Parcela já consta em boletos ativos']);
+
+				}
+			}
+		}
+		return redirect(asset('secretaria/atender'.'/'.$r->pessoa));
+
 	}
 
 

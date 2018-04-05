@@ -1,7 +1,8 @@
 @extends('layout.app')
+@section('titulo')Gerador de parcelas. @endsection
 @section('pagina')
 <div class="title-block">
-    <h3 class="title"> Novo(s) Lançamento(s) <span class="sparkline bar" data-type="bar"></span> </h3>
+    <h3 class="title"> Gerador de parcelas<span class="sparkline bar" data-type="bar"></span> </h3>
 </div>
 @include('inc.errors')
 <form name="item" method="POST">
@@ -27,12 +28,20 @@
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Parcela
 			</label>
-			<div class="col-sm-3"> 
+			<div class="col-sm-2"> 
 				<div class="input-group">
  
-					<input type="number" class="form-control boxed" name="valor" id="valor" value="" required> 
+					<input type="number" class="form-control boxed" name="parcela"  value="" required> 
 					
 				</div>
+			</div>
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				
+			</label>
+			<div class="col-sm-3"> 
+				
 				<div>
 					<label>
 						<input class="checkbox" type="checkbox" name="retroativas"  value="1">
@@ -40,26 +49,16 @@
 					</label>
 				</div>
 			</div>
-		</div>
-		<div class="form-group row"> 
-			<label class="col-sm-2 form-control-label text-xs-right">
-				Referencia
-			</label>
-			<div class="col-sm-3"> 
-				<div class="input-group">
-					<input type="text" class="form-control boxed" name="valor" id="valor" value="Parcela " required> 
-					
-				</div>
-			
-			</div>
-		</div>
-
-		            
+		</div>	            
 		<div class="form-group row">
+			<label class="col-sm-2 form-control-label text-xs-right">
+				
+			</label>
 			<div class="col-sm-10 col-sm-offset-2">
 				<input type="hidden" name="pessoa" value="{{$pessoa}}">
-				<button type="submit" name="btn" value="1" class="btn btn-primary">Salvar</button> 
-				<button type="reset" name="btn" value="2" href="#" class="btn btn-secondary">Cancelar</button> 
+				<button type="submit" name="btn"  class="btn btn-primary">Salvar</button>
+                <button type="reset" name="btn"  class="btn btn-primary">Restaurar</button>
+                <button type="cancel" name="btn" class="btn btn-primary" onclick="history.back(-2);return false;">Cancelar</button>
 				<!-- 
 				<button type="submit" class="btn btn-primary"> Cadastrar</button> 
 				-->

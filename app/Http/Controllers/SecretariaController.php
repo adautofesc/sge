@@ -102,6 +102,7 @@ class SecretariaController extends Controller
 			 	->where(function($query){ $query
 							->where('status','gravado')
 							->orwhere('status', 'impresso')
+							->orwhere('status', 'pago')
 							->orwhere('status', 'emitido');
 					})
 			 	->get();

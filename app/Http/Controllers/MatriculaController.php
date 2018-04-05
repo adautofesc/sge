@@ -44,8 +44,6 @@ class MatriculaController extends Controller
         
         $matriculas=collect();
         $cursos=collect();
-        if(!Session::get('pessoa_atendimento'))
-            return redirect(asset('/secretaria/pre-atendimento'));
 
         $turmas=TurmaController::csvTurmas($r->turmas); // recebe lista de turmas csv
         foreach($turmas as $turma){
@@ -58,7 +56,7 @@ class MatriculaController extends Controller
             
         }
         foreach($cursos as $curso){ 
-            $matriculado=MatriculaController::verificaSeMatriculado(Session::get('pessoa_atendimento'),$curso->id);
+            $matriculado=MatriculaController::verificaSeMatriculado($r->pessoa,$curso->id);
             $curso->turmas=collect();//cria lista de turmas de cada curso
             foreach($turmas as $turma){
                 if($turma->curso->id==$curso->id)
@@ -67,7 +65,7 @@ class MatriculaController extends Controller
             //verifica se já possui matricula no curso
             if($matriculado==false){
                 $matricula=new Matricula();
-                $matricula->pessoa=Session::get('pessoa_atendimento');
+                $matricula->pessoa=$r->pessoa;
                 $matricula->atendimento=Session::get('atendimento');
                 $matricula->data=date('Y-m-d');
                 $valor="valorcursointegral".$curso->id;
@@ -91,7 +89,7 @@ class MatriculaController extends Controller
 
             foreach($curso->turmas as $cturma){
                 //return $cturma;
-                $insc=InscricaoController::inscreverAluno(Session::get('pessoa_atendimento'),$cturma->id,$matricula->id);
+                $insc=InscricaoController::inscreverAluno($r->pessoa,$cturma->id,$matricula->id);
                 MatriculaController::modificaMatricula($insc->matricula);
                 $matriculas->push($matricula);
                 
@@ -105,9 +103,9 @@ class MatriculaController extends Controller
         $atendimento->save();
 
         Session::forget('atendimento');
-        $pessoa=Pessoa::find(session('pessoa_atendimento'));
+        
 
-        return redirect(asset("/pessoa/matriculas"));
+        return redirect(asset("secretaria/atender").'/'.$r->pessoa);
         /*
         return view("secretaria.inscricao.gravar")->with('matriculas',$matriculas)->with('nome',$pessoa->nome_simples);
          */

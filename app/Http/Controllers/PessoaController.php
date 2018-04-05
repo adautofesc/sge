@@ -542,9 +542,7 @@ class PessoaController extends Controller
 			case 'Não especificado':
 				$dados['generoz']="checked";
 				break;
-			default:
-				$pessoa->genero="Não especificado";
-				break;
+			
 		}
 		return view('pessoa.editar-dados-gerais', compact('dados'));
 	}

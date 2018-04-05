@@ -21,8 +21,9 @@
 		<div class="form-group row">
 			<div class="col-sm-10 col-sm-offset-2">
 				<input type="hidden" name="inscricao" value="{{$inscricao->id}}">
-				<button type="submit" name="btn" value="1" class="btn btn-primary">Salvar</button> 
-				<button type="reset" name="btn" value="2" href="#" class="btn btn-secondary">Cancelar</button> 
+				<button type="submit" name="btn"  class="btn btn-primary">Salvar</button>
+                <button type="reset" name="btn"  class="btn btn-primary">Restaurar</button>
+                <button type="cancel" name="btn" class="btn btn-primary" onclick="history.back(-2);return false;">Cancelar</button>
 				<!-- 
 				<button type="submit" class="btn btn-primary"> Cadastrar</button> 
 				-->

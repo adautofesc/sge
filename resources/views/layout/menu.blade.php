@@ -44,11 +44,16 @@
                                     <a href=""> <i class="fa fa-stack-overflow"></i> Secretaria </a>
                                     <ul>
                                         <li>
-                                        <a href="{{asset('/secretaria')}}"> <i class="fa fa-stack-overflow"></i> Home </a>
+                                        <a href="{{asset('/secretaria')}}"> <i class="fa fa-home"></i> Home </a>
                                         </li>
                                         <li>
-                                        <a href="{{asset('secretaria/pre-atendimento')}}"> <i class="fa fa-stack-overflow"></i> Novo atendimento</a>
+                                        <a href="{{asset('secretaria/pre-atendimento')}}"> <i class="fa fa-asterisk"></i> Novo atendimento</a>
                                         </li>
+                                        @if(session('pessoa_atendimento'))
+                                        <li>
+                                        <a href="{{asset('secretaria/atender').'/'.session('pessoa_atendimento')}}"> <i class="fa fa-arrow-right"></i> Retomar atendimento</a>
+                                        </li>
+                                        @endif
                                     
                                     </ul>
                                 </li>

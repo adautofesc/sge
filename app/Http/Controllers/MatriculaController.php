@@ -408,6 +408,10 @@ class MatriculaController extends Controller
 
         return redirect($_SERVER['HTTP_REFERER']);
     }
+    public function atualizar($id){
+        $this->modificaMatricula($id);
+        return redirect($_SERVER['HTTP_REFERER']);
+    }
     public function ativarMatricula($id){
         $matricula=Matricula::find($id);
         $matricula->status='ativa';

@@ -20,6 +20,26 @@
 
 
     <div class="card-block">
+        <div class="form-group row"> 
+            <label class="col-sm-2 form-control-label text-xs-right">
+                Valor
+            </label>
+            <div class="col-sm-2"> 
+                <div class="input-group">
+                    <span class="input-group-addon">R$</span> 
+                    <input type="number" class="form-control boxed" value='{{ str_replace(',', '.', $matricula->valor) }}' name='valor_matricula' required ();"> 
+                    
+                </div>
+            </div>
+            <div class="col-sm-2"> 
+                <div class="input-group">
+                    <a href="{{asset('secretaria/matricula/atualizar').'/'.$matricula->id}}"><i class="fa fa-undo "></i></a> 
+                    
+                </div>
+                
+            </div>
+
+        </div>
        <div class="form-group row"> 
             <label class="col-sm-2 form-control-label text-xs-right">
                 Desconto

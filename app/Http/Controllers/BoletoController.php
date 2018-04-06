@@ -450,10 +450,11 @@ class BoletoController extends Controller
 			$dados_pessoa = \App\PessoaDadosGerais::where('valor','like',$request->cpf)->orWhere('valor','like',$cpf_alt)->get();
 			if(count($dados_pessoa) > 0){
 				$pessoa = Pessoa::find($dados_pessoa->first()->pessoa);
-				if($pessoa->nascimento == $request->nascimento){
+				if($pessoa->nascimento == \Carbon\Carbon::createFromFormat('d/m/Y', $request->nascimento, 'Europe/London')->format('Y-m-d')){
 					$boletos = Boleto::where('pessoa',$pessoa->id)
 						->where(function($query){ $query
 							->where('status','impresso')
+							->orwhere('status', 'gravado')
 							->orwhere('status', 'emitido');
 					})->get();
 					return view('financeiro.boletos.meuboleto-lista',compact('boletos'))->with('nome',$pessoa->nome);
@@ -462,7 +463,8 @@ class BoletoController extends Controller
 				}
 
 				else
-					return redirect('/meuboleto')->withErrors(["Desculpe, os dados estão incorretos. Verifique e tente novamente."]);
+					return $pessoa;
+					//return redirect('/meuboleto')->withErrors(["Desculpe, os dados estão incorretos. Verifique e tente novamente."]);
 			}
 			else
 				return redirect('/meuboleto')->withErrors(["Desculpe, não encontramos registro com os dados informados."]);

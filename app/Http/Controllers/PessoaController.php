@@ -124,7 +124,7 @@ class PessoaController extends Controller
 				$info=new PessoaDadosGerais;					
 				$info->pessoa=$pessoa->id;
 				$info->dado=4; 
-				$info->valor=$request->rg;
+				$info->valor=preg_replace( '/[^0-9]/is', '', $request->rg);
 				$pessoa->dadosContato()->save($info);
 			}
 			if($request->cpf != '')
@@ -132,7 +132,7 @@ class PessoaController extends Controller
 				$info=new PessoaDadosGerais;					
 				$info->pessoa=$pessoa->id;
 				$info->dado=3;
-				$info->valor=$request->cpf;
+				$info->valor=preg_replace( '/[^0-9]/is', '', $request->cpf);
 				$pessoa->dadosContato()->save($info);
 			}
 			if($request->obs != '')
@@ -172,7 +172,7 @@ class PessoaController extends Controller
 				$info=new PessoaDadosContato;					
 				$info->pessoa=$pessoa->id;
 				$info->dado=2; 
-				$info->valor=$request->telefone;
+				$info->valor=preg_replace( '/[^0-9]/is', '', $request->telefone);
 				$pessoa->dadosContato()->save($info);
 			}
 
@@ -181,7 +181,7 @@ class PessoaController extends Controller
 				$info=new PessoaDadosContato;					
 				$info->pessoa=$pessoa->id;
 				$info->dado=9; 
-				$info->valor=$request->tel2;
+				$info->valor=preg_replace( '/[^0-9]/is', '', $request->tel2);
 				$pessoa->dadosContato()->save($info);
 			}
 
@@ -190,7 +190,7 @@ class PessoaController extends Controller
 				$info=new PessoaDadosContato;					
 				$info->pessoa=$pessoa->id;
 				$info->dado=10; 
-				$info->valor=$request->tel3;
+				$info->valor=preg_replace( '/[^0-9]/is', '', $request->tel3);
 				$pessoa->dadosContato()->save($info);
 			}
 			//se tiver vincular
@@ -937,8 +937,11 @@ class PessoaController extends Controller
 
 	}
 	public static function notificarCPFInvalido($pessoa){
-		// abre um protocolo de correção de dados
-		// 
+		$erro = new \App\PessoaDadosGerais;
+            $erro->pessoa = $cpf->pessoa;
+            $erro->dado = 20;
+            $erro->valor= "CPF não foi aprovado pelo validador";
+            $erro->save();
 		return '45.361.904/0001-80';
 
 

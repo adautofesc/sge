@@ -159,20 +159,20 @@
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div>
                                         @if($matricula->status != 'cancelada')
-                                        <a a href="#" onclick="cancelar({{$matricula->id}});" title="Cancelar Matrícula"><i class=" fa fa-times "></i></a>
+                                            <a a href="#" onclick="cancelar({{$matricula->id}});" title="Cancelar Matrícula"><i class=" fa fa-times "></i></a>
                                         @else
-                                        <a a href="#" onclick="reativar({{$matricula->id}});" title="Reativar Matrícula"><i class=" fa fa-undo "></i></a>
+                                            <a a href="#" onclick="reativar({{$matricula->id}});" title="Reativar Matrícula"><i class=" fa fa-undo "></i></a>
                                         @endif
-                                        <a href="{{asset('/secretaria/matricula/editar/').'/'.$matricula->id}}" title="Editar Matrícula"><i class=" fa fa-pencil-square-o "></i></a>
-                                        <a href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}" target="_blank" title="Imprimir Termo de Matrícula"><i class=" fa fa-print "></i></a>
-                                        <a href="{{asset('/secretaria/matricula/nova').'/'.$pessoa->id}}"  title="Adicionar Disciplina"><i class=" fa fa-plus-circle "></i></a>
+                                            <a href="{{asset('/secretaria/matricula/editar/').'/'.$matricula->id}}" title="Editar Matrícula"><i class=" fa fa-pencil-square-o "></i></a>
+                                            <a href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}" target="_blank" title="Imprimir Termo de Matrícula"><i class=" fa fa-print "></i></a>
+                                            <a href="{{asset('/secretaria/matricula/nova').'/'.$pessoa->id}}"  title="Adicionar Disciplina"><i class=" fa fa-plus-circle "></i></a>
                                         @if($matricula->desconto > 0)
-                                        &nbsp;&nbsp;<span><i class=" fa fa-flag " title="Esta matrícula possui bolsa."></i></span>
+                                             &nbsp;&nbsp;<span><i class=" fa fa-flag " title="Esta matrícula possui bolsa."></i></span>
                                         @endif
-                                         @if($matricula->status == 'pendente' && $matricula->obs!='')
-                                        &nbsp;&nbsp;<span><i class=" fa fa-exclamation-triangle "  title="{{$matricula->obs}}"></i></span>
-                                        @elseif($matricula->status == 'ativa' && $matricula->obs!='')
-                                        &nbsp;&nbsp;<span><i class=" fa fa-info "  title="{{$matricula->obs}}"></i></span>
+                                         @if($matricula->status == 'pendente')
+                                            &nbsp;&nbsp;<span><i class=" fa fa-exclamation-triangle "  title="{{$matricula->obs}}"></i></span>
+                                        @elseif(($matricula->status == 'ativa' || $matricula->status == 'cancelada')&& $matricula->obs!='')
+                                            &nbsp;&nbsp;<span><i class=" fa fa-info "  title="{{$matricula->obs}}"></i></span>
                                         @endif
                                         
                                     </div>
@@ -415,7 +415,7 @@
                         &nbsp;
                         <a href="{{asset('financeiro/lancamentos/novo'.'/'.session('pessoa_atendimento'))}}" title="Gerar parcela individual" class="text-white te" style="" ><i class=" fa fa-plus-circle "></i></a>
                         &nbsp;
-                         <a href="#" onclick="gerarLancamentos();"  title="Gerar parcela atual das matriculas ativas" class="text-white te" style="" ><i class=" fa fa-cogs "></i></a>
+                         <a href="#" onclick="gerarLancamentos()"  title="Gerar parcela atual das matriculas ativas" class="text-white te" style="" ><i class=" fa fa-cogs "></i></a>
                     </div>
                 </div>
                 <div class="card-block">
@@ -539,10 +539,9 @@
         $(location).attr('href','{{asset("/financeiro/lancamentos/relancar")}}/'+item);
     }
   }
-  function gerarLancamentos()
-{
-    if(confirm("Tem certeza que deseja gerar os lancamentos da parcela " + item + " e anteriores?")){
-        $(location).attr('href','{{asset("/financeiro/lancamentos/gerar-individual").'/'.$pessoa->id}}/'+item);
+  function gerarLancamentos(){
+    if(confirm("Tem certeza que deseja gerar todas parcelas das matriculas ativas e pendentes?")){
+        $(location).attr('href','{{asset("/financeiro/lancamentos/gerar-individual").'/'.$pessoa->id}}');
     }
 }
 function gerarBoletos()

@@ -43,7 +43,7 @@
                         <form id="login-form" action="" method="POST" novalidate="">
                         {{csrf_field()}}
                             <div class="form-group"> <label for="cpf">CPF</label> <input type="number" class="form-control underlined" name="cpf" id="cpf" max-size="11" placeholder="CPF sem pontos ou traços com 11 dígitos" required> </div>
-                            <div class="form-group"> <label for="nascimento">Nascimento</label> <input type="date" class="form-control underlined" name="nascimento" id="nascimento" title="Sua data de nascimento completa ex. 01/01/1950" required> </div>
+                            <div class="form-group"> <label for="nascimento">Nascimento</label> <input type="text" class="form-control underlined" name="nascimento" id="nascimento" title="Sua data de nascimento completa ex. 01/01/1950" placeholder="00/00/0000" required> </div>
                             
                             <div class="form-group"> <button type="submit" class="btn btn-block btn-primary">Acessar</button>
                             @if(isset($nome))

@@ -179,9 +179,22 @@ class painelController extends Controller
         //$instance = new BoletoController;
         $inst = new LancamentoController; /// esse cara vai fazer os lancamentos atrasados
         //$inst= new MatriculaController;
+        //
+        //
+        //
+        //
+        //return $inst->addPessoaLancamentos();
+        
 
-        return $inst->addPessoaLancamentos();
+        
+       $dados = \App\PessoaDadosGerais::where('dado',2)->get();
+        foreach($dados as $dado){
+            $dado->valor = preg_replace( '/[^0-9]/is', '', $dados_valor );
+            $dado->save();
+        }
+
        
+       return "RG Normatizado";
         
         
     }

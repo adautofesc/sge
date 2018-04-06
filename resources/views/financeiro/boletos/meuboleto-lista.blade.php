@@ -28,7 +28,7 @@
 
     <body  >
         <div class="auth" >
-            <div class="auth-container" style="width:40em;">
+            <div class="auth-container" >
                 <div class="card">
                     <header class="auth-header">
                         <h1 class="auth-title">
@@ -51,7 +51,6 @@
                           <th scope="col">Numero</th>
                           <th scope="col">Vencimento</th>
                           <th scope="col">Valor</th>
-                          <th scope="col">Estado</th>
                           <th scope="col">Imprimir</th>
                         </tr>
                       </thead>
@@ -62,44 +61,18 @@
                           <th scope="row">{{$boleto->id}}</th>
                           <td>{{\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y')}}</td>
                           <td>R$ {{number_format($boleto->valor,2,',','.')}}</td>
-                          <td>{{$boleto->status}}</td>
                           <td class="text-xs-center"><a href="{{asset('/boleto').'/'.$boleto->id}}" target="_blank"><i class="fa fa-print"></i></a></td>
                         </tr>
                     @endforeach
                       </tbody>
                     </table>
-                    <p> Qualquer divergência de valores entre em contato conosco: 3372-1308.
+                    <p> Qualquer divergência de valores entre em contato conosco: 3372-1308.</p>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Reference block for JS -->
-        <div class="ref" id="ref">
-            <div class="color-primary"></div>
-            <div class="chart">
-                <div class="color-primary"></div>
-                <div class="color-secondary"></div>
-            </div>
-        </div>
-        <script>
-            (function(i, s, o, g, r, a, m)
-            {
-                i['GoogleAnalyticsObject'] = r;
-                i[r] = i[r] || function()
-                {
-                    (i[r].q = i[r].q || []).push(arguments)
-                }, i[r].l = 1 * new Date();
-                a = s.createElement(o),
-                    m = s.getElementsByTagName(o)[0];
-                a.async = 1;
-                a.src = g;
-                m.parentNode.insertBefore(a, m)
-            })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-            ga('create', 'UA-80463319-2', 'auto');
-            ga('send', 'pageview');
-        </script>
+
         <script src="{{asset('js/vendor.js')"></script>
-        <script src="{{asset('js/app.js')"></script>
     </body>
 
 </html>

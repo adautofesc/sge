@@ -87,7 +87,7 @@ class LancamentoController extends Controller
 								->get();
 
 		foreach($lancamentos as $lancamento){
-			$lancamento->boleto=$boleto;
+			$lancamento->boleto=$novo_boleto;
 			$lancamento->save();
 		}
 		return $lancamentos;
@@ -111,7 +111,7 @@ class LancamentoController extends Controller
 	}
 
 	public function verificaSeLancada($matricula,$parcela){
-		if($matricula == '' || $matricula == null)
+		if($matricula == '' || $matricula == null || $parcela==0)
 			return false;
 		$lancamentos=Lancamento::where('matricula',$matricula)
 			->where('parcela',$parcela)
@@ -177,7 +177,7 @@ class LancamentoController extends Controller
 			$lancamento->parcela = $anterior->parcela;
 			$lancamento->valor = $anterior->valor;
 			$lancamento->pessoa = $anterior->pessoa;
-			$lancamento->referencia = $anterior->rerencia;
+			$lancamento->referencia = $anterior->referencia;
 			$lancamento->save();
 			return redirect($_SERVER['HTTP_REFERER']);
 		}
@@ -628,7 +628,7 @@ class LancamentoController extends Controller
 							$lancamento->save();
 						}
 						else
-							return redirect(asset('secretaria/atender'.'/'.$r->pessoa))->withErrors(['Parcela já consta em boletos ativos']);
+							return redirect(asset('secretaria/atender'.'/'.$r->pessoa))->withErrors(['Parcela já consta em boletos ativos OU pessoa bolsista.']);
 
 				}
 			}

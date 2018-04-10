@@ -25,7 +25,6 @@ class painelController extends Controller
     		$hoje=new Data();
             $data=$hoje->getData();        
             $dados=['data'=>$data];
-            
             return view('home', compact('dados'));
     	}
 	
@@ -179,22 +178,20 @@ class painelController extends Controller
         //$instance = new BoletoController;
         $inst = new LancamentoController; /// esse cara vai fazer os lancamentos atrasados
         //$inst= new MatriculaController;
-        //
-        //
-        //
-        //
+   
+
         //return $inst->addPessoaLancamentos();
         
 
         
-       $dados = \App\PessoaDadosGerais::where('dado',2)->get();
+       /*$dados = \App\PessoaDadosContato::where('dado',10)->get();
         foreach($dados as $dado){
-            $dado->valor = preg_replace( '/[^0-9]/is', '', $dados_valor );
+            $dado->valor = preg_replace( '/[^0-9]/is', '', $dado->valor);
             $dado->save();
-        }
+        }*/
 
        
-       return "RG Normatizado";
+       return "Testador de classes.";
         
         
     }

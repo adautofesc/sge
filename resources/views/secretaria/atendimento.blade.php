@@ -76,6 +76,12 @@
     </div>
 </section>
 @include('inc.errors')
+@foreach($errosPessoa as $erros)
+<div class="alert alert-danger alert-dismissible">
+  <a href="#" class="close" onclick="apagaErro({{$erros->id}});" >&times;</a>
+  <strong><i class="fa fa-warning"></i> ATENÇÃO:</strong> {{$erros->valor}}.
+</div>
+@endforeach
 <section class="section">
 	<div class="row">
 		<div class="col-xl-12 center-block">
@@ -389,7 +395,9 @@
                                     <div>
                                         @if($lancamento->status == 'cancelado')
                                         <a a href="#" onclick="relancarParcela({{$lancamento->id}});" title="Relançar Parcela"><i class=" fa fa-external-link-square "></i></a>
-                                         <a href="#" onclick="reativarParcela({{$lancamento->id}})" title="Reativar parcela"> <i class="fa fa-undo "></i></a> 
+                                         <a href="#" onclick="reativarParcela({{$lancamento->id}})" title="Reativar parcela"> <i class="fa fa-undo "></i></a>
+                                        @else 
+                                        <a class="remove" onclick="cancelarParcela({{$lancamento->id}})" href="#" title="Cancelar parcela"> <i class="fa fa-times "></i></a>
                                         @endif
                                         <a href="{{asset('financeiro/lancamentos/editar').'/'.$lancamento->id}}" title="Editar parcela"> <i class="fa fa-pencil-square-o "></i></a>
                                     </div>

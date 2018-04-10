@@ -25,29 +25,32 @@ class BoletoController extends Controller
 	public function cadastrar(){ //$parcela/mes/ano
 		$boletos=0;
 		$vencimento=date('Y-m-28 23:59:59');
-		$pessoas = \DB::select("select distinct pessoa from matriculas where status like 'ativa' or status like 'pendente'group by pessoa"); //seleciona pessoas com matriculas ativas/pendentes
+		$pessoas = \DB::select("select distinct pessoa from lancamentos where status is null and  boleto is null group by pessoa"); //seleciona pessoas com matriculas ativas/pendentes
 
 		foreach($pessoas as $pessoa){
+			$valor=0;
 
 	
 			$lancamentos = Lancamento::where('status',null)
 				->where('boleto',null)
 				->where('pessoa',$pessoa->pessoa)
 				->get();
-			if(count($lancamentos)>0){// tem lancamentos?
+			foreach($lancamentos as $lancamento){
+				$valor = $valor + $lancamento->valor;
+			}
+
+			if(count($lancamentos)>0 && $valor>0 ){// tem lancamentos? é maior que zero?
 				$boleto = new Boleto; //cria boleto
 				$boleto->vencimento = $vencimento;
 				$boleto->pessoa = $pessoa->pessoa;
 				$boleto->status = 'gravado';
+				$boleto->valor = $valor;
 				$boleto->save();
 				foreach($lancamentos as $lancamento){ //para cada lancamento
-					$boleto->valor=$boleto->valor+$lancamento->valor;
 					$lancamento->boleto = $boleto->id;
 					$lancamento->save();
 
 				}
-
-				$boleto->save();
 				$boletos++;
 			}
 		}
@@ -56,27 +59,60 @@ class BoletoController extends Controller
 
 
 	}
-	public function imprimirLotex(){
+	public function imprimirLote(){
 
-		$boletos=Boleto::where('status','gravado')->paginate(200)->get();
-		foreach($boletos as $boleto){
-			$boleto->status='impresso';
-			//$boleto->save();
-			$this->gerar($boleto);
+		$boletosx=Boleto::where('status','gravado')->paginate(200);
+		$boletos = collect();
+		
+		$inst = new BoletoFuncional;
+		foreach($boletosx as $boleto){
+			$boleto_completo = $inst->gerar($boleto);
+			$boleto_completo->lancamentos = Lancamento::where('boleto', $boleto->id)->get();
+			$boletos->push($boleto_completo);
+			
 		}
-		//return $boletos;
-
-		return view('financeiro.boletos.lote')->with('boletos',$boletos);
+		return view('financeiro.boletos.lote')->with('boletos',$boletos)->with('boletosx',$boletosx);
 	}
-	public function imprimirx($boleto){
+	public function imprimirLotex(){
+		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
+		$boletos = Boleto::where('status','gravado')->get();
+		foreach($boletos as $boleto){
+			$boleto_completo = $this->gerarBoleto($boleto);
+			$boleto->status = 'impresso';
+			//$boleto->save();
+			$html->addBoleto($boleto_completo);
+		}
+		$html->hideInstrucoes();
+		//$html->showPrint();
+		
+		return $html->gerarBoleto(false,false);
+
+	}
+	public function imprimir($boleto){
 		$boleto = Boleto::find($boleto);
 		//return $boleto;
 		$inst = new BoletoFuncional;
 		$boleto_completo = $inst->gerar($boleto);
 
-		//return $boleto_completo; 
-		return view('financeiro.boletos.boleto')->with('boleto',$boleto_completo);
+		$lancamentos = Lancamento::where('boleto', $boleto->id)->get();
 
+		//return $boleto_completo; 
+		return view('financeiro.boletos.boleto')->with('boleto',$boleto_completo)->with('lancamentos',$lancamentos);
+
+	}
+	public function imprimirx($boleto){
+		$boleto = Boleto::find($boleto);
+		if($boleto == null)
+			throw new \Exception("Boleto Inexistente", 1);
+		if($boleto->status == 'gravado'){
+			$boleto->status = 'impresso';
+			$boleto->save();
+		}
+		$boleto_completo = $this->gerarBoleto($boleto);
+		
+
+		return $boleto_completo->renderHTML();
+		
 	}
 	public static function verificaSeCadastrado($pessoa,$valor,$vencimento){
 		$cadastrado=Boleto::where('pessoa',$pessoa)->where('valor',$valor)->where('vencimento',$vencimento)->first();
@@ -93,39 +129,48 @@ class BoletoController extends Controller
 		if(count($lancamentos) > 0){
 				
 			//gerar boleto
-			$boleto=new Boleto;
-			$boleto->pessoa=Session::get('pessoa_atendimento');
-			$boleto->vencimento=$vencimento;
-			$boleto->save();
-
 			$total=0;
-			$descontos=0;
-			$acrescimos=0;
-
 			foreach($lancamentos as $lancamento){
-				if($lancamento->status != 'cancelado'){
-					if($lancamento->parcela == 0){
-						if($lancamento->valor > 0)
-							$acrescimos=$acrescimos+$lancamento->valor;
+				$total = $total + $lancamento->valor;
+			}
+
+			if($total>0){
+				$boleto=new Boleto;
+				$boleto->pessoa=Session::get('pessoa_atendimento');
+				$boleto->vencimento=$vencimento;
+				$boleto->save();
+
+				$total=0;
+				$descontos=0;
+				$acrescimos=0;
+
+				foreach($lancamentos as $lancamento){
+					if($lancamento->status != 'cancelado'){
+						if($lancamento->parcela == 0){
+							if($lancamento->valor > 0){
+								$total = $total + $lancamento->valor;
+								$acrescimos=$acrescimos+$lancamento->valor;
+							}
+							else{
+								$total = $total + $lancamento->valor;
+								$descontos = $descontos + $lancamento->valor;	
+							}
+						}
 						else
-							$descontos = $descontos + $lancamento->valor;	
+							$total = $total + $lancamento->valor;
+						
+						$lancamento->boleto=$boleto->id;
+						$lancamento->save();
 					}
-					else
-						$total = $total + $lancamento->valor;
-					$total = $total + $descontos + $acrescimos;
-					$lancamento->boleto=$boleto->id;
-					$lancamento->save();
+				}
+				$boleto->valor = $total;
+				$boleto->descontos = $descontos;
+				$boleto->encargos = $acrescimos;
+				if($boleto->valor >0){
+					$boleto->save();
 				}
 			}
-			$boleto->valor = $total;
-			$boleto->descontos = $descontos;
-			$boleto->encargos = $acrescimos;
-			$boleto->save();
-			if($boleto->valor <=0){
-				$boleto->status = 'cancelado';
-				$boleto->save();
-			}
-	
+		
 			
 		}//fim se qnde de lancamentos = 0
 		return redirect($_SERVER['HTTP_REFERER']);
@@ -171,35 +216,8 @@ class BoletoController extends Controller
 		}
 
 	}
-	public function imprimirLote(){
-		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
-		$boletos = Boleto::where('status','gravado')->get();
-		foreach($boletos as $boleto){
-			$boleto_completo = $this->gerarBoleto($boleto);
-			$boleto->status = 'impresso';
-			//$boleto->save();
-			$html->addBoleto($boleto_completo);
-		}
-		$html->hideInstrucoes();
-		//$html->showPrint();
-		
-		return $html->gerarBoleto(false,false);
-
-	}
-	public function imprimir($boleto){
-		$boleto = Boleto::find($boleto);
-		if($boleto == null)
-			throw new \Exception("Boleto Inexistente", 1);
-		if($boleto->status == 'gravado'){
-			$boleto->status = 'impresso';
-			$boleto->save();
-		}
-		$boleto_completo = $this->gerarBoleto($boleto);
-		
-
-		return $boleto_completo->renderHTML();
-		
-	}
+	
+	
 	public function confirmarImpressao(){
 		$boletos = Boleto::where('status','gravado')->get();
 		foreach($boletos as $boleto){
@@ -235,13 +253,14 @@ class BoletoController extends Controller
 			$boleto_completo = $this->gerarBoleto($boleto);
 			$remessa->addBoleto($boleto_completo);
 			$boleto->status='emitido';
-			$boleto->save();
+			//$boleto->save();********************************************************************************
 
 		}
-		//dd($remessa);
-		$remessa->save( 'remessas/'.date('YmdHi').'.rem');
-		$arquivo = date('YmdHi').'.rem';
-		return view('financeiro.remessa.arquivo',compact('arquivo'));
+
+		dd($remessa);
+		//$remessa->save( 'remessas/'.date('YmdHi').'.rem');
+		//$arquivo = date('YmdHi').'.rem';
+		//return view('financeiro.remessa.arquivo',compact('arquivo'));
 
 	}
 	public function downloadRemessa($arquivo){
@@ -304,8 +323,8 @@ class BoletoController extends Controller
 		    'uf'        => 'SP',
 		    'cidade'    => 'São Carlos',
 		]);
-		if(empty($cliente->cpf)){
-			$cliente->cpf = PessoaController::notificarCPFInvalido($cliente->id);
+		if(is_null($cliente->cpf)){	
+			$cliente->cpf = '111.111.111-11';
 		}
 		$pagador = new \Eduardokum\LaravelBoleto\Pessoa([
 			'documento' => $cliente->cpf,

@@ -22,7 +22,7 @@ Route::post('testar-classe', 'painelController@testarClassePost');
 Route::get('lista/{id}','painelController@chamada'); //lista de chamada aberta
 Route::get('meuboleto', function(){ return view('financeiro.boletos.meuboleto');});
 Route::post('meuboleto', 'BoletoController@segundaVia');
-Route::get('boleto/{id}','BoletoController@imprimirx');
+Route::get('boleto/{id}','BoletoController@imprimir');
 
 
 

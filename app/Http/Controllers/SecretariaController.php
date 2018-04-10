@@ -53,6 +53,7 @@ class SecretariaController extends Controller
 			
 			
 		}
+		$errosMsg=\App\PessoaDadosGerais::where('pessoa',$id)->where('dado',20)->get();
 		//listar todas matriculas
 		//if Mostrar estiver definido, serão exibidos todos os dados
 		if(isset($_GET["mostrar"])){
@@ -117,6 +118,6 @@ class SecretariaController extends Controller
 
 		}
 		//return $matriculas;
-		return view('secretaria.atendimento', compact('pessoa'))->with('matriculas',$matriculas)->with('boletos',$boletos)->with('lancamentos',$lancamentos)->with('inscricoes',$inscricoes);
+		return view('secretaria.atendimento', compact('pessoa'))->with('matriculas',$matriculas)->with('boletos',$boletos)->with('lancamentos',$lancamentos)->with('inscricoes',$inscricoes)->with('errosPessoa',$errosMsg);
 	}
 }

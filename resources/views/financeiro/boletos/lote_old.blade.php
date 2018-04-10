@@ -181,12 +181,11 @@ table.line tr.campos td.vencimento2,
 table.line tr.campos td.ag_cod_cedente2,
 table.line tr.campos td.nosso_numero2,
 table.line tr.campos td.xvalor,
-table.line tr.campos td.valor_doc2,
+table.line tr.campos td.valor_doc2
 table.line tr.campos td.desconto2,
 table.line tr.campos td.outros_acrescimos2,
 table.line tr.campos td.valor_cobrado,
 table.line tr.campos td.valor_cobrado2
-
 {
 	text-align: right;
 }
@@ -429,11 +428,7 @@ table.line td.cod_baixa {
 	width: 180px;
 }
 
-.referencia {
-	vertical-align: text-top;
-	height: 100px;
-    overflow-y: hidden;
-}
+
 
 
 div.footer {
@@ -467,72 +462,53 @@ div.barcode {
 	visibility: hidden;
 	overflow: hidden;
 }
-.pagination{
-	visibility: hidden;
-	overflow: hidden;
-}
 
 }
-ul.pagination {
-    display: inline-block;
-    padding: 0;
-    margin: 0;
-    font-family:verdana;
-}
-
-ul.pagination li {
-    display: inline;
-    float: left;
-    text-decoration: none;
-    padding: 8px 16px;
-    border: 1px solid #ddd;
-
-}
-
-ul.pagination li a {
-    color: black;
-    float: left;
-    text-decoration: none;
-
-
-}
-ul.pagination li.active {
-    background-color: #4CAF50;
-    color: white;
-}
-
-ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
-    }
 
 </STYLE>
 </HEAD>
 <BODY>
-	<div id="container" style="@media print { dispplay:none;}">
-{{$boletosx->links()}}
-</div>
-@foreach($boletos as $boleto)
+	@foreach($boletos as $boleto)
 	<div id="container" class="page-break">
 		<div id="">
 	<!--
   Use no lugar do <div id=""> caso queira imprimir sem o logotipo e instruções 
   <div id="instructions">-->
-  		<div class="info-empresa">
-         
-                <div style="display: inline-block;">
-                    <img alt="logo" src="/img/logo-small.png"/>
-                </div>
 
-            <div style="display: inline-block; vertical-align: super;">
-                <div><strong>Fundação Educacional São Carlos</strong></div>
-                <div>CNPJ 45.361.904/0001-80</div>
-                <div>Rua São Sebastião, 2828 Vila Nery</div>
-                <div>13560-230 - São Carlos - SP</div>
-            </div>
-        </div>
-
+		<div id="instr_content">
+			<p>
+				O pagamento deste boleto tamb&eacute;m poder&aacute; ser efetuado 
+				nos terminais de Auto-Atendimento BB.
+			</p>
+			
+			<h2>Observações:</h2>
+			<ol>
+			<li>
+				Em caso de desistência é obrigatório o preenchimento do Pedido de Cancelamento na secretaria da FESC
+			</li>
+			<li>
+				Aos servidores públicos municipais da ativa, apresentar holerite atualizado para desconto na mensalidade
+			</li>
 		
+			</ol>	
+			
+
+		</div>	<!-- id="instr_content" -->
+	</div>	<!-- id="instructions" -->
+	
 	<div id="boleto">
-		
+		<div class="cut">
+			<p>Corte na linha Pontilhada</p>
+		</div>
+    <table cellspacing=0 cellpadding=0 width=666 border=0>
+    	<TBODY>
+    		<TR>
+    			<TD class=ct width=666>
+    				<div align=right><b class=cp>Recibo do Sacado</b></div>
+    			</TD>
+    		</tr>
+    	</tbody>
+    </table>
 	<table class="header" border=0 cellspacing="0" cellpadding="0">
 		<tbody>
 		<tr>
@@ -548,8 +524,8 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 		<table class="line" cellspacing="0" cellpadding="0">
 		<tbody>
 		<tr class="titulos">
-			<td class="cedente">Beneficiário</TD>
-			<td class="ag_cod_cedente">Ag&ecirc;ncia / C&oacute;digo do Beneficiário</td>
+			<td class="cedente">Cedente</TD>
+			<td class="ag_cod_cedente">Ag&ecirc;ncia / C&oacute;digo do Cedente</td>
 			<td class="especie">Esp&eacute;cie</TD>
 			<td class="qtd">Quantidade</TD>
 			<td class="nosso_numero">Nosso n&uacute;mero</td>
@@ -569,14 +545,14 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 		<tbody>
 		<tr class="titulos">
 			<td class="num_doc">N&uacute;mero do documento</td>
-			<td class="contrato">Aluno</TD>
-			<td class="cpf_cei_cnpj">CNPJ</TD>
+			<td class="contrato">Contrato</TD>
+			<td class="cpf_cei_cnpj">CPF/CEI/CNPJ</TD>
 			<td class="vencmento">Vencimento</TD>
 			<td class="valor_doc">Valor documento</TD>
 		</tr>
 		<tr class="campos">
 			<td class="num_doc">{{ $boleto->dados["numero_documento"]}}</td>
-			<td class="contrato">{{ $boleto->dados["sacado_id"]}}</td>
+			<td class="contrato">{{ $boleto->dados["contrato"]}}</td>
 			<td class="cpf_cei_cnpj">{{ $boleto->dados["cpf_cnpj"]}}</td>
 			<td class="vencimento">{{ $boleto->dados["data_vencimento"]}}</td>
 			<td class="valor_doc">{{ $boleto->dados["valor_boleto"]}}</td>
@@ -604,28 +580,28 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 		</table>
 
       
-		<table class="line " cellspacing="0" cellpadding="0">	
+		<table class="line" cellspacing="0" cellpadding="0">
 		<tbody>
 		<tr class="titulos">
-			<td class="sacado">Referência</td>
+			<td class="sacado">Sacado</td>
 		</tr>
-		<tr class="campos referencia">
-			<td valign="top" class="sacado">
-				
-		@foreach($boleto->lancamentos as $lancamento)
-		{{ $lancamento->referencia}} - R$ {{ $lancamento->valor}}
-		<BR>
-		
-		@endforeach
-		</td>
+		<tr class="campos">
+			<td class="sacado">{{ $boleto->dados["sacado"]}}</td>
 		</tr>
 		</tbody>
 		</table>
+		
+		<div class="footer">
+			<p>Autentica&ccedil;&atilde;o mec&acirc;nica</p>
+		</div>
 
 		
+		<br>
+		<br>
 		<div class="cut">
-			<p>dobre na linha pontilhada</p>
+			<p>Dobre/Corte na linha pontilhada</p>
 		</div>
+
 
 
 		<table class="header" border=0 cellspacing="0" cellpadding="0">
@@ -743,7 +719,7 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 				<td class="desconto2">(-) Desconto / Abatimento</td>
 			</tr>
 			<tr class="campos">
-				<td class="desconto2">&nbsp;</td>
+				<td class="desconto2">{{$boleto->valor_desconto}}</td>
 			</tr>
 			</tbody>
 			</table>
@@ -782,7 +758,7 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 				<td class="outros_acrescimos2">(+) Outros Acr&eacute;scimos</td>
 			</tr>
 			<tr class="campos">
-				<td class="outros_acrescimos2">&nbsp;</td>
+				<td class="outros_acrescimos2">{{$boleto->valor_encargo}}</td>
 			</tr>
 			</tbody>
 			</table>
@@ -815,33 +791,15 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 	    	</tbody>
 	    
 	   	</table>
-	   <div class="barcode">
-			<img src="{{asset('./img/barcode.php').'?code='. $boleto->dados["codigo_barras"]}}"  with="600" height="50">		
-		</div>
+	   	<br><br><br><br><br>
 	   	<div class="cut">
 			<p>dobre na linha pontilhada</p>
 		</div>
 		<br>
-		<div id="instr_content">
-			<p>
-				O pagamento deste boleto tamb&eacute;m poder&aacute; ser efetuado 
-				nos terminais de Auto-Atendimento BB.
-			</p>
-			
-			<h2>Observações:</h2>
-			<ol>
-			<li>
-				Em caso de desistência é obrigatório o preenchimento do Pedido de Cancelamento na secretaria da FESC.
-			</li>
-			<li>
-				Aos servidores públicos municipais da ativa, apresentar holerite atualizado no ato da matrícula.
-			</li>
 		
-			</ol>	
-			
-
-		</div>	<!-- id="instr_content" -->
-	</div>	<!-- id="instructions" -->
+		<div class="barcode">
+			<img src="{{asset('./img/barcode.php').'?code='. $boleto->dados["codigo_barras"]}}"  with="600" height="50">		
+		</div>
 		<br><br>
 		<br>
 		<br>
@@ -853,31 +811,38 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 		<br>
 		<br>
 		<br>
-	
 
 		
 		<table class="line" cellspacing="0" cellPadding="0">
 		<tbody>
 		<tr class="titulos">
-			<td class="sacado2">Pagador</td>
+			<td class="sacado2">Sacado</td>
 		</tr>
 		<tr class="campos">
-			<td class="sacado2" style="margin-top: 18em; margin-left:150px; font-family: Tahoma;" >
-				<p style="font-size: 20px;">{{ $boleto->dados["sacado"]}}</p>
+			<td class="sacado2" >
+				<p style="font-weight: bolder;">{{ $boleto->dados["sacado"]}}</p>
 				<p>{{ $boleto->dados["endereco1"]}}</p>
 				<p>{{ $boleto->dados["endereco2"]}}</p>
-				
 			</td>
 		</tr>
 		</tbody>
 		</table>
-
+		<table class="line" cellspacing="0" cellpadding="0">
+		<tbody>
+		<tr class="titulos">
+			<td class="sacador_avalista" colspan="2">Sacador/Avalista</td>
+		</tr>
+		<tr class="campos">
+			<td class="sacador_avalista">&nbsp;</td>
+			<td class="cod_baixa">C&oacute;d. baixa</td>
+		</tr>
+		</tbody>
+		</table>
 
 	</div>
 
 </div>
 @endforeach
-
 
 </body>
 

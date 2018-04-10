@@ -11,6 +11,9 @@ class BoletoFuncional {
 public function gerar($boleto){
 		$cliente=Pessoa::find($boleto->pessoa);
 		$cliente=PessoaController::formataParaMostrar($cliente);
+		if(isset($cliente->cpf)== false){
+			PessoaController::notificarCPFInvalido($cliente->id);
+		}
 
 		
 
@@ -34,18 +37,19 @@ public function gerar($boleto){
 
 		// DADOS DO SEU CLIENTE
 		$dadosboleto["sacado"] = $cliente->nome;
+		$dadosboleto["sacado_id"] = $cliente->id;
 		$dadosboleto["cpf_sacado"]=$cliente->cpf;
-		$dadosboleto["logradouro_sacado"]=$cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->complemento;
+		$dadosboleto["logradouro_sacado"]=$cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->end_complemento;
 		$dadosboleto["bairro_sacado"] = ($cliente->bairro=='Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro);
 		$dadosboleto["cep_sacado"]= str_replace('-', '',$cliente->cep);
 
 
-		$dadosboleto["endereco1"] = $cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->complemento.''. ($cliente->bairro=='Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro) ;
+		$dadosboleto["endereco1"] = $cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->end_complemento.''. ($cliente->bairro=='Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro) ;
 		$dadosboleto["endereco2"] = $cliente->cidade.' '.$cliente->estado.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CEP '.$cliente->cep;
 
 		// INFORMACOES PARA O CLIENTE
 		$dadosboleto["demonstrativo1"] = "Pagamento FESC";
-		$dadosboleto["demonstrativo2"] = "Acréscimos ou descontos são diferenças de valores entre a parcela anterior e a atual.";
+		$dadosboleto["demonstrativo2"] = "";
 		$dadosboleto["demonstrativo3"] = "Mensalidade referente a parcelas de todas as suas atividade na FESC";
 
 		// INSTRUÇÕES PARA O CAIXA

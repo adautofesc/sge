@@ -216,7 +216,7 @@ class PessoaController extends Controller
 					$endereco->bairro=$request->bairro;
 					$endereco->cidade=mb_convert_case($request->cidade, MB_CASE_UPPER, 'UTF-8');
 					$endereco->estado=$request->estado;
-					$endereco->cep=$request->cep;
+					$endereco->cep=preg_replace( '/[^0-9]/is', '',$request->cep);
 					$endereco->atualizado_por=Session::get('usuario');
 					$endereco->save();
 					$id_endereco=$endereco->id;
@@ -391,10 +391,10 @@ class PessoaController extends Controller
 		if($username)
 			$pessoa->username=$username->usuario;
 
-		if(isset($pessoa->cpf)){
-			$pessoa->cpf = str_replace(['.','-'], '', $pessoa->cpf);
-			if(!Strings::validaCPF($pessoa->cpf)){
-				$pessoa->cpf ='';
+		if(isset($pessoa->cpf)){;
+			if(Strings::validaCPF($pessoa->cpf) == false){
+				PessoaController::notificarCPFInvalido($pessoa->id);
+				$pessoa->cpf = null;
 			}
 		}	
 
@@ -573,7 +573,7 @@ class PessoaController extends Controller
 			$rg=new PessoaDadosGerais;
 			$rg->pessoa=$pessoa->id;
 			$rg->dado=4;
-			$rg->valor=$request->rg;
+			$rg->valor=preg_replace( '/[^0-9]/is', '',$request->rg);
 			$rg->save();
 			$pessoa->alert_sucess.=" RG gravado com sucesso,";
 
@@ -594,7 +594,7 @@ class PessoaController extends Controller
 				$cpf=new PessoaDadosGerais;
 				$cpf->pessoa=$pessoa->id;
 				$cpf->dado=3;
-				$cpf->valor=$request->cpf;
+				$cpf->valor=preg_replace( '/[^0-9]/is', '',$request->cpf);
 				$cpf->save();
 				$pessoa->alert_sucess.=" CPF gravado com sucesso,";
 			}
@@ -659,7 +659,7 @@ class PessoaController extends Controller
 				$info=new PessoaDadosContato;					
 				$info->pessoa=$pessoa->id;
 				$info->dado=2; 
-				$info->valor=$request->telefone;
+				$info->valor=preg_replace( '/[^0-9]/is', '',$request->telefone);
 				$pessoa->dadosContato()->save($info);
 			}
 
@@ -668,7 +668,7 @@ class PessoaController extends Controller
 				$info=new PessoaDadosContato;					
 				$info->pessoa=$pessoa->id;
 				$info->dado=9; 
-				$info->valor=$request->tel2;
+				$info->valor=preg_replace( '/[^0-9]/is', '',$request->tel2);
 				$pessoa->dadosContato()->save($info);
 			}
 
@@ -677,7 +677,7 @@ class PessoaController extends Controller
 				$info=new PessoaDadosContato;					
 				$info->pessoa=$pessoa->id;
 				$info->dado=10; 
-				$info->valor=$request->tel3;
+				$info->valor=preg_replace( '/[^0-9]/is', '',$request->tel3);
 				$pessoa->dadosContato()->save($info);
 			}
 			//se tiver vincular
@@ -703,7 +703,7 @@ class PessoaController extends Controller
 					$endereco->bairro=$request->bairro;
 					$endereco->cidade=mb_convert_case($request->cidade, MB_CASE_UPPER, 'UTF-8');
 					$endereco->estado=$request->estado;
-					$endereco->cep=str_replace('-', '', $request->cep);
+					$endereco->cep=preg_replace( '/[^0-9]/is', '',$request->cep);
 					$endereco->atualizado_por=Session::get('usuario');
 					$endereco->save();
 					$id_endereco=$endereco->id;
@@ -937,15 +937,14 @@ class PessoaController extends Controller
 
 	}
 	public static function notificarCPFInvalido($pessoa){
-		$erro = new \App\PessoaDadosGerais;
-            $erro->pessoa = $cpf->pessoa;
+		$dados = \App\PessoaDadosGerais::where('pessoa',$pessoa)->where('dado',3)->where('valor','CPF não foi aprovado pelo validador.')->get();
+		if(count($dados) == 0){
+			$erro = new \App\PessoaDadosGerais;
+            $erro->pessoa = $pessoa;
             $erro->dado = 20;
-            $erro->valor= "CPF não foi aprovado pelo validador";
+            $erro->valor= "CPF não foi aprovado pelo validador.";
             $erro->save();
-		return '45.361.904/0001-80';
-
-
-
+		}
 
 	}
 

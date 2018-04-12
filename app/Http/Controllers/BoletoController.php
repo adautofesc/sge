@@ -249,18 +249,19 @@ class BoletoController extends Controller
 		);
 		
 		$boletos =Boleto::where('status','impresso')->get();
+		if(count($boletos) == 0)
+			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Nenhum boleto encontrado']);
 		foreach($boletos as $boleto){
 			$boleto_completo = $this->gerarBoleto($boleto);
 			$remessa->addBoleto($boleto_completo);
 			$boleto->status='emitido';
-			//$boleto->save();********************************************************************************
-
+			$boleto->save();
 		}
 
-		dd($remessa);
-		//$remessa->save( 'remessas/'.date('YmdHi').'.rem');
-		//$arquivo = date('YmdHi').'.rem';
-		//return view('financeiro.remessa.arquivo',compact('arquivo'));
+		//dd($remessa);
+		$remessa->save( 'remessas/'.date('YmdHi').'.rem');
+		$arquivo = date('YmdHi').'.rem';
+		return view('financeiro.remessa.arquivo',compact('arquivo'));
 
 	}
 	public function downloadRemessa($arquivo){

@@ -151,4 +151,7 @@ class EnderecoController extends Controller
 
 
     }
+    public function buscarBairro($valor=''){
+        return DB::table('bairros_sanca')->where('nome','like','%'.$valor.'%')->limit(20)->get();
+    }
 }

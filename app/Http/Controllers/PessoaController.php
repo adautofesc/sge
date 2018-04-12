@@ -402,9 +402,11 @@ class PessoaController extends Controller
 
 		if(isset($pessoa->endereco)){
 			$endereco=Endereco::find($pessoa->endereco);
+			$pessoa->end_id=$endereco->id;
 			$pessoa->logradouro=$endereco->logradouro;
 			$pessoa->end_numero=$endereco->numero;
 			$pessoa->bairro=EnderecoController::getBairro($endereco->bairro);
+			$pessoa->id_bairro=$endereco->bairro;
 			$pessoa->end_complemento=$endereco->complemento;
 			$pessoa->cidade=$endereco->cidade;
 			$pessoa->estado=$endereco->estado;
@@ -947,6 +949,151 @@ class PessoaController extends Controller
 		}
 
 	}
+	public function iniciarRecadastramento(Request $rq){
+		$dado = PessoaDadosGerais::where('dado',3)->where('valor',preg_replace( '/[^0-9]/is', '',$rq->cpf))->get();
+		if(count($dado)>0){
+			$pessoa = \App\Pessoa::find($dado->first()->pessoa);
+			if(is_null($pessoa))
+				return redirect($_SERVER['HTTP_REFERER'])->withErrors(['CPF encontrado sem vínculos no sistema. Dirija-se ao setor administrativo e procure pelo desenvolvedor.']);
+			
+			return view('pessoa.recadastrar')->with('pessoa',$this->formataParaMostrar($pessoa));
+		}
+		else
+			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Desculpe, mas o CPF '.preg_replace( '/[^0-9]/is', '',$rq->cpf).' não foi encontrado. Tente novamente.']);
+	}
+	public function gravarRecadastro(Request $request){
+			$pessoa = Pessoa::find($request->pessoa);
+
+			$pessoa->nome=mb_convert_case($request->nome, MB_CASE_UPPER, 'UTF-8');
+			$pessoa->nascimento=\Carbon\Carbon::createFromFormat('d/m/Y', $request->nascimento, 'Europe/London')->format('Y-m-d');
+			$pessoa->genero=$request->genero;
+
+			
+			$pessoa->save();//
+		//**************** Dados Gerais
+
+
+			if($request->rg != '')
+			{
+				$dado = PessoaDadosGerais::where('pessoa',$pessoa->id)->where('dado',4)->get();
+				if(count($dado)== 0)
+					$info=new PessoaDadosGerais;
+				else
+					$info = $dado->first();					
+				$info->pessoa=$pessoa->id;
+				$info->dado=4; 
+				$info->valor=preg_replace( '/[^0-9]/is', '', $request->rg);
+				$info->save();
+			}
+
+			
+			if($request->cpf != '')
+			{
+				$dado = PessoaDadosGerais::where('pessoa',$pessoa->id)->where('dado',3)->get();
+				if(count($dado)== 0)
+					$info=new PessoaDadosGerais;
+				else
+					$info = $dado->first();
+				if(Strings::validaCPF($request->cpf) == false){
+					return 'Desculpe, mas o CPF '.preg_replace( '/[^0-9]/is', '',$request->cpf).' não é valido em nosso sistema. Volte e tente novamente.';
+				}					
+				$info->pessoa=$pessoa->id;
+				$info->dado=3;
+				$info->valor=preg_replace( '/[^0-9]/is', '', $request->cpf);
+				$info->save();
+			}
+
+	
+		//**************** Dados Contato
+			if($request->email != '')
+			{
+				$dado = PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',1)->get();
+				if(count($dado)== 0)
+					$info=new PessoaDadosContato;
+				else
+					$info = $dado->first();						
+				$info->pessoa=$pessoa->id;
+				$info->dado=1; 
+				$info->valor=mb_convert_case($request->email, MB_CASE_LOWER, 'UTF-8');
+				$info->save();
+			}
+
+			if($request->telefone != '')
+			{
+				$dado = PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',2)->get();
+				if(count($dado)== 0)
+					$info=new PessoaDadosContato;
+				else
+					$info = $dado->first();					
+				$info->pessoa=$pessoa->id;
+				$info->dado=2; 
+				$info->valor=preg_replace( '/[^0-9]/is', '', $request->telefone);
+				$info->save();
+			}
+
+			if($request->tel2 != '')
+			{
+				$dado = PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',9)->get();
+				if(count($dado)== 0)
+					$info=new PessoaDadosContato;
+				else
+					$info = $dado->first();						
+				$info->pessoa=$pessoa->id;
+				$info->dado=9; 
+				$info->valor=preg_replace( '/[^0-9]/is', '', $request->tel2);
+				$info->save();
+			}
+
+			if($request->tel3 != '')
+			{
+				$dado = PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',10)->get();
+				if(count($dado)== 0)
+					$info=new PessoaDadosContato;
+				else
+					$info = $dado->first();						
+				$info->pessoa=$pessoa->id;
+				$info->dado=10; 
+				$info->valor=preg_replace( '/[^0-9]/is', '', $request->tel3);
+				$info->save();
+			}
+			//se tiver vincular
+			if($request->rua != '')
+			{
+				$dado = PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',6)->get();
+				if(count($dado)== 0){
+					$info=new PessoaDadosContato;
+					$endereco=new Endereco;	
+				}
+				else{
+					$info = $dado->first();	
+					$endereco=Endereco::find($info->valor);	
+				}				
+					$endereco->logradouro =mb_convert_case($request->rua, MB_CASE_UPPER, 'UTF-8'); 
+					$endereco->numero=$request->numero_endereco;
+					$endereco->complemento=mb_convert_case($request->complemento_endereco, MB_CASE_UPPER, 'UTF-8');
+					$endereco->bairro=$request->bairro;
+					$endereco->cidade=mb_convert_case($request->cidade, MB_CASE_UPPER, 'UTF-8');
+					$endereco->estado=$request->estado;
+					$endereco->cep=preg_replace( '/[^0-9]/is', '',$request->cep);
+					$endereco->atualizado_por=Session::get('usuario');
+					$endereco->save();
+					$id_endereco=$endereco->id;
+				
+
+
+					
+				$info->pessoa=$pessoa->id;
+				$info->dado=6; 
+				$info->valor=$id_endereco;
+				$info->save();
+
+				return $endereco;
+			}
+			
+
+				return "dados alterados com sucesso"; 
+	}
+
 
 
 

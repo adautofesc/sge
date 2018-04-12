@@ -175,9 +175,17 @@ class painelController extends Controller
 
      
        
-        //$instance = new BoletoController;
-        $inst = new LancamentoController; /// esse cara vai fazer os lancamentos atrasados
+        $instance = new BoletoController;
+        //$inst = new LancamentoController; /// esse cara vai fazer os lancamentos atrasados
         //$inst= new MatriculaController;
+        $boletos = \App\Boleto::where('vencimento','2018-04-28 23:59:59')->where('status','emitido')->get();
+        foreach ($boletos as $boleto) {
+           $boleto->status = 'impresso';
+           $boleto->save();
+
+
+        }
+        return "boletos recuperados;";
    
 
         //return $inst->addPessoaLancamentos();
@@ -191,7 +199,7 @@ class painelController extends Controller
         }*/
 
        
-       return "Testador de classes.";
+       
         
         
     }

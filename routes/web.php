@@ -26,6 +26,7 @@ Route::get('boleto/{id}','BoletoController@imprimir');
 Route::get('recadastramento', function(){ return view('pessoa.recadastramento');});
 Route::post('recadastramento','PessoaController@iniciarRecadastramento');
 Route::post('recadastrado','PessoaController@gravarRecadastro');
+Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
 
 
 
@@ -64,7 +65,7 @@ Route::middleware('login') ->group(function(){
 		Route::get ('mostrar','PessoaController@listarTodos');//->middleware(['autorizar:56', 'privacy'])
 		Route::get ('mostrar/{var}','PessoaController@mostrar');
 		Route::get('buscarapida/{var}','PessoaController@liveSearchPessoa');
-		Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
+		
 		//dependentes
 		Route::get('adicionardependente/{var}','PessoaController@addDependente_view');
 		Route::get('gravardependente/{pessoa}/{dependente}','PessoaController@addDependente_exec');

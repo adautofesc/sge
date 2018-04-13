@@ -42,7 +42,7 @@
                         <br>
                         <form id="login-form" action="" method="POST" novalidate="">
                         {{csrf_field()}}
-                            <div class="form-group"> <label for="cpf">CPF</label> <input type="number" class="form-control underlined" name="cpf" id="cpf" max-size="11" placeholder="CPF sem pontos ou traços com 11 dígitos" required> </div>
+                            <div class="form-group"> <label for="cpf">CPF ou RG</label> <input type="number" class="form-control underlined" name="cpf" id="cpf" max-size="11" placeholder="Somente números, sem pontos ou traços" required autofocus> </div>
                             
                             <div class="form-group"> <button type="submit" class="btn btn-block btn-primary">Acessar</button>
         
@@ -50,7 +50,7 @@
 
                             </div>
                             <div class="form-group">
-                                <p class="text-muted text-xs-center">Caso o CPF não for encontrado, dirija-se ao atendimento.</p>
+                                <p class="text-muted text-xs-center">Caso seu cadastro não for encontrado, dirija-se ao atendimento.</p>
                             </div>
                         </form>
                     </div>
@@ -82,8 +82,8 @@
             ga('create', 'UA-80463319-2', 'auto');
             ga('send', 'pageview');
         </script>
-        <script src="{{asset('js/vendor.js')"></script>
-        <script src="{{asset('js/app.js')"></script>
+        <script src="{{asset('js/vendor.js')}}"></script>
+        <script src="{{asset('js/app.js')}}"></script>
     </body>
 
 </html>

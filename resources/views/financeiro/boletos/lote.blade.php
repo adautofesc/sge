@@ -507,7 +507,7 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 </STYLE>
 </HEAD>
 <BODY>
-	<div id="container" style="@media print { dispplay:none;}">
+	<div id="container" style="@media print { display:none;}">
 {{$boletosx->links()}}
 </div>
 @foreach($boletos as $boleto)

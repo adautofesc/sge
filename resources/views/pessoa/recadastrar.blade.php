@@ -279,7 +279,7 @@
             
  
            //AJAX is called.
-            $.get("{{asset('pessoa/buscarbairro/')}}"+"/"+name)
+            $.get("{{asset('buscarbairro/')}}"+"/"+name)
                 .done(function(data) 
                 {
                     $.each(data, function(key, val){

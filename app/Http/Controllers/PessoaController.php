@@ -954,12 +954,22 @@ class PessoaController extends Controller
 		if(count($dado)>0){
 			$pessoa = \App\Pessoa::find($dado->first()->pessoa);
 			if(is_null($pessoa))
-				return redirect($_SERVER['HTTP_REFERER'])->withErrors(['CPF encontrado sem vínculos no sistema. Dirija-se ao setor administrativo e procure pelo desenvolvedor.']);
+				return redirect($_SERVER['HTTP_REFERER'])->withErrors(['CPF encontrado sem vínculos no sistema. Tente inserir o RG. Caso já tenha inserido, procure a secretaria.']);
 			
 			return view('pessoa.recadastrar')->with('pessoa',$this->formataParaMostrar($pessoa));
 		}
-		else
-			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Desculpe, mas o CPF '.preg_replace( '/[^0-9]/is', '',$rq->cpf).' não foi encontrado. Tente novamente.']);
+		else{
+			$dado = PessoaDadosGerais::where('dado',4)->where('valor',preg_replace( '/[^0-9]/is', '',$rq->cpf))->get();
+			if(count($dado)>0){
+				$pessoa = \App\Pessoa::find($dado->first()->pessoa);
+				if(is_null($pessoa))
+					return redirect($_SERVER['HTTP_REFERER'])->withErrors(['RG encontrado sem vínculos no sistema. Tente inserir o CPF. Caso já tenha inserido, procure a secretaria.']);
+				return view('pessoa.recadastrar')->with('pessoa',$this->formataParaMostrar($pessoa));
+
+			} 
+			else
+				return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Desculpe, mas o RG/CPF '.preg_replace( '/[^0-9]/is', '',$rq->cpf).' não foi encontrado. Tente novamente.']);
+		}
 	}
 	public function gravarRecadastro(Request $request){
 			$pessoa = Pessoa::find($request->pessoa);
@@ -984,6 +994,7 @@ class PessoaController extends Controller
 				$info->dado=4; 
 				$info->valor=preg_replace( '/[^0-9]/is', '', $request->rg);
 				$info->save();
+				$pessoa->rg = $info->valor;
 			}
 
 			
@@ -1001,6 +1012,7 @@ class PessoaController extends Controller
 				$info->dado=3;
 				$info->valor=preg_replace( '/[^0-9]/is', '', $request->cpf);
 				$info->save();
+				$pessoa->cpf = $info->valor;
 			}
 
 	
@@ -1016,6 +1028,7 @@ class PessoaController extends Controller
 				$info->dado=1; 
 				$info->valor=mb_convert_case($request->email, MB_CASE_LOWER, 'UTF-8');
 				$info->save();
+				$pessoa->email = $info->valor;
 			}
 
 			if($request->telefone != '')
@@ -1029,6 +1042,7 @@ class PessoaController extends Controller
 				$info->dado=2; 
 				$info->valor=preg_replace( '/[^0-9]/is', '', $request->telefone);
 				$info->save();
+				$pessoa->telefone = $info->valor;
 			}
 
 			if($request->tel2 != '')
@@ -1042,6 +1056,7 @@ class PessoaController extends Controller
 				$info->dado=9; 
 				$info->valor=preg_replace( '/[^0-9]/is', '', $request->tel2);
 				$info->save();
+				$pessoa->celular = $info->valor;
 			}
 
 			if($request->tel3 != '')
@@ -1055,6 +1070,7 @@ class PessoaController extends Controller
 				$info->dado=10; 
 				$info->valor=preg_replace( '/[^0-9]/is', '', $request->tel3);
 				$info->save();
+				$pessoa->contato = $info->valor;
 			}
 			//se tiver vincular
 			if($request->rua != '')
@@ -1078,6 +1094,8 @@ class PessoaController extends Controller
 					$endereco->atualizado_por=Session::get('usuario');
 					$endereco->save();
 					$id_endereco=$endereco->id;
+					$endereco->bairro_str = $request->bairro_str;
+					$pessoa->endereco = $endereco;
 				
 
 
@@ -1087,11 +1105,30 @@ class PessoaController extends Controller
 				$info->valor=$id_endereco;
 				$info->save();
 
-				return $endereco;
+				//return $endereco;
 			}
 			
+				
+			//seleciona todas natriculas
+			$matriculas = \App\Matricula::Where('pessoa',$pessoa->id)->Where(function($query) {
+            $query->where('status','ativa')->orWhere('status','pendente');
+        	})->get();
+			//para cara matricula pegar as inscrições
+			foreach($matriculas as $matricula){
+				$matricula->getInscricoes();
+			}
 
-				return "dados alterados com sucesso"; 
+
+			//cria registro de REMATRICULADO 2018
+			$info = new PessoaDadosGerais;
+			$info->pessoa=$pessoa->id;
+			$info->dado=22;
+			$info->valor=date('d/m/Y H:i');
+			$info->save();
+
+			//manda para view termos de matricula em lote
+			//return $pessoa;
+			return view('juridico.documentos.termos-lote')->with('matriculas',$matriculas)->with('pessoa',$pessoa);
 	}
 
 

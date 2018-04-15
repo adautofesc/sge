@@ -462,7 +462,7 @@ class BoletoController extends Controller
 		public function segundaVia(Request $request){
 			$this->validate($request, [
 				'cpf'=>'required|numeric',
-				'nascimento'=>'required|date'			
+				'nascimento'=>'required'			
 
 			]);
 			$cpf_alt = str_pad($request->cpf,11,'0');

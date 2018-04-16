@@ -1115,8 +1115,11 @@ class PessoaController extends Controller
         	})->get();
 			//para cara matricula pegar as inscrições
 			foreach($matriculas as $matricula){
-				$matricula->getInscricoes();
+				$inscri=\App\Inscricao::where('matricula',$matricula->id)->where('status','like','regular')->get();
+				$matricula->inscri = $inscri;
+				
 			}
+			//dd($matriculas);
 
 
 			//cria registro de REMATRICULADO 2018

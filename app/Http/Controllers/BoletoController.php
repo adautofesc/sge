@@ -93,7 +93,10 @@ class BoletoController extends Controller
 		//return $boleto;
 		$inst = new BoletoFuncional;
 		$boleto_completo = $inst->gerar($boleto);
-
+		if($boleto->status == 'gravado'){
+			$boleto->status = 'impresso';
+			$boleto->save();
+		}
 		$lancamentos = Lancamento::where('boleto', $boleto->id)->get();
 
 		//return $boleto_completo; 

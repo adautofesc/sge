@@ -99,7 +99,7 @@
                     <strong>1. OBJETO</strong><br />
                     <strong>1.1</strong> O presente formaliza a inscrição do ALUNO nas seguinte atividades:
                     
-                    @foreach($matricula->inscricoes as $insc)
+                    @foreach($matricula->inscri as $insc)
                         <br>&nbsp;&nbsp;<span id="FormView1_CurDes" style="font-weight:bold;">
                         @if($insc->turma->disciplina==null)
                             {{ $insc->turma->curso->nome }} 
@@ -200,7 +200,7 @@
 				<tr>
 					<th align="left" scope="col">Local</th><th align="left" scope="col">Turma</th><th align="left" scope="col">Dt.Inicio</th><th align="left" scope="col">Dt.Final</th><th align="left" scope="col">Carga Hor&#225;ria</th>
 				</tr>
-                @foreach($matricula->inscricoes as $insc)
+                @foreach($matricula->inscri as $insc)
                         <tr>
                             <td>{{$insc->turma->local->nome}}</td>
                             <td>

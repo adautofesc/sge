@@ -221,7 +221,10 @@ class painelController extends Controller
     public function chamada($id){
         $inscritos=\App\Inscricao::where('turma',$id)->where('status','<>','cancelado')->get();
         $inscritos= $inscritos->sortBy('pessoa.nome');
-        return view('pedagogico.frequencia.index',compact('inscritos'))->with('i',1);
+        if(count($inscritos))
+            return view('pedagogico.frequencia.index',compact('inscritos'))->with('i',1);
+        else
+            return "Nenhum aluno cadastrado para esta turma.";
     }
 
 

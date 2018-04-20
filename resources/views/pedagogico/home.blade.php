@@ -29,11 +29,7 @@
                         <i class=" fa fa-plus-circle "></i>
                         &nbsp;&nbsp;Cadastrar</a>
                     </div>
-                    <div>
-                        <a href="{{asset('pedagogico/turmas/importar')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-file-text "></i>
-                        &nbsp;&nbsp;Importar Xlsx</a>
-                    </div>
+                    
                                    
                 </div>
             </div>  

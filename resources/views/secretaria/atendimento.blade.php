@@ -4,9 +4,9 @@
 <div class="title-search-block">
     <div class="title-block">
         <h3 class="title">Alun{{$pessoa->getArtigoGenero($pessoa->genero)}}: {{$pessoa->nome}} 
-        	@if(isset($pessoa->nome_resgistro))
-        		({{$pessoa->nome_resgistro}})
-        	@endif
+            @if(isset($pessoa->nome_resgistro))
+                ({{$pessoa->nome_resgistro}})
+            @endif
            
         </h3>
         <p class="title-description"> <b> Cod. {{$pessoa->id}}</b> - Tel. {{$pessoa->telefone}} </p>
@@ -83,14 +83,14 @@
 </div>
 @endforeach
 <section class="section">
-	<div class="row">
-		<div class="col-xl-12 center-block">
-			<div class="card card-primary">
-				<div class="card-header">
-					<div class="header-block">
-						<p class="title" style="color:white">Matrículas & Inscrições</p>
-					</div>
-				</div>
+    <div class="row">
+        <div class="col-xl-12 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Matrículas & Inscrições</p>
+                    </div>
+                </div>
                 <div class="card-block">
                     <ul class="item-list striped">
                         <li class="item item-list-header ">
@@ -162,27 +162,63 @@
                                 <div class="col-xl-1" style="line-height:40px !important;">
                                     <div><small>{{\Carbon\Carbon::parse($matricula->updated_at)->format('d/m/y')}}</small></div>
                                 </div>
-                                <div class="col-xl-2" style="line-height:40px !important;">
+                                <div class="col-xl-1" style="line-height:40px !important;">
                                     <div>
-                                        @if($matricula->status != 'cancelada')
-                                            <a a href="#" onclick="cancelar({{$matricula->id}});" title="Cancelar Matrícula"><i class=" fa fa-times "></i></a>
-                                        @else
-                                            <a a href="#" onclick="reativar({{$matricula->id}});" title="Reativar Matrícula"><i class=" fa fa-undo "></i></a>
-                                        @endif
-                                            <a href="{{asset('/secretaria/matricula/editar/').'/'.$matricula->id}}" title="Editar Matrícula"><i class=" fa fa-pencil-square-o "></i></a>
-                                            <a href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}" target="_blank" title="Imprimir Termo de Matrícula"><i class=" fa fa-print "></i></a>
-                                            <a href="{{asset('/secretaria/matricula/nova').'/'.$pessoa->id}}"  title="Adicionar Disciplina"><i class=" fa fa-plus-circle "></i></a>
+                                                                              
+                                        <a href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}" target="_blank" title="Imprimir Termo de Matrícula"><i class=" fa fa-print "></i></a>
+                                         
+
                                         @if($matricula->desconto > 0)
-                                             &nbsp;&nbsp;<span><i class=" fa fa-flag " title="Esta matrícula possui bolsa."></i></span>
+                                             &nbsp;<span><i class=" fa fa-flag " title="Esta matrícula possui bolsa."></i></span>
                                         @endif
                                          @if($matricula->status == 'pendente')
-                                            &nbsp;&nbsp;<span><i class=" fa fa-exclamation-triangle "  title="{{$matricula->obs}}"></i></span>
-                                        @elseif(($matricula->status == 'ativa' || $matricula->status == 'cancelada')&& $matricula->obs!='')
-                                            &nbsp;&nbsp;<span><i class=" fa fa-info "  title="{{$matricula->obs}}"></i></span>
+                                            &nbsp;<span><i class=" fa fa-exclamation-triangle"  title="{{$matricula->obs}}"></i></span>
+                                        @elseif(($matricula->status == 'ativa' || $matricula->status == 'cancelada') && $matricula->obs!='')
+                                            &nbsp; <span><i class=" fa fa-info "  title="{{ $matricula->obs}}"></i></span>
                                         @endif
-                                        
+                                    
                                     </div>
+
                                 </div>
+                                <div class="item-col fixed item-col-actions-dropdown">
+                                        <div class="item-actions-dropdown">
+                                            <a class="item-actions-toggle-btn"> <span class="inactive">
+                                    <i class="fa fa-cog"></i>
+                                </span> <span class="active">
+                                <i class="fa fa-chevron-circle-right"></i>
+                                </span> </a>
+                                            <div class="item-actions-block">
+                                                <ul class="item-actions-list">
+                                                    @if($matricula->status != 'cancelada')
+                                                     <li>
+                                                        <a href="#" class="remove" onclick="cancelar({{$matricula->id}});" title="Cancelar Matrícula"><i class=" fa fa-times "></i></a>
+                                                     </li>
+                                                    @else
+                                                    <li>
+                                                        <a href="#" onclick="reativar({{$matricula->id}});" title="Reativar Matrícula"><i class=" fa fa-undo "></i></a>
+                                                    </li>
+                                                        @endif
+                                                    <li>
+                                                         <a class="edit" href="{{asset('/secretaria/matricula/editar/').'/'.$matricula->id}}" title="Editar Matrícula"><i class=" fa fa-pencil-square-o "></i></a>
+                                                    </li>
+                                                    <li>
+                                                         <a class="edit" href="{{asset('/secretaria/matricula/nova').'/'.$pessoa->id}}"  title="Adicionar Disciplina"><i class=" fa fa-plus-circle "></i></a>
+                                                    </li>
+                                                  
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+
+
+
+
+
+
                             </div>
                             @foreach($matricula->inscricoes as $inscricao)
                             @if($inscricao->status == 'cancelado')
@@ -275,8 +311,8 @@
                         @endforeach
                     </ul>
                 </div>
-			</div>
-		</div>
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-xl-12 center-block">
@@ -498,7 +534,7 @@
                 
             </div>
         </div>
-    </div>		
+    </div>      
 </section>
 
 @endsection

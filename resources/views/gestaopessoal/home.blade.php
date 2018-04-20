@@ -36,11 +36,7 @@
                         <i class=" fa fa-plus-circle "></i>
                         &nbsp;&nbsp;Cadastrar Pessoa</a>
                     </div>
-                    <div>
-                        <a href="{{asset('/admin/listarusuarios')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class="fa fa-group"></i>
-                        &nbsp;&nbsp;Lista de Usuários</a>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -52,7 +48,16 @@
                     </div>
                 </div>
                 <div class="card-block">
-                   <p>Nenhuma opção disponível</p>
+                    <div>
+                        <a href="{{asset('/gestaopessoal/funcionarios')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class="fa fa-sitemap"></i>
+                        &nbsp;&nbsp;Lista de Funcionários</a>
+                    </div>
+                   <div>
+                        <a href="{{asset('/admin/listarusuarios')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class="fa fa-group"></i>
+                        &nbsp;&nbsp;Lista de Usuários</a>
+                    </div>
                 </div>
             </div>
         </div>

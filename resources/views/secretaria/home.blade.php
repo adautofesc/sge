@@ -41,6 +41,7 @@
                         <i class="fa fa-group"></i>
                         &nbsp;&nbsp;Lista de Cadastrados</a>
                     </div>
+
                 </div>                
             </div>
         </div>
@@ -66,6 +67,11 @@
                         <a href="#" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-plus-circle "></i>
                         &nbsp;&nbsp;Relatórios</a>
+                    </div>
+                    <div>
+                        <a href="{{asset('pedagogico/turmas/importar')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-file-text "></i>
+                        &nbsp;&nbsp;Importar alunos de planilha</a>
                     </div>
                 
                 </div>                

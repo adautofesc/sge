@@ -113,7 +113,7 @@ Route::middleware('login') ->group(function(){
 			Route::get('relancar/{lancamento}','LancamentoController@relancarParcela');
 			Route::get('editar/{lancamento}','LancamentoController@editar');
 			Route::post('editar/{lancamento}','LancamentoController@update');
-			Route::post('home', 'LancamentoController@gerarLancamentos' );
+			Route::middleware('liberar.recurso:19')->post('home', 'LancamentoController@gerarLancamentos' );//gerar parcela para todas pessoas
 		});
 
 		Route::prefix('boletos')->group(function(){
@@ -126,9 +126,9 @@ Route::middleware('login') ->group(function(){
 			Route::get('reativar/{id}','BoletoController@reativar');
 			Route::get('gerar-individual/{pessoa}','BoletoController@cadastarIndividualmente');
 			Route::get('gerar','BoletoController@gerar');
-			Route::get('gerar-boletos', 'BoletoController@cadastrar');//precisa de middleware
+			Route::middleware('liberar.recurso:19')->get('gerar-boletos', 'BoletoController@cadastrar');//gerar boletos em lote para todos alunos
 			Route::get('imprimir-lote', 'BoletoController@imprimirLote');
-			Route::get('confirmar-impressao', 'BoletoController@confirmarImpressao');//precisa de middleware
+			Route::middleware('liberar.recurso:19')->get('confirmar-impressao', 'BoletoController@confirmarImpressao');//confirma impressao de todos boletos gravados
 			Route::get('novo/{pesssoa}', 'BoletoController@novo');//precisa de middleware
 			Route::post('novo/{pesssoa}', 'BoletoController@create');//precisa de middleware
 
@@ -173,6 +173,7 @@ Route::middleware('login') ->group(function(){
 		Route::get('atendimento','painelController@gestaoPessoal');
 		Route::get('atender/','painelController@atendimentoPessoalPara');
 		Route::get('atender/{var}','painelController@atendimentoPessoalPara');
+		Route::get('funcionarios','PessoaController@listarFuncionarios');
 		Route::get('relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_view');
 		Route::post('relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_exec');
 	});

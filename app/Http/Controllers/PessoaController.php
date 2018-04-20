@@ -1133,6 +1133,19 @@ class PessoaController extends Controller
 			//return $pessoa;
 			return view('juridico.documentos.termos-lote')->with('matriculas',$matriculas)->with('pessoa',$pessoa);
 	}
+	public function listarFuncionarios(){ // lista pessoas com relação institucional (RI)
+		$com_ri = PessoaDadosAdministrativos::select('pessoa')->where('dado',16)->groupBy('pessoa')->get();
+		$pessoas = Pessoa::whereIn('id',$com_ri)->orderBy('nome')->paginate(50);
+		foreach($pessoas as $pessoa){
+			$pessoa->cargo = PessoaDadosAdministrativos::where('pessoa',$pessoa->id)->where('dado',16)->first()->valor;
+			$telefone = PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',2)->first();
+			if($telefone)
+			 $pessoa->telefone = Strings::formataTelefone($telefone->valor);
+			else
+			 $pessoa->telefone = "Necessita de atualização";	
+		}
+		return view('gestaopessoal.listarusuarios')->with('pessoas',$pessoas);
+	}
 
 
 

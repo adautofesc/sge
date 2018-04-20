@@ -123,7 +123,7 @@
 											<div><a href="{{asset('pessoa/trocarsenha').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-check-square-o"></i> Trocar senha</a></div>
 											
 											<div><a href="#" onclick="cancelarAcesso()" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-times-circle"></i> Cancelar Acesso</a></div>
-											<div><a href="{{asset('gestaopessoal/credenciais').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-times-circle"></i> Credenciais</a></div>
+											<div><a href="{{asset('admin/credenciais').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-times-circle"></i> Credenciais</a></div>
 											@endif
 											<div><a href="{{asset('gestaopessoal/relacaoinstitucional').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-times-circle"></i> Rel. Institucional</a></div>
 											

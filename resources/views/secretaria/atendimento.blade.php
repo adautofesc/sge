@@ -160,12 +160,30 @@
                                 <div class="col-xl-2" style="line-height:40px !important;"></div>
                                 <div class="col-xl-1" style="line-height:40px !important;"></div>
                                 <div class="col-xl-1" style="line-height:40px !important;">
-                                    <div><small>{{\Carbon\Carbon::parse($matricula->updated_at)->format('d/m/y')}}</small></div>
+                                    <div><small title="Criada em {{\Carbon\Carbon::parse($matricula->created_at)->format('d/m/y')}}">{{\Carbon\Carbon::parse($matricula->updated_at)->format('d/m/y')}}</small></div>
                                 </div>
-                                <div class="col-xl-1" style="line-height:40px !important;">
+                                <div class="col-xl-2" style="line-height:40px !important;">
                                     <div>
+                                        @if($matricula->status != 'cancelada')
+                                                    
+                                            <a href="#" class="remove" onclick="cancelar({{$matricula->id}});" title="Cancelar Matrícula"><i class=" fa fa-times "></i></a>
+                                                    
+                                        @else
+                                                    
+                                            <a href="#" onclick="reativar({{$matricula->id}});" title="Reativar Matrícula"><i class=" fa fa-undo "></i></a>
+                                            @if(file_exists('documentos/matriculas/cancelamento/'.$matricula->id.'.pdf'))
+                                                &nbsp;<a href="/documentos/matriculas/cancelamento/{{$matricula->id}}.pdf" target="_blank"><i class=" fa fa-file-text-o " title="Termo de cancelamento disponível"></i></a>
+                                            @else
+                                                &nbsp;<a href="#"><i class="fa fa-cloud-upload " title="Enviar Termo de Cancelamento de Matrícula"></i></a>
+                                            @endif
+                                                    
+                                        @endif
+                                                    
+                                         &nbsp;<a class="edit" href="{{asset('/secretaria/matricula/editar/').'/'.$matricula->id}}" title="Editar Matrícula"><i class=" fa fa-pencil-square-o "></i></a>
+                                                   
+                                        
                                                                               
-                                        <a href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}" target="_blank" title="Imprimir Termo de Matrícula"><i class=" fa fa-print "></i></a>
+                                         &nbsp;<a href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}" target="_blank" title="Imprimir Termo de Matrícula"><i class=" fa fa-print "></i></a>
                                          
 
                                         @if($matricula->desconto > 0)
@@ -176,48 +194,21 @@
                                         @elseif(($matricula->status == 'ativa' || $matricula->status == 'cancelada') && $matricula->obs!='')
                                             &nbsp; <span><i class=" fa fa-info "  title="{{ $matricula->obs}}"></i></span>
                                         @endif
+                                        @if(file_exists('documentos/matriculas/termos/'.$matricula->id.'.pdf'))
+                                            &nbsp;<a href="/documentos/matriculas/termos/{{$matricula->id}}.pdf" target="_blank"><i class=" fa fa-file-text-o " title="Termo disponível"></i></a>
+                                        @else
+                                            &nbsp;<a href="/secretaria/matricula/upload-termo/{{$matricula->id}}"><i class="fa fa-cloud-upload " title="Enviar Termo de Matrícula"></i></a>
+                                        @endif
+
+
+                                
+                                        
+                                                    
+
                                     
                                     </div>
 
-                                </div>
-                                <div class="item-col fixed item-col-actions-dropdown">
-                                        <div class="item-actions-dropdown">
-                                            <a class="item-actions-toggle-btn"> <span class="inactive">
-                                    <i class="fa fa-cog"></i>
-                                </span> <span class="active">
-                                <i class="fa fa-chevron-circle-right"></i>
-                                </span> </a>
-                                            <div class="item-actions-block">
-                                                <ul class="item-actions-list">
-                                                    @if($matricula->status != 'cancelada')
-                                                     <li>
-                                                        <a href="#" class="remove" onclick="cancelar({{$matricula->id}});" title="Cancelar Matrícula"><i class=" fa fa-times "></i></a>
-                                                     </li>
-                                                    @else
-                                                    <li>
-                                                        <a href="#" onclick="reativar({{$matricula->id}});" title="Reativar Matrícula"><i class=" fa fa-undo "></i></a>
-                                                    </li>
-                                                        @endif
-                                                    <li>
-                                                         <a class="edit" href="{{asset('/secretaria/matricula/editar/').'/'.$matricula->id}}" title="Editar Matrícula"><i class=" fa fa-pencil-square-o "></i></a>
-                                                    </li>
-                                                    <li>
-                                                         <a class="edit" href="{{asset('/secretaria/matricula/nova').'/'.$pessoa->id}}"  title="Adicionar Disciplina"><i class=" fa fa-plus-circle "></i></a>
-                                                    </li>
-                                                  
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-
-
-
-
-
-
-
+                                </div>                             
 
                             </div>
                             @foreach($matricula->inscricoes as $inscricao)
@@ -238,10 +229,10 @@
                                     <div><small>{{implode($inscricao->turma->dias_semana,', ').' '.$inscricao->turma->hora_inicio. '-'.$inscricao->turma->hora_termino}}</small></div>
                                 </div>
                                 <div class="col-xl-1" style="line-height:40px !important;">
-                                    <div><small>{{$inscricao->turma->local->sigla}}</small></div>
+                                    <div><small title="{{$inscricao->turma->local->nome}}">{{$inscricao->turma->local->sigla}}</small></div>
                                 </div>
                                 <div class="col-xl-1" style="line-height:40px !important;">
-                                    <div><small>{{\Carbon\Carbon::parse($inscricao->updated_at)->format('d/m/y')}}</small></div>
+                                    <div><small title="Criada em {{\Carbon\Carbon::parse($inscricao->created_at)->format('d/m/y')}}">{{\Carbon\Carbon::parse($inscricao->updated_at)->format('d/m/y')}}</small></div>
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div>
@@ -249,7 +240,13 @@
                                         <a a href="#" onclick="remover({{$inscricao->id}});" title="Cancelar disciplina"><i class=" fa fa-times "></i></a>
                                         <a href="{{asset('/secretaria/matricula/inscricao/editar/').'/'.$inscricao->id}}" target="_blank" title="Editar Inscrição"><i class=" fa fa-pencil-square-o "></i></a>
                                         @else
+
                                         <a a href="#" onclick="recolocar({{$inscricao->id}});" title="Reativar disciplina"><i class=" fa fa-undo "></i></a>
+                                         @if(file_exists('documentos/inscricoes/cancelamento/'.$inscricao->id.'.pdf'))
+                                            &nbsp;<a href="/documentos/inscricoes/cancelamento/{{$inscricao->id}}.pdf" target="_blank"><i class=" fa fa-file-text-o " title="Termo de cancelamento disponível"></i></a>
+                                        @else
+                                            &nbsp;<a href="#"><i class="fa fa-cloud-upload " title="Enviar Termo de Cancelamento de disciplina"></i></a>
+                                        @endif
                                         @endif
                                     </div>
                                 </div>
@@ -288,10 +285,10 @@
                                     <div><small>{{implode($inscricao_livre->turma->dias_semana,', ').' '.$inscricao_livre->turma->hora_inicio. '-'.$inscricao_livre->turma->hora_termino}}</small></div>
                                 </div>
                                 <div class="col-xl-1" style="line-height:40px !important;">
-                                    <div><small>{{$inscricao_livre->turma->local->sigla}}</small></div>
+                                    <div><small title="{{$inscricao_livre->turma->local->nome}}">{{$inscricao_livre->turma->local->sigla}}</small></div>
                                 </div>
                                 <div class="col-xl-1" style="line-height:40px !important;">
-                                    <div><small>{{\Carbon\Carbon::parse($inscricao_livre->updated_at)->format('d/m/y')}}</small></div>
+                                    <div><small title="{{\Carbon\Carbon::parse($inscricao_livre->created_at)->format('d/m/y')}}">{{\Carbon\Carbon::parse($inscricao_livre->updated_at)->format('d/m/y')}}</small></div>
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div>

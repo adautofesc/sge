@@ -265,7 +265,10 @@ Route::middleware('login') ->group(function(){
 
 		Route::prefix('matricula')->group(function(){
 			Route::get('/nova/{pessoa}','InscricaoController@novaInscricao');
-
+			Route::get('/upload-termo-lote', function(){ return view('secretaria.matricula.upload-termos-lote'); });
+			Route::post('/upload-termo-lote', 'MatriculaController@uploadTermosLote');
+			Route::get('/upload-termo/{matricula}','MatriculaController@uploadTermo_vw');
+			Route::post('/upload-termo/{matricula}','MatriculaController@uploadTermo');
 
 			Route::post('nova/confirmacao', 'InscricaoController@confirmacaoAtividades');
 			Route::post('nova/gravar', 'MatriculaController@gravar');

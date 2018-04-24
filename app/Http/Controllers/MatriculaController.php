@@ -364,8 +364,8 @@ class MatriculaController extends Controller
         $matricula=Matricula::find($id);
         if($matricula!=null){
             if($matricula->curso == 307){
-                $inscricoes=Inscricao::where('matricula',$matricula->id)->where('status','regular')->get();
-                switch (count($inscricoes)) {
+                $inscricoesX=Inscricao::where('matricula',$matricula->id)->where('status','regular')->get();
+                switch (count($inscricoesX)) {
                             case 0:
                                 $matricula->valor=0;
                                 break;
@@ -556,6 +556,31 @@ where nt.matricula>1');
         }
         else
             return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Nenhuma inscrição REGULAR para a matrícula']);
+    }
+
+    public function uploadTermo_vw($matricula){
+        return view('secretaria.matricula.upload-termo')->with('matricula',$matricula);
+    }
+    public function uploadTermo(Request $r){
+        $arquivo = $r->file('arquivo');
+            
+                if (!empty($arquivo)) {
+                    $arquivo->move('documentos/matriculas/termos',$r->matricula.'.pdf');
+                }
+
+            return redirect(asset('secretaria/atender'));
+    }
+    public function uploadTermosLote(Request $r){
+        $arquivos = $r->file('arquivos');
+            foreach($arquivos as $arquivo){
+                //dd($arquivo);
+                if (!empty($arquivo)) {
+                    $arquivo->move('documentos/matriculas/termos', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                }
+
+
+            }
+        return redirect(asset('secretaria/matricula/upload-termo-lote'))->withErrors(['Enviados'.count($arquivos).' arquivos.']);
     }
 
 

@@ -41,6 +41,11 @@
                         <i class="fa fa-group"></i>
                         &nbsp;&nbsp;Lista de Cadastrados</a>
                     </div>
+                    <div>
+                        <a href="/secretaria/matricula/upload-termo-lote" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class="fa fa-files-o"></i>
+                        &nbsp;&nbsp; Enviar Termos em Lote</a>
+                    </div>
 
                 </div>                
             </div>

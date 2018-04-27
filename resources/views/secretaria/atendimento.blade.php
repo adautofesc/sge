@@ -46,12 +46,17 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Financeiro</p>
+                        <p class="title" style="color:white">Atestado Médico</p>
                     </div>
                 </div>
                 <div class="card-block">
-                    <div><a href="{{asset('/financeiro/lancamentos/listar-por-pessoa')}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-usd "></i>  <small>Gerar Parcelas</small></a></div>
-                    <div><a href="{{asset('/financeiro/boletos/listar-por-pessoa')}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-barcode"></i> <small>Gerar Boletos</small></a></div>
+                    @if(isset($atestado))
+                    <div><a href="{{asset('/documentos/atestados').'/'.$atestado->id.'.pdf'}}" class="btn btn-success col-xs-12 text-xs-left"><i class=" fa fa-medkit "></i>  <small>Válido até {{\Carbon\Carbon::parse($atestado->validade)->format('d/m/Y')}}</small></a></div>
+                    @else  
+                    <div><span class="btn btn-secondary col-xs-12 text-xs-left"><i class=" fa fa-exclamation-circle "></i>  <small>Nenhum atestado válido.</small></span></div>
+                    @endif
+                    <div><a href="{{asset('/pessoa/cadastrar-atestado').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-plus-circle"></i> <small>Novo atestado.</small></a></div>
+
                   
                    
                 </div>
@@ -171,10 +176,10 @@
                                         @else
                                                     
                                             <a href="#" onclick="reativar({{$matricula->id}});" title="Reativar Matrícula"><i class=" fa fa-undo "></i></a>
-                                            @if(file_exists('documentos/matriculas/cancelamento/'.$matricula->id.'.pdf'))
-                                                &nbsp;<a href="/documentos/matriculas/cancelamento/{{$matricula->id}}.pdf" target="_blank"><i class=" fa fa-file-text-o " title="Termo de cancelamento disponível"></i></a>
+                                            @if(file_exists('documentos/matriculas/cancelamentos/'.$matricula->id.'.pdf'))
+                                                &nbsp;<a href="/documentos/matriculas/cancelamentos/{{$matricula->id}}.pdf" target="_blank"><i class=" fa fa-file-text-o " title="Termo de cancelamento disponível"></i></a>
                                             @else
-                                                &nbsp;<a href="#"><i class="fa fa-cloud-upload " title="Enviar Termo de Cancelamento de Matrícula"></i></a>
+                                                &nbsp;<a href="/secretaria/matricula/uploadglobal/1/0/1/{{$matricula->id}}"><i class="fa fa-cloud-upload " title="Enviar Termo de Cancelamento de Matrícula"></i></a>
                                             @endif
                                                     
                                         @endif
@@ -197,7 +202,7 @@
                                         @if(file_exists('documentos/matriculas/termos/'.$matricula->id.'.pdf'))
                                             &nbsp;<a href="/documentos/matriculas/termos/{{$matricula->id}}.pdf" target="_blank"><i class=" fa fa-file-text-o " title="Termo disponível"></i></a>
                                         @else
-                                            &nbsp;<a href="/secretaria/matricula/upload-termo/{{$matricula->id}}"><i class="fa fa-cloud-upload " title="Enviar Termo de Matrícula"></i></a>
+                                            &nbsp;<a href="/secretaria/matricula/uploadglobal/1/1/1/{{$matricula->id}}"><i class="fa fa-cloud-upload " title="Enviar Termo de Matrícula"></i></a>
                                         @endif
 
 
@@ -245,7 +250,7 @@
                                          @if(file_exists('documentos/inscricoes/cancelamento/'.$inscricao->id.'.pdf'))
                                             &nbsp;<a href="/documentos/inscricoes/cancelamento/{{$inscricao->id}}.pdf" target="_blank"><i class=" fa fa-file-text-o " title="Termo de cancelamento disponível"></i></a>
                                         @else
-                                            &nbsp;<a href="#"><i class="fa fa-cloud-upload " title="Enviar Termo de Cancelamento de disciplina"></i></a>
+                                            &nbsp;<a href="{{asset('secretaria/matricula/uploadglobal/0/0/1').'/'.$inscricao->id}}"><i class="fa fa-cloud-upload " title="Enviar Termo de Cancelamento de disciplina"></i></a>
                                         @endif
                                         @endif
                                     </div>
@@ -590,6 +595,14 @@ function gerarBoletos()
     if(confirm("Tem certeza que deseja gerar um boleto com os lancamentos em aberto? OBS: O vencimento será em 5 dias.")){
         $(location).attr('href','{{asset("/financeiro/boletos/gerar-individual").'/'.$pessoa->id}}');
     }
+}
+
+function apagaErro(id){
+
+    if(confirm("Deseja excluir o aviso?")){
+        $(location).attr('href','{{asset("/pessoa/apagar-atributo")}}/'+id);
+    }
+
 }
 </script>
 @endsection

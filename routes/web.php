@@ -65,6 +65,10 @@ Route::middleware('login') ->group(function(){
 		Route::get ('mostrar','PessoaController@listarTodos');//->middleware(['autorizar:56', 'privacy'])
 		Route::get ('mostrar/{var}','PessoaController@mostrar');
 		Route::get('buscarapida/{var}','PessoaController@liveSearchPessoa');
+		Route::get('apagar-atributo/{var}','PessoaController@apagarAtributo');
+		Route::get('cadastrar-atestado/{pessoa}','AtestadoController@novo');
+		Route::post('cadastrar-atestado/{pessoa}','AtestadoController@create');
+
 		
 		//dependentes
 		Route::get('adicionardependente/{var}','PessoaController@addDependente_view');
@@ -269,6 +273,10 @@ Route::middleware('login') ->group(function(){
 			Route::post('/upload-termo-lote', 'MatriculaController@uploadTermosLote');
 			Route::get('/upload-termo/{matricula}','MatriculaController@uploadTermo_vw');
 			Route::post('/upload-termo/{matricula}','MatriculaController@uploadTermo');
+			Route::get('/upload-termo-cancelamento/{matricula}','MatriculaController@uploadCancelamentoMatricula_vw');
+			Route::post('/upload-termo-cancelamento/{matricula}','MatriculaController@uploadCancelamentoMatricula');
+			Route::get('/uploadglobal/{tipo}/{operacao}/{qnde}/{valor}','MatriculaController@uploadGlobal_vw');
+			Route::post('/uploadglobal/{tipo}/{operacao}/{qnde}/{valor}','MatriculaController@uploadGlobal');
 
 			Route::post('nova/confirmacao', 'InscricaoController@confirmacaoAtividades');
 			Route::post('nova/gravar', 'MatriculaController@gravar');

@@ -118,6 +118,8 @@ class SecretariaController extends Controller
 
 		}
 		//return $matriculas;
-		return view('secretaria.atendimento', compact('pessoa'))->with('matriculas',$matriculas)->with('boletos',$boletos)->with('lancamentos',$lancamentos)->with('inscricoes',$inscricoes)->with('errosPessoa',$errosMsg);
+		$atestado = \App\Atestado::where('pessoa',$id)->where('validade','>=',date('Y-m-d'))->first();
+
+		return view('secretaria.atendimento', compact('pessoa'))->with('matriculas',$matriculas)->with('boletos',$boletos)->with('lancamentos',$lancamentos)->with('inscricoes',$inscricoes)->with('errosPessoa',$errosMsg)->with('atestado',$atestado);
 	}
 }

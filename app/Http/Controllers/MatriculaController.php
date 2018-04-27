@@ -578,9 +578,109 @@ where nt.matricula>1');
                     $arquivo->move('documentos/matriculas/termos', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
                 }
 
-
             }
         return redirect(asset('secretaria/matricula/upload-termo-lote'))->withErrors(['Enviados'.count($arquivos).' arquivos.']);
+    }
+    public function uploadCancelamentoMatricula_vw($matricula){
+        return view('secretaria.matricula.upload-termo')->with('matricula',$matricula);
+    }
+    public function uploadCancelamentoMatricula(Request $r){
+        $arquivos = $r->file('arquivos');
+            foreach($arquivos as $arquivo){
+                //dd($arquivo);
+                if (!empty($arquivo)) {
+                    $arquivo->move('documentos/matriculas/cancelamentos', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                }
+
+            }
+        return redirect(asset('secretaria/atender'))->withErrors(['Enviados'.count($arquivos).' arquivos.']);
+        
+    }
+    /**
+     * [uploadGlobal_vw description]
+     * @param  [type] $tipo  [ 0 = inscricao, 1 = matricula, 2 atestado]
+     * @param  [type] $operacao  [ 0 = cancelamento, 1 = Inserir, 2 = Remover ]
+     * @param  [type] $qnde [1 = unico, 0 = varios]
+     * @param  [type] $valor [Numero da matricula/inscricao ou atestado]
+     * @return [type]        [View dinâmica]
+     */
+    public function uploadGlobal_vw($tipo,$operacao,$qnde,$valor){
+        switch($tipo){
+            case 0 : 
+                $objeto = " de inscrição";
+                break;
+            case 1:
+                $objeto = " de matrícula";
+                break;
+            case 2:
+                $objeto = "atestado";
+                break;
+        }
+        if($qnde==0)
+            $objeto = $objeto.'s em lote.';
+        if($operacao ==0)
+            $objeto = ' de cancelamento'.$objeto;
+
+        return view('secretaria.matricula.upload-global')->with('valor',$valor)->with('tipo',$tipo)->with('operacao',$operacao)->with('qnde',$qnde)->with('objeto',$objeto);
+    }
+    public function uploadGlobal(Request $r){
+        switch($r->tipo){
+            case 0:
+                $pasta = 'inscricoes/';
+                break;
+            case 1:
+                $pasta = 'matriculas/';
+                break;
+            case 2:
+                $pasta = 'atestados/';
+                break;        
+        }
+        switch ($r->operacao) {
+            case 0 :
+                $pasta = $pasta.'cancelamentos/';
+                break;
+            
+            case 1:
+                switch($r->tipo){
+                    case 0:
+                        $pasta = $pasta.'inclusao/';
+                        break;
+                    case 1:
+                        $pasta = $pasta.'termos/';
+                        break;
+                    case 2:
+                        $pasta = $pasta.'';
+                        break;        
+                }
+                break;
+
+
+        }
+        //dd($r);
+
+        if($r->qnde == 0){
+
+            $arquivos = $r->file('arquivos');
+            foreach($arquivos as $arquivo){
+                //dd($arquivo);
+                if (!empty($arquivo)) {
+                    $arquivo->move('documentos/'.$pasta, preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                }
+            }
+            return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Enviados'.count($arquivos).' arquivos.']);
+        }
+        else{
+            $arquivo = $r->file('arquivos');
+            if (!empty($arquivo)) {
+                    $arquivo->move('documentos/'.$pasta, $r->valor.'.pdf');
+            }
+            return redirect(asset('secretaria/atender'))->withErrors(['Arquivo enviado.']);
+
+        }
+
+
+        
+        
     }
 
 

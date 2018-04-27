@@ -327,7 +327,8 @@ class PessoaController extends Controller
 
 		//return $pessoa;
 		//return redirect(asset('/secretaria/atender/'.$id));
-		return view('pessoa.mostrar',compact('pessoa'));
+		$atestados = \App\Atestado::where('pessoa',$pessoa->id)->get();
+		return view('pessoa.mostrar',compact('pessoa'))->with('atestados',$atestados);
 
 	}
 	public function edita($id){
@@ -1145,6 +1146,10 @@ class PessoaController extends Controller
 			 $pessoa->telefone = "Necessita de atualização";	
 		}
 		return view('gestaopessoal.listarusuarios')->with('pessoas',$pessoas);
+	}
+	public function apagarAtributo($id){
+		PessoaDadosGerais::destroy($id);
+		return redirect()->back();
 	}
 
 

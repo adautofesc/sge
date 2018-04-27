@@ -44,6 +44,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if($exception instanceof \Illuminate\Session\TokenMismatchException){
+              return redirect()
+                  ->back()
+                  ->withErrors(['Desculpe, mas precisamos verificar novamente seus dados.']);
+        }
         return parent::render($request, $exception);
     }
 

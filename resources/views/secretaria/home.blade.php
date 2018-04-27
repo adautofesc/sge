@@ -42,10 +42,18 @@
                         &nbsp;&nbsp;Lista de Cadastrados</a>
                     </div>
                     <div>
-                        <a href="/secretaria/matricula/upload-termo-lote" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="/secretaria/matricula/uploadglobal/1/1/0/0" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class="fa fa-files-o"></i>
                         &nbsp;&nbsp; Enviar Termos em Lote</a>
                     </div>
+                    <!--
+                    <div>
+                        <div>
+                            <input type="text" name="matricula" size="21" placeholder="Consultar matrícula">
+                            <input type="submit" name="send" value="Buscar">
+                        </div>
+                    </div>
+                -->
 
                 </div>                
             </div>

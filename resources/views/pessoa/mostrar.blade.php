@@ -305,10 +305,12 @@
                                     <div class="form-group row"> 
                                             <label class="col-sm-4 form-control-label text-xs-right">Atestados médicos</label>
                                             <div class="col-sm-8">
-                                                01/02/2017 por Fulano Valido até 22/08/2017<br>
-                                                01/02/2017 por Fulano Valido até 22/08/2017<br>
-                                                01/02/2017 por Fulano Valido até 22/08/2017<br>
-                                                01/02/2017 por Fulano Valido até 22/08/2017<br>
+                                                @foreach($atestados as $atestado)
+                                                <a href="#" title="Apagar Atestado" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></a> <a href="#" title="Ver atestado">Cod. {{$atestado->id}}</a> - válido até {{\Carbon\Carbon::parse($atestado->validade)->format('d/m/Y')}}<br>
+                                                @endforeach
+
+
+                                    
 
 
                                             </div>

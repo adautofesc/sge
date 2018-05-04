@@ -66,8 +66,16 @@ Route::middleware('login') ->group(function(){
 		Route::get ('mostrar/{var}','PessoaController@mostrar');
 		Route::get('buscarapida/{var}','PessoaController@liveSearchPessoa');
 		Route::get('apagar-atributo/{var}','PessoaController@apagarAtributo');
-		Route::get('cadastrar-atestado/{pessoa}','AtestadoController@novo');
-		Route::post('cadastrar-atestado/{pessoa}','AtestadoController@create');
+		Route::prefix('atestado')->group(function(){
+
+			Route::get('cadastrar/{pessoa}','AtestadoController@novo');
+			Route::post('cadastrar/{pessoa}','AtestadoController@create');
+			Route::get('arquivar/{atestado}', 'AtestadoController@apagar');
+			Route::get('editar/{atestado}', 'AtestadoController@editar');
+			Route::post('editar/{atestado}', 'AtestadoController@update');
+			Route::get('listar', 'AtestadoController@listar');
+
+		});
 
 		
 		//dependentes

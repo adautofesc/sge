@@ -16,9 +16,11 @@ class CreateAtestadosTable extends Migration
         Schema::create('atestados', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('pessoa');
+            $table->unsignedInteger('atendente');
             $table->date('validade');
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('atendente')->references('id')->on('pessoas')->onDelete('restrict')->onUpdate('cascade');
             $table->foreign('pessoa')->references('id')->on('pessoas')->onDelete('restrict')->onUpdate('cascade');
 
         });

@@ -252,7 +252,7 @@
                         <div class="tab-pane fade" id="clinicos">
                             <div class="row"> 
                                     <div class="col-xs-6">
-                                        <a href="pessoas_add.php" class="btn btn-primary btn-sm rounded-s"> Adicionar Atestado</a>
+                                        <a href="/pessoa/cadastrar-atestado/{{$pessoa->id}}" class="btn btn-primary btn-sm rounded-s"> Adicionar Atestado</a>
                                         
                                                                                
                                     </div>                                           
@@ -306,12 +306,15 @@
                                             <label class="col-sm-4 form-control-label text-xs-right">Atestados médicos</label>
                                             <div class="col-sm-8">
                                                 @foreach($atestados as $atestado)
-                                                <a href="#" title="Apagar Atestado" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></a> <a href="#" title="Ver atestado">Cod. {{$atestado->id}}</a> - válido até {{\Carbon\Carbon::parse($atestado->validade)->format('d/m/Y')}}<br>
+                                                <a href="#" onclick="desativarAtestado('{{$atestado->id}}')" title="Apagar Atestado" class="btn btn-danger btn-sm">
+                                                    <i class="fa fa-times"></i>
+                                                </a> 
+                                                <a href="/documentos/atestados/{{$atestado->id}}.pdf" target="_blank" title="Ver atestado">
+                                                    Atestado nº {{$atestado->id}}
+                                                </a> - válido até 
+                                                    {{\Carbon\Carbon::parse($atestado->validade)->format('d/m/Y')}}
+                                                    <br>
                                                 @endforeach
-
-
-                                    
-
 
                                             </div>
 
@@ -390,7 +393,12 @@ function remVinculo(id){
         $(location).attr('href', '{{asset('/pessoa/removervinculo')}}/'+id);
     }
 }
+function desativarAtestado(id){
+    if(confirm("Deseja mesmo arquivar esse atestado?")){
+        $(location).attr('href', '{{asset('/pessoa/atestado/arquivar')}}/'+id);
+    }
 
+}
 </script>
 
 

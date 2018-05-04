@@ -89,7 +89,26 @@
                 
                 </div>                
             </div>
-        </div>  
+        </div>
+        <div class="col-md-4 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Atestados</p>
+                    </div>
+                </div>
+                <div class="card-block">
+                    <div>
+                        <a href="{{asset('/pessoa/atestado/listar')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Lista de atestados</a>
+                    </div>
+            
+                
+                </div>                
+            </div>
+        </div> 
+
     </div>
 </section>
 

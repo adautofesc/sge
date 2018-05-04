@@ -55,7 +55,7 @@
                     @else  
                     <div><span class="btn btn-secondary col-xs-12 text-xs-left"><i class=" fa fa-exclamation-circle "></i>  <small>Nenhum atestado válido.</small></span></div>
                     @endif
-                    <div><a href="{{asset('/pessoa/cadastrar-atestado').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-plus-circle"></i> <small>Novo atestado.</small></a></div>
+                    <div><a href="{{asset('/pessoa/atestado/cadastrar').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-plus-circle"></i> <small>Novo atestado.</small></a></div>
 
                   
                    

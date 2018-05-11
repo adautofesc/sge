@@ -214,7 +214,9 @@ Route::middleware('login') ->group(function(){
 		Route::prefix('turmas')->group(function(){
 			Route::get('cadastrar','TurmaController@create')->name('turma.cadastrar');
 			Route::post('cadastrar','TurmaController@store');
+			Route::post('recadastrar','TurmaController@storeRecadastro');
 			Route::get('/','TurmaController@index')->name('turmas');
+			Route::post('/','TurmaController@acaolote');
 			Route::get('listar','TurmaController@index');
 			Route::get('apagar/{var}','TurmaController@destroy');
 			Route::get('editar/{var}','TurmaController@edit');
@@ -283,6 +285,7 @@ Route::middleware('login') ->group(function(){
 			Route::post('/upload-termo/{matricula}','MatriculaController@uploadTermo');
 			Route::get('/upload-termo-cancelamento/{matricula}','MatriculaController@uploadCancelamentoMatricula_vw');
 			Route::post('/upload-termo-cancelamento/{matricula}','MatriculaController@uploadCancelamentoMatricula');
+
 			Route::get('/uploadglobal/{tipo}/{operacao}/{qnde}/{valor}','MatriculaController@uploadGlobal_vw');
 			Route::post('/uploadglobal/{tipo}/{operacao}/{qnde}/{valor}','MatriculaController@uploadGlobal');
 
@@ -356,7 +359,7 @@ Route::get('403',function(){
 })->name('403');
 Route::get('404',function(){
    return view('error-404');
-});
+})->name('404');
 Route::get('500',function(){
    return view('error-500');
 });

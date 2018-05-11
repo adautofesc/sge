@@ -1,25 +1,86 @@
  @extends('layout.app')
 @section('pagina')
 <div class="title-block">
-    <h3 class="title"> Todas as turmas ativas</h3>
-</div>
-@include('inc.errors')
+    <h3 class="title"> Turmas - gerenciamento pedagógico</h3>
+<!--
+    <div class="row">
+        <div class="col-sm-9">
+            Mostrando {{count($turmas)}} turmas 
+            <a class="products-search-clean-filters" href="https://www.nuuvem.com/catalog">
+                <i class="fa fa-remove"></i>
+                Limpar Filtros
+            </a>
 
-<form name="item" class="form-inline">
-	<section class="section">
+        </div>
+        <div class="col-sm-3">
+            Ordenar por: <strong>Curso</strong>
+
+        </div>
+    </div>
+   
     <div class="row ">
-        <div class="col-xl-12">
-            <div class="card sameheight-item">
-                <div class="card-block">
-                    <!-- Nav tabs -->
-                    <div class="row">
-                        <div class="col-xs-6 text-xs">
-                            <div class="title-block ">
-                                <a class="btn btn-primary" href="{{route('turma.cadastrar')}}">Cadastrar</a>
-                            </div>
+        <div class="col-sm-12">
+            <div class=" card card-block rounded-s">
+                <div class="form-group row"> 
+                    <div class="col-sm-4"> 
+                        <div class="input-group rounded-s">
+                            
+                            <input type="text" class="form-control boxed rounded-s" id="fcurso" name="fcurso" placeholder="Buscar"> 
+                            <span class="input-group-addon"><a href=""><i class=" fa fa-times"></i></a></span> 
+                    
                         </div>
                     </div>
-                    
+                    <div class="col-sm-8"> 
+                        <a href="/pedagogico/turmas/cadastrar" class="btn btn-primary rounded-s"><i class="fa fa-asterisk"></i> Nova...</a>
+                <button type="submit" name="btn"  class="btn btn-primary rounded-s">Encerrar</button>
+                <button type="submit" name="btn"  class="btn btn-primary rounded-s">Relançar turmas</button>
+         
+                    </div>
+                </div>
+              
+                
+            </div>
+            
+        </div>
+    </div>
+    
+-->
+</div>
+
+@include('inc.errors')
+
+<form name="item" class="form-inline" method="post">
+	<section class="section">
+         <div class="row">
+            <div class="col-sm-9"> 
+                <a href="/pedagogico/turmas/cadastrar" class="btn btn-primary rounded-s"><i class="fa fa-asterisk"></i> Nova...</a>
+                <button type="submit" name="acao" value = "encerrar"  class="btn btn-primary rounded-s">Encerrar</button>
+                <button type="submit" name="acao" value = "relancar" class="btn btn-primary rounded-s">Relançar turmas</button>
+                {{csrf_field()}}
+
+                
+            </div>
+            <!--
+            <div class="col-sm-3 "> 
+                <div class="action dropdown"> 
+                    <button class="btn rounded-s btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Relançar Selecionados...
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
+                        <button type="submit" name="btn"  class="dropdown-item" title="Relança mantendo curso/dia/horário/professor"><i class="fa fa-unlock icon"></i> Geral</button>
+                        <button type="submit" name="btn"  class="dropdown-item" title="Relança mantendo curso/dia/horário/professor"><i class="fa fa-unlock icon"></i> Horário/dia e professor</button>
+                        <button type="submit" name="btn"  class="dropdown-item" title="Relança mantendo curso/dia/horário/professor"><i class="fa fa-unlock icon"></i> Horário/dia </button>
+                        
+                    </div>
+                </div>
+            </div>
+        -->
+
+        </div>
+    <div class="row ">
+        <div class="col-xl-12 ">
+            <div class="card sameheight-item">
+                <div class="card-block">
+
                     <ul class="nav nav-tabs nav-tabs-bordered ">
                         <li class="nav-item"> <a href="" class="nav-link active" data-target="#todos" data-toggle="tab" aria-controls="todos" role="tab">Todos</a> </li>
                          @foreach($programas as $programa)
@@ -68,7 +129,7 @@
                                                 <div class="item-col fixed item-col-check"> 
 
                                                     <label class="item-check" id="select-all-items">
-                                                    <input type="checkbox" class="checkbox" name="turma" value="{{$turma->id}}">
+                                                    <input type="checkbox" class="checkbox" name="turmas[]" value="{{$turma->id}}">
                                                     <span></span>
                                                     </label>
                                                 </div>
@@ -77,7 +138,7 @@
                                                     <div class="item-heading">Curso/atividade</div>
                                                     <div class="">
                                                         
-                                                             <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->texto_status}}</small></div> 
+                                                             <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->texto_status. ' - Começa em  ' .$turma->data_inicio}}</small></div> 
 
                                                        
                                                         @if(isset($turma->disciplina))
@@ -182,7 +243,7 @@
 
 
                                                         <label class="item-check" id="select-all-items">
-                                                        <input type="checkbox" class="checkbox" name="turma" value="{{$turma->id}}">
+                                                        <input type="checkbox" class="checkbox" name="turmas[]" value="{{$turma->id}}">
                                                         <span></span>
                                                         </label>
                                                     </div>
@@ -191,7 +252,7 @@
                                                     <div class="item-heading">Curso/atividade</div>
                                                     <div class="">
                                                         
-                                                             <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->texto_status}}</small></div> 
+                                                             <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->texto_status. ' - Começa em  ' .$turma->data_inicio}}</small></div> 
 
                                                        @if(isset($turma->disciplina))
                                                          <a href="{{asset('lista').'/'.$turma->id}}" target="_blank"class="">

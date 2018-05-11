@@ -200,6 +200,18 @@
 		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
+				Carga
+			</label>
+			<div class="col-sm-2"> 
+				<div class="input-group">
+					 
+					<input type="number" class="form-control boxed" name="carga" placeholder="" required> 
+				</div>
+			</div>
+			
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
 				Valor
 			</label>
 			<div class="col-sm-2"> 

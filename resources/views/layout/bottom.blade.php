@@ -4,10 +4,10 @@
 	<div class="footer-block author small">
 	<ul>
 		<li>
-			 <small>Theme created by <a href="https://github.com/modularcode">ModularCode</a> </small>
+			<small>Fundação Educacional São Carlos - FESC 2018 </small>
 		</li>
 		<li> 
-			<small>Desenvolvedor <a href="http://www.adautonet.com">Adauto</a> </small>
+			<small>Tema: <a href="https://github.com/modularcode">ModularCode</a> </small>
 		</li>
 	</ul>
 	</div>

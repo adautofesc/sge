@@ -20,16 +20,26 @@ class TurmaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($dados='')
+    public function index(Request $r)
     {
-        $turmas=Turma::orderBy('curso')->get();
-       
+
+        if(isset($r->data)){
+            $termino = date('Y-m-d', strtotime("+5 months",strtotime($r->data))); 
+            
+            $turmas=Turma::orderBy('curso')->where('data_inicio','>=',$r->data)->where('data_termino','<=',$termino)->get(); 
+            //return $turmas;
+        }
+        else{
+            $turmas=Turma::orderBy('curso')->get();
+              //return $turmas;
+
+        }
         $programas=Programa::all();
 
 
         //return $turmas;
         //$dados=['alert_sucess'=>['hello world']];
-        return view('pedagogico.turma.listar', compact('turmas'))->with('programas',$programas)->with('dados',$dados);
+        return view('pedagogico.turma.listar', compact('turmas'))->with('programas',$programas);
     }
 
     public function listarSecretaria($dados='')
@@ -116,6 +126,7 @@ class TurmaController extends Controller
         $turma->periodicidade=$request->periodicidade;
         $turma->valor=$request->valor;
         $turma->vagas=$request->vagas;
+        $turma->carga=$request->carga;
         $turma->atributos=$request->atributo;
         $turma->status=1;
         //return $turma->dias_semana;
@@ -211,6 +222,7 @@ class TurmaController extends Controller
         $turma->valor=$request->valor;
         //----------------------------------------
         $turma->vagas=$request->vagas;
+        $turma->carga=$request->carga;
         $turma->atributos=$request->atributo;
         $turma->periodicidade=$request->periodicidade;
         $turma->update();
@@ -516,8 +528,127 @@ class TurmaController extends Controller
         }
         //return $cadastrados;
         return view('pedagogico.turma.confirmar-importados')->with('cadastrados',$cadastrados)->with('pessoas',$request->nome);
-    
+    }
 
+    /**
+     * acao em lote verifica alguma ação pedagogica nas turmas que receber por post
+     */
+    public function acaolote(Request $r){
+        switch ($r->acao) {
+            case 'encerrar':
+                foreach($r->turmas as $turma_id){
+                    $turma = Turma::findOrFail($turma_id);
+                    $turma->status = 0;
+                    $turma->save();
+                }
+                return redirect()->back()->withErrors(['Turmas encerradas com sucesso']);
+                break;
+            case 'relancar':
+                if(count($r->turmas) == 0)
+                     return redirect()->back()->withErrors(['Não foi possivel efetuar sua solicitação: Nenhuma turma selecionada.']);
+                $programas=Programa::get();
+                //$cursos=Curso::getCursosPrograma(); ok
+                $professores=PessoaDadosAdministrativos::getFuncionarios('Educador');
+                $unidades=Local::get(['id' ,'nome']);
+                $parcerias=Parceria::orderBy('nome')->get();
+                //Locais=Local::getLocaisPorUnidade($unidade);
+                $dados=collect();
+                $dados->put('programas',$programas);
+                $dados->put('professores',$professores);
+                $dados->put('unidades',$unidades);
+                $dados->put('parcerias',$parcerias);
+
+                //return $dados;
+
+                return view('pedagogico.turma.recadastrar',compact('dados'))->with('turmas',$r->turmas);
+                break;
+            
+            default:
+                return redirect()->back()->withErrors(['Não foi possivel identificar sua solicitação.']);
+                break;
+        }
+    }
+    public function storeRecadastro(Request $r){
+        dd($r);
+        //return '=)  Not ready yet...';
+        $turmas = explode(',', $r->turmas);
+        foreach($turmas as $turma_id){
+            $turma=Turma::findOrFail($turma_id);
+            $novaturma = new Turma;
+            if($r->programa > 0 )
+                $novaturma->programa = $r->programa;
+            else
+                $novaturma->programa = $turma->programa;
+
+            if($r->curso > 0 )
+                $novaturma->curso = $r->curso;
+            else
+                $novaturma->curso = $turma->curso;
+
+            if($r->disciplina > 0 )
+                $novaturma->disciplina = $r->disciplina;
+            else
+                $novaturma->disciplina = $turma->disciplina;
+
+            if($r->professor > 0 )
+                $novaturma->professor = $r->professor;
+            else
+                $novaturma->professor = $turma->professor;
+
+            if($r->unidade > 0 )
+                $novaturma->local = $r->unidade;
+            else
+                $novaturma->local = $turma->local;
+
+            if($r->parceria > 0 )
+                $novaturma->parceria = $r->parceria;
+            else
+                $novaturma->parceria = $turma->parceria;
+
+            if($r->periodicidade != $turma->periodicidade )
+                $novaturma->periodicidade = $r->periodicidade;
+            else
+                $novaturma->periodicidade  = $turma->periodicidade ;
+
+            if($r->dt_inicio != $turma->data_inicio )
+                $novaturma->data_inicio = $r->dt_inicio;
+            else
+                $novaturma->data_inicio = $turma->data_inicio;
+
+            if($r->hr_inicio != $turma->hora_inicio )
+                $novaturma->hora_inicio = $r->hr_inicio;
+            else
+                $novaturma->hora_inicio = $turma->hora_inicio;
+
+            if($r->dt_termino == 0 )
+                $novaturma->data_termino = $r->dt_termino;
+            else
+                $novaturma->data_termino = $turma->data_termino;
+
+            if($r->hr_termino == 0 )
+                $novaturma->hora_termino = $r->hr_termino;
+            else
+                $novaturma->hora_termino = $turma->hora_termino;
+
+            if($r->vagas == 0 )
+                $novaturma->vagas = $r->vagas;
+            else
+                $novaturma->vagas = $turma->vagas;
+
+            if($r->valor == 0 )
+                $novaturma->valor = $r->valor;
+            else
+                $novaturma->valor = $turma->valor;
+
+            if($r->carga == 0 )
+                $novaturma->carga = $r->carga;
+            else
+                $novaturma->carga = $turma->carga;
+
+            $novaturma->save();
+
+        }
+        return redirect()->back()->withErrors(['Turmas recadastradas com sucesso.']);
 
 
 

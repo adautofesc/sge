@@ -247,8 +247,8 @@
                                         @else
 
                                         <a a href="#" onclick="recolocar({{$inscricao->id}});" title="Reativar disciplina"><i class=" fa fa-undo "></i></a>
-                                         @if(file_exists('documentos/inscricoes/cancelamento/'.$inscricao->id.'.pdf'))
-                                            &nbsp;<a href="/documentos/inscricoes/cancelamento/{{$inscricao->id}}.pdf" target="_blank"><i class=" fa fa-file-text-o " title="Termo de cancelamento disponível"></i></a>
+                                         @if(file_exists('documentos/inscricoes/cancelamentos/'.$inscricao->id.'.pdf'))
+                                            &nbsp;<a href="/documentos/inscricoes/cancelamentos/{{$inscricao->id}}.pdf" target="_blank"><i class=" fa fa-file-text-o " title="Termo de cancelamento disponível"></i></a>
                                         @else
                                             &nbsp;<a href="{{asset('secretaria/matricula/uploadglobal/0/0/1').'/'.$inscricao->id}}"><i class="fa fa-cloud-upload " title="Enviar Termo de Cancelamento de disciplina"></i></a>
                                         @endif
@@ -270,18 +270,18 @@
                         <li>
                         @endif
                             <div class="row">                          
-                                    @if($matricula->inscricoes->first()->turma->programa->id == 12)
+                                    @if($inscricao_livre->turma->programa->id == 12)
                                             <div class="col-xl-4 text-success " title="CE - {{$inscricao_livre->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
-                                    @elseif($matricula->inscricoes->first()->turma->programa->id == 2)
+                                    @elseif($inscricao_livre->turma->programa->id == 2)
                                             <div class="col-xl-4 text-primary " title="PID - {{$inscricao_livre->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
-                                    @elseif($matricula->inscricoes->first()->turma->programa->id == 3)
+                                    @elseif($inscricao_livre->turma->programa->id == 3)
                                             <div class="col-xl-4 text-warning " title="UATI - {{$inscricao_livre->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
-                                    @elseif($matricula->inscricoes->first()->turma->programa->id == 1)
+                                    @elseif($inscricao_livre->turma->programa->id == 1)
                                             <div class="col-xl-4 text-danger " title="UNIT - {{$inscricao_livre->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
                                     @else
                                             <div class="col-xl-4 text-secondary " style="line-height:40px !important; padding-left: 30px;" >
                                     @endif
-                                    <div><i class=" fa fa-circle-o "></i> &nbsp;<small><b>i{{$inscricao_livre->id}}  - {{$inscricao_livre->turma->curso->nome}}</b></small></div> 
+                                    <div><i class=" fa fa-circle-o "></i> &nbsp;<small><b>i{{$inscricao_livre->id}}  - {{ isset($inscricao_livre->turma->disciplina->nome) ? $inscricao_livre->turma->disciplina->nome: $inscricao_livre->turma->curso->nome}}</b></small></div> 
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div><small>{{$inscricao_livre->turma->professor->nome_simples}} </small></div>
@@ -301,6 +301,11 @@
                                         <a a href="#" onclick="remover({{$inscricao_livre->id}});" title="Cancelar disciplina"><i class=" fa fa-times "></i></a>
                                         @else
                                         <a a href="#" onclick="recolocar({{$inscricao_livre->id}});" title="Reativar disciplina"><i class=" fa fa-undo "></i></a>
+                                        @if(file_exists('documentos/inscricoes/cancelamentos/'.$inscricao_livre->id.'.pdf'))
+                                            &nbsp;<a href="/documentos/inscricoes/cancelamentos/{{$inscricao_livre->id}}.pdf" target="_blank"><i class=" fa fa-file-text-o " title="Termo de cancelamento disponível"></i></a>
+                                        @else
+                                            &nbsp;<a href="{{asset('secretaria/matricula/uploadglobal/0/0/1').'/'.$inscricao_livre->id}}"><i class="fa fa-cloud-upload " title="Enviar Termo de Cancelamento de disciplina"></i></a>
+                                        @endif
                                         @endif
                                         <a href="#" title="Imprimir inscrição"><i class=" fa fa-print "></i></a>
                                         

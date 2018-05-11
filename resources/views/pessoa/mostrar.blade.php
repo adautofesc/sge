@@ -305,6 +305,7 @@
                                     <div class="form-group row"> 
                                             <label class="col-sm-4 form-control-label text-xs-right">Atestados médicos</label>
                                             <div class="col-sm-8">
+                                                @if(isset($atestados))
                                                 @foreach($atestados as $atestado)
                                                 <a href="#" onclick="desativarAtestado('{{$atestado->id}}')" title="Apagar Atestado" class="btn btn-danger btn-sm">
                                                     <i class="fa fa-times"></i>
@@ -315,6 +316,7 @@
                                                     {{\Carbon\Carbon::parse($atestado->validade)->format('d/m/Y')}}
                                                     <br>
                                                 @endforeach
+                                                @endif
 
                                             </div>
 

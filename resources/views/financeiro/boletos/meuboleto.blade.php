@@ -55,8 +55,8 @@
 
                             </div>
                             <div class="form-group">
-                                <p class="text-muted text-xs-center">Após vencimento voce pode retirar a segunda via no <a href="https://www63.bb.com.br/portalbb/boleto/boletos/hc21e.bbx" target="_blank">site do Banco do Brasil.</a></p>
-                                <p><small>Atualizado em 12/04/2018</small></p>
+                                <p class="text-muted text-xs-center">Boleto vencido? Retire asua segunda via no <a href="https://www63.bb.com.br/portalbb/boleto/boletos/hc21e.bbx" target="_blank" title="Clique aqui para acessar">site do Banco do Brasil.</a></p>
+                                <p><small>Atualizado em 11/05/2018</small></p>
                             </div>
                         </form>
                     </div>

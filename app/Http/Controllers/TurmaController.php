@@ -35,11 +35,14 @@ class TurmaController extends Controller
 
         }
         $programas=Programa::all();
+        $professores = PessoaDadosAdministrativos::getFuncionarios('Educador');
+        $professores = $professores->sortBy('nome_simples');
+        $locais = Local::select(['id','sigla','nome'])->orderBy('sigla')->get();
 
-
+        //return $professores;
         //return $turmas;
         //$dados=['alert_sucess'=>['hello world']];
-        return view('pedagogico.turma.listar', compact('turmas'))->with('programas',$programas);
+        return view('pedagogico.turma.listar', compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais);
     }
 
     public function listarSecretaria($dados='')
@@ -247,16 +250,16 @@ class TurmaController extends Controller
                     // verificação que se há matrículas antes de cancelar
                     $inscricoes=Inscricao::where('turma',$turma->id)->get();
                     if(count($inscricoes)==0){
-                        $msgs=array('alert_sucess'=>["Turma ".$turma->id." excluída com sucesso."]);
+                        $msgs[]= "Turma ".$turma->id." excluída com sucesso.";
                         $turma->delete();
                     }
                     else{
-                        $msgs=array('alert_warning'=>["Turma ".$turma->id." não pôde ser excluída pois possui alunos inscritos. Caso não apareça, a inscrição pode ter sido cancelada, mesmo assim precisamos preservar o histórico das inscrições."]);
+                        $msgs[]="Turma ".$turma->id." não pôde ser excluída pois possui alunos inscritos. Caso não apareça, a inscrição pode ter sido cancelada, mesmo assim precisamos preservar o histórico das inscrições.";
                     }
                 }
             }
         }
-        return $this->index($msgs);
+        return redirect()->back()->withErrors($msgs);
     }
     public function status($status,$itens_url)
     {
@@ -569,36 +572,40 @@ class TurmaController extends Controller
         }
     }
     public function storeRecadastro(Request $r){
-        dd($r);
-        //return '=)  Not ready yet...';
+        //dd($r);
+        //return $turma->hora_inicio;
         $turmas = explode(',', $r->turmas);
         foreach($turmas as $turma_id){
+
+
             $turma=Turma::findOrFail($turma_id);
+
             $novaturma = new Turma;
             if($r->programa > 0 )
                 $novaturma->programa = $r->programa;
             else
-                $novaturma->programa = $turma->programa;
+                $novaturma->programa = $turma->programa->id;
 
             if($r->curso > 0 )
                 $novaturma->curso = $r->curso;
             else
-                $novaturma->curso = $turma->curso;
+                $novaturma->curso = $turma->curso->id;
 
             if($r->disciplina > 0 )
                 $novaturma->disciplina = $r->disciplina;
             else
-                $novaturma->disciplina = $turma->disciplina;
+                if(isset( $turma->disciplina))
+                    $novaturma->disciplina = $turma->disciplina->id;
 
             if($r->professor > 0 )
                 $novaturma->professor = $r->professor;
             else
-                $novaturma->professor = $turma->professor;
+                $novaturma->professor = $turma->professor->id;
 
             if($r->unidade > 0 )
                 $novaturma->local = $r->unidade;
             else
-                $novaturma->local = $turma->local;
+                $novaturma->local = $turma->local->id;
 
             if($r->parceria > 0 )
                 $novaturma->parceria = $r->parceria;
@@ -610,37 +617,42 @@ class TurmaController extends Controller
             else
                 $novaturma->periodicidade  = $turma->periodicidade ;
 
-            if($r->dt_inicio != $turma->data_inicio )
+            if(!empty($r->dias))
+                $novaturma->dias_semana = $r->dias;
+            else
+                $novaturma->dias_semana = $turma->dias_semana;
+
+            if($r->dt_inicio != '' )
                 $novaturma->data_inicio = $r->dt_inicio;
             else
-                $novaturma->data_inicio = $turma->data_inicio;
+                $novaturma->data_inicio = \Carbon\Carbon::createFromFormat('d/m/Y', $turma->data_inicio, 'Europe/London')->format('Y-m-d');
 
-            if($r->hr_inicio != $turma->hora_inicio )
+            if($r->hr_inicio != '' )
                 $novaturma->hora_inicio = $r->hr_inicio;
             else
                 $novaturma->hora_inicio = $turma->hora_inicio;
 
-            if($r->dt_termino == 0 )
+            if($r->dt_termino != '' )
                 $novaturma->data_termino = $r->dt_termino;
             else
-                $novaturma->data_termino = $turma->data_termino;
+                $novaturma->data_termino = \Carbon\Carbon::createFromFormat('d/m/Y', $turma->data_termino, 'Europe/London')->format('Y-m-d');
 
-            if($r->hr_termino == 0 )
+            if($r->hr_termino != '' )
                 $novaturma->hora_termino = $r->hr_termino;
             else
                 $novaturma->hora_termino = $turma->hora_termino;
 
-            if($r->vagas == 0 )
+            if($r->vagas != '' )
                 $novaturma->vagas = $r->vagas;
             else
                 $novaturma->vagas = $turma->vagas;
 
-            if($r->valor == 0 )
+            if($r->valor != '' )
                 $novaturma->valor = $r->valor;
             else
                 $novaturma->valor = $turma->valor;
 
-            if($r->carga == 0 )
+            if($r->carga != '' )
                 $novaturma->carga = $r->carga;
             else
                 $novaturma->carga = $turma->carga;
@@ -648,6 +660,7 @@ class TurmaController extends Controller
             $novaturma->save();
 
         }
+        //return $novaturma;
         return redirect()->back()->withErrors(['Turmas recadastradas com sucesso.']);
 
 

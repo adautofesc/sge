@@ -20,6 +20,7 @@ class Turma extends Model
 		$this->attributes['valor'] = str_replace(',', '.', $value);
 	}
 	public function getValorAttribute($value){
+		//return $value;
 		return number_format($value,2,',','.');
 	}
 	public function setAtributosAttribute($value){
@@ -44,7 +45,7 @@ class Turma extends Model
 	}
 	public function getCursoAttribute($value){
 		$curso=Curso::where('id',$value)->get(['id','nome','carga'])->first();
-		$curso->requisito();
+		//$curso->requisito();
 		return $curso;
 	}
 	public function getDisciplinaAttribute($value){

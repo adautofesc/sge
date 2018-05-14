@@ -2,19 +2,12 @@
 @section('pagina')
 <div class="title-block">
     <h3 class="title"> Turmas - gerenciamento pedagógico</h3>
-
-
-
-
-
-
+<!--
     <div class="row">
-        <br>
         <div class="col-sm-9">
-            
             Mostrando {{count($turmas)}} turmas 
-            <a href="?limparfiltro=1">
-                <i class="fa fa-remove" style="color:red"></i>
+            <a class="products-search-clean-filters" href="https://www.nuuvem.com/catalog">
+                <i class="fa fa-remove"></i>
                 Limpar Filtros
             </a>
 
@@ -24,138 +17,23 @@
 
         </div>
     </div>
-   <form>
+   
     <div class="row ">
         <div class="col-sm-12">
-            <div class=" card card-block rounded-s small">
-                <div class="form-group row "> 
-                    
-                    <div class="col-sm-3"> 
+            <div class=" card card-block rounded-s">
+                <div class="form-group row"> 
+                    <div class="col-sm-4"> 
                         <div class="input-group rounded-s">
                             
-                            <input type="text" class="form-control boxed rounded-s" name="buscar" placeholder="Buscar"> 
-
+                            <input type="text" class="form-control boxed rounded-s" id="fcurso" name="fcurso" placeholder="Buscar"> 
+                            <span class="input-group-addon"><a href=""><i class=" fa fa-times"></i></a></span> 
+                    
                         </div>
                     </div>
-                
                     <div class="col-sm-8"> 
-                        
-                        <div class="action dropdown "> 
-                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Programa
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
-                                @foreach($programas as $programa)
-                                <a class="dropdown-item" href="?filtro=programa&valor={{$programa->id}}">
-                                    <i class="fa fa-circle-o icon"></i>{{$programa->sigla}}
-                                </a>
-                                @endforeach 
-                               
-                            </div>
-                        </div>
-                        <div class="action dropdown "> 
-                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Professor
-                            </button>
-                            <div class="dropdown-menu" style="height:30em;px;overflow-y:scroll;" aria-labelledby="dropdownMenu1"> 
-                                @foreach($professores as $professor)
-                                <a class="dropdown-item" href="?filtro=professor&valor={{$professor->id}}">
-                                    <i class="fa fa-circle-o icon"></i>{{$professor->nome_simples}}
-                                </a> 
-                                @endforeach
-                            </div>
-                        </div>
-                        <div class="action dropdown "> 
-                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Local
-                            </button>
-                            <div class="dropdown-menu" style="height:30em;px;overflow-y:scroll;" aria-labelledby="dropdownMenu1"> 
-                                <a class="dropdown-item" href="?filtro=local&valor=84" title="Campus 1">
-                                    <i class="fa fa-circle-o icon"></i>FESC 1
-                                </a>
-                                <a class="dropdown-item" href="?filtro=local&valor=85" title="Campus 2">
-                                    <i class="fa fa-circle-o icon"></i>FESC 2
-                                </a>
-                                <a class="dropdown-item" href="?filtro=local&valor=86" title="Campus 3">
-                                    <i class="fa fa-circle-o icon"></i>FESC 3
-                                </a>
-                                @foreach($locais as $local)
-                                <a class="dropdown-item" href="?filtro=local&valor={{$local->id}}" title="{{$local->nome}}" onclick="abrirSelecionadas()">
-                                    <i class="fa fa-circle-o icon"></i>{{$local->sigla}}
-                                </a> 
-                                @endforeach
-                                
-                            </div>
-                        </div>
-                        <div class="action dropdown "> 
-                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Dias
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
-                                <a class="dropdown-item" href="?filtro=dias_semana&valor=seg" >
-                                    <i class="fa fa-circle-o icon"></i>Segunda-feira
-                                </a> 
-                                <a class="dropdown-item" href="?filtro=dias_semana&valor=ter" >
-                                    <i class="fa fa-circle-o icon"></i>Terça-feira
-                                </a> 
-                                <a class="dropdown-item" href="?filtro=dias_semana&valor=qua"> 
-                                    <i class="fa fa-circle-o icon"></i>Quarta-feira
-                                </a> 
-                                <a class="dropdown-item" href="?filtro=dias_semana&valor=qui" >
-                                    <i class="fa fa-circle-o icon"></i>Quinta-feira
-                                </a> 
-                                <a class="dropdown-item" href="?filtro=dias_semana&valor=sex" >
-                                    <i class="fa fa-circle-o icon"></i>Sexta-feira
-                                </a> 
-                                <a class="dropdown-item" href="?filtro=dias_semana&valor=sab" >
-                                    <i class="fa fa-circle-o icon"></i>Sábado
-                                </a> 
-                                <a class="dropdown-item" href="?filtro=dias_semana&valor=dom" >
-                                    <i class="fa fa-circle-o icon"></i>Domingo
-                                </a>
-                                
-                            </div>
-                        </div>
-                        <div class="action dropdown "> 
-                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Periodo
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
-                                <div class="input-group rounded-s">
-                            
-                                    <input type="date" class="form-control boxed rounded-s" name="dt_inicio" placeholder="Data de início"> 
-
-                                </div>
-                                <div class="input-group rounded-s">
-                            
-                                    <input type="date" class="form-control boxed rounded-s"  name="dt_termino" placeholder="Data Termino"> 
-
-                                </div>
-                                <div class="input-group rounded-s">
-                            
-                                    <input type="submit" class="btn btn-primary" placeholder="Enviar" value ="Enviar"> 
-
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="action dropdown "> 
-                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Status
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
-                                <a class="dropdown-item" href="?filtro=status&valor=3" ">
-                                    <i class="fa fa-circle-o icon"></i>Com matrículas Abertas
-                                </a> 
-                                <a class="dropdown-item" href="?filtro=status&valor=1" " data-toggle="modal" data-target="#confirm-modal">
-                                    <i class="fa fa-circle-o icon"></i>  Com matrículas Suspensas
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=2" " data-toggle="modal" data-target="#confirm-modal">
-                                    <i class="fa fa-circle-o icon"></i> Em andamento
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=0" " data-toggle="modal" data-target="#confirm-modal">
-                                    <i class="fa fa-circle-o icon"></i> Canceladas/encerradas
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=5" data-toggle="modal" data-target="#confirm-modal">
-                                    <i class="fa fa-circle-o icon"></i> Todas Turmas
-                                </a>
-                            </div>
-                        </div>
-                
+                        <a href="/pedagogico/turmas/cadastrar" class="btn btn-primary rounded-s"><i class="fa fa-asterisk"></i> Nova...</a>
+                <button type="submit" name="btn"  class="btn btn-primary rounded-s">Encerrar</button>
+                <button type="submit" name="btn"  class="btn btn-primary rounded-s">Relançar turmas</button>
          
                     </div>
                 </div>
@@ -166,13 +44,7 @@
         </div>
     </div>
     
-
-</form>
-
-
-
-
-
+-->
 </div>
 
 @include('inc.errors')

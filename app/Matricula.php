@@ -7,6 +7,19 @@ use App\Inscricao;
 
 class Matricula extends Model
 {
+	/*
+	Constantes
+	*/
+	const STATUS = [ 'ativa',
+				'pendente',
+				'cancelada',
+				'expirada',
+				'pendente',
+				'espera'
+				];
+
+	
+	 
     //
     //protected $appends=['inscricoes'];
 

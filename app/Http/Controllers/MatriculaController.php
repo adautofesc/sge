@@ -683,6 +683,40 @@ where nt.matricula>1');
         
     }
 
+    /**
+     * Função para mostrar view de renovação de matrícula
+     * @param  [Integer] pessoa 
+     * @return [View]      
+     */
+    public function renovar_vw($pessoa)
+    {
+       $pessoa = \App\Pessoa::cabecalho($pessoa);
+       $matriculas = Matricula::where('pessoa', $pessoa->id)
+                ->where(function($query){ $query
+                            ->where('status','ativa')
+                            ->orwhere('status', 'pendente');
+                    })
+                ->orderBy('id','desc')->get();
+                
+             //listar inscrições de cada matricula;
+             foreach($matriculas as $matricula){
+                $matricula->getInscricoes();
+                //dd($matricula);
+                foreach($matricula->inscricoes as $inscricao){
+                    
+                    $inscricao->proxima_turma = \App\Turma::where('professor',$inscricao->turma->professor->id)
+                                        ->where('dias_semana',implode(',', $inscricao->turma->dias_semana))
+                                        ->where('hora_inicio',$inscricao->turma->hora_inicio)
+                                        ->where('data_inicio','>',\Carbon\Carbon::createFromFormat('d/m/Y', $inscricao->turma->data_termino)->format('Y-m-d'))
+                                        ->get();
+                }
+             }
+        //dd($matriculas);
+
+       return view('secretaria.matricula.renovacao',compact('pessoa'))->with('matriculas',$matriculas);
+
+    }
+
 
         
 

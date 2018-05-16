@@ -285,9 +285,11 @@ Route::middleware('login') ->group(function(){
 			Route::post('/upload-termo/{matricula}','MatriculaController@uploadTermo');
 			Route::get('/upload-termo-cancelamento/{matricula}','MatriculaController@uploadCancelamentoMatricula_vw');
 			Route::post('/upload-termo-cancelamento/{matricula}','MatriculaController@uploadCancelamentoMatricula');
-
 			Route::get('/uploadglobal/{tipo}/{operacao}/{qnde}/{valor}','MatriculaController@uploadGlobal_vw');
 			Route::post('/uploadglobal/{tipo}/{operacao}/{qnde}/{valor}','MatriculaController@uploadGlobal');
+
+			Route::get('renovar/{pessoa}','MatriculaController@renovar_vw');
+			Route::post('renovar/{pessoa}','MatriculaController@renovar');
 
 			Route::post('nova/confirmacao', 'InscricaoController@confirmacaoAtividades');
 			Route::post('nova/gravar', 'MatriculaController@gravar');

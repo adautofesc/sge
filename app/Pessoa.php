@@ -80,4 +80,18 @@ class Pessoa extends Model
 		}
 	}
 
+	public static function cabecalho($id)
+	{
+		$pessoa= Pessoa::find($id);
+		$pessoa=\App\Http\Controllers\PessoaController::formataParaMostrar($pessoa);
+		if(isset($pessoa->telefone))
+			$pessoa->telefone=\App\classes\Strings::formataTelefone($pessoa->telefone);
+		if(isset($pessoa->telefone_alternativo))
+			$pessoa->telefone_alternativo=\App\classes\Strings::formataTelefone($pessoa->telefone_alternativo);
+		if(isset($pessoa->telefone_contato))
+			$pessoa->telefone_contato=\App\classes\Strings::formataTelefone($pessoa->telefone_contato);
+
+		return $pessoa;
+	}
+
 }

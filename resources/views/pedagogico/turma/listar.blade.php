@@ -6,7 +6,7 @@
 
 
 
-
+<!--
 
     <div class="row">
         <br>
@@ -171,9 +171,10 @@
 
 
 
-
+-->
 
 </div>
+
 
 @include('inc.errors')
 

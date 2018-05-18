@@ -316,8 +316,6 @@ class InscricaoController extends Controller
         $inscricao->matricula=$matricula;
         $inscricao->save();
 
-        
-
         // aumenta Inscricaodos
 
         //$turma=Turma::find($turma);
@@ -346,7 +344,6 @@ class InscricaoController extends Controller
         // aumenta Inscricaodos
         InscricaoController::modInscritos($turma->id,1,1);
   
-
         return $inscricao;
 
     }

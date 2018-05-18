@@ -78,7 +78,8 @@
                             <div class="item-col fixed item-col-check "> 
 
                                 <label class="item-check" id="select-all-items">
-                                <input type="checkbox" class="checkbox" name="turmas[]" value="{{$inscricao->turma->id}}">
+                                <input type="checkbox" class="checkbox" name="turmas[]" value="{{$inscricao->turma->id}}" {{!isset($inscricao->proxima_turma->first()->id)?'disabled="true"':''}}>
+
                                 <span></span>
                                 </label>
                             </div>
@@ -108,7 +109,7 @@
                                      <p>Prof. <strong>{{$inscricao->turma->professor->nome_simples}}</strong><br>
                                        
                                      
-                                    Local: <span class="label">{{$inscricao->turma->local->sigla}}</span> Horário: {{implode(', ',$inscricao->turma->dias_semana)}} - {{$inscricao->turma->hora_inicio}} ás {{$inscricao->turma->hora_termino}}</p>
+                                    Local: <span class="label">{{$inscricao->turma->local->sigla}}</span> Horário: {{implode(', ',$inscricao->turma->dias_semana)}} das {{$inscricao->turma->hora_inicio}} ás {{$inscricao->turma->hora_termino}}</p>
                                 </div>
                             </div>
                             <div  class="item-col" style="max-width: 30px">
@@ -116,6 +117,7 @@
                                 <div> <i class="fa fa-chevron-right"></i></div>
                             </div>
                             <div class="item-col">
+                                @if(isset($inscricao->proxima_turma->first()->id))
                                 <div class="item-heading">Nova Turma</div>
                                 <div class="">
                                     
@@ -140,8 +142,12 @@
                                      <p>Prof. <strong>{{$inscricao->proxima_turma->first()->professor->nome_simples}}</strong><br>
                                        
                                      
-                                    Local: <span class="label">{{$inscricao->proxima_turma->first()->local->sigla}}</span> Horário: {{implode(', ',$inscricao->proxima_turma->first()->dias_semana)}} - {{$inscricao->proxima_turma->first()->hora_inicio}} ás {{$inscricao->proxima_turma->first()->hora_termino}}</p>
+                                    Local: <span class="label">{{$inscricao->proxima_turma->first()->local->sigla}}</span> Horário: <strong>{{implode(', ',$inscricao->proxima_turma->first()->dias_semana)}}</strong> das {{$inscricao->proxima_turma->first()->hora_inicio}} ás {{$inscricao->proxima_turma->first()->hora_termino}}</p>
                                 </div>
+                                <input type="hidden" name="novaturma[{{$inscricao->turma->id}}]" value="{{$inscricao->proxima_turma->first()->id}}">
+                                @else
+                                <p align="center"><i class="fa fa-warning"></i><br>Nenhuma turma com professor,<br> dia e horário compatível.</p>
+                                @endif
                             </div>
                         </div>
                     </li> 

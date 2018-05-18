@@ -331,6 +331,24 @@ class MatriculaController extends Controller
             
 
     }
+    /**
+     * Função que verifica se já existe rematricula para esta pessoa
+     * @param  [type] $pessoa [description]
+     * @param  [type] $curso  [description]
+     * @return [type]         [description]
+     */
+    public static function verificaSeRematriculado($pessoa,$curso){
+        $matriculas_ativas=Matricula::where('pessoa',Session::get('pessoa_atendimento'))
+            ->where('curso',$curso)
+            ->where('status','espera')
+            ->get();
+        if(count($matriculas_ativas) > 0)
+            return $matriculas_ativas->first()->id;  
+        else
+            return false;
+            
+
+    }
 
     public static function gerarMatricula($pessoa,$turma_id){
         $turma=Turma::find($turma_id);
@@ -714,6 +732,20 @@ where nt.matricula>1');
         //dd($matriculas);
 
        return view('secretaria.matricula.renovacao',compact('pessoa'))->with('matriculas',$matriculas);
+
+    }
+    public function renovar(Request $r)
+    {
+        foreach($r->turmas as $turma){
+            //verifica se existe turma de continuação
+            if(isset($r->novaturma[$turma])){
+                $inscricao = InscricaoController::inscreverAlunoSemMatricula($r->pessoa,$r->novaturma[$turma]);
+                $matricula = Matricula::where('status','pendente')->where('curso', $r->novaturma[$turma] )->get();
+
+
+            }
+        }
+        
 
     }
 

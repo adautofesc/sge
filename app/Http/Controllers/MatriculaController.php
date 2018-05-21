@@ -350,19 +350,18 @@ class MatriculaController extends Controller
 
     }
 
-    public static function gerarMatricula($pessoa,$turma_id){
+    public static function gerarMatricula($pessoa,$turma_id,$status_inicial){
         $turma=Turma::find($turma_id);
         if($turma==null)
             redirect($_SERVER['HTTP_REFERER']);
-        AtendimentoController::novoAtendimento("Matrícula automática por inscrição direta.", $pessoa, Session::get('usuario'));
+        $atendimento = AtendimentoController::novoAtendimento("Matrícula gerada por adição direta na turma ou rematrícula.", $pessoa, Session::get('usuario'));
         $matricula=new Matricula();
         $matricula->pessoa=$pessoa;
-        $matricula->atendimento=1;
+        $matricula->atendimento=$atendimento->id;
         $matricula->data=date('Y-m-d');
         $matricula->parcelas=$turma->tempo_curso;
         $matricula->dia_venc=20;
-        $matricula->status="pendente";
-        $matricula->obs="Falta assinar termo e eventual atestado.";
+        $matricula->status=$status_inicial;
         $matricula->valor=str_replace(',','.',$turma->valor);
         $matricula->curso = $turma->curso->id;
         $matricula->save();
@@ -734,17 +733,42 @@ where nt.matricula>1');
        return view('secretaria.matricula.renovacao',compact('pessoa'))->with('matriculas',$matriculas);
 
     }
+    /**
+     * Renovação de matrícula
+     * Verifica
+     * @param  Request $r [description]
+     * @return [type]     [description]
+     */
     public function renovar(Request $r)
     {
         foreach($r->turmas as $turma){
             //verifica se existe turma de continuação
             if(isset($r->novaturma[$turma])){
+
+                //inscreve pessoa na nova turma
                 $inscricao = InscricaoController::inscreverAlunoSemMatricula($r->pessoa,$r->novaturma[$turma]);
-                $matricula = Matricula::where('status','pendente')->where('curso', $r->novaturma[$turma] )->get();
+
+                //procurar matricula em espera ja existente do mesmo curso
+                $matricula = Matricula::where('status','espera')->where('curso', $inscricao->turma->curso->id)->first();
+                if($matricula == null){
+
+                    //senao cria uma nova
+                    $matricula = MatriculaController::gerarMatricula($r->pessoa,$r->novaturma[$turma],'espera');
+
+                }
+
+                //atribui matricula a inscricao
+                $inscricao->matricula = $matricula->id;
+                $inscricao->save();
+
+                //tualiza matricula pra ver se houve alteraçao de valor caso uati
+                MatriculaController::modificaMatricula($inscricao->matricula);
+
 
 
             }
         }
+        return redirect("/secretaria/atender/".$r->pessoa."?mostrar=todos")->with('dados["alert_sucess"]',['Turmas rematriculadas com sucesso']);
         
 
     }

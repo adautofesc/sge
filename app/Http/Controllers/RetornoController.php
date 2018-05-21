@@ -57,6 +57,9 @@ class RetornoController extends Controller
 			$files = glob("{*.ret_PROC}", GLOB_BRACE);
 			rsort($files);
 
+			$files=array_slice($files, 0, -30);
+
+
 			$arquivos = collect();
 
 			foreach($files as $file){
@@ -77,7 +80,7 @@ class RetornoController extends Controller
 				$arquivos->push($arquivo);
 
 			}
-			$arquivos = $arquivos->sortBy('id');
+			$arquivos = $arquivos->sortByDesc('id');
 			//return $arquivos;
 
 			return view('financeiro.retorno.lista')->with('arquivos',$arquivos)->with('processado',true);

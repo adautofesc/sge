@@ -184,7 +184,7 @@
 			<div class="col-sm-2"> 
 				<div class="input-group">
 					 
-					<input type="number" class="form-control boxed" name="carga" placeholder="" required> 
+					<input type="number" class="form-control boxed" name="carga" value="{{$turma->carga}}" placeholder="" required> 
 				</div>
 			</div>
 			
@@ -389,7 +389,7 @@ function cursoEscolhido(id,nome){
 	$.get("{{asset('pedagogico/curso/disciplinas')}}"+"/"+id)
 		.done(function(data) {
 			
-			if(data.length>1){
+			if(data.length>0){
 				$('#row_disciplina').show();
 			}
 		});

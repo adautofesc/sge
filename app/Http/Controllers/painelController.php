@@ -90,7 +90,34 @@ class painelController extends Controller
         return view('admin.home');
     }
     public function docentes(){
-        return view('docentes.home');
+
+
+
+
+        $turmas = Turma::where('professor',session('usuario'))->whereIn('status',[0,2,3,4])->get();
+        foreach($turmas as $turma){
+            if($turma->url == ''){
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_HEADER, false);
+                $url = "https://script.google.com/macros/s/AKfycbwSMC0Q1fdk5LYTQHiDxFNrSf1mdEI7g1pDnV4JvugGbK8OqoPh/exec?id=150&tipo=url";
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSLVERSION,3); 
+                $webservice = curl_exec($ch);
+                curl_close($ch);
+
+                dd($webservice);
+
+            }
+
+
+                    
+        }
+        return view('docentes.home')->with('turmas',$turmas);
+
+
+
+
     }
     public function financeiro(){
         return view('financeiro.home');

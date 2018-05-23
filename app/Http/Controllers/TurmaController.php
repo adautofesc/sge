@@ -73,6 +73,10 @@ class TurmaController extends Controller
             
 
         }
+        if(isset($request->removefiltro)){
+            if(isset($filtros[$request->removefiltro]))
+                unset($filtros[$request->removefiltro]);
+        }
         
 
         $_SESSION['filtro_turmas'] = $filtros;
@@ -102,7 +106,7 @@ class TurmaController extends Controller
         }
         */
 
-        $turmas = $turmas->limit(100)->get();
+        $turmas = $turmas->paginate(50);
 
         //dd($turmas);
         //print_r($filtros);
@@ -143,24 +147,148 @@ class TurmaController extends Controller
         return view('pedagogico.turma.listar', compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$filtros);
     }
 
-    public function listarSecretaria($dados='')
+    public function listarSecretaria(Request $request)
     {
+
+         //verifica se tem algum filtro em sessao para criar o filtro
+        session_start();
+ 
+        
+        if(isset($_SESSION['filtro_turmas']))
+        {
+            
+            $filtros = $_SESSION['filtro_turmas'];
+            
+        }
+        else
+        {
+            
+            $filtros = array();
+            
+        }
+
+        //verifica se tem algum filtro na url
+        if(isset($request->filtro) && isset($request->valor)){
+           
+            //verifica se ja existe esse filtro
+            if(array_key_exists($request->filtro, $filtros)){
+
+                //verifica se o valor ja consta no array, se constar retorna a chave
+                $busca = array_search($request->valor, $filtros[$request->filtro]);
+
+
+                //se nao tiver
+                if($busca === false){
+
+                    //grava novo valor
+                    $filtros[$request->filtro][] = $request->valor;
+                }
+                //se ja tiver
+                else
+                {
+                    //verifica se foi passado por url pra apagar esse filtro
+                    if(isset($request->remove)){
+
+                        //apaga a chave com o filtro
+                        unset($filtros[$request->filtro][$busca]);
+
+                    }
+                }
+            }
+            else{
+                //die('chave nao existe');
+                $filtros[$request->filtro][] = $request->valor;
+            }
+            
+
+        }
+        if(isset($request->removefiltro)){
+            if(isset($filtros[$request->removefiltro]))
+                unset($filtros[$request->removefiltro]);
+        }
+        
+
+        $_SESSION['filtro_turmas'] = $filtros;
+
+        $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.vagas as vagas','disciplinas.id as disciplinaid','cursos.id as cursoid','turmas.programa as programaid','turmas.valor as valor')
+                ->join('cursos', 'turmas.curso','=','cursos.id')
+                ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id');
+
+        if(isset($filtros['programa']) && count($filtros['programa'])){
+            $turmas = $turmas->whereIn('turmas.programa', $filtros['programa']); 
+        }
+
+        if(isset($filtros['professor']) && count($filtros['professor'])){
+            $turmas = $turmas->whereIn('turmas.professor', $filtros['professor']); 
+        }
+        if(isset($filtros['local']) && count($filtros['local'])){
+            $turmas = $turmas->whereIn('turmas.local', $filtros['local']); 
+        }
+
+        if(isset($filtros['status']) && count($filtros['status'])){
+            $turmas = $turmas->whereIn('turmas.status', $filtros['status']); 
+        }
+        /*
+
+        foreach($filtros as $coluna=>$filtro){
+            if(count($filtro)>0){
+                    $turmas = $turmas->where($coluna, $filtro);                
+            }
+        }
+        */
+
+        $turmas = $turmas->paginate(50);
+
+        //dd($turmas);
+        //print_r($filtros);
+
+        
+
+
+
+
+
+
+/*
+        if(isset($r->data)){
+            $termino = date('Y-m-d', strtotime("+5 months",strtotime($r->data))); 
+            
+            $turmas=Turma::orderBy('curso')->where('data_inicio','>=',$r->data)->where('data_termino','<=',$termino)->get(); 
+            //return $turmas;
+        }
+        else{
+            $turmas=Turma::orderBy('curso')->paginate(50);
+              //return $turmas;
+
+        }
+        if(isset($r->programa)){
+            $turmas=Turma::orderBy('curso')->where('programa',$r->programa)->paginate(50);
+
+        }
+*/
+
+        $programas=Programa::all();
+        $professores = PessoaDadosAdministrativos::getFuncionarios('Educador');
+        $professores = $professores->sortBy('nome_simples');
+        $locais = Local::select(['id','sigla','nome'])->orderBy('sigla')->get();
+
+
+ /*       
         $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.vagas as vagas','disciplinas.id as disciplinaid','cursos.id as cursoid','turmas.programa as programaid','turmas.valor as valor')
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
                 ->orderBy('cursos.nome')
                 ->orderBy('disciplinas.nome')
                 ->get();
-
+*/
         //return $turmas;
        
-        $programas=Programa::all();
 
 
         //return $dados;
         //$dados=['alert_sucess'=>['hello world']];
         //return $turmas;
-        return view('secretaria.listar-turmas', compact('turmas'))->with('programas',$programas)->with('dados',$dados);
+        return view('secretaria.listar-turmas', compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$filtros);
     }
 
     /**
@@ -327,7 +455,7 @@ class TurmaController extends Controller
         $turma->atributos=$request->atributo;
         $turma->periodicidade=$request->periodicidade;
         $turma->update();
-        return $this->index();
+        return redirect(asset('/pedagogico/turmas'));
        
     }
 
@@ -375,7 +503,7 @@ class TurmaController extends Controller
             }
         }
         //return $msgs;
-        return $this->listarSecretaria($msgs);
+        return redirect('/secretaria/turmas')->withErrors($msgs);
     }
     public function turmasDisponiveis($turmas_atuais='0',$ordered_by='')
     {
@@ -754,6 +882,8 @@ class TurmaController extends Controller
                 $novaturma->carga = $r->carga;
             else
                 $novaturma->carga = $turma->carga;
+
+            $novaturma->status = 1;
 
             $novaturma->save();
 

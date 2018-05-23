@@ -12,6 +12,7 @@
 	                    	<a class="dropdown-item" href="#" onclick="renovar()"> <i class="fa fa-retweet icon"></i> Renovar </a> 
                             <a class="dropdown-item" href="#" onclick="ativar()"data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-unlock icon"></i> Habilitar</a>
 	                    	<a class="dropdown-item" href="#" onclick="desativar()"data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-lock icon"></i> Desabilitar</a>
+
 	                    </div>
 	                </div>
                 </h3>
@@ -74,7 +75,7 @@
                 <div class="item-col fixed pull-left item-col-title">
                     <div class="item-heading">Pessoa</div>
                     <div>                        
-                        <h4 class="item-title">{{$pessoa->nome}} </h4>
+                        <h4 class="item-title"><a href="/gestaopessoal/atender/{{$pessoa->pessoa}}" title="Atender">{{$pessoa->nome}}</a> </h4>
                     </div>
                 </div>
                 <div class="item-col item-col-sales">
@@ -114,6 +115,7 @@
                                 <li>
                                     <a class="edit"  onclick=alterar(1,{{$pessoa->id}}) href="#" title="Renovar"> <i class="fa fa-retweet "></i> </a>
                                 </li>
+                        
                             </ul>
                         </div>
                     </div>
@@ -182,6 +184,12 @@ function alterar(acao,item)
     if(confirm("Confirma essa alteração ?")){
         $(location).attr('href','{{asset("/admin/alterar")}}/'+acao+'/'+item);
     }
+}
+function atender(pessoa)
+{
+    
+        $(location).attr('href','{{asset("/gestaopessoal/atender/")}}/'+pessoa);
+    
 }
 </script>
 @endsection

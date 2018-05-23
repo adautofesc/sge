@@ -19,7 +19,7 @@
                                     <a href="{{asset('/docentes')}}"> <i class="fa fa-th-large"></i> Docentes </a>
                                 </li>
                                 @endif
-                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','14'))
+                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','19'))
                                 <li  >
                                     <a href="{{asset('/financeiro')}}"> <i class="fa fa-usd"></i> Financeiro </a>
                                 </li>

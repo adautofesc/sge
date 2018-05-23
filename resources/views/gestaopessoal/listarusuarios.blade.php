@@ -46,7 +46,7 @@
                     <div> <span>Validade</span> </div>
                 </div>
                 <div class="item-col item-col-header item-col-sales">
-                    <div> <span>Programa</span> </div>
+                    <div> <span>Status</span> </div>
                 </div>
                 <div class="item-col item-col-header fixed item-col-actions-dropdown"> </div>
             </div>
@@ -77,8 +77,8 @@
                     </div>
                 </div> 
                 <div class="item-col item-col-sales">
-                    <div class="item-heading">Programa</div>
-                    <div>{{$pessoa->status}}UATI</div>
+                    <div class="item-heading">Status</div>
+                    <div>{{$pessoa->status}}</div>
                 </div> 
 
                 <div class="item-col fixed item-col-actions-dropdown">
@@ -97,7 +97,7 @@
                                     <a class="edit"  onclick=alterar(2,{{$pessoa->id}}) href="#" title="Vincular pessoa a Programa Educacional"> <i class="fa fa-indent"></i> </a>
                                 </li>
                                 <li>
-                                    <a class="edit"  onclick=alterar(2,{{$pessoa->id}}) href="#" title="Opções de atendimento"> <i class="fa fa-th-list"></i> </a>
+                                    <a class="edit"  onclick=atender({{$pessoa->id}}) href="#" title="Atender"> <i class="fa fa-th-list"></i> </a>
                                 </li>
                             </ul>
                         </div>
@@ -167,6 +167,12 @@ function alterar(acao,item)
     if(confirm("Confirma essa alteração ?")){
         $(location).attr('href','{{asset("/admin/alterar")}}/'+acao+'/'+item);
     }
+}
+function atender(pessoa)
+{
+    
+        $(location).attr('href','{{asset("/gestaopessoal/atender/")}}/'+pessoa);
+    
 }
 </script>
 @endsection

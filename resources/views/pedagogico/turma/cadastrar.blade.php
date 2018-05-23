@@ -407,7 +407,7 @@ function cursoEscolhido(id,nome){
 	$.get("{{asset('pedagogico/curso/disciplinas')}}"+"/"+id)
 		.done(function(data) {
 			
-			if(data.length>1){
+			if(data.length>0){
 				$('#row_disciplina').show();
 			}
 		});

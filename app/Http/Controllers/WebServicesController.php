@@ -18,7 +18,7 @@ class WebServicesController extends Controller
 
 
     public function apiTurmas(){
-        $turmas = Turma::where('status','>',0)->get();
+        $turmas = Turma::whereIn('status',[2,4])->get();
         return $turmas;
     }
 }

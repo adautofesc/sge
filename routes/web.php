@@ -129,7 +129,7 @@ Route::middleware('login') ->group(function(){
 		});
 
 		Route::prefix('boletos')->group(function(){
-			Route::get('home',  function(){ return view('financeiro.boletos.home'); });
+			Route::middleware('liberar.recurso:19')->get('home',  function(){ return view('financeiro.boletos.home'); });
 			Route::get('editar/{id}','BoletoController@editar');
 			Route::post('editar/{id}','BoletoController@update');
 			Route::get('imprimir/{id}','BoletoController@imprimir');
@@ -315,7 +315,7 @@ Route::middleware('login') ->group(function(){
 
 
 	});
-	Route::middleware('liberar.recurso:15')->prefix('docentes')->group(function(){
+	Route::middleware('liberar.recurso:13')->prefix('docentes')->group(function(){
 		Route::get('/','painelController@docentes');
 		Route::get('turmas-professor', 'TurmaController@listarProfessores');
 		Route::post('turmas-professor', 'TurmaController@turmasProfessor');

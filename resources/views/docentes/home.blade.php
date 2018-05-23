@@ -62,22 +62,30 @@
                     </div>
                 </div>
                 <div class="card-block">
+                    
+
+                    @foreach($turmas as $turma)
+
                     <div>
                         <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Turma 1 - Seg. 08h~10h
+                        &nbsp;&nbsp;<a href="#?id={{$turma->id}}"> Turma {{$turma->id}} | 
+                            {{$turma->curso->nome}}
+                            @if(isset($turma->disciplina))
+                             / {{$turma->disciplina->nome}}
+                            @endif
+                            <br>
+
+                             {{implode(', ',$turma->dias_semana)}} | {{$turma->hora_inicio}}h~{{$turma->hora_termino}}h</a>
                     </div>
+                    @endforeach
+                
+                    <!--
                     <div>
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Turma 2 - Seg. 08h~10h
                     </div>
-                    <div>
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Turma 3 - Seg. 08h~10h
-                    </div>
-                    <div>
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Turma 4 - Seg. 08h~10h
-                    </div>
+                -->
+                    
                 </div>     
             </div>
         </div>  

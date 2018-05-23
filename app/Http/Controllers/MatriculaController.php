@@ -749,8 +749,10 @@ where nt.matricula>1');
                 $inscricao = InscricaoController::inscreverAlunoSemMatricula($r->pessoa,$r->novaturma[$turma]);
 
                 //procurar matricula em espera ja existente do mesmo curso
-                $matricula = Matricula::where('status','espera')->where('curso', $inscricao->turma->curso->id)->first();
+                $matricula = Matricula::where('pessoa',$r->pessoa)->where('status','espera')->where('curso', $inscricao->turma->curso->id)->first();
+                
                 if($matricula == null){
+
 
                     //senao cria uma nova
                     $matricula = MatriculaController::gerarMatricula($r->pessoa,$r->novaturma[$turma],'espera');

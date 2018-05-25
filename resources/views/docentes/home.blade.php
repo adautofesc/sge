@@ -11,14 +11,6 @@
 </div>
 <section class="section">
     <div class="row">
-        <div class="col-md-12 center-block">
-            <div class="card card-primary">
-               <p>Nenhuma opção no momento</p>
-                * Futuro espaço para Grade semanal
-            </div>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-md-6 center-block">
             <div class="card card-primary">
                 <div class="card-header">
@@ -29,15 +21,24 @@
                 <div class="card-block">
                     <div>
                         <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Listas de Frequência
+                        &nbsp;&nbsp;<a href="#"> Listas de Frequência Anteriores</a>
                     </div>
                     <div>
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Calendário
+                        <i class=" fa fa-arrow-right "></i> 
+                        &nbsp;&nbsp;<a href="/documentos/calendario.pdf" target="_blank">Calendário</a>
                     </div>
                     <div>
+                        <i class=" fa fa-arrow-right "></i> 
+                        &nbsp;&nbsp;<a href="/documentos/formulario_turmas.doc" target="_blank" title="Formulário de definição de Turmas e horários">Formulário de Horário</a>
+                    </div>
+                    <div>
+                        <i class=" fa fa-arrow-right "></i> 
+                        &nbsp;&nbsp;<a href="/documentos/formulario_turmas.doc" target="_blank" title="Inscrição para os cursos de parceria.">Formulário de Inscrição</a>
+                    </div>
+                    <!--
+                    <div>
                         <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Planos de ensino
+                        &nbsp;&nbsp;Planos de ensino  
                     </div>
                     <div>
                         <i class=" fa fa-arrow-right "></i>
@@ -51,6 +52,7 @@
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Solicitação de sala de aula extra
                     </div>
+                -->
                 </div>   
             </div>
         </div>
@@ -61,30 +63,33 @@
                         <p class="title" style="color:white">Listas de Frequência</p>
                     </div>
                 </div>
-                <div class="card-block">
-                    
 
+                <div class="card-block">
                     @foreach($turmas as $turma)
 
-                    <div>
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;<a href="#?id={{$turma->id}}"> Turma {{$turma->id}} | 
-                            {{$turma->curso->nome}}
-                            @if(isset($turma->disciplina))
-                             / {{$turma->disciplina->nome}}
-                            @endif
-                            <br>
+                    <div class="row" >
+                        <div class="col-md-1">
+                             <i class=" fa fa-users "></i>
+                        </div>
+                        <div class="col-md-3" >
+                             <a href="{{$turma->url}}" target="_blank"
+                            title="Acessar a lista do curso: {{$turma->curso->nome}}@if(isset($turma->disciplina)) / {{$turma->disciplina->nome}}@endif "> Turma {{$turma->id}}</a>
+                        </div>
+                        <div class="col-md-3" >
+                             {{implode(', ',$turma->dias_semana)}}
+                        </div>
+                        <div class="col-md-4">
+                             {{$turma->hora_inicio}}h~{{$turma->hora_termino}}h
+                        </div>
+                        <div class="col-md-1">
+                             <i class=" fa fa-cog "></i>
+                        </div>
+                           
 
-                             {{implode(', ',$turma->dias_semana)}} | {{$turma->hora_inicio}}h~{{$turma->hora_termino}}h</a>
                     </div>
+
                     @endforeach
-                
-                    <!--
-                    <div>
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Turma 2 - Seg. 08h~10h
-                    </div>
-                -->
+
                     
                 </div>     
             </div>

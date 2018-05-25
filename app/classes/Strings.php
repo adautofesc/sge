@@ -110,6 +110,33 @@ Class Strings
 		}
 
 	}
+	public static function convertWeekDay($item){
+		switch ($item) {
+			case 'seg':
+				return 1;
+				break;
+			case 'ter':
+				return 2;
+				break;
+			case 'qua':
+				return 3;
+				break;
+			case 'qui':
+				return 4;
+				break;
+			case 'sex':
+				return 5;
+				break;
+			case 'sab':
+				return 6;
+				break;
+			
+			default:
+				return 0;
+				break;
+		}
+
+	}
 
 
 }

@@ -890,12 +890,60 @@ class TurmaController extends Controller
         }
         //return $novaturma;
         return redirect()->back()->withErrors(['Turmas recadastradas com sucesso.']);
-
-
-
-
     }
+    public static function listarTurmasDocente($docente){
 
+        $turmas = Turma::where('professor', $docente)->whereIn('status',[0,2,3,4])->orderBy('dias_semana')->get();
+
+        foreach($turmas as $turma){
+            /**
+             * [Ativars/desativar consulta de URL]
+             * @var string
+             */
+            $turma->url="/lista/".$turma->id;
+            
+            if($turma->url == ''){
+
+                $url = "https://script.google.com/macros/s/AKfycbwSMC0Q1fdk5LYTQHiDxFNrSf1mdEI7g1pDnV4JvugGbK8OqoPh/exec?id=150&tipo=rel";
+
+                $ch = curl_init();
+                //não exibir cabeçalho
+                curl_setopt($ch, CURLOPT_HEADER, false);
+                // redirecionar se hover
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                // desabilita ssl
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                // Will return the response, if false it print the response
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                //envia a url
+                curl_setopt($ch, CURLOPT_URL, $url);
+                //executa o curl
+                $result = curl_exec($ch);
+                //encerra o curl
+                curl_close($ch);
+
+               //$webservice = json_decode($webservice);
+
+
+               $ws = json_decode($result);
+
+               if( !isset($ws{0}->url) || $ws{0}->url == '' )
+
+                    $turma->url='#';
+
+                else
+
+                    $turma->url = $ws{0}->url;
+                    //$turma->save();
+
+
+            }
+            $turma->weekday = \App\classes\Strings::convertWeekDay($turma->dias_semana[0]);
+
+        }
+    $turmas = $turmas->sortBy('weekday')->sortBy('hora_inicio');
+    return $turmas;
+    }
 
 
 }

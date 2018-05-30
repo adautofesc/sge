@@ -173,6 +173,8 @@ class InscricaoController extends Controller
             $inscricao->matricula = $request->matricula;
             $inscricao->save();
             AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id." modificada para matrícula ".$inscricao->matricula.".", $inscricao->pessoa->id, Session::get('usuario'));
+            MatriculaController::modificaMatricula($inscricao->matricula);
+            MatriculaController::modificaMatricula($request->matricula);
             return redirect(asset('/secretaria/atender/'));
         }
         else
@@ -491,6 +493,7 @@ class InscricaoController extends Controller
                 $inscricao->status = 'regular';
                 $inscricao->save();
                 InscricaoController::modInscritos($inscricao->turma->id,1,1);
+                MatriculaController::modificaMatricula($inscricao->matricula);
                 return redirect($_SERVER['HTTP_REFERER']);
             }
             else

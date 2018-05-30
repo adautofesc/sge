@@ -893,18 +893,18 @@ class TurmaController extends Controller
     }
     public static function listarTurmasDocente($docente){
 
-        $turmas = Turma::where('professor', $docente)->whereIn('status',[0,2,3,4])->orderBy('dias_semana')->get();
+        $turmas = Turma::where('professor', $docente)->whereIn('status',[2,3,4])->orderBy('dias_semana')->get();
 
         foreach($turmas as $turma){
             /**
              * [Ativars/desativar consulta de URL]
              * @var string
              */
-            $turma->url="/lista/".$turma->id;
+            $turma->url="/lista/".$turma->id;  //------------------------------------------------Apagar aqui
             
             if($turma->url == ''){
 
-                $url = "https://script.google.com/macros/s/AKfycbwSMC0Q1fdk5LYTQHiDxFNrSf1mdEI7g1pDnV4JvugGbK8OqoPh/exec?id=150&tipo=rel";
+                $url = "https://script.google.com/macros/s/AKfycbwSMC0Q1fdk5LYTQHiDxFNrSf1mdEI7g1pDnV4JvugGbK8OqoPh/exec?id=".$turma->id."&tipo=rel";
 
                 $ch = curl_init();
                 //não exibir cabeçalho
@@ -934,14 +934,14 @@ class TurmaController extends Controller
                 else
 
                     $turma->url = $ws{0}->url;
-                    //$turma->save();
+                    //$turma->save(); ----------------------------------------------------------Liberar após 
 
 
             }
             $turma->weekday = \App\classes\Strings::convertWeekDay($turma->dias_semana[0]);
 
         }
-    $turmas = $turmas->sortBy('weekday')->sortBy('hora_inicio');
+    $turmas = $turmas->sortBy('hora_inicio')->sortBy('weekday');
     return $turmas;
     }
 

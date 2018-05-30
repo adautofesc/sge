@@ -19,21 +19,15 @@
                     </div>
                 </div>
                 <div class="card-block">
+                    <!--
                     <div>
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;<a href="#"> Listas de Frequência Anteriores</a>
                     </div>
+                -->
                     <div>
                         <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/documentos/calendario.pdf" target="_blank">Calendário</a>
-                    </div>
-                    <div>
-                        <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/documentos/formulario_turmas.doc" target="_blank" title="Formulário de definição de Turmas e horários">Formulário de Horário</a>
-                    </div>
-                    <div>
-                        <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/documentos/formulario_turmas.doc" target="_blank" title="Inscrição para os cursos de parceria.">Formulário de Inscrição</a>
+                        &nbsp;&nbsp;<a href="/documentos/oficios/2018004.pdf" target="_blank">Calendário</a>
                     </div>
                     <!--
                     <div>
@@ -93,7 +87,33 @@
                     
                 </div>     
             </div>
-        </div>  
+        </div> 
+        <div class="col-md-6 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Formulários</p>
+                    </div>
+                </div>
+                <div class="card-block">
+
+                    <div>
+                        <i class=" fa fa-arrow-right "></i> 
+                        &nbsp;&nbsp;<a href="/documentos/formularios/formulario_turmas.doc" target="_blank" title="Formulário de definição de Turmas e horários">Formulário de Horário</a>
+                    </div>
+                    <div>
+                        <i class=" fa fa-arrow-right "></i> 
+                        &nbsp;&nbsp;<a href="/documentos/formularios/inscricao.doc" target="_blank" title="Inscrição para os cursos de parceria.">Formulário de Inscrição em Turmas</a>
+                    </div>
+                    <div>
+                        <i class=" fa fa-arrow-right "></i> 
+                        &nbsp;&nbsp;<a href="/documentos/insc_usolivre.pdf" target="_blank">Formulário de cadastro no Uso Livre</a>
+                    </div>
+    
+                
+                </div>   
+            </div>
+        </div> 
 
     </div>
 </section>

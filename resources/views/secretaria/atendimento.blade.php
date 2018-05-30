@@ -204,6 +204,8 @@
                                         @else
                                             &nbsp;<a href="/secretaria/matricula/uploadglobal/1/1/1/{{$matricula->id}}"><i class="fa fa-cloud-upload " title="Enviar Termo de Matrícula"></i></a>
                                         @endif
+                                        &nbsp;<a href="/secretaria/matricula/duplicar/{{$matricula->id}}" ><i class=" fa fa-files-o" title="Duplicar matrícula e colocar em espera"></i></a>
+
 
 
                                 

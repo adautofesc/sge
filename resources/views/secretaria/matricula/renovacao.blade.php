@@ -49,10 +49,12 @@
                     <li class="item item-list-header hidden-sm-down">
                         <div class="item-row">
                             <div class="item-col fixed item-col-check">
+                                
                                 <label class="item-check" id="select-all-items">
                                     <input type="checkbox" class="checkbox">
                                 <span></span>
                                 </label> 
+                            
                             </div>
                             
                             <div class="item-col item-col-header turma">

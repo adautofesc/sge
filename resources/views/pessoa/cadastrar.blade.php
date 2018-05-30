@@ -144,6 +144,8 @@
                             <div class="form-group row">
                                 <label class="col-sm-2 form-control-label text-xs-right">Bairro</label>
                                 <div class="col-sm-4"> 
+                                    <input id="bairro" type="text" class="form-control boxed"  name="bairro_str"> 
+                                    <!--
                                     <select class="c-select form-control boxed" name='bairro'>
                                             @if(count($dados['bairros']))
                                             @foreach ($dados['bairros'] as $bairro)
@@ -151,7 +153,21 @@
                                             @endforeach
                                         @endif
                                     </select>
-                                </div>  
+                                -->
+                                </div> 
+                                 <input type="hidden" name="bairro" required>
+                                    <ul class="item-list" id="listabairros" style="display:none; width:auto; 
+       height:auto;  
+       position:absolute; 
+       z-index:100; 
+       top:50px; 
+       padding:20px;
+       margin-left:300px;
+       background-color: white;
+       overflow-y: hidden;
+       border:1px solid #d0d0d0">
+
+                                    </ul> 
                                 <label class="col-sm-2 form-control-label text-xs-right">CEP</label>
                                 <div class="col-sm-4"> 
                                     <input type="text" class="form-control boxed" placeholder="00000-000" name="cep"> 
@@ -324,8 +340,66 @@
         }
  
     });
+   $("#bairro").keyup(function() {
+       
+ 
+       //Assigning search box value to javascript variable named as "name".
+ 
+       var name = $('#bairro').val();
+       var namelist="";
+
+ 
+       //Validating, if "name" is empty.
+ 
+       if (name == "") {
+            
+
+ 
+           //Assigning empty value to "display" div in "search.php" file.
+ 
+           $("#listabairros").html("");
+            $("#listabairros").hide();
+ 
+       }
+ 
+       //If name is not empty.
+ 
+       else {
+            
+ 
+           //AJAX is called.
+            $.get("{{asset('buscarbairro/')}}"+"/"+name)
+                .done(function(data) 
+                {
+                    $.each(data, function(key, val){
+                        namelist+='<li class="item item-list-header">'
+                                    +'<a href="#" onclick="escolherBairro('+val.id+',\''+val.nome+'\')">'
+                                        +val.nome
+                                    +'</a>'
+                                  +'</li>';
+                    });
+                    
+                    $("#listabairros").html(namelist).show();
+
+                });
+
+        }
+ 
+    });
  
 });
+
+function escolherBairro(id,nome) {
+   
+    $('[name=bairro]').val(id);
+    $("#bairro").val(nome);
+    $("#listabairros").html(''); 
+    $("#listabairros").hide(); 
+
+                   
+}
+
+
 /***
  * Vincula resgata os dados da pessoa clicada e preenche o formulário com eles
  * @param id - código da pessoa que tem o endereço

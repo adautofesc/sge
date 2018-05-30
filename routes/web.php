@@ -291,6 +291,10 @@ Route::middleware('login') ->group(function(){
 			Route::get('renovar/{pessoa}','MatriculaController@renovar_vw');
 			Route::post('renovar/{pessoa}','MatriculaController@renovar');
 
+			Route::get('duplicar/{matricula}','MatriculaController@duplicar');
+
+
+
 			Route::post('nova/confirmacao', 'InscricaoController@confirmacaoAtividades');
 			Route::post('nova/gravar', 'MatriculaController@gravar');
 			Route::get('termo/{id}','MatriculaController@termo');

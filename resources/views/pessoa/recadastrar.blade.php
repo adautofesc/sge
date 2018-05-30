@@ -161,8 +161,8 @@
                                     <input id="bairro" type="text" class="form-control boxed"  name="bairro_str" value="{{$pessoa->bairro}}"> 
                                 </div> 
                                 <input type="hidden" name="bairro" value="{{$pessoa->id_bairro}}" required>
-                                    <ul class="item-list" id="listabairros" style="display:none; width:700px; 
-       height:500px;  
+                                    <ul class="item-list" id="listabairros" style="display:none; width:auto; 
+       height:auto;  
        position:absolute; 
        z-index:100; 
        top:50px; 

@@ -121,6 +121,9 @@ class MatriculaController extends Controller
         $matricula->status = $r->status;
         $matricula->obs=$r->obs;
         $matricula->save();
+
+        MatriculaController::modificaMatricula($matricula->id);
+
         AtendimentoController::novoAtendimento("Matrícula atualizada.", $matricula->pessoa, Session::get('usuario'));
         //LancamentoController::atualizaMatricula($matricula->id);
         return redirect(asset('secretaria/atender'));
@@ -569,6 +572,7 @@ where nt.matricula>1');
         $insc = Inscricao::where('matricula',$id)->where('status','regular')->get();
         if(count($insc)>0){
             $matricula->save();
+            MatriculaController::modificaMatricula($id);
             return redirect($_SERVER['HTTP_REFERER']);
         }
         else
@@ -773,6 +777,35 @@ where nt.matricula>1');
         return redirect("/secretaria/atender/".$r->pessoa."?mostrar=todos")->with('dados["alert_sucess"]',['Turmas rematriculadas com sucesso']);
         
 
+    }
+    public function duplicar($matricula)
+    {
+        $original = Matricula::find($matricula);
+        $nova = new Matricula;
+        $nova->pessoa = $original->pessoa;
+        $nova->data = $original->data;
+        $nova->atendimento = AtendimentoController::novoAtendimento("Matrícula duplicada", $nova->pessoa, Session::get('usuario'));
+        $nova->forma_pg = $original->forma_pg;
+        $nova->dia_venc = $original->dia_venc;
+        $nova->parcelas = $original->parcelas;
+        $nova->status = 'espera';
+        $nova->resp_financeiro = $original->resp_financeiro;
+        $nova->desconto = $original->desconto;
+        $nova->valor_desconto= $original->valor_desconto;
+        $nova->obs = '';
+
+
+        $nova->save();
+        MatriculaController::modificaMatricula($nova->id);
+
+
+        
+        
+
+
+
+
+        return redirect()->back()->withErrors(['Matricula duplicada.']);
     }
 
 

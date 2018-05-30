@@ -9,7 +9,7 @@
     <style type="text/css">
         * {
             font-family: Tahoma, MS Sans Serif, Arial, Sans Serif;
-            font-size: 10px;
+            font-size: 12px;
             /*color:#000000;*/
             text-decoration: none;
             /*text-align:left;*/
@@ -53,7 +53,7 @@
                     &nbsp;, cidade:&nbsp;<span id="FormView1_Label11" style="font-weight:bold;">{{$pessoa->cidade}}</span>
                     &nbsp;<span id="FormView1_Label12" style="font-weight:bold;">{{$pessoa->estado}}</span>
                     &nbsp;, cep:&nbsp;<span id="FormView1_Label13" style="font-weight:bold;">{{$pessoa->cep}}</span>
-                    &nbsp;, fone:&nbsp;<span id="FormView1_Label14" style="font-weight:bold;">{{$pessoa->telefone}}</span>
+                    &nbsp;, fone:&nbsp;<span id="FormView1_Label14" style="font-weight:bold;">{{$pessoa->telefone}}{{isset($pessoa->telefone_celular)?' e '.$pessoa->telefone_celular:''}}{{isset($pessoa->email)?'</span> E-mail: <span> '.$pessoa->email:''}}</span>
                     
                     &nbsp;,CPF
 							nº
@@ -114,15 +114,15 @@
                 <p>
                     <strong>4.	CANCELAMENTO: </strong>
                     <br />
-                    <strong>4.1</strong> A rescisão do contrato ocorrerá somente através da formalização do cancelamento da matrícula mediante assinatura do requerimento de cancelamento pelo aluno ou seu representante legal na Secretaria Escolar;
+                    <strong>4.1 A rescisão do contrato ocorrerá somente através da formalização do cancelamento da matrícula mediante assinatura do requerimento de cancelamento pelo aluno ou seu representante legal na Secretaria Escolar;</strong>
                     <br />
                     <strong>4.2</strong> Caso o aluno realize o cancelamento antes da data de início do curso, ficará isento de qualquer pagamento.
                     <br />
-                    <strong>4.3</strong> A falta de comparecimento ou frequência do aluno, enquanto não realizar o cancelamento da matrícula, não o exime do pagamento das parcelas acordadas na cláusula 2.1.
+                    <strong>4.3 A falta de comparecimento ou frequência do aluno, enquanto não realizar o cancelamento da matrícula, não o exime do pagamento das parcelas acordadas na cláusula 2.1.</strong>
                     <br />
-                    <strong>4.4</strong> Somente após a realização do cancelamento na Secretaria Escolar, o aluno estará isento do pagamento das parcelas futuras não vencidas.
+                    <strong>4.4 Somente após a realização do cancelamento na Secretaria Escolar, o aluno estará isento do pagamento das parcelas futuras não vencidas.</strong>
                     <br />
-                    <strong>4.5</strong> Será considerado sem aproveitamento o aluno que deixar de comparecer a mais de 25% do total de aulas ofertadas, caso em que perderá direito ao certificado de conclusão e também solicitação de bolsa de estudo para o próximo semestre, caso houver;
+                    <strong>4.5 Será considerado sem aproveitamento o aluno que deixar de comparecer a mais de 25% do total de aulas ofertadas, caso em que perderá direito ao certificado de conclusão e também solicitação de bolsa de estudo para o próximo semestre, caso houver;</strong>
                 </p>
                 <p>
                     <strong>5.	OBRIGAÇÕES REGIMENTAIS:</strong>
@@ -130,6 +130,9 @@
                     <strong>5.1</strong> O ALUNO regularmente matriculado fica submetido aos deveres de boa convivência e colaboração previstos no Regimento Interno da FESC (Resolução 16/2008) e no Regimento do Programa Educacional correspondente ao curso, podendo sofrer sanções disciplinares em caso de seu descumprimento;
                     <br />
                     <strong>5.2</strong> É de inteira responsabilidade da FESC o atendimento aos direitos regimentais do aluno, bem como a citada prestação de serviços com garantia de adequadas condições para a qualidade do ensino.
+                    <br/>
+                    <strong>5.3 Para cursar atividades físicas, é necessário apresentar atestado médico de liberação para prática de atividades físicas, válido por um ano, contado a partir da data de emissão. O aluno se compromete a manter o atestado sempre atualizado enquanto cursar as atividades.</strong>
+
                 </p>
                 <p>
                     <strong>6.	FORO:</strong> Fica eleito o Foro da Comarca de São Carlos para dirimir quaisquer controvérsias oriundas do presente ajuste.

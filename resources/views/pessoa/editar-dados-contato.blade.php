@@ -69,33 +69,17 @@
                         <label class="col-sm-2 form-control-label text-xs-right">Bairro</label>
                         <div class="col-sm-4"> 
                             <input id="bairro" type="text" class="form-control boxed"  name="bairro_str"> 
-                            <!--
-                            <select class="c-select form-control boxed" name='bairro'>
-                                    @if(count($dados['bairros']))
-                                    @foreach ($dados['bairros'] as $bairro)
-                                        @if($bairro->nome == $dados->bairro)
-                                        <option value="{{ $bairro->id }}" selected> {{ $bairro->nome }}</option>
-                                        @else
-                                        <option value="{{ $bairro->id }}" > {{ $bairro->nome }}</option>
-                                        @endif
-                                    @endforeach
-                                @endif
-                            </select>
-                        -->
-                        </div>  
-                         <input type="hidden" name="bairro" required>
-                                    <ul class="item-list" id="listabairros" style="display:none; width:auto; 
-       height:auto;  
-       position:absolute; 
-       z-index:100; 
-       top:50px; 
-       padding:20px;
-       margin-left:300px;
-       background-color: white;
-       overflow-y: hidden;
-       border:1px solid #d0d0d0">
+                            <ul class="item-list" id="listabairros" style="display:none; width:300px;  height:auto; position:absolute; z-index:100; top:50px; padding:20px;margin-left:300px; background-color: white; overflow-y: hidden; border:1px solid #d0d0d0">
+                                
+                            </ul> 
+                                   
+                           <input type="hidden" name="bairro" required>
+                        </div> 
+                       
+                            
+                        
 
-                                    </ul>
+                         
                         <label class="col-sm-2 form-control-label text-xs-right">CEP</label>
                         <div class="col-sm-4"> 
                             <input type="text" class="form-control boxed" placeholder="00000000" name="cep" value="{{$dados->cep}}"> 
@@ -171,7 +155,7 @@
 <script>
     $(document).ready(function() 
     {
-    $('[name=estado]').val({{$dados->estado}});
+   // $('[name=estado]').val({{$dados->estado}});
  
    //On pressing a key on "Search box" in "search.php" file. This function will be called.
 

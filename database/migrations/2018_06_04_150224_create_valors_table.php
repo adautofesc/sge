@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBolsasTable extends Migration
+class CreateValorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateBolsasTable extends Migration
      */
     public function up()
     {
-        Schema::create('bolsas', function (Blueprint $table) {
+        Schema::create('valores', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedIntegar('pessoa');
-            $table->unsignedIntegar('desconto')->nullable();
-            $table->string('processo',30);
-            $table->string('status',1);
-            $table->date('validade');
+            $table->unsignedInteger('programa');
+            $table->unsignedInteger('curso');
+            $table->unsignedInteger('carga');
+            $table->string('referencia',100);
+            $table->decimal('valor',10,5);
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ class CreateBolsasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bolsas');
+        Schema::dropIfExists('valors');
     }
 }

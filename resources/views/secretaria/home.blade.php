@@ -46,6 +46,11 @@
                         <i class="fa fa-files-o"></i>
                         &nbsp;&nbsp; Enviar Termos em Lote</a>
                     </div>
+                    <div>
+                        <a href="/documentos/formularios/desistencia.pdf" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class="fa fa-file-text"></i>
+                        &nbsp;&nbsp; Termo de desistência</a>
+                    </div>
                     <!--
                     <div>
                         <div>

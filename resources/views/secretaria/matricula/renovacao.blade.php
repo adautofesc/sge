@@ -80,7 +80,7 @@
                             <div class="item-col fixed item-col-check "> 
 
                                 <label class="item-check" id="select-all-items">
-                                <input type="checkbox" class="checkbox" name="turmas[]" value="{{$inscricao->turma->id}}" {{!isset($inscricao->proxima_turma->first()->id)?'disabled="true"':''}}>
+                                <input type="checkbox" class="checkbox" name="turmas[]" value="{{$inscricao->turma->id}}" >
 
                                 <span></span>
                                 </label>
@@ -148,7 +148,9 @@
                                 </div>
                                 <input type="hidden" name="novaturma[{{$inscricao->turma->id}}]" value="{{$inscricao->proxima_turma->first()->id}}">
                                 @else
-                                <p align="center"><i class="fa fa-warning"></i><br>Nenhuma turma com professor,<br> dia e horário compatível.</p>
+                                <p align="center"><i class="fa fa-warning"></i><br/>Nenhuma turma com professor,<br> dia e horário compatível.<br/>
+                                 <input type="text" name="novaturma[{{$inscricao->turma->id}}]" title="Digite aqui o código da turma de continuaçõa que teve seu horário alterado." placeholder="Código da turma alternativa"/></p>
+
                                 @endif
                             </div>
                         </div>

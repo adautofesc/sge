@@ -54,6 +54,7 @@
                             <li><i class="fa fa-bug"></i> 23/05 - corrigido cadastro e alteração de turmas: não exibia disciplinas em cursos de apenas uma disciplina</li>
                             <li><i class="fa fa-asterisk"></i> 23/05 - Adicionados filtros na listagem de turmas no setor secretário</li>
                             <li><i class="fa fa-asterisk"></i> 21/05 - Adicionados filtros na listagem de turmas no setor pedagógico</li>
+                            <li><i class="fa fa-asterisk"></i> 14/05 - Adicionada ferramenta de rematrícula .</li>
                             <li><i class="fa fa-bug"></i> 11/05 - Corrigida edição de pessoa.</li>
                         </ul>
                     </div>

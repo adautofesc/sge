@@ -595,44 +595,58 @@ class LancamentoController extends Controller
 		return view('financeiro.lancamentos.novo')->with('pessoa',$id)->with('matriculas',$matriculas);
 	}
 	public function create(Request $r){
-		if(count($r->matriculas) && $r->parcela*1>=0){
-			foreach($r->matriculas as $matricula){
-				$matricula = Matricula::find($matricula);
-				if($r->retroativas > 0){
-					for($i=1;$i <= $r->parcela;$i++){
-						$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas;
-						if(!$this->verificaSeLancada($matricula->id,$i) && $valor_parcela > 0  ){ //se não tiver ou for 0
-						$lancamento=new Lancamento; //gera novo lançamento
-						$lancamento->matricula=$matricula->id;
-						$lancamento->parcela=$i;
-						$lancamento->valor=$valor_parcela;
-						$lancamento->pessoa = $r->pessoa;
-						$lancamento->referencia = "Parcela ".$i.' - '.$matricula->getNomeCurso();
-						if($lancamento->valor>0)//se for bolsista integral
-							$lancamento->save();
+		if(isset($r->matriculas)){
+
+			if(count($r->matriculas) && $r->parcela*1>=0){
+
+				foreach($r->matriculas as $matricula){
+
+					$matricula = Matricula::find($matricula);
+					if($r->retroativas > 0){
+						for($i=1;$i <= $r->parcela;$i++){
+							$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas;
+							if(!$this->verificaSeLancada($matricula->id,$i) && $valor_parcela > 0  ){ //se não tiver ou for 0
+							$lancamento=new Lancamento; //gera novo lançamento
+							$lancamento->matricula=$matricula->id;
+							$lancamento->parcela=$i;
+							$lancamento->valor=$valor_parcela;
+							$lancamento->pessoa = $r->pessoa;
+							$lancamento->referencia = "Parcela ".$i.' - '.$matricula->getNomeCurso();
+							if($lancamento->valor>0)//se for bolsista integral
+								$lancamento->save();
+							}
+
 						}
+					}
+					else{
+						$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas;
+						//return $matricula->valor;
+						if(!$this->verificaSeLancada($matricula->id,$r->parcela) && $valor_parcela > 0  ){ //se não tiver ou for 0
+							$lancamento=new Lancamento; //gera novo lançamento
+							$lancamento->matricula=$matricula->id;
+							$lancamento->parcela=$r->parcela;
+							$lancamento->valor=$valor_parcela;
+							$lancamento->pessoa = $r->pessoa;
+							$lancamento->referencia = "Parcela ".$r->parcela.' - '.$matricula->getNomeCurso();
+							if($lancamento->valor>0)//se for bolsista integral
+								$lancamento->save();
+							}
+							else
+								return redirect(asset('secretaria/atender'.'/'.$r->pessoa))->withErrors(['Parcela já consta em boletos ativos OU pessoa bolsista.']);
 
 					}
 				}
-				else{
-					$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas;
-					//return $matricula->valor;
-					if(!$this->verificaSeLancada($matricula->id,$r->parcela) && $valor_parcela > 0  ){ //se não tiver ou for 0
-						$lancamento=new Lancamento; //gera novo lançamento
-						$lancamento->matricula=$matricula->id;
-						$lancamento->parcela=$r->parcela;
-						$lancamento->valor=$valor_parcela;
-						$lancamento->pessoa = $r->pessoa;
-						$lancamento->referencia = "Parcela ".$r->parcela.' - '.$matricula->getNomeCurso();
-						if($lancamento->valor>0)//se for bolsista integral
-							$lancamento->save();
-						}
-						else
-							return redirect(asset('secretaria/atender'.'/'.$r->pessoa))->withErrors(['Parcela já consta em boletos ativos OU pessoa bolsista.']);
-
-				}
 			}
+
 		}
+		else
+		{
+			$lancamento=new Lancamento; //gera novo lançamento
+			$lancamento->pessoa = 	$r->pessoa;
+			$lancamento->referencia = "Parcela ";
+			$lancamento->save();
+		}
+		
 		return redirect(asset('secretaria/atender'.'/'.$r->pessoa));
 
 	}

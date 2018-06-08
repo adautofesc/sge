@@ -37,7 +37,7 @@
                                 <div class="col-sm-4"> 
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-phone"></i></span> 
-                                        <input type="text" class="form-control boxed" placeholder="Somente numeros" name="tel2" value="{{$dados->telefone_alternativo}}"> 
+                                        <input type="text" class="form-control boxed" placeholder="Somente numeros" name="tel2" value="{{$dados->telefone_celular}}"> 
                                     </div> 
                                 </div>
                                 <label class="col-sm-2 form-control-label text-xs-right">Telefone de um contato</label>

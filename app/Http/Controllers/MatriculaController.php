@@ -504,20 +504,24 @@ class MatriculaController extends Controller
     }
     // primeiro passo para corrigir mas matriculas erradas é atribuir curso as matriculas
     public function modMatriculas(){
-         $matriculas = Matricula::select( '*', 'matriculas.status as status', 'matriculas.id as id', 'inscricoes.id as inscId', 'turmas.id as turmaId','matriculas.curso as curso', 'turmas.curso as tcurso')
-                    ->join('inscricoes','inscricoes.matricula','matriculas.id')
-                    ->join('turmas','inscricoes.turma','turmas.id')
-                    ->where('matriculas.status','ativa')
-                    ->where('matriculas.curso',null)
-                    ->get();
+        $contador =0;
+         $matriculas = Matricula::whereIn('status',['ativa','pendente'])->where('curso',null)->get();
+         //dd($matriculas);
+
          foreach($matriculas as $matricula){
-            $matricula_origin = Matricula::find($matricula->id);
-            $matricula_origin->curso = $matricula->tcurso;
-            $matricula_origin->save();
+            $inscricao = Inscricao::where('matricula',$matricula->id)->first();
+            $matricula->curso = $inscricao->turma->curso->id;
+            $matricula->save();
+            $contador++;
          }
-         return $matriculas;
+         return $contador." Matriculas alteradas";
 
     }
+
+
+
+
+
     //seleciona pessoas que tem mais de uma matricula no curso da uati
     public function arrumarMultiplasUati(){
         $pessoas=\DB::select('select pessoa, matricula from (

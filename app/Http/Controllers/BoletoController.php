@@ -318,7 +318,11 @@ class BoletoController extends Controller
 	public function gerarBoleto(Boleto $boleto){
 		$cliente=Pessoa::find($boleto->pessoa);
 		$cliente=PessoaController::formataParaMostrar($cliente);
-
+		$lancamentos= LancamentoController::listarPorBoleto($boleto->id); //objetos lancamentos
+		$array_lancamentos = array();
+		foreach($lancamentos as $lancamento){
+			$array_lancamentos[] = $lancamento->referencia;
+		}
 		$beneficiario = new \Eduardokum\LaravelBoleto\Pessoa([
 		    'documento' => '45.361.904/0001-80',
 		    'nome'      => 'Fundação Educacional São Carlos',
@@ -354,19 +358,14 @@ class BoletoController extends Controller
 		    'agencia' => '0295-X',
 		    'convenio' => 2838669,
 		    'conta' => 52822,
-		    'descricaoDemonstrativo' => [
-		    	'Pagamento FESC',
-		    	'Descontos: R$'.number_format($boleto->desconto,2,',','.').' e Acréscimos: R$'.number_format($boleto->acrescimo,2,',','.') , 
-		    	'Boleto único referente a parcelas de todas as suas atividade na FESC',
-		    	'Em caso de dúvidas entre em contato conosco: 3372-1308'
-		    ],
+		    'descricaoDemonstrativo' => $array_lancamentos,
 		    'instrucoes' => [
 		    	'Sr. Caixa, cobrar multa de 2% após o vencimento', 
 		    	'Cobrar juros de 1% ao mês por atraso.', 
-		    	'Pagável em qualquer agência bancária ou lotérica até o vencimento'
+		    	'Em caso de dúvidas ou divergências, entre em contato conosco: 3372-1308'
 		    ],
 		]);
-			//dd($pagador);
+			//dd($bb);
 		    return $bb;
 
 		}
@@ -417,15 +416,19 @@ class BoletoController extends Controller
 				$boleto->valor = $r->valor;
 				$boleto->status = 'gravado';
 				$boleto->save();
-				
-				foreach ($r->lancamentos as $lancamento){
-					$lancamento_bd = Lancamento::find($lancamento);
-					if($lancamento_bd != null){
-						$lancamento_bd->boleto = $boleto->id;
-						$lancamento_bd->save();
-					}
 
+				if(isset($r->lancamentos)){
+					foreach ($r->lancamentos as $lancamento){
+						$lancamento_bd = Lancamento::find($lancamento);
+						if($lancamento_bd != null){
+							$lancamento_bd->boleto = $boleto->id;
+							$lancamento_bd->save();
+						}
+
+					}	
 				}
+				
+				
 			}
 			return redirect(asset('secretaria/atender/'.$r->pessoa));
 

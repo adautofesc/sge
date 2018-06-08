@@ -31,319 +31,22 @@
                     <div class="tab-content tabs-bordered">
 
                         <!-- Geral ****************************************************************************************** -->
-                        <div class="tab-pane fade in active" id="geral">
-
-                            
-                                <div class="row"> 
-                                    <div class="col-xs-10">
-                                        <a href="{{asset('/pessoa/adicionardependente').'/'.$pessoa['id']}}" class="btn btn-secondary btn-sm rounded-s"> Adicionar dependente </a>                                         
-                                    </div>                                           
-                                    <div class="col-xs-2 text-xs-right">                                        
-                                        <a href="{{asset('/pessoa/editar/geral').'/'.$pessoa['id']}}" class="btn btn-primary btn-sm rounded-s"> Editar </a>
-                                    </div>
-                                </div>  
-
-
-                                <section class="card card-block">
-                                <div class="form-group row">
-        
-                                    <label class="col-sm-2 form-control-label text-xs-right">Nascimento</label>
-                                    <div class="col-sm-3">
-                                        {{$pessoa['nascimento']}} ({{$pessoa['idade']}} anos)
-                                    </div>
-                                    @if(isset($pessoa['telefone']))
-                                    <label class="col-sm-2 form-control-label text-xs-right">Telefone</label>
-                                    <div class="col-sm-3"> 
-                                        {{$pessoa['telefone']}}
-                                    </div>
-                                    @endif
-                                </div>                                   
-                                <div class="form-group row"> 
-                                    <label class="col-sm-2 form-control-label text-xs-right">Gênero</label>
-                                    <div class="col-sm-10"> 
-                                        {{$pessoa['genero']}}
-                                    </div>
-                                </div>
-                                @if(isset($pessoa['nome_registro']))
-                                <div class="form-group row"> 
-                                    <label class="col-sm-2 form-control-label text-xs-right">Nome Registro</label>
-                                    <div class="col-sm-10"> 
-                                        {{$pessoa['nome_registro']}}
-                                    </div>
-                                </div>    
-                                @endif    
-                                <div class="form-group row">
-                                     @if(isset($pessoa['rg']))
-                                    <label class="col-sm-2 form-control-label text-xs-right">RG</label>
-                                    <div class="col-sm-3"> 
-                                        {{$pessoa['rg']}}
-                                    </div>
-                                    @endif
-                                    @if(isset($pessoa['cpf']))
-                                    <label class="col-sm-2 form-control-label text-xs-right">CPF</label>
-                                    <div class="col-sm-3"> 
-                                        {{ $pessoa['cpf'] }}
-                                    </div>
-                                    @endif                                  
-                                </div> 
-                                <div class="form-group row">
-                                     @if(isset($pessoa['username']))
-                                    <label class="col-sm-2 form-control-label text-xs-right">Usuário</label>
-                                    <div class="col-sm-3"> 
-                                        {{$pessoa['username']}}
-                                    </div>                                 
-                                    
-                                    <label class="col-sm-2 form-control-label text-xs-right">Senha</label>
-                                    <div class="col-sm-3"> 
-                                        <a href="{{asset('/pessoa/trocarsenha/'.$pessoa['id']) }}" class="btn btn-secondary btn-sm rounded-s"> Redefinir senha </a>
-
-                                    </div>
-                                    @else
-                                    <label class="col-sm-3 form-control-label text-xs-right">Acesso ao sistema</label>
-                                    <div class="col-sm-3"> 
-                                        <a href="{{asset('/pessoa/cadastraracesso/').'/'.$pessoa['id']}}" class="btn btn-primary btn-sm rounded-s"> Cadastrar usuário </a>
-                                    </div>
-                                    @endif                                  
-                                </div> 
-                                @if(count($pessoa['dependentes']))
-                                <div class="form-group row"> 
-                                    <label class="col-sm-2 form-control-label text-xs-right">Dependentes</label>
-                                    <div class="col-sm-10"> 
-                                        @foreach($pessoa['dependentes'] as $dependente)
-                                        <a href="{{asset('/pessoa/mostrar/'.$dependente->valor)}}" target="_blank">{{$dependente->nome}}</a>
-                                        <a href="#{{$dependente->id}}" onclick="remVinculo({{$dependente->id}});" class="btn btn-secondary btn-sm rounded-s"> Remover </a><br>
-                                        @endforeach
-                                    </div>
-                                </div>    
-                                @endif 
-                                @if(isset($pessoa['responsavel']))
-                                <div class="form-group row"> 
-                                    <label class="col-sm-2 form-control-label text-xs-right">Responsável:</label>
-                                    <div class="col-sm-10"> 
-                                        <a href="{{asset('/pessoa/mostrar/'.$pessoa->responsavel)}}" target="_blank">{{$pessoa['nomeresponsavel']}}</a>
-                                        <a href="{{asset('/pessoa/remover-responsavel/'.$pessoa->responsavel) }}" class="btn btn-secondary btn-sm rounded-s"> Remover </a>
-
-                                    </div>
-                                </div>    
-                                @endif 
-                                @if(isset($pessoa['responsavel_financeiro']))
-                                <div class="form-group row"> 
-                                    <label class="col-sm-2 form-control-label text-xs-right">Responsável Financeiro</label>
-                                    <div class="col-sm-10"> 
-                                        <a href="{{asset('/pessoa/mostrar/'.$pessoa->responsavel_financeiro)}}" target="_blank">{{$pessoa['nomeresponsavel_financeiro']}}</a>
-                                        <a href="{{asset('/pessoa/remover-responsavel-financeiro/'.$pessoa->responsavel_financeiro) }}" class="btn btn-secondary btn-sm rounded-s"> Remover </a>
-                                    </div>
-                                </div>    
-                                @endif 
-                                <div class="form-group row"> 
-                                    <label class="col-sm-2 form-control-label text-xs-right">
-                                        Histórico de atendimento:
-                                    </label>
-                                    <div class="col-sm-10">
-
-                                       
-                                        {{$pessoa['cadastro']}}
-                                       
-                                    </div>
-                                </div>     
-                            </section>
-                        </div>
-
+                        @include('pessoa.dados-gerais.mostrar')
 
                         <!-- Acadêmicos ************************************************************************************* -->
-                        <div class="tab-pane fade" id="academicos">
-
-                            <section class="card card-block">
-                            Sem dados para exibir neste momento
-                            </section>
-                        </div>
-
+                        @include('pessoa.dados-academicos.mostrar')
 
                         <!-- // Contato *********************************************************************************** -->
-                        <div class="tab-pane fade" id="contato">
-                            <div class="row"> 
-                                                                               
-                                    <div class="col-xs-12 text-xs-right">                                        
-                                        <a href="{{asset("/pessoa/editar/contato/")."/".$pessoa->id}}" class="btn btn-primary btn-sm rounded-s"> Editar </a>
-                                    </div>
-                                </div> 
+                        @include('pessoa.dados-contato.mostrar')
 
+                        <!-- Clinicos *********************************************************************************** -->    
+                        @include('pessoa.dados-clinicos.mostrar')
 
-                          <section class="card card-block">
-                            <div class="form-group row">
-                                <label class="col-sm-2 form-control-label text-xs-right">E-mail</label>
-                                <div class="col-sm-4"> 
-                                    @if(isset($pessoa['email']))
-                                     {{ $pessoa['email'] }}
-                                    @endif                                    
-                                </div>  
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-2 form-control-label text-xs-right">Celular</label>
-                                <div class="col-sm-4"> 
-                                    @if(isset($pessoa['telefone_alternativo']))
-                                     {{ $pessoa['telefone_alternativo'] }}
-                                    @endif 
-                                </div>
-                                <label class="col-sm-2 form-control-label text-xs-right">Telefone de um contato</label>
-                                <div class="col-sm-4"> 
-                                    @if(isset($pessoa['telefone_contato']))
-                                     {{ $pessoa['telefone_contato'] }}
-                                    @endif 
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-2 form-control-label text-xs-right">Logradouro</label>
-                                <div class="col-sm-10"> 
-                                    @if(isset($pessoa['logradouro']))
-                                     {{ $pessoa['logradouro'] }}
-                                    @endif 
-                                </div>  
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-2 form-control-label text-xs-right">Número</label>
-                                <div class="col-sm-4"> 
-                                    @if(isset($pessoa['end_numero']))
-                                     {{ $pessoa['end_numero'] }}
-                                    @endif 
-                                </div>  
-                                <label class="col-sm-2 form-control-label text-xs-right">Complemento</label>
-                                <div class="col-sm-4"> 
-                                    @if(isset($pessoa['end_complemento']))
-                                     {{ $pessoa['end_complemento'] }}
-                                    @endif 
-                                    
-                                </div>  
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-2 form-control-label text-xs-right">Bairro</label>
-                                <div class="col-sm-4"> 
-                                    @if(isset($pessoa['bairro']))
-                                     {{ $pessoa['bairro'] }}
-                                    @endif 
-                                </div>  
-                                <label class="col-sm-2 form-control-label text-xs-right">CEP</label>
-                                <div class="col-sm-4"> 
-                                    @if(isset($pessoa['cep']))
-                                     {{ $pessoa['cep'] }}
-                                    @endif 
-                                </div>  
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-2 form-control-label text-xs-right">Cidade</label>
-                                <div class="col-sm-4"> 
-                                    @if(isset($pessoa['cidade']))
-                                     {{ $pessoa['cidade'] }}
-                                    @endif 
-                                </div>  
-                                <label class="col-sm-2 form-control-label text-xs-right">Estado</label>
-                                <div class="col-sm-4"> 
-                                    @if(isset($pessoa['estado']))
-                                     {{ $pessoa['estado'] }}
-                                    @endif 
-                                </div>  
-                            </div>
-
-                          </section> 
-                        </div>
-
-                        <!-- Clinicos *********************************************************************************** -->
-                    
-                        <div class="tab-pane fade" id="clinicos">
-                            <div class="row"> 
-                                    <div class="col-xs-6">
-                                        <a href="/pessoa/cadastrar-atestado/{{$pessoa->id}}" class="btn btn-primary btn-sm rounded-s"> Adicionar Atestado</a>
-                                        
-                                                                               
-                                    </div>                                           
-                                    <div class="col-xs-6 text-xs-right">                                        
-                                        <a href="{{asset('/pessoa/editar/dadosclinicos/').'/'.$pessoa->id}}" class="btn btn-primary btn-sm rounded-s"> Editar </a>
-                                    </div>
-                                </div> 
-
-                            <section class="card card-block">
-                                    <div class="form-group row"> 
-                                            <label class="col-sm-4 form-control-label text-xs-right">Necesssidades especiais</label>
-                                            <div class="col-sm-8"> 
-                                                @if(isset($pessoa['necessidade_especial']))
-                                                {{ $pessoa['necessidade_especial'] }}
-                                                @else
-                                                <p>Não possui</p>
-                                                @endif
-                                            </div>
-                                    </div>
-                                    <div class="form-group row"> 
-                                            <label class="col-sm-4 form-control-label text-xs-right">Medicamentos uso contínuo</label>
-                                            <div class="col-sm-8"> 
-                                                @if(isset($pessoa['medicamentos_continuos']))
-                                                {{ $pessoa['medicamentos_continuos'] }}
-                                                @else
-                                                <p>Não possui</p>
-                                                @endif
-                                            </div>
-                                    </div>
-                                    <div class="form-group row"> 
-                                            <label class="col-sm-4 form-control-label text-xs-right">Alergias</label>
-                                            <div class="col-sm-8"> 
-                                                @if(isset($pessoa['alergias']))
-                                                {{ $pessoa['alergias'] }}
-                                                @else
-                                                <p>Não possui</p>
-                                                @endif
-                                            </div>
-                                    </div>
-                                    <div class="form-group row"> 
-                                            <label class="col-sm-4 form-control-label text-xs-right">Doença crônica</label>
-                                            <div class="col-sm-8"> 
-                                                @if(isset($pessoa['doenca_cronica']))
-                                                {{ $pessoa['doenca_cronica'] }}
-                                                @else
-                                                <p>Não possui</p>
-                                                @endif
-                                            </div>
-                                    </div>
-                                    <div class="form-group row"> 
-                                            <label class="col-sm-4 form-control-label text-xs-right">Atestados médicos</label>
-                                            <div class="col-sm-8">
-                                                @if(isset($atestados))
-                                                @foreach($atestados as $atestado)
-                                                <a href="#" onclick="desativarAtestado('{{$atestado->id}}')" title="Apagar Atestado" class="btn btn-danger btn-sm">
-                                                    <i class="fa fa-times"></i>
-                                                </a> 
-                                                <a href="/documentos/atestados/{{$atestado->id}}.pdf" target="_blank" title="Ver atestado">
-                                                    Atestado nº {{$atestado->id}}
-                                                </a> - válido até 
-                                                    {{\Carbon\Carbon::parse($atestado->validade)->format('d/m/Y')}}
-                                                    <br>
-                                                @endforeach
-                                                @endif
-
-                                            </div>
-
-
-                                     
-
-
-                                    </div>
-                           </section>
-                     
-                        </div>
-                        <div class="tab-pane fade" id="financeiros">
-                             <div class="row">                     
-                                    <div class="col-xs-12 text-xs-right">                                        
-                                        <a href="{{asset('/pessoa/editar/dadosclinicos/').'/'.$pessoa->id}}" class="btn btn-primary btn-sm rounded-s"> Editar </a>
-                                    </div>
-                                </div> 
-                            <section class="card card-block">
-                                <p>Sem dados no momento</p>
-                            </section>
-
-                         
-                        </div>
+                        <!-- Financeiros ******************************************************************************** -->
+                        @include('pessoa.dados-financeiros.mostrar')
+                        
+                        
                         <div class="tab-pane fade" id="obs">
-
-
-
                             <div class="row">                     
                                 <div class="col-xs-12 text-xs-right">                                        
                                     <a href="{{asset('/pessoa/editar/observacoes/').'/'.$pessoa->id}}" class="btn btn-primary btn-sm rounded-s"> Editar </a>
@@ -361,16 +64,8 @@
                                 </div>
                             </div>
 
-
-
-
-
-
-                                
-                                
-
                             </section>
-@endif
+            @endif
                          
                         </div>
 
@@ -394,12 +89,6 @@ function remVinculo(id){
     if(confirm("Deseja mesmo apagar esse vínculo?")){
         $(location).attr('href', '{{asset('/pessoa/removervinculo')}}/'+id);
     }
-}
-function desativarAtestado(id){
-    if(confirm("Deseja mesmo arquivar esse atestado?")){
-        $(location).attr('href', '{{asset('/pessoa/atestado/arquivar')}}/'+id);
-    }
-
 }
 </script>
 

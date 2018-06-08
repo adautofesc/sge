@@ -13,6 +13,10 @@
 
 Route::get('/', 'painelController@index');
 
+//testes / procedimentos temporários
+
+Route::get('/bolsa/gerador', 'BolsaController@gerador');
+
 //Publicos
 
 Route::get('cursos-disponiveis', 'TurmaController@turmasSite');

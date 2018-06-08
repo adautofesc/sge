@@ -188,7 +188,7 @@ class painelController extends Controller
         //$inst = new LancamentoController; /// esse cara vai fazer os lancamentos atrasados
         $inst= new MatriculaController;
         
-//        $matriculas = Matricula::where()
+        return $inst->modMatriculas();
    
 
         //return $inst->addPessoaLancamentos();

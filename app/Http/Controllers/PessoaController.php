@@ -644,9 +644,10 @@ class PessoaController extends Controller
 	
 		$pessoa=Pessoa::find($request->pessoa);
 		if(!$pessoa){
-			return redirect(asset("/pessoa/listar/"));
+			return redirect(asset("/pessoa/listar/"))->withErrors(['Erro ao localizar código de pessoa.']);
 		}
 		$dadosAtuais=$this->dadosPessoa($request->pessoa);
+		//dd($dadosAtuais);
 
 		if($request->email != '' || $request->email!= $dadosAtuais->email)
 			{
@@ -666,7 +667,7 @@ class PessoaController extends Controller
 				$pessoa->dadosContato()->save($info);
 			}
 
-			if($request->tel2 != '' || $request->tel2 != $dadosAtuais->telefone_alternativo)
+			if($request->tel2 != '' || $request->tel2 != $dadosAtuais->telefone_celular)
 			{
 				$info=new PessoaDadosContato;					
 				$info->pessoa=$pessoa->id;
@@ -722,7 +723,7 @@ class PessoaController extends Controller
 			}
 
 		$pessoa=$this->formataParaMostrar($pessoa);
-		return redirect(asset("/secretaria/atender/"));
+		return redirect(asset("/secretaria/atender/".$request->pessoa));
 	}	
 	public function editarDadosClinicos_view($id){
 		

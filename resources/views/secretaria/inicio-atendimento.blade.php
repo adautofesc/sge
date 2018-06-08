@@ -4,6 +4,7 @@
 <div class="title-block">
 	<h3 class="title"> Atendimento Geral<span class="sparkline bar" data-type="bar"></span> </h3>
 </div>
+@include('inc.errors')
 <form name="item">
     <div class="card card-block">
 		<div class="form-group row"> 

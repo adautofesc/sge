@@ -38,7 +38,7 @@
 {{csrf_field()}}
     <div class="card card-block">
     	<div class="title-block">
-            <h3 class="title"><i class=" fa fa-check-square-o "></i> Renovação de marículas. </h3>
+            <h3 class="title"><i class=" fa fa-check-square-o "></i> Renovação de matrículas. </h3>
         </div>
 
         

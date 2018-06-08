@@ -120,6 +120,15 @@
                     </label>
                 </div>
             </div>
+            <div class="col-sm-2"> 
+                
+                <div>
+                    <label>
+                    <input class="radio" type="radio" name="status" value="espera" {{ $matricula->status === "espera" ? 'Checked="checked"' : "" }}>
+                    <span>Espera <small>(Aguardando começar aula)</small></span>
+                    </label>
+                </div>
+            </div>
                 
                 
 

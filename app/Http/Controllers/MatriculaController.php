@@ -55,8 +55,14 @@ class MatriculaController extends Controller
             }
             
         }
+
+        $turmas = $turmas->sortByDesc('data_inicio');
+       
+
+
+
         foreach($cursos as $curso){ 
-            $matriculado=MatriculaController::verificaSeMatriculado($r->pessoa,$curso->id);
+            $matriculado=MatriculaController::verificaSeMatriculado($r->pessoa,$curso->id,$turmas->first()->data_inicio);
             $curso->turmas=collect();//cria lista de turmas de cada curso
             foreach($turmas as $turma){
                 if($turma->curso->id==$curso->id)
@@ -70,11 +76,16 @@ class MatriculaController extends Controller
                 $matricula->data=date('Y-m-d');
                 $valor="valorcursointegral".$curso->id;
                 $matricula->valor=str_replace(',', '.', $r->$valor);
-                $parcelas="nparcelas".$curso->id;
+
                 $matricula->parcelas=$r->$parcelas;
                 $dia_vencimento="dvencimento".$curso->id;
                 $matricula->dia_venc=$r->$dia_vencimento;
-                $matricula->status="ativa";
+                if($turmas->first()->data_inicio > date('Y-m-d'))
+                    $matricula->status="espera";
+                
+                else
+
+                    $matricula->status="ativa";
                 $desconto="fdesconto".$curso->id;
                 $matricula->desconto=$r->$desconto;
                 $valordesconto="valordesconto".$curso->id;
@@ -321,7 +332,9 @@ class MatriculaController extends Controller
         return view('secretaria.matricula.lista-por-pessoa',compact('matriculas'))->with('nome',$nome)->with('pessoa_id',Session::get('pessoa_atendimento'));
 
     }
-    public static function verificaSeMatriculado($pessoa,$curso){
+    public static function verificaSeMatriculado($pessoa,$curso,$data)
+    {
+        /*
         $matriculas_ativas=Matricula::where('pessoa',Session::get('pessoa_atendimento'))
             ->where('curso',$curso)
             ->Where(function($query) {
@@ -331,9 +344,49 @@ class MatriculaController extends Controller
             return $matriculas_ativas->first()->id;  
         else
             return false;
-            
+
+            */
+        if($data > date("Y-m-d")){
+            if($curso == 307)
+            {
+                $matriculas_ativas=Matricula::where('pessoa',$pessoa)
+                ->where('curso',$curso)
+                ->Where('status','espera')
+                ->get();
+
+                if(count($matriculas_ativas)>0)
+                    return $matriculas_ativas->first()->id;
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+        else{
+            if($curso == 307)
+            {
+                $matriculas_ativas=Matricula::where('pessoa',$pessoa)
+                ->where('curso',$curso)
+                ->WhereIn('status',['ativa','pendente'])
+                ->get();
+
+                if(count($matriculas_ativas)>0)
+                    return $matriculas_ativas->first()->id;
+                else
+                    return false;
+            }
+            else
+                return false;
+
+        }
+           
+        
+
 
     }
+
+
+
     /**
      * Função que verifica se já existe rematricula para esta pessoa
      * @param  [type] $pessoa [description]

@@ -297,12 +297,12 @@ class InscricaoController extends Controller
         if(InscricaoController::verificaSeInscrito($aluno,$turma->id))
                 return Inscricao::find(InscricaoController::verificaSeInscrito($aluno,$turma->id));
         if($matricula==0){
-            if(MatriculaController::verificaSeMatriculado($aluno,$turma->curso->id)==false){
+            if(MatriculaController::verificaSeMatriculado($aluno,$turma->curso->id,$turma->data_inicio)==false){
                 $matricula_obj=MatriculaController::gerarMatricula($aluno,$turma->id,'pendente');
                 $matricula=$matricula_obj->id;
             }
             else{
-                $matricula_obj=MatriculaController::verificaSeMatriculado($aluno,$turma->curso->id);
+                $matricula_obj=MatriculaController::verificaSeMatriculado($aluno,$turma->curso->id,$turma->data_inicio);
                 $matricula=$matricula_obj;
 
             }

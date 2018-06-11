@@ -507,9 +507,11 @@ class TurmaController extends Controller
     }
     public function turmasDisponiveis($turmas_atuais='0',$ordered_by='')
     {
-        $turmas_af=collect();
+        $turmas_af=collect();// objetos de turmas atuais
         $lista=array();
         $lst=array();
+
+        //lista turmas atuais passados por parametro e as coloco na collection $turmas_af
         $turmas_atuais=explode(',',$turmas_atuais);
         foreach($turmas_atuais as $turma){
             if(is_numeric($turma)){
@@ -518,6 +520,9 @@ class TurmaController extends Controller
             }
         }
         //return $turmas_af;
+  
+
+        // se não tiver nenhuma turma atual
         if(count($turmas_af)==0){
             $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
                 -> where('turmas.status', '>', 2)
@@ -534,25 +539,34 @@ class TurmaController extends Controller
             //return $turmas;
             return view('secretaria.inscricao.lista-formatada', compact('turmas'))->with('programas',$programas);
         }
+
+        // ja se tem turma selecionada ou atual
         else{
 
+            //Para cada turma 
             foreach($turmas_af as $turma){
+
+                    // tira um minuto da turma atual para não conflitar com as que começam exatamente no  mesmo horário
                     $hora_fim=date("H:i",strtotime($turma->hora_termino." - 1 minutes"));
+
+                    //para cada dia da semana da turma atual
                     foreach($turma->dias_semana as $turm){
-                        $lista[]=Turma::where('dias_semana', 'like', '%'.$turm.'%')->whereBetween('hora_inicio', [$turma->hora_inicio,$hora_fim])->get(['id']);
+
+                        //adiciona turmas que conflitam nessa lista
+                        $lista[]=Turma::where('dias_semana', 'like', '%'.$turm.'%')->whereBetween('hora_inicio', [$turma->hora_inicio,$hora_fim])->where('data_inicio','<=',$turma->data_termino)->get(['id']);
                     }
                     
                 }
             //transforma resultados em array
-            foreach($lista as $x){
-                foreach($x as $y)
-                    $lst[]=$y->id;
+            foreach($lista as $col_turma){
+                foreach($col_turma as $obj_turma)
+                    $lst[]=$obj_turma->id;
 
             }
 
             //return $lst;
 
-            
+            // seleciona todas as turmas disponíveis (tira da lista aquelas que conflitam)
             $turmas=Turma::select('*', 'turmas.id as id', 'turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
                 ->where('turmas.status', '>', 2)
                 ->join('cursos', 'turmas.curso','=','cursos.id')
@@ -574,7 +588,7 @@ class TurmaController extends Controller
         $turmas=collect();
         $valor=0;
         $uati=0;
-        $parcelas=4;
+        $parcelas=5;
         $lista=explode(',',$lista);
         foreach($lista as $turma){
             if(is_numeric($turma)){

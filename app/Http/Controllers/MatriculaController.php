@@ -346,6 +346,7 @@ class MatriculaController extends Controller
             return false;
 
             */
+        $data = \Carbon\Carbon::createFromFormat('d/m/Y', $data)->format('Y-m-d');
         if($data > date("Y-m-d")){
             if($curso == 307)
             {

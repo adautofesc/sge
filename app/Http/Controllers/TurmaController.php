@@ -551,9 +551,10 @@ class TurmaController extends Controller
 
                     //para cada dia da semana da turma atual
                     foreach($turma->dias_semana as $turm){
+                        $data = \Carbon\Carbon::createFromFormat('d/m/Y', $turma->data_termino)->format('Y-m-d');
 
                         //adiciona turmas que conflitam nessa lista
-                        $lista[]=Turma::where('dias_semana', 'like', '%'.$turm.'%')->whereBetween('hora_inicio', [$turma->hora_inicio,$hora_fim])->where('data_inicio','<=',$turma->data_termino)->get(['id']);
+                        $lista[]=Turma::where('dias_semana', 'like', '%'.$turm.'%')->whereBetween('hora_inicio', [$turma->hora_inicio,$hora_fim])->where('data_inicio','<=',$data)->get(['id']);
                     }
                     
                 }

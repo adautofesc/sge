@@ -30,7 +30,7 @@
 
 
 <div class="card card-block">
-    @if(count($curso->turmas)>1)
+    @if(isset($curso->turmas->first()->disciplina))
         
         <div class="title-block center">
 

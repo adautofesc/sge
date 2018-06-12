@@ -76,11 +76,14 @@ class MatriculaController extends Controller
                 $matricula->data=date('Y-m-d');
                 $valor="valorcursointegral".$curso->id;
                 $matricula->valor=str_replace(',', '.', $r->$valor);
-
-                $matricula->parcelas=$r->$parcelas;
-                $dia_vencimento="dvencimento".$curso->id;
-                $matricula->dia_venc=$r->$dia_vencimento;
-                if($turmas->first()->data_inicio > date('Y-m-d'))
+                //verifica se é do centro esportivo
+                if($curso->turmas->first()->programa->id == 12)
+                    $matricula->parcelas=11;
+                else
+                    $matricula->parcelas=5;
+                
+                $matricula->dia_venc=20;
+                if(\Carbon\Carbon::createFromFormat('d/m/Y', $turmas->first()->data_inicio)->format('Y-m-d') > date('Y-m-d'))
                     $matricula->status="espera";
                 
                 else

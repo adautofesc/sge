@@ -524,7 +524,7 @@ class TurmaController extends Controller
 
         // se não tiver nenhuma turma atual
         if(count($turmas_af)==0){
-            $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
+            $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.carga as carga','turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
                 -> where('turmas.status', '>', 2)
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
@@ -532,6 +532,7 @@ class TurmaController extends Controller
                 ->orderBy('cursos.nome')
                 ->orderBy('disciplinas.nome')
                 ->get();
+                //dd($turmas);
 
             
             //return $turmas;
@@ -568,7 +569,7 @@ class TurmaController extends Controller
             //return $lst;
 
             // seleciona todas as turmas disponíveis (tira da lista aquelas que conflitam)
-            $turmas=Turma::select('*', 'turmas.id as id', 'turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
+            $turmas=Turma::select('*', 'turmas.id as id', 'turmas.carga as carga','turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
                 ->where('turmas.status', '>', 2)
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
@@ -576,6 +577,7 @@ class TurmaController extends Controller
                 ->orderBy('cursos.nome')
                 ->orderBy('disciplinas.nome')
                 ->get();
+               //dd($turmas);
 
 
         }

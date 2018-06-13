@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Turma extends Model
 {
 
-	protected $appends=['texto_status','icone_status','tempo_curso'];
+	protected $appends=['texto_status','icone_status','tempo_curso','valor'];
 
 	public function setDiasSemanaAttribute($value){
 		$this->attributes['dias_semana']= implode(',',$value);
@@ -21,7 +21,20 @@ class Turma extends Model
 	}
 	public function getValorAttribute($value){
 		//return $value;
-		return number_format($value,2,',','.');
+		if($this->curso->id == 307 && $this->carga<10)
+		{
+			$valor= Valor::find(5);
+		}
+		else
+		{
+			$valor= Valor::where('programa',$this->programa->id)->where('carga',$this->carga)->first();
+			
+		}
+		if(isset($valor))
+			return number_format($valor->valor,2,',','.');
+		else
+			return '0,00';
+
 	}
 	public function setAtributosAttribute($value){
 		if(count($value))

@@ -21,20 +21,22 @@ class Matricula extends Model
 	
 	 
     //
-    //protected $appends=['inscricoes'];
+    protected $appends=['valor'];
 
-    /*public function getInscricoesAttribute($value){
+	public function getValorAttribute($value){
+		//return $value;
+		
+		$valor = \App\Http\Controllers\ValorController::valorMatricula($this->id);
+		
+			return $valor;
 
-		$inscricoes=Inscricao::where('matricula',$this->id)->get();
-		return $inscricoes;
-
-
-	}*/
+	}
 	 public function getInscricoes(){
 		$inscricoes=Inscricao::where('matricula',$this->id)->get();
 		$this->inscricoes = $inscricoes;
 		return $inscricoes;
 	}
+
 	public function getNomeCurso(){
 		$curso = Curso::find($this->curso);
 		if($curso != null)
@@ -46,5 +48,6 @@ class Matricula extends Model
 
 		}
 	}
+
 
 }

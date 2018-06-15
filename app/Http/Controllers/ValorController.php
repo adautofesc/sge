@@ -58,7 +58,25 @@ class ValorController extends Controller
     		else
     		{
     			$inscricao = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','pendente'])->first();
-    			$inscricao->turma->programa->id;
+    			
+                $valor= Valor::where('programa',$inscricao->turma->programa->id)->where('carga',$inscricao->turma->carga)->where('curso',$inscricao->turma->curso->id)->first();
+                if($valor)
+                {
+                    return number_format($valor->valor,2,',','.');
+                   
+                }
+                else
+                {
+                    $valor= Valor::where('programa',$inscricao->turma->programa->id)->where('carga',$inscricao->turma->carga)->first();
+
+
+                }
+                if(isset($valor))
+                    return number_format($valor->valor,2,',','.');
+                else
+                    return '0';
+                
+
     			//pegar programa e  carga horária
     			//listar se existe algum valor com programa e curso
     				//se sim retornar o valor

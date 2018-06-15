@@ -9,8 +9,102 @@
         </div>
     </div>
 </div>
+<div class="alert alert-info">
+    22/06 - 17hs. Festa Junina da FESC<br>
+</div>
 <section class="section">
     <div class="row">
+        <div class="col-md-6 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Comunicados & portarias</p>
+                    </div>
+                </div>
+                <div class="card-block">
+                    <small>
+                    <table class="table">
+                        <thead>
+                            <th>Link</th>
+                            <th>Data</th>
+                            <th>Descrição</th>
+                        </thead>
+                        <tr>
+                            <td><a href="/documentos/oficios/2018004.pdf"><i class="fa fa-file-text-o"></i></a></td>
+                            <td>22/05/18</td>
+                            <td>Calendário Escolar</td>
+                        </tr>
+                        
+
+                    </table>
+                    </small>
+                </div>
+            </div> 
+
+
+        </div>
+        <div class="col-md-6 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Períodos de Matrículas/rematrículas Of.6/18</p>
+                    </div>
+                </div>
+                <div class="card-block">
+
+                    <div class="text-xs-left">
+                        <small>
+                        <table class="table">
+                            <tr>
+                                <td>04/06</td>
+                                <td>à</td>
+                                <td>15/06</td>
+                                <td>Rematrícula geral*</td>
+                            </tr>
+                            <tr>
+                                <td>11/06</td>
+                                <td></td>
+                                <td></td>
+                                <td>Matrículas UniTrabalhador</td>
+                            </tr>
+                            <tr>
+                                <td>18/06</td>
+                                <td></td>
+                                <td></td>
+                                <td>Matrículas PID</td>
+
+                               
+                            </tr>
+                            <tr>
+                                <td>02/07</td>
+                                <td></td>
+                                <td></td>
+                                <td>Matrículas UATI</td>
+
+                               
+                            </tr>
+                            <tr>
+                                <td>04/06</td>
+                                <td></td>
+                                <td></td>
+                                <td>Pedidos de Bolsas</td>
+
+                               
+                            </tr>                                                     
+                           
+                        </table>
+                        *exceto piscina.
+                    </small>
+                    </div>
+ 
+                </div>
+            </div> 
+
+
+        </div>
+    </div>
+    <div class="row">
+        <!--
         <div class="col-md-5 center-block">
             <div class="card card-primary">
                 <div class="card-header">
@@ -39,31 +133,13 @@
 
 
         </div>
-        <div class="col-md-5 center-block">
-            <div class="card card-primary">
-                <div class="card-header">
-                    <div class="header-block">
-                        <p class="title" style="color:white">Atualizações do sistema</p>
-                    </div>
-                </div>
-                <div class="card-block">
+    -->
+        
 
-                    <div class="text-xs-left">
-                        <ul>
-                            <li><i class="fa fa-flask"></i> Trabalhando na finalização de turmas e intergração com chamada digital em planilha do Google </li>
-                            <li><i class="fa fa-bug"></i> 23/05 - corrigido cadastro e alteração de turmas: não exibia disciplinas em cursos de apenas uma disciplina</li>
-                            <li><i class="fa fa-asterisk"></i> 23/05 - Adicionados filtros na listagem de turmas no setor secretário</li>
-                            <li><i class="fa fa-asterisk"></i> 21/05 - Adicionados filtros na listagem de turmas no setor pedagógico</li>
-                            <li><i class="fa fa-asterisk"></i> 14/05 - Adicionada ferramenta de rematrícula .</li>
-                            <li><i class="fa fa-bug"></i> 11/05 - Corrigida edição de pessoa.</li>
-                        </ul>
-                    </div>
- 
-                </div>
-            </div> 
 
 
         </div>
+
     </div>
 </section>
 

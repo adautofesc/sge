@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Matricula;
 use App\Boleto;
 use App\Lancamento;
+use ValorController;
 use Session;
 
 
@@ -16,31 +17,32 @@ class LancamentoController extends Controller
 		$parcela_atual = $request->parcela;
 		$parcela=$request->parcela;
 		// colocar um if de parcela, se for menor que 6,  fazer recursivo
-		$matriculas=Matricula::where(function($query){
-				$query->where('status','ativa')->orwhere('status', 'pendente');
-			})	
-			->where('valor','>',0)
-			->where('parcelas','>=',$parcela_atual)
+		$matriculas=Matricula::whereIn('status',['ativa','pendente'])		
 			->get();
 		//return $matriculas;
 //OBS: tem que tratar os bolsistas, tem que analizar o que ja foi pago, e o quanto falta pagar pelas parcelas restantes. Ex.: pessoa pagou 2 parcelas e na terceira quer pagar tudo o que falta.
 
 
-		foreach($matriculas as $matricula){
-			if($parcela>5 && $matricula->parcelas<6)
-				$parcela=$parcela-7;
-			//for($i=$parcela;$i<=$matricula->parcelas;$i--)
-			$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas;
-			if(!$this->verificaSeLancada($matricula->id,$parcela)){
-				$lancamento=new Lancamento;
-				$lancamento->matricula=$matricula->id;
-				$lancamento->parcela=$parcela;
-				$lancamento->valor=$valor_parcela;
-				$lancamento->pessoa = $matricula->pessoa;
-				$lancamento->referencia = "Parcela ".$parcela.' - '.$matricula->getNomeCurso();
-				if($lancamento->valor>0)//se for bolsista integral
-					$lancamento->save();
+		foreach($matriculas as $matricula)
+		{
+
+			if($parcela <= $matricula->valor->parcelas){
+				if($parcela>5 && $matricula->valor->parcelas<6)
+					$parcela=$parcela-7;
+				//for($i=$parcela;$i<=$matricula->parcelas;$i--)
+				$valor_parcela=($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas;
+				if(!$this->verificaSeLancada($matricula->id,$parcela)){
+					$lancamento=new Lancamento;
+					$lancamento->matricula=$matricula->id;
+					$lancamento->parcela=$parcela;
+					$lancamento->valor=$valor_parcela;
+					$lancamento->pessoa = $matricula->pessoa;
+					$lancamento->referencia = "Parcela ".$parcela.' - '.$matricula->getNomeCurso();
+					if($lancamento->valor>0)//se for bolsista integral
+						$lancamento->save();
+				}
 			}
+				
 		}
 		//gerar os boletos.
 		return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Lançamentos efetuados']);
@@ -56,25 +58,28 @@ class LancamentoController extends Controller
 			->where(function($query){
 				$query->where('status','ativa')->orwhere('status', 'pendente');
 			})	
-			->where('valor','>',0)
 			->where('parcelas','>=',$parcela_atual)
 			->get();
-		if($parcela_atual>5 && $matricula->parcelas<6)//se parcelamento < parcela atual
+		if($parcela_atual>5 && $matricula->valor->parcelas<6)//se parcelamento < parcela atual
 					$parcela_atual=$parcela_atual-7; //começa parcela novamente
 
-		foreach($matriculas as $matricula){ //para cada matricula
 
-			for($i=$parcela_atual;$i>0;$i--){ //gerador recursivo de parcela
-				$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas; //calcula valor parcela
-				if(!$this->verificaSeLancada($matricula->id,$i) && $valor_parcela > 0  ){ //se não tiver ou for 0
-					$lancamento=new Lancamento; //gera novo lançamento
-					$lancamento->matricula=$matricula->id;
-					$lancamento->parcela=$i;
-					$lancamento->valor=$valor_parcela;
-					$lancamento->pessoa = $pessoa;
-					$lancamento->referencia = "Parcela ".$i.' - '.$matricula->getNomeCurso();
-					if($lancamento->valor>0)//se for bolsista integral
-						$lancamento->save();
+
+		foreach($matriculas as $matricula){ //para cada matricula
+			if($parcela_atual <= $matricula->valor->parcelas){
+
+				for($i=$parcela_atual;$i>0;$i--){ //gerador recursivo de parcela
+					$valor_parcela=($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas; //calcula valor parcela
+					if(!$this->verificaSeLancada($matricula->id,$i) && $valor_parcela > 0  ){ //se não tiver ou for 0
+						$lancamento=new Lancamento; //gera novo lançamento
+						$lancamento->matricula=$matricula->id;
+						$lancamento->parcela=$i;
+						$lancamento->valor=$valor_parcela;
+						$lancamento->pessoa = $pessoa;
+						$lancamento->referencia = "Parcela ".$i.' - '.$matricula->getNomeCurso();
+						if($lancamento->valor>0)//se for bolsista integral
+							$lancamento->save();
+					}
 				}
 			}
 		}
@@ -604,7 +609,7 @@ class LancamentoController extends Controller
 					$matricula = Matricula::find($matricula);
 					if($r->retroativas > 0){
 						for($i=1;$i <= $r->parcela;$i++){
-							$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas;
+							$valor_parcela=($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas;
 							if(!$this->verificaSeLancada($matricula->id,$i) && $valor_parcela > 0  ){ //se não tiver ou for 0
 							$lancamento=new Lancamento; //gera novo lançamento
 							$lancamento->matricula=$matricula->id;
@@ -619,7 +624,7 @@ class LancamentoController extends Controller
 						}
 					}
 					else{
-						$valor_parcela=($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas;
+						$valor_parcela=($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas;
 						//return $matricula->valor;
 						if(!$this->verificaSeLancada($matricula->id,$r->parcela) && $valor_parcela > 0  ){ //se não tiver ou for 0
 							$lancamento=new Lancamento; //gera novo lançamento

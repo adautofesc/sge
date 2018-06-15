@@ -65,15 +65,16 @@
                             <input type="text" class="form-control boxed" placeholder="" name="complemento_endereco" value="{{$dados->end_complemento}}"> 
                         </div>  
                     </div>
+                    
                     <div class="form-group row">
                         <label class="col-sm-2 form-control-label text-xs-right">Bairro</label>
                         <div class="col-sm-4"> 
-                            <input id="bairro" type="text" class="form-control boxed"  name="bairro_str"> 
+                            <input id="bairro" type="text" class="form-control boxed"  name="bairro_str" value="{{$dados->bairro}}"> 
                             <ul class="item-list" id="listabairros" style="display:none; width:300px;  height:auto; position:absolute; z-index:100; top:50px; padding:20px;margin-left:300px; background-color: white; overflow-y: hidden; border:1px solid #d0d0d0">
                                 
                             </ul> 
                                    
-                           <input type="hidden" name="bairro" required>
+                           <input type="hidden" name="bairro" value="{{$dados->id_bairro}}" required>
                         </div> 
                        
                             

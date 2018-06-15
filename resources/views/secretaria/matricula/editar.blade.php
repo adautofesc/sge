@@ -27,17 +27,12 @@
             <div class="col-sm-2"> 
                 <div class="input-group">
                     <span class="input-group-addon">R$</span> 
-                    <input type="number" class="form-control boxed" value='{{ str_replace(',', '.', $matricula->valor) }}' name='valor_matricula' required ();"> 
+                    <input type="number" class="form-control boxed" readonly="true" value='{{ str_replace(',', '.', $matricula->valor->valor) }}' name='valor_matricula' required ();"> 
                     
                 </div>
             </div>
-            <div class="col-sm-2"> 
-                <div class="input-group">
-                    <a href="{{asset('secretaria/matricula/atualizar').'/'.$matricula->id}}"><i class="fa fa-undo "></i></a> 
-                    
-                </div>
-                
-            </div>
+
+    
 
         </div>
        <div class="form-group row"> 
@@ -85,7 +80,7 @@
             <div class="col-sm-2"> 
                 <div class="input-group">
                     
-                    <input type="number" class="form-control boxed" value='{{$matricula->parcelas}}' name='nparcelas' id="nparcelas" required onchange="aplicarPlano({{ str_replace(',', '.', $matricula->valor) }});"> 
+                    <input type="number" class="form-control boxed" value='{{$matricula->valor->parcelas}}' name='nparcelas' readonly="true" id="nparcelas" required onchange="aplicarPlano({{ str_replace(',', '.', $matricula->valor->valor) }});"> 
                     <span class="input-group-addon">Vezes</span> 
                 </div>
             </div>
@@ -143,11 +138,11 @@
                 <textarea rows="4" class="form-control boxed" name="obs" maxlength="150">{{$matricula->obs}}</textarea> 
             </div>
             <div class="col-sm-6 ">
-            <p class="subtitle-block"> Saldo: <b id="parcelas">{{$matricula->parcelas}}</b> parcela(s) de <small>R$</small> <b><span id="saldo_final_parcelado">{{number_format(($matricula->valor-$matricula->valor_desconto)/$matricula->parcelas,2,',','.')}}</span></b> = <small>R$</small> <b><span id="saldo_final">{{number_format(($matricula->valor-$matricula->valor_desconto),2,',','.')}}</span></b></p>
+            <p class="subtitle-block"> Saldo: <b id="parcelas">{{$matricula->valor->parcelas}}</b> parcela(s) de <small>R$</small> <b><span id="saldo_final_parcelado">{{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->parcelas,2,',','.')}}</span></b> = <small>R$</small> <b><span id="saldo_final">{{number_format(($matricula->valor->valor-$matricula->valor_desconto),2,',','.')}}</span></b></p>
             </div>
 
         </div> 
-        <input type="hidden" name="valorcursointegral" value="{{$matricula->valor}}" >
+        <input type="hidden" name="valorcursointegral" value="{{$matricula->valor->valor}}" >
         <input type="hidden" name="valordesconto" value="{{$matricula->valor_desconto}}" >
         <div class="form-group row">
             <label class="col-sm-2 form-control-label text-xs-right"></label>
@@ -196,7 +191,7 @@ function desconto(item){
         $('#porcentagem').val(0)
         $('#valor').val(valor_desc);
     }
-    aplicarPlano({{ str_replace(',', '.', $matricula->valor) }});
+    aplicarPlano({{ str_replace(',', '.', $matricula->valor->valor) }});
 
 
 }

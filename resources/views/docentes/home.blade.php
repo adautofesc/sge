@@ -107,7 +107,7 @@
                     </div>
                     <div>
                         <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/documentos/insc_usolivre.pdf" target="_blank">Formulário de cadastro no Uso Livre</a>
+                        &nbsp;&nbsp;<a href="/documentos/usolivre.pdf" target="_blank">Formulário de cadastro no Uso Livre</a>
                     </div>
     
                 

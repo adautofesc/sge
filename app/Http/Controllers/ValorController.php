@@ -34,13 +34,13 @@ class ValorController extends Controller
                         break;
                     case 1:
                     	$valor = Valor::find(5);
-                        return $valor->valor;
+                        return $valor;
                         break;
                     case 2:
                     case 3:
                     case 4:
                         $valor = Valor::find(6);
-                        return $valor->valor;
+                        return $valor;
                         break;
                     case 5:
                     case 6:
@@ -49,7 +49,7 @@ class ValorController extends Controller
                     case 9:
                     case 10:
                         $valor = Valor::find(7);
-                        return $valor->valor;
+                        return $valor;
                         break;
     			}
     			
@@ -57,24 +57,33 @@ class ValorController extends Controller
     		}
     		else
     		{
+    			//pega a primeira inscricao da matricula
     			$inscricao = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','pendente'])->first();
-    			
+
+
+
                 $valor= Valor::where('programa',$inscricao->turma->programa->id)->where('carga',$inscricao->turma->carga)->where('curso',$inscricao->turma->curso->id)->first();
+
                 if($valor)
                 {
-                    return number_format($valor->valor,2,',','.');
-                   
+                    return $valor;//number_format($valor->valor,2,',','.'); 
                 }
                 else
                 {
+
+
                     $valor= Valor::where('programa',$inscricao->turma->programa->id)->where('carga',$inscricao->turma->carga)->first();
+                
 
 
                 }
                 if(isset($valor))
-                    return number_format($valor->valor,2,',','.');
+                    return $valor;//number_format($valor->valor,2,',','.');
                 else
-                    return '0';
+
+                    throw new \Exception("Erro ao acessar valor da turma:".$valor, 1);
+                    
+                    
                 
 
     			//pegar programa e  carga horária

@@ -98,6 +98,8 @@ class SecretariaController extends Controller
 					})
 			 	->get();
 
+			 //dd($inscricoes);
+
 			 //listar Boletos
 			 $boletos = Boleto::where('pessoa',$id)
 			 	->where(function($query){ $query

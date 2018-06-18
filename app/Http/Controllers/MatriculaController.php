@@ -414,7 +414,7 @@ class MatriculaController extends Controller
         $turma=Turma::find($turma_id);
         if($turma==null)
             redirect($_SERVER['HTTP_REFERER']);
-        $atendimento = AtendimentoController::novoAtendimento("Matrícula gerada por adição direta na turma ou rematrícula.", $pessoa, Session::get('usuario'));
+        $atendimento = AtendimentoController::novoAtendimento("Matrícula gerada por adição direta na turma, lote ou rematrícula.", $pessoa, Session::get('usuario'));
         $matricula=new Matricula();
         $matricula->pessoa=$pessoa;
         $matricula->atendimento=$atendimento->id;

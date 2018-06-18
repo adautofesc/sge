@@ -31,6 +31,7 @@ Route::get('recadastramento', function(){ return view('pessoa.recadastramento');
 Route::post('recadastramento','PessoaController@iniciarRecadastramento');
 Route::post('recadastrado','PessoaController@gravarRecadastro');
 Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
+Route::get('/relatorios/alunos-concluintes','InscricaoController@relatorioConcluintes');
 
 
 

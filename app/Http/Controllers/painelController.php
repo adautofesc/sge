@@ -186,9 +186,32 @@ class painelController extends Controller
        
         //$instance = new BoletoController;
         //$inst = new LancamentoController; /// esse cara vai fazer os lancamentos atrasados
-        $inst= new MatriculaController;
+        $inst= new TurmaController;
+
         
-        return $inst->modMatriculas();
+        $turmas=Turma::where('parceria','>','0')->get();
+        foreach($turmas as $turma){
+            $inscricoes = \App\Inscricao::where('turma',$turma->id)->get();
+            foreach($inscricoes as $inscricao){
+                if($inscricao->matricula != null){
+                    $matricula = \App\Matricula::find($inscricao->matricula);
+                    if($matricula->pessoa != $inscricao->pessoa->id){
+                        //dd($inscricao->turma->id);
+                        $matricula_nova = MatriculaController::gerarMatricula($inscricao->pessoa->id,$inscricao->turma->id,'ativa');
+                        $inscricao->matricula = $matricula_nova->id;
+                        $inscricao->save();
+
+                    }
+                        
+                }
+                else{
+                    $matricula_nova = MatriculaController::gerarMatricula($inscricao->pessoa->id,$inscricao->turma->id,'ativa');
+                    $inscricao->matricula = $matricula_nova->id;
+                    $inscricao->save();
+                }
+            }
+        }
+        return "inscrições normalizadas.";
    
 
         //return $inst->addPessoaLancamentos();

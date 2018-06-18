@@ -505,6 +505,39 @@ class InscricaoController extends Controller
 
 
     }
+    public function relatorioConcluintes($turma=0){
+        $alunosx = array();
+        if($turma ==0){
+            $concluintes = Inscricao::where('inscricoes.status','regular')
+                ->get();
+
+                //->toSql();
+            //return $concluintes;
+            $concluintes_filtrados = $concluintes->filter(function ($concluinte){
+                return $concluinte->turma->programa->id == 1;
+            });
+            //return  $concluintes_filtrados;
+            foreach($concluintes_filtrados as $inscricao){
+
+                //$inscricao->turma;
+                
+                $alunosx[$inscricao->pessoa->id]['nome'] = $inscricao->pessoa->nome;
+                $alunosx[$inscricao->pessoa->id]['curso'] = $inscricao->turma->first()->curso->nome;
+                $alunosx[$inscricao->pessoa->id]['professor'] = $inscricao->turma->first()->professor->nome;
+                $alunosx[$inscricao->pessoa->id]['unidade'] = $inscricao->turma->first()->local->nome;
+                $alunosx[$inscricao->pessoa->id]['inicio'] = $inscricao->turma->first()->data_inicio;
+                $alunosx[$inscricao->pessoa->id]['termino'] = $inscricao->turma->first()->data_termino;
+                $alunosx[$inscricao->pessoa->id]['programa'] = $inscricao->turma->first()->programa->sigla;
+                $alunosx[$inscricao->pessoa->id]['status'] = $inscricao->status;
+
+            }
+
+            return $alunosx;
+
+            
+        }
+
+    }
 
 
 }

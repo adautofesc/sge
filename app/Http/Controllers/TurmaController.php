@@ -917,11 +917,11 @@ class TurmaController extends Controller
              * [Ativars/desativar consulta de URL]
              * @var string
              */
-            $turma->url="/lista/".$turma->id;  //------------------------------------------------Apagar aqui
+            //$turma->url="/lista/".$turma->id;  //------------------------------------------------Apagar aqui
             
             if($turma->url == ''){
 
-                $url = "https://script.google.com/macros/s/AKfycbwSMC0Q1fdk5LYTQHiDxFNrSf1mdEI7g1pDnV4JvugGbK8OqoPh/exec?id=".$turma->id."&tipo=rel";
+                $url = "https://script.google.com/macros/s/AKfycbwY09oq3lCeWL3vHoxdXmocjVPnCEeZMVQgzhgl-J0WNOQPzQc/exec?id=".$turma->id."&tipo=rel";
 
                 $ch = curl_init();
                 //não exibir cabeçalho
@@ -940,6 +940,8 @@ class TurmaController extends Controller
                 curl_close($ch);
 
                //$webservice = json_decode($webservice);
+               //
+               //dd($result);
 
 
                $ws = json_decode($result);
@@ -951,7 +953,7 @@ class TurmaController extends Controller
                 else
 
                     $turma->url = $ws{0}->url;
-                    //$turma->save(); ----------------------------------------------------------Liberar após 
+                    $turma->save(); //----------------------------------------------------------Liberar após 
 
 
             }

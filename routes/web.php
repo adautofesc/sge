@@ -158,6 +158,7 @@ Route::middleware('login') ->group(function(){
 				Route::get('listar-arquivos', 'BoletoController@listarRemessas');
 			});
 
+
 			Route::prefix('retorno')->group(function(){//precisa de middleware
 				Route::get('home',  function(){ return view('financeiro.retorno.home'); });
 				Route::get('upload',  function(){ return view('financeiro.retorno.upload'); });
@@ -179,6 +180,9 @@ Route::middleware('login') ->group(function(){
 			});
 
 		});
+		Route::prefix('relatorios')->group(function(){
+				Route::get('boletos', 'BoletoController@relatorioBoletosAbertos');
+			});
 
 
 	});

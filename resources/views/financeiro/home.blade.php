@@ -51,7 +51,11 @@
                     </div>
                 </div>
                 <div class="card-block">
-                    Nenhuma opção disponível no momento              
+                    <div>
+                        <a href="{{asset('/')}}financeiro/relatorios/boletos" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-file-text-o "></i>
+                        &nbsp;&nbsp;Boletos vencidos e não pagos</a>
+                    </div>           
                 </div>
             </div>
         </div>

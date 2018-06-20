@@ -506,36 +506,41 @@ class InscricaoController extends Controller
 
     }
     public function relatorioConcluintes($turma=0){
-        $alunosx = array();
+        $formandos = collect();
         if($turma ==0){
-            $concluintes = Inscricao::where('inscricoes.status','regular')
-                ->get();
+            $concluintes = Inscricao::join('turmas', 'inscricoes.turma','=','turmas.id')
+            ->where('inscricoes.status','regular')
+            ->whereIn('turmas.programa',[1,2])
+            ->get();
 
                 //->toSql();
-            //return $concluintes;
-            $concluintes_filtrados = $concluintes->filter(function ($concluinte){
-                return $concluinte->turma->programa->id == 1;
-            });
-            //return  $concluintes_filtrados;
-            foreach($concluintes_filtrados as $inscricao){
-
-                //$inscricao->turma;
                 
-                $alunosx[$inscricao->pessoa->id]['nome'] = $inscricao->pessoa->nome;
-                $alunosx[$inscricao->pessoa->id]['curso'] = $inscricao->turma->first()->curso->nome;
-                $alunosx[$inscricao->pessoa->id]['professor'] = $inscricao->turma->first()->professor->nome;
-                $alunosx[$inscricao->pessoa->id]['unidade'] = $inscricao->turma->first()->local->nome;
-                $alunosx[$inscricao->pessoa->id]['inicio'] = $inscricao->turma->first()->data_inicio;
-                $alunosx[$inscricao->pessoa->id]['termino'] = $inscricao->turma->first()->data_termino;
-                $alunosx[$inscricao->pessoa->id]['programa'] = $inscricao->turma->first()->programa->sigla;
-                $alunosx[$inscricao->pessoa->id]['status'] = $inscricao->status;
+           // dd($concluintes);
+           
+           
+        }
+            
+        foreach($concluintes as $concluinte){ 
 
-            }
-
-            return $alunosx;
-
+                $aluno = new \stdClass;
+                
+                $aluno->nome = $concluinte->pessoa->nome;
+                $aluno->programa = $concluinte->turma->programa->sigla;
+                $aluno->curso = $concluinte->turma->curso->nome;
+                $aluno->professor = $concluinte->turma->professor->nome;
+                $aluno->unidade = $concluinte->turma->local->nome;
+                $aluno->carga= $concluinte->turma->carga;
+                $aluno->inicio =  $concluinte->turma->data_inicio;
+                $aluno->termino =  $concluinte->turma->data_termino;
+               
+                $formandos->push($aluno);
             
         }
+
+        return $formandos;
+
+            
+        
 
     }
 

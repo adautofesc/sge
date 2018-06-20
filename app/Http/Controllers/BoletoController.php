@@ -498,6 +498,11 @@ class BoletoController extends Controller
 
 
 		}
+		public function relatorioBoletosAbertos(){
+			$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->get();
+			
+			return $boletos;
+		}
 
 		
 

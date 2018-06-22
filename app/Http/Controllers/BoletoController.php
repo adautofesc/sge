@@ -499,9 +499,12 @@ class BoletoController extends Controller
 
 		}
 		public function relatorioBoletosAbertos(){
-			$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->get();
+			$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
+			foreach($boletos as $boleto){
+				$boleto->aluno = \App\Pessoa::find($boleto->pessoa);
+			}
 			
-			return $boletos;
+			return view('relatorios.boletos_vencidos')->with('boletos',$boletos);
 		}
 
 		

@@ -180,7 +180,15 @@ class painelController extends Controller
         return $salas;
 
     }
-    public function testarClasse(){
+    /**
+     * Função para corrigir eventuais problemas que ocorreram de importação de pessoas para as turmas das parcerias.
+     * verifica se tem matriculas, se não tiver cria e atribui o numero para inscrição
+     * se tiver, verifica se a pessoa da matricula e inscrição é a mesma, senão cria uma nova ]
+     * @return [type] [description]
+     */
+    
+
+    public function corrigeInscricoes(){
 
      
        
@@ -229,6 +237,10 @@ class painelController extends Controller
         
         
     }
+    public function testarClasse(){
+        return "=)";
+    }
+
     public function testarClassePost(Request $r){
         
         foreach($r->matricula as $id){

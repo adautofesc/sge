@@ -26,30 +26,38 @@
 		<br/>
 		<div class="title-block">
 			<center>
-            <h3 class="title"> Termo de Concessão de Acesso e Responsabilidade</h3></center>
+            <h3 class="title"> Relatório de Boletos Vencidos</h3></center>
         </div>
         <br/>
         <div class="row">
         	<div class="col-xs-12">
 	        	<p> 
-	        	A Fundação Educacional São Carlos por meio deste documento, autoriza o acesso do servidor [nome] a acessar seu sistema de gestão eletrônica SGE, através do nome de acesso: [login],  com as credenciais abaixo relacionadas. 
-	        	Contudo faz-se saber que toda ação realizada dentro do sistema pelo usuário será registrada e este se responsabiliza integralmente pelas informações fornecidas e ações executadas dentro do sistema. 
+	        	Relação de <strong>{{count($boletos)}}</strong> boletos vencidos não pagos até a data de <strong>{{date('d/m/Y - H:i')}}</strong>
 		       </p>
-		       <p>
-		       	Credenciais concedidas:
-		       </p>
-		       <ul>
-		       	<li> Cadastrar pessoas </li>
-		       	<li> Visualizar dados de pessoas </li>
-		       	<li> Editar dados de pessoas </li>
-		       
-		       </ul>
+		    
+		       <table>
+		       	<thead>
+		       		<th width="100px">Boleto</th>	
+		       		<th width="120px">Vencimento </th>
+		       		<th>Cod.</th>
+		       		<th>Nome da pessoa</th>
+		       		<th>valor</th>
+		       	</thead>
+		       	<tbody>
+		       		@foreach($boletos as $boleto)
+		       		<tr>
+		       			<td>{{$boleto->id}}</td>
+		       			<td>{{\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y')}}</td>
+		       			<td><a href="{{asset('/secretaria/atender').'/'.$boleto->aluno->id}}">{{$boleto->aluno->id}}</a></td>
+		       			<td>{{$boleto->aluno->nome}}</td>
+		       			<td>R$ {{number_format($boleto->valor, 2, ',', '')}}</td>
+		       		</tr>
+		       		@endforeach
+		       	</tbody>
         	</div>
 	        
         </div>
-        <footer class="align-bottom align-text-bottom">
-        Assinatura
-        </footer>
+  
 	</div>
         	
 	<script src="{{asset('/')}}/js/vendor.js">

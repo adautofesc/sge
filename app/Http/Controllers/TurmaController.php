@@ -910,7 +910,7 @@ class TurmaController extends Controller
     }
     public static function listarTurmasDocente($docente){
 
-        $turmas = Turma::where('professor', $docente)->whereIn('status',[2,3,4])->orderBy('dias_semana')->get();
+        $turmas = Turma::where('professor', $docente)->whereIn('status',[2,3,4])->orderBy('hora_inicio')->get();
 
         foreach($turmas as $turma){
             /**
@@ -960,7 +960,11 @@ class TurmaController extends Controller
             $turma->weekday = \App\classes\Strings::convertWeekDay($turma->dias_semana[0]);
 
         }
-    $turmas = $turmas->sortBy('hora_inicio')->sortBy('weekday');
+    //dd($turmas->hora_inicio);
+    $turmas = $turmas->sortBy('weekday');
+
+
+
     return $turmas;
     }
 

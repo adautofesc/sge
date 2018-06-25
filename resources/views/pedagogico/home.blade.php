@@ -63,9 +63,9 @@
                         &nbsp;&nbsp;Requisitos</a>
                     </div>
                     <div>
-                        <p class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <p class="btn btn-secondary col-xs-12 text-xs-left">
                         <i class=" fa fa-file-text-o "></i>
-                        &nbsp;&nbsp;Relatórios</p>
+                        &nbsp;&nbsp;Projetos</p>
                     </div>
                                
                 </div>
@@ -75,11 +75,16 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Projetos</p>
+                        <p class="title" style="color:white">Relatórios</p>
                     </div>
                 </div>
                 <div class="card-block">
-                    <p>Nenhuma opção disponível</p>               
+                     <div>
+                        <a href="{{asset('/relatorios/alunos-concluintes')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-table "></i>
+                        &nbsp;&nbsp;Concluintes (Excel)</a>
+                    </div>
+
                 </div>
             </div>  
         </div>

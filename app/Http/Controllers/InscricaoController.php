@@ -12,6 +12,9 @@ use App\Atendimento;
 use App\Classe;
 use Session;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
+
 class InscricaoController extends Controller
 {
     /**
@@ -506,10 +509,35 @@ class InscricaoController extends Controller
 
     }
     public function relatorioConcluintes($turma=0){
-        $formandos = collect();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'. 'relatorio' .'.xls"'); /*-- $filename is  xsl filename ---*/
+        header('Cache-Control: max-age=0');
+
+        $tabela =  new Spreadsheet();
+        $arquivo = new Xls($tabela);
+
+        $planilha = $tabela->getActiveSheet();
+        $planilha->setCellValue('A1', 'ALUNOS PENDENTES - Gerado em '.date('d/m/Y'));
+        $planilha->setCellValue('A2', 'Nome');
+        $planilha->setCellValue('B2', 'Programa');
+        $planilha->setCellValue('C2', 'Curso');
+        $planilha->setCellValue('D2', 'Professor');
+        $planilha->setCellValue('E2', 'Local');
+        $planilha->setCellValue('F2', 'Carga Horária');
+        $planilha->setCellValue('G2', 'Início');
+        $planilha->setCellValue('H2', 'Termino');
+        $linha = 3;
+
+        
+        
+
+        
+
+
+        
         if($turma ==0){
             $concluintes = Inscricao::join('turmas', 'inscricoes.turma','=','turmas.id')
-            ->where('inscricoes.status','regular')
+            ->where('inscricoes.status','pendente')
             ->whereIn('turmas.programa',[1,2])
             ->get();
 
@@ -522,8 +550,18 @@ class InscricaoController extends Controller
             
         foreach($concluintes as $concluinte){ 
 
-                $aluno = new \stdClass;
-                
+                $planilha->setCellValue('A'.$linha, $concluinte->pessoa->nome);
+                $planilha->setCellValue('B'.$linha, $concluinte->turma->programa->sigla);
+                $planilha->setCellValue('C'.$linha, $concluinte->turma->curso->nome);
+                $planilha->setCellValue('D'.$linha, $concluinte->turma->professor->nome);
+                $planilha->setCellValue('E'.$linha, $concluinte->turma->local->nome);
+                $planilha->setCellValue('F'.$linha, $concluinte->turma->carga);
+                $planilha->setCellValue('G'.$linha, $concluinte->turma->data_inicio);
+                $planilha->setCellValue('H'.$linha, $concluinte->turma->data_termino);
+
+                $linha++;
+                /*
+                $aluno->turma = $concluinte->turma->id;
                 $aluno->nome = $concluinte->pessoa->nome;
                 $aluno->programa = $concluinte->turma->programa->sigla;
                 $aluno->curso = $concluinte->turma->curso->nome;
@@ -531,13 +569,15 @@ class InscricaoController extends Controller
                 $aluno->unidade = $concluinte->turma->local->nome;
                 $aluno->carga= $concluinte->turma->carga;
                 $aluno->inicio =  $concluinte->turma->data_inicio;
-                $aluno->termino =  $concluinte->turma->data_termino;
+                $aluno->termino =  $concluinte->turma->data_termino;*/
                
-                $formandos->push($aluno);
+                
+
             
         }
-
-        return $formandos;
+        
+        return $arquivo->save('php://output', 'xls');
+        //return $formandos;
 
             
         

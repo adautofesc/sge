@@ -14,6 +14,9 @@ use Carbon\Carbon;
 use DateTime;
 use Cnab;
 use Session;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
+
 
 //require '../vendor/autoload.php';
 
@@ -498,13 +501,112 @@ class BoletoController extends Controller
 
 
 		}
+		
+		/**
+		 * [Gera relatório (view) com todos boletos em aberto]
+		 * @return [type] [description]
+		 */
 		public function relatorioBoletosAbertos(){
 			$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
+
 			foreach($boletos as $boleto){
 				$boleto->aluno = \App\Pessoa::find($boleto->pessoa);
 			}
 			
 			return view('relatorios.boletos_vencidos')->with('boletos',$boletos);
+		}
+
+		/**
+		 * Json com pessoas, seu saldo devedor e endereços
+		 * @return [json] [lista de pessoa com seu saldo devedor]
+		 */
+		public function relatorioDevedores(){
+			//seleciona boletos de status emitidos, vencido ordenado por pessoa
+			$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
+
+			//cria uma coleção para armazenar as pessoas
+			$devedores = collect();
+			
+			//para cada boleto aberto
+			foreach($boletos as $boleto){
+
+				//seleciona devedor na coleção
+				$devedor= $devedores->where('id',$boleto->pessoa)->first();
+
+
+				//se ele estiver na coleção
+				if($devedor){
+
+					//soma valor do boleto atual	
+					$devedor->divida +=  $boleto->valor;					
+				}
+
+				//se não tiver na coleção
+				else{
+
+					//criar uma nova pessoa e adiciona na coleção
+					$pessoa = new \stdClass;
+					$pessoa->id = $boleto->pessoa;
+					$pessoa->nome = \App\Pessoa::getNome($boleto->pessoa);
+
+					//seleciona o id do endereço
+					$endereco = \App\PessoaDadosContato::where('pessoa',$boleto->pessoa)->where('dado',6)->orderByDesc('id')->first();
+
+					//se achou endereco
+					if($endereco)
+						//busca na tabela enderecos
+						$pessoa->endereco =  \App\Endereco::find($endereco->valor);
+
+					$pessoa->divida = $boleto->valor;
+					// adiciona na coleção
+					$devedores->push($pessoa);
+
+				}
+			}
+
+			dd($devedores);
+			
+			return $devedores;
+		}
+
+		public function relatorioDevedoresXls(){
+			
+			header('Content-Type: application/vnd.ms-excel');
+	        header('Content-Disposition: attachment;filename="'. 'relatorio' .'.xls"'); /*-- $filename is  xsl filename ---*/
+	        header('Cache-Control: max-age=0');
+
+
+	        $planilha =  new Spreadsheet();
+        	$arquivo = new Xls($planilha);
+			
+	        $planilha = $planilha->getActiveSheet();
+	        $planilha->setCellValue('A1', 'Nome');
+	        $planilha->setCellValue('B1', 'Endereço');
+	        $planilha->setCellValue('C1', 'Valor');
+
+	        $linha = 2;
+	        
+
+			$devedores = $this->relatorioDevedores();
+
+
+
+
+			foreach($devedores as $pessoa){
+
+				$planilha->setCellValue('A'.$linha, $pessoa->nome);
+		        $planilha->setCellValue('B'.$linha, $pessoa->endereco->logradouro.' '.$pessoa->endereco->numero.' '.$pessoa->endereco->complemento);
+		        $planilha->setCellValue('C'.$linha, $pessoa->divida);
+
+		        $linha++;
+
+			}
+
+			return $arquivo->save('php://output', 'xls');
+
+
+
+			
 		}
 
 		

@@ -312,6 +312,12 @@ class BoletoController extends Controller
 				$boleto->save();
 				LancamentoController::cancelarPorBoleto($id);
 			}
+			if($boleto->status == 'cancelar'){
+				LancamentoController::cancelarPorBoleto($id);
+			}
+			if($boleto->status == 'cancelado'){
+				LancamentoController::cancelarPorBoleto($id);
+			}
 		}
 		return redirect($_SERVER['HTTP_REFERER']);
 
@@ -569,13 +575,18 @@ class BoletoController extends Controller
 			return $devedores;
 		}
 
+		/**
+		 * Transforma relatorio de devedores em Xls
+		 * @return [type] [description]
+		 */
 		public function relatorioDevedoresXls(){
-			
+
+			//header para XLS
 			header('Content-Type: application/vnd.ms-excel');
 	        header('Content-Disposition: attachment;filename="'. 'relatorio' .'.xls"'); /*-- $filename is  xsl filename ---*/
 	        header('Cache-Control: max-age=0');
 
-
+	        //
 	        $planilha =  new Spreadsheet();
         	$arquivo = new Xls($planilha);
 			
@@ -604,9 +615,41 @@ class BoletoController extends Controller
 
 			return $arquivo->save('php://output', 'xls');
 
-
-
 			
+		}
+		
+
+		/**
+		 * Função para corrigir boletos em aberto com parcelas canceladas
+		 * @return [type] [description]
+		 */
+		public function corrigirBoletosSemParcelas(){
+
+			$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
+			$erros=0;
+    	
+			foreach($boletos as $boleto){
+
+				$lancamentos = Lancamento::where('boleto',$boleto->id)->where('status','cancelado')->get();
+
+				if(count($lancamentos)>0){
+
+					//cancelar boleto
+					$boleto->status = 'cancelar';
+					$boleto->save();
+					$erros++;
+
+					//cancelar todos lancamentos desse boleto
+					$lancamentos_todos = Lancamento::where('boleto', $boleto->id)->get();
+					foreach($lancamentos_todos as $lancamento){
+						$lancamento->status = 'cancelado';
+						$lancamento->save();
+					}
+				}
+
+			}
+
+			return $erros . " boletos corrigidos.";
 		}
 
 		

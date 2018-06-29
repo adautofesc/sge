@@ -9,9 +9,7 @@
         </div>
     </div>
 </div>
-<div class="alert alert-info">
-    22/06 - 17hs. Festa Junina da FESC<br>
-</div>
+
 <section class="section">
     <div class="row">
         <div class="col-md-6 center-block">

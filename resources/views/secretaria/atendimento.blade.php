@@ -35,10 +35,11 @@
                 </div>
                 <div class="card-block">
                     <div><a href="{{asset('/secretaria/matricula/nova').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-plus-circle "></i>  <small>Nova Matrícula</small></a></div>
+                    
+                    <div><a href="/secretaria/matricula/renovar/{{$pessoa->id}}" class="btn btn-warning-outline col-xs-12 text-xs-left"><i class="fa fa-check-square-o"></i> <small> Renovar (Rematricula) </small> </a></div>
                     <!--
-                    <div><a href="/secretaria/matricula/renovar/{{$pessoa->id}}" class="btn btn-warning-outline col-xs-12 text-xs-left"><i class="fa fa-check-square-o"></i> <small> Renovar (Rematricula) </small> </a></div>-->
-
                     <div><a href="#" class="btn btn-secondary col-xs-12 text-xs-left" title="Rematrículas encerradas."><i class="fa fa-check-square-o"></i> <small> Rematricula ENCERRADA </small> </a></div>
+                    -->
                   
 
                 </div>
@@ -75,7 +76,7 @@
                 </div>
                 <div class="card-block">
                     <div><a href="{{asset('/pessoa/mostrar/'.$pessoa->id)}}"  class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-archive "></i> <small>Dados completos</small></a></div>
-                    <div><a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left"><i class="fa fa-external-link"></i> <small>Certificados</small></a></div>
+                    <div><a href="{{asset('/pessoa/bolsa/'.$pessoa->id)}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-plus-square-o"></i> <small>Solicitações de Bolsa</small></a></div>
                     
                 </div>
                 

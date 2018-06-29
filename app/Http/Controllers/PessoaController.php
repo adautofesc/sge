@@ -631,7 +631,7 @@ class PessoaController extends Controller
 
 		//return $dados;
 				
-		return view('pessoa.editar-dados-contato', compact('dados'));
+		return view('pessoa.dados-contato.editar-dados-contato', compact('dados'));
 	}
 	public function editarContato_exec(Request $request){
 		

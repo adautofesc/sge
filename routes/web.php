@@ -17,6 +17,7 @@ Route::get('/', 'painelController@index');
 
 Route::get('/bolsa/gerador', 'BolsaController@gerador');
 Route::get('/devedores', 'BoletoController@relatorioDevedoresXls');
+Route::get('/corrigir-boletos','BoletoController@corrigirBoletosSemParcelas');
 
 
 //Publicos

@@ -198,10 +198,9 @@ class LancamentoController extends Controller
 			//if($lancamento->status != 'cancelado'){
 				$lancamento->status = 'cancelado';
 				//$lancamento->status='cancelado';
-				$lancamento->save();
-
-			
+				$lancamento->save();	
 		}
+
 	}
 	public static function reativarPorBoleto($boleto){
 		$lancamentos = Lancamento::where('boleto',$boleto)
@@ -232,6 +231,7 @@ class LancamentoController extends Controller
 			$lancamento->save();
 			;
 		}
+
 	}
 	public function editar($lancamento){
 		$lancamento = Lancamento::find($lancamento);
@@ -523,18 +523,29 @@ class LancamentoController extends Controller
 
 	}
 	public function cancelar($id){
+
+		//Carrega os dados
 		$lancamento = Lancamento::find($id);
-		if($lancamento != null){
-			if($lancamento->boleto != 'pago'){ //só apaga lancamento se não tiver boleto gerado !!!!!!!oi? donde vc ta pegando status do boleto maluco?
-				$lancamento->status = 'cancelado';
-				$lancamento->save();	
-			}else
-			return redirect(asset("financeiro/lancamentos/listar-por-pessoa"))->withErrors(['Cancele o boleto para cancelar lancamentos']);
-			
+		$boleto = Boleto::find($lancamento->boleto);
 
+		//Tem boleto?
+		if(isset($boleto) && $lancamento != null){
 
-				
+			//Ele não está pago né?
+			if($boleto->status != 'pago'){ //só apaga lancamento se não tiver boleto gerado !!!!!!!oi? donde vc ta pegando status do boleto maluco?
+				$boleto_c = new BoletoController;
+				$boleto_c->cancelar($boleto->id);
+			}
+
+			else
+				return redirect()->back()->withErrors(['Impossível cancelar lancamento de boleto pago.']);
+
 		}
+		else{
+			$lancamento->status = 'cancelado';
+			$lancamento->save();
+		}
+
 		return redirect($_SERVER['HTTP_REFERER']);
 	}
 	public function reativar($id){

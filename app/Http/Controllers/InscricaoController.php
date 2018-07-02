@@ -27,8 +27,9 @@ class InscricaoController extends Controller
         //
     }
     public function editar($id){
-        $inscricao = Inscricao::find($id);
-        return view('secretaria.inscricao.editar',compact('inscricao'));
+         $inscricao = Inscricao::find($id);
+        $matriculas = \App\Matricula::where('pessoa',$inscricao->pessoa->id)->whereIn('status',['ativa','pendente','espera'])->get();
+        return view('secretaria.inscricao.editar',compact('inscricao'))->with('matriculas',$matriculas);
     }
     public function novaInscricao($id_pessoa){
 

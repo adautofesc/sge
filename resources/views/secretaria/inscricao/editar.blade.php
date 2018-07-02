@@ -12,8 +12,20 @@
 			</label>
 			<div class="col-sm-3"> 
 				<div class="input-group">
-					<span class="input-group-addon"><i class="fa fa-arrows"></i></span> 
-					<input type="text" class="form-control boxed" name="matricula" value="{{$inscricao->matricula}}" required> 
+					<span class="input-group-addon"><i class="fa fa-arrows"></i></span>
+					<select class="form-control boxed"  name="matricula" required>
+
+						@foreach($matriculas as $matricula)
+							@if($matricula->id == $inscricao->matricula)
+							<option selected="selected">{{$matricula->id}}</option>
+							@else
+							<option>{{$matricula->id}}</option>
+							@endif
+						@endforeach
+
+					</select>
+
+					
 				</div>
 			</div>
 		</div>
@@ -33,4 +45,4 @@
     {{csrf_field()}}
 </form>
         
-@endsection
+@endsection 

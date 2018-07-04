@@ -76,11 +76,22 @@ class MatriculaController extends Controller
                 $matricula->data=date('Y-m-d');
                 $valor="valorcursointegral".$curso->id;
                 $matricula->valor=str_replace(',', '.', $r->$valor);
+
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
                 //verifica se é do centro esportivo
                 if($curso->turmas->first()->programa->id == 12)
-                    $matricula->parcelas=11;
+                    $matricula->parcelas=date(m)-1;
                 else
-                    $matricula->parcelas=5;
+                    $matricula->parcelas=1;
+
+
+
+
+
+
                 
                 $matricula->dia_venc=20;
                 if(\Carbon\Carbon::createFromFormat('d/m/Y', $turmas->first()->data_inicio)->format('Y-m-d') > date('Y-m-d'))
@@ -419,7 +430,17 @@ class MatriculaController extends Controller
         $matricula->pessoa=$pessoa;
         $matricula->atendimento=$atendimento->id;
         $matricula->data=date('Y-m-d');
+        ///////////////////////////////////////////////////////////////////////////////////////
+        
+
+
+
         $matricula->parcelas=$turma->tempo_curso;
+
+
+
+
+
         $matricula->dia_venc=20;
         $matricula->status=$status_inicial;
         $matricula->valor=str_replace(',','.',$turma->valor);
@@ -499,6 +520,7 @@ class MatriculaController extends Controller
         $matricula=Matricula::find($id);
         $nome=Pessoa::getNome($matricula->pessoa);
         $descontos=Desconto::all();
+        //dd($matricula);
 
         return view('secretaria.matricula.editar',compact('matricula'))->with('nome',$nome)->with('descontos',$descontos);
 

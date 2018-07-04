@@ -16,6 +16,10 @@ class MatriculasTest extends TestCase
      */
     public function testExample()
     {
-        $this->assertTrue(true);
+
+        $data = ceil(date('d',strtotime('2018-02-25'))/7);
+
+        //die('Semana:'.$data);
+        $this->assertTrue(True);
     }
 }

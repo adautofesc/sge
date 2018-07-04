@@ -30,7 +30,11 @@ class ValorController extends Controller
     			$inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','pendente'])->get();
     			switch (count($inscricoes)) {
     				case 0:
-                        return 0;
+                        $valor = new Valor;
+                        $valor->valor = 0;
+                        $valor->parcelas = 1;
+                        $valor->referencia = ' Nenhuma disciplina regular.';
+                        return $valor;
                         break;
                     case 1:
                     	$valor = Valor::find(5);
@@ -82,6 +86,13 @@ class ValorController extends Controller
                 else
 
                     throw new \Exception("Erro ao acessar valor da turma:".$valor, 1);
+                    /*
+                    $valor = new Valor;
+                        $valor->valor = 0;
+                        $valor->parcelas = 1;
+                        $valor->referencia = 'Valor não disponível no tabela de valores.';
+                        return $valor;
+                     */
                     
                     
                 

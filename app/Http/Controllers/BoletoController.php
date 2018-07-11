@@ -329,6 +329,7 @@ class BoletoController extends Controller
 		$cliente=PessoaController::formataParaMostrar($cliente);
 		$lancamentos= LancamentoController::listarPorBoleto($boleto->id); //objetos lancamentos
 		$array_lancamentos = array();
+		dd($cliente);
 		foreach($lancamentos as $lancamento){
 			$array_lancamentos[] = $lancamento->referencia;
 		}

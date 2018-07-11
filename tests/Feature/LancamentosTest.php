@@ -48,6 +48,7 @@ class LancamentosTest extends TestCase
         foreach($cursos as $curso){
             foreach($status as $estado){
                 for($i=1;$i<6;$i++){
+                    $valor=0;
 
                     //*******************************
                     //sem bolsa
@@ -72,14 +73,14 @@ class LancamentosTest extends TestCase
 
                     if($curso == 307){   
                         if($i==1)
-                            $valor = 20;
+                            $valor = 100;
                         if($i>1 && $i<5)
-                            $valor = 50;
+                            $valor = 250;
                         if($i>5)
-                            $valor = 80;
+                            $valor = 400;
                     }
                     else{
-                        $valor = str_replace(',', '.',$turma->valor );
+                        $valor = str_replace(',', '.',$turma->valor ); 
                     }
 
                     if($curso == 898 || $curso == 1151)
@@ -89,9 +90,9 @@ class LancamentosTest extends TestCase
 
 
                     if($amostra){
-                        if($amostra->parcela > $parcelas || abs($amostra->valor - $valor) != 00){
+                        if($amostra->parcela > $parcelas || abs($amostra->valor - $valor/$parcelas) != 00){
                         $erros++;
-                        $erro_str = $erro_str . 'Lançamento '.$amostra->id.' da pessoa '.$amostra->pessoa. ': Parcelas: '.$amostra->parcela.'/'.$parcelas .' Valor:'.$amostra->valor.'/'.$valor."\n";
+                        $erro_str = $erro_str . 'Lançamento '.$amostra->id.' da pessoa '.$amostra->pessoa. ': Parcelas: '.$amostra->parcela.'/'.$parcelas .' Valor:'.$amostra->valor.'/'.$valor/$parcelas.'-'.$curso."\n";
                         }
                     }
                     
@@ -121,11 +122,11 @@ class LancamentosTest extends TestCase
 
                     if($curso == 307){   
                         if($i==1)
-                            $valor = 20;
+                            $valor = 100  - $matricula->valor_desconto;
                         if($i>1 && $i<5)
-                            $valor = 50;
+                            $valor = 250 - $matricula->valor_desconto;
                         if($i>5)
-                            $valor = 80;
+                            $valor = 400 - $matricula->valor_desconto;
                     }
                     else{
                         $valor = str_replace(',', '.',$turma->valor );
@@ -137,9 +138,9 @@ class LancamentosTest extends TestCase
                         $parcelas = 5;
 
                     if($amostra){
-                        if($amostra->parcela > $parcelas || abs($amostra->valor - $valor) != 00){
+                        if($amostra->parcela > $parcelas || abs($amostra->valor - ($valor/$parcelas)) != 00){
                         $erros++;
-                        $erro_str = $erro_str . 'Lançamento '.$amostra->id.' da pessoa '.$amostra->pessoa. ': Parcelas: '.$amostra->parcela.'/'.$parcelas .' Valor:'.$amostra->valor.'/'.$valor."\n";
+                        $erro_str = $erro_str . 'Lançamento '.$amostra->id.' da pessoa '.$amostra->pessoa. ': Parcelas: '.$amostra->parcela.'/'.$parcelas .' Valor:'.$amostra->valor.'/'.$valor.'-'.$turma->valor_desconto.'-'.$parcelas."\n";
                         }
                     }
                 }// end for

@@ -62,7 +62,7 @@ class ValorController extends Controller
     		else
     		{
     			//pega a primeira inscricao da matricula
-    			$inscricao = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','pendente'])->first();
+    			$inscricao = \App\Inscricao::where('matricula',$matricula->id)->first();
 
 
 
@@ -86,13 +86,13 @@ class ValorController extends Controller
                 else
 
                     throw new \Exception("Erro ao acessar valor da turma:".$valor, 1);
-                    /*
-                    $valor = new Valor;
+                    
+                    /*$valor = new Valor;
                         $valor->valor = 0;
                         $valor->parcelas = 1;
                         $valor->referencia = 'Valor não disponível no tabela de valores.';
-                        return $valor;
-                     */
+                        return $valor;*/
+                     
                     
                     
                 

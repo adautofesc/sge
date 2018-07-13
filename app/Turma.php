@@ -21,6 +21,9 @@ class Turma extends Model
 	}
 	public function getValorAttribute($value){
 		//return $value;
+		/*
+		if($this->parceria->id>0)
+			return '0';*/
 		if($this->curso->id == 307 && $this->carga<10)
 		{
 			$valor= Valor::find(5);
@@ -33,7 +36,7 @@ class Turma extends Model
 		if(isset($valor))
 			return number_format($valor->valor,2,',','.');
 		else
-			return '0,00';
+			return '0';
 
 	}
 	public function setAtributosAttribute($value){

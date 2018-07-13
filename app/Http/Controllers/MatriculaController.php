@@ -598,12 +598,31 @@ class MatriculaController extends Controller
     }
 
 
+    static public function matriculaSemCurso($matricula){
+        $inscricao = Inscricao::where('matricula',$matricula->id)->first();
+        if(!$inscricao){
+            $matricula->status = 'cancelada';
+            $matricula->obs = 'Cancelada automaticamente por falta de inscrições.';
+            $matricula->save();
+        }
+        else{
+            $matricula->curso = $inscricao->turma->curso->id;
+            $matricula->save();
+        }
+
+
+
+
+    }
+
+
 
 
 
     //seleciona pessoas que tem mais de uma matricula no curso da uati
     public function arrumarMultiplasUati(){
         $pessoas=\DB::select('select pessoa, matricula from (
+        }
 select distinct(pessoa),count(id)as matricula from matriculas where curso = 307 group by pessoa)as nt
 where nt.matricula>1');
 

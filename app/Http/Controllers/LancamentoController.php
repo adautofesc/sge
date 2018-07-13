@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -9,7 +10,7 @@ use App\Lancamento;
 use ValorController;
 use Session;
 
-
+ini_set('max_execution_time', 180);
 class LancamentoController extends Controller
 {
     //

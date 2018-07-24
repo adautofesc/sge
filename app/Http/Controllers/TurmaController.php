@@ -919,7 +919,8 @@ class TurmaController extends Controller
              */
             //$turma->url="/lista/".$turma->id;  //------------------------------------------------Apagar aqui
             
-            if($turma->url == ''){
+
+            //if($turma->url == '' || $turma->url == '#'){
 
                 $url = "https://script.google.com/macros/s/AKfycbwY09oq3lCeWL3vHoxdXmocjVPnCEeZMVQgzhgl-J0WNOQPzQc/exec?id=".$turma->id."&tipo=rel";
 
@@ -946,9 +947,10 @@ class TurmaController extends Controller
 
                $ws = json_decode($result);
 
+
                if( !isset($ws{0}->url) || $ws{0}->url == '' )
 
-                    $turma->url='#';
+                    $turma->url='#'.$result;
 
                 else
 
@@ -956,7 +958,7 @@ class TurmaController extends Controller
                     $turma->save(); //----------------------------------------------------------Liberar após 
 
 
-            }
+            //}
             $turma->weekday = \App\classes\Strings::convertWeekDay($turma->dias_semana[0]);
 
         }

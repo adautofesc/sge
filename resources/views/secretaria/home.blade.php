@@ -15,13 +15,19 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Matrículas</p>
+                        <p class="title" style="color:white">Pessoas</p>
                     </div>
                 </div>
                 <div class="card-block">
                     @if(isset($pessoa))
                     <div>
                         <a href="/secretaria/atender/{{$pessoa}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Retomar Atendimento</a>
+                    </div>
+                    @else
+                    <div>
+                        <a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Retomar Atendimento</a>
                     </div>
@@ -41,16 +47,7 @@
                         <i class="fa fa-group"></i>
                         &nbsp;&nbsp;Lista de Cadastrados</a>
                     </div>
-                    <div>
-                        <a href="/secretaria/matricula/uploadglobal/1/1/0/0" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class="fa fa-files-o"></i>
-                        &nbsp;&nbsp; Enviar Termos em Lote</a>
-                    </div>
-                    <div>
-                        <a href="/documentos/formularios/desistencia.pdf" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class="fa fa-file-text"></i>
-                        &nbsp;&nbsp; Termo de desistência</a>
-                    </div>
+                    
                     <!--
                     <div>
                         <div>
@@ -76,13 +73,11 @@
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Liberação de Matrículas</a>
                     </div>
+                    
+                       
+                    
                     <div>
-                        <a href="/secretaria/atender" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Lista de espera</a>
-                    </div>
-                    <div>
-                        <a href="#" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-plus-circle "></i>
                         &nbsp;&nbsp;Relatórios</a>
                     </div>
@@ -91,6 +86,12 @@
                         <i class=" fa fa-file-text "></i>
                         &nbsp;&nbsp;Importar alunos de planilha</a>
                     </div>
+                    <div class="input-group input-group-sm">
+                          <input type="text" class="form-control" placeholder="Código da turma" maxlength="10" size="2">
+                          <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" onclick="alert('teste');">Consultar</button>
+                          </span>
+                    </div><!-- /input-group -->
                 
                 </div>                
             </div>
@@ -99,7 +100,7 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Atestados</p>
+                        <p class="title" style="color:white">Documentos</p>
                     </div>
                 </div>
                 <div class="card-block">
@@ -108,6 +109,22 @@
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Lista de atestados</a>
                     </div>
+                    <div>
+                        <a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Termos de Matrículas</a>
+                    </div>
+                    <div>
+                        <a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Termos de Cancelamento</a>
+                    </div>
+                    <div>
+                        <a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Solicitações Bolsas</a>
+                    </div>
+
             
                 
                 </div>                
@@ -115,6 +132,44 @@
         </div> 
 
     </div>
+    <!-- ******************************************************************************************************-->
+    <div class="row">
+        <div class="col-md-4 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Matrículas</p>
+                    </div>
+                </div>
+                <div class="card-block">
+                    <div>
+                        <a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left">
+                        <i class="fa fa-files-o"></i>
+                        &nbsp;&nbsp; Operações com matrículas</a>
+                    </div>
+                    <div>
+                        <a href="/secretaria/matricula/uploadglobal/1/1/0/0" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class="fa fa-files-o"></i>
+                        &nbsp;&nbsp; Enviar termos digitalizados</a>
+                    </div>
+                    <div>
+                        <a href="/documentos/formularios/desistencia.pdf" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class="fa fa-file-text"></i>
+                        &nbsp;&nbsp; Termo de desistência</a>
+                    </div>
+                     <div class="input-group input-group-sm">
+                          <input type="text" class="form-control" placeholder="Código da matrícula" maxlength="10">
+                          <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button">Consultar</button>
+                          </span>
+                    </div><!-- /input-group -->
+            
+                
+                </div>                
+            </div>
+        </div> 
+    </div> 
+
 </section>
 
 @endsection

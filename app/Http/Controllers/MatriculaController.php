@@ -83,7 +83,7 @@ class MatriculaController extends Controller
 
                 //verifica se é do centro esportivo
                 if($curso->turmas->first()->programa->id == 12)
-                    $matricula->parcelas=date(m)-1;
+                    $matricula->parcelas=date('m')-1;
                 else
                     $matricula->parcelas=1;
 

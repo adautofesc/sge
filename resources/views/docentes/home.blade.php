@@ -15,6 +15,44 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
+                        <p class="title" style="color:white">Listas de Frequência</p>
+                    </div>
+                </div>
+
+                <div class="card-block">
+                    @foreach($turmas as $turma)
+
+                    <div class="row" >
+                        <div class="col-md-1">
+                             <i class=" fa fa-users "></i>
+                        </div>
+                        <div class="col-md-3" >
+                             <a href="/chamada/{{$turma->id}}" target="_blank"
+                            title="Acessar a lista do curso: {{$turma->curso->nome}}@if(isset($turma->disciplina)) / {{$turma->disciplina->nome}}@endif "> Turma {{$turma->id}}</a>
+                        </div>
+                        <div class="col-md-3" >
+                             {{implode(', ',$turma->dias_semana)}}
+                        </div>
+                        <div class="col-md-4">
+                             {{$turma->hora_inicio}}h~{{$turma->hora_termino}}h
+                        </div>
+                        <div class="col-md-1">
+                             <i class=" fa fa-cog "></i>
+                        </div>
+                           
+
+                    </div>
+
+                    @endforeach
+
+                    
+                </div>     
+            </div>
+        </div> 
+        <div class="col-md-6 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
                         <p class="title" style="color:white">Opções</p>
                     </div>
                 </div>
@@ -50,44 +88,7 @@
                 </div>   
             </div>
         </div>
-        <div class="col-md-6 center-block">
-            <div class="card card-primary">
-                <div class="card-header">
-                    <div class="header-block">
-                        <p class="title" style="color:white">Listas de Frequência</p>
-                    </div>
-                </div>
-
-                <div class="card-block">
-                    @foreach($turmas as $turma)
-
-                    <div class="row" >
-                        <div class="col-md-1">
-                             <i class=" fa fa-users "></i>
-                        </div>
-                        <div class="col-md-3" >
-                             <a href="{{$turma->url}}" target="_blank"
-                            title="Acessar a lista do curso: {{$turma->curso->nome}}@if(isset($turma->disciplina)) / {{$turma->disciplina->nome}}@endif "> Turma {{$turma->id}}</a>
-                        </div>
-                        <div class="col-md-3" >
-                             {{implode(', ',$turma->dias_semana)}}
-                        </div>
-                        <div class="col-md-4">
-                             {{$turma->hora_inicio}}h~{{$turma->hora_termino}}h
-                        </div>
-                        <div class="col-md-1">
-                             <i class=" fa fa-cog "></i>
-                        </div>
-                           
-
-                    </div>
-
-                    @endforeach
-
-                    
-                </div>     
-            </div>
-        </div> 
+        
         <div class="col-md-6 center-block">
             <div class="card card-primary">
                 <div class="card-header">

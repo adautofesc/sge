@@ -87,9 +87,9 @@
                         &nbsp;&nbsp;Importar alunos de planilha</a>
                     </div>
                     <div class="input-group input-group-sm">
-                          <input type="text" class="form-control" placeholder="Código da turma" maxlength="10" size="2">
+                          <input type="text" class="form-control" placeholder="Código da turma" id="turma" maxlength="10" size="2">
                           <span class="input-group-btn">
-                            <button class="btn btn-primary" type="button" onclick="alert('teste');">Consultar</button>
+                            <button class="btn btn-primary" type="button" onclick="abreTurma();">Consultar</button>
                           </span>
                     </div><!-- /input-group -->
                 
@@ -172,4 +172,14 @@
 
 </section>
 
+@endsection
+@section('scripts')
+<script type="text/javascript">
+    function abreTurma(){
+        if($("#turma").val()!='')
+            window.open('/secretaria/turma/'+$("#turma").val(),'Abrir Turma');
+        else
+            alert('Ops, cadê o código da turma?');
+    }
+</script>
 @endsection

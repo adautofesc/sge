@@ -920,45 +920,6 @@ class TurmaController extends Controller
             //$turma->url="/lista/".$turma->id;  //------------------------------------------------Apagar aqui
             
 
-            //if($turma->url == '' || $turma->url == '#'){
-
-                $url = "https://script.google.com/macros/s/AKfycbwY09oq3lCeWL3vHoxdXmocjVPnCEeZMVQgzhgl-J0WNOQPzQc/exec?id=".$turma->id."&tipo=rel";
-
-                $ch = curl_init();
-                //não exibir cabeçalho
-                curl_setopt($ch, CURLOPT_HEADER, false);
-                // redirecionar se hover
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                // desabilita ssl
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                // Will return the response, if false it print the response
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                //envia a url
-                curl_setopt($ch, CURLOPT_URL, $url);
-                //executa o curl
-                $result = curl_exec($ch);
-                //encerra o curl
-                curl_close($ch);
-
-               //$webservice = json_decode($webservice);
-               //
-               //dd($result);
-
-
-               $ws = json_decode($result);
-
-
-               if( !isset($ws{0}->url) || $ws{0}->url == '' )
-
-                    $turma->url='#'.$result;
-
-                else
-
-                    $turma->url = $ws{0}->url;
-                    $turma->save(); //----------------------------------------------------------Liberar após 
-
-
-            //}
             $turma->weekday = \App\classes\Strings::convertWeekDay($turma->dias_semana[0]);
 
         }
@@ -969,6 +930,46 @@ class TurmaController extends Controller
 
     return $turmas;
     }
+    public function getChamada($turma_id){
+
+        print 'Carregando...';
+
+        $url = "https://script.google.com/macros/s/AKfycbwY09oq3lCeWL3vHoxdXmocjVPnCEeZMVQgzhgl-J0WNOQPzQc/exec?id=".$turma_id."&tipo=url";
+
+        $ch = curl_init();
+        //não exibir cabeçalho
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        // redirecionar se hover
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        // desabilita ssl
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        // Will return the response, if false it print the response
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        //envia a url
+        curl_setopt($ch, CURLOPT_URL, $url);
+        //executa o curl
+        $result = curl_exec($ch);
+        //encerra o curl
+        curl_close($ch);
+
+
+
+       $ws = json_decode($result);
+
+
+       if( isset($ws{0}->url) || $ws{0}->url != '' )
+
+            return redirect( $ws{0}->url);
+
+        else
+
+            return $result;
+    }
+
+
+        
+        
+
 
 
 }

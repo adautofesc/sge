@@ -64,6 +64,7 @@ Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec
 Route::middleware('login') ->group(function(){
 	Route::get('home', 'painelController@index');
 
+
 	Route::prefix('pessoa')->group(function(){
 	// Pessoas
 		Route::get ('listar','PessoaController@listarTodos');//->middleware('autorizar:56')
@@ -331,18 +332,22 @@ Route::middleware('login') ->group(function(){
 
 
 	});
+
+	//Docentes
+	
 	Route::middleware('liberar.recurso:13')->prefix('docentes')->group(function(){
 		Route::get('/','painelController@docentes');
 		Route::get('turmas-professor', 'TurmaController@listarProfessores');
 		Route::post('turmas-professor', 'TurmaController@turmasProfessor');
 	});
+	Route::get('chamada/{id}','TurmaController@getChamada');
 	
 
-	
-	
 
 
 
+
+	//Administração
 
 	Route::middleware('liberar.recurso:15')->prefix('admin')->group(function(){
 		Route::get('credenciais/{var}', 'loginController@credenciais_view');

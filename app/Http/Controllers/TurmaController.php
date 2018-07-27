@@ -966,6 +966,36 @@ class TurmaController extends Controller
             return $result;
     }
 
+    public function finalizarTurma($id){
+       
+        //localizar a turma
+        $turma = Turma::find($id);
+
+        //Finalizar a turma
+        $turma->status = 0;
+        $turma->save();
+        
+        //Inscricao->finalizar
+        //Matricula->atualizar
+        return true;
+
+    }
+
+    public function processarTurmasExpiradas(){
+        $turmas_finalizadas = 0;
+
+        //selecionar todas as turmas
+        //
+        //para cada turma finalizar
+
+        $this->finalizarTurma();
+        $turmas_finalizadas ++;
+
+        return $turmas_finalizadas.' turmas estavam expiradas e foram finalizadas.';
+
+
+    }
+
 
         
         

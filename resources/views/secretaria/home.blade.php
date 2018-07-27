@@ -177,7 +177,13 @@
 <script type="text/javascript">
     function abreTurma(){
         if($("#turma").val()!='')
-            window.open('/secretaria/turma/'+$("#turma").val(),'Abrir Turma');
+            window.open('/secretaria/turma/'+$("#turma").val(),'Mostrar Turma');
+        else
+            alert('Ops, cadê o código da turma?');
+    }
+    function abreMatricula(){
+        if($("#matricula").val()!='')
+            window.open('/secretaria/matricula/'+$("#matricula").val(),'Mostrar Matricula');
         else
             alert('Ops, cadê o código da turma?');
     }

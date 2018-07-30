@@ -31,8 +31,8 @@ class Matricula extends Model
 			return $valor;
 
 	}
-	 public function getInscricoes(){
-		$inscricoes=Inscricao::where('matricula',$this->id)->get();
+	 public function getInscricoes($tipo = 'todas'){
+		$inscricoes= \App\Http\Controllers\InscricaoController::inscricoesPorMatricula($this->id,$tipo);
 		$this->inscricoes = $inscricoes;
 		return $inscricoes;
 	}

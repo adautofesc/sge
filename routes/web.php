@@ -225,7 +225,7 @@ Route::middleware('login') ->group(function(){
 		Route::get('/','painelController@pedagogico');
 		//Turmas
 		Route::prefix('turmas')->group(function(){
-			Route::get('cadastrar','TurmaController@create')->name('turma.cadastrar');
+			Route::get('cadastrar','TurmaController@create')->name('turmas.cadastrar');
 			Route::post('cadastrar','TurmaController@store');
 			Route::post('recadastrar','TurmaController@storeRecadastro');
 			Route::get('/','TurmaController@index')->name('turmas');
@@ -241,6 +241,8 @@ Route::middleware('login') ->group(function(){
 			Route::get('importar', function(){ return view('pedagogico.turma.upload');});
 			Route::post('importar', 'TurmaController@uploadImportaTurma' );
 			Route::post('processar-importacao', 'TurmaController@processarImportacao');
+			Route::get('expiradas','TurmaController@processarTurmasExpiradas')->name('turmas.expiradas');
+
 
 
 		});

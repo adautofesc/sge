@@ -966,32 +966,47 @@ class TurmaController extends Controller
             return $result;
     }
 
-    public function finalizarTurma($id){
+    /**
+     * Finaliza turma individualmente
+     * @param  [Turma] $turma [Objeto Turma]
+     * @return [type]        [description]
+     */
+    public function finalizarTurma($turma){
        
         //localizar a turma
-        $turma = Turma::find($id);
 
-        //Finalizar a turma
+        $inscricoes = Inscricao::where('turma', $turma->id)->get();
+       
         $turma->status = 0;
         $turma->save();
-        
+
         //Inscricao->finalizar
-        //Matricula->atualizar
-        return true;
+        foreach($inscricoes as $inscricao){
+
+            $executar = InscricaoController::finaliza($inscricao);
+
+        }
+
+   
+
+        return $turma;
 
     }
 
     public function processarTurmasExpiradas(){
         $turmas_finalizadas = 0;
 
+        $turmas = Turma::where('data_termino','<', date('Y-m-d'))->where('status','==','0')->get();
+
         //selecionar todas as turmas
-        //
-        //para cada turma finalizar
+        foreach($turmas as $turma){
 
-        $this->finalizarTurma();
-        $turmas_finalizadas ++;
+            $this->finalizarTurma($turma);
+            $turmas_finalizadas ++;
 
-        return $turmas_finalizadas.' turmas estavam expiradas e foram finalizadas.';
+        }
+
+        return redirect($_SERVER['HTTP_REFERER'])->withErrors([$turmas_finalizadas.' turmas estavam expiradas e foram finalizadas.']);
 
 
     }

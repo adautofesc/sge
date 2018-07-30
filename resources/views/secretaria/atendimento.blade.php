@@ -223,7 +223,7 @@
 
                             </div>
                             @foreach($matricula->inscricoes as $inscricao)
-                            @if($inscricao->status == 'cancelado')
+                            @if($inscricao->status == 'cancelada')
                             <div class="row alert-danger">
                             @else
                             <div class="row">
@@ -247,7 +247,7 @@
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div>
-                                        @if($inscricao->status != 'cancelado')
+                                        @if($inscricao->status != 'cancelada')
                                         <a a href="#" onclick="remover({{$inscricao->id}});" title="Cancelar disciplina"><i class=" fa fa-times "></i></a>
                                         <a href="{{asset('/secretaria/matricula/inscricao/editar/').'/'.$inscricao->id}}" target="_blank" title="Editar Inscrição"><i class=" fa fa-pencil-square-o "></i></a>
                                         @else
@@ -268,7 +268,7 @@
                         </li>
                         @endforeach
                         @foreach($inscricoes as $inscricao_livre)
-                        @if($inscricao_livre->status == 'cancelado')
+                        @if($inscricao_livre->status == 'cancelada')
                         <li class="alert-danger" style="background-color: #F2DEDE;">
                         @elseif($inscricao_livre->status == 'pendente')
                         <li class="alert-warning" style="background-color: #FFD8B0;" >
@@ -303,7 +303,7 @@
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div>
-                                        @if($inscricao_livre->status != 'cancelado')
+                                        @if($inscricao_livre->status != 'cancelada')
                                         <a a href="#" onclick="remover({{$inscricao_livre->id}});" title="Cancelar disciplina"><i class=" fa fa-times "></i></a>
                                         @else
                                         <a a href="#" onclick="recolocar({{$inscricao_livre->id}});" title="Reativar disciplina"><i class=" fa fa-undo "></i></a>

@@ -166,7 +166,7 @@ class MatriculaController extends Controller
         $pessoa=Pessoa::find($matricula->pessoa);
         $pessoa=PessoaController::formataParaMostrar($pessoa);
         
-        $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->where('status','<>','cancelado')->get();
+        $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->where('status','<>','cancelada')->get();
         foreach($inscricoes as $inscricao){
             $inscricao->turmac=Turma::find($inscricao->turma->id);
         }
@@ -183,7 +183,7 @@ class MatriculaController extends Controller
         $pessoa=Pessoa::find($matricula->pessoa);
         $pessoa=PessoaController::formataParaMostrar($pessoa);
         
-        $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->where('status','<>','cancelado')->get();
+        $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->where('status','<>','cancelada')->get();
         foreach($inscricoes as $inscricao){
             $inscricao->turmac=Turma::find($inscricao->turma->id);
         }
@@ -336,6 +336,13 @@ class MatriculaController extends Controller
         return  $registros;
 
     }
+
+
+
+    /**
+     * [listarPorPessoa description]
+     * @return [type] [description]
+     */
     public function listarPorPessoa(){
         if(!Session::get('pessoa_atendimento'))
             return redirect(asset('/secretaria/pre-atendimento'));
@@ -346,6 +353,17 @@ class MatriculaController extends Controller
         return view('secretaria.matricula.lista-por-pessoa',compact('matriculas'))->with('nome',$nome)->with('pessoa_id',Session::get('pessoa_atendimento'));
 
     }
+
+
+
+
+    /**
+     * [verificaSeMatriculado description]
+     * @param  [type] $pessoa [description]
+     * @param  [type] $curso  [description]
+     * @param  [type] $data   [description]
+     * @return [type]         [description]
+     */
     public static function verificaSeMatriculado($pessoa,$curso,$data)
     {
         /*
@@ -494,10 +512,8 @@ class MatriculaController extends Controller
         $matricula=Matricula::find($id);
         $matricula->status='cancelada';
         $matricula->save();
-        $inscricoes=Inscricao::where('matricula',$matricula->id)->where('status','<>','cancelado')->get();
-        foreach($inscricoes as $inscricao){
-            $insc=InscricaoController::cancelar($inscricao->id);
-        }
+         $insc=InscricaoController::cancelarPorMatricula($matricula->id);
+        
         //LancamentoController::cancelamentoMatricula($id);
         AtendimentoController::novoAtendimento("Cancelamento da matricula ".$id, $matricula->pessoa, Session::get('usuario'));
 
@@ -506,16 +522,68 @@ class MatriculaController extends Controller
 
         return redirect($_SERVER['HTTP_REFERER']);
     }
-    public function atualizar($id){
-        $this->modificaMatricula($id);
-        return redirect($_SERVER['HTTP_REFERER']);
+
+
+
+    /**
+     * Atualizar Matrícula.
+     * Chamado após alterações nas inscrições 
+     *  - Finaliza caso tiver todas inscrições estiverem finalizadas
+     *  - Cancela matricula se não houver inscrições regulares
+     * @param  [integer] $id [id da matricula a ser atualizada]
+     * @return [Matricula]     [retorna objeto matrícula.]
+     */
+    public static function atualizar($id){
+        $matricula = Matricula::find($id);
+        $inscricoes = InscricaoController::inscricoesPorMatricula($id,'todas');
+
+        //verifica se tem matricula regular      
+        foreach($inscricoes as $inscricao){
+            if ($inscricao->status =='regular')
+                return $matricula;
+        }
+        //verifica se tem alguma finalizada
+        foreach($inscricoes as $inscricao){
+            if ($inscricao->status =='finalizada'){
+                $matricula->status = 'finalizada';
+                $matricula->save();
+                return $matricula;
+            }
+        }
+
+        //senão cancelar
+        $matricula->status = 'cancelada';
+        $matricula->save();
+        
+        return $matricula;
     }
+
+
+
+
+
+    /**
+     * Ativador de Matrícula
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
     public function ativarMatricula($id){
         $matricula=Matricula::find($id);
         $matricula->status='ativa';
         $matricula->save();
         AtendimentoController::novoAtendimento("Ativação de matrícula com pendencia ou cancelada.", $pessoa, Session::get('usuario'));
     }
+
+
+
+
+
+    /**
+     * Editar Matrícula
+     * Carrega os dados da matrícula e abre a view com formulário de edição
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
     public function editar($id){
         $matricula=Matricula::find($id);
         $nome=Pessoa::getNome($matricula->pessoa);
@@ -525,50 +593,29 @@ class MatriculaController extends Controller
         return view('secretaria.matricula.editar',compact('matricula'))->with('nome',$nome)->with('descontos',$descontos);
 
     }
-    /*
-    public function revitaliza(){
-        $turmas=[88,89,99,100];
-        $inscricoes=Inscricao::select('*','inscricoes.id as id')
-                                 ->join('turmas', 'inscricoes.turma','=','turmas.id')
-                                 ->whereIn('inscricoes.turma',$turmas)
-                                 ->get();
-        foreach($inscricoes as $inscricao){
-            if($this->numeroInscritos($inscricao->matricula)==1){
-                $matricula=Matricula::find($inscricao->matricula);
-                $matricula->valor=25;
-                $matricula->status='pendente';
-                $matricula->obs='Falta assinar termo.';
-                $matricula->save();
-            }
-            else{
-                $matricula=new Matricula();
-                $matricula->pessoa=$inscricao->pessoa->id;
-                $matricula->atendimento=1;
-                $matricula->data=date('Y-m-d');
-                $matricula->parcelas=5;
-                $matricula->dia_venc=20;
-                $matricula->status="pendente";
-                $matricula->obs="Falta assinar termo e eventual atestado.";
-                $matricula->valor=25;
-                $matricula->save();
-                $inscricao->matricula=$matricula->id;
-                $inscricao->save();
-            }
+    
 
-        }
-        return "Procedimento executado.";
 
-    }*/
+
+    /**
+     * Numero de inscrições
+     * @param  [type] $matricula [description]
+     * @return [type]            [description]
+     */
     public static function numeroInscritos($matricula){
         $inscritos=Inscricao::where('matricula',$matricula)->count();
         return $inscritos;
     }
+
+
+
+
     public static function regularizarCancelamentos(){
         //pega todas matriculas com status de ativo sem inscricoes regulares
         $matriculas = Matricula::select( '*', 'matriculas.status as status', 'matriculas.id as id')
                     ->join('inscricoes','inscricoes.matricula','matriculas.id')
                     ->where('matriculas.status','ativa')
-                    ->where('inscricoes.status','cancelado')
+                    ->where('inscricoes.status','cancelada')
                     ->get();
         /*pega todas matriculas com valor de 100
         $matriculas = Matricula::select( '*', 'matriculas.status as status', 'matriculas.id as id')
@@ -581,7 +628,16 @@ class MatriculaController extends Controller
 
 
     }
-    // primeiro passo para corrigir mas matriculas erradas é atribuir curso as matriculas
+
+
+
+
+
+    /**
+     * Modificador de Matrículas
+     * Atribui código do curso nas matrículas ativas ou pendentes sem esse código.
+     * @return [type] [description]
+     */
     public function modMatriculas(){
         $contador =0;
          $matriculas = Matricula::whereIn('status',['ativa','pendente'])->where('curso',null)->get();
@@ -598,6 +654,14 @@ class MatriculaController extends Controller
     }
 
 
+
+
+    /**
+     * Modificador de Matrícula individual
+     * Atribui código do curso na matrícula ativas ou pendentes sem esse código. Cancela caso não tiver incrição
+     * @param  [Matricula] $matricula [objeto matrícula]
+     * @return [type]            [description]
+     */
     static public function matriculaSemCurso($matricula){
         $inscricao = Inscricao::where('matricula',$matricula->id)->first();
         if(!$inscricao){
@@ -746,6 +810,13 @@ where nt.matricula>1');
 
         return view('secretaria.matricula.upload-global')->with('valor',$valor)->with('tipo',$tipo)->with('operacao',$operacao)->with('qnde',$qnde)->with('objeto',$objeto);
     }
+
+
+    /**
+     * [uploadGlobal description]
+     * @param  Request $r [description]
+     * @return [type]     [description]
+     */
     public function uploadGlobal(Request $r){
         switch($r->tipo){
             case 0:
@@ -799,11 +870,7 @@ where nt.matricula>1');
             }
             return redirect(asset('secretaria/atender'))->withErrors(['Arquivo enviado.']);
 
-        }
-
-
-        
-        
+        }   
     }
 
     /**
@@ -839,6 +906,11 @@ where nt.matricula>1');
        return view('secretaria.matricula.renovacao',compact('pessoa'))->with('matriculas',$matriculas);
 
     }
+
+
+
+
+
     /**
      * Renovação de matrícula
      * Verifica
@@ -871,15 +943,20 @@ where nt.matricula>1');
 
                 //tualiza matricula pra ver se houve alteraçao de valor caso uati
                 MatriculaController::modificaMatricula($inscricao->matricula);
-
-
-
             }
         }
         return redirect("/secretaria/atender/".$r->pessoa."?mostrar=todos")->with('dados["alert_sucess"]',['Turmas rematriculadas com sucesso']);
-        
-
     }
+
+
+
+
+
+    /**
+     * Cria uma cópia da matricula para regularização de situações.
+     * @param  [type] $matricula [description]
+     * @return [type]            [description]
+     */
     public function duplicar($matricula)
     {
         $original = Matricula::find($matricula);
@@ -895,18 +972,8 @@ where nt.matricula>1');
         $nova->desconto = $original->desconto;
         $nova->valor_desconto= $original->valor_desconto;
         $nova->obs = '';
-
-
         $nova->save();
         MatriculaController::modificaMatricula($nova->id);
-
-
-        
-        
-
-
-
-
         return redirect()->back()->withErrors(['Matricula duplicada.']);
     }
 

@@ -77,7 +77,7 @@
                        
                     
                     <div>
-                        <a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left">
+                        <a href="#" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-plus-circle "></i>
                         &nbsp;&nbsp;Relatórios</a>
                     </div>
@@ -143,9 +143,9 @@
                 </div>
                 <div class="card-block">
                     <div>
-                        <a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left">
-                        <i class="fa fa-files-o"></i>
-                        &nbsp;&nbsp; Operações com matrículas</a>
+                        <a href="#" class="btn btn-danger-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-play-circle "></i>
+                        &nbsp;&nbsp;Ativar Matrículas</a>
                     </div>
                     <div>
                         <a href="/secretaria/matricula/uploadglobal/1/1/0/0" class="btn btn-primary-outline col-xs-12 text-xs-left">

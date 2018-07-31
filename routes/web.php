@@ -302,14 +302,9 @@ Route::middleware('login') ->group(function(){
 			Route::post('/upload-termo-cancelamento/{matricula}','MatriculaController@uploadCancelamentoMatricula');
 			Route::get('/uploadglobal/{tipo}/{operacao}/{qnde}/{valor}','MatriculaController@uploadGlobal_vw');
 			Route::post('/uploadglobal/{tipo}/{operacao}/{qnde}/{valor}','MatriculaController@uploadGlobal');
-
 			Route::get('renovar/{pessoa}','MatriculaController@renovar_vw');
 			Route::post('renovar/{pessoa}','MatriculaController@renovar');
-
 			Route::get('duplicar/{matricula}','MatriculaController@duplicar');
-
-
-
 			Route::post('nova/confirmacao', 'InscricaoController@confirmacaoAtividades');
 			Route::post('nova/gravar', 'MatriculaController@gravar');
 			Route::get('termo/{id}','MatriculaController@termo');
@@ -326,6 +321,7 @@ Route::middleware('login') ->group(function(){
 				Route::get('apagar/{id}', 'InscricaoController@cancelar');
 				Route::get('reativar/{id}', 'InscricaoController@reativar');
 			});
+			Route::middleware('liberar.recurso:20')->get('ativar_matriculas_em_espera','MatriculaController@ativarEmEspera');
 
 		});
 

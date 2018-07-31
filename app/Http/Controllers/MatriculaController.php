@@ -13,13 +13,9 @@ use App\Classe;
 use App\Inscricao;
 use Session;
 use App\Lancamento;
-
-
 use App\PessoaDadosGerais;
 use App\PessoaDadosContato;
 use App\Endereco;
-
-
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -57,10 +53,7 @@ class MatriculaController extends Controller
         }
 
         $turmas = $turmas->sortByDesc('data_inicio');
-       
-
-
-
+    
         foreach($cursos as $curso){ 
             $matriculado=MatriculaController::verificaSeMatriculado($r->pessoa,$curso->id,$turmas->first()->data_inicio);
             $curso->turmas=collect();//cria lista de turmas de cada curso
@@ -78,28 +71,13 @@ class MatriculaController extends Controller
                 $matricula->valor=str_replace(',', '.', $r->$valor);
 
 
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-                //verifica se é do centro esportivo
-                if($curso->turmas->first()->programa->id == 12)
-                    $matricula->parcelas=date('m')-1;
+                //verifica se a pessoa está fazendo inscrição com a turma já em andamento ou não.
+                if($turmas->first()->status == 'andamento' || $turmas->first()->status == 'aberta')
+                    $matricula->status="ativa";    
                 else
-                    $matricula->parcelas=1;
-
-
-
-
-
-
-                
-                $matricula->dia_venc=20;
-                if(\Carbon\Carbon::createFromFormat('d/m/Y', $turmas->first()->data_inicio)->format('Y-m-d') > date('Y-m-d'))
                     $matricula->status="espera";
-                
-                else
 
-                    $matricula->status="ativa";
+
                 $desconto="fdesconto".$curso->id;
                 $matricula->desconto=$r->$desconto;
                 $valordesconto="valordesconto".$curso->id;
@@ -137,12 +115,19 @@ class MatriculaController extends Controller
         
 
     }
+    
+
+
+
+    /**
+     * Grava alterações feitas na edição de matricula
+     * @param  Request $r [description]
+     * @return [type]     [description]
+     */
     public function update(Request $r){
         $matricula=Matricula::find($r->id);
         $matricula->desconto=$r->fdesconto;
         $matricula->valor_desconto=$r->valordesconto;
-        $matricula->parcelas=$r->nparcelas;
-        $matricula->dia_venc=$r->dvencimento;
         $matricula->status = $r->status;
         $matricula->obs=$r->obs;
         $matricula->save();
@@ -281,6 +266,11 @@ class MatriculaController extends Controller
 
     }
     */
+   
+   /**
+    * Importa inscrições feitas através de planilha externa
+    * @return [type] [description]
+    */
     public function importarMatriculas(){
         //importava matriculas de um aquuivo XLSX
         $registros=collect();
@@ -340,9 +330,9 @@ class MatriculaController extends Controller
 
 
     /**
-     * [listarPorPessoa description]
+     * Listar Matriculas por pessoa
      * @return [type] [description]
-     */
+     
     public function listarPorPessoa(){
         if(!Session::get('pessoa_atendimento'))
             return redirect(asset('/secretaria/pre-atendimento'));
@@ -353,6 +343,7 @@ class MatriculaController extends Controller
         return view('secretaria.matricula.lista-por-pessoa',compact('matriculas'))->with('nome',$nome)->with('pessoa_id',Session::get('pessoa_atendimento'));
 
     }
+    */
 
 
 
@@ -448,7 +439,7 @@ class MatriculaController extends Controller
         $matricula->pessoa=$pessoa;
         $matricula->atendimento=$atendimento->id;
         $matricula->data=date('Y-m-d');
-        ///////////////////////////////////////////////////////////////////////////////////////
+        
         
 
 
@@ -534,28 +525,36 @@ class MatriculaController extends Controller
      * @return [Matricula]     [retorna objeto matrícula.]
      */
     public static function atualizar($id){
-        $matricula = Matricula::find($id);
-        $inscricoes = InscricaoController::inscricoesPorMatricula($id,'todas');
 
-        //verifica se tem matricula regular      
-        foreach($inscricoes as $inscricao){
-            if ($inscricao->status =='regular')
-                return $matricula;
-        }
-        //verifica se tem alguma finalizada
-        foreach($inscricoes as $inscricao){
-            if ($inscricao->status =='finalizada'){
-                $matricula->status = 'finalizada';
+        $matricula = Matricula::find($id);
+        if($matricula){
+            $inscricoes = InscricaoController::inscricoesPorMatricula($id,'todas');
+            if($inscricoes){
+                //verifica se tem matricula regular      
+                foreach($inscricoes as $inscricao){
+                    if ($inscricao->status =='regular')
+                        return $matricula;
+                }
+
+
+
+                //verifica se tem alguma finalizada
+                foreach($inscricoes as $inscricao){
+                    if ($inscricao->status =='finalizada'){
+                        $matricula->status = 'expirada';
+                        $matricula->save();
+                        return $matricula;
+                    }
+                }
+
+                //senão cancelar
+                $matricula->status = 'cancelada';
                 $matricula->save();
+                
                 return $matricula;
             }
-        }
 
-        //senão cancelar
-        $matricula->status = 'cancelada';
-        $matricula->save();
-        
-        return $matricula;
+        }
     }
 
 
@@ -975,6 +974,26 @@ where nt.matricula>1');
         $nova->save();
         MatriculaController::modificaMatricula($nova->id);
         return redirect()->back()->withErrors(['Matricula duplicada.']);
+    }
+
+
+
+
+    /**
+     * Muda o status das matriculas em espera para ativas.
+     * Recurso só pode ser efetuado por quem for autorizado.
+     * @return [type] [description]
+     */
+    public function ativarEmEspera(){
+        $contador=0;
+        $matriculas = Matricula::where('status','espera')->get();
+        foreach($matriculas as $matricula){
+            $matricula->status = 'ativa';
+            $matricula->save();
+            $contador++;
+        }
+
+        return redirect($_SERVER['HTTP_REFERER'])->withErrors([$contador.'Matriculas ativadas com sucesso.']);
     }
 
 

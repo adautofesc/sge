@@ -33,13 +33,7 @@
                         <a href="{{route('turmas.expiradas')}}" class="btn btn-danger-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-minus-square "></i>
                         &nbsp;&nbsp;Encerrar Expiradas</a>
-                    </div>
-                    <div>
-                        <a href="#" class="btn btn-danger-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-play-circle "></i>
-                        &nbsp;&nbsp;Ativar Matrículas</a>
-                    </div>
-                    
+                    </div>                    
                                    
                 </div>
             </div>  

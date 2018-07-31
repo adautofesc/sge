@@ -81,46 +81,26 @@ class Turma extends Model
 	public function getHoraTerminoAttribute($value){	
 		return substr($value,0,5);
 	}
-	public function getTextoStatusAttribute($value){
-
-		switch($this->status){
-			case 0:
-				return "Encerrada";
-				break;
-			case 1:
-				return "Aguardando abrir matrícula";
-				break;
-			case 2: 
-				return "Turma Completa/Em andamento";
-				break;
-			case 3:
-				return "Matrículas abertas";
-				break;
-			case 4:
-				return "Em andamento, aberta";
-				break;
-			
-			default:
-				return "Indefinida";
-				break;
-		}//end switch
-	}
+	
 	public function getIconeStatusAttribute($value){
 		switch($this->status){
-			case 0:
+			case 'cancelada':
 				return "ban";
 				break;
-			case 1:
+			case 'espera':
 				return "clock-o";
 				break;
-			case 2: 
+			case 'andamento': 
 				return "check-circle";
 				break;
-			case 3:
+			case 'inscricao':
 				return "circle-o";
 				break;
-			case 4:
+			case 'iniciada':
 				return "check-circle-o";
+				break;
+			case 'encerrada':
+				return "minus-circle";
 				break;
 			default:
 				return "question-circle";

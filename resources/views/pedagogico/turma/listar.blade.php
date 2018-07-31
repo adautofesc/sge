@@ -177,38 +177,44 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
                                 @if(isset($filtros['status']))
 
-                                <a class="dropdown-item" href="?filtro=status&valor=3{{array_search('3',$filtros['status'])!==false?'&remove=1':''}}">
-                                    <i class="fa fa-{{array_search('3',$filtros['status'])!==false?'check-':''}}circle-o icon"></i>  Com matrículas abertas
+                                <a class="dropdown-item" href="?filtro=status&valor=inscricao{{array_search('inscricao',$filtros['status'])!==false?'&remove=1':''}}">
+                                    <i class="fa fa-{{array_search('inscricao',$filtros['status'])!==false?'check-':''}}circle-o icon"></i>  Com matrículas abertas
                                 </a>
                                
-                                <a class="dropdown-item" href="?filtro=status&valor=1{{array_search('1',$filtros['status'])!==false?'&remove=1':''}}">
-                                    <i class="fa fa-{{array_search('1',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Aguardando / matrículas Suspensas
+                                <a class="dropdown-item" href="?filtro=status&valor=espera{{array_search('espera',$filtros['status'])!==false?'&remove=1':''}}">
+                                    <i class="fa fa-{{array_search('espera',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Aguardando / matrículas Suspensas
                                 </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=4{{array_search('4',$filtros['status'])!==false?'&remove=1':''}}" >
-                                    <i class="fa fa-{{array_search('4',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Em andamento/aberta
+                                <a class="dropdown-item" href="?filtro=status&valor=iniciada{{array_search('iniciada',$filtros['status'])!==false?'&remove=1':''}}" >
+                                    <i class="fa fa-{{array_search('iniciada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Em andamento / matrícula aberta
                                 </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=2{{array_search('2',$filtros['status'])!==false?'&remove=1':''}}" >
-                                    <i class="fa fa-{{array_search('2',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Em andamento/fechada
+                                <a class="dropdown-item" href="?filtro=status&valor=andamento{{array_search('andamento',$filtros['status'])!==false?'&remove=1':''}}" >
+                                    <i class="fa fa-{{array_search('andamento',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Em andamento / matricula fechada
                                 </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=0{{array_search('0',$filtros['status'])!==false?'&remove=1':''}}" >
-                                    <i class="fa fa-{{array_search('0',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Canceladas/encerradas
+                                <a class="dropdown-item" href="?filtro=status&valor=encerrada{{array_search('encerrada',$filtros['status'])!==false?'&remove=1':''}}" >
+                                    <i class="fa fa-{{array_search('encerrada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Encerradas
+                                </a>
+                                <a class="dropdown-item" href="?filtro=status&valor=cancelada{{array_search('cancelada',$filtros['status'])!==false?'&remove=1':''}}" >
+                                    <i class="fa fa-{{array_search('cancelada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Canceladas 
                                 </a>
                                 
                                 @else
-                                <a class="dropdown-item" href="?filtro=status&valor=3" >
+                                <a class="dropdown-item" href="?filtro=status&valor=inscricao" >
                                     <i class="fa fa-circle-o icon"></i>Com matrículas Abertas
                                 </a> 
-                                <a class="dropdown-item" href="?filtro=status&valor=1"  >
+                                <a class="dropdown-item" href="?filtro=status&valor=espera"  >
                                     <i class="fa fa-circle-o icon"></i>  Aguardando / matrículas Suspensas
                                 </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=4" >
-                                    <i class="fa fa-circle-o icon"></i> Em andamento / aberta
+                                <a class="dropdown-item" href="?filtro=status&valor=iniciada" >
+                                    <i class="fa fa-circle-o icon"></i> Em andamento / matrícula aberta
                                 </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=2" >
-                                    <i class="fa fa-circle-o icon"></i> Em andamento
+                                <a class="dropdown-item" href="?filtro=status&valor=andamento" >
+                                    <i class="fa fa-circle-o icon"></i> Em andamento / matricula fechada
                                 </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=0" >
-                                    <i class="fa fa-circle-o icon"></i> Canceladas/encerradas
+                                <a class="dropdown-item" href="?filtro=status&valor=encerrada" >
+                                    <i class="fa fa-circle-o icon"></i> Encerradas
+                                </a>
+                                <a class="dropdown-item" href="?filtro=status&valor=cancelada" >
+                                    <i class="fa fa-circle-o icon"></i> Canceladas 
                                 </a>
                                 
                                 @endif

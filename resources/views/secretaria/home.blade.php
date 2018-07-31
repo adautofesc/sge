@@ -143,7 +143,7 @@
                 </div>
                 <div class="card-block">
                     <div>
-                        <a href="#" class="btn btn-danger-outline col-xs-12 text-xs-left">
+                        <a href="/secretaria/matricula/ativar_matriculas_em_espera" class="btn btn-danger-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-play-circle "></i>
                         &nbsp;&nbsp;Ativar Matrículas</a>
                     </div>

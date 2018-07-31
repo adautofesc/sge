@@ -357,7 +357,7 @@ class TurmaController extends Controller
         $turma->vagas=$request->vagas;
         $turma->carga=$request->carga;
         $turma->atributos=$request->atributo;
-        $turma->status=1;
+        $turma->status='espera';
         //return $turma->dias_semana;
 
         $turma->save();
@@ -496,9 +496,12 @@ class TurmaController extends Controller
                 if($turma){
                     // Aqui virá uma verificação que se há matrículas antes de excluir
                     $msgs['alert_sucess'][]="Turma ".$turma->id." modificada com sucesso.";
-                    $turma->status=$status;
-                    $turma->save();
-                    
+                    if($status=='encerrada')
+                        $this->finalizarTurma($turma);
+                    else{
+                        $turma->status=$status;
+                        $turma->save();
+                    }
                 }
             }
         }
@@ -783,9 +786,8 @@ class TurmaController extends Controller
         switch ($r->acao) {
             case 'encerrar':
                 foreach($r->turmas as $turma_id){
-                    $turma = Turma::findOrFail($turma_id);
-                    $turma->status = 0;
-                    $turma->save();
+                    $turma = Turma::find($turma_id);
+                    $this->finalizarTurma($turma);
                 }
                 return redirect()->back()->withErrors(['Turmas encerradas com sucesso']);
                 break;
@@ -900,7 +902,7 @@ class TurmaController extends Controller
             else
                 $novaturma->carga = $turma->carga;
 
-            $novaturma->status = 1;
+            $novaturma->status = 'espera';
 
             $novaturma->save();
 
@@ -977,7 +979,7 @@ class TurmaController extends Controller
 
         $inscricoes = Inscricao::where('turma', $turma->id)->get();
        
-        $turma->status = 0;
+        $turma->status = 'encerrada';
         $turma->save();
 
         //Inscricao->finalizar
@@ -996,9 +998,13 @@ class TurmaController extends Controller
     public function processarTurmasExpiradas(){
         $turmas_finalizadas = 0;
 
-        $turmas = Turma::where('data_termino','<', date('Y-m-d'))->where('status','==','0')->get();
+        $turmas = Turma::where('data_termino','<', date('Y-m-d'))->where('status','<>','0')->get();
 
-        //selecionar todas as turmas
+
+
+        //dd($turmas);
+
+        //selecionar todas as turmas 
         foreach($turmas as $turma){
 
             $this->finalizarTurma($turma);

@@ -87,10 +87,39 @@
                             <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Local
                             </button>
                             <div class="dropdown-menu" style="height:30em;px;overflow-y:scroll;" aria-labelledby="dropdownMenu1">
+                                 @if(isset($filtros['local']) && array_search(84,$filtros['local']) !== false)
+                               
+                                    <a class="dropdown-item" href="?filtro=local&valor=84&remove=1" title="Remover filtro: Campus 1">
+                                        <i class="fa fa-check-circle-o icon"></i>FESC 1
+                                    </a>
+                                 @else
+                                    <a class="dropdown-item" href="?filtro=local&valor=84" title="Campus 1">
+                                        <i class="fa fa-circle-o icon"></i>FESC 1
+                                    </a>
+                                 @endif
+                                 @if(isset($filtros['local']) && array_search(85,$filtros['local']) !== false)
+                               
+                                    <a class="dropdown-item" href="?filtro=local&valor=85&remove=1" title="Remover filtro: Campus 2">
+                                        <i class="fa fa-check-circle-o icon"></i>FESC 2
+                                    </a>
+                                 @else
+                                    <a class="dropdown-item" href="?filtro=local&valor=85" title="Campus 2">
+                                        <i class="fa fa-circle-o icon"></i>FESC 2
+                                    </a>
+                                 @endif
+                                 @if(isset($filtros['local']) && array_search(86,$filtros['local']) !== false)
+                               
+                                    <a class="dropdown-item" href="?filtro=local&valor=86&remove=1" title="Remover filtro: Campus 3">
+                                        <i class="fa fa-check-circle-o icon"></i>FESC 3
+                                    </a>
+                                 @else
+                                    <a class="dropdown-item" href="?filtro=local&valor=86" title="Campus 3">
+                                        <i class="fa fa-circle-o icon"></i>FESC 3
+                                    </a>
+                                 @endif
+
+
                                 <!--
-                                <a class="dropdown-item" href="?filtro=local&valor=84" title="Campus 1">
-                                    <i class="fa fa-circle-o icon"></i>FESC 1
-                                </a>
 
                                 <a class="dropdown-item" href="?filtro=local&valor=85" title="Campus 2">
                                     <i class="fa fa-circle-o icon"></i>FESC 2
@@ -101,7 +130,7 @@
                             -->
                                 @foreach($locais as $local)
                                 @if(isset($filtros['local']) && array_search($local->id,$filtros['local']) !== false)
-                                <a class="dropdown-item" href="?filtro=local&valor={{$local->id}}&remove=1" title="{{$local->nome}}" >
+                                <a class="dropdown-item" href="?filtro=local&valor={{$local->id}}&remove=1" title="Remover filtro: {{$local->nome}}" >
                                     <i class="fa fa-check-circle-o icon"></i>{{$local->sigla}}
                                 </a>
                                 @else
@@ -171,38 +200,44 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
                                 @if(isset($filtros['status']))
 
-                                <a class="dropdown-item" href="?filtro=status&valor=3{{array_search('3',$filtros['status'])!==false?'&remove=1':''}}">
-                                    <i class="fa fa-{{array_search('3',$filtros['status'])!==false?'check-':''}}circle-o icon"></i>  Com matrículas abertas
+                                <a class="dropdown-item" href="?filtro=status&valor=inscricao{{array_search('inscricao',$filtros['status'])!==false?'&remove=1':''}}">
+                                    <i class="fa fa-{{array_search('inscricao',$filtros['status'])!==false?'check-':''}}circle-o icon"></i>  Com matrículas abertas
                                 </a>
                                
-                                <a class="dropdown-item" href="?filtro=status&valor=1{{array_search('1',$filtros['status'])!==false?'&remove=1':''}}">
-                                    <i class="fa fa-{{array_search('1',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Aguardando / matrículas Suspensas
+                                <a class="dropdown-item" href="?filtro=status&valor=espera{{array_search('espera',$filtros['status'])!==false?'&remove=1':''}}">
+                                    <i class="fa fa-{{array_search('espera',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Aguardando / matrículas Suspensas
                                 </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=4{{array_search('4',$filtros['status'])!==false?'&remove=1':''}}" >
-                                    <i class="fa fa-{{array_search('4',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Em andamento / matrícula aberta
+                                <a class="dropdown-item" href="?filtro=status&valor=iniciada{{array_search('iniciada',$filtros['status'])!==false?'&remove=1':''}}" >
+                                    <i class="fa fa-{{array_search('iniciada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Em andamento / matrícula aberta
                                 </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=2{{array_search('2',$filtros['status'])!==false?'&remove=1':''}}" >
-                                    <i class="fa fa-{{array_search('2',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Em andamento / matricula fechada
+                                <a class="dropdown-item" href="?filtro=status&valor=andamento{{array_search('andamento',$filtros['status'])!==false?'&remove=1':''}}" >
+                                    <i class="fa fa-{{array_search('andamento',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Em andamento / matricula fechada
                                 </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=0{{array_search('0',$filtros['status'])!==false?'&remove=1':''}}" >
-                                    <i class="fa fa-{{array_search('0',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Canceladas / encerradas
+                                <a class="dropdown-item" href="?filtro=status&valor=encerrada{{array_search('encerrada',$filtros['status'])!==false?'&remove=1':''}}" >
+                                    <i class="fa fa-{{array_search('encerrada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Encerradas
+                                </a>
+                                <a class="dropdown-item" href="?filtro=status&valor=cancelada{{array_search('cancelada',$filtros['status'])!==false?'&remove=1':''}}" >
+                                    <i class="fa fa-{{array_search('cancelada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Canceladas 
                                 </a>
                                 
                                 @else
-                                <a class="dropdown-item" href="?filtro=status&valor=3" >
+                                <a class="dropdown-item" href="?filtro=status&valor=inscricao" >
                                     <i class="fa fa-circle-o icon"></i>Com matrículas Abertas
                                 </a> 
-                                <a class="dropdown-item" href="?filtro=status&valor=1"  >
+                                <a class="dropdown-item" href="?filtro=status&valor=espera"  >
                                     <i class="fa fa-circle-o icon"></i>  Aguardando / matrículas Suspensas
                                 </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=4" >
+                                <a class="dropdown-item" href="?filtro=status&valor=iniciada" >
                                     <i class="fa fa-circle-o icon"></i> Em andamento / matrícula aberta
                                 </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=2" >
+                                <a class="dropdown-item" href="?filtro=status&valor=andamento" >
                                     <i class="fa fa-circle-o icon"></i> Em andamento / matricula fechada
                                 </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=0" >
-                                    <i class="fa fa-circle-o icon"></i> Canceladas / encerradas
+                                <a class="dropdown-item" href="?filtro=status&valor=encerrada" >
+                                    <i class="fa fa-circle-o icon"></i> Encerradas
+                                </a>
+                                <a class="dropdown-item" href="?filtro=status&valor=cancelada" >
+                                    <i class="fa fa-circle-o icon"></i> Canceladas 
                                 </a>
                                 
                                 @endif
@@ -238,20 +273,23 @@
                                 <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Com os selecionados...
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus(3)">
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('inscricao')">
                                         <i class="fa fa-circle-o icon"></i>Abrir Matrículas
                                     </a> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus(1)">
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('espera')">
                                         <i class="fa fa-clock-o icon"></i> Suspender Matrículas
                                     </a>
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus(2)" >
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('andamento')" >
                                         <i class="fa fa-check-circle icon"></i> Iniciada / parar matrículas
                                     </a>
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus(4)" >
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('iniciada')" >
                                         <i class="fa fa-check-circle-o icon"></i> Iniciada / c/matrículas abertas 
                                     </a>
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus(0)" >
-                                        <i class="fa fa-ban icon"></i> Cancelar / Encerrar Turmas
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('encerrada')" >
+                                        <i class="fa fa-minus-circle icon"></i> Encerrar Turmas
+                                    </a>
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('cancelada')" >
+                                        <i class="fa fa-ban icon"></i> Cancelar Turmas
                                     </a>
                                 </div>
                              </div>
@@ -311,7 +349,7 @@
                                                     <div class="item-heading">Curso/atividade</div>
                                                     <div class="">
                                                         
-                                                             <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}}- <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->texto_status. ' - Começa em  ' .$turma->data_inicio}}</small></div> 
+                                                             <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}}- <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->status. ' - Começa em  ' .$turma->data_inicio}}</small></div> 
 
                                                        @if(isset($turma->disciplina))
                                                         <a href="{{asset('secretaria/turma/'.$turma->id)}}" target="_blank" class="" title="Ver inscritos na turma">
@@ -396,17 +434,17 @@ function apagar(turma){
 }
 function abrir(turma){
     if(confirm("Deseja mesmo abrir as matrículas dessa turma?"))
-        $(location).attr('href','{{route('turmas')}}/status/3/'+turma);
+        $(location).attr('href','{{route('turmas')}}/status/inscricao/'+turma);
 
 }
 function suspender(turma){
     if(confirm("Deseja mesmo suspender as matrículas dessa turma?"))
-      $(location).attr('href','{{route('turmas')}}/status/1/'+turma);
+      $(location).attr('href','{{route('turmas')}}/status/espera/'+turma);
 
 }
 function iniciar(turma){
     if(confirm("Deseja mesmo iniciar o período letivo essa turma?"))
-       $(location).attr('href','{{route('turmas')}}/status/4/'+turma);
+       $(location).attr('href','{{route('turmas')}}/status/iniciada/'+turma);
 
 }
 function editar(turma){
@@ -415,7 +453,7 @@ function editar(turma){
 }
 function cancelar(turma){
     if(confirm("Deseja mesmo cancelar essa turma?"))
-        $(location).attr('href','{{route('turmas')}}/status/0/'+turma);
+        $(location).attr('href','{{route('turmas')}}/status/cancelada/'+turma);
 
 }
 function alterarStatus(status){

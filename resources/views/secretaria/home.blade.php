@@ -77,7 +77,7 @@
                        
                     
                     <div>
-                        <a href="#" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-plus-circle "></i>
                         &nbsp;&nbsp;Relatórios</a>
                     </div>
@@ -143,7 +143,7 @@
                 </div>
                 <div class="card-block">
                     <div>
-                        <a href="/secretaria/matricula/ativar_matriculas_em_espera" class="btn btn-danger-outline col-xs-12 text-xs-left">
+                        <a href="/secretaria/matricula/ativar_matriculas_em_espera" class="btn btn-danger-outline col-xs-12 text-xs-left" title="Ativar matriculas que estao em espera. Necessita de credencial.">
                         <i class=" fa fa-play-circle "></i>
                         &nbsp;&nbsp;Ativar Matrículas</a>
                     </div>
@@ -160,7 +160,7 @@
                      <div class="input-group input-group-sm">
                           <input type="text" class="form-control" placeholder="Código da matrícula" maxlength="10">
                           <span class="input-group-btn">
-                            <button class="btn btn-primary" type="button">Consultar</button>
+                            <button class="btn btn-secondary-outline" type="button">Consultar</button>
                           </span>
                     </div><!-- /input-group -->
             

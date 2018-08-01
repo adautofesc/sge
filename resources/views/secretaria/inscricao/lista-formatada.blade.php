@@ -55,7 +55,7 @@
                         <div class="item-heading">Curso/atividade</div>
                         <div class="">
                             
-                                 <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->texto_status}} <br> De {{$turma->data_inicio}} a {{$turma->data_termino}}</small></div> 
+                                 <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->status}} <br> De {{$turma->data_inicio}} a {{$turma->data_termino}}</small></div> 
 
                            
                            @if(isset($turma->disciplina))

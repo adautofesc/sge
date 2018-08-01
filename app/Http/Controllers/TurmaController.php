@@ -17,13 +17,42 @@ use Session;
 class TurmaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Listagem de turmas para o setor pedagógico.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
-        //verifica se tem algum filtro em sessao para criar o filtro
+        $turmas = $this->listagemGlobal($request->filtro,$request->valor,$request->removefiltro,$request->remove);
+
+        $programas=Programa::all();
+        $professores = PessoaDadosAdministrativos::getFuncionarios('Educador');
+        $professores = $professores->sortBy('nome_simples');
+        $locais = Local::select(['id','sigla','nome'])->orderBy('sigla')->get();
+        
+
+        //return $professores;
+        //return $turmas;
+        //$dados=['alert_sucess'=>['hello world']];
+        return view('pedagogico.turma.listar', compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$_SESSION['filtro_turmas']);
+    }
+
+    /**
+     * Listador global de turmas
+     * Suporta os seguintes tipos de filtros:
+     *     -programa
+     *     -professor
+     *     -local
+     *     -status
+     * 
+     * @param  [type]  $filtro [description]
+     * @param  [type]  $valor  [description]
+     * @param  integer $remove [description]
+     * @param  integer $ipp    [Quantidade de itens por página]
+     * @return [type]          [description]
+     */
+    public function listagemGlobal($filtro=null,$valor=null,$rem_filtro=null,$remove=0,$ipp=50){
+
         session_start();
  
         
@@ -39,49 +68,51 @@ class TurmaController extends Controller
         }
 
         //verifica se tem algum filtro na url
-        if(isset($request->filtro) && isset($request->valor)){
+        if(isset($filtro) && isset($valor)){
            
             //verifica se ja existe esse filtro
-            if(array_key_exists($request->filtro, $filtros)){
+            if(array_key_exists($filtro, $filtros)){
 
                 //verifica se o valor ja consta no array, se constar retorna a chave
-                $busca = array_search($request->valor, $filtros[$request->filtro]);
+                $busca = array_search($valor, $filtros[$filtro]);
 
 
                 //se nao tiver
                 if($busca === false){
 
                     //grava novo valor
-                    $filtros[$request->filtro][] = $request->valor;
+                    $filtros[$filtro][] = $valor;
                 }
                 //se ja tiver
                 else
                 {
                     //verifica se foi passado por url pra apagar esse filtro
-                    if(isset($request->remove)){
+                    if($remove > 0){
 
                         //apaga a chave com o filtro
-                        unset($filtros[$request->filtro][$busca]);
+                        unset($filtros[$filtro][$busca]);
 
                     }
                 }
             }
             else{
                 //die('chave nao existe');
-                $filtros[$request->filtro][] = $request->valor;
+                $filtros[$filtro][] = $valor;
             }
             
 
         }
-        if(isset($request->removefiltro)){
-            if(isset($filtros[$request->removefiltro]))
-                unset($filtros[$request->removefiltro]);
+        if($rem_filtro != null){
+            if(isset($filtros[$rem_filtro]))
+                unset($filtros[$rem_filtro]);
         }
         
 
         $_SESSION['filtro_turmas'] = $filtros;
 
-        $turmas = Turma::select('*');
+        $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.vagas as vagas','turmas.carga as carga','turmas.programa as programa','disciplinas.id as disciplinaid','cursos.id as cursoid','turmas.programa as programaid','turmas.valor as valor')
+                ->join('cursos', 'turmas.curso','=','cursos.id')
+                ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id');
 
         if(isset($filtros['programa']) && count($filtros['programa'])){
             $turmas = $turmas->whereIn('programa', $filtros['programa']); 
@@ -97,6 +128,8 @@ class TurmaController extends Controller
         if(isset($filtros['status']) && count($filtros['status'])){
             $turmas = $turmas->whereIn('status', $filtros['status']); 
         }
+
+        $turmas = $turmas->orderBy('cursos.nome')->orderBy('disciplinas.nome');
         /*
 
         foreach($filtros as $coluna=>$filtro){
@@ -104,21 +137,7 @@ class TurmaController extends Controller
                     $turmas = $turmas->where($coluna, $filtro);                
             }
         }
-        */
-
-        $turmas = $turmas->paginate(50);
-
-        //dd($turmas);
-        //print_r($filtros);
-
         
-
-
-
-
-
-
-/*
         if(isset($r->data)){
             $termino = date('Y-m-d', strtotime("+5 months",strtotime($r->data))); 
             
@@ -134,161 +153,33 @@ class TurmaController extends Controller
             $turmas=Turma::orderBy('curso')->where('programa',$r->programa)->paginate(50);
 
         }
-*/
+        */
 
-        $programas=Programa::all();
-        $professores = PessoaDadosAdministrativos::getFuncionarios('Educador');
-        $professores = $professores->sortBy('nome_simples');
-        $locais = Local::select(['id','sigla','nome'])->orderBy('sigla')->get();
+        $turmas = $turmas->paginate($ipp);
 
-        //return $professores;
-        //return $turmas;
-        //$dados=['alert_sucess'=>['hello world']];
-        return view('pedagogico.turma.listar', compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$filtros);
+        return $turmas;
+
     }
 
+
+
+
+    /**
+     * Listagem de turmas da secretaria
+     * 
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function listarSecretaria(Request $request)
     {
-
-         //verifica se tem algum filtro em sessao para criar o filtro
-        session_start();
- 
         
-        if(isset($_SESSION['filtro_turmas']))
-        {
-            
-            $filtros = $_SESSION['filtro_turmas'];
-            
-        }
-        else
-        {
-            
-            $filtros = array();
-            
-        }
-
-        //verifica se tem algum filtro na url
-        if(isset($request->filtro) && isset($request->valor)){
-           
-            //verifica se ja existe esse filtro
-            if(array_key_exists($request->filtro, $filtros)){
-
-                //verifica se o valor ja consta no array, se constar retorna a chave
-                $busca = array_search($request->valor, $filtros[$request->filtro]);
-
-
-                //se nao tiver
-                if($busca === false){
-
-                    //grava novo valor
-                    $filtros[$request->filtro][] = $request->valor;
-                }
-                //se ja tiver
-                else
-                {
-                    //verifica se foi passado por url pra apagar esse filtro
-                    if(isset($request->remove)){
-
-                        //apaga a chave com o filtro
-                        unset($filtros[$request->filtro][$busca]);
-
-                    }
-                }
-            }
-            else{
-                //die('chave nao existe');
-                $filtros[$request->filtro][] = $request->valor;
-            }
-            
-
-        }
-        if(isset($request->removefiltro)){
-            if(isset($filtros[$request->removefiltro]))
-                unset($filtros[$request->removefiltro]);
-        }
-        
-
-        $_SESSION['filtro_turmas'] = $filtros;
-
-        $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.vagas as vagas','turmas.carga as carga','turmas.programa as programa','disciplinas.id as disciplinaid','cursos.id as cursoid','turmas.programa as programaid','turmas.valor as valor')
-                ->join('cursos', 'turmas.curso','=','cursos.id')
-                ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id');
-
-        if(isset($filtros['programa']) && count($filtros['programa'])){
-            $turmas = $turmas->whereIn('turmas.programa', $filtros['programa']); 
-        }
-
-        if(isset($filtros['professor']) && count($filtros['professor'])){
-            $turmas = $turmas->whereIn('turmas.professor', $filtros['professor']); 
-        }
-        if(isset($filtros['local']) && count($filtros['local'])){
-            $turmas = $turmas->whereIn('turmas.local', $filtros['local']); 
-        }
-
-        if(isset($filtros['status']) && count($filtros['status'])){
-            $turmas = $turmas->whereIn('turmas.status', $filtros['status']); 
-        }
-        /*
-
-        foreach($filtros as $coluna=>$filtro){
-            if(count($filtro)>0){
-                    $turmas = $turmas->where($coluna, $filtro);                
-            }
-        }
-        */
-
-        $turmas = $turmas->paginate(50);
-
-        //dd($turmas);
-        //print_r($filtros);
-
-        
-
-
-
-
-
-
-/*
-        if(isset($r->data)){
-            $termino = date('Y-m-d', strtotime("+5 months",strtotime($r->data))); 
-            
-            $turmas=Turma::orderBy('curso')->where('data_inicio','>=',$r->data)->where('data_termino','<=',$termino)->get(); 
-            //return $turmas;
-        }
-        else{
-            $turmas=Turma::orderBy('curso')->paginate(50);
-              //return $turmas;
-
-        }
-        if(isset($r->programa)){
-            $turmas=Turma::orderBy('curso')->where('programa',$r->programa)->paginate(50);
-
-        }
-*/
-
+        $turmas = $this->listagemGlobal($request->filtro,$request->valor,$request->removefiltro,$request->remove);
         $programas=Programa::all();
         $professores = PessoaDadosAdministrativos::getFuncionarios('Educador');
         $professores = $professores->sortBy('nome_simples');
         $locais = Local::select(['id','sigla','nome'])->orderBy('sigla')->get();
 
-
- /*       
-        $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.vagas as vagas','disciplinas.id as disciplinaid','cursos.id as cursoid','turmas.programa as programaid','turmas.valor as valor')
-                ->join('cursos', 'turmas.curso','=','cursos.id')
-                ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
-                ->orderBy('cursos.nome')
-                ->orderBy('disciplinas.nome')
-                ->get();
-*/
-        //return $turmas;
-       
-
-
-        //return $dados;
-        //$dados=['alert_sucess'=>['hello world']];
-        //return $turmas;
-        return view('secretaria.listar-turmas', compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$filtros);
+        return view('secretaria.listar-turmas', compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$_SESSION['filtro_turmas']);
     }
 
     /**
@@ -528,7 +419,7 @@ class TurmaController extends Controller
         // se não tiver nenhuma turma atual
         if(count($turmas_af)==0){
             $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.carga as carga','turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
-                -> where('turmas.status', '>', 2)
+                -> whereIn('turmas.status', ['inscricao','iniciada'])
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
                 ->whereNotIn('turmas.id', $lst)
@@ -573,7 +464,7 @@ class TurmaController extends Controller
 
             // seleciona todas as turmas disponíveis (tira da lista aquelas que conflitam)
             $turmas=Turma::select('*', 'turmas.id as id', 'turmas.carga as carga','turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
-                ->where('turmas.status', '>', 2)
+                -> whereIn('turmas.status', ['inscricao','iniciada'])
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
                 ->whereNotIn('turmas.id', $lst)
@@ -605,31 +496,6 @@ class TurmaController extends Controller
 
         }
 
-        foreach($turmas as $turma){
-            if($turma->curso->id==307)
-                $uati++;
-            else
-            $valor=$valor+str_replace(',', '.',$turma->valor);
-        }
-        switch ($uati) {
-            case '1':
-                $valor=$valor+100;
-                break;
-            case '2':
-            case '3':
-            case '4':
-                $valor=$valor+250;
-                break;
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
-                $valor=$valor+400;
-                break;
-            
-        }
 
         return view('secretaria.inscricao.turmas-escolhidas', compact('turmas'))->with('valor',$valor)->with('parcelas',$parcelas);
 
@@ -666,7 +532,7 @@ class TurmaController extends Controller
     public function turmasSite(){
 
         $turmas=Turma::select('*', 'turmas.vagas as vagas','turmas.id as id')
-                ->where('turmas.status','>',2)
+                ->whereIn('turmas.status', ['inscricao','iniciada'])
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
                 ->orderBy('cursos.nome')
@@ -684,7 +550,7 @@ class TurmaController extends Controller
     }
     public function turmasProfessor(Request $r){
         $turmas=Turma::select('*', 'turmas.vagas as vagas','turmas.id as id','turmas.matriculados as matriculados')
-                ->where('turmas.status','>',2)
+                ->whereIn('turmas.status', ['inscricao','iniciada'])
                 ->where('professor',$r->professor)
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
@@ -912,7 +778,7 @@ class TurmaController extends Controller
     }
     public static function listarTurmasDocente($docente){
 
-        $turmas = Turma::where('professor', $docente)->whereIn('status',[2,3,4])->orderBy('hora_inicio')->get();
+        $turmas = Turma::where('professor', $docente)->whereIn('status',['inscricao','andamento','iniciada'])->orderBy('hora_inicio')->get();
 
         foreach($turmas as $turma){
             /**
@@ -998,7 +864,7 @@ class TurmaController extends Controller
     public function processarTurmasExpiradas(){
         $turmas_finalizadas = 0;
 
-        $turmas = Turma::where('data_termino','<', date('Y-m-d'))->where('status','<>','0')->get();
+        $turmas = Turma::where('data_termino','<', date('Y-m-d'))->whereIn('status',['iniciada','andamento'])->get();
 
 
 

@@ -5,6 +5,15 @@
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 <link rel="stylesheet" href="{{asset('/')}}/css/vendor.css"/>
 <title>Documento Oficial - Fesc</title>
+<style type="text/css">
+	@media screen,print {
+
+       
+            .hide-onprint { 
+                display: none;
+            }
+        }
+</style>
 </head>
 
 <body>

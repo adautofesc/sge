@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Retorno;
 use App\Boleto;
-
+ini_set('max_execution_time', 180);
 class RetornoController extends Controller
 {
     		public function upload(Request $r){

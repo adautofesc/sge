@@ -43,7 +43,11 @@
                     </div>
                 </div>
                 <div class="card-block">
-                    Nenhuma opção disponível no momento              
+                     <div>
+                        <a href="/secretaria/relatorios/turmas" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Alunos 1º Semestre de 2018</a>
+                    </div>            
                 </div>
             </div>
         </div>

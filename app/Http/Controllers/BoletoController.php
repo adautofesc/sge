@@ -16,7 +16,7 @@ use Cnab;
 use Session;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
-
+ini_set('max_execution_time', 180);
 
 //require '../vendor/autoload.php';
 

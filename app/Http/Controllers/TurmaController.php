@@ -115,18 +115,18 @@ class TurmaController extends Controller
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id');
 
         if(isset($filtros['programa']) && count($filtros['programa'])){
-            $turmas = $turmas->whereIn('programa', $filtros['programa']); 
+            $turmas = $turmas->whereIn('turmas.programa', $filtros['programa']); 
         }
 
         if(isset($filtros['professor']) && count($filtros['professor'])){
-            $turmas = $turmas->whereIn('professor', $filtros['professor']); 
+            $turmas = $turmas->whereIn('turmas.professor', $filtros['professor']); 
         }
         if(isset($filtros['local']) && count($filtros['local'])){
-            $turmas = $turmas->whereIn('local', $filtros['local']); 
+            $turmas = $turmas->whereIn('turmas.local', $filtros['local']); 
         }
 
         if(isset($filtros['status']) && count($filtros['status'])){
-            $turmas = $turmas->whereIn('status', $filtros['status']); 
+            $turmas = $turmas->whereIn('turmas.status', $filtros['status']); 
         }
 
         $turmas = $turmas->orderBy('cursos.nome')->orderBy('disciplinas.nome');

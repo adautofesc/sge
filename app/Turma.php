@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Turma extends Model
 {
 
-	protected $appends=['texto_status','icone_status','tempo_curso','valor'];
+	protected $appends=['icone_status','tempo_curso','valor'];
 
 	public function setDiasSemanaAttribute($value){
 		$this->attributes['dias_semana']= implode(',',$value);

@@ -90,6 +90,9 @@
 
             </h5></center>
         </div>
+        <br>
+        <br>
+        Total de vagas oferecidas: <strong>{{$vagas}}</strong> com <strong>{{$inscricoes}}</strong> inscrições ({{$porcentagem}}%).
          <div class="row hide-onprint">
 	        <br>
 	        <div class="col-sm-9">

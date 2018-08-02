@@ -57,7 +57,7 @@ class loginController extends Controller
 	}
 	public function recuperarContaExec(Request $r){
 		$this->validate($request, [
-			'senha'=>'required|between:6,30|alpha_num',
+			'senha'=>'required|between:6,30',
 			'contrasenha'=>'required|same:senha'
 
 		]);
@@ -74,8 +74,8 @@ class loginController extends Controller
     public function loginCheck(Request $request)
     {
 		$this->validate($request, [
-			'login'=>'required|between:4,30|alpha_num',
-			'senha'=>'required|between:6,30|alpha_num'
+			'login'=>'required|between:4,30',
+			'senha'=>'required|between:6,30'
 
 		]);
 
@@ -264,7 +264,7 @@ class loginController extends Controller
 		if($r->userid != Session::get('usuario'))
 			return $this->logout();
 		$this->validate($r , [
-			'novasenha'=>'required|between:6,10|alpha_num',
+			'novasenha'=>'required|between:6,10',
 			'confirmanovasenha'=>'required|same:novasenha'
 		]);
 		$usuario=PessoaDadosAcesso::where('pessoa', Session::get('usuario'))->first();
@@ -279,7 +279,7 @@ class loginController extends Controller
 		}
 		else
 		{	
-			$usuario->senha=Hash::make($r->novasenha);
+			$usuario->senha= \Hash::make($r->novasenha);
 			$usuario->save();
 			return $this->logout();
 		}
@@ -315,8 +315,8 @@ class loginController extends Controller
 		if(!$this->check())
 			return redirect(asset("/"));
 		$this->validate($request, [
-			'nome_usuario'=>'required|between:4,20|alpha_num',
-			'senha'=>'required|between:6,20|alpha_num',
+			'nome_usuario'=>'required|between:4,20',
+			'senha'=>'required|between:6,20',
 			'repetir_senha'=>'required|same:senha',
 			]);
 		$acesso=PessoaDadosAcesso::where('usuario', $request->nome_usuario)->get();
@@ -384,7 +384,7 @@ class loginController extends Controller
 
 		$this->validate($request, [
 			'pessoa'=>'required|integer',
-			'nova_senha'=>'required|between:6,10|alpha_num',
+			'nova_senha'=>'required|between:6,10',
 			'repetir_senha'=>'required|same:nova_senha'
 			]);
 		$pessoa=Pessoa::find($request->pessoa);

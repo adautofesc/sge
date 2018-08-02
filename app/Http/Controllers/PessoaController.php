@@ -289,6 +289,7 @@ class PessoaController extends Controller
  */
 	public function dadosPessoa($id)
 	{
+		
 		$pessoa=Pessoa::find($id);
 		// Verifica se a pessoa existe
 		if(!$pessoa)
@@ -298,8 +299,8 @@ class PessoaController extends Controller
 		if($pessoa->id != Session::get('usuario'))
 		{
 		//verifica se pode ver outras pessoas
-			if(!loginController::pedirPermissao(4))			
-				return view('error-404-alt')->with(array('error'=>['id'=>'403.4','desc'=>'Seu cadastro não permite que você veja os dados de outra pessoa']));
+		if(!GerenciadorAcesso::pedirPermissao(4) )		
+				return view('error-404-alt')->with(array('error'=>['id'=>'403.41','desc'=>'Seu cadastro não permite que você veja os dados de outra pessoa']));
 				//return $this->listar();	
 		// verifica se a pessoa tem relação institucional
 			$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
@@ -433,7 +434,7 @@ class PessoaController extends Controller
 			return redirect(asset("/"));
 
 		if(!GerenciadorAcesso::pedirPermissao(4))
-			return view('error-404-alt')->with(array('error'=>['id'=>'403.4','desc'=>'Seu cadastro não permite que você veja os dados de outra pessoa']));
+			return view('error-404-alt')->with(array('error'=>['id'=>'403.42','desc'=>'Seu cadastro não permite que você veja os dados de outras pessoas']));
 
 		$pessoas=Pessoa::orderBy('nome','ASC')->paginate(35);
 		foreach($pessoas->all() as $pessoa)
@@ -513,8 +514,8 @@ class PessoaController extends Controller
 	public function gravarUsuario(Request $request)
 	{
 		$this->validate($request, [
-				'username'=>'required|alpha_num|min:3|max:10',
-				'senha'=>'required|alpha_num|min:6',
+				'username'=>'required|min:3|max:10',
+				'senha'=>'required|min:6',
 				'retsenha'=>'required|same:senha'
 				]);
 		return "ok";	
@@ -523,35 +524,39 @@ class PessoaController extends Controller
 	
 	public function editarGeral_view($id){
 		
-		if(!GerenciadorAcesso::pedirPermissao(3))
+
+		
+		if(!GerenciadorAcesso::pedirPermissao(3) && $id != Session::get('usuario') )
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
 
 
 		$dados=$this->dadosPessoa($id);
 		//return $dados;
+		if(isset($dados['genero']) ){
+				
 				switch ($dados['genero']) {
-			case 'Masculino':
-				$dados['generom']="checked";
-				break;
-			case 'Feminino':
-				$dados['generof']="checked";
-				break;
-			case 'Trans Masculino':
-				$dados['generox']="checked";
-				break;
-			case 'Trans Feminino':
-				$dados['generoy']="checked";
-				break;
-			case 'Não especificado':
-				$dados['generoz']="checked";
-				break;
-			
+					case 'Masculino':
+						$dados['generom']="checked";
+						break;
+					case 'Feminino':
+						$dados['generof']="checked";
+						break;
+					case 'Trans Masculino':
+						$dados['generox']="checked";
+						break;
+					case 'Trans Feminino':
+						$dados['generoy']="checked";
+						break;
+					case 'Não especificado':
+						$dados['generoz']="checked";
+						break;
+				}
 		}
 		return view('pessoa.editar-dados-gerais', compact('dados'));
 	}
 	public function editarGeral_exec(Request $request){
 		
-		if(!GerenciadorAcesso::pedirPermissao(3))
+		if(!GerenciadorAcesso::pedirPermissao(3) && $request->pessoa != Session::get('usuario') )
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Desculpe, você não possui autorização para alterar dados de outras pessoas']));
 		$this->validate($request, [
 				'pessoa'=>'required|integer',
@@ -617,10 +622,12 @@ class PessoaController extends Controller
 		return view('pessoa.mostrar', compact('pessoa'));
 	}
 	public function editarContato_view($id){
+
+
 		
-		if(!GerenciadorAcesso::pedirPermissao(3))
+		if(!GerenciadorAcesso::pedirPermissao(3) && $id != Session::get('usuario') )
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
-		if(!loginController::autorizarDadosPessoais($id))
+		if(!loginController::autorizarDadosPessoais($id) && $id != Session::get('usuario'))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
 		
 
@@ -635,10 +642,10 @@ class PessoaController extends Controller
 	}
 	public function editarContato_exec(Request $request){
 		
-		if(!GerenciadorAcesso::pedirPermissao(3))
+		if(!GerenciadorAcesso::pedirPermissao(3) && $request->pessoa != Session::get('usuario') )
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Desculpe, você não possui autorização para alterar dados de outras pessoas']));
 
-		if(!loginController::autorizarDadosPessoais($request->pessoa))
+		if(!loginController::autorizarDadosPessoais($request->pessoa) && $request->pessoa != Session::get('usuario'))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
 
 	
@@ -723,11 +730,11 @@ class PessoaController extends Controller
 			}
 
 		$pessoa=$this->formataParaMostrar($pessoa);
-		return redirect(asset("/secretaria/atender/".$request->pessoa));
+		return redirect()->back()->withErrors(['Alterções salvas com sucesso.']);
 	}	
 	public function editarDadosClinicos_view($id){
 		
-		if(!GerenciadorAcesso::pedirPermissao(3))
+		if(!GerenciadorAcesso::pedirPermissao(3) && $id != Session::get('usuario') )
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
 		if(!loginController::autorizarDadosPessoais($id))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
@@ -743,9 +750,9 @@ class PessoaController extends Controller
 
 	}
 	public function editarDadosClinicos_exec(Request $request){
-		if(!GerenciadorAcesso::pedirPermissao(3))
+		if(!GerenciadorAcesso::pedirPermissao(3) && $request->pessoa != Session::get('usuario') )
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
-		if(!loginController::autorizarDadosPessoais($request->pessoa))
+		if(!loginController::autorizarDadosPessoais($request->pessoa) && $request->pessoa != Session::get('usuario') )
 			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
 
 		$pessoa=Pessoa::find($request->pessoa);
@@ -791,13 +798,13 @@ class PessoaController extends Controller
 
 
 		
-		return redirect(asset("/secretaria/atender/"));
+		return redirect()->back()->withErrors(['Alterções salvas com sucesso.']);
 	}
 
 
 
 	public function editarObservacoes_view($id){
-		if(!GerenciadorAcesso::pedirPermissao(3))
+		if(!GerenciadorAcesso::pedirPermissao(3) && $id != Session::get('usuario') )
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
 		if(!loginController::autorizarDadosPessoais($id))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
@@ -809,9 +816,9 @@ class PessoaController extends Controller
 
 	}
 	public function editarObservacoes_exec(Request $request){
-		if(!GerenciadorAcesso::pedirPermissao(3))
+		if(!GerenciadorAcesso::pedirPermissao(3) && $request->pessoa != Session::get('usuario') )
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
-		if(!loginController::autorizarDadosPessoais($request->pessoa))
+		if(!loginController::autorizarDadosPessoais($request->pessoa) && $request->pessoa != Session::get('usuario') )
 			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
 
 		$pessoa=Pessoa::find($request->pessoa);
@@ -820,7 +827,7 @@ class PessoaController extends Controller
 
 		$dados=$this->dadosPessoa($pessoa->id);
 
-		if($request->obs != '' || $dados->obs!=$request->obs )
+		if($request->obs != '' || $dados->obs != $request->obs )
 			{
 				$dado=PessoaDadosGerais::where('dado', 5)->where('pessoa',$pessoa->id)->first();
 				if($dado)
@@ -829,6 +836,11 @@ class PessoaController extends Controller
 				$info->pessoa=$pessoa->id;
 				$info->dado=5;
 				$info->valor=$request->obs;
+				if($info->valor = ''){
+					$dado->valor =' ';
+					$dado->save(); 
+				}
+				else
 				$pessoa->dadosGerais()->save($info);
 			}
 
@@ -836,7 +848,9 @@ class PessoaController extends Controller
 
 
 
-		return redirect(asset("/secretaria/atender/"));
+
+
+		return redirect()->back()->withErrors(['Alterções salvas com sucesso.']);
 
 	}
 
@@ -857,7 +871,7 @@ class PessoaController extends Controller
 		$dado->dado=7;
 		$dado->valor=$dependente;
 		$dado->save();
-		return redirect(asset("/secretaria/atender/"));
+		return redirect()->back()->withErrors(['Alterções salvas com sucesso.']);
 
 	}
 	public function remVinculo_exec($vinculo)
@@ -866,7 +880,7 @@ class PessoaController extends Controller
 		$pessoa=$vinculo->pessoa;
 		$vinculo->delete();
 		
-		return redirect(asset("/secretaria/atender/"));
+		return redirect()->back()->withErrors(['Alterções salvas com sucesso.']);
 
 	}
 	public function addResponsavel_view($pessoa)

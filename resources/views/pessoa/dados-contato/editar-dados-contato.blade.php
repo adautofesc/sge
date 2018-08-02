@@ -1,6 +1,5 @@
 @extends('layout.app')
 @section('pagina')
-
 <form name="item" method="POST">
 
     <div class="title-block">
@@ -154,7 +153,7 @@
 <script>
     $(document).ready(function() 
     {
-   // $('[name=estado]').val({{$dados->estado}});
+   // $('[name=estado]').val({$dados->estado});
  
    //On pressing a key on "Search box" in "search.php" file. This function will be called.
 

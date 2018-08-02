@@ -8,6 +8,7 @@ class ControleAcessoRecurso extends Model
 {
     //
     protected $table  = 'pessoas_controle_acessos';
+    public $timestamps = false;
 
     public function pessoa(){
     	return $this->belongsTo('App\Pessoa','pessoa'); // (Pessoa::class)

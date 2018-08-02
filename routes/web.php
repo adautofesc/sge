@@ -97,7 +97,7 @@ Route::middleware('login') ->group(function(){
 		Route::get('buscarendereco/{var}','PessoaController@buscarEndereco');
 		// Editar dados das pessoas
 		Route::prefix('editar')->group(function(){
-			Route::get('geral/{var}','PessoaController@editarGeral_view');
+			Route::get('geral/{id}','PessoaController@editarGeral_view');
 			Route::post('geral/{var}','PessoaController@editarGeral_exec');
 			Route::get('contato/{var}','PessoaController@editarContato_view');
 			Route::post('contato/{var}','PessoaController@editarContato_exec');

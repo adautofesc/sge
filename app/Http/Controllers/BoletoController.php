@@ -260,10 +260,12 @@ class BoletoController extends Controller
 			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Nenhum boleto encontrado']);
 		foreach($boletos as $boleto){
 			$boleto_completo = $this->gerarBoleto($boleto);
+
 			$remessa->addBoleto($boleto_completo);
 			$boleto->status='emitido';
 			$boleto->save();
 		}
+		
 
 		//dd($remessa);
 		$remessa->save( 'remessas/'.date('YmdHi').'.rem');
@@ -329,7 +331,6 @@ class BoletoController extends Controller
 		$cliente=PessoaController::formataParaMostrar($cliente);
 		$lancamentos= LancamentoController::listarPorBoleto($boleto->id); //objetos lancamentos
 		$array_lancamentos = array();
-		dd($cliente);
 		foreach($lancamentos as $lancamento){
 			$array_lancamentos[] = $lancamento->referencia;
 		}

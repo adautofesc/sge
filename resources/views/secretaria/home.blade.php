@@ -77,7 +77,7 @@
                        
                     
                     <div>
-                        <a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left">
+                        <a href="/secretaria/relatorios/turmas" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-plus-circle "></i>
                         &nbsp;&nbsp;Relatórios</a>
                     </div>

@@ -237,10 +237,55 @@ class painelController extends Controller
         
         
     }
-    public function testarClasse(){
-        return "=)";
-    }
+    
 
+
+
+
+    /**
+     * 
+     * @return [type] [description]
+     */
+    public function gerarLoginEducadores(){
+        $professores = \App\PessoaDadosAdministrativos::getFuncionarios('Educador');
+        foreach($professores as $professor){
+            $cpf =  \App\PessoaDadosGerais::where('dado',3)->where('pessoa',$professor->id)->first();
+            if($cpf)
+                $professor->cpf = $cpf->valor;
+            else
+                $professor->cpf = '123456';
+            $cpf='';
+
+            $login_db = \App\PessoaDadosAcesso::where('pessoa',$professor->id)->get();
+            //dd($professor);
+             if(count($login_db)==0){
+                $login = new PessoaDadosAcesso();
+                $login->pessoa = $professor->id;
+                $login->usuario = strtolower(str_replace(' ', '.', $professor->nome_simples));
+                $login->senha = \Illuminate\Support\Facades\Hash::make($professor->cpf);
+                $login->validade = '2018-12-31';
+                $login->status = 1;
+                $login->save();
+                $acesso = new \App\ControleAcessoRecurso();
+                $acesso->timestamps = false;
+                $acesso->pessoa = $professor->id;
+                $acesso->recurso = 13;
+                $acesso->save();
+
+                $professor->login = $login;
+
+
+            }
+
+
+        }
+        return $professores;
+    }
+    public function testarClasse(){
+
+        return ' Nenhum procedimento =)';
+
+    }
     public function testarClassePost(Request $r){
         
         foreach($r->matricula as $id){

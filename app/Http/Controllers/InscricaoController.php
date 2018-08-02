@@ -431,7 +431,9 @@ class InscricaoController extends Controller
         $turma=Turma::find($turma);
         if (empty($turma))
             return redirect(asset('/secretaria/turmas'));
-        $inscricoes=Inscricao::where('turma','=', $turma->id)->where('status','<>','cancelada')->get();
+        $inscricoes=Inscricao::where('turma','=', $turma->id)->whereIn('status',['regular','pendente'])->get();
+
+        $inscricoes = $inscricoes->sortBy('pessoa.nome');
         foreach ($inscricoes as $inscricao) {
             $inscricao->telefone = \App\PessoaDadosContato::getTelefone($inscricao->pessoa->id);
             
@@ -454,7 +456,8 @@ class InscricaoController extends Controller
         $turma=Turma::find($turma);
         if (empty($turma))
             return redirect(asset('/secretaria/turmas'));
-        $inscricoes=Inscricao::where('turma','=', $turma->id)->where('status','<>','cancelada')->get();
+        $inscricoes=Inscricao::where('turma','=', $turma->id)->whereIn('status',['regular','pendente'])->get();
+        $inscricoes->sortBy('pessoa.nome');
         //return $inscricoes;
         return view('pedagogico.turma.inscritos',compact('turma'))->with('inscricoes',$inscricoes);
 

@@ -297,12 +297,12 @@ class painelController extends Controller
 
     }
     public function apiChamada($id){
-    $inscritos=\App\Inscricao::where('turma',$id)->where('status','<>','cancelado')->get();
+    $inscritos=\App\Inscricao::where('turma',$id)->where('status','<>','cancelada')->get();
     $inscritos= $inscritos->sortBy('pessoa.nome');
     return $inscritos;
     }
     public function chamada($id){
-        $inscritos=\App\Inscricao::where('turma',$id)->where('status','<>','cancelado')->get();
+        $inscritos=\App\Inscricao::where('turma',$id)->where('status','<>','cancelada')->get();
         $inscritos= $inscritos->sortBy('pessoa.nome');
         if(count($inscritos))
             return view('pedagogico.frequencia.index',compact('inscritos'))->with('i',1);

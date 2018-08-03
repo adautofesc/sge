@@ -378,12 +378,14 @@ class InscricaoController extends Controller
     public static function finaliza($inscricao){
 
         //finaliza turma
-        $inscricao->status = 'finalizada';
-        $inscricao->save();
+        if($inscricao->status == 'regular' || $inscricao->status == 'pendente' ){
+            $inscricao->status = 'finalizada';
+            $inscricao->save();
+             //atualiza a matricula. caso não houver matriculas ativas, finalizar.
+            MatriculaController::atualizar($inscricao->matricula);
+        }
 
-        //atualiza a matricula. caso não houver matriculas ativas, finalizar.
-        MatriculaController::atualizar($inscricao->matricula);
-
+       
         return true;
 
 
@@ -443,27 +445,6 @@ class InscricaoController extends Controller
 
 
     }
-
-
-
-
-    /**
-     * Pedagogico ver inscrições
-     * @param  [type] $turma [description]
-     * @return [type]        [description]
-     */
-    public function verInscritos($turma){
-        $turma=Turma::find($turma);
-        if (empty($turma))
-            return redirect(asset('/secretaria/turmas'));
-        $inscricoes=Inscricao::where('turma','=', $turma->id)->whereIn('status',['regular','pendente'])->get();
-        $inscricoes->sortBy('pessoa.nome');
-        //return $inscricoes;
-        return view('pedagogico.turma.inscritos',compact('turma'))->with('inscricoes',$inscricoes);
-
-
-    }
-
 
 
 

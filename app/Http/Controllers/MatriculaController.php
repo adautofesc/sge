@@ -22,15 +22,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class MatriculaController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *it
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-    /**
      * Grava a Matricula e gera as inscrições
      * @param  Request $r Proveniente de formulário
      * @return View     secretaria.inscricao.gravar

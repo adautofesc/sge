@@ -24,17 +24,10 @@ Route::get('/corrigir-boletos','BoletoController@corrigirBoletosSemParcelas');
 
 Route::get('cursos-disponiveis', 'TurmaController@turmasSite');
 Route::get('vagas', 'TurmaController@turmasSite');
-Route::get('testar-classe', 'painelController@testarClasse');
-Route::post('testar-classe', 'painelController@testarClassePost');
-Route::get('lista/{id}','painelController@chamada'); //lista de chamada aberta
+
 Route::get('meuboleto', function(){ return view('financeiro.boletos.meuboleto');});
 Route::post('meuboleto', 'BoletoController@segundaVia');
 Route::get('boleto/{id}','BoletoController@imprimir');
-Route::get('recadastramento', function(){ return view('pessoa.recadastramento');});
-Route::post('recadastramento','PessoaController@iniciarRecadastramento');
-Route::post('recadastrado','PessoaController@gravarRecadastro');
-Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
-Route::get('/relatorios/alunos-concluintes','InscricaoController@relatorioConcluintes');
 
 
 
@@ -63,6 +56,16 @@ Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec
 //Areas restritas para cadastrados
 Route::middleware('login') ->group(function(){
 	Route::get('home', 'painelController@index');
+	Route::get('recadastramento', function(){ return view('pessoa.recadastramento');});
+	Route::post('recadastramento','PessoaController@iniciarRecadastramento');
+	Route::post('recadastrado','PessoaController@gravarRecadastro');
+	Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
+	Route::get('/relatorios/alunos-concluintes','InscricaoController@relatorioConcluintes');
+	Route::get('testar-classe', 'painelController@testarClasse');
+	Route::post('testar-classe', 'painelController@testarClassePost');
+	Route::get('lista/{id}','painelController@chamada'); //lista de chamada aberta
+	Route::get('turma/{turma}', 'TurmaController@mostrarTurma');
+
 
 
 	Route::prefix('pessoa')->group(function(){

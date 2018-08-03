@@ -37,6 +37,28 @@ class TurmaController extends Controller
         return view('pedagogico.turma.listar', compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$_SESSION['filtro_turmas']);
     }
 
+
+
+
+
+    /**
+     * Pedagogico ver dados das turmas.
+     * @param  [type] $turma [description]
+     * @return [type]        [description]
+     */
+    public function mostrarTurma($turma){
+        $turma=Turma::find($turma);
+        if (empty($turma))
+            return redirect(asset('/secretaria/turmas'));
+        $inscricoes=Inscricao::where('turma','=', $turma->id)->where('status','<>','cancelada')->get();
+        $inscricoes->sortBy('pessoa.nome');
+        //return $inscricoes;
+        return view('pedagogico.turma.mostrar-dados',compact('turma'))->with('inscricoes',$inscricoes);
+
+
+    }
+
+
     /**
      * Listador global de turmas
      * Suporta os seguintes tipos de filtros:

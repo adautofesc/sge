@@ -19,6 +19,12 @@
                     </div>
                 </div>
                 <div class="card-block">
+                    <div class="input-group input-group-sm">
+                          <input type="text" class="form-control" placeholder="Código da turma" id="turma" maxlength="10" size="2">
+                          <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" onclick="abreTurma();">Consultar</button>
+                          </span>
+                    </div><!-- /input-group -->
                     <div>
                         <a href="{{route('turmas')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-bookmark "></i>
@@ -33,7 +39,8 @@
                         <a href="{{route('turmas.expiradas')}}" class="btn btn-danger-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-minus-square "></i>
                         &nbsp;&nbsp;Encerrar Expiradas</a>
-                    </div>                    
+                    </div> 
+                                       
                                    
                 </div>
             </div>  
@@ -96,4 +103,14 @@
 
 </section>
 
+@endsection
+@section('scripts')
+<script type="text/javascript">
+    function abreTurma(){
+        if($("#turma").val()!='')
+            window.open('/turma/'+$("#turma").val(),'Mostrar Turma');
+        else
+            alert('Ops, cadê o código da turma?');
+    }
+</script>
 @endsection

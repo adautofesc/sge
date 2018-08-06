@@ -553,7 +553,9 @@ class TurmaController extends Controller
 
     public function turmasSite(){
 
+        
         $turmas=Turma::select('*', 'turmas.vagas as vagas','turmas.id as id')
+                ->where('turmas.vagas','!=','turmas.matriculados')
                 ->whereIn('turmas.status', ['inscricao','iniciada'])
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
@@ -561,6 +563,7 @@ class TurmaController extends Controller
                 ->orderBy('disciplinas.nome')
                 ->get();
         //return $turmas;
+        
         return view('pedagogico.turma.turmas-site',compact('turmas'));
     }
 
@@ -820,11 +823,18 @@ class TurmaController extends Controller
 
     return $turmas;
     }
-    public function getChamada($turma_id){
+    public function getChamada($turma_id,$page,$opt){
 
-        print 'Carregando...';
+        if($opt=='pdf')
+            $opt='pdf&rel_pdf=rel_freq';
 
-        $url = "https://script.google.com/macros/s/AKfycbwY09oq3lCeWL3vHoxdXmocjVPnCEeZMVQgzhgl-J0WNOQPzQc/exec?id=".$turma_id."&tipo=url";
+        if($page == 0)
+            $url = "https://script.google.com/macros/s/AKfycbwY09oq3lCeWL3vHoxdXmocjVPnCEeZMVQgzhgl-J0WNOQPzQc/exec?id=".$turma_id."&portrait=false&tipo=".$opt;
+        else
+            $url = "https://script.google.com/macros/s/AKfycbwY09oq3lCeWL3vHoxdXmocjVPnCEeZMVQgzhgl-J0WNOQPzQc/exec?id=".$turma_id."&portrait=false&tipo=".$opt."&page=".$page;
+
+
+        print "Acessando sua lista em: ".$url;
 
         $ch = curl_init();
         //não exibir cabeçalho
@@ -855,6 +865,57 @@ class TurmaController extends Controller
 
             return $result;
     }
+
+
+
+
+
+    public function getPlano($professor,$tipo,$curso){
+
+        print 'Carregando...';
+       
+        if($tipo)
+            $url = "https://script.google.com/macros/s/AKfycbwY09oq3lCeWL3vHoxdXmocjVPnCEeZMVQgzhgl-J0WNOQPzQc/exec?id_pro=".$professor."&id_disciplina=".$curso."&tipo=plano";
+        else
+            $url = "https://script.google.com/macros/s/AKfycbwY09oq3lCeWL3vHoxdXmocjVPnCEeZMVQgzhgl-J0WNOQPzQc/exec?id_pro=".$professor. "&id_curso=".$curso."&tipo=plano";
+        //return $url;
+
+        $ch = curl_init();
+        //não exibir cabeçalho
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        // redirecionar se hover
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        // desabilita ssl
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        // Will return the response, if false it print the response
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        //envia a url
+        curl_setopt($ch, CURLOPT_URL, $url);
+        //executa o curl
+        $result = curl_exec($ch);
+        //encerra o curl
+        curl_close($ch);
+
+
+
+       $ws = json_decode($result);
+
+
+       if( isset($ws{0}->url) || $ws{0}->url != '' )
+
+            return redirect( $ws{0}->url);
+
+        else
+
+            return $result;
+    }
+
+
+
+
+
+
+
 
     /**
      * Finaliza turma individualmente

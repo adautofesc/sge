@@ -249,6 +249,7 @@
                 <a href="/pedagogico/turmas/cadastrar" class="btn btn-primary rounded-s"><i class="fa fa-asterisk"></i> Nova...</a>
                 <button type="submit" name="acao" value = "encerrar"  class="btn btn-primary rounded-s">Encerrar</button>
                 <button type="submit" name="acao" value = "relancar" class="btn btn-primary rounded-s">Relançar turmas</button>
+                <a href="/secretaria/turmas/" class="btn btn-primary rounded-s"><i class="fa fa-stack-overflow"></i> Listas da secretaria</a>
                 {{csrf_field()}}
 
                 
@@ -320,7 +321,7 @@
                                                     <div class="item-heading">Curso/atividade</div>
                                                     <div class="">
                                                         
-                                                             <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->texto_status. ' - Começa em  ' .$turma->data_inicio}}</small></div> 
+                                                             <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->status. ' - Começa em  ' .$turma->data_inicio}}</small></div> 
 
                                                        
                                                         @if(isset($turma->disciplina))
@@ -395,10 +396,12 @@
         <!-- /.col-xl-6 -->
     </div>
     <div class="row">
-            <div class="col-sm-9"> 
+            <div class="col-sm-12"> 
                 <a href="/pedagogico/turmas/cadastrar" class="btn btn-primary rounded-s"><i class="fa fa-asterisk"></i> Nova...</a>
                 <button type="submit" name="acao" value = "encerrar"  class="btn btn-primary rounded-s">Encerrar</button>
-                <button type="submit" name="acao" value = "relancar" class="btn btn-primary rounded-s">Relançar turmas</button>
+                <button type="submit" name="acao" value = "relancar" class="btn btn-primary rounded-s">Relançar turmassss</button>
+                <a href="/pedagogico/turmas/" class="btn btn-primary rounded-s"><i class="fa fa-asterisk"></i> Lista na Secretaria</a>
+
                 {{csrf_field()}}
 
                 

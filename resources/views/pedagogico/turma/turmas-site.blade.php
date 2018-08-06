@@ -1,18 +1,22 @@
+@php $i=0
+@endphp
 <!DOCTYPE html>
 <html>
 <head>
 	<link rel="stylesheet" href="{{ asset('css/vendor.css')}}">
-	<title>SGE - Turmas Disponíveis</title>
+	<title>FESC - Turmas Disponíveis</title>
 </head>
 <body>
-	<h3> Turmas disponíveis para 1º semestre de 2018 </h3>
+	<h3> Turmas com vagas disponíveis</h3>
 	<br>
-	<h5>Novas matrículas podem ser efetuadas a partir de 20/02.</h5>
+	<h5> {{$i}} turmas com vagas. </h5>
 	<br>
+	<p class="small">Consultado em {{date('d/m/Y h:i')}}</p>
+	
 	@if(isset($professor))
 		<h4> Prof. {{$professor}} </h4>
 	@endif
-	<table class="table table-striped">
+	<table class="table table-striped table-condensed">
 		<thead>
 			<th scope="col">#</th>
 			<th scope="col">Turma</th>
@@ -25,9 +29,9 @@
 			<th scope="col">Restam</th>
 		</thead>
 		<tbody>
-			@php $i=0
-			@endphp
+			
 			@foreach($turmas as $turma)
+			@if($turma->vagas-$turma->matriculados>0)
 			@php $i++
 			@endphp
 			 <tr>
@@ -55,6 +59,7 @@
 			 		</td>
 			 	
 			 </tr>
+			@endif
 			@endforeach
 		</tbody>
 	</table>

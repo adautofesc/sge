@@ -37,7 +37,7 @@
                         </li>
                         @endforeach
                     </ol>
-                    <a href="#"> Acessar turma pela secretaria.</a>
+                    <a href="/secretaria/turma/{{$turma->id}}"> Acessar turma pela secretaria.</a>
 
                     
                 </div>     
@@ -59,21 +59,29 @@
                 -->
                     <div>
                         <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/lista/{{$turma->id}}" target="_blank">Lista em branco</a>
+                        &nbsp;&nbsp;<a href="/lista/{{$turma->id}}" >Lista em branco</a>
                     </div>
                     
                     <div>
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;
-                        <a href="/chamada/{{$turma->id}}" target="_blank">Frequência digital 1</a>
-                        <a href="/documentos/oficios/2018004.pdf" target="_blank"> 2 </a>
-                        <a href="/documentos/oficios/2018004.pdf" target="_blank"> 3 </a>
-                        <a href="/documentos/oficios/2018004.pdf" target="_blank"> 4 </a>
-                        <a href="/documentos/oficios/2018004.pdf" target="_blank"> <i class=" fa fa-print"></i> </a>
+                        <a href="/chamada/{{$turma->id}}/0/url" >Frequência digital</a>
+                        <a href="/chamada/{{$turma->id}}/1/url"> 1 </a>
+                        <a href="/chamada/{{$turma->id}}/2/url"> 2 </a>
+                        <a href="/chamada/{{$turma->id}}/3/url"> 3 </a>
+                        <a href="/chamada/{{$turma->id}}/4/url"> 4 </a>
+                        <a href="/chamada/{{$turma->id}}/0/rel" title="Atualizar"> <i class=" fa fa-refresh"></i> </a>
+                        <!--
+                        <a href="/chamada/{{$turma->id}}/0/pdf" title="Imprimir"> <i class=" fa fa-print"></i> </a>
+                    -->
                     </div>
                     <div>
                         <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Plano de ensino
+                        @if(isset($turma->disciplina->id))
+                            &nbsp;&nbsp;<a href="/plano/{{$turma->professor->id}}/1/{{$turma->disciplina->id}}" title="Plano de ensino">Plano de ensino</a>
+                        @else
+                            &nbsp;&nbsp;<a href="/plano/{{$turma->professor->id}}/0/{{$turma->curso->id}}" title="Plano de ensino">Plano de ensino</a>
+                        @endif
                     </div>
                     <!--
                     <div>

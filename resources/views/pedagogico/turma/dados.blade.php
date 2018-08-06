@@ -14,46 +14,118 @@
         @endforeach
         das {{$turma->hora_inicio}} às {{$turma->hora_termino}} - 
         Prof(a). {{$turma->professor->nome_simples}}
-
+        <br>
+        <i class="fa fa-{{$turma->icone_status}} icon"></i> Status: {{$turma->status}} . Início em {{$turma->data_inicio}} Término em {{$turma->data_termino}}
     </p>
 </div>
 @include('inc.errors')
 <section class="section">
-    <div class="row ">
-        <div class="col-xl-12">
-            <div class="subtitle-block">
-                <h3 class="subtitle"> Alunos inscritos </h3>
-            </div>
-            <div class="card sameheight-item">     
-                <div class="card-block">
-                    <!-- Nav tabs -->
-                    <div class="row">
-                        <div class="col-xs-12 text-xs">
-                            <div class="title-block ">
-                                <p class="title-description"> Relação: </p>
-                                <br>
-                                <ol>
-                                    @foreach($inscricoes as $inscricao)
-                                    <li>
-                                        <a hrfe="#" class="btn btn-danger btn-sm" title="Remover esta pessoa da turma" onclick="remover('{{$inscricao->id}}')">
-                                            <i class=" fa fa-times text-white"></i>
-                                        </a>
-                                        <a href="{{asset('/secretaria/atender').'/'.$inscricao->pessoa->id}}" target="_blank" class="btn btn-primary btn-sm" title="Abrir tela de atendimento desta pessoa">
-                                            <i class=" fa fa-user text-white"></i></a>
-                                        
-                                         <b>{{$inscricao->pessoa->nome}}</b> Tel.{{$inscricao->telefone}} <small>Cod.{{$inscricao->pessoa->id}} </small>
-                                    </li>
-                                    @endforeach
-                                </ol>
-                               
-                                
-                            </div>
-
-                        </div>
+    <div class="row">
+        <div class="col-md-7 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Alunos inscritos</p>
                     </div>
                 </div>
+
+                <div class="card-block">
+                   <ol>
+                        @foreach($inscricoes as $inscricao)
+                        <li>
+                            <small>
+                            <a hrfe="#" class="btn btn-danger btn-sm" title="Remover esta pessoa da turma" onclick="remover('{{$inscricao->id}}')">
+                                <i class=" fa fa-times text-white"></i>
+                            </a>
+                            <a href="{{asset('/secretaria/atender').'/'.$inscricao->pessoa->id}}" target="_blank" class="btn btn-success btn-sm" title="Abrir tela de atendimento desta pessoa">
+                                
+                            
+                             <b>{{$inscricao->pessoa->nome}}</b></a> Tel.{{$inscricao->telefone}} <small>Cod.{{$inscricao->pessoa->id}} </small>
+                         </small>
+                        </li>
+                        @endforeach
+                    </ol>
+                    <a href="/turma/{{$turma->id}}"> Acessar turma pelo pedagógico.</a>
+
+                    
+                </div>     
+            </div>
+        </div> 
+        <div class="col-md-5 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Frequência</p>
+                    </div>
+                </div>
+                <div class="card-block">
+                    <!--
+                    <div>
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;<a href="#"> Listas de Frequência Anteriores</a>
+                    </div>
+                -->
+                    <div>
+                        <i class=" fa fa-arrow-right "></i> 
+                        &nbsp;&nbsp;<a href="/lista/{{$turma->id}}" >Lista em branco</a>
+                    </div>
+                    
+                    <div>
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;
+                        <a href="/chamada/{{$turma->id}}/0/url" >Frequência digital</a>
+                        <a href="/chamada/{{$turma->id}}/1/url"> 1 </a>
+                        <a href="/chamada/{{$turma->id}}/2/url"> 2 </a>
+                        <a href="/chamada/{{$turma->id}}/3/url"> 3 </a>
+                        <a href="/chamada/{{$turma->id}}/4/url"> 4 </a>
+                        <a href="/chamada/{{$turma->id}}/0/rel" title="Atualizar"> <i class=" fa fa-refresh"></i> </a>
+                        <!--
+                        <a href="/chamada/{{$turma->id}}/0/pdf" title="Imprimir"> <i class=" fa fa-print"></i> </a>
+                    -->
+                    </div>
+                    <div>
+                        <i class=" fa fa-arrow-right "></i>
+                        @if(isset($turma->disciplina->id))
+                            &nbsp;&nbsp;<a href="/plano/{{$turma->professor->id}}/1/{{$turma->disciplina->id}}" title="Plano de ensino">Plano de ensino</a>
+                        @else
+                            &nbsp;&nbsp;<a href="/plano/{{$turma->professor->id}}/0/{{$turma->curso->id}}" title="Plano de ensino">Plano de ensino</a>
+                        @endif
+                    </div>
+                    <!--
+                    <div>
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Solicitação de equipamentos
+                    </div>
+                    <div>
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Solicitação de sala de aula extra
+                    </div>
+                -->
+                
+                </div>   
             </div>
         </div>
+        
+        <div class="col-md-5 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Formulários</p>
+                    </div>
+                </div>
+                <div class="card-block">
+
+                    <div>
+                        <i class=" fa fa-arrow-right "></i> 
+                        &nbsp;&nbsp;<a href="#" target="_blank" title="Formulário de definição de Turmas e horários">Nenhum documento cadastrado</a>
+                    </div>
+                  
+    
+                
+                </div>   
+            </div>
+        </div> 
+
     </div>
 </section>
 <br>

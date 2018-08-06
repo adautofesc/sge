@@ -270,6 +270,7 @@
                     <div class="row">
                         <div class="col-xs-12 text-xs-right">
                             <div class="action dropdown pull-right "> 
+                                <a href="/pedagogico/turmas/" class="btn btn-primary rounded-s"><i class="fa fa-th-list"></i> Turmas no pedagógico</a>
                                 <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Com os selecionados...
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 

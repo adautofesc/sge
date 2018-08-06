@@ -345,7 +345,8 @@ Route::middleware('login') ->group(function(){
 		Route::get('turmas-professor', 'TurmaController@listarProfessores');
 		Route::post('turmas-professor', 'TurmaController@turmasProfessor');
 	});
-	Route::get('chamada/{id}','TurmaController@getChamada');
+	Route::get('chamada/{id}/{pg}/{url}','TurmaController@getChamada');
+	Route::get('plano/{professor}/{tipo}/{curso}','TurmaController@getPlano');
 	
 
 

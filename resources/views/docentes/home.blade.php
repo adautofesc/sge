@@ -11,7 +11,7 @@
 </div>
 <section class="section">
     <div class="row">
-        <div class="col-md-6 center-block">
+        <div class="col-md-7 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
@@ -20,36 +20,59 @@
                 </div>
 
                 <div class="card-block">
-                    @foreach($turmas as $turma)
-
-                    <div class="row" >
-                        <div class="col-md-1">
-                             <i class=" fa fa-users "></i>
-                        </div>
-                        <div class="col-md-3" >
-                             <a href="/chamada/{{$turma->id}}" target="_blank"
-                            title="Acessar a lista do curso: {{$turma->curso->nome}}@if(isset($turma->disciplina)) / {{$turma->disciplina->nome}}@endif "> Turma {{$turma->id}}</a>
-                        </div>
-                        <div class="col-md-3" >
-                             {{implode(', ',$turma->dias_semana)}}
-                        </div>
-                        <div class="col-md-4">
-                             {{$turma->hora_inicio}}h~{{$turma->hora_termino}}h
-                        </div>
-                        <div class="col-md-1">
-                             <i class=" fa fa-cog "></i>
-                        </div>
-                           
-
-                    </div>
-
-                    @endforeach
-
                     
+                    <table class="table table-striped table-condensed">
+                    
+                        <thead>
+                            <th><small>Cód.</small></th>
+                            <th><small>Dia(s)</small></th>
+                            <th><small>Inicio</small></th>
+                            <th><small>Curso/Disciplina</small></th>
+                            <th><small>Opções</small></th>
+                        </thead>
+                    
+                        <tbody>
+                            @foreach($turmas as $turma)
+                            <tr>
+                                <td><small>{{$turma->id}}</small></td>
+                                <td title="Inicio: {{$turma->data_inicio}}"><small>{{implode(', ',$turma->dias_semana)}}</small></td>
+                                <td><small>{{$turma->hora_inicio}}h</small></td>
+                                <td><small>
+                                    <a href="/chamada/{{$turma->id}}/0/url" target="_blank">
+                                        
+                                        @if(isset($turma->disciplina))
+                                         {{$turma->disciplina->nome}}
+                                         @else
+                                          {{$turma->curso->nome}}
+                                        @endif
+
+                                    </a>
+                                    </small>
+                                </td>
+                            
+                                <td>
+                                    <a href="/lista/{{$turma->id}}" title="Impressão de lista em branco" target="_blank">
+                                        <i class=" fa fa-print "></i></a>&nbsp;
+                                        @if(isset($turma->disciplina->id))
+                                        <a href="/plano/{{$turma->professor->id}}/1/{{$turma->disciplina->id}}" title="Plano de ensino" target="_blank">
+                                            <i class=" fa fa-clipboard "></i></a>
+                                        @else
+                                           <a href="/plano/{{$turma->professor->id}}/0/{{$turma->curso->id}}" title="Plano de ensino" target="_blank"><i class=" fa fa-clipboard "></i></a>
+                                        @endif
+                                  
+
+                                    
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    
+                                   
                 </div>     
             </div>
         </div> 
-        <div class="col-md-6 center-block">
+        <div class="col-md-5 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
@@ -89,7 +112,7 @@
             </div>
         </div>
         
-        <div class="col-md-6 center-block">
+        <div class="col-md-5 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">

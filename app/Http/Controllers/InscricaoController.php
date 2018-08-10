@@ -433,7 +433,7 @@ class InscricaoController extends Controller
         $turma=Turma::find($turma);
         if (empty($turma))
             return redirect(asset('/secretaria/turmas'));
-        $inscricoes=Inscricao::where('turma','=', $turma->id)->whereIn('status',['regular','pendente'])->get();
+        $inscricoes=Inscricao::where('turma','=', $turma->id)->whereIn('status',['regular','pendente','finalizada'])->get();
 
         $inscricoes = $inscricoes->sortBy('pessoa.nome');
         foreach ($inscricoes as $inscricao) {

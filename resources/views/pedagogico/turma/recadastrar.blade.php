@@ -3,7 +3,7 @@
 <div class="title-block">
     <h3 class="title"> Relançar turmas <span class="sparkline bar" data-type="bar"></span> </h3>
     <br>
-    <p class="title-description alert alert-danger"> Preencha <strong>SOMENTE</strong> os dados que serão aplicados nas turmas relacionadas acima. </p>
+    <p class="title-description alert alert-danger"> Preencha <strong>SOMENTE</strong> os dados que serão <strong>ALTERADOS</strong> nas turmas escolhidas previamente. </p>
 </div>
 @include('inc.errors')
 <form name="item" method="POST" action="./turmas/recadastrar">

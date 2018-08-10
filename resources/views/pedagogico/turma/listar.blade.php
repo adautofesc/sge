@@ -247,9 +247,9 @@
          <div class="row">
             <div class="col-sm-9"> 
                 <a href="/pedagogico/turmas/cadastrar" class="btn btn-primary rounded-s"><i class="fa fa-asterisk"></i> Nova...</a>
-                <button type="submit" name="acao" value = "encerrar"  class="btn btn-primary rounded-s">Encerrar</button>
-                <button type="submit" name="acao" value = "relancar" class="btn btn-primary rounded-s">Relançar turmas</button>
-                <a href="/secretaria/turmas/" class="btn btn-primary rounded-s"><i class="fa fa-stack-overflow"></i> Listas da secretaria</a>
+                <button type="submit" name="acao" value = "encerrar"  class="btn btn-primary rounded-s">Encerrar selecionadas</button>
+                <button type="submit" name="acao" value = "relancar" class="btn btn-primary rounded-s">Relançar selecionadas</button>
+                <a href="/secretaria/turmas/" class="btn btn-primary rounded-s" title="Ver essa lista em modo Secretaria (requer permissão)"><i class="fa fa-stack-overflow"></i> Modo Secretaria</a>
                 {{csrf_field()}}
 
                 
@@ -398,9 +398,9 @@
     <div class="row">
             <div class="col-sm-12"> 
                 <a href="/pedagogico/turmas/cadastrar" class="btn btn-primary rounded-s"><i class="fa fa-asterisk"></i> Nova...</a>
-                <button type="submit" name="acao" value = "encerrar"  class="btn btn-primary rounded-s">Encerrar</button>
-                <button type="submit" name="acao" value = "relancar" class="btn btn-primary rounded-s">Relançar turmassss</button>
-                <a href="/pedagogico/turmas/" class="btn btn-primary rounded-s"><i class="fa fa-asterisk"></i> Lista na Secretaria</a>
+                <button type="submit" name="acao" value = "encerrar"  class="btn btn-primary rounded-s">Encerrar selecionadas</button>
+                <button type="submit" name="acao" value = "relancar" class="btn btn-primary rounded-s">Relançar selecionadas</button>
+                <a href="/pedagogico/turmas/" class="btn btn-primary rounded-s" title="Ver essa lista em modo Secretaria (requer permissão)"><i class="fa fa-asterisk"></i> Modo Secretaria</a>
 
                 {{csrf_field()}}
 

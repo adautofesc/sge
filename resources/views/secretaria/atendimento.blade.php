@@ -128,9 +128,13 @@
                         </li>
                         @foreach($matriculas as $matricula)
                         @if($matricula->status == 'cancelada')
-                        <li class="alert-danger" style="background-color: #F2DEDE;"> 
+                        <li style="border:solid 1px red; margin-bottom: 2px;"> 
                         @elseif($matricula->status == 'pendente')
-                        <li class="alert-warning" style="background-color: #FFD8B0;">
+                        <li class="alert-warning" style="background-color:  #FFD8B0; margin-bottom: 12px;">
+                        @elseif($matricula->status == 'espera')
+                        <li class="alert-info" style="background-color: #E7F5F8; margin-bottom: 2px;">
+                        @elseif($matricula->status == 'expirada')
+                        <li class="alert-success" style="background-color: #d6d8d9; margin-bottom: 2px;">
                         @else
                         <li>
                         @endif
@@ -151,7 +155,7 @@
                             @else
                             <div class="row">                          
                                     @if($matricula->inscricoes->first()->turma->programa->id == 12)
-                                            <div class="col-xl-4 text-success " title="CE - {{$matricula->inscricoes->first()->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
+                                            <div class="col-xl-4 text-success" title="CE - {{$matricula->inscricoes->first()->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
                                     @elseif($matricula->inscricoes->first()->turma->programa->id == 2)
                                             <div class="col-xl-4 text-primary " title="PID - {{$matricula->inscricoes->first()->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
                                     @elseif($matricula->inscricoes->first()->turma->programa->id == 3)
@@ -223,11 +227,8 @@
 
                             </div>
                             @foreach($matricula->inscricoes as $inscricao)
-                            @if($inscricao->status == 'cancelada')
-                            <div class="row alert-danger">
-                            @else
-                            <div class="row">
-                            @endif
+                            <div class="row" >
+                           
                                                              
                                 <div class="col-xl-4" title="Turma {{$inscricao->turma->id}} - {{ isset($inscricao->turma->disciplina->nome) ? $inscricao->turma->disciplina->nome: $inscricao->turma->curso->nome}} " style="line-height:40px !important; padding-left: 50px;">
                                      <div><i class=" fa fa-caret-right"></i>&nbsp;<small>&nbsp;i{{$inscricao->id}} - 

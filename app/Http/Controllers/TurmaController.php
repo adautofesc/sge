@@ -367,6 +367,7 @@ class TurmaController extends Controller
         $turma->carga=$request->carga;
         $turma->atributos=$request->atributo;
         $turma->periodicidade=$request->periodicidade;
+        $turma->parceria = $request->parceria;
         $turma->update();
         return redirect(asset('/pedagogico/turmas'));
        
@@ -834,7 +835,7 @@ class TurmaController extends Controller
             $url = "https://script.google.com/macros/s/AKfycbwY09oq3lCeWL3vHoxdXmocjVPnCEeZMVQgzhgl-J0WNOQPzQc/exec?id=".$turma_id."&portrait=false&tipo=".$opt."&page=".$page;
 
 
-        print "Acessando sua lista em: ".$url;
+        print '<div style="font-family:tahoma;font-size:10px;margin:50px auto 0;">Acessando sua lista em: '.$url.'</div><br>';
 
         $ch = curl_init();
         //não exibir cabeçalho
@@ -857,7 +858,7 @@ class TurmaController extends Controller
        $ws = json_decode($result);
 
 
-       if( isset($ws{0}->url) || $ws{0}->url != '' )
+       if( isset($ws{0}->url) )
 
             return redirect( $ws{0}->url);
 
@@ -901,7 +902,7 @@ class TurmaController extends Controller
        $ws = json_decode($result);
 
 
-       if( isset($ws{0}->url) || $ws{0}->url != '' )
+       if( isset($ws{0}->url) )
 
             return redirect( $ws{0}->url);
 

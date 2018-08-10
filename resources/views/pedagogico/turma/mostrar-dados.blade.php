@@ -106,7 +106,10 @@
                     </div>
                 </div>
                 <div class="card-block">
-
+                    <div>
+                        <i class=" fa fa-arrow-right "></i> 
+                        &nbsp;&nbsp;<a href="/pedagogico/turmas/editar/{{$turma->id}}" target="_blank" title="Formulário de definição de Turmas e horários">Editar dados da turma</a>
+                    </div>
                     <div>
                         <i class=" fa fa-arrow-right "></i> 
                         &nbsp;&nbsp;<a href="/documentos/formularios/formulario_turmas.doc" target="_blank" title="Formulário de definição de Turmas e horários">Formulário de Horário</a>

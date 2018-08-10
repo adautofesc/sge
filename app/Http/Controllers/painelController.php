@@ -296,11 +296,19 @@ class painelController extends Controller
 
 
     }
+    /*
     public function apiChamada($id){
     $inscritos=\App\Inscricao::where('turma',$id)->where('status','<>','cancelada')->get();
     $inscritos= $inscritos->sortBy('pessoa.nome');
     return $inscritos;
     }
+    */
+   
+   /**
+    * Lista em Brnco
+    * @param  [type] $id [description]
+    * @return [type]     [description]
+    */
     public function chamada($id){
         $inscritos=\App\Inscricao::where('turma',$id)->where('status','<>','cancelada')->get();
         $inscritos= $inscritos->sortBy('pessoa.nome');

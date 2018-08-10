@@ -49,5 +49,34 @@ class Matricula extends Model
 		}
 	}
 
+	public function getDescontoAttribute($value){
+		//return $value;
+		//return 100;
+		
+		$valor = \App\Http\Controllers\BolsaController::verificaBolsa($this->pessoa,$this->curso);
+		
+			if($valor)
+				return $valor;
+			else
+				return null;
+	}
+
+	public function getValorDescontoAttribute($value){
+		//return $value;
+		//dd($this);
+		if($this->desconto != null){
+			dd($this->desconto);
+			if($this->desconto->tipo == 'p')
+				return $this->valor->valor*$this->desconto->valor/100;
+			else
+			
+				return  $this->desconto->valor;
+
+		}
+		else 
+			return 0;
+
+	}
+
 
 }

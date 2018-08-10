@@ -44,7 +44,8 @@ class ValorController extends Controller
                 return $valor;
             }
             $turma = \App\Turma::find($inscricao_t->turma->id);
-            if($turma->parceria){
+            $fesc=[84,85,86];
+            if(!in_array($turma->local->id,$fesc)){
                 $valor = new Valor;
                 $valor->valor = 0;
                 $valor->parcelas = 1;

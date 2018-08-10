@@ -33,6 +33,10 @@ class Turma extends Model
 			$valor= Valor::where('programa',$this->programa->id)->where('carga',$this->carga)->first();
 			
 		}
+		$fesc=[84,85,86];
+		if(!in_array($this->local->id,$fesc)){
+			return '0';
+		}
 		if(isset($valor))
 			return number_format($valor->valor,2,',','.');
 		else

@@ -245,6 +245,7 @@ class RetornoController extends Controller
 						$boleto->pago = $linha->valor;
 						$boleto->encargos = $linha->valorMulta + $linha->valorMora + $linha->valorIOF;
 						$boleto->descontos = $linha->valorDesconto;
+						$boleto->retorno = $retorno_id;
 						$boleto->save();
 						
 					}

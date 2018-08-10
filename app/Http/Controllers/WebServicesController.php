@@ -11,7 +11,7 @@ class WebServicesController extends Controller
 
 
     public function apiChamada($id){
-	    $inscritos=\App\Inscricao::where('turma',$id)->where('status','<>','cancelada')->get();
+	    $inscritos=\App\Inscricao::where('turma',$id)->get();
 	    $inscritos= $inscritos->sortBy('pessoa.nome');
 	    if(count($inscritos)>0)
 	    	return $inscritos;
@@ -22,8 +22,8 @@ class WebServicesController extends Controller
 	    	$pessoa = new \App\Pessoa;
 	    	$pessoa->nome = '';
 	    	$pessoa->id = 0;
-	    	$inscricao->pessoax = new \App\Pessoa;
-	    	$inscricao->turma = \App\Turma::find($id);
+	    	
+	    	$inscricao->setTurma($id);
 	    	$inscricoes->push($inscricao);
 	    	return $inscricoes;
 	    }

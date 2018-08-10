@@ -57,7 +57,7 @@ class SecretariaController extends Controller
 		//listar todas matriculas
 		//if Mostrar estiver definido, serão exibidos todos os dados
 		if(isset($_GET["mostrar"])){
-			 $matriculas=Matricula::where('pessoa', Session::get('pessoa_atendimento'))->where('status','<>','expirada')->orderBy('id','desc')->get();
+			 $matriculas=Matricula::where('pessoa', Session::get('pessoa_atendimento'))->orderBy('id','desc')->limit(20)->get();
 			 //listar inscrições de cada matricula;
 			 foreach($matriculas as $matricula){
 			 	$matricula->getInscricoes();
@@ -66,7 +66,7 @@ class SecretariaController extends Controller
 			 $inscricoes = Inscricao::where('pessoa',$id)->where('matricula',null)->get();
 
 			 //listar Boletos
-			 $boletos = Boleto::where('pessoa',$id)->get();
+			 $boletos = Boleto::where('pessoa',$id)->orderBy('id','desc')->limit(20)->get();
 			 //listar lancamentos de cada boleto;
 			 foreach($boletos as $boleto){
 			 	$boleto->getLancamentos();
@@ -80,14 +80,17 @@ class SecretariaController extends Controller
 		// mostrar somente dados ativos/ok
 		else{
 			 $matriculas=Matricula::where('pessoa', Session::get('pessoa_atendimento'))
+			 	->whereIn('status',['ativa','pendente','espera'])
+			 	/*
 			 	->where(function($query){ $query
 							->where('status','ativa')
 							->orwhere('status', 'pendente');
-					})
+					})*/
 			 	->orderBy('id','desc')->get();
 			 //listar inscrições de cada matricula;
 			 foreach($matriculas as $matricula){
 			 	$matricula->getInscricoes();
+
 			 }
 
 			 $inscricoes = Inscricao::where('pessoa',$id)
@@ -105,9 +108,9 @@ class SecretariaController extends Controller
 			 	->where(function($query){ $query
 							->where('status','gravado')
 							->orwhere('status', 'impresso')
-							->orwhere('status', 'pago')
 							->orwhere('status', 'emitido');
 					})
+			 	->orderBy('id','desc')
 			 	->get();
 			 //listar lancamentos de cada boleto;
 			 foreach($boletos as $boleto){

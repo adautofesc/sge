@@ -255,18 +255,29 @@ class BoletoController extends Controller
 		    ]
 		);
 		
-		$boletos =Boleto::where('status','impresso')->get();
+		$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->get();
 		if(count($boletos) == 0)
 			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Nenhum boleto encontrado']);
 		foreach($boletos as $boleto){
 			$boleto_completo = $this->gerarBoleto($boleto);
+			if($boleto->status == 'cancelar'){
+				$boleto_completo->baixarBoleto();
+				$boleto->status='cancelado';	
+
+			}
+			else{
+				
+				$boleto->status='emitido';
+				
+			}
+
+			$boleto->remessa = intval(date('ymdHi'));
+			$boleto->save();
 
 			$remessa->addBoleto($boleto_completo);
-			$boleto->status='emitido';
-			$boleto->save();
+	
 		}
 		
-
 		//dd($remessa);
 		$remessa->save( 'remessas/'.date('YmdHi').'.rem');
 		$arquivo = date('YmdHi').'.rem';
@@ -345,6 +356,8 @@ class BoletoController extends Controller
 		]);
 		if(is_null($cliente->cpf)){	
 			$cliente->cpf = '111.111.111-11';
+
+		//dd($cliente->cpf);
 		}
 		$pagador = new \Eduardokum\LaravelBoleto\Pessoa([
 			'documento' => $cliente->cpf,

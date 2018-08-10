@@ -329,7 +329,8 @@ class PessoaController extends Controller
 		//return $pessoa;
 		//return redirect(asset('/secretaria/atender/'.$id));
 		$atestados = \App\Atestado::where('pessoa',$pessoa->id)->get();
-		return view('pessoa.mostrar',compact('pessoa'))->with('atestados',$atestados);
+		$atendimentos = \App\Atendimento::where('usuario', $pessoa->id)->get();
+		return view('pessoa.mostrar',compact('pessoa'))->with('atestados',$atestados)->with($atendimentos);
 
 	}
 	public function edita($id){

@@ -21,7 +21,7 @@
 
     <div class="card-header">
         <div class="header-block">
-        <p class="title" style="color:white"> Matrícula Código {{$matricula->id}}</p>
+        <p class="title" style="color:white"> Matrícula Código {{$matricula->id}} - {{$matricula->getNomeCurso()}}</p>
         </div>
     </div>
 
@@ -90,13 +90,7 @@
                     </label>
 
                 </div>
-            </div>
-         
-                
-                
-
-                
-                
+            </div>        
         </div>
         <div class="form-group row"> 
             <label class="col-sm-2 form-control-label text-xs-right">

@@ -30,7 +30,7 @@ Class Data
                         $this->dia = $p[0];
                         $this->mes = $p[1];
                         $this->ano = $p[2];
-                        $this->diaSemana = date("w", mktime( $hora, $minuto , $segundo , $this->mes, $this->dia, $this->ano));
+                        $this->diaSemana = date("w", mktime( 0, 0 , 0 , $this->mes, $this->dia, $this->ano));
                 }
         }
         public function getData()

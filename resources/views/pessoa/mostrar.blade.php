@@ -21,7 +21,7 @@
                     
                     <ul class="nav nav-tabs nav-tabs-bordered">
                         <li class="nav-item"> <a href="" class="nav-link active" data-target="#geral" data-toggle="tab" aria-controls="geral" role="tab">Dados Gerais</a> </li>
-                        <li class="nav-item"> <a href="" class="nav-link" data-target="#academicos" aria-controls="academicos" data-toggle="tab" role="tab">Acadêmicos</a> </li>
+                        <li class="nav-item"> <a href="" class="nav-link" data-target="#academicos" aria-controls="academicos" data-toggle="tab" role="tab">Atendimentos</a> </li>
                         <li class="nav-item"> <a href="" class="nav-link" data-target="#clinicos" aria-controls="clinicos" data-toggle="tab" role="tab">Clínicos</a> </li>
                         <li class="nav-item"> <a href="" class="nav-link" data-target="#contato" aria-controls="contato" data-toggle="tab" role="tab">Contato</a> </li>
                         <li class="nav-item"> <a href="" class="nav-link" data-target="#financeiros" aria-controls="financeiros" data-toggle="tab" role="tab">Financeiros</a> </li>

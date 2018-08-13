@@ -37,33 +37,31 @@ class ValorController extends Controller
                 $matricula->status = 'cancelada';
                 $matricula->obs = 'Cancelada automaticamente por falta de inscrições.';
                 $matricula->save();
-                $valor = new Valor;
-                $valor->valor = 0;
-                $valor->parcelas = 1;
-                $valor->referencia = 'Sem inscrição.';
-                return $valor;
+                return ValorController::retornarZero('Não há inscrições ativas');
             }
             $turma = \App\Turma::find($inscricao_t->turma->id);
+
+            //dd($turma->parceria->id);
             $fesc=[84,85,86];
             if(!in_array($turma->local->id,$fesc)){
-                $valor = new Valor;
-                $valor->valor = 0;
-                $valor->parcelas = 1;
-                $valor->referencia = 'Parceria.';
-                return $valor;
+                 return ValorController::retornarZero('Parcerias/Ação Social');
 
             }
+            if(isset($turma->parceria))
+                return ValorController::retornarZero('Parcerias/Ação Social');
+
+            if($turma->programa->id == 4)
+                return ValorController::retornarZero('Escola Municipal de Governo');
+
+
+
 
     		if($matricula->curso == 307)
     		{
     			$inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','pendente'])->get();
     			switch (count($inscricoes)) {
     				case 0:
-                        $valor = new Valor;
-                        $valor->valor = 0;
-                        $valor->parcelas = 1;
-                        $valor->referencia = ' Nenhuma disciplina regular.';
-                        return $valor;
+                         return ValorController::retornarZero('Não há inscrições ativas');
                         break;
                     case 1:
                     	$valor = Valor::find(5);
@@ -94,11 +92,7 @@ class ValorController extends Controller
     			//pega a primeira inscricao da matricula
     			$inscricao = \App\Inscricao::where('matricula',$matricula->id)->first();
                 if(!$inscricao){
-                    $valor = new Valor;
-                        $valor->valor = 0;
-                        $valor->parcelas = 1;
-                        $valor->referencia = 'Valor não disponível no tabela de valores.';
-                        return $valor;
+                    return ValorController::retornarZero('Não há inscrições ativas');
                 }
 
 
@@ -141,6 +135,14 @@ class ValorController extends Controller
     				//se não verificar programa e carga horária
     		}
     	}
+
+    }
+    public static function retornarZero($msg='Valor não disponível no tabela de valores.'){
+        $valor = new Valor;
+        $valor->valor = 0;
+        $valor->parcelas = 1;
+        $valor->referencia = $msg;
+        return $valor;
 
     }
 }

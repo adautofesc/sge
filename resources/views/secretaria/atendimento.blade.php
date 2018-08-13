@@ -76,7 +76,7 @@
                 </div>
                 <div class="card-block">
                     <div><a href="{{asset('/pessoa/mostrar/'.$pessoa->id)}}"  class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-archive "></i> <small>Dados completos</small></a></div>
-                    <div><a href="{{asset('/pessoa/bolsa/'.$pessoa->id)}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-plus-square-o"></i> <small>Solicitações de Bolsa</small></a></div>
+                    <div><a href="{{asset('/pessoa/bolsa/cadastrar/'.$pessoa->id)}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-plus-square-o"></i> <small>Solicitações de Bolsa</small></a></div>
                     
                 </div>
                 
@@ -128,9 +128,9 @@
                         </li>
                         @foreach($matriculas as $matricula)
                         @if($matricula->status == 'cancelada')
-                        <li style="border:solid 1px red; margin-bottom: 2px;"> 
+                        <li style="background-color:  #FDD8B0; margin-bottom: 2px;"> 
                         @elseif($matricula->status == 'pendente')
-                        <li class="alert-warning" style="background-color:  #FFD8B0; margin-bottom: 12px;">
+                        <li class="alert-warning" style="background-color:  #FFD8B0; margin-bottom: 2px;">
                         @elseif($matricula->status == 'espera')
                         <li class="alert-info" style="background-color: #E7F5F8; margin-bottom: 2px;">
                         @elseif($matricula->status == 'expirada')
@@ -199,8 +199,10 @@
                                          &nbsp;<a href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}" target="_blank" title="Imprimir Termo de Matrícula"><i class=" fa fa-print "></i></a>
                                          
 
-                                        @if($matricula->desconto > 0)
+                                        @if(isset($matricula->desconto->id))
+                                        @if($matricula->desconto->id > 0)
                                              &nbsp;<span><i class=" fa fa-flag " title="Esta matrícula possui bolsa."></i></span>
+                                        @endif
                                         @endif
                                          @if($matricula->status == 'pendente')
                                             &nbsp;<span><i class=" fa fa-exclamation-triangle"  title="{{$matricula->obs}}"></i></span>

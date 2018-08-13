@@ -7,81 +7,7 @@ use Illuminate\Http\Request;
 
 class BolsaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Bolsa  $bolsa
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Bolsa $bolsa)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Bolsa  $bolsa
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Bolsa $bolsa)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Bolsa  $bolsa
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Bolsa $bolsa)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Bolsa  $bolsa
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Bolsa $bolsa)
-    {
-        //
-    }
+    
     /**
      * Gerador de Bolsas, para migração do sistema de bolsas em matriculas para bolsas independentes
      * @return [type] [description]
@@ -89,6 +15,8 @@ class BolsaController extends Controller
     public function gerador(){
         //pegar todas matriculas com bolsa
         $matriculas = \App\Matricula::select(['id','desconto','curso','pessoa'])->whereIn('status',['ativa','pendente'])->where('desconto','>',0)->get();
+
+       
 
         //Contador
        $bolsas_criadas = 0;
@@ -110,13 +38,11 @@ class BolsaController extends Controller
                 $bolsa->pessoa = $matricula->pessoa;
                 $bolsa->curso = $matricula->curso;
                 $bolsa->desconto = $matricula->desconto;
-                
                 $bolsa->curso = $inscricao->turma->curso->id;
                 $bolsa->programa = $inscricao->turma->programa->id;
-
                 $bolsa->validade = '2018-12-31';
                 $bolsa->obs = 'Bolsa gerada a partir das matrículas do 1º semestre';
-                $bolsa->status = 'ativa';
+                $bolsa->status = 'ativa'; 
                 $bolsa->save();
                 $bolsas_criadas++;
 
@@ -134,6 +60,56 @@ class BolsaController extends Controller
             return $bolsa->desconto;
         else
             return null;
+
+
+    }
+
+    /**
+     * Formulário de nova Bolsa com listagem das atuais
+     * @param  [Int] $pessoa [Id da pessoa]
+     * @return [type]         [description]
+     */
+    public function nova($pessoa){
+        $pessoa = \App\Pessoa::find($pessoa);
+        $matriculas = \App\Matricula::where('pessoa',$pessoa->id)->whereIn('status',['ativa','pendente','espera'])->get();
+        $bolsas = Bolsa::where('pessoa',$pessoa->id)->get();
+        return view('pessoa.bolsa.cadastrar',compact('pessoa'))->with('matriculas',$matriculas)->with('bolsas',$bolsas);
+    }
+
+    /**
+     * Gravação da Bolsa
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function gravar(Request $request){
+
+        //Falta colocar a verificação de qnde de vagas para bolsisas antes de gerar a Bolsa
+        //Recomenda-se que a pessoa que for conceder a bolsa, verifique a quantidade de pessoas bolsistas na turma atua
+
+        $this->validate($request,[
+            'pessoa' => 'required|integer',
+            'curso' => 'required|integer',
+            'desconto' =>'required'
+        ]);
+
+        $curso = \App\Curso::find($request->curso);
+
+        if(!$curso)
+            return redirect()->back()->withErrors(['Não foi possível encontrar o curso. BolsaController 88.']);
+
+        $bolsa = new Bolsa;
+        $bolsa->pessoa = $request->pessoa;
+        $bolsa->curso = $request->curso;
+        $bolsa->desconto = $request->desconto;
+        $bolsa->programa = $curso->programa;
+        $bolsa->status = 'analisando';
+        $bolsa->save();
+
+        $atendimento = AtendimentoController::novoAtendimento('Solicitação de Bolsa',$request->pessoa);
+
+        return redirect()->back()->withErrors(['Bolsa registrada com sucesso.']);
+
+
 
 
     }

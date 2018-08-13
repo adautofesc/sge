@@ -35,12 +35,16 @@ class Turma extends Model
 		}
 		$fesc=[84,85,86];
 		if(!in_array($this->local->id,$fesc)){
-			return '0';
+			return number_format(0,2,',','.');
 		}
+		if($this->programa->id == 4)
+			return number_format(0,2,',','.');
+
+
 		if(isset($valor))
 			return number_format($valor->valor,2,',','.');
 		else
-			return '0';
+			return number_format(0,2,',','.');
 
 	}
 	public function setAtributosAttribute($value){

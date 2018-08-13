@@ -43,12 +43,15 @@ class SecretariaController extends Controller
 		if(isset($pessoa->telefone_contato))
 			$pessoa->telefone_contato=Strings::formataTelefone($pessoa->telefone_contato);
 
-		//inicia atendimento.
+		//inicia atendimento
+		
 		if(!Session::get('atendimento')){
+			
 			$atendimento=new Atendimento();
 			$atendimento->atendente=Session::get('usuario');
 			$atendimento->usuario=$pessoa->id;
 			$atendimento->save();
+			
 			Session::put('atendimento', $atendimento->id);
 			
 			

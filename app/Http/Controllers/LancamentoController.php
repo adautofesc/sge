@@ -15,6 +15,7 @@ class LancamentoController extends Controller
 {
     //
 	public function gerarLancamentos(Request $request){
+		$data_util = new \App\classes\Data();
 		$parcela_atual = $request->parcela;
 		$parcela=$request->parcela;
 		// colocar um if de parcela, se for menor que 6,  fazer recursivo
@@ -38,7 +39,7 @@ class LancamentoController extends Controller
 					$lancamento->parcela=$parcela;
 					$lancamento->valor=$valor_parcela;
 					$lancamento->pessoa = $matricula->pessoa;
-					$lancamento->referencia = "Parcela ".$parcela.' - '.$matricula->getNomeCurso();
+					$lancamento->referencia = "Parcela de ".$data_util->Mes().' - '.$matricula->getNomeCurso();
 					if($lancamento->valor>0)//se for bolsista integral
 						$lancamento->save();
 				}
@@ -59,17 +60,20 @@ class LancamentoController extends Controller
 			->where(function($query){
 				$query->where('status','ativa')->orwhere('status', 'pendente');
 			})	
-			->where('parcelas','>=',$parcela_atual)
 			->get();
-		if($parcela_atual>5 && $matricula->valor->parcelas<6)//se parcelamento < parcela atual
-					$parcela_atual=$parcela_atual-7; //começa parcela novamente
+		
 
 
 
 		foreach($matriculas as $matricula){ //para cada matricula
+			if($parcela_atual>5 && $matricula->valor->parcelas<6)//se parcelamento < parcela atual
+					$parcela_atual=$parcela_atual-7; //começa parcela novamente
+
 			if($parcela_atual <= $matricula->valor->parcelas){
 
 				for($i=$parcela_atual;$i>0;$i--){ //gerador recursivo de parcela
+					$referencia= '01/'.($i+1).'/'.date('Y');
+					$referencia = new \App\classes\Data($referencia);
 					$valor_parcela=($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas; //calcula valor parcela
 					if(!$this->verificaSeLancada($matricula->id,$i) && $valor_parcela > 0  ){ //se não tiver ou for 0
 						$lancamento=new Lancamento; //gera novo lançamento
@@ -77,14 +81,14 @@ class LancamentoController extends Controller
 						$lancamento->parcela=$i;
 						$lancamento->valor=$valor_parcela;
 						$lancamento->pessoa = $pessoa;
-						$lancamento->referencia = "Parcela ".$i.' - '.$matricula->getNomeCurso();
+						$lancamento->referencia = "Parcela de ".$referencia->Mes().' - '.$matricula->getNomeCurso();
 						if($lancamento->valor>0)//se for bolsista integral
 							$lancamento->save();
 					}
 				}
 			}
 		}
-		return redirect($_SERVER['HTTP_REFERER']);
+		return redirect()->back();
 
 	}
 	public static function atualizaLancamentos($boleto,$novo_boleto){

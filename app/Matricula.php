@@ -65,7 +65,7 @@ class Matricula extends Model
 		//return $value;
 		//dd($this);
 		if($this->desconto != null){
-			dd($this->desconto);
+			//dd($this->desconto);
 			if($this->desconto->tipo == 'p')
 				return $this->valor->valor*$this->desconto->valor/100;
 			else
@@ -77,6 +77,9 @@ class Matricula extends Model
 			return 0;
 
 	}
+
+
+
 
 
 }

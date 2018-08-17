@@ -42,8 +42,11 @@ class Matricula extends Model
 		if($curso != null)
 			return $curso->nome;
 		else{
+			/*
 			$inscricoes = $this->getInscricoes();
-			return $inscricoes->first()->turma->curso->nome;
+
+			return $inscricoes->first()->turma->curso->nome;*/
+			return 'Matricula sem nome do curso.';
 			
 
 		}

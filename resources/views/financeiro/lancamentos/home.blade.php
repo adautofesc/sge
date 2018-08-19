@@ -26,14 +26,14 @@
                     <p><b>Antes de gerar a parcela do mês atual, processar todos arquivos de retorno de datas anteriores.</b></p>
                     <p>Não há problemas em gerar mais de uma vez a mesma parcela, uma vez que o sistema verifica se a parcela já foi lançada antes de gerar uma nova. Porém não é uma pratica recomendada.</p>
                     <p><b>Após gerar as parcelas, deve-se gerar os boletos.</b></p>
-                    <form method="POST">
+                    <form method="GET" action="./gerar">
                         {{csrf_field()}}
                    <div class="form-group row" id="row_modulos" > 
                         <label class="col-sm-2 form-control-label text-xs-right">
                             Parcela
                         </label>
                         <div class="col-sm-4"> 
-                            <input type="number" name="parcela" required="required" class="form-control boxed" name="modulo" min="1" max="11" placeholder="" > 
+                            <input type="number" name="parcela" required="required" class="form-control boxed"  min="1" max="11" placeholder="" id="parcela"> 
                         </div>
                         <div class="col-sm-4"> 
                             <button type="submit" onclick="gerarParcelas();return false;" class="btn btn-danger" > Gerar</button>
@@ -54,7 +54,7 @@
 <script type="text/javascript">
     function gerarParcelas(){
         if(confirm("Tem certeza que deseja gerar as parcelas desse mês?")){
-            $(form).submit();
+             window.location.replace("{{asset('financeiro/lancamentos/gerar')}}/"+$('#parcela').val());
         }
     }
     function gerarParcelasComBoletos(){

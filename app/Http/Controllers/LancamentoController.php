@@ -19,6 +19,18 @@ class LancamentoController extends Controller
     const MES_PARCELA_SEGUNDO_SEMESTRE = 8-1;
     
 	public function gerarLancamentos(Request $request){
+		/*
+		$this->validate($request,
+			[
+				'parcela'=> 'required|numeric|min:1'
+			]
+
+		);
+		*/
+
+		if($request->parcela < 0 || !is_numeric($request->parcela))
+			die('Erro. Parcela inválida');
+
 
 		
 		$referencia= '01/'.($request->parcela+1).'/'.date('Y');
@@ -31,7 +43,7 @@ class LancamentoController extends Controller
 		$parcela=$request->parcela;
 		// colocar um if de parcela, se for menor que 6,  fazer recursivo
 		$matriculas=Matricula::whereIn('status',['ativa','pendente'])	
-			->get();
+			->paginate(50);
 		//dd(count($matriculas)); //ver a matricula
 		//return $matriculas;
 //OBS: tem que tratar os bolsistas, tem que analizar o que ja foi pago, e o quanto falta pagar pelas parcelas restantes. Ex.: pessoa pagou 2 parcelas e na terceira quer pagar tudo o que falta.
@@ -78,7 +90,7 @@ class LancamentoController extends Controller
 		}
 		//return $parcelas;
 
-		return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Lançamentos efetuados']);
+		return view('financeiro.lancamentos.processando')->with('matriculas',$matriculas);
 
 	}
 	public function gerarLancamentosPorPessoa($pessoa){

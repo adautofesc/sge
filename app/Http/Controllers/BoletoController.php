@@ -345,6 +345,7 @@ class BoletoController extends Controller
 		foreach($lancamentos as $lancamento){
 			$array_lancamentos[] = $lancamento->referencia;
 		}
+		$array_lancamentos = array_slice($array_lancamentos,0,4);
 		$beneficiario = new \Eduardokum\LaravelBoleto\Pessoa([
 		    'documento' => '45.361.904/0001-80',
 		    'nome'      => 'Fundação Educacional São Carlos',
@@ -386,6 +387,7 @@ class BoletoController extends Controller
 		    'instrucoes' => [
 		    	'Sr. Caixa, cobrar multa de 2% após o vencimento', 
 		    	'Cobrar juros de 1% ao mês por atraso.', 
+		    	'Após o vencimento, o pagamento dever ser feito no Banco do Brasil',
 		    	'Em caso de dúvidas ou divergências, entre em contato conosco: 3372-1308'
 		    ],
 		]);

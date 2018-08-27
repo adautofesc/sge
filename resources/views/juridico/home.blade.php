@@ -94,27 +94,27 @@
             </div>  
         </div>
     </div>
-    <!--
+    
     <div class="row">
         <div class="col-md-4 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Recursos de sistema</p>
+                        <p class="title" style="color:white">Bolsas de estudos</p>
                     </div>
                 </div>
                 <div class="card-block">
                     <div>                        
-                        <a href="/juridico/documentos" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-file"></i>
-                        &nbsp;&nbsp;Contratos e Termos</a>
+                        <a href="/juridico/bolsas/liberacao" class="col-xs-12 text-xs-left">
+                        <i class=" fa fa-folder-open"></i>
+                        &nbsp;&nbsp;Liberação de Bolsas</a>
                     </div>
                  
                 </div>
             </div>  
         </div>
     </div>
--->
+
 </section>
 
 @endsection

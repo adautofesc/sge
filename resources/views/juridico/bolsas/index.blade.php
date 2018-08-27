@@ -1,5 +1,5 @@
 @extends('layout.app')
-@section('titulo')Solicitação de Bolsa de estudo @endsection
+@section('titulo')Liberação de Bolsas de estudo @endsection
 @section('pagina')
 
 <div class="title-search-block">

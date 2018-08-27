@@ -536,23 +536,24 @@ class PessoaController extends Controller
 		if(isset($dados['genero']) ){
 				
 				switch ($dados['genero']) {
-					case 'Masculino':
+					case 'M':
 						$dados['generom']="checked";
 						break;
-					case 'Feminino':
+					case 'F':
 						$dados['generof']="checked";
 						break;
-					case 'Trans Masculino':
+					case 'X':
 						$dados['generox']="checked";
 						break;
-					case 'Trans Feminino':
+					case 'Y':
 						$dados['generoy']="checked";
 						break;
-					case 'Não especificado':
+					case 'Z':
 						$dados['generoz']="checked";
 						break;
 				}
 		}
+		//dd($dados['genero']);
 		return view('pessoa.editar-dados-gerais', compact('dados'));
 	}
 	public function editarGeral_exec(Request $request){
@@ -620,7 +621,7 @@ class PessoaController extends Controller
 			
 		}
 		$pessoa=$this->formataParaMostrar($pessoa);
-		return view('pessoa.mostrar', compact('pessoa'));
+		return redirect()->back();
 	}
 	public function editarContato_view($id){
 

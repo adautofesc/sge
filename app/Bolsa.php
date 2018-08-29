@@ -34,4 +34,11 @@ class Bolsa extends Model
 
 		}
 	}
+	public function getNomePessoa(){
+		$pessoa = Pessoa::find($this->pessoa);
+		if($pessoa!=null)
+			return $pessoa->nome;
+		else
+			return "Nome não encontrado.";
+	}
 }

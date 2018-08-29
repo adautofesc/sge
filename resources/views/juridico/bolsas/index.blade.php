@@ -4,111 +4,229 @@
 
 <div class="title-search-block">
     <div class="title-block">
-        <h3 class="title">Alun{{$pessoa->getArtigoGenero($pessoa->genero)}}: {{$pessoa->nome}} 
-            @if(isset($pessoa->nome_resgistro))
-                ({{$pessoa->nome_resgistro}})
-            @endif
-           
-        </h3>
-        <p class="title-description"> <b> Cod. {{$pessoa->id}}</b> - Tel. {{$pessoa->telefone}} </p>
+        <div class="row">
+            <div class="col-md-6">
+
+                <h3 class="title"> Comissão de avaliação de Bolsas </h3>
+
+                <p class="title-description"> Análise e visualização de bolsas </p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="items-search">
+        <form class="form-inline" method="POST">
+        {{csrf_field()}}
+            <div class="input-group"> 
+                <input type="text" class="form-control boxed rounded-s" name="codigo" placeholder="Procurar p/ código.">
+                <span class="input-group-btn">
+                    <button class="btn btn-secondary rounded-s" type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+        </form>
     </div>
 </div>
 @include('inc.errors')
-<form name="item" method="post" enctype="multipart/form-data">
-{{csrf_field()}}
-    <div class="card card-block">
-    	<div class="subtitle-block">
-            <h3 class="subtitle"><i class=" fa fa-folder-open "></i> Solicitação de Bolsa de Estudos</h3>
-            <small>Para solicitar bolsa, o aluno deve se matricular no curso pretendido.</small>
-        </div>
-		<div class="form-group row"> 
-            <label class="col-sm-2 form-control-label text-xs-right">
-                Desconto
-            </label>
-            <div class="col-sm-6"> 
-                <select name="desconto" class="c-select form-control boxed" ">
-                    <option value="1">Bolsa Integral</option>
-                    <option value="2">Bolsa 50%</option>
-                    <option value="3">Bolsa para Funcionários Públicos (20%)</option>
-                    <option value="5">Bolsa Servidores Fesc</option>
-                </select>
-            </div>
-        </div>
-		<div class="form-group row"> 
-            <label class="col-sm-2 form-control-label text-xs-right">Matriculas ativas:</label>
-            <div class="col-sm-10"> 
-                <div>
-                    @foreach($matriculas as $matricula)
-                    <label>
-                    <input class="radio" type="radio" name="curso" value="{{ $matricula->curso}}" >
-                    <span>{{$matricula->id}} - {{$matricula->getNomeCurso()}}</span>
-                    </label><br>
-                    @endforeach
-                </div>
-            </div>        
-        </div>
+<form name="item" class="form-inline">
+    <section class="section">
+    <div class="row ">
+        <div class="col-xl-12">
+            <div class="card sameheight-item">
+                <div class="card-block">
+                    <!-- Nav tabs -->
+                    <div class="row">
+                        <div class="col-xs-12 text-xs-right">
+                            <div class="action dropdown pull-right "> 
+                                <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Com os selecionados...
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('aprovar')">
+                                        <i class="fa fa-circle-o icon"></i> Aprovar
+                                    </a> 
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('negar')">
+                                        <i class="fa fa-circle-o icon"></i> Negar
+                                    </a> 
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('excluir')">
+                                        <i class="fa fa-circle-o icon"></i> Excluir
+                                    </a> 
+                                    
+                                </div>
+                             </div>
+                        </div>
 
-		<div class="form-group row">
-			<label class="col-sm-2 form-control-label text-xs-right"></label>
-			<div class="col-sm-10 col-sm-offset-2"> 
-				<input type="hidden" name="pessoa" value="{{$pessoa->id}}">
-                <button type="submit" name="btn"  class="btn btn-primary">Salvar</button>
-                <button type="reset" name="btn"  class="btn btn-primary">Restaurar</button>
-                <button type="cancel" name="btn" class="btn btn-primary" onclick="history.back(-2);return false;">Cancelar</button>
-			</div>
-       </div>
-    </div>
-</form>
-<section class="section">
-    <div class="row">
-        <div class="col-md-12 center-block">
-            <div class="card card-primary">
-                <div class="card-header">
-                    <div class="header-block">
-                        <p class="title" style="color:white">Bolsas solicitadas</p>
+                    </div>
+                    
+                    <div class="tab-content tabs-bordered">
+                        <!-- Tab panes ******************************************************************************** -->
+                        
+                                <section class="example">
+                                    <div class="table-flip-scroll">
+
+                                        <ul class="item-list striped">
+                                            <li class="item item-list-header hidden-sm-down">
+                                                <div class="item-row">
+                                                    <div class="item-col fixed item-col-check">
+                                                        <label class="item-check">
+                                                        <input type="checkbox" class="checkbox" onchange="selectAllItens(this);">
+                                                        <span></span>
+                                                        </label> 
+                                                    </div>
+                                                    
+                                                    <div class="item-col item-col-header item-col-title">
+                                                        <div> <span>Pessoa</span> </div>
+                                                    </div>
+                                                    <div class="item-col item-col-header item-col-sales">
+                                                        <div> <span>Data</span> </div>
+                                                    </div>
+
+                                                    <div class="item-col item-col-header item-col-sales">
+                                                        <div> <span>Curso</span> </div>
+                                                    </div>
+                                                    <div class="item-col item-col-header item-col-sales">
+                                                        <div> <span>Status</span> </div>
+                                                    </div>
+
+                                                    <div class="item-col item-col-header fixed item-col-actions-dropdown"> </div>
+                                                </div>
+                                            </li>
+                                            @foreach($bolsas as $bolsa)
+
+
+                                                                                  
+                                            <li class="item">
+                                                <div class="item-row">
+                                                    <div class="item-col fixed item-col-check"> 
+
+
+                                                        <label class="item-check" >
+                                                        <input type="checkbox" class="checkbox" name="turma" value="{{$bolsa->id}}">
+                                                        <span></span>
+                                                        </label>
+                                                    </div>
+                                                    
+                                                    <div class="item-col fixed pull-left item-col-title">
+                                                    <div class="item-heading">Pessoa</div>
+                                                    <div class="">
+                                                        
+                                                             <div href="#" style="margin-bottom:5px;">{{$bolsa->getNomePessoa()}}</div> 
+
+                            
+                                                    </div>
+                                                </div>
+                                                    <div class="item-col item-col-sales">
+                                                        <div class="item-heading">Data</div>
+                                                        <div> 
+                                                            <div>{{$bolsa->created_at->format('d/m/Y')}}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="item-col item-col-sales">
+                                                        <div class="item-heading">Curso</div>
+                                                        <div>{{$bolsa->getNomeCurso()}}</div>
+                                                    </div>
+                                                     
+                                                   
+                                                    <div class="item-col item-col-sales">
+                                                        <div class="item-heading">Status</div>
+                                                        <div> {{$bolsa->status}} </div>
+                                                    </div>
+
+                                                    <div class="item-col fixed item-col-actions-dropdown">
+                                                        <div class="item-actions-dropdown">
+                                                            <a class="item-actions-toggle-btn"> 
+                                                                <span class="inactive">
+                                                                    <i class="fa fa-cog"></i>
+                                                                </span> 
+                                                                <span class="active">
+                                                                    <i class="fa fa-chevron-circle-right"></i>
+                                                                </span>
+                                                            </a>
+                                                            <div class="item-actions-block">
+                                                                <ul class="item-actions-list">
+                                                                    <li>
+                                                                     <a class="remove" title="Cancelar" href="#" onclick=cancelar({{$bolsa->id}})> <i class="fa fa-ban "></i> </a>
+                                                                </li>
+                                                                
+                                                                </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                           
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </section>
+                            
                     </div>
                 </div>
-
-                <div class="card-block">
-                    <small>
-                        <table class="table">
-                            <thead>
-                    
-                                <th class="col-md-1">Data</th>
-                                <th class="col-md-3">Curso</th>
-                                <th class="col-md-1">Status</th>
-                                <th class="col-md-5">Obs</th>
-                                <th class="col-md-2">Opções</th>
-                               
-                            </thead>
-                            <tbody>
-                                @foreach($bolsas as $bolsa)
-                                <tr>
-                                    <td class="col-md-1">{{$bolsa->created_at->format('d/m/Y')}}</td>
-                                    <td class="col-md-3">{{$bolsa->getNomeCurso()}}</td>
-                                    <td class="col-md-1">{{$bolsa->status}}</td>
-                                    <td class="col-md-5">{{$bolsa->obs}}</td>
-                                    <td style="font-size: 1.3em;" class="col-md-2">
-                                        <i class=" fa fa-print "></i>&nbsp;
-                                        <i class=" fa fa-pencil-square-o "></i>&nbsp;
-                                        <i class=" fa fa-cloud-upload"></i>&nbsp;
-                                        <i class=" fa fa-files-o"></i>&nbsp;
-                                        </td>
-                                    
-                                </tr>
-
-                                @endforeach
-                                
-                            </tbody>
-                        </table>
-                    </small>
-                    
-                    
-                    
-                                   
-                </div>     
+                <!-- /.card-block -->
             </div>
-        </div> 
+            <!-- /.card -->
+        </div>
+        <!-- /.col-xl-6 -->
+        
+        <!-- /.col-xl-6 -->
     </div>
 </section>
+{{ $bolsas->links() }}
+
+</form>
+
+@endsection
+@section('scripts')
+<script>
+function apagar(turma){
+    if(confirm("Deseja mesmo apagar essa turma?"))
+        $(location).attr('href','{{route('turmas')}}/apagar/'+turma);
+
+}
+function abrir(turma){
+    if(confirm("Deseja mesmo abrir as matrículas dessa turma?"))
+        $(location).attr('href','{{route('turmas')}}/status/inscricao/'+turma);
+
+}
+function suspender(turma){
+    if(confirm("Deseja mesmo suspender as matrículas dessa turma?"))
+      $(location).attr('href','{{route('turmas')}}/status/espera/'+turma);
+
+}
+function iniciar(turma){
+    if(confirm("Deseja mesmo iniciar o período letivo essa turma?"))
+       $(location).attr('href','{{route('turmas')}}/status/iniciada/'+turma);
+
+}
+function editar(turma){
+        $(location).attr('href','{{route('turmas')}}/editar/'+turma);
+
+}
+function cancelar(turma){
+    if(confirm("Deseja mesmo cancelar essa turma?"))
+        $(location).attr('href','{{route('turmas')}}/status/cancelada/'+turma);
+
+}
+function alterarStatus(status){
+     var selecionados='';
+        $("input:checkbox[name=turma]:checked").each(function () {
+            selecionados+=this.value+',';
+
+        });
+        if(selecionados=='')
+            alert('Nenhum item selecionado');
+        else
+        if(confirm('Deseja realmente alterar as bolsas selecionadas?'))
+            $(location).attr('href','./status/'+status+'/'+selecionados);
+
+    
+}
+
+
+</script>
+
+
+
 @endsection

@@ -49,8 +49,8 @@ class Handler extends ExceptionHandler
                   ->back()
                   ->withErrors(['Desculpe, mas precisamos verificar novamente seus dados.']);
         }
-        if($exception instanceof  \Symfony\Component\HttpKernel\Exception\NotFoundHttpException)
-            return redirect('404');
+        //if($exception instanceof  \Symfony\Component\HttpKernel\Exception\NotFoundHttpException)
+            //return redirect('404');
 
         return parent::render($request, $exception);
     }

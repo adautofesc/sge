@@ -6,8 +6,32 @@ use App\Bolsa;
 use Illuminate\Http\Request;
 
 class BolsaController extends Controller
-{
+{   
+    public function listar(){
+        $bolsas = Bolsa::orderByDesc('created_at')->paginate(10);
+
+        return view('juridico.bolsas.index',compact('bolsas'));
+    }
     
+    public function alterarStatus($status,$itens){
+        $bolsas=explode(',',$itens);
+        foreach($bolsas as $bolsa){
+            if(is_numeric($bolsa)){
+                $bolsa = Bolsa::find($bolsa);
+                if($bolsa{
+                    // Aqui virá uma verificação que se há matrículas antes de excluir
+                    switch($status){
+                        
+                    }
+                }
+            }
+        }
+
+
+    }
+
+
+
     /**
      * Gerador de Bolsas, para migração do sistema de bolsas em matriculas para bolsas independentes
      * @return [type] [description]
@@ -88,29 +112,44 @@ class BolsaController extends Controller
 
         $this->validate($request,[
             'pessoa' => 'required|integer',
-            'curso' => 'required|integer',
+            'matricula' => 'required|integer',
             'desconto' =>'required'
         ]);
 
-        $curso = \App\Curso::find($request->curso);
+        $matricula = \App\Matricula::find($request->matricula);
+        $curso = \App\Curso::find($matricula->curso);
 
         if(!$curso)
             return redirect()->back()->withErrors(['Não foi possível encontrar o curso. BolsaController 88.']);
 
         $bolsa = new Bolsa;
         $bolsa->pessoa = $request->pessoa;
-        $bolsa->curso = $request->curso;
+        $bolsa->curso = $curso->id;
         $bolsa->desconto = $request->desconto;
-        $bolsa->programa = $curso->programa;
+        $bolsa->programa = $curso->programa->id;
+        $bolsa->matricula = $request->matricula;
         $bolsa->status = 'analisando';
-        $bolsa->save();
+
+        //dd($bolsa);
+        if(!$this->vericaSeSolicitado($request->pessoa,$request->matricula))
+            $bolsa->save();
+        else
+            return redirect()->back()->withErrors(['Bolsa já solicitada.']);
+
 
         $atendimento = AtendimentoController::novoAtendimento('Solicitação de Bolsa',$request->pessoa);
 
-        return redirect()->back()->withErrors(['Bolsa registrada com sucesso.']);
+        return redirect()->back()->withErrors(['Bolsa registrada com sucesso. Aguarde análise da Comissão de Avaliação']);
 
+    }
+    public function vericaSeSolicitado($pessoa,$matricula){
+        $bolsa = Bolsa::where('pessoa',$pessoa)->where('matricula',$matricula)->get();
 
-
+        //dd(is_array($bolsa));
+        if(count($bolsa))
+            return true;
+        else
+            return false;
 
     }
 }

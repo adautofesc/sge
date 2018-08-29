@@ -40,7 +40,7 @@
                 <div>
                     @foreach($matriculas as $matricula)
                     <label>
-                    <input class="radio" type="radio" name="curso" value="{{ $matricula->curso}}" >
+                    <input class="radio" type="radio" name="matricula" value="{{ $matricula->id}}" >
                     <span>{{$matricula->id}} - {{$matricula->getNomeCurso()}}</span>
                     </label><br>
                     @endforeach

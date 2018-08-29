@@ -216,6 +216,12 @@ Route::middleware('login') ->group(function(){
 		Route::get('/','painelController@juridico');
 		//Documentos
 		//
+		Route::middleware('liberar.recurso:16')->prefix('bolsas')->group(function(){
+
+			Route::get('liberacao','BolsaController@listar');
+			Route::get('/status/{status}/{bolsas}','BolsaController@alterarStatus');
+
+		});
 		Route::middleware('liberar.recurso:16')->prefix('documentos')->group(function(){
 			Route::get('/','DocumentoController@index');
 			Route::get('cadastrar','DocumentoController@cadastrar');

@@ -7,8 +7,11 @@ use Illuminate\Http\Request;
 
 class BolsaController extends Controller
 {   
-    public function listar(){
-        $bolsas = Bolsa::orderByDesc('created_at')->paginate(10);
+    public function listar(Request $r = Request){
+        if($r->codigo)
+             $bolsas = Bolsa::where('id',$r->codigo)->paginate(10);
+        else
+            $bolsas = Bolsa::orderByDesc('created_at')->paginate(10);
 
         return view('juridico.bolsas.index',compact('bolsas'));
     }
@@ -18,14 +21,39 @@ class BolsaController extends Controller
         foreach($bolsas as $bolsa){
             if(is_numeric($bolsa)){
                 $bolsa = Bolsa::find($bolsa);
-                if($bolsa{
+                if($bolsa){
                     // Aqui virá uma verificação que se há matrículas antes de excluir
                     switch($status){
+                        case 'aprovar':
+                            $bolsa->status = 'ativa';
+                            $bolsa->save();
+                            $atendimento = AtendimentoController::novoAtendimento('Bolsa '.$bolsa->id.' aprovada.',$bolsa->pessoa);
+                            break;
+                        case 'negar':
+                            $bolsa->status = 'indefirida';
+                            $bolsa->save();
+                            $atendimento = AtendimentoController::novoAtendimento('Bolsa '.$bolsa->id.' indefirida.',$bolsa->pessoa);
+                            break;
+                        case 'analisando':
+                            $bolsa->status = 'analisando';
+                            $bolsa->save();
+                            $atendimento = AtendimentoController::novoAtendimento('Bolsa '.$bolsa->id.' em análise.',$bolsa->pessoa);
+                            break;
+                        case 'cancelar':
+                            $bolsa->status = 'cancelada';
+                            $bolsa->save();
+                            $atendimento = AtendimentoController::novoAtendimento('Bolsa '.$bolsa->id.' cancelada.',$bolsa->pessoa);
+                            break;
+                        case 'apagar':
+                            $atendimento = AtendimentoController::novoAtendimento('Solicitação de bolsa '.$bolsa->id.' excluída.',$bolsa->pessoa);
+                            $bolsa->delete();
+                            break;
                         
                     }
                 }
             }
         }
+        return redirect()->back()->withErrors(['Bolsa(s) processadas.']);
 
 
     }
@@ -150,6 +178,11 @@ class BolsaController extends Controller
             return true;
         else
             return false;
+
+    }
+    public function imprimir($bolsa){
+
+        return view('juridico.bolsas.requerimento');
 
     }
 }

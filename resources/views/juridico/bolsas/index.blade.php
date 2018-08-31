@@ -16,7 +16,7 @@
 
 
     <div class="items-search">
-        <form class="form-inline" method="POST">
+        <form class="form-inline" method="GET>
         {{csrf_field()}}
             <div class="input-group"> 
                 <input type="text" class="form-control boxed rounded-s" name="codigo" placeholder="Procurar p/ código.">
@@ -44,13 +44,19 @@
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
                                     <a class="dropdown-item" href="#" onclick="alterarStatus('aprovar')">
-                                        <i class="fa fa-circle-o icon"></i> Aprovar
+                                        <i class="fa fa-check-circle-o icon"></i> Aprovar
                                     </a> 
                                     <a class="dropdown-item" href="#" onclick="alterarStatus('negar')">
-                                        <i class="fa fa-circle-o icon"></i> Negar
+                                        <i class="fa fa-ban icon"></i> Negar
                                     </a> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('excluir')">
-                                        <i class="fa fa-circle-o icon"></i> Excluir
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('analisando')">
+                                        <i class="fa fa-clock-o icon"></i> Analisando
+                                    </a> 
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('cancelar')">
+                                        <i class="fa fa-minus-circle icon"></i> Cancelar
+                                    </a> 
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('apagar')">
+                                        <i class="fa fa-times-circle icon"></i> Excluir
                                     </a> 
                                     
                                 </div>
@@ -74,8 +80,14 @@
                                                         <span></span>
                                                         </label> 
                                                     </div>
-                                                    
-                                                    <div class="item-col item-col-header item-col-title">
+                                                    <div class="item-col item-col-header item-col-sales " >
+                                                        <div> <span>Id<span> </div>
+                                                    </div>
+                                                    <div class="item-col item-col-header item-col-sales">
+                                                        <div> <span>Tipo<span> </div>
+                                                    </div>
+
+                                                    <div class="item-col item-col-header item-col-sales">
                                                         <div> <span>Pessoa</span> </div>
                                                     </div>
                                                     <div class="item-col item-col-header item-col-sales">
@@ -106,12 +118,20 @@
                                                         <span></span>
                                                         </label>
                                                     </div>
+                                                    <div class="item-col item-col-sales">
+                                                        <div class="item-heading">id</div>
+                                                        <div> {{$bolsa->id}} </div>
+                                                    </div>
+                                                    <div class="item-col item-col-sales">
+                                                        <div class="item-heading">Status</div>
+                                                        <div> {{$bolsa->desconto->nome}} </div>
+                                                    </div>
                                                     
                                                     <div class="item-col fixed pull-left item-col-title">
                                                     <div class="item-heading">Pessoa</div>
                                                     <div class="">
                                                         
-                                                             <div href="#" style="margin-bottom:5px;">{{$bolsa->getNomePessoa()}}</div> 
+                                                             <div>{{$bolsa->getNomePessoa()}}</div> 
 
                             
                                                     </div>
@@ -146,8 +166,18 @@
                                                             <div class="item-actions-block">
                                                                 <ul class="item-actions-list">
                                                                     <li>
-                                                                     <a class="remove" title="Cancelar" href="#" onclick=cancelar({{$bolsa->id}})> <i class="fa fa-ban "></i> </a>
-                                                                </li>
+                                                                     <a class="edit" title="Aprovar" href="#" onclick="alterarStatusIndividual('aprovar','{{$bolsa->id}}')"> <i class="fa fa-check-circle-o "></i> </a>
+                                                                    </li>
+                                                                    <li>
+                                                                     <a class="remove" title="Negar" href="#" onclick="alterarStatusIndividual('negar','{{$bolsa->id}}')"> <i class="fa fa-ban "></i> </a>
+                                                                    </li>
+                                                                    <li>
+                                                                     <a class="edit" title="Colocar para análise" href="#" onclick="alterarStatusIndividual('analisando','{{$bolsa->id}}')"> <i class="fa fa-clock-o "></i> </a>
+                                                                    </li>
+                                                                    <li>
+                                                                     <a class="remove" title="Cancelar" href="#" onclick="alterarStatusIndividual('cancelar','{{$bolsa->id}}')"> <i class="fa fa-minus-circle "></i> </a>
+                                                                    </li>
+                                                                    
                                                                 
                                                                 </li>
                                                                 </ul>
@@ -172,43 +202,25 @@
         
         <!-- /.col-xl-6 -->
     </div>
-</section>
+
 {{ $bolsas->links() }}
 
 </form>
-
+</section>
 @endsection
 @section('scripts')
 <script>
-function apagar(turma){
-    if(confirm("Deseja mesmo apagar essa turma?"))
-        $(location).attr('href','{{route('turmas')}}/apagar/'+turma);
+function alterarStatusIndividual(status,id){
+     
+        if(id=='')
+            alert('Nenhum item selecionado');
+        else
+        if(confirm('Deseja realmente alterar as bolsas selecionadas?'))
+            $(location).attr('href','./status/'+status+'/'+id);
 
+    
 }
-function abrir(turma){
-    if(confirm("Deseja mesmo abrir as matrículas dessa turma?"))
-        $(location).attr('href','{{route('turmas')}}/status/inscricao/'+turma);
 
-}
-function suspender(turma){
-    if(confirm("Deseja mesmo suspender as matrículas dessa turma?"))
-      $(location).attr('href','{{route('turmas')}}/status/espera/'+turma);
-
-}
-function iniciar(turma){
-    if(confirm("Deseja mesmo iniciar o período letivo essa turma?"))
-       $(location).attr('href','{{route('turmas')}}/status/iniciada/'+turma);
-
-}
-function editar(turma){
-        $(location).attr('href','{{route('turmas')}}/editar/'+turma);
-
-}
-function cancelar(turma){
-    if(confirm("Deseja mesmo cancelar essa turma?"))
-        $(location).attr('href','{{route('turmas')}}/status/cancelada/'+turma);
-
-}
 function alterarStatus(status){
      var selecionados='';
         $("input:checkbox[name=turma]:checked").each(function () {

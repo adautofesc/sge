@@ -89,7 +89,7 @@
                                     <td class="col-md-1">{{$bolsa->status}}</td>
                                     <td class="col-md-5">{{$bolsa->obs}}</td>
                                     <td style="font-size: 1.3em;" class="col-md-2">
-                                        <i class=" fa fa-print "></i>&nbsp;
+                                        <a href="../imprimir/{{$bolsa->id}}"><i class=" fa fa-print "></i></a>&nbsp;
                                         <i class=" fa fa-pencil-square-o "></i>&nbsp;
                                         <i class=" fa fa-cloud-upload"></i>&nbsp;
                                         <i class=" fa fa-files-o"></i>&nbsp;

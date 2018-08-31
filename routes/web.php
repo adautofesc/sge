@@ -91,6 +91,7 @@ Route::middleware('login') ->group(function(){
 		Route::middleware('liberar.recurso:18')->prefix('bolsa')->group(function(){ //criar novo código
 			Route::get('cadastrar/{pessoa}','BolsaController@nova');
 			Route::post('cadastrar/{pessoa}','BolsaController@gravar');
+			Route::get('imprimir/{bolsa}','BolsaController@imprimir');
 
 		});
 

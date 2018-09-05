@@ -19,6 +19,8 @@ use App\Endereco;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
+ini_set('upload_max_filesize', '4194304');
+
 class MatriculaController extends Controller
 {
     /**
@@ -63,7 +65,7 @@ class MatriculaController extends Controller
 
 
                 //verifica se a pessoa está fazendo inscrição com a turma já em andamento ou não.
-                if($turmas->first()->status == 'andamento' || $turmas->first()->status == 'aberta')
+                if($turmas->first()->status == 'andamento' || $turmas->first()->status == 'iniciada')
                     $matricula->status="ativa";    
                 else
                     $matricula->status="espera";

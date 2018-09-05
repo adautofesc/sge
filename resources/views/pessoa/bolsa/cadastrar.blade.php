@@ -27,9 +27,10 @@
             </label>
             <div class="col-sm-6"> 
                 <select name="desconto" class="c-select form-control boxed" ">
-                    <option value="1">Bolsa Integral</option>
-                    <option value="2">Bolsa 50%</option>
+                    <option value="1">Bolsa Socioeconômica</option>
+                    <option value="2">Bolsa Beneficiário de Programa Social</option>
                     <option value="3">Bolsa para Funcionários Públicos (20%)</option>
+                    <option value="4">Bolsa Alunos de Parcerias</option>
                     <option value="5">Bolsa Servidores Fesc</option>
                 </select>
             </div>
@@ -89,11 +90,22 @@
                                     <td class="col-md-1">{{$bolsa->status}}</td>
                                     <td class="col-md-5">{{$bolsa->obs}}</td>
                                     <td style="font-size: 1.3em;" class="col-md-2">
-                                        <a href="../imprimir/{{$bolsa->id}}"><i class=" fa fa-print "></i></a>&nbsp;
-                                        <i class=" fa fa-pencil-square-o "></i>&nbsp;
-                                        <i class=" fa fa-cloud-upload"></i>&nbsp;
-                                        <i class=" fa fa-files-o"></i>&nbsp;
+                                        <a href="../imprimir/{{$bolsa->id}}" title="Imprimir Requerimento e Parecer"><i class=" fa fa-print "></i></a>&nbsp;
+                                         @if(file_exists('documentos/bolsas/requerimentos/'.$bolsa->id.'.pdf'))
+                                        <a href="/documentos/bolsas/requerimentos/{{$bolsa->id}}.pdf" title="Visualizar documentos;">
+                                            <i class=" fa fa-file-text "></i></a>&nbsp;
+                                        @else
+                                         <a href="../upload/{{$bolsa->id}}" title="Enviar requerimento"><i class=" fa fa-cloud-upload"></i></a>&nbsp;
+                                        @endif
+                                        
+                                         @if(file_exists('documentos/bolsas/pareceres/'.$bolsa->id.'.pdf'))
+                                        <a href="/documentos/bolsas/pareceres/{{$bolsa->id}}.pdf" title="Visualizar Parecer" >
+                                            <i class=" fa fa-file-text-o "></i></a>&nbsp;
+                                        @else
+
+                                        <a href="../parecer/{{$bolsa->id}}" style="color:orange;" title="Enviar parecer"><i class=" fa fa-cloud-upload"></i></a>&nbsp;
                                         </td>
+                                        @endif
                                     
                                 </tr>
 

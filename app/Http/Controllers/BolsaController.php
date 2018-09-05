@@ -181,8 +181,53 @@ class BolsaController extends Controller
 
     }
     public function imprimir($bolsa){
+        setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+        date_default_timezone_set('America/Sao_Paulo');
 
-        return view('juridico.bolsas.requerimento');
+        $bolsa = Bolsa::find($bolsa);
 
+        if(is_null($bolsa))
+            return redirect()->back()->withErrors("Erro ao localizar bolsa");
+
+        $pessoa = \App\Pessoa::find($bolsa->pessoa);
+
+        $pessoa = PessoaController::formataParaMostrar($pessoa);
+
+        $hoje = strftime('%d de %B de %Y', strtotime('today'));
+
+
+
+        return view('juridico.bolsas.requerimento',compact('bolsa'))->with('pessoa',$pessoa)->with('hoje',$hoje);
+
+    }
+
+    public function analisar($bolsa){
+
+        return view('juridico.bolsas.analisar');
+
+    }
+    public function uploadForm($bolsa){
+        return view('pessoa.bolsa.upload')->with('bolsa',$bolsa);
+    }
+    public function uploadExec(Request $r){
+        $arquivo = $r->file('arquivo');
+            
+                if (!empty($arquivo)) {
+                    $arquivo->move('documentos/bolsas/requerimentos',$r->matricula.'.pdf');
+                }
+
+            return redirect(asset('secretaria/atender'));
+    }
+    public function uploadParecerForm($bolsa){
+        return view('pessoa.bolsa.upload-parecer')->with('bolsa',$bolsa);
+    }
+    public function uploadParecerExec(Request $r){
+        $arquivo = $r->file('arquivo');
+            
+                if (!empty($arquivo)) {
+                    $arquivo->move('documentos/bolsas/pareceres',$r->matricula.'.pdf');
+                }
+
+            return redirect(asset('secretaria/atender'));
     }
 }

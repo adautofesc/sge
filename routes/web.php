@@ -92,6 +92,11 @@ Route::middleware('login') ->group(function(){
 			Route::get('cadastrar/{pessoa}','BolsaController@nova');
 			Route::post('cadastrar/{pessoa}','BolsaController@gravar');
 			Route::get('imprimir/{bolsa}','BolsaController@imprimir');
+			Route::get('upload/{bolsa}','BolsaController@uploadForm');
+			Route::post('upload/{bolsa}','BolsaController@uploadExec');
+			Route::get('parecer/{bolsa}','BolsaController@uploadParecerForm');
+			Route::post('parecer/{bolsa}','BolsaController@uploadParecerExec');
+
 
 		});
 
@@ -221,6 +226,7 @@ Route::middleware('login') ->group(function(){
 
 			Route::get('liberacao','BolsaController@listar');
 			Route::get('/status/{status}/{bolsas}','BolsaController@alterarStatus');
+			Route::get('analisar/{bolsa}','BolsaController@analisar');
 
 		});
 		Route::middleware('liberar.recurso:16')->prefix('documentos')->group(function(){

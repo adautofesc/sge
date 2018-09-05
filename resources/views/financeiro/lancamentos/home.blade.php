@@ -33,7 +33,21 @@
                             Parcela
                         </label>
                         <div class="col-sm-4"> 
-                            <input type="number" name="parcela" required="required" class="form-control boxed"  min="1" max="11" placeholder="" id="parcela"> 
+                            <select class="c-select form-control boxed" name="parcela" required>
+                                <option >Selecione o mês</option>
+                                <option value="1" >Fevereiro</option>
+                                <option value="2" >Março</option>
+                                <option value="3" >Abril</option>
+                                <option value="4" >Maio</option>
+                                <option value="5" >Junho</option>
+                                <option value="6" >Julho</option>
+                                <option value="7" >Agosto</option>
+                                <option value="8" >Setembro</option>
+                                <option value="9" >Outubro</option>
+                                <option value="10" >Novembro</option>
+                                <option value="11" >Dezembro</option>
+
+                            </select> 
                         </div>
                         <div class="col-sm-4"> 
                             <button type="submit" onclick="gerarParcelas();return false;" class="btn btn-danger" > Gerar</button>

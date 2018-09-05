@@ -80,24 +80,21 @@
                                                         <span></span>
                                                         </label> 
                                                     </div>
-                                                    <div class="item-col item-col-header item-col-sales " >
+                                                    <div class="item-col item-col-header " >
                                                         <div> <span>Id<span> </div>
                                                     </div>
-                                                    <div class="item-col item-col-header item-col-sales">
-                                                        <div> <span>Tipo<span> </div>
-                                                    </div>
-
-                                                    <div class="item-col item-col-header item-col-sales">
+                    
+                                                    <div class="item-col col-md-4 item-col-header " >
                                                         <div> <span>Pessoa</span> </div>
                                                     </div>
-                                                    <div class="item-col item-col-header item-col-sales">
+                                                    <div class="item-col item-col-header ">
                                                         <div> <span>Data</span> </div>
                                                     </div>
 
-                                                    <div class="item-col item-col-header item-col-sales">
+                                                    <div class="item-col item-col-header ">
                                                         <div> <span>Curso</span> </div>
                                                     </div>
-                                                    <div class="item-col item-col-header item-col-sales">
+                                                    <div class="item-col item-col-header ">
                                                         <div> <span>Status</span> </div>
                                                     </div>
 
@@ -110,7 +107,7 @@
                                                                                   
                                             <li class="item">
                                                 <div class="item-row">
-                                                    <div class="item-col fixed item-col-check"> 
+                                                    <div class="item-col fixed item-col-check" > 
 
 
                                                         <label class="item-check" >
@@ -118,14 +115,11 @@
                                                         <span></span>
                                                         </label>
                                                     </div>
-                                                    <div class="item-col item-col-sales">
+                                                    <div class="item-col item-col-sales" >
                                                         <div class="item-heading">id</div>
-                                                        <div> {{$bolsa->id}} </div>
+                                                        <div style="width:80px;"> <a class="btn btn-primary btn-sm" href="./analisar/{{$bolsa->id}} ">{{$bolsa->id}} </a></div>
                                                     </div>
-                                                    <div class="item-col item-col-sales">
-                                                        <div class="item-heading">Status</div>
-                                                        <div> {{$bolsa->desconto->nome}} </div>
-                                                    </div>
+                                        
                                                     
                                                     <div class="item-col fixed pull-left item-col-title">
                                                     <div class="item-heading">Pessoa</div>
@@ -139,18 +133,18 @@
                                                     <div class="item-col item-col-sales">
                                                         <div class="item-heading">Data</div>
                                                         <div> 
-                                                            <div>{{$bolsa->created_at->format('d/m/Y')}}</div>
+                                                            <div><small>{{$bolsa->created_at->format('d/m/Y')}}</small></div>
                                                         </div>
                                                     </div>
                                                     <div class="item-col item-col-sales">
                                                         <div class="item-heading">Curso</div>
-                                                        <div>{{$bolsa->getNomeCurso()}}</div>
+                                                        <div><small>{{$bolsa->getNomeCurso()}}</small></div>
                                                     </div>
                                                      
                                                    
                                                     <div class="item-col item-col-sales">
                                                         <div class="item-heading">Status</div>
-                                                        <div> {{$bolsa->status}} </div>
+                                                        <div> <small>{{$bolsa->status}}</small></div>
                                                     </div>
 
                                                     <div class="item-col fixed item-col-actions-dropdown">

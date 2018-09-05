@@ -1,11 +1,14 @@
 <?php
+ini_set('display_errors',1);
+ini_set('display_startup_erros',1);
+error_reporting(E_ALL);
 	header("Content-type: image/gif");
-	//die("ok");
-	if(file_exists('../../../laravel/app/classes/CodeGenrator.php'))
-    	require_once('../../../laravel/app/classes/CodeGenrator.php'); 
-	else
-    	require_once('../../app/classes/CodeGenrator.php'); 	
-    
-   
-    new barCodeGenrator($_GET['code'],0,'hello.gif', 600, 50, false);
+	//die("");
+
+    //require_once('../../../laravel/app/classes/CodeGenrator.php'); //externo
+
+    require_once('../../app/classes/CodeGenrator.php'); //interno
+
+    new barCodeGenrator($_GET['code'],0,'hello.gif', 110, 50, True);
+
 ?>

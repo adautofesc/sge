@@ -27,7 +27,7 @@ class BoletoController extends Controller
 {	
 	public function cadastrar(){ //$parcela/mes/ano
 		$boletos=0;
-		$vencimento=date('Y-m-28 23:59:59');
+		$vencimento=date('Y-m-20 23:59:59');
 		$pessoas = \DB::select("select distinct pessoa from lancamentos where status is null and  boleto is null group by pessoa"); //seleciona pessoas com matriculas ativas/pendentes
 
 		foreach($pessoas as $pessoa){
@@ -388,7 +388,7 @@ class BoletoController extends Controller
 		    	'Sr. Caixa, cobrar multa de 2% após o vencimento', 
 		    	'Cobrar juros de 1% ao mês por atraso.', 
 		    	'Após o vencimento, o pagamento dever ser feito no Banco do Brasil',
-		    	'Em caso de dúvidas ou divergências, entre em contato conosco: 3372-1308'
+		    	'Em caso de dúvidas ou divergências entre em contato conosco: 3372-1308'
 		    ],
 		]);
 			//dd($bb);

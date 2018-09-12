@@ -110,9 +110,9 @@
                         &nbsp;&nbsp;Lista de atestados</a>
                     </div>
                     <div>
-                        <a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Termos de Matrículas</a>
+                        <a href="#" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-archive "></i>
+                        &nbsp;&nbsp;Enviar documentos em lote</a>
                     </div>
                     <div>
                         <a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left">

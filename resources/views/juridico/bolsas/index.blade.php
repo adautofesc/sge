@@ -221,11 +221,17 @@ function alterarStatus(status){
             selecionados+=this.value+',';
 
         });
-        if(selecionados=='')
+        if(selecionados==''){
             alert('Nenhum item selecionado');
+            return false;
+        }
+        if(status ==  'aprovar' || status ==  'negar' )
+            $(location).attr('href','./analisar/'+selecionados);
         else
-        if(confirm('Deseja realmente alterar as bolsas selecionadas?'))
-            $(location).attr('href','./status/'+status+'/'+selecionados);
+            if(confirm('Deseja realmente alterar as bolsas selecionadas?'))
+                $(location).attr('href','./status/'+status+'/'+selecionados);
+
+        return false;
 
     
 }

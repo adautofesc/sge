@@ -222,11 +222,12 @@ Route::middleware('login') ->group(function(){
 		Route::get('/','painelController@juridico');
 		//Documentos
 		//
-		Route::middleware('liberar.recurso:16')->prefix('bolsas')->group(function(){
+		Route::middleware('liberar.recurso:21')->prefix('bolsas')->group(function(){
 
 			Route::get('liberacao','BolsaController@listar');
 			Route::get('/status/{status}/{bolsas}','BolsaController@alterarStatus');
 			Route::get('analisar/{bolsa}','BolsaController@analisar');
+			Route::post('analisar/{bolsa}','BolsaController@gravarAnalise');
 
 		});
 		Route::middleware('liberar.recurso:16')->prefix('documentos')->group(function(){

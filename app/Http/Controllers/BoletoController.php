@@ -494,16 +494,17 @@ class BoletoController extends Controller
 		}
 		public function segundaVia(Request $request){
 			$this->validate($request, [
-				'cpf'=>'required|numeric',
-				'nascimento'=>'required'			
+				'cpf'=>'required'
+							
 
 			]);
 			$cpf_alt = str_pad($request->cpf,11,'0');
 			$cpf_alt = \App\classes\Strings::mask($cpf_alt,"###.###.###-##");
-			$dados_pessoa = \App\PessoaDadosGerais::where('valor','like',$request->cpf)->orWhere('valor','like',$cpf_alt)->get();
-			if(count($dados_pessoa) > 0){
-				$pessoa = Pessoa::find($dados_pessoa->first()->pessoa);
-				if($pessoa->nascimento == \Carbon\Carbon::createFromFormat('d/m/Y', $request->nascimento, 'Europe/London')->format('Y-m-d')){
+			$dados_pessoa = \App\PessoaDadosGerais::where('valor','like',$request->cpf)->first();
+			//dd($dados_pessoa);
+			if($dados_pessoa){
+				$pessoa = Pessoa::find($dados_pessoa->pessoa);
+				
 					$boletos = Boleto::where('pessoa',$pessoa->id)
 						->where(function($query){ $query
 							->where('status','impresso')
@@ -513,10 +514,9 @@ class BoletoController extends Controller
 					return view('financeiro.boletos.meuboleto-lista',compact('boletos'))->with('nome',$pessoa->nome);
 
 
-				}
+				
 
-				else
-					return $pessoa;
+				
 					//return redirect('/meuboleto')->withErrors(["Desculpe, os dados estão incorretos. Verifique e tente novamente."]);
 			}
 			else

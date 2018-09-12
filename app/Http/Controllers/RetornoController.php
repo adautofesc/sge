@@ -53,9 +53,13 @@ class RetornoController extends Controller
 			return view('financeiro.retorno.lista')->with('arquivos',$arquivos);
 		}
 		public function listarRetornosProcessados(){
+			$retornos = Retorno::orderByDesc('id')->paginate(50);
+
+			//return $retornos;
+			/*
 			chdir( 'retornos/' );
 			$files = glob("{*.ret_PROC}", GLOB_BRACE);
-			rsort($files);
+			//$files = rsort($files);
 
 			$files=array_slice($files, 0, -30);
 
@@ -82,8 +86,8 @@ class RetornoController extends Controller
 			}
 			$arquivos = $arquivos->sortByDesc('id');
 			//return $arquivos;
-
-			return view('financeiro.retorno.lista')->with('arquivos',$arquivos)->with('processado',true);
+			*/
+			return view('financeiro.retorno.lista', compact('retornos'))->with('processado',true);
 		}
 		public function listarRetornosComErro(){
 			chdir( 'retornos/' );
@@ -296,8 +300,12 @@ class RetornoController extends Controller
 					}
 				}		
 			}
-			rename($arquivo, $arquivo.'_PROC');
-			return redirect(asset('financeiro/boletos/retorno/analisar'.'/'.substr($arquivo,9).'_PROC'))->withErrors([$arquivo.' foi reprocessado.']);
+			if(substr($arquivo,-4) != 'PROC'){
+				rename($arquivo, $arquivo.'_PROC');
+				$arquivo = $arquivo.'_PROC';
+			}
+			
+			return redirect(asset('financeiro/boletos/retorno/analisar'.'/'.substr($arquivo,9)))->withErrors([$arquivo.' foi reprocessado.']);
 		}
 		
 		public function marcarErro($arquivo){

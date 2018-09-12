@@ -20,7 +20,7 @@ class Bolsa extends Model
 
 	}
     public function desconto(){
-		return $this->hasOne('App\Descobto','desconto'); // (Pessoa::class)
+		return $this->hasOne('App\Desconto','desconto'); // (Pessoa::class)
 	}
 
 	public function getNomeCurso(){

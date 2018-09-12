@@ -201,11 +201,43 @@ class BolsaController extends Controller
 
     }
 
-    public function analisar($bolsa){
+    public function analisar($bolsas){
+        $bolsa_array = explode(",", $bolsas);
+        if(count($bolsa_array)==1){
+            $bolsa = Bolsa::find($bolsa_array[0]);
+            if(!$bolsa){
+                return redirect()->back()->withErrors(["Bolsa ".$bolsa. " não encontrada em nosso sistema."]);
+            }
 
-        return view('juridico.bolsas.analisar');
+
+        }else 
+            $bolsa=null;
+
+        return view('juridico.bolsas.analisar')->with('bolsa',$bolsa)->with('bolsas',$bolsas);
+        
 
     }
+    public function gravarAnalise(Request $r){
+         $this->validate($r,[
+            'parecer' => 'required',
+        ]);
+
+
+        $bolsa_array = explode(",", $r->bolsas);
+        foreach($bolsa_array as $bolsa_i){
+            $bolsa = Bolsa::find($bolsa_i);
+            if($bolsa){
+                $bolsa->status = $r->parecer;
+                $bolsa->obs = $r->obs."\n"."Atualizado em ".date('d/m/Y').' parecer: '.$r->parecer.' por '.session('nome_usuario');
+                $bolsa->save();
+            }
+        }
+
+
+        return redirect('/juridico/bolsas/liberacao')->withErrors(['Bolsa(s) alteradas com sucesso.']);
+    }
+
+
     public function uploadForm($bolsa){
         return view('pessoa.bolsa.upload')->with('bolsa',$bolsa);
     }
@@ -230,4 +262,5 @@ class BolsaController extends Controller
 
             return redirect(asset('secretaria/atender'));
     }
+
 }

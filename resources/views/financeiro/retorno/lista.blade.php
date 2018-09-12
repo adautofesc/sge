@@ -33,6 +33,7 @@
                     </div>
                 </div>
                 <div class="card-block">
+                    @if(isset($arquivos))
                     @foreach($arquivos as $arquivo)
 
                     @if(isset($arquivo->id))
@@ -55,6 +56,21 @@
                     </div>
                     @endif
                     @endforeach
+                    @endif
+
+                    @if(isset($retornos))
+                        @foreach($retornos as $retorno)
+                        <div>
+                            <a href="{{asset('/financeiro/boletos/retorno/analisar/')}}/{{substr($retorno->nome_arquivo,9)}}_PROC" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                            <i class=" fa fa-sign-in "></i>                         
+                                ID:{{$retorno->id}} {{ \Carbon\Carbon::parse($retorno->data_processamento)->format('d/m/Y')}} <small> {{$retorno->nome_arquivo}}_PROC </small> </a>
+                        </div>
+
+
+                        @endforeach
+
+                        {{$retornos->links()}}
+                    @endif
                     <!--
                     <div>
                         <a href="{{asset('financeiro/boletos/imprimir-lote')}}" data-toggle="modal" data-target="#confirm-modal" class="btn btn-primary-outline col-xs-12 text-xs-left">

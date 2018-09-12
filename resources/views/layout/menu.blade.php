@@ -14,6 +14,11 @@
                                     <a href="{{asset('/administrativo')}}"> <i class="fa fa-bar-chart-o"></i> Administração </a>
                                 </li>
                                 @endif
+                                 @if(unserialize(Session('recursos_usuario'))->contains('recurso','21'))
+                                <li  >
+                                    <a href="{{asset('/juridico/bolsas/liberacao')}}"> <i class="fa fa-heart"></i> Bolsas </a>
+                                </li>
+                                @endif
                                 @if(unserialize(Session('recursos_usuario'))->contains('recurso','13'))
                                 <li  >
                                     <a href="{{asset('/docentes')}}"> <i class="fa fa-th-large"></i> Docentes </a>

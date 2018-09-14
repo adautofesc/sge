@@ -70,10 +70,13 @@ class BoletoController extends Controller
 		$inst = new BoletoFuncional;
 		foreach($boletosx as $boleto){
 			$boleto_completo = $inst->gerar($boleto);
-			$boleto_completo->lancamentos = Lancamento::where('boleto', $boleto->id)->get();
-			$boletos->push($boleto_completo);
+			$boleto = new \stdClass();
+			$boleto = $boleto_completo->dados;
+			$boletos->push($boleto);
+			
 			
 		}
+		return $boletos;
 		return view('financeiro.boletos.lote')->with('boletos',$boletos)->with('boletosx',$boletosx);
 	}
 	public function imprimirLotex(){

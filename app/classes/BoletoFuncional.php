@@ -17,6 +17,10 @@ public function gerar($boleto){
 
 		
 
+
+
+		
+
 		$dias_de_prazo_para_pagamento = 5;
 		$taxa_boleto = 0;
 		$data_venc =Carbon::parse($boleto->vencimento)->format('d/m/Y');  // Prazo de X dias OU informe data: "13/04/2006"; 
@@ -44,10 +48,15 @@ public function gerar($boleto){
 		$dadosboleto["cep_sacado"]= str_replace('-', '',$cliente->cep);
 
 
-		$dadosboleto["endereco1"] = $cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->end_complemento.''. ($cliente->bairro=='Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro) ;
-		$dadosboleto["endereco2"] = $cliente->cidade.' '.$cliente->estado.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CEP '.$cliente->cep;
+		$dadosboleto["endereco1"] = $cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->end_complemento;
+		$dadosboleto["endereco2"] = ($cliente->bairro=='Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro). ', ' .$cliente->cidade.' '.$cliente->estado.', CEP '.$cliente->cep;
 
 		// INFORMACOES PARA O CLIENTE
+		$lancamentos = \App\Lancamento::select('referencia')->where('boleto', $boleto->id)->get();
+		for($i=0;$i<count($lancamentos);$i++){
+			$dadosboleto["referencia".$i] = $lancamentos{$i}->referencia;
+		}
+		
 		$dadosboleto["demonstrativo1"] = "Pagamento FESC";
 		$dadosboleto["demonstrativo2"] = "";
 		$dadosboleto["demonstrativo3"] = "Mensalidade referente a parcelas de todas as suas atividade na FESC";

@@ -25,8 +25,15 @@ class painelController extends Controller
     		$hoje=new Data();
             $data=$hoje->getData();        
             $dados=['data'=>$data];
-            return view('home', compact('dados'));
+            
     	}
+
+        if(unserialize(Session('recursos_usuario'))->contains('recurso','18')){
+            $pendencias = \App\PessoaDadosGerais::where('dado',20)->paginate(10);
+            return view('home', compact('dados'))->with("pendencias",$pendencias);
+
+        }
+        return view('home', compact('dados'));
 	
     }
     public function verTurmasAnterioresCursos(){

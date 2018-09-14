@@ -100,45 +100,56 @@
 
 
         </div>
+
+
     </div>
+    @if(unserialize(Session('recursos_usuario'))->contains('recurso','18'))
     <div class="row">
-        <!--
-        <div class="col-md-5 center-block">
-            <div class="card card-primary">
+        <div class="col-md-6 center-block">
+            <div class="card card-warning">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Departamentos disponíveis:</p>
+                        <p class="title" style="color:white">Pendências de alunos</p>
                     </div>
                 </div>
                 <div class="card-block">
-                    <div>
-                        <a href="/administrativo/" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-bar-chart-o "></i>
-                        &nbsp;&nbsp;Administrativo</a></div>
-                    <div>
-                        <a href="/docentes/" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-th-large "></i>
-                        &nbsp;&nbsp;Docentes</a></div>
-                    <div><a href="/financeiro" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-usd"></i>&nbsp;&nbsp;Financeiro</a></div>
-                    <div><a href="/gestaopessoal" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-users"></i>&nbsp;&nbsp;Gestão Pessoal</a></div>
-                    <div><a href="/pedagogico" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-th-list"></i>&nbsp;&nbsp;Pedagógico</a></div>
-                    <div>
-                        <a href="{{asset("/secretaria")}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-stack-overflow"></i>&nbsp;&nbsp;Secretaria</a>
-                    </div>
- 
+                    <small>
+                    <table class="table">
+                        <thead>
+                            <th>Pessoa</th>
+                            <th>Pendência</th>
+                            <th>Apagar</th>
+                        </thead>
+
+                        @foreach($pendencias as $pendencia)
+                        <tr>
+                            <td><a href="/secretaria/atender/{{$pendencia->pessoa}}">{{$pendencia->pessoa}}</a></td>
+                            <td>{{$pendencia->valor}}</td>
+                            <td> <a href="#" class="close" onclick="apagaErro({{$pendencia->id}});" >&times;</a> </td>
+                        </tr>
+                        @endforeach
+                        
+
+                    </table>
+                    </small>
                 </div>
             </div> 
-
-
         </div>
-    -->
-        
-
-
-
-        </div>
-
     </div>
+    @endif
 </section>
 
+@endsection
+@section('scripts')
+<script>
+  
+
+function apagaErro(id){
+
+    if(confirm("Deseja excluir o aviso?")){
+        $(location).attr('href','{{asset("/pessoa/apagar-atributo")}}/'+id);
+    }
+
+}
+</script>
 @endsection

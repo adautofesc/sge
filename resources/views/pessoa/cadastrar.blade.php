@@ -271,11 +271,11 @@
                             <div class="form-group row">
                                 <label class="col-sm-2 form-control-label text-xs-right"></label>
                                 <div class="col-sm-10 col-sm-offset-2"> 
-                                    <button type="submit" name="btn_sub" value='1' class="btn btn-primary">Salvar</button>
+                                    <button type="submit" name="btn_sub" value='1' class="btn btn-primary" onclick="return enviar();">Salvar</button>
                                     @if(isset($dados['responsavel_por']) && $dados['responsavel_por']!='')
                                         <input type="hidden" name="responsavel_por" value="{{ $dados['responsavel_por' ]}}"/>
                                     @else
-                                        <button type="submit" name="btn_sub" value='2' class="btn btn-secondary">Salvar sem CPF e cadastrar Responsável</button>
+                                        <button type="submit" name="btn_sub" value='2' class="btn btn-secondary" onclick="return enviar();">Salvar sem CPF e cadastrar Responsável</button>
                                     @endif
                                     
                                     <button type="submit" name="btn_sub" value='3'  class="btn btn-secondary">Salvar e inserir outra pessoa</button>
@@ -437,6 +437,14 @@ function vincularEndereco(id,nome) {
                   
 
                 });
+}
+function enviar(){
+   if( $('[name=rua]').val()!='' && $('[name=bairro]').val()==''){
+        alert('O bairro não foi escolhido na lista. Por favor, preencha o campo novamente e selecione o bairro nas opções que aparecem ao lado.');
+        return false;
+    }
+
+    return true;
 }
 </script>
 @endsection

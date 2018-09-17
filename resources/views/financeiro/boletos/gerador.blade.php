@@ -1,12 +1,12 @@
 @extends('layout.app')
-@section('titulo')Gerador de parcelas @endsection
+@section('titulo')Gerador de Boletos @endsection
 @section('pagina')
 </body>
 <header>
     
 
     <script type="text/javascript">
-    	@if($matriculas->hasMorePages())
+    	@if($pessoas->hasMorePages())
     	var next = true;
     	@else
     	var next = false;
@@ -14,7 +14,7 @@
     	@endif
     	function loadNext(){
     		if(next){
-    			setTimeout(mudar('{{$matriculas->nextPageUrl()}}'), 2000);
+    			setTimeout(location.reload(), 2000);
     		}
     		else{
     			
@@ -43,16 +43,16 @@
 <div class="title-block">
     <div class="row">
         <div class="col-md-7">
-            <h3 class="title">Geração de Parcelas</h3>
-            <p class="title-description">Processando página {{$matriculas->currentPage()}} de {{$matriculas->lastPage()}}. </p>
+            <h3 class="title">Geração de Boletos</h3>
+            <p class="title-description">Processando página {{$pessoas->currentPage()}} de {{$pessoas->lastPage()}}. </p>
         </div>
     </div>
 </div>
-<p>{{ceil($matriculas->currentPage()*100/$matriculas->lastPage())}}% processado...</p>
+<p>{{ceil($pessoas->currentPage()*100/$pessoas->lastPage())}}% processado...</p>
 
 <div id="progressbar"></div>
 <br>
-<a id="botao" href="/financeiro/boletos/home" class="btn btn-primary" style="display:none;">Menu Boletos</a>
+<a id="botao" href="/financeiro/boletos/home" class="btn btn-primary" style="display:none;">Exportar Boletos</a>
 
 
 
@@ -72,7 +72,7 @@
   <script>
   $( function() {
     $( "#progressbar" ).progressbar({
-      value: {{ceil($matriculas->currentPage()*100/$matriculas->lastPage())}}
+      value: {{ceil($pessoas->currentPage()*100/$pessoas->lastPage())}}
     });
   } );
   </script>

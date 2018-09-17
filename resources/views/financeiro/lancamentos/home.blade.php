@@ -33,7 +33,7 @@
                             Parcela
                         </label>
                         <div class="col-sm-4"> 
-                            <select class="c-select form-control boxed" name="parcela" required>
+                            <select class="c-select form-control boxed" name="parcela" id="parcela" required>
                                 <option >Selecione o mês</option>
                                 <option value="1" >Fevereiro</option>
                                 <option value="2" >Março</option>
@@ -50,7 +50,7 @@
                             </select> 
                         </div>
                         <div class="col-sm-4"> 
-                            <button type="submit" onclick="gerarParcelas();return false;" class="btn btn-danger" > Gerar</button>
+                            <button type="submit" onclick="return gerarParcelas();" class="btn btn-danger" > Gerar</button>
                         </div>
                         
                     </div> 
@@ -68,7 +68,9 @@
 <script type="text/javascript">
     function gerarParcelas(){
         if(confirm("Tem certeza que deseja gerar as parcelas desse mês?")){
-             window.location.replace("{{asset('financeiro/lancamentos/gerar')}}/"+$('#parcela').val());
+            //alert($('#parcela :selected').val());
+            window.location.replace("{{asset('financeiro/lancamentos/gerar')}}/"+$('#parcela :selected').val());
+            return false;
         }
     }
     function gerarParcelasComBoletos(){

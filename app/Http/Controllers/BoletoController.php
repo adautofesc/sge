@@ -28,7 +28,12 @@ class BoletoController extends Controller
 	public function cadastrar(){ //$parcela/mes/ano
 		$boletos=0;
 		$vencimento=date('Y-m-20 23:59:59');
-		$pessoas = \DB::select("select distinct pessoa from lancamentos where status is null and  boleto is null group by pessoa"); //seleciona pessoas com matriculas ativas/pendentes
+		//$pessoas = \DB::select("select distinct pessoa from lancamentos where status is null and  boleto is null group by pessoa"); //seleciona pessoas com matriculas ativas/pendentes
+
+
+		$pessoas = Lancamento::distinct('pessoa')->where('status',null)->where('boleto',null)->groupBy('pessoa')->paginate(50);
+
+		//dd($pessoas);
 
 		foreach($pessoas as $pessoa){
 			$valor=0;
@@ -58,18 +63,21 @@ class BoletoController extends Controller
 			}
 		}
 
-		return redirect($_SERVER['HTTP_REFERER'])->withErrors([$boletos.' boletos gerados']);
+		return view('financeiro.boletos.gerador', compact('pessoas'));
 
 
 	}
 	public function imprimirLote(){
 
-		$boletosx=Boleto::where('status','gravado')->paginate(200);
+		$boletosx=Boleto::where('status','gravado')->get();
 		$boletos = collect();
 		
 		$inst = new BoletoFuncional;
 		foreach($boletosx as $boleto){
 			$boleto_completo = $inst->gerar($boleto);
+
+			//
+
 			$boleto = new \stdClass();
 			$boleto = $boleto_completo->dados;
 			$boletos->push($boleto);

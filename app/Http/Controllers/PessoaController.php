@@ -396,7 +396,7 @@ class PessoaController extends Controller
 
 		if(isset($pessoa->cpf)){;
 			if(Strings::validaCPF($pessoa->cpf) == false){
-				PessoaController::notificarCPFInvalido($pessoa->id);
+				PessoaController::notificarErro($pessoa->id,1);
 				$pessoa->cpf = null;
 			}
 		}	
@@ -557,6 +557,7 @@ class PessoaController extends Controller
 		return view('pessoa.editar-dados-gerais', compact('dados'));
 	}
 	public function editarGeral_exec(Request $request){
+		$erros=array();
 		
 		if(!GerenciadorAcesso::pedirPermissao(3) && $request->pessoa != Session::get('usuario') )
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Desculpe, você não possui autorização para alterar dados de outras pessoas']));
@@ -577,7 +578,7 @@ class PessoaController extends Controller
 		$pessoa->nascimento=Data::converteParaBd($request->nascimento);
 		$pessoa->genero=$request->genero;
 		$pessoa->save();
-		$pessoa->alert_sucess=" Nome, nascimento e gênero gravados com sucesso,";
+		$erros[] = " Nome, nascimento e gênero gravados com sucesso,";
 		if($request->rg!='' || $request->rg!=$dados_atuais->rg){
 
 			$rg=new PessoaDadosGerais;
@@ -585,31 +586,55 @@ class PessoaController extends Controller
 			$rg->dado=4;
 			$rg->valor=preg_replace( '/[^0-9]/is', '',$request->rg);
 			$rg->save();
-			$pessoa->alert_sucess.=" RG gravado com sucesso,";
+			$erros[] = " RG gravado com sucesso,";
 
 			
 		}
+		//******************************************************
+
+
 		if($request->cpf!='' || $request->cpf!=$dados_atuais->cpf )
 		{	
-			if (!Strings::validaCPF($request->cpf)) 
-			{
-				$pessoa->alert_warning.=" Erro ao gravar: O CPF informado não é válido,";
-				
+			if($request->cpf==''){
+				$dado = PessoaDadosGerais::where('dado',3)->where('pessoa',$request->pessoa)->first();
+				$dado->delete();
+				$pessoa->alert_sucess.=" CPF gravado com sucesso.";
+
+			}else{
+
+				if (!Strings::validaCPF($request->cpf)) 
+				{
+					$erros[] = " Erro ao gravar CPF: valor informado não é válido.";
+					
+				}
+				elseif(PessoaDadosGerais::where('dado',3)->where('valor', $request->cpf)->where('pessoa','!=',$request->pessoa)->first()){
+					$erros[] = " Erro ao gravar CPF: já consta no cadastro de outra pessoa.";
+				}
+				else{
+			
+					$cpf=new PessoaDadosGerais;
+					$cpf->pessoa=$pessoa->id;
+					$cpf->dado=3;
+					$cpf->valor=preg_replace( '/[^0-9]/is', '',$request->cpf);
+					$cpf->save();
+					$erros[] = " CPF gravado com sucesso,";
+				}
+
 			}
-			elseif(PessoaDadosGerais::where('dado',3)->where('valor', $request->cpf)->where('pessoa','!=',$request->pessoa)->first()){
-				$pessoa->alert_warning.=" Erro ao gravar: O CPF informado já consta no sistema,";
-			}
-			else{
-		
-				$cpf=new PessoaDadosGerais;
-				$cpf->pessoa=$pessoa->id;
-				$cpf->dado=3;
-				$cpf->valor=preg_replace( '/[^0-9]/is', '',$request->cpf);
-				$cpf->save();
-				$pessoa->alert_sucess.=" CPF gravado com sucesso,";
-			}
+			
 
 		}
+		else{
+			if($request->cpf==''){
+				$dado = PessoaDadosGerais::where('dado',3)->where('pessoa',$request->pessoa)->first();
+				$dado->delete();
+				$erros[] = " CPF gravado com sucesso,";
+
+			}
+		}
+
+
+		//************************************************************
 		if($request->nome_registro!='' || $request->nome_registro!=$dados_atuais->nome_registro )
 		{
 			$nome=new PessoaDadosGerais;
@@ -621,7 +646,7 @@ class PessoaController extends Controller
 			
 		}
 		$pessoa=$this->formataParaMostrar($pessoa);
-		return redirect()->back();
+		return redirect()->back()->withErrors($erros);
 	}
 	public function editarContato_view($id){
 
@@ -956,13 +981,52 @@ class PessoaController extends Controller
 
 
 	}
-	public static function notificarCPFInvalido($pessoa){
-		$dados = \App\PessoaDadosGerais::where('pessoa',$pessoa)->where('dado',3)->where('valor','CPF não foi aprovado pelo validador.')->get();
+	public static function notificarErro($pessoa,$erro){
+		//Erros 1 = CPF, 2 = Endereço, 3 = Atestado vencido, 4 = telefone
+
+		switch($erro){
+			case 1:
+				$dados = \App\PessoaDadosGerais::where('pessoa',$pessoa)
+					->where('dado',20)
+					->where('valor','CPF não foi aprovado pelo validador.')
+					->get();
+				$dado = 'CPF não foi aprovado pelo validador.';
+			break;
+			case 2:
+				$dados = \App\PessoaDadosGerais::where('pessoa',$pessoa)
+					->where('dado',20)
+					->where('valor','Endereço inválido ou insuficiente.')
+					->get();
+				$dado = 'Endereço inválido ou insuficiente.';
+			break;
+			case 3:
+				$dados = \App\PessoaDadosGerais::where('pessoa',$pessoa)
+					->where('dado',20)
+					->where('valor','Atestado médico vencido ou ausente.')
+					->get();
+				$dado = 'Atestado médico vencido ou ausente.';
+			break;
+			case 4:
+				$dados = \App\PessoaDadosGerais::where('pessoa',$pessoa)
+					->where('dado',20)
+					->where('valor','Nenhum telefone válido.')
+					->get();
+				$dado = 'Nenhum telefone válido.';
+			break;
+			default:
+				$dados = \App\PessoaDadosGerais::where('pessoa',$pessoa)
+					->where('dado',20)
+					->where('valor',$erro)
+					->get();
+				$dado = $erro;
+			break;
+		}
+		
 		if(count($dados) == 0){
 			$erro = new \App\PessoaDadosGerais;
             $erro->pessoa = $pessoa;
             $erro->dado = 20;
-            $erro->valor= "CPF não foi aprovado pelo validador.";
+            $erro->valor= $dado;
             $erro->save();
 		}
 

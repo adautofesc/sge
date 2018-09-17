@@ -87,6 +87,7 @@
                                 <div class="col-sm-10 col-sm-offset-2"> 
                                     <input type="hidden" name="pessoa" value="{{$dados['id']}}">
                                     <button type="submit" name="btn_sub" value='1' class="btn btn-primary">Salvar</button>
+                                    <a href="#" class="btn btn-danger" onclick="excluirPessoa({{$dados['id']}})">Excluir Pessoa</a>
                                    
                                    
                                     {{ csrf_field() }}
@@ -96,4 +97,11 @@
                         </div>
                     </form>@endif
 
+@endsection
+@section('scripts')
+<script>
+    function excluirPessoa(pessoa){
+        alert('Recurso requer autorização.')
+    }
+</script>
 @endsection

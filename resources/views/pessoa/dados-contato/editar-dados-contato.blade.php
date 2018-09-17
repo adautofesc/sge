@@ -71,7 +71,7 @@
     <div class="form-group row">
         <label class="col-sm-2 form-control-label text-xs-right">Bairro</label>
         <div class="col-sm-4"> 
-            <input id="bairro" type="text" class="form-control boxed"  name="bairro_str" value="{{$dados->bairro}}"> 
+            <input id="bairro" type="text" class="form-control boxed"  name="bairro_str" value="{{$dados->bairro}}" onfocus="this.value='';$('[name=bairro]').val(null);"> 
             <ul class="item-list" id="listabairros" style="display:none; width:300px;  height:auto; position:absolute; z-index:100; top:50px; padding:20px;margin-left:300px; background-color: white; overflow-y: hidden; border:1px solid #d0d0d0">
                 
             </ul> 
@@ -136,7 +136,7 @@
         <label class="col-sm-2 form-control-label text-xs-right"></label>
         <div class="col-sm-10 col-sm-offset-2"> 
             <input type="hidden" name="pessoa" value="{{$dados['id']}}">
-            <button type="submit" name="btn_sub" value='1' class="btn btn-primary">Salvar</button>
+            <button type="submit" name="btn_sub" value='1' class="btn btn-primary" onclick="return enviar();">Salvar</button>
            
            
             {{ csrf_field() }}
@@ -219,8 +219,8 @@
 
  
            //Assigning empty value to "display" div in "search.php" file.
- 
-           $("#listabairros").html("");
+            
+            $("#listabairros").html("");
             $("#listabairros").hide();
  
        }
@@ -289,6 +289,14 @@ function escolherBairro(id,nome) {
                         $("#vincular").val(nome);
                     }
                 });
+}
+function enviar(){
+   if( $('[name=rua]').val()!='' && $('[name=bairro]').val()==''){
+        alert('O bairro não foi escolhido na lista. Por favor, preencha o campo novamente e selecione o bairro nas opções que aparecem ao lado.');
+        return false;
+    }
+
+    return true;
 }
 </script>
 @endsection

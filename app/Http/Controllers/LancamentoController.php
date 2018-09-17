@@ -19,17 +19,19 @@ class LancamentoController extends Controller
     const MES_PARCELA_SEGUNDO_SEMESTRE = 8-1;
     
 	public function gerarLancamentos(Request $request){
-		/*
+
+		//dd($request->parcela);
 		$this->validate($request,
 			[
-				'parcela'=> 'required|numeric|min:1'
+				'parcela' => 'min:1'
 			]
 
 		);
-		*/
+		
+
 
 		if($request->parcela < 0 || !is_numeric($request->parcela))
-			die('Erro. Parcela inválida');
+			die('Erro. Parcela inválida: '.$request->parcela );
 
 
 		
@@ -51,6 +53,23 @@ class LancamentoController extends Controller
 		
 		foreach($matriculas as $matricula){
 
+			$pessoa = \App\Pessoa::find($matricula->pessoa);
+			
+			$pessoa = PessoaController::formataParaMostrar($pessoa);
+			if(!isset($pessoa->cpf)){
+				PessoaController::notificarErro($pessoa->id,1);
+				continue;
+
+			} 
+			if(!isset($pessoa->end_id)){
+				PessoaController::notificarErro($pessoa->id,2);
+				continue;
+
+			}
+
+
+
+			//verifica se matricula é primeiro ou segundo semenstre e lança a parcela.
 			if($parcela_atual>5 && $matricula->valor->parcelas<6)
 				$parcela=$parcela_atual-6;
 			else
@@ -73,7 +92,7 @@ class LancamentoController extends Controller
 					$lancamento->parcela=$parcela;
 					$lancamento->valor=$valor_parcela;
 					$lancamento->pessoa = $matricula->pessoa;
-					$lancamento->referencia = "Parcela de ".$data_util->Mes().' - '.$matricula->id;
+					$lancamento->referencia = "Parcela de ".$data_util->Mes().' - '.$matricula->getNomeCurso();
 					if($lancamento->valor>0)//se for bolsista integral
 						$lancamento->save();
 					
@@ -97,6 +116,7 @@ class LancamentoController extends Controller
 	
            // colocar um if de parcela, se for menor que 6,  fazer recursivo
            // 
+
           
         $parcela_atual = date('m')-1;   
 		$matriculas=Matricula::where('pessoa',$pessoa)//pega mas matriculas ativas e pendentes da pessoa
@@ -109,6 +129,23 @@ class LancamentoController extends Controller
 
 
 		foreach($matriculas as $matricula){ //para cada matricula
+
+
+			$pessoa = \App\Pessoa::find($matricula->pessoa);
+			
+			$pessoa = PessoaController::formataParaMostrar($pessoa);
+			if(!isset($pessoa->cpf)){
+				PessoaController::notificarErro($pessoa->id,1);
+				continue;
+
+			} 
+			if(!isset($pessoa->end_id)){
+				PessoaController::notificarErro($pessoa->id,2);
+				continue;
+
+			}
+
+
 			if($parcela_atual>5 && $matricula->valor->parcelas<6)//se parcelamento < parcela atual
 					$parcela_atual=$parcela_atual-6; //começa parcela novamente
 
@@ -662,6 +699,9 @@ class LancamentoController extends Controller
 		return view('financeiro.lancamentos.novo')->with('pessoa',$id)->with('matriculas',$matriculas);
 	}
 	public function create(Request $r){
+
+		
+
 		if(isset($r->matriculas)){
 
 			if(count($r->matriculas) && $r->parcela*1>=0){
@@ -669,8 +709,19 @@ class LancamentoController extends Controller
 				foreach($r->matriculas as $matricula){
 
 					$matricula = Matricula::find($matricula);
+
+					if($r->parcela>5 && $matricula->valor->parcelas<6)
+						$parcela=$r->parcela-6;
+					else
+						$parcela = $r->parcela;
+
+
+
 					if($r->retroativas > 0){
-						for($i=1;$i <= $r->parcela;$i++){
+						for($i=1;$i <= $parcela;$i++){
+							$referencia= '01/'.($i+1).'/'.date('Y');
+							$data_util = new \App\classes\Data($referencia);
+
 							$valor_parcela=($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas;
 							if(!$this->verificaSeLancada($matricula->id,$i) && $valor_parcela > 0  ){ //se não tiver ou for 0
 							$lancamento=new Lancamento; //gera novo lançamento
@@ -688,13 +739,16 @@ class LancamentoController extends Controller
 					else{
 						$valor_parcela=($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas;
 						//return $matricula->valor;
+						$referencia= '01/'.($r->parcela+1).'/'.date('Y');
+						$data_util = new \App\classes\Data($referencia);
+
 						if(!$this->verificaSeLancada($matricula->id,$r->parcela) && $valor_parcela > 0  ){ //se não tiver ou for 0
 							$lancamento=new Lancamento; //gera novo lançamento
 							$lancamento->matricula=$matricula->id;
-							$lancamento->parcela=$r->parcela;
+							$lancamento->parcela=$parcela;
 							$lancamento->valor=$valor_parcela;
 							$lancamento->pessoa = $r->pessoa;
-							$lancamento->referencia = "Parcela ".$r->parcela.' - '.$matricula->getNomeCurso();
+							$lancamento->referencia = "Parcela ".$data_util->Mes().' - '.$matricula->getNomeCurso();
 							if($lancamento->valor>0)//se for bolsista integral
 								$lancamento->save();
 							}

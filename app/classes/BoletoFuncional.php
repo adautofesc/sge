@@ -11,15 +11,6 @@ class BoletoFuncional {
 public function gerar($boleto){
 		$cliente=Pessoa::find($boleto->pessoa);
 		$cliente=PessoaController::formataParaMostrar($cliente);
-		if(isset($cliente->cpf)== false){
-			PessoaController::notificarCPFInvalido($cliente->id);
-		}
-
-		
-
-
-
-		
 
 		$dias_de_prazo_para_pagamento = 5;
 		$taxa_boleto = 0;

@@ -82,6 +82,40 @@ class Pessoa extends Model
 				break;
 		}
 	}
+	public function getCelular(){
+		$telefones = $this->getTelefones();
+		//dd($telefones);
+		foreach($telefones as $telefone){
+			if(substr($telefone->valor, 0,1)=='9' || substr($telefone->valor, 2,1)=='9' || substr($telefone->valor, 0,1)=='8' || substr($telefone->valor, 2,1)=='8' ){
+				switch(strlen($telefone->valor)){
+					case 8:
+						return '169'.$telefone->valor;
+						break;
+					case 9:
+						return '16'.$telefone->valor;
+						break;
+					case 10:
+						return substr($telefone->valor, 0,2).'9'.substr($telefone->valor,2);
+						break;
+					case 11:
+						return $telefone->valor;
+						break;
+				}
+			}
+				
+				
+
+
+
+
+		}
+		return '-';
+			
+	}
+	public function getTelefones(){
+		$telefones = PessoaDadosContato::whereIn('dado',[2,9])->where('pessoa',$this->id)->get();
+		return $telefones;
+	}
 
 	public static function cabecalho($id)
 	{

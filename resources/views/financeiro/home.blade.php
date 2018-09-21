@@ -55,7 +55,17 @@
                         <a href="{{asset('/')}}financeiro/relatorios/boletos" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-file-text-o "></i>
                         &nbsp;&nbsp;Boletos vencidos e não pagos</a>
-                    </div>           
+                    </div>
+                    <div>
+                        <a href="{{asset('/')}}financeiro/relatorios/cobranca-xls" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-table "></i>
+                        &nbsp;&nbsp;Mala direta de cobrança (xls)</a>
+                    </div>   
+                    <div>
+                        <a href="{{asset('/')}}financeiro/relatorios/cobranca-sms" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-envelope"></i>
+                        &nbsp;&nbsp;Mala direta cobrança SMS (txt)</a>
+                    </div>             
                 </div>
             </div>
         </div>

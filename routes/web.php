@@ -16,7 +16,7 @@ Route::get('/', 'painelController@index');
 //testes / procedimentos temporários
 
 Route::get('/bolsa/gerador', 'BolsaController@gerador');
-Route::get('/devedores', 'BoletoController@relatorioDevedoresXls');
+
 Route::get('/corrigir-boletos','BoletoController@corrigirBoletosSemParcelas');
 
 
@@ -166,6 +166,7 @@ Route::middleware('login') ->group(function(){
 			Route::middleware('liberar.recurso:19')->get('confirmar-impressao', 'BoletoController@confirmarImpressao');//confirma impressao de todos boletos gravados
 			Route::get('novo/{pesssoa}', 'BoletoController@novo');//precisa de middleware
 			Route::post('novo/{pesssoa}', 'BoletoController@create');//precisa de middleware
+			Route::get('/lote-csv', 'BoletoController@gerarArquivoCSV');
 
 			
 
@@ -200,6 +201,8 @@ Route::middleware('login') ->group(function(){
 		});
 		Route::prefix('relatorios')->group(function(){
 				Route::get('boletos', 'BoletoController@relatorioBoletosAbertos');
+				Route::get('/cobranca-xls', 'BoletoController@relatorioDevedoresXls');
+				Route::get('/cobranca-sms', 'BoletoController@relatorioDevedoresSms');
 			});
 
 

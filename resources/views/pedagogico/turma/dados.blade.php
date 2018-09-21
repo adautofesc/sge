@@ -40,7 +40,15 @@
                             <a href="{{asset('/secretaria/atender').'/'.$inscricao->pessoa->id}}" target="_blank" class="btn btn-success btn-sm" title="Abrir tela de atendimento desta pessoa">
                                 
                             
-                             <b>{{$inscricao->pessoa->nome}}</b></a> Tel.{{$inscricao->telefone}} <small>Cod.{{$inscricao->pessoa->id}} </small>
+                             <b>{{$inscricao->pessoa->nome}}</b></a> 
+                             Tel.
+                             @foreach($inscricao->telefone as $telefone)
+                                 {{$telefone->valor}} |
+                                <!-- {{\App\classes\Strings::formataTelefone($telefone->valor)}} | -->
+                             @endforeach
+                             
+
+                             <small>Cod.{{$inscricao->pessoa->id}} </small>
                          </small>
                         </li>
                         @endforeach

@@ -22,6 +22,7 @@ public function gerar($boleto){
         $boleto->valor_desconto=number_format($boleto->descontos, 2, ',', '');
         $boleto->valor_encargo=number_format($boleto->encargos, 2, ',', '');
         $boleto->valor_cobrado= number_format($valor_cobrado, 2, ',', '');
+        $boleto->cliente = $cliente;
 
 		$dadosboleto["nosso_numero"] = $boleto->id; //numero de identificaçao no sistema interno SEM convenio (7)
 		$dadosboleto["numero_documento"] = $boleto->id;	// Num do pedido ou do documento

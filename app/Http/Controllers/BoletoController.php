@@ -75,17 +75,93 @@ class BoletoController extends Controller
 		$inst = new BoletoFuncional;
 		foreach($boletosx as $boleto){
 			$boleto_completo = $inst->gerar($boleto);
-
-			//
-
 			$boleto = new \stdClass();
 			$boleto = $boleto_completo->dados;
 			$boletos->push($boleto);
-			
-			
 		}
 		return $boletos;
 		return view('financeiro.boletos.lote')->with('boletos',$boletos)->with('boletosx',$boletosx);
+	}
+	public function gerarArquivoCSV(){
+
+		header('Content-Type: text/csv;');
+	    header('Content-Disposition: attachment;filename="'. 'lote_boletos' .'.csv"'); 
+	    header('Cache-Control: max-age=0');
+
+		$file = fopen('php://output', 'w');
+		$linha["pessoa_id"] = "id";
+		$linha["pessoa_nome"] = "Nome";
+		$linha["pessoa_cpf"] = "cpf";
+		$linha["endereco_rua"] = "rua";
+		$linha["endereco_numero"] = "numero";
+		$linha["endereco_complemento"] = "complemento";
+		$linha["endereco_bairro"] = "bairro";
+		$linha["endereco_cidade"] = "cidade_uf";
+		$linha["endereco_cep"] = "cep";
+		$linha["boleto_nossonumero"] = "nosso_numero";
+		$linha["boleto_documento"] = "documento";
+		$linha["boleto_vencimento"] = "vencimento";
+		$linha["boleto_emissao"] = "emissao";
+		$linha["boleto_valor"] = "valor";
+		$linha["boleto_referencias"] = "referencias";
+		$linha["boleto_linha_digitavel"] = "linha_digitavel";
+		$linha["boleto_codigo_barras"] = "codigo_barras";
+		fputcsv($file, $linha,';');
+
+
+		$boletos=Boleto::where('status','gravado')->get();
+		
+		
+		$inst = new BoletoFuncional;
+		foreach($boletos as $boleto){
+			
+			$pessoa = Pessoa::find($boleto->pessoa);
+			
+
+			$boleto_completo = $inst->gerar($boleto);
+
+			$lancamentos = $boleto->getLancamentos();
+		
+
+			$linha["pessoa_id"] = $boleto->pessoa;
+			$linha["pessoa_nome"] = $boleto->dados['sacado'];
+			$linha["pessoa_cpf"] = $boleto->dados['cpf_sacado'];
+			$linha["endereco_rua"] = $boleto->cliente->logradouro;
+			$linha["endereco_numero"] = $boleto->cliente->end_numero;
+			$linha["endereco_complemento"] = $boleto->cliente->end_complemento;
+			if($boleto->cliente->bairro=='Outros/Outra cidade')
+				$linha["endereco_bairro"] = $boleto->cliente->bairro_alt;
+			else
+				$linha["endereco_bairro"] = $boleto->cliente->bairro;
+
+			$linha["endereco_cidade"] = $boleto->cliente->cidade.' - '.$boleto->cliente->estado;
+			$linha["endereco_cep"] = $boleto->cliente->cep;
+			$linha["boleto_nossonumero"] = $boleto->dados['nosso_numero'];
+			$linha["boleto_documento"] = $boleto->dados['numero_documento'];
+			$linha["boleto_vencimento"] = $boleto->dados['data_vencimento'];
+			$linha["boleto_emissao"] = $boleto->dados['data_processamento'];
+			$linha["boleto_valor"] = $boleto->valor;
+			$linha["boleto_referencias"] ='';
+			foreach ($lancamentos as $lancamento){
+				$linha["boleto_referencias"] .= $lancamento->referencia."; ";
+			}
+
+			$linha["boleto_linha_digitavel"] = $boleto->dados['linha_digitavel'];
+			$linha["boleto_codigo_barras"] = $boleto->dados['codigo_barras'];
+			
+			
+
+
+
+			//dd($linha);
+			fputcsv($file, $linha,';');
+
+
+		}
+		fclose($file);
+
+
+		//return $file;
 	}
 	public function imprimirLotex(){
 		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
@@ -545,6 +621,9 @@ class BoletoController extends Controller
 
 			foreach($boletos as $boleto){
 				$boleto->aluno = \App\Pessoa::find($boleto->pessoa);
+				$boleto->aluno->telefones =  $boleto->aluno->getTelefones();
+
+
 			}
 			
 			return view('relatorios.boletos_vencidos')->with('boletos',$boletos);
@@ -558,8 +637,11 @@ class BoletoController extends Controller
 			//seleciona boletos de status emitidos, vencido ordenado por pessoa
 			$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
 
+			//dd($boletos);
+
 			//cria uma coleção para armazenar as pessoas
 			$devedores = collect();
+
 			
 			//para cada boleto aberto
 			foreach($boletos as $boleto){
@@ -582,14 +664,31 @@ class BoletoController extends Controller
 					$pessoa = new \stdClass;
 					$pessoa->id = $boleto->pessoa;
 					$pessoa->nome = \App\Pessoa::getNome($boleto->pessoa);
+					$pessoa->pendencias = array();
+
 
 					//seleciona o id do endereço
 					$endereco = \App\PessoaDadosContato::where('pessoa',$boleto->pessoa)->where('dado',6)->orderByDesc('id')->first();
+					$cpf = \App\PessoaDadosGerais::where('pessoa',$boleto->pessoa)->where('dado',3)->first();
 
+					if(isset($cpf->valor)==false || \App\classes\Strings::validaCPF($cpf->valor) == false){
+						//die('cpf invalido');
+						PessoaController::notificarErro($pessoa->id,1);
+						continue;
+					}
+					else
+					$pessoa->cpf = $cpf->valor;
 					//se achou endereco
 					if($endereco)
 						//busca na tabela enderecos
 						$pessoa->endereco =  \App\Endereco::find($endereco->valor);
+
+					else{
+						//die('endereço invalidao'.$pessoa->id);
+						PessoaController::notificarErro($pessoa->id,2);
+						continue;
+					}
+					$pessoa->pendencias = $boleto->getLancamentos();
 
 					$pessoa->divida = $boleto->valor;
 					// adiciona na coleção
@@ -598,7 +697,6 @@ class BoletoController extends Controller
 				}
 			}
 
-			dd($devedores);
 			
 			return $devedores;
 		}
@@ -611,7 +709,7 @@ class BoletoController extends Controller
 
 			//header para XLS
 			header('Content-Type: application/vnd.ms-excel');
-	        header('Content-Disposition: attachment;filename="'. 'relatorio' .'.xls"'); /*-- $filename is  xsl filename ---*/
+	        header('Content-Disposition: attachment;filename="'. 'cobranca' .'.xls"'); /*-- $filename is  xsl filename ---*/
 	        header('Cache-Control: max-age=0');
 
 	        //
@@ -620,65 +718,78 @@ class BoletoController extends Controller
 			
 	        $planilha = $planilha->getActiveSheet();
 	        $planilha->setCellValue('A1', 'Nome');
-	        $planilha->setCellValue('B1', 'Endereço');
-	        $planilha->setCellValue('C1', 'Valor');
+	        $planilha->setCellValue('B1', 'CPF');
+	        $planilha->setCellValue('C1', 'Endereço');
+	        $planilha->setCellValue('D1', 'Bairro');
+	        $planilha->setCellValue('E1', 'CEP');
+	        $planilha->setCellValue('F1', 'Cidade');
+	        $planilha->setCellValue('G1', 'Referência');
+	        $planilha->setCellValue('H1', 'Valor');
 
 	        $linha = 2;
-	        
+
 
 			$devedores = $this->relatorioDevedores();
 
-
-
-
 			foreach($devedores as $pessoa){
 
-				$planilha->setCellValue('A'.$linha, $pessoa->nome);
-		        $planilha->setCellValue('B'.$linha, $pessoa->endereco->logradouro.' '.$pessoa->endereco->numero.' '.$pessoa->endereco->complemento);
-		        $planilha->setCellValue('C'.$linha, $pessoa->divida);
 
-		        $linha++;
+				foreach($pessoa->pendencias as $pendencia){
+
+					if($pendencia->valor>0){
+
+						$planilha->setCellValue('A'.$linha, $pessoa->nome);
+						$planilha->setCellValue('B'.$linha, $pessoa->cpf);
+				        $planilha->setCellValue('C'.$linha, $pessoa->endereco->logradouro.' '.$pessoa->endereco->numero.' '.$pessoa->endereco->complemento);
+				 
+				        $planilha->setCellValue('D'.$linha, $pessoa->endereco->getBairro());
+				
+
+				        $planilha->setCellValue('E'.$linha, $pessoa->endereco->cep);
+				        $planilha->setCellValue('F'.$linha, $pessoa->endereco->cidade);
+				        $planilha->setCellValue('G'.$linha, $pendencia->referencia);
+				        $planilha->setCellValue('H'.$linha, $pendencia->valor);
+
+				        $linha++;
+			    	}
+		    	}
 
 			}
+			
+
 
 			return $arquivo->save('php://output', 'xls');
 
 			
 		}
-		
+		public function relatorioDevedoresSms(){
+			header('Content-Type: text/plain');
+	        header('Content-Disposition: attachment;filename="'. 'cobranca-sms' .'.txt"'); /*-- $filename is  xsl filename ---*/
+	        header('Cache-Control: max-age=0');
 
-		/**
-		 * Função para corrigir boletos em aberto com parcelas canceladas
-		 * @return [type] [description]
-		 */
-		public function corrigirBoletosSemParcelas(){
+	        $devedores = $this->relatorioDevedores();
+	        $contador=0;
+	        $linha  = 'FESC - '."\n";
+	        $linha .= 'ATENÇÂO. Constatamos pendências relacionadas a seu cadastro. Por favor, entre em contato conosco.'."\n";
 
-			$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
-			$erros=0;
-    	
-			foreach($boletos as $boleto){
+	        foreach($devedores as $pessoax){
+	        	$pessoa = \App\Pessoa::find($pessoax->id);
+	        	$pessoa->celular = $pessoa->getCelular();
+	        	if($pessoa->celular == '-')
+	        		continue;
+	        	
+	        	$linha .= $pessoa->celular.';'.$pessoa->nome_simples."\n";
+	        	$contador++;
+	        	
 
-				$lancamentos = Lancamento::where('boleto',$boleto->id)->where('status','cancelado')->get();
+	        }
+	        $linha .= $contador;
 
-				if(count($lancamentos)>0){
 
-					//cancelar boleto
-					$boleto->status = 'cancelar';
-					$boleto->save();
-					$erros++;
 
-					//cancelar todos lancamentos desse boleto
-					$lancamentos_todos = Lancamento::where('boleto', $boleto->id)->get();
-					foreach($lancamentos_todos as $lancamento){
-						$lancamento->status = 'cancelado';
-						$lancamento->save();
-					}
-				}
-
-			}
-
-			return $erros . " boletos corrigidos.";
+			return $linha;
 		}
+		
 
 		
 

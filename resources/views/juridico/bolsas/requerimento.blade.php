@@ -43,7 +43,7 @@
 				</p>
 			</div>
 			<div class="col-2" tyle="margin-bottom: 0;">
-				R{{$bolsa->id}}
+				<img src="/img/code39.php?code=RQ{{$bolsa->id}}">
 			
 			</div>
 

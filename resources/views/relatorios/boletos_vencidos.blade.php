@@ -41,6 +41,7 @@
 		       		<th width="120px">Vencimento </th>
 		       		<th>Cod.</th>
 		       		<th>Nome da pessoa</th>
+		       		<th width="150px">Telefone</th>
 		       		<th>valor</th>
 		       	</thead>
 		       	<tbody>
@@ -50,6 +51,11 @@
 		       			<td>{{\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y')}}</td>
 		       			<td><a href="{{asset('/secretaria/atender').'/'.$boleto->aluno->id}}">{{$boleto->aluno->id}}</a></td>
 		       			<td>{{$boleto->aluno->nome}}</td>
+		       			@if(isset($boleto->aluno->telefones{0}))
+		       			<td>{{\App\classes\Strings::formataTelefone($boleto->aluno->telefones{0}->valor)}}</td>
+		       			@else
+		       			<td>* Não informado.</td>
+		       			@endif
 		       			<td>R$ {{number_format($boleto->valor, 2, ',', '')}}</td>
 		       		</tr>
 		       		@endforeach

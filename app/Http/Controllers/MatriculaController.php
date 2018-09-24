@@ -492,19 +492,29 @@ class MatriculaController extends Controller
             }
         }
     }
-    public static function cancelarMatricula($id){
+    public static function viewCancelarMatricula($id){
+        
         $matricula=Matricula::find($id);
+        $pessoa = Pessoa::find($matricula->pessoa);
+
+        return view('secretaria.matricula.cancelamento')->with('pessoa',$pessoa)->with('matricula',$matricula);
+  
+    }
+    public function cancelarMatricula(Request $r){
+        
+        $matricula=Matricula::find($r->matricula);
         $matricula->status='cancelada';
+        $pessoa = Pessoa::find($matricula->pessoa);
         $matricula->save();
-         $insc=InscricaoController::cancelarPorMatricula($matricula->id);
+        $insc=InscricaoController::cancelarPorMatricula($matricula->id);
         
         //LancamentoController::cancelamentoMatricula($id);
-        AtendimentoController::novoAtendimento("Cancelamento da matricula ".$id, $matricula->pessoa, Session::get('usuario'));
+        AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id. " motivo: ".implode(', ',$r->cancelamento), $matricula->pessoa, Session::get('usuario'));
 
         //verifica numero de parcelas existentes  se <=2 e cancela os boletos atuais se for o caso
 
-
-        return redirect($_SERVER['HTTP_REFERER']);
+       
+        return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula);
     }
 
 
@@ -730,6 +740,7 @@ where nt.matricula>1');
         $insc = Inscricao::where('matricula',$id)->where('status','regular')->get();
         if(count($insc)>0){
             $matricula->save();
+            AtendimentoController::novoAtendimento("Reativação de matrícula ".$matricula->id, $matricula->pessoa, Session::get('usuario'));
             MatriculaController::modificaMatricula($id);
             return redirect($_SERVER['HTTP_REFERER']);
         }

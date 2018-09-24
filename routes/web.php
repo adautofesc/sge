@@ -337,7 +337,9 @@ Route::middleware('login') ->group(function(){
 			Route::get('editar/{id}', 'MatriculaController@editar');
 			Route::post('editar/{id}','MatriculaController@update');
 			Route::get('declaracao/{id}','MatriculaController@declaracao');
-			Route::get('cancelar/{id}','MatriculaController@cancelarMatricula');
+			Route::get('cancelar/{id}','MatriculaController@viewCancelarMatricula');
+			Route::post('cancelar/{id}','MatriculaController@cancelarMatricula');
+
 			Route::get('reativar/{id}','MatriculaController@reativarMatricula');
 			Route::get('atualizar/{id}','MatriculaController@atualizar');
 			Route::get('cancelamento', 'MatriculaController@regularizarCancelamentos');

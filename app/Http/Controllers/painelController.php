@@ -288,9 +288,36 @@ class painelController extends Controller
         }
         return $professores;
     }
-    public function testarClasse(){
+    public function smsRecado(){
+        header('Content-Type: text/plain');
+        header('Content-Disposition: attachment;filename="'. 'aviso-sms' .'.txt"'); /*-- $filename is  xsl filename ---*/
+        header('Cache-Control: max-age=0');
 
-        return ' Nenhum procedimento =)';
+        $linha='Cadastros com Celular'."\n";
+        $erros="\n"."\n".'Cadastros SEM Celular'."\n";
+
+
+        $turmas = \App\Turma::where('professor',20477)->whereIn('status',['iniciada','andamento'])->get();
+        foreach($turmas as $turma){
+            $inscricoes = \App\Inscricao::where('turma',$turma->id)->get();
+            foreach ($inscricoes as $inscricao){
+                $pessoa = Pessoa::find($inscricao->pessoa->id);
+                if($pessoa->getCelular() != '-')
+                    $linha.= $pessoa->getCelular().';'.$pessoa->nome_simples."\n";
+                else{
+                    $telefones = $pessoa->getTelefones();
+                    $all='';
+                    foreach($telefones as $telefone){
+                        $all .= $telefone->valor.'  ';  
+                    }
+                    
+                    $erros.= "\n".$pessoa->nome_simples.' : '.$all;
+                }
+
+            }
+        }
+
+        return $linha.$erros;
 
     }
     public function testarClassePost(Request $r){

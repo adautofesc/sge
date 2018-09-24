@@ -39,7 +39,7 @@
                         <td width="100%" align="center">
                             <strong>TERMO DE MATRICULA Nº &nbsp;<span id="FormView1_CurDesTit">{{$matricula->id}}</span></strong></div>
                         </td>
-                        <td>&nbsp;
+                        <td><img src="/img/code39.php?code=MT{{$matricula->id}}">
                             
                         </td>
                     </tr>
@@ -131,7 +131,7 @@
                     <br />
                     <strong>5.2</strong> É de inteira responsabilidade da FESC o atendimento aos direitos regimentais do aluno, bem como a citada prestação de serviços com garantia de adequadas condições para a qualidade do ensino.
                     <br/>
-                    <strong>5.3 Para cursar atividades físicas, é necessário apresentar atestado médico de liberação para prática de atividades físicas, válido por um ano, contado a partir da data de emissão. O aluno se compromete a manter o atestado sempre atualizado enquanto cursar as atividades.</strong>
+                    <strong>5.3 Para cursar atividades físicas, é necessário apresentar atestado médico de liberação para prática de atividades físicas, válido por seis meses, contados a partir da data de emissão. O aluno se compromete a manter o atestado sempre atualizado enquanto cursar as atividades.</strong>
 
                 </p>
                 <p>

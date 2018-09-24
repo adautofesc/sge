@@ -39,7 +39,7 @@
                         <td width="100%" align="center">
                             <strong>TERMO DE MATRICULA Nº &nbsp;<span id="FormView1_CurDesTit">{{$matricula->id}}</span></strong></div>
                         </td>
-                        <td>&nbsp;
+                        <td><img src="/img/code39.php?code=MT{{$matricula->id}}">
                             
                         </td>
                     </tr>

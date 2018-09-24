@@ -154,7 +154,7 @@
 				</p>
 			</div>
 			<div class="col-2" tyle="margin-bottom: 0;">
-			P{{$bolsa->id}}
+			<img src="/img/code39.php?code=PA{{$bolsa->id}}">
 			</div>
 
 			

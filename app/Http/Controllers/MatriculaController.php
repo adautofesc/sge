@@ -509,7 +509,10 @@ class MatriculaController extends Controller
         $insc=InscricaoController::cancelarPorMatricula($matricula->id);
         
         //LancamentoController::cancelamentoMatricula($id);
+        if(count($r->cancelamento))
         AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id. " motivo: ".implode(', ',$r->cancelamento), $matricula->pessoa, Session::get('usuario'));
+        else
+            AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id, $matricula->pessoa, Session::get('usuario'));
 
         //verifica numero de parcelas existentes  se <=2 e cancela os boletos atuais se for o caso
 

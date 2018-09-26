@@ -10,7 +10,7 @@
 		font-size: 1.3em;
 		margin: 0 0 0 0;
 	}
-	@media screen,print {
+	@media print {
 
        
             .hide-onprint { 

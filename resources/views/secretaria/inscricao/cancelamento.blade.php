@@ -1,5 +1,5 @@
 @extends('layout.app')
-@section('titulo')Cancelamento de Matrícula @endsection
+@section('titulo')Cancelamento de inscrição @endsection
 @section('pagina')
 
 <div class="title-search-block">
@@ -18,28 +18,9 @@
 {{csrf_field()}}
     <div class="card card-block">
     	<div class="subtitle-block">
-            <h3 class="subtitle"><i class=" fa fa-minus-circle" style="color:red"></i> Cancelamento da MATRICULA {{ $matricula->id}}</h3>
-            <small><STRONG>TODAS TURMAS VINCULADAS A ESSA MATRÍCULA SERÃO CANCELADAS</STRONG></small>
+            <h3 class="subtitle"><i class=" fa fa-minus-circle" style="color:red"></i> Cancelamento da INSCRIÇÃO {{ $inscricao->id}}</h3>
+            <small><STRONG>APÓS O CANCELAMENTO, NÃO HAVERÁ GARANTIA DE VAGAS.</STRONG></small>
         </div>
-        <!--
-		<div class="form-group row"> 
-            <label class="col-sm-2 form-control-label text-xs-right">
-                Motivo
-            </label>
-            <div class="col-sm-6"> 
-                <select name="desconto" class="c-select form-control boxed" ">
-                    <option value="1">Problemas com o horário</option>
-                    <option value="1">Problemas com o transporte</option>
-                    <option value="1">Problemas de saúde</option>
-                    <option value="2">Problemas com os Professores</option>
-                    <option value="3">Problemas financeiros</option>
-                    <option value="4">Problemas com o atendimento (secretaria) </option>
-                    <option value="4">Problemas com o atendimento (adminstrativo) </option>
-                    <option value="5">Problemas com a infra-estrutura do local</option>
-                </select>
-            </div>
-        </div>
-    -->
 		<div class="form-group row"> 
             <label class="col-sm-2 form-control-label text-xs-right">Motivo do cancelamento</label>
             <div class="col-sm-10"> 
@@ -99,7 +80,7 @@
 			<label class="col-sm-2 form-control-label text-xs-right"></label>
 			<div class="col-sm-10 col-sm-offset-2"> 
 				<input type="hidden" name="pessoa" value="{{$pessoa->id}}">
-                <input type="hidden" name="matricula" value="{{$matricula->id}}">
+                <input type="hidden" name="inscricao" value="{{$inscricao->id}}">
                 <button type="submit" name="btn"  class="btn btn-danger">SALVAR</button>
                 <button type="reset" name="btn"  class="btn btn-primary">Restaurar</button>
                 <button type="cancel" name="btn" class="btn btn-primary" onclick="history.back(-2);return false;">Cancelar</button>
@@ -107,5 +88,6 @@
        </div>
     </div>
 </form>
-
+ </div>
+</section>
 @endsection

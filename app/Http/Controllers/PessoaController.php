@@ -627,7 +627,8 @@ class PessoaController extends Controller
 		else{
 			if($request->cpf==''){
 				$dado = PessoaDadosGerais::where('dado',3)->where('pessoa',$request->pessoa)->first();
-				$dado->delete();
+				if($dado)
+					$dado->delete();
 				$erros[] = " CPF gravado com sucesso,";
 
 			}

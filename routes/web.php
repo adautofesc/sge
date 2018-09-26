@@ -346,7 +346,8 @@ Route::middleware('login') ->group(function(){
 			Route::prefix('inscricao')->group(function(){
 				Route::get('editar/{id}', 'InscricaoController@editar');
 				Route::post('editar/{id}', 'InscricaoController@update');
-				Route::get('apagar/{id}', 'InscricaoController@cancelar');
+				Route::get('apagar/{id}', 'InscricaoController@viewCancelar');
+				Route::post('apagar/{id}', 'InscricaoController@cancelar');
 				Route::get('reativar/{id}', 'InscricaoController@reativar');
 			});
 			Route::middleware('liberar.recurso:20')->get('ativar_matriculas_em_espera','MatriculaController@ativarEmEspera');

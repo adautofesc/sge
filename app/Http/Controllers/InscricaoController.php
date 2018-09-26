@@ -307,11 +307,23 @@ class InscricaoController extends Controller
      * @return [type]         [description]
      */
     public function inscreverAlunoLote($turma,Request $r){
+        
         //return "função temporareamente bloqueada";
         $inscricao=InscricaoController::inscreverAluno($r->id_pessoa,$turma);
         MatriculaController::modificaMatricula($inscricao->matricula);
-
         return redirect(asset('/secretaria/turma/'.$turma));
+
+    }
+
+    public function viewCancelar($id){
+
+        $inscricao = Inscricao::find($id);
+        $pessoa = Pessoa::find($inscricao->pessoa->id);
+        return view('secretaria.inscricao.cancelamento')->with('pessoa',$pessoa)->with('inscricao',$inscricao);
+  
+
+
+
     }
 
 
@@ -322,15 +334,15 @@ class InscricaoController extends Controller
      * @param  [type] $id [description]
      * @return [type]     [description]
      */
-    public static function cancelar($id){
-        $insc=Inscricao::find($id);
+    public static function cancelar(Request $r){
+        $insc=Inscricao::find($r->inscricao);
 
         //existe mesmo essa inscrição?
         if($insc==null)
-            return die("Inscrição não encontrada");
+            return redirect($_SERVER['HTTP_REFERER'])->withErrors(["Inscrição não encontrada"]);
         //return $insc->turma->id."teste";
         if($insc->status == 'cancelada')
-            return redirect($_SERVER['HTTP_REFERER']);
+            return redirect($_SERVER['HTTP_REFERER'])->withErrors(["Inscrição já está cancelada"]);
 
         //diminui uma pessoa da turma
         InscricaoController::modInscritos($insc->turma->id,0,1);
@@ -341,16 +353,27 @@ class InscricaoController extends Controller
 
         //atualiza matricula para caso não tiver mais inscrições
         $matricula = MatriculaController::atualizar($insc->matricula);
-        
-        /*
-        $num_inscricoes=count(InscricaoController::inscricoesPorMatricula(,'regulares'));
-        if($num_inscricoes==0)
-            MatriculaController::cancelarMatricula($insc->matricula);
-        */
 
-        AtendimentoController::novoAtendimento("Cancelamento da inscrição ".$insc->id." da matrícula ".$insc->matricula.".", $insc->pessoa->id, Session::get('usuario'));
+        $inscricoes = Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','pendente'])->count();
 
-        return redirect($_SERVER['HTTP_REFERER']); //volta pra pagina anterior, atualizando ela.
+        $pessoa = Pessoa::find($insc->pessoa->id);
+
+        if($inscricoes>0){
+            if(count($r->cancelamento))
+            AtendimentoController::novoAtendimento("Cancelamento da inscrição ".$insc->id. " motivo: ".implode(', ',$r->cancelamento), $matricula->pessoa, Session::get('usuario'));
+            else
+                AtendimentoController::novoAtendimento("Cancelamento da inscrição ".$insc->id, $matricula->pessoa, Session::get('usuario'));
+
+            return view('juridico.documentos.cancelamento-inscricao')->with('pessoa',$pessoa)->with('inscricao',$insc);
+        }
+
+        else{
+            if(count($r->cancelamento))
+            AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id. " motivo: ".implode(', ',$r->cancelamento), $matricula->pessoa, Session::get('usuario'));
+            else
+                AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id, $matricula->pessoa, Session::get('usuario'));
+            return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula);
+        }
 
     }
 

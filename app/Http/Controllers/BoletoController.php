@@ -420,7 +420,7 @@ class BoletoController extends Controller
 			}
 		}
 
-		AtendimentoController::novoAtendimento("Solicitação de cancelamento de boleto: ".$id, $matricula->pessoa, Session::get('usuario'));
+		AtendimentoController::novoAtendimento("Solicitação de cancelamento de boleto: ".$id, $boleto->pessoa, Session::get('usuario'));
 		return redirect($_SERVER['HTTP_REFERER']);
 
 		
@@ -545,6 +545,7 @@ class BoletoController extends Controller
 				
 				
 			}
+			AtendimentoController::novoAtendimento("Criação manual de boleto: ".$boleto->id, $boleto->pessoa, Session::get('usuario'));
 			return redirect(asset('secretaria/atender/'.$r->pessoa));
 
 
@@ -555,7 +556,7 @@ class BoletoController extends Controller
 			$boleto->status = 'impresso';
 			$boleto->save();
 			LancamentoController::reativarPorBoleto($id);
-			AtendimentoController::novoAtendimento("Solicitação de reativação de boleto: ".$id., $matricula->pessoa, Session::get('usuario'));
+			AtendimentoController::novoAtendimento("Solicitação de reativação de boleto: ".$id, $matricula->pessoa, Session::get('usuario'));
 			return redirect($_SERVER['HTTP_REFERER']);
 
 

@@ -124,7 +124,7 @@
 	        	<small>
 	        	<strong>Protocolo de recebimento</strong> <br>
 
-	        	Recebemos e registramos a solicitação de bolsa sobre o número {{$bolsa->id}}contendo ___ páginas. <br>
+	        	Recebemos e registramos a solicitação de bolsa sobre o número {{$bolsa->id}} contendo ___ páginas. <br>
 	        	
 	        	São Carlos, {{$hoje}}.<br><br>
 

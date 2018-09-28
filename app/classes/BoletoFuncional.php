@@ -10,6 +10,8 @@ class BoletoFuncional {
 
 public function gerar($boleto){
 		$cliente=Pessoa::find($boleto->pessoa);
+		if($cliente==null)
+			die("Boleto com problema. Não foi possivel gerar dados bancarios para esse boleto:".$boleto);
 		$cliente=PessoaController::formataParaMostrar($cliente);
 
 		$dias_de_prazo_para_pagamento = 5;

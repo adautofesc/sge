@@ -311,6 +311,7 @@ Route::middleware('login') ->group(function(){
 		Route::get('atendimento','SecretariaController@atender');
 		Route::get('atender','SecretariaController@atender')->name('secretaria.atender');
 		Route::get('atender/{var}','SecretariaController@atender');
+
 		Route::get('turmas', 'TurmaController@listarSecretaria')->name('secretaria.turmas');
 		Route::get('turmas-disponiveis/{turmas}/{filtros}', 'TurmaController@turmasDisponiveis');
 		Route::get('turmas-escolhidas/{turmas}/', 'TurmaController@turmasEscolhidas');

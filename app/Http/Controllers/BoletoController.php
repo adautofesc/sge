@@ -143,7 +143,7 @@ class BoletoController extends Controller
 			$linha["boleto_valor"] = $boleto->valor;
 			$linha["boleto_referencias"] ='';
 			foreach ($lancamentos as $lancamento){
-				$linha["boleto_referencias"] .= $lancamento->referencia."; ";
+				$linha["boleto_referencias"] .= $lancamento->referencia." ".$lancamento->matricula;
 			}
 
 			$linha["boleto_linha_digitavel"] = $boleto->dados['linha_digitavel'];

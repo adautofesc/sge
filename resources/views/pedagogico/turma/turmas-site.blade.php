@@ -9,7 +9,7 @@
 <body>
 	<h3> Turmas com vagas disponíveis</h3>
 	<br>
-	<h5> {{$i}} turmas com vagas. </h5>
+	<!--<h5> {{$i}} turmas com vagas. </h5>-->
 	<br>
 	<p class="small">Consultado em {{date('d/m/Y h:i')}}</p>
 	

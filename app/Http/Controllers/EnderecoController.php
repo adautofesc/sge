@@ -83,13 +83,14 @@ class EnderecoController extends Controller
     {
         //
     }
+    /*
     public static function getBairro($id){
         $bairro=DB::table('bairros_sanca')->find($id);
         if(count($bairro))
             return $bairro->nome;
         else
             return "Não definido";
-    }
+    }*/
     public function importarBairros(){
         $col_enderecos=collect();
         $nomes_comuns=[ 

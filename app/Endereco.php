@@ -13,7 +13,11 @@ class Endereco extends Model
         if($bairro->id>0)
             return $bairro->nome;
         else
-            return $this->bairro_str;
+        	if($this->bairro_str!='')
+            	return $this->bairro_str;
+            else{
+            	return \App\classes\CepUtils::getBairro($this->cep).'.';
+            }
 	}
 	
 }

@@ -53,13 +53,16 @@ class BoletoController extends Controller
 				$boleto->pessoa = $pessoa->pessoa;
 				$boleto->status = 'gravado';
 				$boleto->valor = $valor;
-				$boleto->save();
-				foreach($lancamentos as $lancamento){ //para cada lancamento
-					$lancamento->boleto = $boleto->id;
-					$lancamento->save();
+				if($pessoa->pessoa>0){
+					$boleto->save();
+					foreach($lancamentos as $lancamento){ //para cada lancamento
+						$lancamento->boleto = $boleto->id;
+						$lancamento->save();
+					}
+				$boletos++;
 
 				}
-				$boletos++;
+
 			}
 		}
 
@@ -84,9 +87,10 @@ class BoletoController extends Controller
 	}
 	public function gerarArquivoCSV(){
 
-		header('Content-Type: text/csv;');
+		header('Content-Type: text/csv; charset=utf-8');
 	    header('Content-Disposition: attachment;filename="'. 'lote_boletos' .'.csv"'); 
 	    header('Cache-Control: max-age=0');
+
 
 		$file = fopen('php://output', 'w');
 		$linha["pessoa_id"] = "id";
@@ -134,7 +138,7 @@ class BoletoController extends Controller
 			else
 				$linha["endereco_bairro"] = $boleto->cliente->bairro;
 
-			$linha["endereco_cidade"] = $boleto->cliente->cidade.' - '.$boleto->cliente->estado;
+			$linha["endereco_cidade"] =  $boleto->cliente->cidade.' - '.$boleto->cliente->estado;
 			$linha["endereco_cep"] = $boleto->cliente->cep;
 			$linha["boleto_nossonumero"] = $boleto->dados['nosso_numero'];
 			$linha["boleto_documento"] = $boleto->dados['numero_documento'];
@@ -143,7 +147,7 @@ class BoletoController extends Controller
 			$linha["boleto_valor"] = $boleto->valor;
 			$linha["boleto_referencias"] ='';
 			foreach ($lancamentos as $lancamento){
-				$linha["boleto_referencias"] .= $lancamento->referencia." ".$lancamento->matricula;
+				$linha["boleto_referencias"] .= $lancamento->referencia." ".$lancamento->matricula.'. ';
 			}
 
 			$linha["boleto_linha_digitavel"] = $boleto->dados['linha_digitavel'];
@@ -152,13 +156,18 @@ class BoletoController extends Controller
 			
 
 
-
-			//dd($linha);
+/*
+			foreach($linha as $valor){
+				$valor = utf8_decode($valor);
+			}
+*/
 			fputcsv($file, $linha,';');
 
 
-		}
+		}//fim foreach boletos
 		fclose($file);
+
+		//die(mb_detect_encoding($linha["endereco_cidade"] ) );
 
 
 		//return $file;
@@ -453,7 +462,7 @@ class BoletoController extends Controller
 			'documento' => $cliente->cpf,
 		    //'documento' => $cliente->cpf > 0 ? $cliente->cpf : PessoaController::notificarCPFInvalido($cliente->id), //verificar cpf
 		    'nome'      =>  str_replace(['º','ª','°'],'',substr($cliente->nome,0,37)), //nome até x cara
-		    'cep'       => preg_match('/^[0-9]{5,5}([- ]?[0-9]{3,3})?$/', $cliente->cep) ? $cliente->cep : '13500-000' ,
+		    'cep'       => preg_match('/^[0-9]{5,5}([- ]?[0-9]{3,3})?$/', $cliente->cep) ? $cliente->cep : '13970-000' ,
 		    'endereco'  => str_replace(['º','ª','°'], '',$cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->complemento),
 		    'bairro' => substr(($cliente->bairro=='Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro),0,15),
 		    'uf'        => $cliente->estado,
@@ -556,7 +565,7 @@ class BoletoController extends Controller
 			$boleto->status = 'impresso';
 			$boleto->save();
 			LancamentoController::reativarPorBoleto($id);
-			AtendimentoController::novoAtendimento("Solicitação de reativação de boleto: ".$id, $matricula->pessoa, Session::get('usuario'));
+			AtendimentoController::novoAtendimento("Solicitação de reativação de boleto: ".$id, $boleto->pessoa, Session::get('usuario'));
 			return redirect($_SERVER['HTTP_REFERER']);
 
 

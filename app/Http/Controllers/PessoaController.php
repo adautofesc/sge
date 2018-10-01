@@ -408,12 +408,12 @@ class PessoaController extends Controller
 			$pessoa->end_id=$endereco->id;
 			$pessoa->logradouro=$endereco->logradouro;
 			$pessoa->end_numero=$endereco->numero;
-			$pessoa->bairro=EnderecoController::getBairro($endereco->bairro);
+			$pessoa->bairro=$endereco->getBairro();
 			$pessoa->id_bairro=$endereco->bairro;
 			$pessoa->end_complemento=$endereco->complemento;
 			$pessoa->cidade=$endereco->cidade;
 			$pessoa->estado=$endereco->estado;
-			$pessoa->cep=Strings::mask($endereco->cep,'#####-###');
+			$pessoa->cep=Strings::mask(preg_replace( '/[^0-9]/is', '',$endereco->cep),'#####-###');
 			$pessoa->bairro_alt=$endereco->bairro_str;
 		}
 		

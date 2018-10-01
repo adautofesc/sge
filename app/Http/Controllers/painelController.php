@@ -320,6 +320,12 @@ class painelController extends Controller
         return $linha.$erros;
 
     }
+    public function testarClasse(){
+        return \App\classes\CepUtils::getBairro('13560000');
+    }
+
+
+
     public function testarClassePost(Request $r){
         
         foreach($r->matricula as $id){

@@ -127,12 +127,147 @@
                             </div>
                         </li>
                         @foreach($matriculas as $matricula)
-             
+                        @if($matricula->status == 'cancelada')
+                        <li style="background-color:  #FDD8B0; margin-bottom: 2px;"> 
+                        @elseif($matricula->status == 'pendente')
+                        <li class="alert-warning" style="background-color:  #FFD8B0; margin-bottom: 2px;">
+                        @elseif($matricula->status == 'espera')
+                        <li class="alert-info" style="background-color: #E7F5F8; margin-bottom: 2px;">
+                        @elseif($matricula->status == 'expirada')
+                        <li class="alert-success" style="background-color: #d6d8d9; margin-bottom: 2px;">
+                        @else
+                        <li>
+                        @endif
+                            @if(count($matricula->inscricoes) == 0)
+                             <div class="row alert-danger">                                                
+                                  
+                                <div class="col-xl-11 text-secondary " style="line-height:40px !important; padding-left: 30px;" >
+                                    
+                                    <div><i class=" fa fa-exclamation-circle "></i> &nbsp;<small><b>M{{$matricula->id}}  - SEM INSCRIÇÕES </b></small></div> 
+                                </div>
+                                <div class="col-xl-1" style="line-height:40px !important;">
+                                     @if($matricula->status != 'cancelada')
+                                    <a a href="#" onclick="cancelar({{$matricula->id}});" title="Cancelar Matrícula"><i class=" fa fa-times "></i></a>
+                                    @endif
+                                    
+                                </div>
+                            </div>
+                            @else
+                            <div class="row">                          
+                                    @if($matricula->inscricoes->first()->turma->programa->id == 12)
+                                            <div class="col-xl-4 text-success" title="CE - {{$matricula->inscricoes->first()->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
+                                    @elseif($matricula->inscricoes->first()->turma->programa->id == 2)
+                                            <div class="col-xl-4 text-primary " title="PID - {{$matricula->inscricoes->first()->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
+                                    @elseif($matricula->inscricoes->first()->turma->programa->id == 3)
+                                            <div class="col-xl-4 text-warning " title="UATI - {{$matricula->inscricoes->first()->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
+                                    @elseif($matricula->inscricoes->first()->turma->programa->id == 1)
+                                            <div class="col-xl-4 text-danger " title="UNIT - {{$matricula->inscricoes->first()->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
+                                    @else
+                                            <div class="col-xl-4 text-secondary " style="line-height:40px !important; padding-left: 30px;" >
+                                    @endif
+                                    <div class="dropdown-toggle"> <i class=" fa fa-circle "></i> &nbsp;<small><b>M{{$matricula->id}}  - {{substr($matricula->inscricoes->first()->turma->curso->nome,0,25)}}</b></small></div> 
+                                </div>
+                                <div class="col-xl-2" style="line-height:40px !important;">
+                                    <div><small>{{count($matricula->inscricoes)}} Disciplina(s) </small></div>
+                                </div>
+                                <div class="col-xl-2" style="line-height:40px !important;"></div>
+                                <div class="col-xl-1" style="line-height:40px !important;"></div>
+                                <div class="col-xl-1" style="line-height:40px !important;">
+                                    <div><small title="Criada em {{\Carbon\Carbon::parse($matricula->created_at)->format('d/m/y')}}">{{\Carbon\Carbon::parse($matricula->updated_at)->format('d/m/y')}}</small></div>
+                                </div>
+                                <div class="col-xl-2" style="line-height:40px !important;">
+                                    <div>
+                                        @if($matricula->status != 'cancelada')
+                                                    
+                                            <a href="#" class="remove" onclick="cancelar({{$matricula->id}});" title="Cancelar Matrícula"><i class=" fa fa-times "></i></a>
+                                                    
+                                        @else
+                                                    
+                                            <a href="#" onclick="reativar({{$matricula->id}});" title="Reativar Matrícula"><i class=" fa fa-undo "></i></a>
+                                            @if(file_exists('documentos/matriculas/cancelamentos/'.$matricula->id.'.pdf'))
+                                                &nbsp;<a href="/documentos/matriculas/cancelamentos/{{$matricula->id}}.pdf" target="_blank"><i class=" fa fa-file-text-o " title="Termo de cancelamento disponível"></i></a>
+                                            @else
+                                                &nbsp;<a href="/secretaria/matricula/uploadglobal/1/0/1/{{$matricula->id}}"><i class="fa fa-cloud-upload " title="Enviar Termo de Cancelamento de Matrícula"></i></a>
+                                            @endif
+                                                    
+                                        @endif
+                                                    
+                                         &nbsp;<a class="edit" href="{{asset('/secretaria/matricula/editar/').'/'.$matricula->id}}" title="Editar Matrícula"><i class=" fa fa-pencil-square-o "></i></a>
+                                                   
+                                        
+                                                                              
+                                         &nbsp;<a href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}" target="_blank" title="Imprimir Termo de Matrícula"><i class=" fa fa-print "></i></a>
+                                         
 
-                        <!-- verifica o status -->
+                                        @if(isset($matricula->desconto->id))
+                                        @if($matricula->desconto->id > 0)
+                                             &nbsp;<span><i class=" fa fa-flag " title="Esta matrícula possui bolsa."></i></span>
+                                        @endif
+                                        @endif
+                                         @if($matricula->status == 'pendente')
+                                            &nbsp;<span><i class=" fa fa-exclamation-triangle"  title="{{$matricula->obs}}"></i></span>
+                                        @elseif(($matricula->status == 'ativa' || $matricula->status == 'cancelada') && $matricula->obs!='')
+                                            &nbsp; <span><i class=" fa fa-info "  title="{{ $matricula->obs}}"></i></span>
+                                        @endif
+                                        @if(file_exists('documentos/matriculas/termos/'.$matricula->id.'.pdf'))
+                                            &nbsp;<a href="/documentos/matriculas/termos/{{$matricula->id}}.pdf" target="_blank"><i class=" fa fa-file-text-o " title="Termo disponível"></i></a>
+                                        @else
+                                            &nbsp;<a href="/secretaria/matricula/uploadglobal/1/1/1/{{$matricula->id}}"><i class="fa fa-cloud-upload " title="Enviar Termo de Matrícula"></i></a>
+                                        @endif
+                                        &nbsp;<a href="/secretaria/matricula/duplicar/{{$matricula->id}}" ><i class=" fa fa-files-o" title="Duplicar matrícula e colocar em espera"></i></a>
 
-                        <li style="background-color:  #FDD8B0; margin-bottom: 2px; border: solid 1px red;"> 
-                        teste
+
+
+                                
+                                        
+                                                    
+
+                                    
+                                    </div>
+
+                                </div>                             
+
+                            </div>
+                            @foreach($matricula->inscricoes as $inscricao)
+                            <div class="row" >
+                           
+                                                             
+                                <div class="col-xl-4" title="Turma {{$inscricao->turma->id}} - {{ isset($inscricao->turma->disciplina->nome) ? $inscricao->turma->disciplina->nome: $inscricao->turma->curso->nome}} " style="line-height:40px !important; padding-left: 50px;">
+                                     <div><i class=" fa fa-caret-right"></i>&nbsp;<small>&nbsp;i{{$inscricao->id}} - 
+                                        {{ isset($inscricao->turma->disciplina->nome) ? substr($inscricao->turma->disciplina->nome,0,30) : substr($inscricao->turma->curso->nome,0,30)}}</small></div>
+                                </div>
+                                <div class="col-xl-2" style="line-height:40px !important;">
+                                    <div><small>{{$inscricao->turma->professor->nome_simples}} </small></div>
+                                </div>
+                                <div class="col-xl-2" style="line-height:40px !important;">
+                                    <div><small>{{implode($inscricao->turma->dias_semana,', ').' '.$inscricao->turma->hora_inicio. '-'.$inscricao->turma->hora_termino}}</small></div>
+                                </div>
+                                <div class="col-xl-1" style="line-height:40px !important;">
+                                    <div><small title="{{$inscricao->turma->local->nome}}">{{$inscricao->turma->local->sigla}}</small></div>
+                                </div>
+                                <div class="col-xl-1" style="line-height:40px !important;">
+                                    <div><small title="Criada em {{\Carbon\Carbon::parse($inscricao->created_at)->format('d/m/y')}}">{{\Carbon\Carbon::parse($inscricao->updated_at)->format('d/m/y')}}</small></div>
+                                </div>
+                                <div class="col-xl-2" style="line-height:40px !important;">
+                                    <div>
+                                        @if($inscricao->status != 'cancelada')
+                                        <a a href="#" onclick="remover({{$inscricao->id}});" title="Cancelar disciplina"><i class=" fa fa-times "></i></a>
+                                        <a href="{{asset('/secretaria/matricula/inscricao/editar/').'/'.$inscricao->id}}" target="_blank" title="Editar Inscrição"><i class=" fa fa-pencil-square-o "></i></a>
+                                        @else
+
+                                        <a a href="#" onclick="recolocar({{$inscricao->id}});" title="Reativar disciplina"><i class=" fa fa-undo "></i></a>
+                                         @if(file_exists('documentos/inscricoes/cancelamentos/'.$inscricao->id.'.pdf'))
+                                            &nbsp;<a href="/documentos/inscricoes/cancelamentos/{{$inscricao->id}}.pdf" target="_blank"><i class=" fa fa-file-text-o " title="Termo de cancelamento disponível"></i></a>
+                                        @else
+                                            &nbsp;<a href="{{asset('secretaria/matricula/uploadglobal/0/0/1').'/'.$inscricao->id}}"><i class="fa fa-cloud-upload " title="Enviar Termo de Cancelamento de disciplina"></i></a>
+                                        @endif
+                                        @endif
+                                    </div>
+                                </div>
+                         
+                            </div>
+                            @endforeach
+                            @endif
                         </li>
                         @endforeach
                         @foreach($inscricoes as $inscricao_livre)

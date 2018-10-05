@@ -72,7 +72,7 @@
             <!-- Menu de perfil -->
             <li class="profile dropdown">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    <div class="img" style="background-image: url('http://thesocialmediamonthly.com/wp-content/uploads/2015/08/photo.png')"> </div> 
+                    <div class="img" style="background-image: url('https://thesocialmediamonthly.com/wp-content/uploads/2015/08/photo.png')"> </div> 
                     <span class="name"> {{Session::get('nome_usuario')}}</span> 	
                 </a>
 

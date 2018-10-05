@@ -156,6 +156,9 @@ Route::middleware('login') ->group(function(){
 			Route::get('editar/{id}','BoletoController@editar');
 			Route::post('editar/{id}','BoletoController@update');
 			Route::get('imprimir/{id}','BoletoController@imprimir');
+
+			Route::get('registrar/{id}','BoletoController@registrar');//registrar para o banco
+
 			Route::get('listar-por-pessoa','BoletoController@listarPorPessoa');
 			Route::get('cancelar/{id}','BoletoController@cancelar');
 			Route::get('reativar/{id}','BoletoController@reativar');

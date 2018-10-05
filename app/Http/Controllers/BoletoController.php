@@ -189,15 +189,39 @@ class BoletoController extends Controller
 	}
 	public function imprimir($boleto){
 		$boleto = Boleto::find($boleto);
+
+		if(!$boleto)
+			return redirect()->back();
+
+		
+		
+		$lancamentos = Lancamento::where('boleto', $boleto->id)->get();
+		$str_lancamentos ='';
+		foreach ($lancamentos as $lancamento){
+				$str_lancamentos.= $lancamento->referencia." ".$lancamento->matricula.'<br>';
+			}
 		if($boleto->status == 'gravado'){
+
+			$pessoa = Pessoa::find($boleto->pessoa);
+			$pessoa = PessoaController::formataParaMostrar($pessoa);
+			//dd($pessoa);
+			//$pessoa->formataParaMostrar();
+			$boleto->status = 'emitido';
+
+			return view('financeiro.boletos.registrar')->with('boleto',$boleto)->with('lancamentos',$str_lancamentos)->with('pessoa',$pessoa);
+
+		}
+			
+		else{
 			$boleto->status = 'impresso';
-			$boleto->save();
+			//$boleto->save();
+		
 		}
 		//return $boleto;
 		$inst = new BoletoFuncional;
 		$boleto_completo = $inst->gerar($boleto);
 		
-		$lancamentos = Lancamento::where('boleto', $boleto->id)->get();
+		
 
 		//return $boleto_completo; 
 		return view('financeiro.boletos.boleto')->with('boleto',$boleto_completo)->with('lancamentos',$lancamentos);

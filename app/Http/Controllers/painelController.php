@@ -321,7 +321,13 @@ class painelController extends Controller
 
     }
     public function testarClasse(){
-        return \App\classes\CepUtils::getBairro('13560000');
+        $matriculas = Matricula::select('id')->where('curso',null)->get();
+        foreach($matriculas as $matricula){
+            MatriculaController::matriculaSemCurso($matricula);
+        }
+
+        return $matriculas;
+        
     }
 
 

@@ -35,7 +35,7 @@
                         &nbsp;&nbsp;Impressão de boletos em lote</a>
                     </div>
                      <div>
-                        <a href="{{asset('financeiro/boletos/lote-csv')}}" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="{{asset('financeiro/boletos/lote-csv')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-circle-right "></i>
                         &nbsp;&nbsp;Gerar arquivo CSV com boletos.</a>
                     </div>

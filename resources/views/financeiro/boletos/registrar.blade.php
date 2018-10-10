@@ -1,16 +1,26 @@
 @extends('layout.app')
 @section('pagina')
 <div class="title-block">
+	@if($vencido)
+	<h3 class="title"> Solicitando 2ª via do boleto {{$boleto->id}} <span class="sparkline bar" data-type="bar"></span> </h3>
+	@else
     <h3 class="title"> Registrando boleto {{$boleto->id}} no banco para impressão.<span class="sparkline bar" data-type="bar"></span> </h3>
+    @endif
 </div>
 @include('inc.errors')
 <form name="item" action="https://mpag.bb.com.br/site/mpag/" method="POST">
-	<input type="hidden" name="idConv" value="2838669">
+	<input type="hidden" name="idConv" value="318737">
 	<input type="hidden" name="refTran" value="2838669{{str_pad($boleto->id,10,'0',STR_PAD_LEFT)}}">
 	<input type="hidden" name="valor" value="{{preg_replace( '/[^0-9]/is', '',$boleto->valor)}}">
 	<input type="hidden" name="qtdPontos" value="">
 	<input type="hidden" name="dtVenc" value="{{\Carbon\Carbon::parse($boleto->vencimento)->format('dmY')}}">
-	<input type="hidden" name="tpPagamento" value="2">
+	@if($vencido)
+	<input type="hidden" name="tpPagamento" value="21">
+
+	@else
+	<input type="hidden" name="dtVenc" value="{{\Carbon\Carbon::parse($boleto->vencimento)->format('dmY')}}">
+	@endif
+	
 	<input type="hidden" name="cpfCnpj" value="{{$pessoa->cpf}}">
 	<input type="hidden" name="indicadorPessoa" value="1">
 	<input type="hidden" name="valorDesconto" value="">
@@ -22,59 +32,20 @@
 	<input type="hidden" name="endereco" value="{{$pessoa->logradouro.' '.$pessoa->end_numero.' '.$pessoa->end_complemento.' '.$pessoa->bairro}}">
 	<input type="hidden" name="cidade" value="{{$pessoa->cidade}}">
 	<input type="hidden" name="uf" value="{{$pessoa->estado}}">
-	<input type="hidden" name="cep" value="{{$pessoa->cep}}">
-	<input type="hidden" name="msgLoja" value="{{$lancamentos}}">
+	<input type="hidden" name="cep" value="{{preg_replace( '/[^0-9]/is', '',$pessoa->cep)}}">
+	<input type="hidden" name="msgLoja" value="{!!$lancamentos!!}">
 
 
     <div class="card card-block">
-    	<div class="form-group row"> 
-			<label class="col-sm-2 form-control-label text-xs-right">
-				Estado
-			</label>
-			<div class="col-sm-6"> 
-				<select class="c-select form-control boxed" name="status" required>
-					<option >Selecione uma opção</option>
-					<option value="gravado" {{$boleto->status == 'gravado' ? "selected" : ""}} >Gravado</option>
-					<option value="impresso" {{$boleto->status == 'impresso' ? "selected" : ""}} >Impresso</option>
-					<option value="emitido" {{$boleto->status == 'emitido' ? "selected" : ""}}>Enviado ao banco</option>
-					<!--
-					<option value="cancelar" {{$boleto->status == 'cancelar' ? "selected" : ""}}>Cancelar</option>
-					<option value="cancelado" {{$boleto->status == 'cancelado' ? "selected" : ""}}>Cancelado</option>
-					-->
-					
-					
-				</select> 
+    	<div class="form-group row">
+			<div class="col-sm-10 col-sm-offset-2">
+				<h5>Enviar?</h5>
 			</div>
-		</div>
-		<div class="form-group row"> 
-			<label class="col-sm-2 form-control-label text-xs-right">
-				Vencimento
-			</label>
-			<div class="col-sm-3"> 
-				<div class="input-group">
-					<span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
-					<input type="text" class="form-control boxed" name="vencimento" value="{{$boleto->vencimento}}" required> 
-				</div>
-			</div>
-		</div>
-		<div class="form-group row"> 
-			<label class="col-sm-2 form-control-label text-xs-right">
-				Valor
-			</label>
-			<div class="col-sm-3"> 
-				<div class="input-group">
-					<span class="input-group-addon">R$ </span> 
-					<input type="text" class="form-control boxed" name="valore" value="{{str_replace('.',',',$boleto->valor)}}" required> 
-				</div>
-			</div>
-		</div>
-
-		            
+       </div>		            
 		<div class="form-group row">
 			<div class="col-sm-10 col-sm-offset-2">
 				<input type="hidden" name="boleto" value="{{$boleto->id}}">
-				<button type="submit" name="btn"  class="btn btn-primary">Salvar</button>
-                <button type="reset" name="btn"  class="btn btn-primary">Restaurar</button>
+				<button type="submit" name="btn"  class="btn btn-primary">Enviar</button>
                 <button type="cancel" name="btn" class="btn btn-primary" onclick="history.back(-2);return false;">Cancelar</button>
 				<!-- 
 				<button type="submit" class="btn btn-primary"> Cadastrar</button> 

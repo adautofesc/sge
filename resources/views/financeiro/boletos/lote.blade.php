@@ -538,9 +538,9 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 		<tr>
 			<td width=150><IMG SRC="{{asset('img/logobb.gif')}}" with="150px" height="40"></td>
 			<td width=50>
-        <div class="field_cod_banco">{{ $boleto->dados["codigo_banco_com_dv"]}}</div>
+        <div class="field_cod_banco">{{ $boleto["codigo_banco_com_dv"]}}</div>
 			</td>
-			<td class="linha_digitavel">{{ $boleto->dados["linha_digitavel"]}}</td>
+			<td class="linha_digitavel">{{ $boleto["linha_digitavel"]}}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -556,11 +556,11 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 		</tr>
 
 		<tr class="campos">
-			<td class="cedente">{{ $boleto->dados["cedente"]}}&nbsp;</td>
-			<td class="ag_cod_cedente">{{ $boleto->dados["agencia_codigo"]}} &nbsp;</td>
-			<td class="especie">{{ $boleto->dados["especie"]}}&nbsp;</td>
-			<TD class="qtd">{{ $boleto->dados["quantidade"]}}&nbsp;</td>
-			<TD class="nosso_numero">{{ $boleto->dados["nosso_numero"]}}&nbsp;</td>
+			<td class="cedente">{{ $boleto["cedente"]}}&nbsp;</td>
+			<td class="ag_cod_cedente">{{ $boleto["agencia_codigo"]}} &nbsp;</td>
+			<td class="especie">{{ $boleto["especie"]}}&nbsp;</td>
+			<TD class="qtd">{{ $boleto["quantidade"]}}&nbsp;</td>
+			<TD class="nosso_numero">{{ $boleto["nosso_numero"]}}&nbsp;</td>
 		</tr>
 		</tbody>
 		</table>
@@ -575,11 +575,11 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 			<td class="valor_doc">Valor documento</TD>
 		</tr>
 		<tr class="campos">
-			<td class="num_doc">{{ $boleto->dados["numero_documento"]}}</td>
-			<td class="contrato">{{ $boleto->dados["sacado_id"]}}</td>
-			<td class="cpf_cei_cnpj">{{ $boleto->dados["cpf_cnpj"]}}</td>
-			<td class="vencimento">{{ $boleto->dados["data_vencimento"]}}</td>
-			<td class="valor_doc">{{ $boleto->dados["valor_boleto"]}}</td>
+			<td class="num_doc">{{ $boleto["numero_documento"]}}</td>
+			<td class="contrato">{{ $boleto["sacado_id"]}}</td>
+			<td class="cpf_cei_cnpj">{{ $boleto["cpf_cnpj"]}}</td>
+			<td class="vencimento">{{ $boleto["data_vencimento"]}}</td>
+			<td class="valor_doc">{{ $boleto["valor_boleto"]}}</td>
 		</tr>
       </tbody>
       </table>
@@ -598,7 +598,7 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 			<td class="outras_deducoes">&nbsp;</td>
 			<td class="mora_multa">&nbsp;</td>
 			<td class="outros_acrescimos">&nbsp;</td>
-			<td class="valor_cobrado">{{$boleto->valor_cobrado}}</td>
+			<td class="valor_cobrado">{{$boleto["valor_boleto"]}}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -612,11 +612,25 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 		<tr class="campos referencia">
 			<td valign="top" class="sacado">
 				
-		@foreach($boleto->lancamentos as $lancamento)
-		{{ $lancamento->referencia}} - R$ {{ $lancamento->valor}}
-		<BR>
+		@if(isset($boleto["referencia0"]))
+			{{ $boleto["referencia0"]}}
+			<BR>
+		@endif
+		@if(isset($boleto["referencia1"]))
+			{{ $boleto["referencia1"]}}
+			<BR>
+		@endif
+		@if(isset($boleto["referencia2"]))
+			{{ $boleto["referencia2"]}}
+			<BR>
+		@endif
+		@if(isset($boleto["referencia3"]))
+			{{ $boleto["referencia3"]}}
+			<BR>
+		@endif
 		
-		@endforeach
+		
+		
 		</td>
 		</tr>
 		</tbody>
@@ -633,9 +647,9 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 		<tr>
 			<td width=150><IMG SRC="{{asset('img/logobb.gif')}}" with="150px" height="40"></td>
 			<td width=50>
-        <div class="field_cod_banco">{{ $boleto->dados["codigo_banco_com_dv"]}}</div>
+        <div class="field_cod_banco">{{ $boleto["codigo_banco_com_dv"]}}</div>
 			</td>
-			<td class="linha_digitavel">{{ $boleto->dados["linha_digitavel"]}}</td>
+			<td class="linha_digitavel">{{ $boleto["linha_digitavel"]}}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -648,7 +662,7 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 		</tr>
 		<tr class="campos">
 			<td class="local_pagto">QUALQUER BANCO AT&Eacute; O VENCIMENTO</td>
-			<td class="vencimento2">{{ $boleto->dados["data_vencimento"]}}</td>
+			<td class="vencimento2">{{ $boleto["data_vencimento"]}}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -660,8 +674,8 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 			<td class="ag_cod_cedente2">Ag&ecirc;ncia/C&oacute;digo cedente</td>
 		</tr>
 		<tr class="campos">
-			<td class="cedente2">{{ $boleto->dados["cedente"]}}</td>
-			<td class="ag_cod_cedente2">{{ $boleto->dados["agencia_codigo"]}}</td>
+			<td class="cedente2">{{ $boleto["cedente"]}}</td>
+			<td class="ag_cod_cedente2">{{ $boleto["agencia_codigo"]}}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -677,12 +691,12 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 			<td class="nosso_numero2">Nosso n&uacute;mero</td>
 		</tr>
 		<tr class="campos">
-			<td class="data_doc">{{ $boleto->dados["data_documento"]}}</td>
-			<td class="num_doc2">{{ $boleto->dados["numero_documento"]}}</td>
-			<td class="especie_doc">{{ $boleto->dados["especie_doc"]}}</td>
-			<td class="aceite">{{ $boleto->dados["aceite"]}}</td>
-			<td class="data_process">{{ $boleto->dados["data_processamento"]}}</td>
-			<td class="nosso_numero2">{{ $boleto->dados["nosso_numero"]}}</td>
+			<td class="data_doc">{{ $boleto["data_documento"]}}</td>
+			<td class="num_doc2">{{ $boleto["numero_documento"]}}</td>
+			<td class="especie_doc">{{ $boleto["especie_doc"]}}</td>
+			<td class="aceite">{{ $boleto["aceite"]}}</td>
+			<td class="data_process">{{ $boleto["data_processamento"]}}</td>
+			<td class="nosso_numero2">{{ $boleto["nosso_numero"]}}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -699,11 +713,11 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 		</tr>
 		<tr class="campos">
 			<td class="reservado">&nbsp;</td>
-			<td class="carteira">{{ $boleto->dados["carteira"]}} {{ isset($boleto->dados["variacao_carteira"]) ? $boleto->dados["variacao_carteira"] : '&nbsp;' }}</td>
-			<td class="especie2">{{ $boleto->dados["especie"]}}</td>
-			<td class="qtd2">{{ $boleto->dados["quantidade"]}}</td>
-			<td class="xvalor">{{ $boleto->dados["valor_unitario"]}}</td>
-			<td class="valor_doc2">{{ $boleto->dados["valor_boleto"]}}</td>
+			<td class="carteira">{{ $boleto["carteira"]}} {{ isset($boleto["variacao_carteira"]) ? $boleto["variacao_carteira"] : '&nbsp;' }}</td>
+			<td class="especie2">{{ $boleto["especie"]}}</td>
+			<td class="qtd2">{{ $boleto["quantidade"]}}</td>
+			<td class="xvalor">{{ $boleto["valor_unitario"]}}</td>
+			<td class="valor_doc2">{{ $boleto["valor_boleto"]}}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -721,15 +735,15 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 			</tr>
 			<tr class="campos">
 				<td class="instrucoes" rowspan="5">
-					<p>{{ $boleto->dados["demonstrativo1"] }}</p>		
-					<p>{{ $boleto->dados["demonstrativo2"]}}</p>
-					<p>{{ $boleto->dados["demonstrativo3"] }}</p>
+					<p>{{ $boleto["demonstrativo1"] }}</p>		
+					<p>{{ $boleto["demonstrativo2"]}}</p>
+					<p>{{ $boleto["demonstrativo3"] }}</p>
 					<p>&nbsp;</p>
 					<p>&nbsp;</p>
-					<p>{{ $boleto->dados["instrucoes1"] }}</p>
-					<p>{{ $boleto->dados["instrucoes2"] }}</p>
-					<p>{{ $boleto->dados["instrucoes3"] }}</p>
-					<p>{{ $boleto->dados["instrucoes4"] }}</p>
+					<p>{{ $boleto["instrucoes1"] }}</p>
+					<p>{{ $boleto["instrucoes2"] }}</p>
+					<p>{{ $boleto["instrucoes3"] }}</p>
+					<p>{{ $boleto["instrucoes4"] }}</p>
 				</td>
 			</tr>
 			</tbody>
@@ -795,7 +809,7 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 				<td class="valor_cobrado2">(=) Valor cobrado</td>
 			</tr>
 			<tr class="campos">
-				<td class="valor_cobrado2">{{$boleto->valor_cobrado}}</td>
+				<td class="valor_cobrado2">{{ $boleto["valor_boleto"]}}</td>
 			</tr>
 			</tbody>
 			</table>
@@ -816,7 +830,7 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 	    
 	   	</table>
 	   <div class="barcode">
-			<img src="{{asset('./img/barcode.php').'?code='. $boleto->dados["codigo_barras"]}}"  with="600" height="50">		
+			<img src="{{asset('./img/barcode.php').'?code='. $boleto["codigo_barras"]}}"  with="600" height="50">		
 		</div>
 	   	<div class="cut">
 			<p>dobre na linha pontilhada</p>
@@ -863,9 +877,9 @@ ul.pagination li a:hover:not(.active) {background-color: #ddd;}";
 		</tr>
 		<tr class="campos">
 			<td class="sacado2" style="margin-top: 18em; margin-left:150px; font-family: Tahoma;" >
-				<p style="font-size: 20px;">{{ $boleto->dados["sacado"]}}</p>
-				<p>{{ $boleto->dados["endereco1"]}}</p>
-				<p>{{ $boleto->dados["endereco2"]}}</p>
+				<p style="font-size: 20px;">{{ $boleto["sacado"]}}</p>
+				<p>{{ $boleto["endereco1"]}}</p>
+				<p>{{ $boleto["endereco2"]}}</p>
 				
 			</td>
 		</tr>

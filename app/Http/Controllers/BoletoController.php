@@ -72,7 +72,7 @@ class BoletoController extends Controller
 	}
 	public function imprimirLote(){
 
-		$boletosx=Boleto::where('status','gravado')->get();
+		$boletosx=Boleto::where('status','gravado')->paginate(200);
 		$boletos = collect();
 		
 		$inst = new BoletoFuncional;
@@ -82,38 +82,50 @@ class BoletoController extends Controller
 			$boleto = $boleto_completo->dados;
 			$boletos->push($boleto);
 		}
-		return $boletos;
+		//return $boletos;
 		return view('financeiro.boletos.lote')->with('boletos',$boletos)->with('boletosx',$boletosx);
 	}
 	public function gerarArquivoCSV(){
-
+/*
 		header('Content-Type: text/csv; charset=utf-8');
 	    header('Content-Disposition: attachment;filename="'. 'lote_boletos' .'.csv"'); 
 	    header('Cache-Control: max-age=0');
 
+*/
+	    if(isset($_GET['page'])){
+	    	$file = fopen('lote-boletos.csv', 'a+');
+	    }
 
-		$file = fopen('php://output', 'w');
-		$linha["pessoa_id"] = "id";
-		$linha["pessoa_nome"] = "Nome";
-		$linha["pessoa_cpf"] = "cpf";
-		$linha["endereco_rua"] = "rua";
-		$linha["endereco_numero"] = "numero";
-		$linha["endereco_complemento"] = "complemento";
-		$linha["endereco_bairro"] = "bairro";
-		$linha["endereco_cidade"] = "cidade_uf";
-		$linha["endereco_cep"] = "cep";
-		$linha["boleto_nossonumero"] = "nosso_numero";
-		$linha["boleto_documento"] = "documento";
-		$linha["boleto_vencimento"] = "vencimento";
-		$linha["boleto_emissao"] = "emissao";
-		$linha["boleto_valor"] = "valor";
-		$linha["boleto_referencias"] = "referencias";
-		$linha["boleto_linha_digitavel"] = "linha_digitavel";
-		$linha["boleto_codigo_barras"] = "codigo_barras";
-		fputcsv($file, $linha,';');
+	    else{
+	    	$file = fopen('lote-boletos.csv', 'w');
+			$linha["pessoa_id"] = "id";
+			$linha["pessoa_nome"] = "Nome";
+			$linha["pessoa_cpf"] = "cpf";
+			$linha["endereco_rua"] = "rua";
+			$linha["endereco_numero"] = "numero";
+			$linha["endereco_complemento"] = "complemento";
+			$linha["endereco_bairro"] = "bairro";
+			$linha["endereco_cidade"] = "cidade_uf";
+			$linha["endereco_cep"] = "cep";
+			$linha["boleto_nossonumero"] = "nosso_numero";
+			$linha["boleto_documento"] = "documento";
+			$linha["boleto_vencimento"] = "vencimento";
+			$linha["boleto_emissao"] = "emissao";
+			$linha["boleto_valor"] = "valor";
+			$linha["boleto_referencias"] = "referencias";
+			$linha["boleto_linha_digitavel"] = "linha_digitavel";
+			$linha["boleto_codigo_barras"] = "codigo_barras";
+			fputcsv($file, $linha,';');
 
 
-		$boletos=Boleto::where('status','gravado')->get();
+	    }
+
+		
+
+
+		$boletos=Boleto::where('status','gravado')->paginate(100);
+		//$boletos=Boleto::where('vencimento','like','2018-10-20%');
+		
 		
 		
 		$inst = new BoletoFuncional;
@@ -129,7 +141,7 @@ class BoletoController extends Controller
 
 			$linha["pessoa_id"] = $boleto->pessoa;
 			$linha["pessoa_nome"] = $boleto->dados['sacado'];
-			$linha["pessoa_cpf"] = $boleto->dados['cpf_sacado'];
+			$linha["pessoa_cpf"] = '"'.$boleto->dados['cpf_sacado'].'"';
 			$linha["endereco_rua"] = $boleto->cliente->logradouro;
 			$linha["endereco_numero"] = $boleto->cliente->end_numero;
 			$linha["endereco_complemento"] = $boleto->cliente->end_complemento;
@@ -140,8 +152,8 @@ class BoletoController extends Controller
 
 			$linha["endereco_cidade"] =  $boleto->cliente->cidade.' - '.$boleto->cliente->estado;
 			$linha["endereco_cep"] = $boleto->cliente->cep;
-			$linha["boleto_nossonumero"] = $boleto->dados['nosso_numero'];
-			$linha["boleto_documento"] = $boleto->dados['numero_documento'];
+			$linha["boleto_nossonumero"] = '"'.$boleto->dados['nosso_numero'].'"';
+			$linha["boleto_documento"] = '"'.$boleto->dados['numero_documento'].'"';
 			$linha["boleto_vencimento"] = $boleto->dados['data_vencimento'];
 			$linha["boleto_emissao"] = $boleto->dados['data_processamento'];
 			$linha["boleto_valor"] = $boleto->valor;
@@ -150,8 +162,8 @@ class BoletoController extends Controller
 				$linha["boleto_referencias"] .= $lancamento->referencia." ".$lancamento->matricula.'. ';
 			}
 
-			$linha["boleto_linha_digitavel"] = $boleto->dados['linha_digitavel'];
-			$linha["boleto_codigo_barras"] = $boleto->dados['codigo_barras'];
+			$linha["boleto_linha_digitavel"] = '"'.$boleto->dados['linha_digitavel'].'"';
+			$linha["boleto_codigo_barras"] = '"'.$boleto->dados['codigo_barras'].'"';
 			
 			
 
@@ -170,7 +182,7 @@ class BoletoController extends Controller
 		//die(mb_detect_encoding($linha["endereco_cidade"] ) );
 
 
-		//return $file;
+		return view('financeiro.boletos.gerador-csv',compact('boletos'));
 	}
 	public function imprimirLotex(){
 		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
@@ -189,9 +201,15 @@ class BoletoController extends Controller
 	}
 	public function imprimir($boleto){
 		$boleto = Boleto::find($boleto);
+		$vencido = false;
 
 		if(!$boleto)
 			return redirect()->back();
+
+		if($boleto->vencimento < date('Y-m-d')){
+			$vencido = true;
+
+		}
 
 		
 		
@@ -200,29 +218,32 @@ class BoletoController extends Controller
 		foreach ($lancamentos as $lancamento){
 				$str_lancamentos.= $lancamento->referencia." ".$lancamento->matricula.'<br>';
 			}
-		if($boleto->status == 'gravado'){
+		
+		if($boleto->status == 'gravado' || $boleto->status == 'impresso' || $vencido==true){
 
 			$pessoa = Pessoa::find($boleto->pessoa);
 			$pessoa = PessoaController::formataParaMostrar($pessoa);
 			//dd($pessoa);
 			//$pessoa->formataParaMostrar();
 			$boleto->status = 'emitido';
+			$boleto->save();
 
-			return view('financeiro.boletos.registrar')->with('boleto',$boleto)->with('lancamentos',$str_lancamentos)->with('pessoa',$pessoa);
+			return view('financeiro.boletos.registrar')->with('boleto',$boleto)->with('lancamentos',$str_lancamentos)->with('pessoa',$pessoa)->with('vencido',$vencido);
 
 		}
 			
-		else{
-			$boleto->status = 'impresso';
-			//$boleto->save();
-		
+		if($boleto->status =='emitido'){
+			$inst = new BoletoFuncional;
+			$boleto_completo = $inst->gerar($boleto);
+			//return $boleto_completo; 
+			return view('financeiro.boletos.boleto')->with('boleto',$boleto_completo)->with('lancamentos',$lancamentos);
+
 		}
-		//return $boleto;
+		
+		
+		
 		$inst = new BoletoFuncional;
 		$boleto_completo = $inst->gerar($boleto);
-		
-		
-
 		//return $boleto_completo; 
 		return view('financeiro.boletos.boleto')->with('boleto',$boleto_completo)->with('lancamentos',$lancamentos);
 
@@ -654,7 +675,7 @@ class BoletoController extends Controller
 		 * @return [type] [description]
 		 */
 		public function relatorioBoletosAbertos(){
-			$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
+			$boletos = Boleto::whereIn('status',['emitido','gravado','impresso'])->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
 
 			foreach($boletos as $boleto){
 				$boleto->aluno = \App\Pessoa::find($boleto->pessoa);
@@ -672,7 +693,7 @@ class BoletoController extends Controller
 		 */
 		public function relatorioDevedores(){
 			//seleciona boletos de status emitidos, vencido ordenado por pessoa
-			$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
+			$boletos = Boleto::whereIn('status',['emitido','gravado','impresso'])->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
 
 			//dd($boletos);
 
@@ -726,15 +747,17 @@ class BoletoController extends Controller
 						continue;
 					}
 					$pessoa->pendencias = $boleto->getLancamentos();
+					$pessoa->boleto = $boleto;
+					$pessoa->vencimento= $boleto->vencimento;
 
 					$pessoa->divida = $boleto->valor;
 					// adiciona na coleção
 					$devedores->push($pessoa);
 
-				}
-			}
+				}//else de não estiver na coleção
+			}//end foreach boletos
 
-			
+			//dd($devedores);
 			return $devedores;
 		}
 
@@ -743,13 +766,14 @@ class BoletoController extends Controller
 		 * @return [type] [description]
 		 */
 		public function relatorioDevedoresXls(){
-
 			//header para XLS
+
+			
 			header('Content-Type: application/vnd.ms-excel');
-	        header('Content-Disposition: attachment;filename="'. 'cobranca' .'.xls"'); /*-- $filename is  xsl filename ---*/
+	        header('Content-Disposition: attachment;filename="'. 'cobranca' .'.xls"'); 
 	        header('Cache-Control: max-age=0');
 
-	        //
+	        
 	        $planilha =  new Spreadsheet();
         	$arquivo = new Xls($planilha);
 			
@@ -761,7 +785,7 @@ class BoletoController extends Controller
 	        $planilha->setCellValue('E1', 'CEP');
 	        $planilha->setCellValue('F1', 'Cidade');
 	        $planilha->setCellValue('G1', 'Referência');
-	        $planilha->setCellValue('H1', 'Valor');
+	        $planilha->setCellValue('H1', 'Total');
 
 	        $linha = 2;
 
@@ -770,26 +794,37 @@ class BoletoController extends Controller
 
 			foreach($devedores as $pessoa){
 
-
-				foreach($pessoa->pendencias as $pendencia){
-
-					if($pendencia->valor>0){
-
 						$planilha->setCellValue('A'.$linha, $pessoa->nome);
 						$planilha->setCellValue('B'.$linha, $pessoa->cpf);
 				        $planilha->setCellValue('C'.$linha, $pessoa->endereco->logradouro.' '.$pessoa->endereco->numero.' '.$pessoa->endereco->complemento);
 				 
 				        $planilha->setCellValue('D'.$linha, $pessoa->endereco->getBairro());
-				
-
 				        $planilha->setCellValue('E'.$linha, $pessoa->endereco->cep);
 				        $planilha->setCellValue('F'.$linha, $pessoa->endereco->cidade);
-				        $planilha->setCellValue('G'.$linha, $pendencia->referencia);
-				        $planilha->setCellValue('H'.$linha, $pendencia->valor);
 
-				        $linha++;
-			    	}
-		    	}
+				        $referencias='';
+				        $valor=0;
+
+
+
+				foreach($pessoa->pendencias as $pendencia){
+
+
+					if($pendencia->valor>0){
+
+						 //dd($pendencia);
+						$referencias .= $pendencia->referencia. ' R$ '.$pendencia->valor. ' Mt.'.$pendencia->matricula. "\n";
+						$valor += $pendencia->valor;
+
+				       
+			    	}//end if($pendencia->valor>0)
+		    	}// end foreach($pessoa->pendencias as $pendencia)
+
+		    	$planilha->setCellValue('G'.$linha, $referencias);
+		        $planilha->setCellValue('H'.$linha, $valor);
+		     
+
+		    	$linha++;
 
 			}
 			

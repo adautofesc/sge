@@ -113,7 +113,7 @@ class InscricaoController extends Controller
             $inscricao->save();
             AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id." modificada para matrícula ".$inscricao->matricula.".", $inscricao->pessoa->id, Session::get('usuario'));
             MatriculaController::modificaMatricula($inscricao->matricula);
-            MatriculaController::modificaMatricula($request->matricula);
+
             return redirect(asset('/secretaria/atender/'));
         }
         else
@@ -231,6 +231,7 @@ class InscricaoController extends Controller
      * @return [type]             [description]
      */
     public static function inscreverAluno($aluno,$turma,$matricula=0){
+        $atendimento = AtendimentoController::novoAtendimento(' ', $aluno, Session::get('usuario'));
         $turma=Turma::find($turma);
         if(InscricaoController::verificaSeInscrito($aluno,$turma->id))
                 return Inscricao::find(InscricaoController::verificaSeInscrito($aluno,$turma->id));
@@ -246,21 +247,19 @@ class InscricaoController extends Controller
             }
         }
         $inscricao=new Inscricao();
+        $inscricao->atendimento = $atendimento->id;
         $inscricao->pessoa=$aluno;
-        if (Session::get('atendimento')>0)
-            $inscricao->atendimento=Session::get('atendimento');
-        else
-            $inscricao->atendimento=1;
         $inscricao->turma=$turma->id;
         $inscricao->status='regular';
         $inscricao->matricula=$matricula;
         $inscricao->save();
 
-        // aumenta Inscricaodos
+        //adiciona no log de atendimentos
+        $atendimento->descricao = "Inscrição na turma ".$turma->id.' ID'.$inscricao->id;
+        $atendimento->save();
 
-        //$turma=Turma::find($turma);
+        //modifica o numero de inscritos na turma
         InscricaoController::modInscritos($turma->id,1,1);
-        MatriculaController::modificaMatricula($matricula);
 
         return $inscricao;
 
@@ -282,13 +281,11 @@ class InscricaoController extends Controller
             return Inscricao::find(InscricaoController::verificaSeInscrito($aluno,$turma->id));
     $inscricao=new Inscricao();
     $inscricao->pessoa=$aluno;
-    if (Session::get('atendimento')>0)
-        $inscricao->atendimento=Session::get('atendimento');
-    else
-        $inscricao->atendimento=1;
     $inscricao->turma=$turma->id;
     $inscricao->status='regular';
     $inscricao->save();
+
+     AtendimentoController::novoAtendimento("Inscrição na turma ".$turma->id.' ID'.$inscricao->id, $aluno, Session::get('usuario'));
 
     // aumenta Inscricaodos
     InscricaoController::modInscritos($turma->id,1,1);
@@ -394,7 +391,7 @@ class InscricaoController extends Controller
     
 
     /**
-     * Fianliza inscrição
+     * Finaliza inscrição
      * @param  [Inscricao] $inscricao [Objeto Inscricao]
      * @return [type]            [description]
      */
@@ -404,6 +401,7 @@ class InscricaoController extends Controller
         if($inscricao->status == 'regular' || $inscricao->status == 'pendente' ){
             $inscricao->status = 'finalizada';
             $inscricao->save();
+            AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id.' finalizada.', $inscricao->pessoa, Session::get('usuario'));
              //atualiza a matricula. caso não houver matriculas ativas, finalizar.
             MatriculaController::atualizar($inscricao->matricula);
         }
@@ -569,8 +567,8 @@ class InscricaoController extends Controller
             if($inscricao->status == 'cancelada'){
                 $inscricao->status = 'regular';
                 $inscricao->save();
+                AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id." reativada.", $inscricao->pessoa->id, Session::get('usuario'));
                 InscricaoController::modInscritos($inscricao->turma->id,1,1);
-                MatriculaController::modificaMatricula($inscricao->matricula);
                 return redirect($_SERVER['HTTP_REFERER']);
             }
             else

@@ -31,12 +31,16 @@ class MatriculaController extends Controller
     public function gravar(Request $r){
         //throw new \Exception("Matricula temporariamente suspensa. Tente novamente em instantes.", 1);
         
+        //criar colections de objetos
         $matriculas=collect();
         $cursos=collect();
 
-        $turmas=TurmaController::csvTurmas($r->turmas); // recebe lista de turmas csv
+
+        // recebe lista de turmas csv
+        $turmas=TurmaController::csvTurmas($r->turmas); 
         foreach($turmas as $turma){
-            if($turma->disciplina==null) // verifica se é curso ou disciplina
+            // verifica se é curso ou disciplina
+            if($turma->disciplina==null) 
                 $cursos->push($turma->curso);//adiciona na lista de cursos escolhidos
             else{
                 if(!$cursos->contains($turma->curso))
@@ -47,36 +51,37 @@ class MatriculaController extends Controller
 
         $turmas = $turmas->sortByDesc('data_inicio');
     
+        //para cada um dos cursos listados na lista de turmas escolhidas
         foreach($cursos as $curso){ 
-            $matriculado=MatriculaController::verificaSeMatriculado($r->pessoa,$curso->id,$turmas->first()->data_inicio);
+            //verifica se já matriculado no curso
+            
+
             $curso->turmas=collect();//cria lista de turmas de cada curso
             foreach($turmas as $turma){
                 if($turma->curso->id==$curso->id)
                     $curso->turmas->push($turma);// adiciona turma ao curso
             } 
             //verifica se já possui matricula no curso
+            $matriculado=MatriculaController::verificaSeMatriculado($r->pessoa,$curso->id,$turmas->first()->data_inicio);
             if($matriculado==false){
+                //criar matricula nova
+                $atendimento = AtendimentoController::novoAtendimento("Nova matrícula, código ", $r->pessoa, Session::get('usuario'));
+                //dd($atendimento->id);
                 $matricula=new Matricula();
                 $matricula->pessoa=$r->pessoa;
-                $matricula->atendimento=Session::get('atendimento');
+                $matricula->atendimento=$atendimento->id;
                 $matricula->data=date('Y-m-d');
                 $valor="valorcursointegral".$curso->id;
                 $matricula->valor=str_replace(',', '.', $r->$valor);
-
-
                 //verifica se a pessoa está fazendo inscrição com a turma já em andamento ou não.
                 if($turmas->first()->status == 'andamento' || $turmas->first()->status == 'iniciada')
                     $matricula->status="ativa";    
                 else
                     $matricula->status="espera";
-
-
-                $desconto="fdesconto".$curso->id;
-                $matricula->desconto=$r->$desconto;
-                $valordesconto="valordesconto".$curso->id;
-                $matricula->valor_desconto=$r->$valordesconto*1;
                 $matricula->curso = $curso->id;
                 $matricula->save();
+                $atendimento->descricao .= $matricula->id;
+                $atendimento->save();
                 $matriculas->push($matricula);
             }
             else{ // ja esta matriculada
@@ -84,27 +89,16 @@ class MatriculaController extends Controller
             }
 
             foreach($curso->turmas as $cturma){
-                //return $cturma;
+                // Increver aluno na turma
                 $insc=InscricaoController::inscreverAluno($r->pessoa,$cturma->id,$matricula->id);
-                MatriculaController::modificaMatricula($insc->matricula);
                 $matriculas->push($matricula);
                 
             }
    
         }
-       
-
-        $atendimento=Atendimento::find(Session::get('atendimento'));
-        $atendimento->descricao="Matricula/Inscrição ";
-        $atendimento->save();
-
-        Session::forget('atendimento');
         
-
         return redirect(asset("secretaria/atender").'/'.$r->pessoa);
-        /*
-        return view("secretaria.inscricao.gravar")->with('matriculas',$matriculas)->with('nome',$pessoa->nome_simples);
-         */
+ 
         
 
     }
@@ -166,99 +160,10 @@ class MatriculaController extends Controller
             $inscricao->turmac=Turma::find($inscricao->turma->id);
         }
 
-        //return $pessoa;
-
         return view("juridico.documentos.declaracao",compact('matricula'))->with('pessoa',$pessoa)->with('inscricoes',$inscricoes);
         
     }
-    /*
-    // Pega todas inscrições sem matricula e atribui matriculas pra elas
-    public function autoMatriculas(){
-        $resultado=array();
-        $inscricoes=Inscricao::where('status','<>','cancelado')->where('matricula', null)->orWhere('matricula','=','0')->get();
-        foreach($inscricoes as $inscricao){
-            if($inscricao->turma->curso->id == 307){
-                $insc_com_mat=Inscricao::select('*', 'inscricoes.id as id', 'turmas.id as turmaid')
-                    ->leftjoin('turmas', 'inscricoes.turma','=','turmas.id')
-                    ->where('inscricoes.pessoa',$inscricao->pessoa->id)
-                    ->where('turmas.curso','307')
-                    ->where('inscricoes.matricula','>',0)
-                    ->get();
-                if(count($insc_com_mat)==0){
-                    
-                    $matricula=new Matricula();
-                    $matricula->pessoa=$inscricao->pessoa->id;
-                    $matricula->atendimento=1;
-                    $matricula->data=date('Y-m-d');
-                    $matricula->parcelas=5;
-                    $matricula->dia_venc=20;
-                    $matricula->status="pendente";
-                    $matricula->obs="Falta assinar termo e eventual atestado.";
-                    $matricula->valor=100;
-                    $matricula->save();
-
-                    //adiciona ela na inscrição
-                    $inscricao->matricula=$matricula->id;
-                    $inscricao->save();
-                    //
-                    $resultado[]= "Criada nova matrúcula: ". $matricula->id;
-                }
-                else{
-                    //atualiza valor da matricula
-                    $matricula=Matricula::find($insc_com_mat->first()->matricula);
-                    switch (count($insc_com_mat)) {
-                        case 1:
-                            $matricula->valor=100;
-                            break;
-                        case 2:
-                        case 3:
-                        case 4:
-                            $matricula->valor=250;
-                            break;
-                        case 5:
-                        case 6:
-                        case 7:
-                        case 8:
-                        case 9:
-                        case 10:
-                            $matricula->valor=400;
-                            break;;
-                    }
-                    $matricula->save();
-
-                    //adiciona ela na inscrição
-                    $inscricao->matricula=$matricula->id;
-                    $inscricao->save();
-                    //
-                     $resultado[]= "Matricula ".$matricula->id." atualizada";
-                }
-
-
-            }
-            else{
-                $turma=Turma::find($inscricao->turma->id);
-                $matricula=new Matricula();
-                $matricula->pessoa=$inscricao->pessoa->id;
-                $matricula->atendimento=1;
-                $matricula->data=date('Y-m-d');
-                $matricula->parcelas=$turma->tempo_curso;
-                $matricula->dia_venc=20;
-                $matricula->status="ativa";
-                $matricula->valor=str_replace(',','.',$turma->valor)*1;
-                $matricula->save();
-                $inscricao->matricula=$matricula->id;
-                $inscricao->save();
-                $resultado[]= "Criada matricula ".$matricula->id." para a inscricao de cursos id ".$inscricao->id;
-            }
-
-        }
-
-        return $resultado;
-
-
-
-    }
-    */
+    
    
    /**
     * Importa inscrições feitas através de planilha externa
@@ -432,17 +337,7 @@ class MatriculaController extends Controller
         $matricula->pessoa=$pessoa;
         $matricula->atendimento=$atendimento->id;
         $matricula->data=date('Y-m-d');
-        
-        
-
-
-
         $matricula->parcelas=$turma->tempo_curso;
-
-
-
-
-
         $matricula->dia_venc=20;
         $matricula->status=$status_inicial;
         $matricula->valor=str_replace(',','.',$turma->valor);
@@ -455,43 +350,7 @@ class MatriculaController extends Controller
 
 
     }
-    /**
-     * Modifica valor da matrícula em caso de alteração.
-     * @param  [type] $id [description]
-     * @return [type]     [description]
-     */
-    public static function modificaMatricula($id){
-        $matricula=Matricula::find($id);
-        if($matricula!=null){
-            if($matricula->curso == 307){
-                $inscricoesX=Inscricao::where('matricula',$matricula->id)->where('status','regular')->get();
-                switch (count($inscricoesX)) {
-                            case 0:
-                                $matricula->valor=0;
-                                break;
-                            case 1:
-                                $matricula->valor=100;
-                                break;
-                            case 2:
-                            case 3:
-                            case 4:
-                                $matricula->valor=250;
-                                break;
-                            case 5:
-                            case 6:
-                            case 7:
-                            case 8:
-                            case 9:
-                            case 10:
-                                $matricula->valor=400;
-                                break;
-                        }
-                $matricula->save();
-                //LancamentoController::atualizaMatricula($matricula->id);
-                return $matricula->valor;
-            }
-        }
-    }
+
     public static function viewCancelarMatricula($id){
         
         $matricula=Matricula::find($id);
@@ -732,6 +591,7 @@ where nt.matricula>1');
             LancamentoController::atualizaMatricula($matricula->id);
         }
     }
+
     public function reativarMatricula($id){
         $matricula = Matricula::find($id);
         $matricula->status = 'ativa';
@@ -744,7 +604,6 @@ where nt.matricula>1');
         if(count($insc)>0){
             $matricula->save();
             AtendimentoController::novoAtendimento("Reativação de matrícula ".$matricula->id, $matricula->pessoa, Session::get('usuario'));
-            MatriculaController::modificaMatricula($id);
             return redirect($_SERVER['HTTP_REFERER']);
         }
         else

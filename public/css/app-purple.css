@@ -27,6 +27,44 @@ body {
   color: #4f5f6f;
   overflow-x: hidden; }
 
+.breadcrumb {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  list-style: none;
+  border-radius: 0.25rem;
+  margin-top:-30px;
+  margin-left:-30px;
+  background: none;
+  font-size: 0.7em;
+}
+
+.breadcrumb-item + .breadcrumb-item {
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  display: inline-block;
+  color: #6c757d;
+  content: "|";
+}
+
+.breadcrumb-item + .breadcrumb-item:hover::before {
+  text-decoration: underline;
+}
+
+.breadcrumb-item + .breadcrumb-item:hover::before {
+  text-decoration: none;
+}
+
+.breadcrumb-item.active {
+  color: #6c757d;
+}
+.lista:hover{
+  background-color: #d7dde4;
+}
+
+
 .badge {
   display: inline-block;
   padding: 0.25em 0.4em;

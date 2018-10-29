@@ -123,6 +123,37 @@
        </div>
     </div>
 </div>
+<div class="card card-primary">
+
+    <div class="card-header">
+        <div class="header-block">
+        <p class="title" style="color:white"> Ferramentas para matrícula {{$matricula->id}} - {{$matricula->getNomeCurso()}}</p>
+        </div>
+    </div>
+
+
+    <div class="card-block">
+        <div class="form-group row"> 
+            <div class="col-xl-4 center-block">
+           
+                <div class="card-block">
+                    <div><a href="/secretaria/matricula/duplicar/{{$matricula->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Em caso de Hidro ou algum curso que não gere matrícula automática"><i class=" fa fa-plus-circle "></i>  <small>Clonar Matrícula</small></a></div>
+                    
+          
+                    <!--
+                    <div><a href="#" class="btn btn-secondary col-xs-12 text-xs-left" title="Rematrículas encerradas."><i class="fa fa-check-square-o"></i> <small> Rematricula ENCERRADA </small> </a></div>
+                    -->
+                  
+
+                </div>
+                
+
+            
+            
+      
+    </div>
+</div>
+
 
 @endsection
 @section('scripts')

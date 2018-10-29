@@ -644,18 +644,33 @@ class InscricaoController extends Controller
                 $aluno->unidade = $concluinte->turma->local->nome;
                 $aluno->carga= $concluinte->turma->carga;
                 $aluno->inicio =  $concluinte->turma->data_inicio;
-                $aluno->termino =  $concluinte->turma->data_termino;*/
-               
-                
-
-            
+                $aluno->termino =  $concluinte->turma->data_termino;*/   
         }
         
         return $arquivo->save('php://output', 'xls');
         //return $formandos;
+    }
 
-            
-        
+
+    public function trocarView($id){
+        $inscricao = Inscricao::find($id);
+        if(!$inscricao)
+            return redirect()->back()->withErrors('Inscrição não encontrada.');
+
+       // return $inscricao;
+
+        $turmas_compativeis = Turma::where('curso',$inscricao->turma->curso->id)->whereIn('status',['inscricao','iniciada','espera'])->whereColumn('matriculados','<',"vagas")->get();
+
+
+        //dd($inscricao->turma->curso->id);
+
+        //return $turmas_compativeis;
+
+        return view('secretaria.inscricao.trocar',compact('inscricao'))->with('turmas',$turmas_compativeis);
+
+    }
+    public function trocarExec(Request $r){
+        return "ok2";
 
     }
 

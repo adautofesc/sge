@@ -119,8 +119,6 @@ class MatriculaController extends Controller
         $matricula->obs=$r->obs;
         $matricula->save();
 
-        MatriculaController::modificaMatricula($matricula->id);
-
         AtendimentoController::novoAtendimento("Matrícula atualizada.", $matricula->pessoa, Session::get('usuario'));
         //LancamentoController::atualizaMatricula($matricula->id);
         return redirect(asset('secretaria/atender'));
@@ -828,18 +826,17 @@ where nt.matricula>1');
         $nova = new Matricula;
         $nova->pessoa = $original->pessoa;
         $nova->data = $original->data;
-        $nova->atendimento = AtendimentoController::novoAtendimento("Matrícula duplicada", $nova->pessoa, Session::get('usuario'));
         $nova->forma_pg = $original->forma_pg;
         $nova->dia_venc = $original->dia_venc;
         $nova->parcelas = $original->parcelas;
         $nova->status = 'espera';
         $nova->resp_financeiro = $original->resp_financeiro;
-        $nova->desconto = $original->desconto;
-        $nova->valor_desconto= $original->valor_desconto;
         $nova->obs = '';
         $nova->save();
-        MatriculaController::modificaMatricula($nova->id);
-        return redirect()->back()->withErrors(['Matricula duplicada.']);
+
+        $nova->atendimento = AtendimentoController::novoAtendimento("Matrícula ".$nova->id." copiada da matricula ".$original->id, $nova->pessoa, Session::get('usuario'));
+        
+        return redirect('/secretaria/atender/'.$nova->pessoa)->withErrors(['Matricula duplicada.']);
     }
 
 

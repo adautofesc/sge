@@ -317,7 +317,7 @@ class LancamentoController extends Controller
 		foreach($lancamentos as $lancamento){
 			$lancamento->status='cancelado';
 			$lancamento->save();
-			;
+			
 		}
 
 	}
@@ -636,6 +636,35 @@ class LancamentoController extends Controller
 
 		return redirect($_SERVER['HTTP_REFERER']);
 	}
+
+
+
+
+	public function excluir($id){
+
+		//Carrega os dados
+		$lancamento = Lancamento::find($id);
+		$boleto = Boleto::find($lancamento->boleto);
+
+		//Tem boleto?
+		if(isset($boleto) && $lancamento != null){
+
+			//Ele não está pago né?
+			if($boleto->status != 'pago'){ //só apaga lancamento se não tiver boleto gerado !!!!!!!oi? donde vc ta pegando status do boleto maluco?
+				$boleto_c = new BoletoController;
+				$boleto_c->cancelar($boleto->id);
+			}
+
+			else
+				return redirect()->back()->withErrors(['Impossível cancelar lancamento de boleto pago.']);
+
+		}
+		else{
+			$lancamento->delete();
+		}
+
+		return redirect($_SERVER['HTTP_REFERER']);
+	}
 	public function reativar($id){
 		$lancamento = Lancamento::find($id);
 		if($lancamento != null){
@@ -646,6 +675,8 @@ class LancamentoController extends Controller
 		return redirect($_SERVER['HTTP_REFERER']);
 
 	}
+
+
 
 	public static function lancarDesconto($boleto,$valor){
 		$lancamento=Lancamento::where('boleto',$boleto)->first();

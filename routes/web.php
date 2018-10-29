@@ -144,6 +144,7 @@ Route::middleware('login') ->group(function(){
 			Route::post('novo/{id}','LancamentoController@create');
 			Route::get('gerar-individual/{pessoa}','LancamentoController@gerarLancamentosPorPessoa');
 			Route::get('cancelar/{lancamento}','LancamentoController@cancelar');
+			Route::get('excluir/{lancamento}', 'LancamentoController@excluir');
 			Route::get('reativar/{lancamento}','LancamentoController@reativar');
 			Route::get('relancar/{lancamento}','LancamentoController@relancarParcela');
 			Route::get('editar/{lancamento}','LancamentoController@editar');
@@ -343,7 +344,6 @@ Route::middleware('login') ->group(function(){
 			Route::get('declaracao/{id}','MatriculaController@declaracao');
 			Route::get('cancelar/{id}','MatriculaController@viewCancelarMatricula');
 			Route::post('cancelar/{id}','MatriculaController@cancelarMatricula');
-
 			Route::get('reativar/{id}','MatriculaController@reativarMatricula');
 			Route::get('atualizar/{id}','MatriculaController@atualizar');
 			Route::get('cancelamento', 'MatriculaController@regularizarCancelamentos');
@@ -353,6 +353,8 @@ Route::middleware('login') ->group(function(){
 				Route::get('apagar/{id}', 'InscricaoController@viewCancelar');
 				Route::post('apagar/{id}', 'InscricaoController@cancelar');
 				Route::get('reativar/{id}', 'InscricaoController@reativar');
+				Route::get('trocar/{id}', 'InscricaoController@trocarView');
+				Route::post('trocar/{id}', 'InscricaoController@trocarExec');
 			});
 			Route::middleware('liberar.recurso:20')->get('ativar_matriculas_em_espera','MatriculaController@ativarEmEspera');
 			

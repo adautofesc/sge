@@ -556,14 +556,17 @@ class TurmaController extends Controller
 
         
         $turmas=Turma::select('*', 'turmas.vagas as vagas','turmas.id as id')
-                ->where('turmas.vagas','!=','turmas.matriculados')
                 ->whereIn('turmas.status', ['inscricao','iniciada'])
+                ->whereIn('turmas.local',[84,85,86])
+                ->whereColumn('turmas.vagas','>','turmas.matriculados')
                 ->join('cursos', 'turmas.curso','=','cursos.id')
-                ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
+                ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id') 
                 ->orderBy('cursos.nome')
                 ->orderBy('disciplinas.nome')
                 ->get();
+
         //return $turmas;
+
         
         return view('pedagogico.turma.turmas-site',compact('turmas'));
     }

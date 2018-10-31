@@ -379,12 +379,12 @@ class InscricaoController extends Controller
      * @param [Integer] $matricula [número da matricula]
      */
     public static function cancelarPorMatricula($matricula){
-        $inscricoes=Inscricao::where('matricula',$matricula)->where('status','<>','cancelada')->get();
+        $inscricoes=Inscricao::where('matricula',$matricula)->whereIn('status',['regular','pendente'])->get();
         foreach($inscricoes as $inscricao){
             $inscricao->status = 'cancelada';
             $inscricao->save();
         }
-        return true;
+        return $inscricoes;
 
     }
 
@@ -670,7 +670,34 @@ class InscricaoController extends Controller
 
     }
     public function trocarExec(Request $r){
-        return "ok2";
+        $inscricao = Inscricao::find($r->inscricao);
+        $inscricao_nova = $this->inscreverAluno($inscricao->pessoa->id,$r->turma,$inscricao->matricula);
+        $inscricao->status = 'transferida';
+        $inscricao->save();
+        AtendimentoController::novoAtendimento('Transferencia da turma '.$inscricao->turma->id.' para turma '.$r->turma, $inscricao->pessoa->id, Session::get('usuario'));
+
+
+        
+        return redirect('/secretaria/atender/'.$inscricao->pessoa->id)->withErrors(['Transferência efetuada.']);
+
+    }
+
+    public function imprimirCancelamento($inscricao){
+
+
+        $insc=Inscricao::find($inscricao);
+
+        //existe mesmo essa inscrição?
+        if($insc==null)
+            return redirect($_SERVER['HTTP_REFERER'])->withErrors(["Inscrição não encontrada"]);
+
+        $pessoa = Pessoa::find($insc->pessoa->id);
+
+
+        return view('juridico.documentos.cancelamento-inscricao')->with('pessoa',$pessoa)->with('inscricao',$insc);
+
+
+
 
     }
 

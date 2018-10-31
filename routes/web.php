@@ -344,6 +344,7 @@ Route::middleware('login') ->group(function(){
 			Route::get('declaracao/{id}','MatriculaController@declaracao');
 			Route::get('cancelar/{id}','MatriculaController@viewCancelarMatricula');
 			Route::post('cancelar/{id}','MatriculaController@cancelarMatricula');
+			Route::get('imprimir-cancelamento/{matricula}','MatriculaController@imprimirCancelamento');
 			Route::get('reativar/{id}','MatriculaController@reativarMatricula');
 			Route::get('atualizar/{id}','MatriculaController@atualizar');
 			Route::get('cancelamento', 'MatriculaController@regularizarCancelamentos');
@@ -355,6 +356,7 @@ Route::middleware('login') ->group(function(){
 				Route::get('reativar/{id}', 'InscricaoController@reativar');
 				Route::get('trocar/{id}', 'InscricaoController@trocarView');
 				Route::post('trocar/{id}', 'InscricaoController@trocarExec');
+				Route::get('imprimir-cancelamento/{inscricao}', 'InscricaoController@imprimirCancelamento');
 			});
 			Route::middleware('liberar.recurso:20')->get('ativar_matriculas_em_espera','MatriculaController@ativarEmEspera');
 			

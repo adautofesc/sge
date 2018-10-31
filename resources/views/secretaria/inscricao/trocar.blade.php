@@ -17,13 +17,13 @@
 				<div class="input-group">
 					@if(count($turmas)>1)
 					<span class="input-group-addon"><i class="fa fa-exchange"></i></span>
-					<select class="form-control boxed"  name="matricula" required>
+					<select class="form-control boxed"  name="turma" required>
 						@foreach($turmas as $turma)
 							@if(isset($turma->disciplina->id))
-							<option>{{$turma->id.' - '.implode(', ',$turma->dias_semana).' das '.$turma->hora_inicio.' as '.$turma->hora_termino. ' ---- '.$turma->disciplina->nome}}</option>
+							<option value="{{$turma->id}}">{{$turma->id.' - '.implode(', ',$turma->dias_semana).' das '.$turma->hora_inicio.' as '.$turma->hora_termino. ' - '.$turma->local->nome.' ---- '.$turma->disciplina->nome}}</option>
 		
 							@else
-							<option>{{$turma->id.' - '.implode(', ',$turma->dias_semana).' das '.$turma->hora_inicio.' as '.$turma->hora_termino. ' ---- '.$turma->curso->nome}}</option>
+							<option value="{{$turma->id}}">{{$turma->id.' - '.implode(', ',$turma->dias_semana).' das '.$turma->hora_inicio.' as '.$turma->hora_termino.' - '.$turma->local->nome.' ---- '.$turma->curso->nome}}</option>
 							@endif
 						
 						@endforeach

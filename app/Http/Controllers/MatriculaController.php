@@ -372,9 +372,9 @@ class MatriculaController extends Controller
             AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id, $matricula->pessoa, Session::get('usuario'));
 
         //verifica numero de parcelas existentes  se <=2 e cancela os boletos atuais se for o caso
-
+      
        
-        return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula);
+        return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula)->with('inscricoes',$insc);
     }
 
 
@@ -857,6 +857,18 @@ where nt.matricula>1');
         }
 
         return redirect($_SERVER['HTTP_REFERER'])->withErrors([$contador.'Matriculas ativadas com sucesso.']);
+    }
+
+    public function imprimirCancelamento($matricula){
+        $matricula = Matricula::find($matricula);
+        if(!$matricula)
+            return redirect()->back()->withErrors('Matrícula não encontrada para gerar a impressão.');
+        $pessoa = Pessoa::find($matricula->pessoa);
+
+        $inscricoes = Inscricao::where('matricula',$matricula->id)->where('updated_at', $matricula->updated_at)->get();
+
+        //return $inscricoes;
+        return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula)->with('inscricoes',$inscricoes);
     }
 
 

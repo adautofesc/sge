@@ -170,11 +170,11 @@
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     @if(isset($matricula->desconto->id))
                                     @if($matricula->desconto->id > 0)
-                                         <i class=" fa fa-heart text-success" title="Esta matrícula possui bolsa."></i>&nbsp;
+                                         <small><span class="text-success"> <i class=" fa fa-heart"></i> bolsista</span></small>&nbsp;
                                     @endif
                                     @endif
                                     @if($matricula->obs!='')
-                                    <i class=" fa fa-info text-info"  title="{{ $matricula->obs}}"></i>
+                                    <small class="text-info" title="{{ $matricula->obs}}"><i class=" fa fa-info text-info" ></i> Obs</small>
                                     @endif
 
                                 </div>
@@ -248,7 +248,7 @@
 
                                             @else 
                                             <a class="dropdown-item" style="text-decoration: none;"  href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}"> <i class="fa fa-print icon"></i> Imprimir Termo</a>
-                                            <a class="dropdown-item" style="text-decoration: none;"  href="#"> <i class="fa fa-print icon"></i> Imprimir Cancelamento</a>
+                                            <a class="dropdown-item" style="text-decoration: none;"  href="{{asset('/secretaria/matricula/imprimir-cancelamento/').'/'.$matricula->id}}"> <i class="fa fa-print icon"></i> Imprimir Cancelamento</a>
                                             <a class="dropdown-item" style="text-decoration: none;"  href="/secretaria/matricula/uploadglobal/1/1/1/{{$matricula->id}}"> <i class="fa fa-cloud-upload icon"></i> (Re)Enviar termo</a>
                                              @if(file_exists('documentos/matriculas/termos/'.$matricula->id.'.pdf'))
                                             <a class="dropdown-item" style="text-decoration: none;"  href="/documentos/matriculas/termos/{{$matricula->id}}.pdf"> <i class="fa fa-file-text-o icon"></i> Termo disponivel</a>
@@ -314,6 +314,11 @@
                                         @else
                                             &nbsp;<a href="{{asset('secretaria/matricula/uploadglobal/0/0/1').'/'.$inscricao->id}}" class="badge badge-pill badge-primary"><i class="fa fa-cloud-upload " title="Enviar Termo de Cancelamento de disciplina" style="color:white;"></i></a>
                                         @endif
+                                        <a a href="#" 
+                                            title="Imprimir cancelamento"
+                                            class="badge badge-pill badge-primary">
+                                            <i class=" fa fa-print " style="color:white;"></i>
+                                        </a>
                                         
                                         @elseif($inscricao->status == 'regular')
                                         <a a href="#"
@@ -337,7 +342,20 @@
                                         
 
 
-                                        @elseif($inscricao->status == 'finalizada')
+                                        @elseif($inscricao->status == 'transferida')
+                                        &nbsp;
+                                        @if(file_exists('documentos/inscricoes/transferencias/'.$inscricao->id.'.pdf'))
+                                            &nbsp;
+                                            <a href="/documentos/inscricoes/transferencias/{{$inscricao->id}}.pdf" target="_blank" class="badge badge-pill badge-primary">  <i class=" fa fa-file-text-o " title="Formulário de transferencia disponível" style="color:white;"></i>
+                                            </a>
+                                        @else
+                                            &nbsp;<a href="#" class="badge badge-pill badge-primary"><i class="fa fa-cloud-upload " title="Enviar formulário de transferencia de turma" style="color:white;"></i></a>
+                                        @endif
+                                        <a a href="#" 
+                                            title="Imprimir transferência"
+                                            class="badge badge-pill badge-primary">
+                                            <i class=" fa fa-print " style="color:white;"></i>
+                                        </a>
 
                                         @else
 

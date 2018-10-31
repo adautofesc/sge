@@ -4,7 +4,7 @@
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 <link rel="stylesheet" href="{{asset('/')}}/css/vendor.css"/>
-<title>Cancelamento de matrícula - Fesc</title>
+<title>Troca de turma - Fesc</title>
 <style type="text/css">
 	h5{
 		font-size: 1.3em;
@@ -56,7 +56,7 @@
 				</p>
 			</div>
 			<div class="col-4" tyle="margin-bottom: 0;" align="right">
-				<img src="/img/code39.php?code=CM{{$matricula->id}}">
+				<img src="/img/code39.php?code=CI{{$inscricao->id}}">
 			
 			</div>
 
@@ -65,7 +65,7 @@
 	
 		<div class="title-block">
 			<center>
-            <h5> <strong>CANCELAMENTO DE MATRÍCULA {{$matricula->id}}</strong></h5></center>
+            <h5> <strong>TRANSFERENCIA DE TURMA {{$inscricao->id}}</strong></h5></center>
         </div>
 
 
@@ -73,20 +73,22 @@
         	<div class="col-xs-12">
 
 	        	<p style="margin-top: 5%">
-	        		Eu, {{$pessoa->nome}}, alun{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} regularmente matriculad{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} nesta instituição no ano de {{date("Y")}}, venho pela presente, DECLARAR MINHA DESISTÊNCIA À VAGA, NAS TURMAS DOS CURSOS ABAIXO:
+	        		Eu, {{$pessoa->nome}}, alun{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} regularmente matriculad{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} nesta instituição no ano de {{date("Y")}}, venho pela presente, SOLICITAR A TROCA DAS SEGUINTES TURMAS:
 		       </p>
 		       <ul>
-		       	@foreach($inscricoes as $inscricao)
+		       
 		       		@if(isset($inscricao->turma->disciplina->nome))
 		       		<li> {{$inscricao->turma->curso->nome}},{{$inscricao->turma->disciplina->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}  das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
 		       		@else
 		       		<li> {{$inscricao->turma->curso->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}. das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
 		       		@endif
 
-		       	@endforeach
+		    
 		       </ul>
 		       <p style="margin-top: 8%" align="center">
-		       	São Carlos, {{$matricula->updated_at->format('d')}} de {{(new \App\classes\Data($matricula->updated_at->format('d/m/Y')))->mes()}} de {{$matricula->updated_at->format('Y')}}.
+
+		       São Carlos, {{$inscricao->updated_at->format('d')}} de {{(new \App\classes\Data($inscricao->updated_at->format('d/m/Y')))->mes()}} de {{$inscricao->updated_at->format('Y')}}.
+		       
 		       </p>
 		       <center>
 		       <p style="border-top: solid 1px black; width: 30%; margin-top: 10%" align="center" >
@@ -95,13 +97,11 @@
         	</div>
         </div>
 
-        @if(count($matricula->getInscricoes())>4)
-        <div style="page-break-before: always;"> </div>   
-        @else
+       
         <div class="cut">
 			<p>corte na linha pontilhada</p>
 		</div>
-		@endif
+		
 		<div class="row">
         	<div class="col-xs-2" tyle="margin-bottom: 0;">
 				<img src="{{asset('/')}}/img/logofesc.png" width="60"/>
@@ -118,7 +118,7 @@
 				</p>
 			</div>
 			<div class="col-xs-6" tyle="margin-bottom: 0;" align="right">
-				<img src="/img/code39.php?code=CM{{$matricula->id}}">
+				<img src="/img/code39.php?code=CI{{$inscricao->id}}">
 			
 			</div>
         </div>
@@ -131,20 +131,20 @@
         	<div class="col-xs-12">
 
 	        	<p style="margin-top: 0%">
-	        		<strong>PROTOCOLO DE CANCELAMENTO DE MATRÍCULA {{$matricula->id}}</strong><br>
+	        		<strong>PROTOCOLO DE CANCELAMENTO DE INSCRIÇÃO {{$inscricao->id}}</strong><br>
 	        		Eu, {{$pessoa->nome}}, alun{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} regularmente matriculad{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} nesta instituição no ano de {{date("Y")}}, venho pela presente, DECLARAR MINHA DESISTÊNCIA À VAGA, NAS TURMAS DOS CURSOS ABAIXO:
 		       </p>
 		       <ul>
-		       	@foreach($inscricoes as $inscricao)
+		       
 		       		@if(isset($inscricao->turma->disciplina->nome))
 		       		<li> {{$inscricao->turma->curso->nome}},{{$inscricao->turma->disciplina->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}  das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
 		       		@else
 		       		<li> {{$inscricao->turma->curso->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}. das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
 		       		@endif
-		       	@endforeach
+		       
 		       </ul>
 		       <p  align="center">
-		       		São Carlos, {{$matricula->updated_at->format('d')}} de {{(new \App\classes\Data($matricula->updated_at->format('d/m/Y')))->mes()}} de {{$matricula->updated_at->format('Y')}}.
+		       		São Carlos, {{$inscricao->updated_at->format('d')}} de {{(new \App\classes\Data($inscricao->updated_at->format('d/m/Y')))->mes()}} de {{$inscricao->updated_at->format('Y')}}.
 		       </p>
 		       <center>
 		       <p style="border-top: solid 1px black; width: 30%; margin-top: 5%" align="center" >

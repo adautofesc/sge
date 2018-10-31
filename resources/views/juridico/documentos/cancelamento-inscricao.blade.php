@@ -4,7 +4,7 @@
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 <link rel="stylesheet" href="{{asset('/')}}/css/vendor.css"/>
-<title>Requerimento de Bolsa de Estudo / Concessão de desconto - Fesc</title>
+<title>Cancelamento de inscrição - Fesc</title>
 <style type="text/css">
 	h5{
 		font-size: 1.3em;
@@ -86,7 +86,9 @@
 		    
 		       </ul>
 		       <p style="margin-top: 8%" align="center">
-		       	São Carlos, {{date('d')}} de {{(new \App\classes\Data())->mes()}} de {{date('Y')}}.
+
+		       São Carlos, {{$inscricao->updated_at->format('d')}} de {{(new \App\classes\Data($inscricao->updated_at->format('d/m/Y')))->mes()}} de {{$inscricao->updated_at->format('Y')}}.
+
 		       </p>
 		       <center>
 		       <p style="border-top: solid 1px black; width: 30%; margin-top: 10%" align="center" >
@@ -142,7 +144,7 @@
 		       
 		       </ul>
 		       <p  align="center">
-		       		São Carlos, {{date('d')}} de {{(new \App\classes\Data())->mes()}} de {{date('Y')}}.
+		       		São Carlos, {{$inscricao->updated_at->format('d')}} de {{(new \App\classes\Data($inscricao->updated_at->format('d/m/Y')))->mes()}} de {{$inscricao->updated_at->format('Y')}}.
 		       </p>
 		       <center>
 		       <p style="border-top: solid 1px black; width: 30%; margin-top: 5%" align="center" >

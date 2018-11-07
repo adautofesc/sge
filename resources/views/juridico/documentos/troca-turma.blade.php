@@ -56,7 +56,7 @@
 				</p>
 			</div>
 			<div class="col-4" tyle="margin-bottom: 0;" align="right">
-				<img src="/img/code39.php?code=CI{{$inscricao->id}}">
+				<img src="/img/code39.php?code=TI{{$inscricao->id}}">
 			
 			</div>
 
@@ -82,6 +82,15 @@
 		       		@else
 		       		<li> {{$inscricao->turma->curso->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}. das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
 		       		@endif
+
+		       		<li>Para a turma</li>
+
+		       		@if(isset($inscricao->turma->disciplina->nome))
+		       		<li> {{$inscricao->turma->curso->nome}},{{$inscricao->turma->disciplina->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}  das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
+		       		@else
+		       		<li> {{$inscricao->turma->curso->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}. das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
+		       		@endif
+
 
 		    
 		       </ul>
@@ -118,7 +127,7 @@
 				</p>
 			</div>
 			<div class="col-xs-6" tyle="margin-bottom: 0;" align="right">
-				<img src="/img/code39.php?code=CI{{$inscricao->id}}">
+				<img src="/img/code39.php?code=TI{{$inscricao->id}}">
 			
 			</div>
         </div>
@@ -130,12 +139,18 @@
         <div class="row">
         	<div class="col-xs-12">
 
-	        	<p style="margin-top: 0%">
-	        		<strong>PROTOCOLO DE CANCELAMENTO DE INSCRIÇÃO {{$inscricao->id}}</strong><br>
-	        		Eu, {{$pessoa->nome}}, alun{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} regularmente matriculad{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} nesta instituição no ano de {{date("Y")}}, venho pela presente, DECLARAR MINHA DESISTÊNCIA À VAGA, NAS TURMAS DOS CURSOS ABAIXO:
+	        	<p style="margin-top: 5%">
+	        		Eu, {{$pessoa->nome}}, alun{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} regularmente matriculad{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} nesta instituição no ano de {{date("Y")}}, venho pela presente, SOLICITAR A TROCA DAS SEGUINTES TURMAS:
 		       </p>
 		       <ul>
-		       
+		      		@if(isset($inscricao->turma->disciplina->nome))
+		       		<li> {{$inscricao->turma->curso->nome}},{{$inscricao->turma->disciplina->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}  das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
+		       		@else
+		       		<li> {{$inscricao->turma->curso->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}. das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
+		       		@endif
+		       		
+		       		<li>Para a turma</li>
+
 		       		@if(isset($inscricao->turma->disciplina->nome))
 		       		<li> {{$inscricao->turma->curso->nome}},{{$inscricao->turma->disciplina->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}  das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
 		       		@else

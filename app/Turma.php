@@ -19,24 +19,46 @@ class Turma extends Model
 	public function setValorAttribute($value){
 		$this->attributes['valor'] = str_replace(',', '.', $value);
 	}
+
+
+	/**
+	Valor que vai aparecer na lista de turmas
+	**/
 	public function getValorAttribute($value){
-		//return $value;
-		/*
-		if($this->parceria->id>0)
-			return '0';*/
+		
+		// se for do curso atividades uati
 		if($this->curso->id == 307 && $this->carga<10)
 		{
+			//mostra valor de 1 disciplina
 			$valor= Valor::find(5);
 		}
 		else
-		{
-			$valor= Valor::where('programa',$this->programa->id)->where('carga',$this->carga)->first();
+		{	
+			//procura curso carga.
+			$valor= Valor::where('curso',$this->curso->id)->where('carga',$this->carga)->get();
+			if(count($valor)!=1)
+
+			//ṕrocura curso
+			$valor= Valor::where('curso',$this->curso->id)->get();
+			elseif(count($valor)!=1)
+
+			//programa carga
+			$valor= Valor::where('programa',$this->programa->id)->where('carga',$this->carga)->get();
+
+			else
+				throw new Exception("Turma ".$this->id.' não tem valor na tabela de preços. Curso: '.$this->curso->id.' Carga: '.$this->carga, 1);
+				
 			
 		}
+
+		//verifica se o curso é fora da fesc, se for, retorna valor 0
 		$fesc=[84,85,86];
 		if(!in_array($this->local->id,$fesc)){
 			return number_format(0,2,',','.');
 		}
+
+
+		//verifica se não é EMG, se for retorna valor 0
 		if($this->programa->id == 4)
 			return number_format(0,2,',','.');
 

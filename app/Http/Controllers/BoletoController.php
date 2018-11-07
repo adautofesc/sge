@@ -219,7 +219,7 @@ class BoletoController extends Controller
 				$str_lancamentos.= $lancamento->referencia." ".$lancamento->matricula.'<br>';
 			}
 		
-		if($boleto->status == 'gravado' || $boleto->status == 'impresso' || $vencido==true){
+		if($boleto->status == 'gravado' || $boleto->status == 'impresso'){
 
 			$pessoa = Pessoa::find($boleto->pessoa);
 			$pessoa = PessoaController::formataParaMostrar($pessoa);
@@ -232,7 +232,7 @@ class BoletoController extends Controller
 
 		}
 			
-		if($boleto->status =='emitido'){
+		else {
 			$inst = new BoletoFuncional;
 			$boleto_completo = $inst->gerar($boleto);
 			//return $boleto_completo; 

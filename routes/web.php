@@ -17,6 +17,7 @@ Route::get('/', 'painelController@index');
 
 Route::get('/bolsa/gerador', 'BolsaController@gerador');
 
+
 Route::get('/corrigir-boletos','BoletoController@corrigirBoletosSemParcelas');
 
 
@@ -61,6 +62,8 @@ Route::middleware('login') ->group(function(){
 	Route::post('recadastrado','PessoaController@gravarRecadastro');
 	Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
 	Route::get('/relatorios/alunos-concluintes','InscricaoController@relatorioConcluintes');
+	Route::get('/relatorios/faixasuati', 'RelatorioController@matriculasUati');
+	Route::get('/relatorios/alunos-posto', 'RelatorioController@alunosPorUnidade');
 	Route::get('testar-classe', 'painelController@testarClasse');
 	Route::post('testar-classe', 'painelController@testarClassePost');
 	Route::get('lista/{id}','painelController@chamada'); //lista de chamada aberta
@@ -356,13 +359,16 @@ Route::middleware('login') ->group(function(){
 				Route::get('reativar/{id}', 'InscricaoController@reativar');
 				Route::get('trocar/{id}', 'InscricaoController@trocarView');
 				Route::post('trocar/{id}', 'InscricaoController@trocarExec');
-				Route::get('imprimir-cancelamento/{inscricao}', 'InscricaoController@imprimirCancelamento');
+				Route::get('imprimir/cancelamento/{inscricao}', 'InscricaoController@imprimirCancelamento');
+				Route::get('imprimir/transferencia/{inscricao}', 'InscricaoController@imprimirTransferencia');
 			});
 			Route::middleware('liberar.recurso:20')->get('ativar_matriculas_em_espera','MatriculaController@ativarEmEspera');
 			
 		});
 		Route::prefix('relatorios')->group(function(){
 				Route::get('turmas', 'RelatorioController@inscricoesAtivas');
+
+
 		});
 
 

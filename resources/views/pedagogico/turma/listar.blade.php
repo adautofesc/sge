@@ -300,6 +300,9 @@
                                                     <div> <span>Vagas/Ocup.</span> </div>
                                                 </div>
                                                 <div class="item-col item-col-header item-col-sales">
+                                                    <div> <span>Carga</span> </div>
+                                                </div>
+                                                <div class="item-col item-col-header item-col-sales">
                                                     <div> <span>Valor</span> </div>
                                                 </div>
 
@@ -321,7 +324,7 @@
                                                     <div class="item-heading">Curso/atividade</div>
                                                     <div class="">
                                                         
-                                                             <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->status. ' - Começa em  ' .$turma->data_inicio}}</small></div> 
+                                                             <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->status}} <br> {{' De ' .$turma->data_inicio.' a '.$turma->data_termino}}</small></div> 
 
                                                        
                                                         @if(isset($turma->disciplina))
@@ -347,6 +350,10 @@
                                                 <div class="item-col item-col-sales">
                                                     <div class="item-heading">Vagas</div>
                                                     <div>{{$turma->vagas}}/{{$turma->matriculados}}</div>
+                                                </div>
+                                                <div class="item-col item-col-sales">
+                                                    <div class="item-heading">Carga</div>
+                                                    <div>{{$turma->carga}}hs</div>
                                                 </div>
                                                  
                                                

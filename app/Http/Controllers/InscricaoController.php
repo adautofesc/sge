@@ -369,7 +369,7 @@ class InscricaoController extends Controller
             AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id. " motivo: ".implode(', ',$r->cancelamento), $matricula->pessoa, Session::get('usuario'));
             else
                 AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id, $matricula->pessoa, Session::get('usuario'));
-            return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula);
+            return redirect('/secretaria/matricula/imprimir-cancelamento/'.$matricula->id);
         }
 
     }
@@ -695,10 +695,20 @@ class InscricaoController extends Controller
 
 
         return view('juridico.documentos.cancelamento-inscricao')->with('pessoa',$pessoa)->with('inscricao',$insc);
+    }
+    public function imprimirTransferencia($inscricao){
 
 
+        $insc=Inscricao::find($inscricao);
+
+        //existe mesmo essa inscrição?
+        if($insc==null)
+            return redirect($_SERVER['HTTP_REFERER'])->withErrors(["Inscrição não encontrada"]);
+
+        $pessoa = Pessoa::find($insc->pessoa->id);
 
 
+        return view('juridico.documentos.troca-turma')->with('pessoa',$pessoa)->with('inscricao',$insc);
     }
 
 

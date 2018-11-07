@@ -314,7 +314,7 @@
                                         @else
                                             &nbsp;<a href="{{asset('secretaria/matricula/uploadglobal/0/0/1').'/'.$inscricao->id}}" class="badge badge-pill badge-primary"><i class="fa fa-cloud-upload " title="Enviar Termo de Cancelamento de disciplina" style="color:white;"></i></a>
                                         @endif
-                                        <a a href="#" 
+                                        <a a href="{{asset('secretaria/matricula/inscricao/imprimir-cancelamento'.'/'.$inscricao->id)}}" 
                                             title="Imprimir cancelamento"
                                             class="badge badge-pill badge-primary">
                                             <i class=" fa fa-print " style="color:white;"></i>
@@ -351,7 +351,7 @@
                                         @else
                                             &nbsp;<a href="#" class="badge badge-pill badge-primary"><i class="fa fa-cloud-upload " title="Enviar formulário de transferencia de turma" style="color:white;"></i></a>
                                         @endif
-                                        <a a href="#" 
+                                          <a a href="{{asset('secretaria/matricula/inscricao/imprimir/transferencia'.'/'.$inscricao->id)}}" 
                                             title="Imprimir transferência"
                                             class="badge badge-pill badge-primary">
                                             <i class=" fa fa-print " style="color:white;"></i>

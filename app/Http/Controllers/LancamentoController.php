@@ -86,7 +86,6 @@ class LancamentoController extends Controller
 				if(!$this->verificaSeLancada($matricula->id,$parcela)){
 					//$parcelas[$matricula->id] = $parcela;
 
-		
 					$lancamento=new Lancamento;
 					$lancamento->matricula=$matricula->id;
 					$lancamento->parcela=$parcela;

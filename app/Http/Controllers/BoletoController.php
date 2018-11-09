@@ -813,7 +813,7 @@ class BoletoController extends Controller
 					if($pendencia->valor>0){
 
 						 //dd($pendencia);
-						$referencias .= $pendencia->referencia. ' R$ '.$pendencia->valor. ' Mt.'.$pendencia->matricula. "\n";
+						$referencias .= $pendencia->referencia. '; R$ '.$pendencia->valor. '; Mt.'.$pendencia->matricula.';'. "\n";
 						$valor += $pendencia->valor;
 
 				       

@@ -17,6 +17,6 @@ class CursoRequisito extends Model
     }
 	public function getRequisitoAttribute($value){
 		$requisito=Requisito::find($value);
-		return $requisito->nome;
+		return $requisito;
 	}
 }

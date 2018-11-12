@@ -683,6 +683,7 @@ class InscricaoController extends Controller
     }
 
     public function imprimirCancelamento($inscricao){
+        //dd('oi');
 
 
         $insc=Inscricao::find($inscricao);

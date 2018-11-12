@@ -10,6 +10,7 @@ use App\PessoaDadosAdministrativos;
 use App\Parceria;
 use App\Pessoa;
 use App\Inscricao;
+use App\CursoRequisito;
 //use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Session;
@@ -52,8 +53,9 @@ class TurmaController extends Controller
             return redirect(asset('/secretaria/turmas'));
         $inscricoes=Inscricao::where('turma','=', $turma->id)->where('status','<>','cancelada')->get();
         $inscricoes->sortBy('pessoa.nome');
+        $requisitos = CursoRequisito::where('para_tipo','turma')->where('curso',$turma->id)->get();
         //return $inscricoes;
-        return view('pedagogico.turma.mostrar-dados',compact('turma'))->with('inscricoes',$inscricoes);
+        return view('pedagogico.turma.mostrar-dados',compact('turma'))->with('inscricoes',$inscricoes)->with('requisitos',$requisitos);
 
 
     }
@@ -213,6 +215,7 @@ class TurmaController extends Controller
     {
 
         $programas=Programa::get();
+        $requisitos=RequisitosController::listar();
         //$cursos=Curso::getCursosPrograma(); ok
         $professores=PessoaDadosAdministrativos::getFuncionarios('Educador');
         $unidades=Local::get(['id' ,'nome']);
@@ -226,7 +229,7 @@ class TurmaController extends Controller
 
         //return $dados;
 
-        return view('pedagogico.turma.cadastrar',compact('dados'));
+        return view('pedagogico.turma.cadastrar',compact('dados'))->with('requisitos',$requisitos);
     }
 
     /**
@@ -273,7 +276,21 @@ class TurmaController extends Controller
         $turma->status='espera';
         //return $turma->dias_semana;
 
+
+
         $turma->save();
+
+        if(isset($request->requisito)){
+            foreach($request->requisito as $req){
+                $curso_requisito=new CursoRequisito;
+                $curso_requisito->para_tipo='turma';
+                $curso_requisito->curso=$turma->id;
+                $curso_requisito->requisito=$req;
+                $curso_requisito->obrigatorio=1;
+                $curso_requisito->timestamps=false;
+                $curso_requisito->save();
+            }
+        }
         if($request->btn==1)
             return redirect(asset('/pedagogico/turmas'));
         else
@@ -967,6 +984,10 @@ class TurmaController extends Controller
 
         return redirect($_SERVER['HTTP_REFERER'])->withErrors([$turmas_finalizadas.' turmas estavam expiradas e foram finalizadas.']);
 
+
+    }
+    public function modificarRequisitosView($turma){
+        
 
     }
 

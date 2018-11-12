@@ -287,15 +287,15 @@
                                 </div>
                                 <div class="col-xl-1" style="line-height:40px !important;">
                                     @if($inscricao->status == 'cancelada')
-                                    <div class="badge badge-pill badge-danger">cancelada</div>
+                                    <div class="badge badge-pill badge-danger" title="Criada em {{$inscricao->created_at->format('d/m/y')}} e atualizada em {{$inscricao->updated_at->format('d/m/y')}}">cancelada</div>
                                     @elseif($inscricao->status == 'regular')
-                                    <div class="badge badge-pill badge-success">regular</div>
+                                    <div class="badge badge-pill badge-success" title="Criada em {{$inscricao->created_at->format('d/m/y')}} e atualizada em {{$inscricao->updated_at->format('d/m/y')}}">regular</div>
                                     @elseif($inscricao->status == 'pendente')
-                                    <div class="badge badge-pill badge-warning">pendente</div>
+                                    <div class="badge badge-pill badge-warning" title="Criada em {{$inscricao->created_at->format('d/m/y')}} e atualizada em {{$inscricao->updated_at->format('d/m/y')}}">pendente</div>
                                     @elseif($inscricao->status == 'finalizada' || $inscricao->status == 'finalizado')
-                                    <div class="badge badge-pill badge-light">finalizada</div>
+                                    <div class="badge badge-pill badge-light" title="Criada em {{$inscricao->created_at->format('d/m/y')}} e atualizada em {{$inscricao->updated_at->format('d/m/y')}}">finalizada</div>
                                     @else
-                                     <div class="badge badge-pill badge-secondary">{{$inscricao->status}}</div>
+                                     <div class="badge badge-pill badge-secondary" title="Criada em {{$inscricao->created_at->format('d/m/y')}} e atualizada em {{$inscricao->updated_at->format('d/m/y')}}">{{$inscricao->status}}</div>
                                     @endif
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
@@ -314,7 +314,7 @@
                                         @else
                                             &nbsp;<a href="{{asset('secretaria/matricula/uploadglobal/0/0/1').'/'.$inscricao->id}}" class="badge badge-pill badge-primary"><i class="fa fa-cloud-upload " title="Enviar Termo de Cancelamento de disciplina" style="color:white;"></i></a>
                                         @endif
-                                        <a a href="{{asset('secretaria/matricula/inscricao/imprimir-cancelamento'.'/'.$inscricao->id)}}" 
+                                        <a a href="{{asset('secretaria/matricula/inscricao/imprimir/cancelamento'.'/'.$inscricao->id)}}" 
                                             title="Imprimir cancelamento"
                                             class="badge badge-pill badge-primary">
                                             <i class=" fa fa-print " style="color:white;"></i>
@@ -333,12 +333,14 @@
                                             class="badge badge-pill badge-primary">
                                             <i class=" fa fa-pencil-square-o " style="color:white;"></i>
                                         </a>
+                                        <!--
                                          &nbsp;
                                         <a href="{{asset('/secretaria/matricula/inscricao/trocar/').'/'.$inscricao->id}}"                                
                                             title="Mudar de turma" 
                                             class="badge badge-pill badge-primary">
                                             <i class=" fa fa-exchange" style="color:white;"></i>
                                         </a>
+                                    -->
                                         
 
 

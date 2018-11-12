@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Requisito;
 use App\Curso;
 use App\CursoRequisito;
+use App\Turma;
 
 use Illuminate\Http\Request;
 
@@ -144,28 +145,80 @@ class RequisitosController extends Controller
         return view('pedagogico.curso.curso-requisitos', compact('requisitos'))->with(array('curso'=>['nome'=>$cursoexiste->nome, 'id_curso'=>$cursoexiste->id]));
     }
 
-    public function storeRequisitosAoCurso(Request $r){
-        $rc=CursoRequisito::where('curso',$r->curso)->get();
-        foreach($rc->all() as $reqcurso){
-            $reqcurso->delete();
+    public function editRequisitosTurma($turma){
+        $turma=Turma::find($turma);
+        if(!$turma)
+            return redirect(asset('/pedagogico/turmas'));
+        $requisitos=Requisito::get();
+        foreach($requisitos->all() as $requisito){
+            $rc=CursoRequisito::where('curso', $turma->id)->where('para_tipo','turma')->where('requisito',$requisito->id)->first();
+            if(count($rc)){
+                $requisito->checked="checked";
+                if($rc->obrigatorio==1)
+                    $requisito->obrigatorio="checked";
+            }
         }
-        foreach($r->requisito as $requisito){
-            $reqcur=new CursoRequisito;
-            $reqcur->timestamps=false;
-            $reqcur->curso=$r->curso;
-            $reqcur->requisito=$r->requisito[$requisito];
 
+        //return $requisitos;
+        //dd($turma);
+        return view('pedagogico.turma.turma-requisitos', compact('requisitos'))->with('turma',$turma);
+    }
+    public function storeRequisitosTurma(Request $r){
+        $array_turmas = explode(',',$r->turmas);
+        foreach($array_turmas as $turma){
+            $this->clear('turma',$turma);
+            foreach($r->requisito as $requisito){
+
+                if(isset($r->obrigatorio))
+                    if(in_array($requisito, $r->obrigatorio))
+                        $this->gerar('turma',$turma,$r->requisito[$requisito],1);
+                        
+                    else
+                        $this->gerar('turma',$turma,$r->requisito[$requisito],0);
+
+              
+            }
+
+
+        }
+
+       return redirect('pedagogico/turmas');
+    }
+
+    public function storeRequisitosAoCurso(Request $r){
+        $this->clear('curso',$r->curso);
+        foreach($r->requisito as $requisito){
             if(isset($r->obrigatorio))
                 if(in_array($requisito, $r->obrigatorio))
-                    $reqcur->obrigatorio=1;
+                    $this->gerar('curso',$r->curso,$r->requisito[$requisito],1);
                 else
-                    $reqcur->obrigatorio=0;
+                    $this->gerar('curso',$r->curso,$r->requisito[$requisito],0);
             /*
             if($r->obrigatorio[$requisito]==1)
                 $reqcur->obrigatorio=1;
                 */
-            $reqcur->save();
+        
         }
         return redirect(asset('/pedagogico/curso').'/'.$r->curso);
+    }
+
+    public function clear($tipo,$valor){
+        $requisitos = CursoRequisito::where('para_tipo',$tipo)->where('curso',$valor)->get();
+        foreach($requisitos as $requisito){
+            $requisito->delete();
+        }
+        return true;
+    }
+    public function gerar($tipo,$item,$requisito,$obrigatorio=0){
+
+        $reqcur = new CursoRequisito;
+        $reqcur->para_tipo = $tipo; 
+        $reqcur->curso = $item;
+        $reqcur->requisito = $requisito;
+        $reqcur->obrigatorio = $obrigatorio;
+        $reqcur->timestamps=false;
+        $reqcur->save();
+        return true;
+
     }
 }

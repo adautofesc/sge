@@ -274,6 +274,9 @@ Route::middleware('login') ->group(function(){
 			Route::post('importar', 'TurmaController@uploadImportaTurma' );
 			Route::post('processar-importacao', 'TurmaController@processarImportacao');
 			Route::get('expiradas','TurmaController@processarTurmasExpiradas')->name('turmas.expiradas');
+			Route::get('modificar-requisitos/{id}','RequisitosController@editRequisitosTurma');
+			Route::post('turmas-requisitos','RequisitosController@editRequisitosTurma');
+			Route::post('modificar-requisitos/{id}','RequisitosController@storeRequisitosTurma');
 
 
 

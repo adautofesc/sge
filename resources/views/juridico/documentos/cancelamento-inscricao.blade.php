@@ -87,7 +87,7 @@
 		       </ul>
 		       <p style="margin-top: 8%" align="center">
 
-		       São Carlos, {{$inscricao->updated_at->format('d')}} de {{(new \App\classes\Data($inscricao->updated_at->format('d/m/Y')))->mes()}} de {{$inscricao->updated_at->format('Y')}}.
+		       São Carlos, {{$inscricao->updated_at->format('d')}} de {{(new \App\classes\Data($inscricao->updated_at->format('d/n/Y')))->mes()}} de {{$inscricao->updated_at->format('Y')}}.
 
 		       </p>
 		       <center>
@@ -144,7 +144,7 @@
 		       
 		       </ul>
 		       <p  align="center">
-		       		São Carlos, {{$inscricao->updated_at->format('d')}} de {{(new \App\classes\Data($inscricao->updated_at->format('d/m/Y')))->mes()}} de {{$inscricao->updated_at->format('Y')}}.
+		       		São Carlos, {{$inscricao->updated_at->format('d')}} de {{(new \App\classes\Data($inscricao->updated_at->format('d/n/Y')))->mes()}} de {{$inscricao->updated_at->format('Y')}}.
 		       </p>
 		       <center>
 		       <p style="border-top: solid 1px black; width: 30%; margin-top: 5%" align="center" >

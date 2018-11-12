@@ -86,7 +86,7 @@
 		       	@endforeach
 		       </ul>
 		       <p style="margin-top: 8%" align="center">
-		       	São Carlos, {{$matricula->updated_at->format('d')}} de {{(new \App\classes\Data($matricula->updated_at->format('d/m/Y')))->mes()}} de {{$matricula->updated_at->format('Y')}}.
+		       	São Carlos, {{$matricula->updated_at->format('d')}} de {{(new \App\classes\Data($matricula->updated_at->format('d/n/Y')))->mes()}} de {{$matricula->updated_at->format('Y')}}.
 		       </p>
 		       <center>
 		       <p style="border-top: solid 1px black; width: 30%; margin-top: 10%" align="center" >
@@ -144,7 +144,7 @@
 		       	@endforeach
 		       </ul>
 		       <p  align="center">
-		       		São Carlos, {{$matricula->updated_at->format('d')}} de {{(new \App\classes\Data($matricula->updated_at->format('d/m/Y')))->mes()}} de {{$matricula->updated_at->format('Y')}}.
+		       		São Carlos, {{$matricula->updated_at->format('d')}} de {{(new \App\classes\Data($matricula->updated_at->format('d/n/Y')))->mes()}} de {{$matricula->updated_at->format('Y')}}.
 		       </p>
 		       <center>
 		       <p style="border-top: solid 1px black; width: 30%; margin-top: 5%" align="center" >

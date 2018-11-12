@@ -127,6 +127,31 @@
                 </div>   
             </div>
         </div> 
+        <div class="col-md-6 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Requisitos</p>
+                    </div>
+                </div>
+                <div class="card-block">
+                    <div>
+                        @if(isset($requisitos))
+                            <a href="{{ asset("pedagogico/turmas/modificar-requisitos/").'/'.$turma->id}}" class="btn btn-secondary rounded-s btn-sm" >Modificar Requisitos</a>
+                            <ul>
+                        @foreach($requisitos as $requisito)
+                            <li> {{ $requisito->requisito->nome}}</li>
+                        @endforeach
+                            </ul>
+                        @else
+                            <a href="{{ asset("pedagogico/requisitosdocurso/").'/'.$turma->id}}" class="btn btn-secondary rounded-s btn-sm" >Adicionar Requisito(s)</a>
+                        @endif
+                    </div>
+    
+                
+                </div>   
+            </div>
+        </div> 
 
     </div>
 </section>

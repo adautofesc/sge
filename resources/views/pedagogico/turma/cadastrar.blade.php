@@ -222,6 +222,20 @@
 			</div>
 			
 		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">Requisitos obrigatórios</label>
+            <div class="col-sm-10"> 
+            	@foreach($requisitos as $requisito)
+				<div>
+					<label>
+					<input class="checkbox" type="checkbox" name="requisito[]" value="{{$requisito->id}}">
+					<span>{{$requisito->nome}}</span>
+					</label>
+				</div>
+				@endforeach
+        	</div>
+                
+        </div>
 		
 <!--		
 		<div class="form-group row"> 

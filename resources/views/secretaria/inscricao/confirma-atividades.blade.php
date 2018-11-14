@@ -35,13 +35,27 @@
         <div class="title-block center">
 
             @foreach($curso->turmas as $turma)
+            <div class="subtitle-block  row lista">
+                <div class="col-xs-6">
+                    <strong>Turma</strong> {{$turma->id}}<br/>
+                    <strong>Disciplina</strong> {{$turma->disciplina->nome}}<br/>
+                    <strong>Prof.</strong> {{$turma->professor->nome_simples}}<br/>
+                    <strong>Local</strong> {{$turma->local->nome}}<br/>
+                    <strong>Início:</strong> {{$turma->data_inicio}} <strong>Término</strong> {{$turma->data_termino}}<br/>
+                    <strong>Dia(s): </strong>{{implode(', ',$turma->dias_semana)}} <strong> Horários:</strong> {{$turma->hora_inicio}} às {{$turma->hora_termino}}
 
-            <div class="subtitle-block">
-                <strong>Disciplina</strong> {{$turma->disciplina->nome}} - <strong>Turma</strong> {{$turma->id}}<br/>
-                <strong>Prof.</strong> {{$turma->professor->nome_simples}}<br/>
-                <strong>Local</strong> {{$turma->local->nome}}<br/>
-                <strong>Início:</strong> {{$turma->data_inicio}} <strong>Término</strong> {{$turma->data_termino}}<br/>
-                <strong>Dia(s): </strong>{{implode(', ',$turma->dias_semana)}} <strong> Horários:</strong> {{$turma->hora_inicio}} às {{$turma->hora_termino}}
+                </div>
+                <div class="col-xs-6">
+                    Requisitos:
+                    <ul>
+                        @if(isset($turma->requisitos))
+                            @foreach($turma->requisitos as $requisito)
+                        <li><small>{{$requisito->requisito->nome}} {!!$requisito->obrigatorio==1?'<span class="badge badge-pill badge-danger">obrigatorio</span>':''!!}</small></li>
+                            @endforeach
+                        @endif
+                        
+                    </ul>
+                </div>
 
             </div>
             @endforeach

@@ -141,37 +141,9 @@ class InscricaoController extends Controller
             else{
                 if(!$cursos->contains($turma->curso)){
                     $cursos->push($turma->curso);
-                    if($turma->curso->id==307)
-                        $uati++;
-                    else
-                        $valor=$valor+str_replace(',', '.',$turma->valor);
-
-                    switch ($uati) {
-                        case '0':
-                            $valor=$valor+0;
-                        case '1':
-                            $valor=$valor+100;
-                            break;
-                        case '2':
-                        case '3':
-                        case '4':
-                            $valor=$valor+250;
-                            break;
-                        case 4:
-                        case 5:
-                        case 6:
-                        case 7:
-                        case 8:
-                        case 9:
-                        case 10:
-                            $valor=$valor+400;
-                            break;
-
-                    }
-                    $valor=$valor+str_replace(',', '.',$turma->valor);
-
                 }       
             }
+            $turma->requisitos = \App\CursoRequisito::where('para_tipo','turma')->where('curso',$turma->id)->get();
         }
 
         //coloca turma dento da lista de curso atribui valor de cada curso
@@ -183,41 +155,17 @@ class InscricaoController extends Controller
                     $curso->turmas->push($turma);
 
             }
-            if($curso->id==307){
-                switch (count($curso->turmas)) {
-                        case 1:
-                            $curso->valor=100;
-                            break;
-                        case 2:
-                        case 3:
-                        case 4:
-                            $curso->valor=250;
-                            break;
-                        case 5:
-                        case 6:
-                        case 7:
-                        case 8:
-                        case 9:
-                        case 10:
-                            $curso->valor=400;
-                            break;;
-
-                    }
-
-            }
-            else{
-                $curso->valor=$curso->turmas->first()->valor;
-            }
             
            // $curso->valor=$curso->turma->valor;
         }
         $descontos=Desconto::all();
 
+        //dd($turmas);
 
 
         //return $cursos;
 
-        return view('secretaria.inscricao.confirma-atividades')->with('cursos',$cursos)->with('turmas',$turmas)->with('valor',$valor)->with('descontos',$descontos)->with('pessoa',$pessoa)->with('todas_turmas',$todas_turmas)->with('turmas_str',$request->atividades);
+        return view('secretaria.inscricao.confirma-atividades')->with('cursos',$cursos)->with('turmas',$turmas)->with('descontos',$descontos)->with('pessoa',$pessoa)->with('todas_turmas',$todas_turmas)->with('turmas_str',$request->atividades);
 
     }
 
@@ -283,9 +231,10 @@ class InscricaoController extends Controller
     $inscricao->pessoa=$aluno;
     $inscricao->turma=$turma->id;
     $inscricao->status='regular';
+    $atendimento = AtendimentoController::novoAtendimento("Inscrição na turma ".$turma->id , $aluno, Session::get('usuario'));
+    $inscricao->atendimento = $atendimento->id;
     $inscricao->save();
 
-     AtendimentoController::novoAtendimento("Inscrição na turma ".$turma->id.' ID'.$inscricao->id, $aluno, Session::get('usuario'));
 
     // aumenta Inscricaodos
     InscricaoController::modInscritos($turma->id,1,1);
@@ -307,7 +256,6 @@ class InscricaoController extends Controller
         
         //return "função temporareamente bloqueada";
         $inscricao=InscricaoController::inscreverAluno($r->id_pessoa,$turma);
-        MatriculaController::modificaMatricula($inscricao->matricula);
         return redirect(asset('/secretaria/turma/'.$turma));
 
     }
@@ -401,7 +349,7 @@ class InscricaoController extends Controller
         if($inscricao->status == 'regular' || $inscricao->status == 'pendente' ){
             $inscricao->status = 'finalizada';
             $inscricao->save();
-            AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id.' finalizada.', $inscricao->pessoa, Session::get('usuario'));
+            AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id.' finalizada.', $inscricao->pessoa->id, Session::get('usuario'));
              //atualiza a matricula. caso não houver matriculas ativas, finalizar.
             MatriculaController::atualizar($inscricao->matricula);
         }

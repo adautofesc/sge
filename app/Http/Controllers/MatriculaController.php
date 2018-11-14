@@ -782,6 +782,8 @@ where nt.matricula>1');
      */
     public function renovar(Request $r)
     {
+        if(!isset($r->turmas))
+            return redirect()->back()->withErrors(['Nenhuma turma selecionada']);
         foreach($r->turmas as $turma){
             //verifica se existe turma de continuação
             if(isset($r->novaturma[$turma])){
@@ -803,9 +805,6 @@ where nt.matricula>1');
                 //atribui matricula a inscricao
                 $inscricao->matricula = $matricula->id;
                 $inscricao->save();
-
-                //tualiza matricula pra ver se houve alteraçao de valor caso uati
-                MatriculaController::modificaMatricula($inscricao->matricula);
             }
         }
         return redirect("/secretaria/atender/".$r->pessoa."?mostrar=todos")->with('dados["alert_sucess"]',['Turmas rematriculadas com sucesso']);

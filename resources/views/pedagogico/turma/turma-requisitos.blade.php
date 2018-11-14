@@ -4,6 +4,7 @@
     <div class="title-block">
         <div class="row">
             <div class="col-md-6">
+                @if(isset($turma))
                 <h3 class="title"> Requisitos da turma {{$turma->id}}</h3>
                     <p class="title-description">
                         @foreach($turma->dias_semana as $dia)
@@ -14,6 +15,10 @@
                         <br>
                         <i class="fa fa-{{$turma->icone_status}} icon"></i> Status: {{$turma->status}} . Início em {{$turma->data_inicio}} Término em {{$turma->data_termino}}
                     </p> 
+                @else
+                <h3 class="title"> Requisitos das turmas {{$turmas}}</h3>
+
+                @endif
             </div>
         </div>
 
@@ -79,7 +84,11 @@
 
 
     </ul>
+    @if(isset($turma))
     <input type="hidden" name="turmas" value="{{ $turma->id }}">
+    @else
+    <input type="hidden" name="turmas" value="{{ $turmas}}">
+    @endif
     </form>
 </div>
 @if(method_exists($requisitos, 'links'))
@@ -90,7 +99,7 @@
 
 
 @else
-<h3 class="title-description"> Nenhuma requisito encontrada </p>
+<h3 class="title-description"> Nenhum requisito encontrado.</p>
 @endif
 
 @endsection

@@ -695,6 +695,8 @@ class TurmaController extends Controller
      * acao em lote verifica alguma ação pedagogica nas turmas que receber por post
      */
     public function acaolote(Request $r){
+        if(count($r->turmas) == 0)
+                     return redirect()->back()->withErrors(['Não foi possivel efetuar sua solicitação: Nenhuma turma selecionada.']);
         switch ($r->acao) {
             case 'encerrar':
                 foreach($r->turmas as $turma_id){
@@ -704,8 +706,7 @@ class TurmaController extends Controller
                 return redirect()->back()->withErrors(['Turmas encerradas com sucesso']);
                 break;
             case 'relancar':
-                if(count($r->turmas) == 0)
-                     return redirect()->back()->withErrors(['Não foi possivel efetuar sua solicitação: Nenhuma turma selecionada.']);
+                
                 $programas=Programa::get();
                 //$cursos=Curso::getCursosPrograma(); ok
                 $professores=PessoaDadosAdministrativos::getFuncionarios('Educador');
@@ -720,7 +721,14 @@ class TurmaController extends Controller
 
                 //return $dados;
 
-                return view('pedagogico.turma.recadastrar',compact('dados'))->with('turmas',$r->turmas);
+                return view('pedagogico.turma.recadastrar')->with('turmas',$r->turmas);
+                break;
+            case 'requisitos':
+                $turmas = implode(',',$r->turmas);
+                $requisitos = \App\Requisito::all();
+                return redirect('/pedagogico/turmas/modificar-requisitos/'.$turmas);
+                //return view('pedagogico.turma.turma-requisitos',compact('requisitos'))->with('turmas',$turmas);
+
                 break;
             
             default:

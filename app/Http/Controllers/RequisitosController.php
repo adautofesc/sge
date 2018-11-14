@@ -39,6 +39,7 @@ class RequisitosController extends Controller
      */
     public function store(Request $request)
     {
+        dd('teste');
         $this->validate($request, [
             'nome'=>'required|max:150|min:3'
             ]);
@@ -145,11 +146,14 @@ class RequisitosController extends Controller
         return view('pedagogico.curso.curso-requisitos', compact('requisitos'))->with(array('curso'=>['nome'=>$cursoexiste->nome, 'id_curso'=>$cursoexiste->id]));
     }
 
-    public function editRequisitosTurma($turma){
-        $turma=Turma::find($turma);
-        if(!$turma)
-            return redirect(asset('/pedagogico/turmas'));
+    public function editRequisitosTurma($turmas){
+
         $requisitos=Requisito::get();
+        $turmas_arr = explode(',',$turmas);
+        if(count($turmas_arr)!=1)
+            return view('pedagogico.turma.turma-requisitos', compact('requisitos'))->with('turmas',$turmas);
+
+        $turma=Turma::find($turmas);
         foreach($requisitos->all() as $requisito){
             $rc=CursoRequisito::where('curso', $turma->id)->where('para_tipo','turma')->where('requisito',$requisito->id)->first();
             if(count($rc)){
@@ -164,25 +168,35 @@ class RequisitosController extends Controller
         return view('pedagogico.turma.turma-requisitos', compact('requisitos'))->with('turma',$turma);
     }
     public function storeRequisitosTurma(Request $r){
-        $array_turmas = explode(',',$r->turmas);
-        foreach($array_turmas as $turma){
-            $this->clear('turma',$turma);
-            foreach($r->requisito as $requisito){
 
-                if(isset($r->obrigatorio))
-                    if(in_array($requisito, $r->obrigatorio))
-                        $this->gerar('turma',$turma,$r->requisito[$requisito],1);
-                        
+
+        $array_turmas = explode(',',$r->turmas);
+
+
+        foreach($array_turmas as $turma){
+
+            $this->clear('turma',$turma);
+            if(isset($r->requisito)){
+                foreach($r->requisito as $requisito){
+
+                    if(isset($r->obrigatorio))
+                        if(in_array($requisito, $r->obrigatorio))
+                            $this->gerar('turma',$turma,$r->requisito[$requisito],1);
+                            
+                        else
+                            $this->gerar('turma',$turma,$r->requisito[$requisito],0);
                     else
                         $this->gerar('turma',$turma,$r->requisito[$requisito],0);
 
-              
+                  
+                }
             }
 
 
         }
 
-       return redirect('pedagogico/turmas');
+
+       return redirect('pedagogico/turmas')->withErrors('Requisitos atualizados das turmas '.$r->turmas);
     }
 
     public function storeRequisitosAoCurso(Request $r){
@@ -190,9 +204,12 @@ class RequisitosController extends Controller
         foreach($r->requisito as $requisito){
             if(isset($r->obrigatorio))
                 if(in_array($requisito, $r->obrigatorio))
-                    $this->gerar('curso',$r->curso,$r->requisito[$requisito],1);
+                    return $this->gerar('curso',$r->curso,$r->requisito[$requisito],1);
                 else
-                    $this->gerar('curso',$r->curso,$r->requisito[$requisito],0);
+                    return $this->gerar('curso',$r->curso,$r->requisito[$requisito],0);
+            else
+                return $this->gerar('curso',$r->curso,$r->requisito[$requisito],0);
+
             /*
             if($r->obrigatorio[$requisito]==1)
                 $reqcur->obrigatorio=1;
@@ -218,7 +235,9 @@ class RequisitosController extends Controller
         $reqcur->obrigatorio = $obrigatorio;
         $reqcur->timestamps=false;
         $reqcur->save();
-        return true;
+
+        
+        return $reqcur;
 
     }
 }

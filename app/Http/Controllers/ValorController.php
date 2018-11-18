@@ -94,25 +94,45 @@ class ValorController extends Controller
                 if(!$inscricao){
                     return ValorController::retornarZero('Não há inscrições ativas');
                 }
-
-
-
-
-                $valor= Valor::where('programa',$inscricao->turma->programa->id)->where('carga',$inscricao->turma->carga)->where('curso',$inscricao->turma->curso->id)->first();
-
-                if($valor)
-                {
-                    return $valor;//number_format($valor->valor,2,',','.'); 
-                }
                 else
-                {
 
-
-                    $valor= Valor::where('programa',$inscricao->turma->programa->id)->where('carga',$inscricao->turma->carga)->first();
+                    $turma= \App\Turma::find($inscricao->turma->id);
+                    if($turma->valor>0){
+                        $valor = new Valor;
+                        $valor->valor = $turma->valor;
+                        switch($turma->periodicidade){
+                            case 'mensal' :
+                                $valor->parcelas = 1;
+                                break;
+                            case 'bimestral' :
+                                $valor->parcelas = 2;
+                                break;
+                            case 'trimestral' :
+                                $valor->parcelas = 3;
+                                break;
+                            case 'semestral' :
+                                $valor->parcelas = 5;
+                                break;
+                            case 'anual' :
+                                $valor->parcelas = 11;
+                                break;
+                            case 'eventual' :
+                                $valor->parcelas = 1;
+                                break;
+                            default :
+                                $valor->parcelas = 5;
+                                break;
+                        }
+                        
+                        $valor->referencia = 'parcelas temporaria';
+                        return $valor;
+                    }
                 
 
+               
 
-                }
+
+                
                 if(isset($valor))
                     return $valor;//number_format($valor->valor,2,',','.');
                 else

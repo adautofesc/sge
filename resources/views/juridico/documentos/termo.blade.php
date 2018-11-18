@@ -113,7 +113,7 @@
                     2.1 O ALUNO pagará à FESC, pela prestação dos serviços ora ajustados, o valor total de
                     <span id="FormView1_MatVlrPag">R$ {{number_format($matricula->valor->valor-$matricula->valor_desconto, 2, ',', '.')}}</span>, dividido em
                     <span id="FormView1_CPACod">{{$matricula->valor->parcelas}}</span>
-                    parcelas de
+                    parcelas de R$ {{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas,2,',','.')}}
                     <span id="FormView1_parcela"></span>
                     cada uma, vencíveis no dia
                     <span id="FormView1_MatDiaPag">20</span>
@@ -121,7 +121,7 @@
                     <br />
                     2.2 Se o vencimento do prazo cair em feriado, considera-se prorrogado o prazo até o primeiro dia útil seguinte;
                     <br />
-                    <strong>2.3 O não pagamneto no prazo estipulado acarretará multa de 2% (dois por cento) sobre o valor da parcela em atraso, juros de mora de 1% (um por cento) ao mês (0,33% ao dia), bem como a atualização monetária pelo índice IPCA/IBGE até a data do efetivo pagamento;
+                    <strong>2.3 O não pagamento no prazo estipulado acarretará multa de 2% (dois por cento) sobre o valor da parcela em atraso, juros de mora de 1% (um por cento) ao mês (0,33% ao dia), bem como a atualização monetária pelo índice IPCA/IBGE até a data do efetivo pagamento;
                     <br /></strong>
                     2.4 As parcelas vencidas e não pagas serão inscritas na Dívida Ativa da Fazenda Pública, e cobradas mediante procedimento administrativo e, se necessário, judicial.<br>
                     3. VIGÊNCIA:

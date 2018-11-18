@@ -360,7 +360,7 @@
                                                
                                                 <div class="item-col item-col-sales">
                                                     <div class="item-heading">Valor</div>
-                                                    <div>R$ {{$turma->valor}} </div>
+                                                    <div>R$ {{number_format($turma->valor,2,',','.')}} </div>
                                                 </div>
 
                                                 <div class="item-col fixed item-col-actions-dropdown">

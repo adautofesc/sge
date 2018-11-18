@@ -29,13 +29,13 @@ class Turma extends Model
 		//verifica se o curso é fora da fesc, se for, retorna valor 0
 		$fesc=[84,85,86];
 		if(!in_array($this->local->id,$fesc)){
-			return number_format(0,2,',','.');
+			return 0;
 		}
 
 
 		//verifica se não é EMG, se for retorna valor 0
 		if($this->programa->id == 4)
-			return number_format(0,2,',','.');
+			return 0;
 		
 		// se for do curso atividades uati
 		if($this->curso->id == 307 && $this->carga<10)
@@ -58,7 +58,7 @@ class Turma extends Model
 			if(count($valorc)!=1)
 
 				//se não tiver na tabela, pega do valor da tabela turma mesmo;
-				return number_format($value,2,',','.');
+				return $value;
 
 			$valor=$valorc->first();
 				
@@ -67,9 +67,9 @@ class Turma extends Model
 		
 
 		if(isset($valor))
-			return number_format($valor->valor,2,',','.');
+			return $valor->valor;
 		else
-			return number_format(0,2,',','.');
+			return 0;
 
 	}
 	public function setAtributosAttribute($value){

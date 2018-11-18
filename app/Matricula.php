@@ -27,7 +27,6 @@ class Matricula extends Model
 		//return $value;
 		
 		$valor = \App\Http\Controllers\ValorController::valorMatricula($this->id);
-		
 			return $valor;
 
 	}

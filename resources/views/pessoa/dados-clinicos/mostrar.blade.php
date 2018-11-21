@@ -1,7 +1,7 @@
 <div class="tab-pane fade" id="clinicos">
     <div class="row"> 
             <div class="col-xs-6">
-                <a href="/pessoa/cadastrar-atestado/{{$pessoa->id}}" class="btn btn-primary btn-sm rounded-s"> Adicionar Atestado</a>
+                <a href="/pessoa/atestado/cadastrar/{{$pessoa->id}}" class="btn btn-primary btn-sm rounded-s"> Adicionar Atestado</a>
                 
                                                        
             </div>                                           
@@ -59,10 +59,14 @@
                         <a href="#" onclick="desativarAtestado('{{$atestado->id}}')" title="Apagar Atestado" class="btn btn-danger btn-sm">
                             <i class="fa fa-times"></i>
                         </a> 
-                        <a href="/documentos/atestados/{{$atestado->id}}.pdf" target="_blank" title="Ver atestado">
+                        @if(file_exists('documentos/atestados/'.$atestado->id.'.pdf'))
+                            
+                                <a href="{{'/documentos/atestados/'.$atestado->id.'.pdf'}}" target="_blank"><i class="fa fa-file"></i></a>
+                             
+                        @endif
                             Atestado nº {{$atestado->id}}
-                        </a> - válido até 
-                            {{\Carbon\Carbon::parse($atestado->validade)->format('d/m/Y')}}
+                         - emitido em
+                            {{\Carbon\Carbon::parse($atestado->emissao)->format('d/m/Y')}}
                             <br>
                         @endforeach
                         @endif

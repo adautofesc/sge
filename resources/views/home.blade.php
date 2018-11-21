@@ -13,35 +13,7 @@
 
 <section class="section">
     <div class="row">
-        <div class="col-md-6">
-            <div class="card card-primary">
-                <div class="card-header">
-                    <div class="header-block">
-                        <p class="title" style="color:white">Comunicados & portarias</p>
-                    </div>
-                </div>
-                <div class="card-block">
-                    <small>
-                    <table class="table">
-                        <thead>
-                            <th>Link</th>
-                            <th>Data</th>
-                            <th>Descrição</th>
-                        </thead>
-                        <tr>
-                            <td><a href="/documentos/oficios/2018004.pdf"><i class="fa fa-file-text-o"></i></a></td>
-                            <td>22/05/18</td>
-                            <td>Calendário Escolar</td>
-                        </tr>
-                        
-
-                    </table>
-                    </small>
-                </div>
-            </div> 
-
-
-        </div>
+        
         <div class="col-md-6 center-block">
             <div class="card card-primary">
                 <div class="card-header">
@@ -88,8 +60,14 @@
                                 <td>18/01</td>
                                 <td>Matrículas UNIT</td>
                             </tr>
-                             <tr>
+                            <tr>
                                 <td>21/01</td>
+                                <td>à</td>
+                                <td>25/01</td>
+                                <td>Matrículas PID</td>
+                            </tr>
+                             <tr>
+                                <td>28/01</td>
                                 <td>à</td>
                                 <td>01/02</td>
                                 <td>Matrículas UATI & Piscina</td>
@@ -151,6 +129,35 @@
                     </small>
                 </div>
             </div> 
+        </div>
+        <div class="col-md-6">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Comunicados & portarias</p>
+                    </div>
+                </div>
+                <div class="card-block">
+                    <small>
+                    <table class="table">
+                        <thead>
+                            <th>Link</th>
+                            <th>Data</th>
+                            <th>Descrição</th>
+                        </thead>
+                        <tr>
+                            <td><a href="/documentos/oficios/2018004.pdf"><i class="fa fa-file-text-o"></i></a></td>
+                            <td>22/05/18</td>
+                            <td>Calendário Escolar</td>
+                        </tr>
+                        
+
+                    </table>
+                    </small>
+                </div>
+            </div> 
+
+
         </div>
     </div>
     @endif

@@ -579,14 +579,13 @@ class BoletoController extends Controller
 		}
 		public function create(Request $r){
 			if($r->valor >0){
-				$boleto = new Boleto;
-				$boleto->vencimento = $r->vencimento;
-				$boleto->pessoa = $r->pessoa;
-				$boleto->valor = $r->valor;
-				$boleto->status = 'gravado';
-				$boleto->save();
-
 				if(isset($r->lancamentos)){
+					$boleto = new Boleto;
+					$boleto->vencimento = $r->vencimento;
+					$boleto->pessoa = $r->pessoa;
+					$boleto->valor = $r->valor;
+					$boleto->status = 'gravado';
+					$boleto->save();
 					foreach ($r->lancamentos as $lancamento){
 						$lancamento_bd = Lancamento::find($lancamento);
 						if($lancamento_bd != null){
@@ -595,6 +594,9 @@ class BoletoController extends Controller
 						}
 
 					}	
+				}
+				else{
+					return redirect()->back()->withErrors(['Para gerar um boleto é necessário pelo menos uma parcela (lançamento).']);
 				}
 				
 				
@@ -620,7 +622,8 @@ class BoletoController extends Controller
 			$boleto = Boleto::find($id);
 			if($boleto != null){
 				$boleto->vencimento = \Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y');
-				return view('financeiro.boletos.editar')->with('boleto',$boleto);
+				$valor = $this->valorSoma($id);
+				return view('financeiro.boletos.editar')->with('boleto',$boleto)->with('valor',$valor);
 			}
 			else 
 				return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Boleto '.$id.' não encontrado.']);
@@ -862,6 +865,15 @@ class BoletoController extends Controller
 			return $linha;
 		}
 		
+		public function valorSoma($boleto){
+			$lancamentos = Lancamento::where('boleto',$boleto)->where('status',null)->get();
+			$valor = 0;
+			foreach($lancamentos as $lancamento){
+				$valor+=$lancamento->valor;
+			}
+			return $valor;
+
+		}
 
 		
 

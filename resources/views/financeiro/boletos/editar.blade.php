@@ -5,6 +5,7 @@
 </div>
 @include('inc.errors')
 <form name="item" method="POST">
+	<p>O valor mostrado neste formulário é resultado da soma das parcelas (lançamentos).</p>
     <div class="card card-block">
     	<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
@@ -43,13 +44,16 @@
 			<div class="col-sm-3"> 
 				<div class="input-group">
 					<span class="input-group-addon">R$ </span> 
-					<input type="text" class="form-control boxed" name="valor" value="{{str_replace('.',',',$boleto->valor)}}" required> 
+					<input type="text" class="form-control boxed" name="valor" value="{{number_format($valor,2,',','.')}}" readonly="true">
 				</div>
 			</div>
 		</div>
 
 		            
 		<div class="form-group row">
+			<label class="col-sm-2 form-control-label text-xs-right">
+				&nbsp;
+			</label>
 			<div class="col-sm-10 col-sm-offset-2">
 				<input type="hidden" name="boleto" value="{{$boleto->id}}">
 				<button type="submit" name="btn"  class="btn btn-primary">Salvar</button>

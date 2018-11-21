@@ -28,6 +28,16 @@
 		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
+				Boleto
+			</label>
+			<div class="col-sm-3"> 
+				<div class="input-group">
+					<input type="number" class="form-control boxed" name="boleto" value="{{$lancamento->boleto}}"> 
+				</div>
+			</div>
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
 				Refencia
 			</label>
 			<div class="col-sm-3"> 

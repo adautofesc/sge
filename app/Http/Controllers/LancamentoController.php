@@ -332,6 +332,7 @@ class LancamentoController extends Controller
 		$lancamento->matricula = $r->matricula;
 		$lancamento->parcela = $r->parcela;
 		$lancamento->referencia = $r->referencia;
+		$lancamento->boleto = $r->boleto;
 		$lancamento->valor =  str_replace(',','.',$r->valor);
 		$lancamento->save();
 
@@ -619,13 +620,16 @@ class LancamentoController extends Controller
 		if(isset($boleto) && $lancamento != null){
 
 			//Ele não está pago né?
-			if($boleto->status != 'pago'){ //só apaga lancamento se não tiver boleto gerado !!!!!!!oi? donde vc ta pegando status do boleto maluco?
-				$boleto_c = new BoletoController;
-				$boleto_c->cancelar($boleto->id);
+			if($boleto->status == 'gravado' || $boleto->status == 'impresso'){ 
+				$lancamento->status = 'cancelado';
+				$lancamento->save();
+				
 			}
+			else{
+				return redirect()->back()->withErrors(['Impossível cancelar lancamento de boleto pago. '.$boleto->status]);
 
-			else
-				return redirect()->back()->withErrors(['Impossível cancelar lancamento de boleto pago.']);
+			}
+				
 
 		}
 		else{
@@ -633,7 +637,8 @@ class LancamentoController extends Controller
 			$lancamento->save();
 		}
 
-		return redirect($_SERVER['HTTP_REFERER']);
+		return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Parcela cancelada, altere o valor do boleto se necessário.']);
+			
 	}
 
 
@@ -739,6 +744,7 @@ class LancamentoController extends Controller
 				foreach($r->matriculas as $matricula){
 
 					$matricula = Matricula::find($matricula);
+					dd($matricula->valor->parcelas);
 
 					if($r->parcela>5 && $matricula->valor->parcelas<6)
 						$parcela=$r->parcela-6;

@@ -36,7 +36,7 @@
                     <div> <span>Nome</span> </div>
                 </div>
                 <div class="item-col item-col-header item-col-sales">
-                    <div> <span>Validade</span> </div>
+                    <div> <span>Data de Emissão</span> </div>
                 </div>
                 <div class="item-col item-col-header item-col-sales">
                     <div> <span>Recebido em</span> </div>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Validade</div>
-                    <div> {{$atestado->validade}}</div>
+                    <div> {{$atestado->emissao}}</div>
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Recebido em</div>
@@ -87,9 +87,11 @@
 			</span> </a>
                         <div class="item-actions-block">
                             <ul class="item-actions-list">
+                                @if(file_exists('documentos/atestados/'.$atestado->id.'.pdf'))
                                 <li>
-                                    <a class="edit" target="_blank" href="/documentos/atestados/{{$atestado->id}}.pdf" title="Ver atestado digitalizado"> <i class="fa fa-file "></i> </a>
-                                </li>
+                                    <a href="{{'/documentos/atestados/'.$atestado->id.'.pdf'}}" target="_blank"><i class="fa fa-file"></i></a>
+                                 </li>
+                                @endif
                                 <li>
                                     <a class="edit" href="{{asset('pessoa/atestado/editar').'/'.$atestado->id}}" title="Editar Atestado"> <i class="fa fa-pencil-square-o "></i> </a>
                                 </li>

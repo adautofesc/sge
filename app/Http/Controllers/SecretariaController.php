@@ -77,7 +77,9 @@ class SecretariaController extends Controller
 			
 			 //Listar lançamentos
 		 	$lancamentos = Lancamento::where('pessoa',$id)->where('boleto',null)->get();
-		
+		 	$atividades_aquaticas = $matriculas->whereIn('status',['ativa','pendente'])->whereIn('curso',['898','1151','1152']);
+		 	
+		 	
 			
 		}
 		// mostrar somente dados ativos/ok
@@ -122,11 +124,21 @@ class SecretariaController extends Controller
 			
 			 //Listar lançamentos
 			 $lancamentos = Lancamento::where('pessoa',$id)->where('boleto',null)->where('status',null)->get();
+			 $atividades_aquaticas = $matriculas->WhereIn('curso',['898','1151','1152']);
 
 
 		}
 		//return $matriculas;
-		$atestado = \App\Atestado::where('pessoa',$id)->where('validade','>=',date('Y-m-d'))->first();
+		$atestado = \App\Atestado::where('pessoa',$id)->first();
+		if($atestado){
+			if(isset($atividades_aquaticas))
+				$atestado->validade = $atestado->calcularVencimento(12);
+			else
+				$atestado->validade = $atestado->calcularVencimento(3);
+
+		}
+
+		
 
 
 		return view('secretaria.atendimento', compact('pessoa'))->with('matriculas',$matriculas)->with('boletos',$boletos)->with('lancamentos',$lancamentos)->with('inscricoes',$inscricoes)->with('errosPessoa',$errosMsg)->with('atestado',$atestado);

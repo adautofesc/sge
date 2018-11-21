@@ -110,7 +110,7 @@
 					<option value="bimestral" {{$turma->periodicidade=="bimestral"?"selected":"" }}>Bimestral</option>
 					<option value="trimestral" {{$turma->periodicidade=="trimestral"?"selected":"" }}>Trimestral</option>
 					<option value="semestral" {{$turma->periodicidade=="semestral"?"selected":"" }}>Semestral</option>
-					<option value="anual" {{$turma->periodicidade=="mensal"?"selected":"anual" }}>Anual</option>
+					<option value="anual" {{$turma->periodicidade=="anual"?"selected":"" }}>Anual</option>
 					<option value="eventual" {{$turma->periodicidade=="eventual"?"selected":"" }}>Eventual</option>
 					<option value="ND" {{$turma->periodicidade=="ND"?"selected":"" }}>Não Definido</option>
 		

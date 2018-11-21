@@ -46,7 +46,7 @@ class RelatorioController extends Controller
 		$matriculas_faixa['matriculas com uma disciplina']= 0;
 		$matriculas_faixa['com 2 a 4 disciplinas']= 0;
 		$matriculas_faixa['acima de 4']= 0;
-		$matriculas = \App\Matricula::where('status','ativa')->where('curso','307')->get();
+		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente'])->where('curso','307')->get();
 		$matriculas_faixa['Matriculas totais'] = count($matriculas);
 		foreach($matriculas as $matricula){
 			$inscricoes = $matricula->getInscricoes();
@@ -104,6 +104,26 @@ class RelatorioController extends Controller
 		dd($alunos_fesc);
 
 		
+	}
+
+	public function matriculasPrograma($programa){
+
+		$qnde_matriculas = 0;
+		$pessoas= Array();
+		
+		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente'])->get();
+		$matriculas_faixa['Matriculas totais'] = count($matriculas);
+		foreach($matriculas as $matricula){
+			$inscricoes = $matricula->getInscricoes();
+			if($inscricoes->first()->turma->programa->id == $programa){
+				if(!in_array($matricula->pessoa,$pessoas))
+					array_push($pessoas,$matricula->pessoa);
+				$qnde_matriculas++;
+			}
+			
+
+		}
+		return count($pessoas). ' pessoas com '.$qnde_matriculas .' matrículas.' ;
 	}
 
 

@@ -368,17 +368,19 @@ Route::middleware('login') ->group(function(){
 			Route::middleware('liberar.recurso:20')->get('ativar_matriculas_em_espera','MatriculaController@ativarEmEspera');
 			
 		});
-		Route::prefix('relatorios')->group(function(){
-				Route::get('turmas', 'RelatorioController@inscricoesAtivas');
-
-
-		});
-
-
-
 
 
 	});
+
+
+	//Relatórios
+
+	Route::prefix('relatorios')->group(function(){
+				Route::get('turmas', 'RelatorioController@inscricoesAtivas');
+				Route::get('matriculas-por-programa/{programa}','RelatorioController@matriculasPrograma');
+
+
+		});
 
 	//Docentes
 	

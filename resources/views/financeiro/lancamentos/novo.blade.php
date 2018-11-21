@@ -30,7 +30,7 @@
 			</label>
 			<div class="col-sm-4"> 
 				<select class="c-select form-control boxed" name="parcela" required>
-					<option >Selecione o mês</option>
+					<option value="0">Selecione o mês</option>
 					<option value="1" >Fevereiro</option>
 					<option value="2" >Março</option>
 					<option value="3" >Abril</option>

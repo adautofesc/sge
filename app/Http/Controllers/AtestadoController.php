@@ -22,19 +22,18 @@ class AtestadoController extends Controller
 	}
 	public function create(Request $r){
 		$arquivo = $r->file('arquivo');
-        if (!empty($arquivo)) {
-        		$atestado = new Atestado;
+		$atestado = new Atestado;
 				$atestado->pessoa = $r->pessoa;
-				$atestado->validade = $r->validade;
+				$atestado->emissao = $r->emissao;
 				$atestado->atendente = session('usuario');
 				$atestado->save();
+        if (!empty($arquivo)) {	
                 $arquivo->move('documentos/atestados/', $atestado->id.'.pdf');
         }
-        else
-        	return redirect()->back()->withErrors(['Atestado não gravado: arquivo nulo/vazio.']);
+      
         
 
-        return redirect('/secretaria/atender/'.$r->pessoa)->withErrors(['Atestado cadastrado com sucesso.']);
+        return redirect('/secretaria/atender/'.$r->pessoa)->withErrors(['Atestado '.$atestado->id.' cadastrado com sucesso.']);
 
 
 	}
@@ -68,7 +67,7 @@ class AtestadoController extends Controller
 	public function update(Request $r){
 		$atestado = Atestado::find($r->atestado);
 		if($atestado){
-			$atestado->validade = $r->validade;
+			$atestado->emissao = $r->emissao;
 			$atestado->save();
 			$arquivo = $r->file('arquivo');
        		if (!empty($arquivo)) {

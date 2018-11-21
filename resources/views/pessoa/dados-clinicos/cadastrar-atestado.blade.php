@@ -22,10 +22,10 @@
         </div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Validade
+				Emissão
 			</label>
 			<div class="col-sm-3"> 
-				<input type="date" class="form-control boxed" name="validade" placeholder="" > 
+				<input type="date" class="form-control boxed" name="emissao" placeholder="" > 
 			</div>
 		</div>
 		<div class="form-group row"> 
@@ -33,7 +33,7 @@
                 Arquivo
             </label>
             <div class="col-sm-6">  
-                <input type="file" required="true" accept=".pdf" name="arquivo" class="form-control boxed"  placeholder="" maxlength="150"> 
+                <input type="file" accept=".pdf" name="arquivo" class="form-control boxed"  placeholder="" maxlength="150"> 
             </div>
         </div>
 

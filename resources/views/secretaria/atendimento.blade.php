@@ -269,7 +269,11 @@
 
                             </div>
                             @foreach($matricula->inscricoes as $inscricao)
+                            @if($inscricao->status =='cancelada')
+                            <div class="row lista text-danger" >
+                            @else
                             <div class="row lista" >
+                            @endif
                            
                                                              
                                 <div class="col-xl-4" title="Turma {{$inscricao->turma->id}} - {{ isset($inscricao->turma->disciplina->nome) ? $inscricao->turma->disciplina->nome: $inscricao->turma->curso->nome}} " style="line-height:40px !important; padding-left: 50px;">
@@ -504,7 +508,15 @@
 
 
                                         @if($lancamento->status == 'cancelado' )
-                                        <a a href="#" onclick="relancarParcela({{$lancamento->id}});" title="Relançar Parcela"><i class=" fa fa-external-link-square "></i></a>
+                                        
+                                         <a href="#" onclick="reativarParcela({{$lancamento->id}})" title="Reativar parcela"> <i class="fa fa-undo "></i></a>&nbsp;
+                                         <a a href="#" onclick="relancarParcela({{$lancamento->id}});" title="Relançar Parcela"><i class=" fa fa-external-link-square "></i></a>
+
+                                        @elseif($boleto->status=='gravado')
+
+                                         <a class="remove" onclick="cancelarParcela({{$lancamento->id}})" href="#" title="Cancelar parcela"> <i class="fa fa-times "></i></a>&nbsp;
+                                        <a href="{{asset('financeiro/lancamentos/editar').'/'.$lancamento->id}}" title="Editar parcela"> <i class="fa fa-pencil-square-o "></i></a>&nbsp;
+                                         
                             
                                         @endif
                                       
@@ -538,7 +550,7 @@
                     <ul class="item-list striped">
                         <li class="item item-list-header ">
                             <div class="row ">
-                                <div class="col-xl-4 " style="line-height:40px !important; padding-left: 30px;">
+                                <div class="col-xl-5 " style="line-height:40px !important; padding-left: 30px;">
                                     <div><i class=" fa fa-usd "></i> &nbsp;<small><b>Referência</b></small></div>
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
@@ -546,9 +558,6 @@
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div title="Vencimento"><small><b>Valor</b></small></div>
-                                </div>
-                                <div class="col-xl-1" style="line-height:40px !important;">
-                                    <div><small></small></div>
                                 </div>
                                 <div class="col-xl-1" style="line-height:40px !important;">
                                     <div><small><b>Status</b></small></div>
@@ -568,7 +577,7 @@
                         @endif
                             <div class="row">
                                                          
-                                <div class="col-xl-4" style="line-height:40px !important; padding-left: 50px;">
+                                <div class="col-xl-5" style="line-height:40px !important; padding-left: 50px;">
                                     <div></i> &nbsp;<small>{{$lancamento->referencia}} {{$lancamento->matricula}}</small></div>
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
@@ -577,9 +586,7 @@
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div><small>R$ {{$lancamento->valor}}</small></div>
                                 </div>
-                                <div class="col-xl-1" style="line-height:40px !important;">
-                                    <div><small></small></div>
-                                </div>
+                              
                                 <div class="col-xl-1" style="line-height:40px !important;">
                                     <div><small>{{$lancamento->status}}</small></div>
                                 </div>

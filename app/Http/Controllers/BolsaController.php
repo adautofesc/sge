@@ -140,7 +140,6 @@ class BolsaController extends Controller
 
         $this->validate($request,[
             'pessoa' => 'required|integer',
-            'matricula' => 'required|integer',
             'desconto' =>'required'
         ]);
 
@@ -148,7 +147,11 @@ class BolsaController extends Controller
         $curso = \App\Curso::find($matricula->curso);
 
         if(!$curso)
-            return redirect()->back()->withErrors(['Não foi possível encontrar o curso. BolsaController 88.']);
+            return redirect()->back()->withErrors(['Não foi possível encontrar o curso. BolsaController']);
+
+     
+
+
 
         $bolsa = new Bolsa;
         $bolsa->pessoa = $request->pessoa;

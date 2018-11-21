@@ -5,10 +5,11 @@
 </div>
 @include('inc.errors')
 <form name="item" method="POST">
+	<p>Os valores dos boletos serão obtidos exclusivamente através da soma das parcelas (lançamentos). </p>
     <div class="card card-block">
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Vencimento
+				Vencimento*
 			</label>
 			<div class="col-sm-3"> 
 				<div class="input-group">
@@ -18,7 +19,7 @@
 			</div>
 		</div>
 		<div class="form-group row"> 
-			<label class="col-sm-2 form-control-label text-xs-right">Lançamentos pendentes</label>
+			<label class="col-sm-2 form-control-label text-xs-right">Lançamentos pendentes*</label>
             <div class="col-sm-10"> 
             	@foreach($lancamentos as $lancamento)
 				<div>
@@ -39,7 +40,7 @@
 			<div class="col-sm-3"> 
 				<div class="input-group">
 					<span class="input-group-addon">R$ </span> 
-					<input type="text" class="form-control boxed" name="valor" id="valor" value="" required> 
+					<input type="text" class="form-control boxed" name="valor" id="valor" value="" readonly="true" required> 
 				</div>
 			</div>
 		</div>

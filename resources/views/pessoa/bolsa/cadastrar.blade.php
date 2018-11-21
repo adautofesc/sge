@@ -41,7 +41,7 @@
                 <div>
                     @foreach($matriculas as $matricula)
                     <label>
-                    <input class="radio" type="radio" name="matricula" value="{{ $matricula->id}}" >
+                    <input class="checkbox" type="checkbox" name="matricula[]" value="{{ $matricula->id}}" >
                     <span>{{$matricula->id}} - {{$matricula->getNomeCurso()}}</span>
                     </label><br>
                     @endforeach

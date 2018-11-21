@@ -22,10 +22,10 @@
         </div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Validade
+				Emissão
 			</label>
 			<div class="col-sm-3"> 
-				<input type="date" class="form-control boxed" name="validade" value="{{$atestado->validade}}" placeholder="" > 
+				<input type="date" class="form-control boxed" name="emissao" value="{{$atestado->emissao}}" placeholder="" > 
 			</div>
 		</div>
 		<div class="form-group row"> 

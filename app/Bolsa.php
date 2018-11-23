@@ -24,15 +24,13 @@ class Bolsa extends Model
 	}
 
 	public function getNomeCurso(){
-		$curso = Curso::find($this->curso);
-		if($curso != null)
-			return $curso->nome;
-		else{
-			$inscricoes = $this->getInscricoes();
-			return $inscricoes->first()->turma->curso->nome;
+		$matricula = \App\Matricula::find($this->matricula);
+		return $matricula->getNomeCurso();
+		
+		
 			
 
-		}
+		
 	}
 	public function getNomePessoa(){
 		$pessoa = Pessoa::find($this->pessoa);

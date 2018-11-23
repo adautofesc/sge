@@ -144,10 +144,15 @@ class BolsaController extends Controller
         ]);
 
         $matricula = \App\Matricula::find($request->matricula);
-        $curso = \App\Curso::find($matricula->curso);
+        //$curso = \App\Curso::find($matricula->curso);
 
-        if(!$curso)
-            return redirect()->back()->withErrors(['Não foi possível encontrar o curso. BolsaController']);
+
+        if(count($request->matricula) > 2)
+            return redirect()->back()->withErrors(['Mais de duas matrículas selecionadas.']);
+
+
+
+
 
      
 
@@ -155,11 +160,19 @@ class BolsaController extends Controller
 
         $bolsa = new Bolsa;
         $bolsa->pessoa = $request->pessoa;
-        $bolsa->curso = $curso->id;
+
         $bolsa->desconto = $request->desconto;
-        $bolsa->programa = $curso->programa->id;
         $bolsa->matricula = $request->matricula;
         $bolsa->status = 'analisando';
+
+        foreach($request->matricula as $matricula){
+            if(isset($bolsa->matricula))
+                $bolsa->matricula2 = $matricula;
+            else
+                $bolsa->matricula = $matricula;
+
+            
+        }
 
         //dd($bolsa);
         if(!$this->vericaSeSolicitado($request->pessoa,$request->matricula))

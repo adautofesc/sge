@@ -54,7 +54,7 @@
 			<div class="col-sm-10 col-sm-offset-2"> 
 				<input type="hidden" name="pessoa" value="{{$pessoa->id}}">
                 <button type="submit" name="btn"  class="btn btn-primary">Salvar</button>
-                <button type="reset" name="btn"  class="btn btn-primary">Restaurar</button>
+                <button type="reset" name="btn"  class="btn btn-primary">Limpar</button>
                 <button type="cancel" name="btn" class="btn btn-primary" onclick="history.back(-2);return false;">Cancelar</button>
 			</div>
        </div>

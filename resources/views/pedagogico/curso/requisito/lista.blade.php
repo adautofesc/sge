@@ -1,13 +1,45 @@
 @extends('layout.app')
+@section('titulo')Criando novo requisito @endsection
 @section('pagina')
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a href="../../">Início</a></li>
+  <li class="breadcrumb-item"><a href="../">Pedagogico</a></li>
+ 
+</ol>
 
-<div class="title-block">
+
+
+<div class="">
         <div class="row">
-            <div class="col-md-12">
-                <h3 class="title"> Requisitos dos cursos/atividades <a href="{{asset('pedagogico/cursos/requisitos/add')}}" class="btn btn-primary btn-sm rounded-s">Adicionar</a>  
-                <a href="#" onclick="apagar()" class="btn btn-danger btn-sm rounded-s">Remover selecionados</a>           
+            <div class="col-md-3">
+                <h3 class="title border-bottom"><i class=" fa fa-asterisk "></i> Requisitos
+                     
                 </h3>
-                <p class="title-description"> Lista de requisitos que podem ser solicitados ao criar um curso ou atividade.</p>
+            </div>
+            <div class="col-md-7 ">
+                &nbsp;
+            </div>
+            <div class="form-group col-md-2">
+                 <div class="header-block header-block-search hidden-sm-down">
+                    <form role="search">
+                        <div class="input-group input-group-sm">
+                
+                            
+                            <input type="text" class="form-control" placeholder="Buscar...">
+                            <i class="input-group-addon fa fa-search" onclick="this.form.submit();"></i>
+
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-5">
+                <a href="{{asset('pedagogico/cursos/requisitos/add')}}" class="btn btn-secondary btn-sm rounded-s"><i class="text-success fa fa-plus"></i></a>
+                
+                <a href="#" onclick="apagar()" class="btn btn-secondary btn-sm rounded-s" title="Apagar selecionados"><i class="text-danger fa fa-trash-o"></i></a>      
             </div>
         </div>
 </div>

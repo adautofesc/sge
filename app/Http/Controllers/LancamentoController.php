@@ -744,7 +744,7 @@ class LancamentoController extends Controller
 				foreach($r->matriculas as $matricula){
 
 					$matricula = Matricula::find($matricula);
-					dd($matricula->valor->parcelas);
+					//dd($matricula->valor->parcelas);
 
 					if($r->parcela>5 && $matricula->valor->parcelas<6)
 						$parcela=$r->parcela-6;

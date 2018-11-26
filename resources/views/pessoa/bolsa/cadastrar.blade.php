@@ -23,18 +23,30 @@
         </div>
 		<div class="form-group row"> 
             <label class="col-sm-2 form-control-label text-xs-right">
-                Desconto
+                Validade
             </label>
             <div class="col-sm-6"> 
-                <select name="desconto" class="c-select form-control boxed" ">
-                    <option value="1">Bolsa Socioeconômica</option>
-                    <option value="2">Bolsa Beneficiário de Programa Social</option>
-                    <option value="3">Bolsa para Funcionários Públicos (20%)</option>
-                    <option value="4">Bolsa Alunos de Parcerias</option>
-                    <option value="5">Bolsa Servidores Fesc</option>
+                <select name="classificacao" class="c-select form-control boxed" ">
+                    <option value="socioeconomica">Bolsa Socioeconômica</option>
+                    <option value="nis">Bolsa Beneficiário de Programa Social</option>
+                    <option value="prefeitura">Bolsa para Funcionários Públicos (20%)</option>
+                    <option value="saude">Bolsa de encaminhamento da Saúde</option>
+                    <option value="caps">Bolsa de encaminhamento CAPS</option>
+                    <option value="cidadania">Bolsa de encaminhamento da Cidadania</option>
+                    <option value="pmsc">Bolsa de encaminhamento PMSC</option>
+                    <option value="fesc">Bolsa Servidores Fesc</option>
                 </select>
             </div>
         </div>
+        <div class="form-group row"> 
+            <label class="col-sm-2 form-control-label text-xs-right">
+                Bolsa tipo
+            </label>
+            <div class="col-sm-6"> 
+                <input type="date" class="form-control boxed"" name="validade">
+            </div>
+        </div>
+
 		<div class="form-group row"> 
             <label class="col-sm-2 form-control-label text-xs-right">Matriculas ativas:</label>
             <div class="col-sm-10"> 

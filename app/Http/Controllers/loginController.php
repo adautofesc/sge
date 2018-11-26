@@ -26,14 +26,21 @@ class loginController extends Controller
 	*/
 	public static function login(){
 		
-		if(isset($_COOKIE['sge_token'])){
+		/*if(isset($_COOKIE['sge_token'])){
+
 			$usuario=PessoaDadosAcesso::where('remember_token',$_COOKIE['sge_token'])->first();
+			dd($usuario);
 			if(count($usuario)==1){
-				$usuario= Pessoa::where('id',$usuario->pessoa)->first();
-				return view('login')->with('nome', $usuario->nome_simples);
+				$pessoa= Pessoa::where('id',$usuario->pessoa)->first();
+				return view('login')->with('nome', $pessoa->nome_simples);
+			}
+			else{
+				unset($_COOKIE['sge_token']);
+				return redirect()->back();
+
 			}
 
-		}
+		}*/
 		return view('login');
 	}
 	public function loginSaved(){

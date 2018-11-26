@@ -58,16 +58,6 @@
 
         <div class="row">
         	<div class="col-xs-12">
-	        	<p style="border: solid 1px black; padding: 10px 10px 10px 10px"> 
-	        	<small>
-	        	<strong>Programa Educacional:</strong> 
-	        	
-	        		({{$bolsa->programa == '2'? 'X':'&nbsp;&nbsp;'}}) Programa de Incusão Digital&nbsp;&nbsp;&nbsp;
-	        		({{$bolsa->programa == '3'? 'X':'&nbsp;&nbsp;'}}) Universidade Aberta da Terceira Idade &nbsp;&nbsp;&nbsp; </br>
-	        		({{$bolsa->programa == '1'? 'X':'&nbsp;&nbsp;'}}) Universidade Aberta do Trabalhador &nbsp;&nbsp;&nbsp;
-	        		({{$bolsa->programa == '12'? 'X':'&nbsp;&nbsp;'}}) Centro Esportivo - Piscina
-	        	</small>
-		       </p>
 		       <p style="border: solid 1px black; padding: 10px 10px 10px 10px"> 
 		       	<small>
 	        	<strong>Dados Pessoais:</strong> <br>

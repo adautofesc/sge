@@ -140,10 +140,10 @@ class BolsaController extends Controller
 
         $this->validate($request,[
             'pessoa' => 'required|integer',
-            'desconto' =>'required'
+            'classificacao' =>'required'
         ]);
 
-        $matricula = \App\Matricula::find($request->matricula);
+        //$matricula = \App\Matricula::find($request->matricula);
         //$curso = \App\Curso::find($matricula->curso);
 
 
@@ -151,30 +151,58 @@ class BolsaController extends Controller
             return redirect()->back()->withErrors(['Mais de duas matrículas selecionadas.']);
 
 
+        switch($request->classificacao){
+            case 'fesc':
+            $desconto = 5;
+            break;
+            case 'prefeitura':
+            $desconto = 5;
+            break;
+            case 'pmsc':
+            $desconto = 5;
+            break;
+            case 'saude':
+            $desconto = 5;
+            break;
+            case 'caps':
+            $desconto = 5;
+            break;
+            case 'cidadania':
+            $desconto = 5;
+            break;
+            case 'nis':
+            $desconto = 5;
+            break;
+            case 'socioeconomica':
+            $desconto = 5;
+            break;
 
-
-
-     
+        }
 
 
 
         $bolsa = new Bolsa;
         $bolsa->pessoa = $request->pessoa;
-
-        $bolsa->desconto = $request->desconto;
-        $bolsa->matricula = $request->matricula;
+        $bolsa->tipo = $request->classificacao;
+        $bolsa->desconto = $desconto;
         $bolsa->status = 'analisando';
 
         foreach($request->matricula as $matricula){
             if(isset($bolsa->matricula))
                 $bolsa->matricula2 = $matricula;
+                $bolsa->curso2 = Matricula::retornarCurso($matricula);
             else
                 $bolsa->matricula = $matricula;
+                $bolsa->curso = Matricula::retornarCurso($matricula);
 
             
         }
 
         //dd($bolsa);
+        if(date('m')>11)
+            $validade = date('Y-12-31 23:23:59', strtotime("+12 months",strtotime(date('Y-m-d')))); 
+        else
+
         if(!$this->vericaSeSolicitado($request->pessoa,$request->matricula))
             $bolsa->save();
         else

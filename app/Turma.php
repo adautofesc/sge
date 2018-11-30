@@ -36,6 +36,10 @@ class Turma extends Model
 		//verifica se não é EMG, se for retorna valor 0
 		if($this->programa->id == 4)
 			return 0;
+
+		//verifica se é parceria social
+		if($this->parceria)
+			return 0;
 		
 		// se for do curso atividades uati
 		if($this->curso->id == 307 && $this->carga<10)
@@ -46,15 +50,15 @@ class Turma extends Model
 		else
 		{	
 			//procura curso carga.
-			$valorc= Valor::where('curso',$this->curso->id)->where('carga',$this->carga)->get();
+			$valorc= Valor::where('curso',$this->curso->id)->where('carga',$this->carga)->where('ano',substr($this->data_inicio,-4))->get();
 			if(count($valorc)!=1)
 
 			//ṕrocura curso
-			$valorc= Valor::where('curso',$this->curso->id)->get();
+			$valorc= Valor::where('curso',$this->curso->id)->where('ano',substr($this->data_inicio,-4))->get();
 			if(count($valorc)!=1)
 
 			//programa carga
-			$valorc= Valor::where('programa',$this->programa->id)->where('carga',$this->carga)->get();
+			$valorc= Valor::where('programa',$this->programa->id)->where('carga',$this->carga)->where('ano',substr($this->data_inicio,-4))->get();
 			if(count($valorc)!=1)
 
 				//se não tiver na tabela, pega do valor da tabela turma mesmo;

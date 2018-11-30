@@ -103,9 +103,10 @@ class BolsaController extends Controller
         return "Foram geradas ".$bolsas_criadas. " bolsas a partir de matrículas do 1º semestre";
         
     }
-    public static function verificaBolsa($pessoa,$curso){
-        $bolsa = Bolsa::where('pessoa',$pessoa)->where('curso',$curso)->where('status','ativa')->first();
-        //die('teste');
+    public static function verificaBolsa($pessoa,){
+        $bo$bolsa = Bolsa::where('pessoa',$pessoa)->where(function($query) use ($matricula) {
+            $query->where('matricula',$matricula)->orWhere('matricula2',$matricula);
+        })->where('status','ativa')->first();
         //
         //dd($bolsa);
         if($bolsa)
@@ -188,12 +189,16 @@ class BolsaController extends Controller
         $bolsa->status = 'analisando';
 
         foreach($request->matricula as $matricula){
-            if(isset($bolsa->matricula))
+            if(isset($bolsa->matricula)){
                 $bolsa->matricula2 = $matricula;
                 $bolsa->curso2 = Matricula::retornarCurso($matricula);
-            else
+            }
+                
+            else{
                 $bolsa->matricula = $matricula;
                 $bolsa->curso = Matricula::retornarCurso($matricula);
+            }
+                
 
             
         }

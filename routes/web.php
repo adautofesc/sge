@@ -21,6 +21,7 @@ Route::get('/bolsa/gerador', 'BolsaController@gerador');
 Route::get('/corrigir-boletos','BoletoController@corrigirBoletosSemParcelas');
 
 
+
 //Publicos
 
 Route::get('cursos-disponiveis', 'TurmaController@turmasSite');
@@ -54,6 +55,8 @@ Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec
 
 
 
+
+
 //Areas restritas para cadastrados
 Route::middleware('login') ->group(function(){
 	Route::get('home', 'painelController@index');
@@ -68,6 +71,9 @@ Route::middleware('login') ->group(function(){
 	Route::post('testar-classe', 'painelController@testarClassePost');
 	Route::get('lista/{id}','painelController@chamada'); //lista de chamada aberta
 	Route::get('turma/{turma}', 'TurmaController@mostrarTurma');
+
+	Route::get('/descontao','LancamentoController@descontao1');
+	Route::get('/descontao2','LancamentoController@descontao2');
 
 
 

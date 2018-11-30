@@ -807,6 +807,76 @@ class LancamentoController extends Controller
 		return redirect(asset('secretaria/atender'.'/'.$r->pessoa));
 
 	}
+	
+
+	
+	public function descontao1(){
+		$turmas1 = \App\Turma::whereIn('status', ['andamento','iniciada'])->where(function($query){
+							$query->where('dias_semana','like','%qui%')
+							->orwhere('dias_semana','like','%sex%');
+							})
+							->where('local', 84 )
+							->get();
+		
+
+		foreach($turmas1 as $turma){
+			if($turma->tempo_curso<9)
+				$tempo = 5;
+			else
+				$tempo = 11;
+
+			if($turma->valor)
+				$valor =  ($turma->valor/$tempo)/4;
+				$this->descontoTurma($turma->id,$valor,'Desconto de aulas não dadas - 27 e 28 de setembro');
+		}
+
+		
+		
+		return count($turmas1).' turmas receberam descontos.';
+	}
+	
+	public function descontao2(){
+		$turmas = \App\Turma::where('local',86)->whereIn('status', ['andamento','iniciada'])->where('id','365')->get();
+		foreach($turmas as $turma){
+			if($turma->tempo_curso<9)
+				$tempo = 5;
+			else
+				$tempo = 11;
+			$valor =  ($turma->valor/$tempo)/(4*count($turma->dias_semana));	
+			$valor = $valor*count($turma->dias_semana);
+			return $valor;
+			
+			//$this->descontoTurma($turma->id,$valor,'Desconto de aulas não dadas por uso do espaço pelos Jogos Regionais');
+		}
+
+		return count($turmas).' turmas receberam descontos na FESC 3.';
+
+
+
+	}
+
+	public function descontoTurma($turma,$valor,$referencia){
+		$inscricoes = \App\Inscricao::where('turma',$turma)->whereIn('status',['regular','pendente'])->get();
+		foreach($inscricoes as $inscricao){
+
+			//verifica se não bolsista 
+			$matricula = \App\Matricula::find($inscricao->matricula);
+			if($matricula->valor->valor>0){ 
+
+				//lançar desconto
+				$lancamento=new Lancamento; //gera novo lançamento
+				$lancamento->pessoa = 	$inscricao->pessoa->id;
+				$lancamento->matricula= $inscricao->matricula;
+				$lancamento->referencia = $referencia;
+				$lancamento->parcela=0;
+				$lancamento->valor = $valor*-1;
+				$lancamento->save();
+			}
+
+		}
+		return 'Descontos lançados.';
+
+	}
 
 
 

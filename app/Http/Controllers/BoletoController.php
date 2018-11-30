@@ -875,6 +875,27 @@ class BoletoController extends Controller
 
 		}
 
+		public function atualizarBoletosGravados(){
+			$boletos = Boleto::where('status','gravado')->get();
+			foreach($boletos as $boleto){
+				$valor=0;
+				$lancamentos1 = Lancamento::where('boleto',$boleto->id)->get();
+				foreach($lancamentos1 as $lancamentox){
+					$valor+=$lancamentox->valor;
+				}
+				$lancamentos2 = Lancamento::where('pessoa',$boleto->pessoa)->where('boleto',null)->get();
+				foreach($lancamentos2 as $lancamentoy){
+					$lancamentoy->boleto = $boleto->id;
+					$lancamentoy->save();
+					$valor+=$lancamentoy->valor;
+				}
+				$boleto->valor = $valor;
+				$boleto->save();
+			}
+
+			return count($boletos)." boletos atualizados.";
+		}
+
 		
 
 }

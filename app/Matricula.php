@@ -55,7 +55,7 @@ class Matricula extends Model
 		//return $value;
 		//return 100;
 		
-		$valor = \App\Http\Controllers\BolsaController::verificaBolsa($this->pessoa,$this->curso);
+		$valor = \App\Http\Controllers\BolsaController::verificaBolsa($this->pessoa,$this->id);
 		
 			if($valor)
 				return $valor;

@@ -836,7 +836,7 @@ class LancamentoController extends Controller
 	}
 	
 	public function descontao2(){
-		$turmas = \App\Turma::where('local',86)->whereIn('status', ['andamento','iniciada'])->where('id','365')->get();
+		$turmas = \App\Turma::where('local',86)->whereIn('status', ['andamento','iniciada'])->get();
 		foreach($turmas as $turma){
 			if($turma->tempo_curso<9)
 				$tempo = 5;
@@ -844,9 +844,7 @@ class LancamentoController extends Controller
 				$tempo = 11;
 			$valor =  ($turma->valor/$tempo)/(4*count($turma->dias_semana));	
 			$valor = $valor*count($turma->dias_semana);
-			return $valor;
-			
-			//$this->descontoTurma($turma->id,$valor,'Desconto de aulas não dadas por uso do espaço pelos Jogos Regionais');
+			$this->descontoTurma($turma->id,$valor,'Desconto de aulas não dadas por uso do espaço pelos Jogos Regionais');
 		}
 
 		return count($turmas).' turmas receberam descontos na FESC 3.';

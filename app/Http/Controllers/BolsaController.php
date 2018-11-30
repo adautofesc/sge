@@ -103,8 +103,8 @@ class BolsaController extends Controller
         return "Foram geradas ".$bolsas_criadas. " bolsas a partir de matrículas do 1º semestre";
         
     }
-    public static function verificaBolsa($pessoa,){
-        $bo$bolsa = Bolsa::where('pessoa',$pessoa)->where(function($query) use ($matricula) {
+    public static function verificaBolsa($pessoa,$matricula){
+        $bolsa = Bolsa::where('pessoa',$pessoa)->where(function($query) use ($matricula) {
             $query->where('matricula',$matricula)->orWhere('matricula2',$matricula);
         })->where('status','ativa')->first();
         //

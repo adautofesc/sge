@@ -74,6 +74,7 @@ Route::middleware('login') ->group(function(){
 
 	Route::get('/descontao','LancamentoController@descontao1');
 	Route::get('/descontao2','LancamentoController@descontao2');
+	Route::get('/executardesconto','BoletoController@atualizarBoletosGravados');
 
 
 

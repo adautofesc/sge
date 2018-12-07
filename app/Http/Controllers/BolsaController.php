@@ -105,7 +105,8 @@ class BolsaController extends Controller
     }
     public static function verificaBolsa($pessoa,$matricula){
         $bolsa = Bolsa::where('pessoa',$pessoa)->where(function($query) use ($matricula) {
-            $query->where('matricula',$matricula)->orWhere('matricula2',$matricula);
+            $query->where('matricula',$matricula)
+            ->orWhere('matricula2',$matricula);
         })->where('status','ativa')->first();
         //
         //dd($bolsa);
@@ -191,12 +192,12 @@ class BolsaController extends Controller
         foreach($request->matricula as $matricula){
             if(isset($bolsa->matricula)){
                 $bolsa->matricula2 = $matricula;
-                $bolsa->curso2 = Matricula::retornarCurso($matricula);
+                //$bolsa->curso2 = Matricula::retornarCurso($matricula);
             }
                 
             else{
                 $bolsa->matricula = $matricula;
-                $bolsa->curso = Matricula::retornarCurso($matricula);
+                //$bolsa->curso = \App\Matricula::retornarCurso($matricula);
             }
                 
 
@@ -310,6 +311,11 @@ class BolsaController extends Controller
                 }
 
             return redirect(asset('secretaria/atender'));
+    }
+
+    public function relatorioFPM(){
+        $bolsas = Bolsa::where('desconto','3')->get();
+        return view('relatorios.bolsistas')->with('bolsas',$bolsas);
     }
 
 }

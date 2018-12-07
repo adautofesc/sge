@@ -112,7 +112,6 @@ class InscricaoController extends Controller
             $inscricao->matricula = $request->matricula;
             $inscricao->save();
             AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id." modificada para matrícula ".$inscricao->matricula.".", $inscricao->pessoa->id, Session::get('usuario'));
-            MatriculaController::modificaMatricula($inscricao->matricula);
 
             return redirect(asset('/secretaria/atender/'));
         }

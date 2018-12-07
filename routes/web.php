@@ -72,9 +72,11 @@ Route::middleware('login') ->group(function(){
 	Route::get('lista/{id}','painelController@chamada'); //lista de chamada aberta
 	Route::get('turma/{turma}', 'TurmaController@mostrarTurma');
 
+/*
 	Route::get('/descontao','LancamentoController@descontao1');
 	Route::get('/descontao2','LancamentoController@descontao2');
 	Route::get('/executardesconto','BoletoController@atualizarBoletosGravados');
+*/
 
 
 
@@ -106,6 +108,7 @@ Route::middleware('login') ->group(function(){
 			Route::post('upload/{bolsa}','BolsaController@uploadExec');
 			Route::get('parecer/{bolsa}','BolsaController@uploadParecerForm');
 			Route::post('parecer/{bolsa}','BolsaController@uploadParecerExec');
+			Route::get('relatorio/fpm','BolsaController@relatorioFPM');
 
 
 		});

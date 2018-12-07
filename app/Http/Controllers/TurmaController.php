@@ -240,19 +240,23 @@ class TurmaController extends Controller
      */
     public function store(Request $request)
     {
+         //dd($request);
         $this->validate($request, [
             "programa"=>"required|numeric",
             "curso"=>"required|numeric",
             "professor"=>"required|numeric",
             "unidade"=>"required|numeric",
             "dias"=>"required",
-            "dt_inicio"=>"required",
-            "hr_inicio"=>"required",
-            "vagas"=>"required",
-            "valor"=>"required"
+            "dt_inicio"=>"date|required",
+            "dt_termino"=>"date|required",
+            "hr_inicio"=>"date_format:'H:i'|required",
+            "hr_termino"=>"date_format:'H:i'|required",
+            "vagas"=>"numeric|required",
+            "valor"=>"numeric|required"
 
 
         ]);
+        dd($request);
 
 
 

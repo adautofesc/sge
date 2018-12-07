@@ -745,10 +745,7 @@ where nt.matricula>1');
     {
        $pessoa = \App\Pessoa::cabecalho($pessoa);
        $matriculas = Matricula::where('pessoa', $pessoa->id)
-                ->where(function($query){ $query
-                            ->where('status','ativa')
-                            ->orwhere('status', 'pendente');
-                    })
+                ->whereIn('status',['ativa','pendente'])
                 ->orderBy('id','desc')->get();
                 
              //listar inscrições de cada matricula;
@@ -761,6 +758,7 @@ where nt.matricula>1');
                                         ->where('dias_semana',implode(',', $inscricao->turma->dias_semana))
                                         ->where('hora_inicio',$inscricao->turma->hora_inicio)
                                         ->where('data_inicio','>',\Carbon\Carbon::createFromFormat('d/m/Y', $inscricao->turma->data_termino)->format('Y-m-d'))
+                                        ->where('status','inscricao')
                                         ->get();
                 }
              }

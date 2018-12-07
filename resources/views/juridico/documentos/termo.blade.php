@@ -137,7 +137,7 @@
                     5.	CANCELAMENTO:<br>                  
                     5.1 A desistência da continuidade no serviço educacional pelo(a) Aluno(a) e/ou Representante Legal somente será aceita nas seguintes condições:
                     <strong><br>
-                    I. se o pedido for formalizado e protocolado sa Secretaria escolar ou enviado ao e-mail fesc{{'@'}}fesc.saocarlos.sp.gov.br;<br>
+                    I. se o pedido for formalizado e protocolado na Secretaria escolar ou enviado ao e-mail fesc{{'@'}}fesc.saocarlos.sp.gov.br;<br>
                     5.2 A simples ausência às aulas e às demais atividades acadêmicas exigidas não caracterizam desistência e tampouco exime o pagamento das parcelas, tendo em vista a disponibilidade di serviço e a vaga garantida, mesmo que o aluno apresente atestado médico de justificativa de faltas;</strong><br>
                     5.3 A desistência formalizada até o dia do vencimento da parcela eximirá o pagamento da respectiva mensalidade e das subsequentes.<br>             
                     6.	OBRIGAÇÕES Gerais<br />

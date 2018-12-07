@@ -45,7 +45,7 @@ class Turma extends Model
 		if($this->curso->id == 307 && $this->carga<10)
 		{
 			//mostra valor de 1 disciplina
-			$valor= Valor::find(5);
+			$valor= Valor::find(17);
 		}
 		else
 		{	

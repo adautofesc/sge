@@ -64,22 +64,23 @@ class ValorController extends Controller
                          return ValorController::retornarZero('Não há inscrições ativas');
                         break;
                     case 1:
-                    	$valor = Valor::find(5);
+                    	$valor = Valor::where('curso','307')->where('carga','1')->where('ano',substr($inscricoes->first()->turma->data_inicio,-4))->first();
                         return $valor;
                         break;
                     case 2:
                     case 3:
-                    case 4:
-                        $valor = Valor::find(6);
+                    
+                        $valor = Valor::where('curso','307')->where('carga','2')->where('ano',substr($inscricoes->first()->turma->data_inicio,-4))->first();
                         return $valor;
                         break;
+                    case 4:
                     case 5:
                     case 6:
                     case 7:
                     case 8:
                     case 9:
                     case 10:
-                        $valor = Valor::find(7);
+                        $valor = Valor::where('curso','307')->where('carga','3')->where('ano',substr($inscricoes->first()->turma->data_inicio,-4))->first();
                         return $valor;
                         break;
     			}

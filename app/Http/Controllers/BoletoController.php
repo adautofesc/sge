@@ -879,11 +879,11 @@ class BoletoController extends Controller
 			$boletos = Boleto::where('status','gravado')->get();
 			foreach($boletos as $boleto){
 				$valor=0;
-				$lancamentos1 = Lancamento::where('boleto',$boleto->id)->get();
+				$lancamentos1 = Lancamento::where('boleto',$boleto->id)->where('status',null)->get();
 				foreach($lancamentos1 as $lancamentox){
 					$valor+=$lancamentox->valor;
 				}
-				$lancamentos2 = Lancamento::where('pessoa',$boleto->pessoa)->where('boleto',null)->get();
+				$lancamentos2 = Lancamento::where('pessoa',$boleto->pessoa)->where('boleto',null)->where('status',null)->get();
 				foreach($lancamentos2 as $lancamentoy){
 					$lancamentoy->boleto = $boleto->id;
 					$lancamentoy->save();

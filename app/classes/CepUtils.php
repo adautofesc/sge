@@ -44,8 +44,11 @@ class CepUtils{
 
         $ws = json_decode($result);
        
-        if(isset($ws->erro))
+        if(isset($ws->erro) || !$ws)
         		return 'ERRO.';
+
+
+
         	
 
 

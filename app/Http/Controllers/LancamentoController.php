@@ -826,7 +826,7 @@ class LancamentoController extends Controller
 				$tempo = 11;
 
 			if($turma->valor)
-				$valor =  ($turma->valor/$tempo)/4;
+				$valor = 1;
 				$this->descontoTurma($turma->id,$valor,'Desconto de aulas não dadas - 27 e 28 de setembro');
 		}
 
@@ -842,8 +842,7 @@ class LancamentoController extends Controller
 				$tempo = 5;
 			else
 				$tempo = 11;
-			$valor =  ($turma->valor/$tempo)/(4*count($turma->dias_semana));	
-			$valor = $valor*count($turma->dias_semana);
+			$valor = count($turma->dias_semana);
 			$this->descontoTurma($turma->id,$valor,'Desconto de aulas não dadas por uso do espaço pelos Jogos Regionais');
 		}
 
@@ -867,7 +866,7 @@ class LancamentoController extends Controller
 				$lancamento->matricula= $inscricao->matricula;
 				$lancamento->referencia = $referencia;
 				$lancamento->parcela=0;
-				$lancamento->valor = $valor*-1;
+				$lancamento->valor = (($matricula->valor->valor/$matricula->valor->parcelas)/4)*$valor*-1;
 				$lancamento->save();
 			}
 

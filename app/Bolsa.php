@@ -25,7 +25,10 @@ class Bolsa extends Model
 
 	public function getNomeCurso(){
 		$matricula = \App\Matricula::find($this->matricula);
-		return $matricula->getNomeCurso();
+		if($matricula)
+			return $matricula->getNomeCurso();
+		else
+			return "Erro ao obter nome do curso.";
 		
 		
 			

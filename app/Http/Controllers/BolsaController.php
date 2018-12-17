@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Bolsa;
+use App\BolsaMatricula;
 use Illuminate\Http\Request;
+
 
 class BolsaController extends Controller
 {   
+    const max_matriculas = 2;
     public function listar(Request $r = Request){
         if($r->codigo)
              $bolsas = Bolsa::where('id',$r->codigo)->paginate(10);
@@ -148,38 +151,64 @@ class BolsaController extends Controller
         //$matricula = \App\Matricula::find($request->matricula);
         //$curso = \App\Curso::find($matricula->curso);
 
-
-        if(count($request->matricula) > 2)
+        //verifica se 
+        if(count($request->matricula) > self::max_matriculas)
             return redirect()->back()->withErrors(['Mais de duas matrículas selecionadas.']);
+
+        $bolsa = Bolsa::where('pessoa',$request->pessoa)->where('status','ativa')->first();
+
+        if($bolsa){
+            $matriculas = \App\BolsaMatricula::where('bolsa',$bolsa->id)->get();
+            if(count($matriculas)>= self::max_matriculas)
+                return redirect()->back()->withErrors(['Erro: Máximo de matrículas por bolsa já atingido.']);
+            else{
+                $bolsa_matricula = new BolsaMatricula();
+                $bolsa_matricula->bolsa = $bolsa->id;
+                $bolsa_matricula->pessoa = $bolsa->pessoa;
+                $bolsa_matricula->matricula = $request->matricula[0];
+                $bolsa_matricula->programa = ;
+                $bolsa_matricula
+
+            }
+        }
+        else{
+            //gerar bolsa
+        }
+
+
 
 
         switch($request->classificacao){
             case 'fesc':
             $desconto = 5;
             break;
+            //funcionarios:
             case 'prefeitura':
-            $desconto = 5;
+            $desconto = 3;
             break;
+            //encaminhados:
             case 'pmsc':
-            $desconto = 5;
+            $desconto = 7;
             break;
             case 'saude':
-            $desconto = 5;
+            $desconto = 7;
             break;
             case 'caps':
-            $desconto = 5;
+            $desconto = 7;
             break;
             case 'cidadania':
-            $desconto = 5;
+            $desconto = 7;
             break;
             case 'nis':
-            $desconto = 5;
+            $desconto = 6;
             break;
             case 'socioeconomica':
-            $desconto = 5;
+            $desconto = 1;
             break;
 
         }
+        if($this->vericaSeSolicitado($request->pessoa,$request->matricula))
+            return redirect()->back()->withErrors(['Bolsa já solicitada.']);
 
 
 
@@ -190,16 +219,7 @@ class BolsaController extends Controller
         $bolsa->status = 'analisando';
 
         foreach($request->matricula as $matricula){
-            if(isset($bolsa->matricula)){
-                $bolsa->matricula2 = $matricula;
-                //$bolsa->curso2 = Matricula::retornarCurso($matricula);
-            }
-                
-            else{
-                $bolsa->matricula = $matricula;
-                //$bolsa->curso = \App\Matricula::retornarCurso($matricula);
-            }
-                
+
 
             
         }
@@ -208,12 +228,12 @@ class BolsaController extends Controller
         if(date('m')>11)
             $validade = date('Y-12-31 23:23:59', strtotime("+12 months",strtotime(date('Y-m-d')))); 
         else
+            $validade = date('Y-12-31 23:23:59'); 
 
-        if(!$this->vericaSeSolicitado($request->pessoa,$request->matricula))
-            $bolsa->save();
-        else
-            return redirect()->back()->withErrors(['Bolsa já solicitada.']);
+        
 
+        
+        $bolsa->save();
 
         $atendimento = AtendimentoController::novoAtendimento('Solicitação de Bolsa',$request->pessoa);
 
@@ -317,5 +337,31 @@ class BolsaController extends Controller
         $bolsas = Bolsa::where('desconto','3')->get();
         return view('relatorios.bolsistas')->with('bolsas',$bolsas);
     }
+
+    public function ajusteBolsaSemMatricula(){
+        $bolsas = Bolsa::where('matricula',null)->get();
+        foreach ($bolsas as $bolsa){
+            $matricula = \App\Matricula::where('curso',$bolsa->curso)->where('pessoa',$bolsa->pessoa)->first();
+            if($matricula){
+                $bolsa->matricula = $matricula->id;
+                $bolsa->save();
+            }
+            
+       
+        }
+        return $bolsas;
+    }
+
+    public function novaBolsa(){
+        $bolsas = Bolsa::all();
+        foreach($bolsas as $bolsa){
+            $bolsa_m = new BolsaMatricula();
+            $bolsa_m->pessoa = $bolsa->pessoa;
+            $bolsa_m->bolsa = $bolsa->id;
+            $bolsa_m->matricula = $bolsa->matricula;
+            $bolsa->save();
+        }
+    }
+
 
 }

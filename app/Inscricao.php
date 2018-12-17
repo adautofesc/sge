@@ -22,4 +22,10 @@ class Inscricao extends Model
 		return $this->turma;
 
 	}
+	public function getCurso(){
+		$curso=Turma::where('id',$value)->get(['id','curso']);
+		return $curso->curso;
+
+	}
+
 }

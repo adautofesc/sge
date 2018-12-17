@@ -72,10 +72,13 @@ Route::middleware('login') ->group(function(){
 	Route::get('lista/{id}','painelController@chamada'); //lista de chamada aberta
 	Route::get('turma/{turma}', 'TurmaController@mostrarTurma');
 
+	Route::get('ajusteBolsas', 'BolsaController@ajusteBolsaSemMatricula');
+
 /*
 	Route::get('/descontao','LancamentoController@descontao1');
 	Route::get('/descontao2','LancamentoController@descontao2');
 	Route::get('/executardesconto','BoletoController@atualizarBoletosGravados');
+
 */
 
 

@@ -18,12 +18,12 @@
 {{csrf_field()}}
     <div class="card card-block">
     	<div class="subtitle-block">
-            <h3 class="subtitle"><i class=" fa fa-folder-open "></i> Solicitação de Bolsa de Estudos</h3>
-            <small>Para solicitar bolsa, o aluno deve se matricular no curso pretendido.</small>
+            <h3 class="subtitle"><i class=" fa fa-folder-open "></i> Solicitação de Bolsa / Desconto</h3>
+            <small>Para solicitação do desconto, o aluno deve se matricular no curso pretendido.</small>
         </div>
 		<div class="form-group row"> 
             <label class="col-sm-2 form-control-label text-xs-right">
-                Validade
+                Tipo
             </label>
             <div class="col-sm-6"> 
                 <select name="classificacao" class="c-select form-control boxed" ">
@@ -40,7 +40,7 @@
         </div>
         <div class="form-group row"> 
             <label class="col-sm-2 form-control-label text-xs-right">
-                Bolsa tipo
+                Validade
             </label>
             <div class="col-sm-6"> 
                 <input type="date" class="form-control boxed"" name="validade">
@@ -54,7 +54,7 @@
                     @foreach($matriculas as $matricula)
                     <label>
                     <input class="checkbox" type="checkbox" name="matricula[]" value="{{ $matricula->id}}" >
-                    <span>{{$matricula->id}} - {{$matricula->getNomeCurso()}}</span>
+                    <span>{{$matricula->id}} <small>({{$matricula->status}})</small> - {{$matricula->getNomeCurso()}}</span>
                     </label><br>
                     @endforeach
                 </div>
@@ -88,7 +88,7 @@
                             <thead>
                     
                                 <th class="col-md-1">Data</th>
-                                <th class="col-md-3">Curso</th>
+                                <th class="col-md-3">Matrícula</th>
                                 <th class="col-md-1">Status</th>
                                 <th class="col-md-5">Obs</th>
                                 <th class="col-md-2">Opções</th>
@@ -98,7 +98,7 @@
                                 @foreach($bolsas as $bolsa)
                                 <tr>
                                     <td class="col-md-1">{{$bolsa->created_at->format('d/m/Y')}}</td>
-                                    <td class="col-md-3">{{$bolsa->getNomeCurso()}}</td>
+                                    <td class="col-md-3">{{$bolsa->matricula.', '.$bolsa->matricula2}}</td>
                                     <td class="col-md-1">{{$bolsa->status}}</td>
                                     <td class="col-md-5">{{$bolsa->obs}}</td>
                                     <td style="font-size: 1.3em;" class="col-md-2">

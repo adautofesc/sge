@@ -27,29 +27,26 @@
             </label>
             <div class="col-sm-6"> 
                 <select name="classificacao" class="c-select form-control boxed" ">
+                    <option selected="true">Selecione uma opção</option>
+                    <option value="prefeitura">Desconto para Funcionários Públicos (20%)</option>
+                    <option value="fesc">Desconto Servidores Fesc (100%)</option>
+                    <option value="emg">Desconto EMG (100%)</option>
+
                     <option value="socioeconomica">Bolsa Socioeconômica</option>
                     <option value="nis">Bolsa Beneficiário de Programa Social</option>
-                    <option value="prefeitura">Bolsa para Funcionários Públicos (20%)</option>
                     <option value="saude">Bolsa de encaminhamento da Saúde</option>
                     <option value="caps">Bolsa de encaminhamento CAPS</option>
                     <option value="cidadania">Bolsa de encaminhamento da Cidadania</option>
                     <option value="pmsc">Bolsa de encaminhamento PMSC</option>
-                    <option value="fesc">Bolsa Servidores Fesc</option>
+                    
                 </select>
-            </div>
-        </div>
-        <div class="form-group row"> 
-            <label class="col-sm-2 form-control-label text-xs-right">
-                Validade
-            </label>
-            <div class="col-sm-6"> 
-                <input type="date" class="form-control boxed"" name="validade">
             </div>
         </div>
 
 		<div class="form-group row"> 
             <label class="col-sm-2 form-control-label text-xs-right">Matriculas ativas:</label>
             <div class="col-sm-10"> 
+
                 <div>
                     @foreach($matriculas as $matricula)
                     <label>
@@ -116,8 +113,11 @@
                                         @else
 
                                         <a href="../parecer/{{$bolsa->id}}" style="color:orange;" title="Enviar parecer"><i class=" fa fa-cloud-upload"></i></a>&nbsp;
+                                        <a href="#" onclick="cancelar({{$bolsa->id}})" style="color:red;" title="Cancelar"><i class=" fa fa-times"></i></a>&nbsp;
                                         </td>
                                         @endif
+
+                                        
                                     
                                 </tr>
 
@@ -135,4 +135,13 @@
         </div> 
     </div>
 </section>
+@endsection
+@section('scripts')
+<script type="text/javascript">
+    function cancelar(id){
+        if(confirm('Deseja mesmo cancelar a solicitação de bolsa '+id+' ?')){
+             $(location).attr('href','/juridico/bolsas/status/cancelar/'+id);
+        }
+    }
+</script>
 @endsection

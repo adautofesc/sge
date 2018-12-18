@@ -80,6 +80,14 @@ class Matricula extends Model
 
 	}
 
+	public function getPrograma(){
+
+		$inscricoes = $this->getInscricoes();
+
+		return $inscricoes->first()->turma->programa;
+
+	}
+
 
 
 

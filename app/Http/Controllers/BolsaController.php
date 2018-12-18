@@ -151,23 +151,42 @@ class BolsaController extends Controller
         //$matricula = \App\Matricula::find($request->matricula);
         //$curso = \App\Curso::find($matricula->curso);
 
-        //verifica se 
+        //verifica se qnde de matriculas escolhidas ultrapassa o limite (max)
         if(count($request->matricula) > self::max_matriculas)
             return redirect()->back()->withErrors(['Mais de duas matrículas selecionadas.']);
 
-        $bolsa = Bolsa::where('pessoa',$request->pessoa)->where('status','ativa')->first();
 
+        //procura bolsas ativas dessa pessoa
+        $bolsa = Bolsa::where('pessoa',$request->pessoa)->whereIn('status',['ativa','analisando'])->first();
+
+        //se houver bolsa
         if($bolsa){
+
+            //pega as matriculas da bolsa
             $matriculas = \App\BolsaMatricula::where('bolsa',$bolsa->id)->get();
+
+           
+
+            //se já tiver duas matriculas na bolsa retorna erro
             if(count($matriculas)>= self::max_matriculas)
                 return redirect()->back()->withErrors(['Erro: Máximo de matrículas por bolsa já atingido.']);
+
             else{
+                 
+
+
+                $matricula =  \App\Matricula::find($request->matricula[0]);
+
+                //
+                if($matriculas->first() == $matricula->id)
+                    return redirect()->back()->withErrors(['Já existe uma solicitação de bolsa para esta matícula.']);
+
                 $bolsa_matricula = new BolsaMatricula();
                 $bolsa_matricula->bolsa = $bolsa->id;
                 $bolsa_matricula->pessoa = $bolsa->pessoa;
-                $bolsa_matricula->matricula = $request->matricula[0];
-                $bolsa_matricula->programa = ;
-                $bolsa_matricula
+                $bolsa_matricula->matricula = $matricula->id;
+                $bolsa_matricula->programa = \App\Matricula::find($bolsa_matricula->matricula)->getPrograma()->id;
+                return $bolsa_matricula;
 
             }
         }
@@ -205,6 +224,9 @@ class BolsaController extends Controller
             case 'socioeconomica':
             $desconto = 1;
             break;
+            default:
+            return redirect()->back()->withErrors(['Tipo de bolsa não selecionado.']);
+            break;
 
         }
         if($this->vericaSeSolicitado($request->pessoa,$request->matricula))
@@ -219,6 +241,11 @@ class BolsaController extends Controller
         $bolsa->status = 'analisando';
 
         foreach($request->matricula as $matricula){
+            $bolsa_matricula = new BolsaMatricula();
+            $bolsa_matricula->bolsa = $bolsa->id;
+            $bolsa_matricula->pessoa = $bolsa->pessoa;
+            $bolsa_matricula->matricula = $matricula->id;
+            $bolsa_matricula->programa = \App\Matricula::find($bolsa_matricula->matricula)->getPrograma()->id;
 
 
             
@@ -241,7 +268,7 @@ class BolsaController extends Controller
 
     }
     public function vericaSeSolicitado($pessoa,$matricula){
-        $bolsa = Bolsa::where('pessoa',$pessoa)->where('matricula',$matricula)->get();
+        $bolsa = Bolsa::where('pessoa',$pessoa)->where('matricula',$matricula)->whereIn('status',['ativa','analisando'])->get();
 
         //dd(is_array($bolsa));
         if(count($bolsa))

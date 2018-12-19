@@ -129,8 +129,14 @@ class BolsaController extends Controller
     public function nova($pessoa){
         $pessoa = \App\Pessoa::find($pessoa);
         $matriculas = \App\Matricula::where('pessoa',$pessoa->id)->whereIn('status',['ativa','pendente','espera'])->get();
+        $descontos = \App\Desconto::orderBy('nome')->get();
         $bolsas = Bolsa::where('pessoa',$pessoa->id)->get();
-        return view('pessoa.bolsa.cadastrar',compact('pessoa'))->with('matriculas',$matriculas)->with('bolsas',$bolsas);
+        foreach($bolsas as $bolsa){
+            $bolsa->matriculas = $bolsa->getMatriculas();
+        }
+
+
+        return view('pessoa.bolsa.cadastrar',compact('pessoa'))->with('matriculas',$matriculas)->with('bolsas',$bolsas)->with('descontos',$descontos);
     }
 
     /**
@@ -145,7 +151,9 @@ class BolsaController extends Controller
 
         $this->validate($request,[
             'pessoa' => 'required|integer',
-            'classificacao' =>'required'
+            'classificacao' =>'required',
+            'matricula'=>'required'
+
         ]);
 
         //$matricula = \App\Matricula::find($request->matricula);
@@ -164,21 +172,23 @@ class BolsaController extends Controller
 
             //pega as matriculas da bolsa
             $matriculas = \App\BolsaMatricula::where('bolsa',$bolsa->id)->get();
+            //dd($matriculas);
+           
 
            
 
             //se já tiver duas matriculas na bolsa retorna erro
             if(count($matriculas)>= self::max_matriculas)
-                return redirect()->back()->withErrors(['Erro: Máximo de matrículas por bolsa já atingido.']);
+                return redirect()->back()->withErrors(['Erro: Já consta uma solicitação de bolsa aberta com o máximo de matrículas permitida.']);
 
             else{
                  
 
-
+                // instancia primeira matricula fornecida
                 $matricula =  \App\Matricula::find($request->matricula[0]);
 
-                //
-                if($matriculas->first() == $matricula->id)
+                // a matricula in
+                if($matriculas->first()->matricula == $matricula->id)
                     return redirect()->back()->withErrors(['Já existe uma solicitação de bolsa para esta matícula.']);
 
                 $bolsa_matricula = new BolsaMatricula();
@@ -186,11 +196,17 @@ class BolsaController extends Controller
                 $bolsa_matricula->pessoa = $bolsa->pessoa;
                 $bolsa_matricula->matricula = $matricula->id;
                 $bolsa_matricula->programa = \App\Matricula::find($bolsa_matricula->matricula)->getPrograma()->id;
-                return $bolsa_matricula;
+                $bolsa_matricula->save();
+                return redirect()->back()->withErrors(['Matrícula inserida na bolsa com sucesso.']);
+
 
             }
         }
         else{
+            if(date('m')>11)
+                $validade = date('Y-12-31 23:23:59', strtotime("+12 months",strtotime(date('Y-m-d')))); 
+            else
+                $validade = date('Y-12-31 23:23:59'); 
             //gerar bolsa
         }
 
@@ -239,28 +255,28 @@ class BolsaController extends Controller
         $bolsa->tipo = $request->classificacao;
         $bolsa->desconto = $desconto;
         $bolsa->status = 'analisando';
+        $bolsa->save();
+
 
         foreach($request->matricula as $matricula){
             $bolsa_matricula = new BolsaMatricula();
             $bolsa_matricula->bolsa = $bolsa->id;
             $bolsa_matricula->pessoa = $bolsa->pessoa;
-            $bolsa_matricula->matricula = $matricula->id;
-            $bolsa_matricula->programa = \App\Matricula::find($bolsa_matricula->matricula)->getPrograma()->id;
-
-
+            $bolsa_matricula->matricula = $matricula;
+            $obj_matricula = \App\Matricula::find($matricula);
+            $programa_matricula = $obj_matricula ->getPrograma();
+            $bolsa_matricula->programa = $programa_matricula->id;
+            $bolsa_matricula->save();
             
         }
 
         //dd($bolsa);
-        if(date('m')>11)
-            $validade = date('Y-12-31 23:23:59', strtotime("+12 months",strtotime(date('Y-m-d')))); 
-        else
-            $validade = date('Y-12-31 23:23:59'); 
+        
 
         
 
         
-        $bolsa->save();
+        
 
         $atendimento = AtendimentoController::novoAtendimento('Solicitação de Bolsa',$request->pessoa);
 
@@ -290,7 +306,10 @@ class BolsaController extends Controller
 
         $pessoa = PessoaController::formataParaMostrar($pessoa);
 
-        $hoje = strftime('%d de %B de %Y', strtotime('today'));
+        $matriculas = \App\BolsaMatricula::where('bolsa',$bolsa->id)->get();
+        $bolsa->matriculas = $matriculas;
+
+        $hoje = strftime('%d de %B de %Y', strtotime($bolsa->created_at));
 
 
 

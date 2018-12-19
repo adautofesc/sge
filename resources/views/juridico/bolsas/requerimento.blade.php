@@ -43,7 +43,7 @@
 				</p>
 			</div>
 			<div class="col-2" tyle="margin-bottom: 0;">
-				<img src="/img/code39.php?code=RQ{{$bolsa->id}}">
+				<img src="/img/code39.php?code=RD{{$bolsa->id}}">
 			
 			</div>
 
@@ -58,23 +58,26 @@
 
         <div class="row">
         	<div class="col-xs-12">
-		       <p style="border: solid 1px black; padding: 10px 10px 10px 10px"> 
+		       <div style="border: solid 1px black; padding: 10px 10px 10px 10px"> 
 		       	<small>
 	        	<strong>Dados Pessoais:</strong> <br>
 	        	<strong>Nome: </strong> {{$pessoa->nome}} <strong>Cód.: </strong> {{$pessoa->id}} <br>
 	        	<strong>Endereço: </strong> {{$pessoa->logradouro}} {{$pessoa->end_numero}}, {{$pessoa->end_complemento}} <strong>Bairro: </strong> {{$pessoa->bairro}} <strong>Telefone: </strong> {{$pessoa->telefone}} {{$pessoa->celular}}<br>
 	        	<strong>RG: </strong> {{$pessoa->rg}} <strong>CPF: </strong> {{$pessoa->cpf}} <strong>Nascimento: </strong> {{$pessoa->nascimento}} <strong>Idade: </strong> {{$pessoa->idade}} anos<br><br>
-	        	<strong>Requisita Bolsa / desconto na matrícula:</strong> {{$bolsa->matricula}} <strong>Pedido:</strong> {{$bolsa->id}}<br>
-	        	<strong>Curso:</strong> {{$bolsa->getNomeCurso()}} <strong>Rematrícula:</strong> (&nbsp;&nbsp;) sim  (&nbsp;&nbsp;) não</small>
-		       </p>
+	        	<strong>Requisita Bolsa / desconto na matrícula:</strong> {{$bolsa->matriculas->implode('matricula',', ')}} <strong>&nbsp;&nbsp;Pedido:</strong> {{$bolsa->id}}<br>
+	        	<strong>Curso(s):</strong>
+	        		<br><br>
+	        		<ul>
+	        			@foreach($bolsa->matriculas as $bolsa_matricula)
+	        				<li> <strong>{{$bolsa->getNomeCurso($bolsa_matricula->matricula)}}</strong>, sobre a matrícula nº <strong>{{$bolsa_matricula->matricula}}</strong>;
+	        			@endforeach
+	        		</ul>
+	        		<br>Rematrícula:</strong> (&nbsp;&nbsp;) sim  (&nbsp;&nbsp;) não</small>
+		       </div><br>
 		       <p style="border: solid 1px black; padding: 10px 10px 10px 10px"> 
 	        	<small>
 	        	Venho pelo presente, requerer a concessão de bolsa de estudo para frequência ao curso supra indicado por:<br>
-	        	1.({{$bolsa->desconto == '1'? 'X':'&nbsp;&nbsp;'}}) Não possuir condições socioeconômicas de arcar com as respectivas parcelas.<br>
-	        	2.({{$bolsa->desconto == '5'? 'X':'&nbsp;&nbsp;'}}) Ser servidor, voluntário ou estagiário da Fundação Educacional São Carlos.<br>
-	        	3.({{$bolsa->desconto == '3'? 'X':'&nbsp;&nbsp;'}}) Ser servidor público municipal.<br>
-	        	4.({{$bolsa->desconto == '2'? 'X':'&nbsp;&nbsp;'}}) Ser beneficiário de programa social de crédito de qualquer nível de governo.<br>
-	        	5.({{$bolsa->desconto == '4'? 'X':'&nbsp;&nbsp;'}}) Ser aluno de programa de parceria firmada entre a Fundação São Carlos e Terceiros.
+	        	<strong>MOTIVO PARA A SOLICITAÇÃO</strong>
 	        	</small>
 		       </p>
 		       <table width="100%">

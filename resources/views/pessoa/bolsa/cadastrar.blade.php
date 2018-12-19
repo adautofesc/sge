@@ -26,8 +26,12 @@
                 Tipo
             </label>
             <div class="col-sm-6"> 
-                <select name="classificacao" class="c-select form-control boxed" ">
+                <select name="desconto" class="c-select form-control boxed" ">
                     <option selected="true">Selecione uma opção</option>
+                    @foreach($descontos as $desconto)
+                        <option value="{{$desconto->id}}" title="{{$desconto->descricao}}">{{$desconto->nome}}</option>
+                    @endforeach
+                    <!--
                     <option value="prefeitura">Desconto para Funcionários Públicos (20%)</option>
                     <option value="fesc">Desconto Servidores Fesc (100%)</option>
                     <option value="emg">Desconto EMG (100%)</option>
@@ -37,7 +41,7 @@
                     <option value="saude">Bolsa de encaminhamento da Saúde</option>
                     <option value="caps">Bolsa de encaminhamento CAPS</option>
                     <option value="cidadania">Bolsa de encaminhamento da Cidadania</option>
-                    <option value="pmsc">Bolsa de encaminhamento PMSC</option>
+                    <option value="pmsc">Bolsa de encaminhamento PMSC</option>-->
                     
                 </select>
             </div>
@@ -83,21 +87,22 @@
                     <small>
                         <table class="table">
                             <thead>
-                    
-                                <th class="col-md-1">Data</th>
-                                <th class="col-md-3">Matrícula</th>
+                                <th class="col-md-1">Cód.</th>
+                                <th class="col-md-1">Tipo</th>
+                                <th class="col-md-3">Matrícula(s)</th>
                                 <th class="col-md-1">Status</th>
-                                <th class="col-md-5">Obs</th>
+                                <th class="col-md-4">Obs</th>
                                 <th class="col-md-2">Opções</th>
                                
                             </thead>
                             <tbody>
                                 @foreach($bolsas as $bolsa)
                                 <tr>
-                                    <td class="col-md-1">{{$bolsa->created_at->format('d/m/Y')}}</td>
-                                    <td class="col-md-3">{{$bolsa->matricula.', '.$bolsa->matricula2}}</td>
+                                    <td class="col-md-1">{{$bolsa->id}}</td>
+                                    <td class="col-md-1">{{$bolsa->tipo}}</td>
+                                    <td class="col-md-3">{{$bolsa->matriculas->implode('matricula',', ')}}</td>
                                     <td class="col-md-1">{{$bolsa->status}}</td>
-                                    <td class="col-md-5">{{$bolsa->obs}}</td>
+                                    <td class="col-md-4">{{$bolsa->obs}}</td>
                                     <td style="font-size: 1.3em;" class="col-md-2">
                                         <a href="../imprimir/{{$bolsa->id}}" title="Imprimir Requerimento e Parecer"><i class=" fa fa-print "></i></a>&nbsp;
                                          @if(file_exists('documentos/bolsas/requerimentos/'.$bolsa->id.'.pdf'))

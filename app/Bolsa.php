@@ -23,23 +23,30 @@ class Bolsa extends Model
 		return $this->hasOne('App\Desconto','desconto'); // (Pessoa::class)
 	}
 
-	public function getNomeCurso(){
-		$matricula = \App\Matricula::find($this->matricula);
+	public function getNomeCurso($matricula){
+		$matricula = \App\Matricula::find($matricula);
 		if($matricula)
 			return $matricula->getNomeCurso();
 		else
 			return "Erro ao obter nome do curso.";
-		
-		
-			
-
-		
+	
 	}
+
 	public function getNomePessoa(){
 		$pessoa = Pessoa::find($this->pessoa);
 		if($pessoa!=null)
 			return $pessoa->nome;
 		else
 			return "Nome não encontrado.";
+	}
+
+	public function getMatriculas(){
+		$matriculas = BolsaMatricula::where('bolsa',$this->id)->get();
+		return $matriculas;
+	}
+
+	public function getTipo(){
+		$tipo = Desconto::find($this->desconto);
+	
 	}
 }

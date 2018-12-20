@@ -108,8 +108,6 @@
                                             <li class="item">
                                                 <div class="item-row">
                                                     <div class="item-col fixed item-col-check" > 
-
-
                                                         <label class="item-check" >
                                                         <input type="checkbox" class="checkbox" name="turma" value="{{$bolsa->id}}">
                                                         <span></span>
@@ -117,7 +115,7 @@
                                                     </div>
                                                     <div class="item-col item-col-sales" >
                                                         <div class="item-heading">id</div>
-                                                        <div style="width:80px;"> <a class="btn btn-primary btn-sm" href="./analisar/{{$bolsa->id}} ">{{$bolsa->id}} </a></div>
+                                                        <div style="width:20px;"> <a class="btn btn-primary btn-sm" href="./analisar/{{$bolsa->id}} ">{{$bolsa->id}} </a></div>
                                                     </div>
                                         
                                                     
@@ -137,8 +135,10 @@
                                                         </div>
                                                     </div>
                                                     <div class="item-col item-col-sales">
-                                                        <div class="item-heading">Curso</div>
-                                                        <div><small>{{$bolsa->getNomeCurso()}}</small></div>
+                                                        <div class="item-heading">Matricula</div>
+                                                     
+                                                        <div><small>{{$bolsa->desconto_str->nome}}</small></div>
+                                                     
                                                     </div>
                                                      
                                                    

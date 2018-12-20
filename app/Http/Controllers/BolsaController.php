@@ -11,10 +11,20 @@ class BolsaController extends Controller
 {   
     const max_matriculas = 2;
     public function listar(Request $r = Request){
-        if($r->codigo)
-             $bolsas = Bolsa::where('id',$r->codigo)->paginate(10);
-        else
+        if($r->codigo){
+            $bolsas = Bolsa::where('id',$r->codigo)->paginate(10);
+            foreach($bolsas as $bolsa){
+                $bolsa->matriculas = $bolsa->getMatriculas();
+                $bolsa->desconto_str = \App\Desconto::find($bolsa->desconto->id);
+            }
+        }
+        else{
             $bolsas = Bolsa::orderByDesc('created_at')->paginate(10);
+            foreach($bolsas as $bolsa){
+                $bolsa->matriculas = $bolsa->getMatriculas();
+                $bolsa->desconto_str = \App\Desconto::find($bolsa->desconto->id);
+            }
+        }
 
         return view('juridico.bolsas.index',compact('bolsas'));
     }
@@ -50,6 +60,12 @@ class BolsaController extends Controller
                         case 'apagar':
                             $atendimento = AtendimentoController::novoAtendimento('Solicitação de bolsa '.$bolsa->id.' excluída.',$bolsa->pessoa);
                             $bolsa->delete();
+                            break;
+                        case 'reativar':
+                            $bolsa->status = 'analisando';
+                            $bolsa->save();
+                            $atendimento = AtendimentoController::novoAtendimento('Solicitação de bolsa '.$bolsa->id.' reativada.',$bolsa->pessoa);
+                           
                             break;
                         
                     }
@@ -107,12 +123,20 @@ class BolsaController extends Controller
         
     }
     public static function verificaBolsa($pessoa,$matricula){
+
+
+        //********************************************* aqui colocar a validade dos descontos
+
+        $bolsa = Bolsa::join('bolsa_matriculas','bolsas.id','=','bolsa_matriculas.bolsa')
+                ->where('bolsas.status','ativa')
+                ->first();
+        /*
         $bolsa = Bolsa::where('pessoa',$pessoa)->where(function($query) use ($matricula) {
             $query->where('matricula',$matricula)
             ->orWhere('matricula2',$matricula);
         })->where('status','ativa')->first();
-        //
-        //dd($bolsa);
+        //*/
+       
         if($bolsa)
             return $bolsa->desconto;
         else
@@ -128,12 +152,18 @@ class BolsaController extends Controller
      */
     public function nova($pessoa){
         $pessoa = \App\Pessoa::find($pessoa);
+    
+
+
         $matriculas = \App\Matricula::where('pessoa',$pessoa->id)->whereIn('status',['ativa','pendente','espera'])->get();
         $descontos = \App\Desconto::orderBy('nome')->get();
         $bolsas = Bolsa::where('pessoa',$pessoa->id)->get();
         foreach($bolsas as $bolsa){
             $bolsa->matriculas = $bolsa->getMatriculas();
+            $bolsa->desconto_str = \App\Desconto::find($bolsa->desconto->id);
+
         }
+
 
 
         return view('pessoa.bolsa.cadastrar',compact('pessoa'))->with('matriculas',$matriculas)->with('bolsas',$bolsas)->with('descontos',$descontos);
@@ -151,7 +181,7 @@ class BolsaController extends Controller
 
         $this->validate($request,[
             'pessoa' => 'required|integer',
-            'classificacao' =>'required',
+            'desconto' =>'required',
             'matricula'=>'required'
 
         ]);
@@ -165,7 +195,7 @@ class BolsaController extends Controller
 
 
         //procura bolsas ativas dessa pessoa
-        $bolsa = Bolsa::where('pessoa',$request->pessoa)->whereIn('status',['ativa','analisando'])->first();
+        $bolsa = Bolsa::where('pessoa',$request->pessoa)->whereIn('status',['ativa','analisando'])->where('desconto',$request->desconto)->first();
 
         //se houver bolsa
         if($bolsa){
@@ -211,40 +241,6 @@ class BolsaController extends Controller
         }
 
 
-
-
-        switch($request->classificacao){
-            case 'fesc':
-            $desconto = 5;
-            break;
-            //funcionarios:
-            case 'prefeitura':
-            $desconto = 3;
-            break;
-            //encaminhados:
-            case 'pmsc':
-            $desconto = 7;
-            break;
-            case 'saude':
-            $desconto = 7;
-            break;
-            case 'caps':
-            $desconto = 7;
-            break;
-            case 'cidadania':
-            $desconto = 7;
-            break;
-            case 'nis':
-            $desconto = 6;
-            break;
-            case 'socioeconomica':
-            $desconto = 1;
-            break;
-            default:
-            return redirect()->back()->withErrors(['Tipo de bolsa não selecionado.']);
-            break;
-
-        }
         if($this->vericaSeSolicitado($request->pessoa,$request->matricula))
             return redirect()->back()->withErrors(['Bolsa já solicitada.']);
 
@@ -252,8 +248,8 @@ class BolsaController extends Controller
 
         $bolsa = new Bolsa;
         $bolsa->pessoa = $request->pessoa;
-        $bolsa->tipo = $request->classificacao;
-        $bolsa->desconto = $desconto;
+        $bolsa->desconto = $request->desconto;
+        $bolsa->rematricula = $request->rematricula;
         $bolsa->status = 'analisando';
         $bolsa->save();
 
@@ -305,9 +301,16 @@ class BolsaController extends Controller
         $pessoa = \App\Pessoa::find($bolsa->pessoa);
 
         $pessoa = PessoaController::formataParaMostrar($pessoa);
+        $pessoa->cpf = \App\classes\Strings::mask($pessoa->cpf,'###.###.###-##');
+        $pessoa->rg = \App\classes\Strings::mask($pessoa->rg,'##.###.###-##');
 
         $matriculas = \App\BolsaMatricula::where('bolsa',$bolsa->id)->get();
+
         $bolsa->matriculas = $matriculas;
+        $bolsa->desconto_str = \App\Desconto::find($bolsa->desconto->id);
+
+        //dd($bolsa->desconto_str);
+
 
         $hoje = strftime('%d de %B de %Y', strtotime($bolsa->created_at));
 

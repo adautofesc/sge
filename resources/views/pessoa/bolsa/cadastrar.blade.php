@@ -18,7 +18,7 @@
 {{csrf_field()}}
     <div class="card card-block">
     	<div class="subtitle-block">
-            <h3 class="subtitle"><i class=" fa fa-folder-open "></i> Solicitação de Bolsa / Desconto</h3>
+            <h3 class="subtitle"><i class=" fa fa-heart "></i> Solicitação de Bolsa / Desconto</h3>
             <small>Para solicitação do desconto, o aluno deve se matricular no curso pretendido.</small>
         </div>
 		<div class="form-group row"> 
@@ -31,19 +31,24 @@
                     @foreach($descontos as $desconto)
                         <option value="{{$desconto->id}}" title="{{$desconto->descricao}}">{{$desconto->nome}}</option>
                     @endforeach
-                    <!--
-                    <option value="prefeitura">Desconto para Funcionários Públicos (20%)</option>
-                    <option value="fesc">Desconto Servidores Fesc (100%)</option>
-                    <option value="emg">Desconto EMG (100%)</option>
-
-                    <option value="socioeconomica">Bolsa Socioeconômica</option>
-                    <option value="nis">Bolsa Beneficiário de Programa Social</option>
-                    <option value="saude">Bolsa de encaminhamento da Saúde</option>
-                    <option value="caps">Bolsa de encaminhamento CAPS</option>
-                    <option value="cidadania">Bolsa de encaminhamento da Cidadania</option>
-                    <option value="pmsc">Bolsa de encaminhamento PMSC</option>-->
-                    
                 </select>
+            </div>
+        </div>
+        <div class="form-group row"> 
+            <label class="col-sm-2 form-control-label text-xs-right">
+                &nbsp;
+            </label>
+            <div class="col-sm-6"> 
+                <div>
+                    
+                    <label>
+                    <input class="checkbox" type="checkbox" name="rematricula" value="1" >
+                    <span>Rematrícula?</span>
+                    </label><br>
+                  
+                </div>
+                    
+               
             </div>
         </div>
 
@@ -79,7 +84,7 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Bolsas solicitadas</p>
+                        <p class="title" style="color:white">Descontos solicitados</p>
                     </div>
                 </div>
 
@@ -88,10 +93,10 @@
                         <table class="table">
                             <thead>
                                 <th class="col-md-1">Cód.</th>
-                                <th class="col-md-1">Tipo</th>
-                                <th class="col-md-3">Matrícula(s)</th>
+                                <th class="col-md-3">Tipo</th>
+                                <th class="col-md-2">Matrícula(s)</th>
                                 <th class="col-md-1">Status</th>
-                                <th class="col-md-4">Obs</th>
+                                <th class="col-md-3">Obs</th>
                                 <th class="col-md-2">Opções</th>
                                
                             </thead>
@@ -99,10 +104,25 @@
                                 @foreach($bolsas as $bolsa)
                                 <tr>
                                     <td class="col-md-1">{{$bolsa->id}}</td>
-                                    <td class="col-md-1">{{$bolsa->tipo}}</td>
-                                    <td class="col-md-3">{{$bolsa->matriculas->implode('matricula',', ')}}</td>
-                                    <td class="col-md-1">{{$bolsa->status}}</td>
-                                    <td class="col-md-4">{{$bolsa->obs}}</td>
+                                    <td class="col-md-3">{{$bolsa->desconto_str->nome}}</td>
+                                    <td class="col-md-2">{{$bolsa->matriculas->implode('matricula',', ')}}</td>
+                                     <td class="col-md-1">
+                                    @if($bolsa->status == 'analisando')
+                                    <span class="badge badge-pill badge-warning">
+                                    @elseif($bolsa->status == 'ativa')
+                                    <span class="badge badge-pill badge-success">
+                                    @elseif($bolsa->status == 'indeferida')
+                                    <span class="badge badge-pill badge-danger">
+                                    @elseif($bolsa->status == 'cancelada')
+                                    <span class="badge badge-pill badge-danger">
+                                    @elseif($bolsa->status == 'expirada')
+                                    <span class="badge badge-pill badge-secondary">
+                                    @else
+                                    <span>
+                                    @endif
+
+                                        {{$bolsa->status}}</span></td>
+                                    <td class="col-md-3">{{$bolsa->obs}}</td>
                                     <td style="font-size: 1.3em;" class="col-md-2">
                                         <a href="../imprimir/{{$bolsa->id}}" title="Imprimir Requerimento e Parecer"><i class=" fa fa-print "></i></a>&nbsp;
                                          @if(file_exists('documentos/bolsas/requerimentos/'.$bolsa->id.'.pdf'))
@@ -112,18 +132,22 @@
                                          <a href="../upload/{{$bolsa->id}}" title="Enviar requerimento"><i class=" fa fa-cloud-upload"></i></a>&nbsp;
                                         @endif
                                         
-                                         @if(file_exists('documentos/bolsas/pareceres/'.$bolsa->id.'.pdf'))
+                                        @if(file_exists('documentos/bolsas/pareceres/'.$bolsa->id.'.pdf'))
                                         <a href="/documentos/bolsas/pareceres/{{$bolsa->id}}.pdf" title="Visualizar Parecer" >
                                             <i class=" fa fa-file-text-o "></i></a>&nbsp;
                                         @else
+                                        <a href="../parecer/{{$bolsa->id}}" style="color:#52BCD3;" title="Enviar parecer"><i class=" fa fa-cloud-upload"></i></a>&nbsp;
+                                        @endif
 
-                                        <a href="../parecer/{{$bolsa->id}}" style="color:orange;" title="Enviar parecer"><i class=" fa fa-cloud-upload"></i></a>&nbsp;
+                                        @if($bolsa->status == 'cancelada')
+
+                                        <a href="#" onclick="reativar({{$bolsa->id}})" style="color:orange;" title="Reativar"><i class=" fa fa-undo"></i></a>&nbsp;
+                                        @else
                                         <a href="#" onclick="cancelar({{$bolsa->id}})" style="color:red;" title="Cancelar"><i class=" fa fa-times"></i></a>&nbsp;
-                                        </td>
                                         @endif
 
                                         
-                                    
+                                     </td>
                                 </tr>
 
                                 @endforeach
@@ -146,6 +170,11 @@
     function cancelar(id){
         if(confirm('Deseja mesmo cancelar a solicitação de bolsa '+id+' ?')){
              $(location).attr('href','/juridico/bolsas/status/cancelar/'+id);
+        }
+    }
+    function reativar(id){
+        if(confirm('Deseja mesmo reativar a solicitação de bolsa '+id+' ?')){
+             $(location).attr('href','/juridico/bolsas/status/reativar/'+id);
         }
     }
 </script>

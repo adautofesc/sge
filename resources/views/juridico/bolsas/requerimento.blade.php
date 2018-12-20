@@ -66,20 +66,25 @@
 	        	<strong>RG: </strong> {{$pessoa->rg}} <strong>CPF: </strong> {{$pessoa->cpf}} <strong>Nascimento: </strong> {{$pessoa->nascimento}} <strong>Idade: </strong> {{$pessoa->idade}} anos<br><br>
 	        	<strong>Requisita Bolsa / desconto na matrícula:</strong> {{$bolsa->matriculas->implode('matricula',', ')}} <strong>&nbsp;&nbsp;Pedido:</strong> {{$bolsa->id}}<br>
 	        	<strong>Curso(s):</strong>
-	        		<br><br>
+	        		<br>
 	        		<ul>
 	        			@foreach($bolsa->matriculas as $bolsa_matricula)
-	        				<li> <strong>{{$bolsa->getNomeCurso($bolsa_matricula->matricula)}}</strong>, sobre a matrícula nº <strong>{{$bolsa_matricula->matricula}}</strong>;
+	        				<li> <strong>{{$bolsa->getNomeCurso($bolsa_matricula->matricula)}}</strong></li>
 	        			@endforeach
 	        		</ul>
-	        		<br>Rematrícula:</strong> (&nbsp;&nbsp;) sim  (&nbsp;&nbsp;) não</small>
+	        		@if($bolsa->rematricula == '1')
+	        		Rematrícula:</strong> (X) sim  (&nbsp;&nbsp;) não</small>
+	        		@else
+	        		Rematrícula:</strong> (&nbsp;&nbsp;) sim  (X) não</small>
+	        		@endif
 		       </div><br>
 		       <p style="border: solid 1px black; padding: 10px 10px 10px 10px"> 
 	        	<small>
-	        	Venho pelo presente, requerer a concessão de bolsa de estudo para frequência ao curso supra indicado por:<br>
-	        	<strong>MOTIVO PARA A SOLICITAÇÃO</strong>
+	        	Venho pelo presente, requerer a concessão de desconto para frequência ao curso supra indicado por:<br>
+	        	<strong>{{$bolsa->desconto_str->descricao}}</strong>
 	        	</small>
 		       </p>
+		       <!--
 		       <table width="100%">
 		       		<tr>
 						<td colspan="5" style="text-align: left; padding-left: 10px;">Caso assinalado item 1, preencher os campos abaixo com os dados dos dependentes:</td>
@@ -97,7 +102,7 @@
 						<td>3</td><td>	&nbsp;</td><td>	&nbsp;</td><td>	&nbsp;</td>
 					</tr>
 					
-		       </table><br>
+		       </table><br>-->
 		       
 		       <p style="border: solid 1px black; padding: 10px 10px 10px 10px;" align="justify" > 
 	        	<small>

@@ -4,9 +4,11 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Turma extends Model
 {
+	use SoftDeletes;
 
 	protected $appends=['icone_status','tempo_curso','valor'];
 

@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Inscricao extends Model
 {
+	use SoftDeletes;
 	protected $table  = 'inscricoes';
     //
     public function getPessoaAttribute($value){

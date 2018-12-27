@@ -1,6 +1,29 @@
 @extends('layout.app')
 @section('titulo')Liberação de Bolsas de estudo @endsection
 @section('pagina')
+<style>
+@media (min-width: 767px){
+    .codigo{
+        max-width: 50px; }
+    .pessoa{
+        max-width: 300px; }
+    .pedidoem{
+        max-width: 80px; }
+        
+        
+    }
+@media (max-width: 766px){
+    .pessoa{
+        font-size: 20px;
+    }
+}
+    
+</style>
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a href="../../">Início</a></li>
+  <li class="breadcrumb-item"><a href="#">Bolsas</a></li>
+ 
+</ol>
 
 <div class="title-search-block">
     <div class="title-block">
@@ -66,6 +89,7 @@
                     </div>
                     
                     <div class="tab-content tabs-bordered">
+
                         <!-- Tab panes ******************************************************************************** -->
                         
                                 <section class="example">
@@ -80,25 +104,25 @@
                                                         <span></span>
                                                         </label> 
                                                     </div>
-                                                    <div class="item-col item-col-header " >
+                                                    <div class="item-col item-col-header codigo">
                                                         <div> <span>Id<span> </div>
                                                     </div>
                     
-                                                    <div class="item-col col-md-4 item-col-header " >
+                                                    <div class="item-col item-col-title item-col-header pessoa">
                                                         <div> <span>Pessoa</span> </div>
                                                     </div>
-                                                    <div class="item-col item-col-header ">
+                                                    <div class="item-col item-col-header pedidoem">
                                                         <div> <span>Data</span> </div>
                                                     </div>
 
                                                     <div class="item-col item-col-header ">
-                                                        <div> <span>Curso</span> </div>
+                                                        <div> <span>Tipo</span> </div>
                                                     </div>
                                                     <div class="item-col item-col-header ">
                                                         <div> <span>Status</span> </div>
                                                     </div>
 
-                                                    <div class="item-col item-col-header fixed item-col-actions-dropdown"> </div>
+                                                    <div class="item-col item-col-header fixed item-col-actions-dropdown">&nbsp; </div>
                                                 </div>
                                             </li>
                                             @foreach($bolsas as $bolsa)
@@ -107,45 +131,64 @@
                                                                                   
                                             <li class="item">
                                                 <div class="item-row">
+
+
                                                     <div class="item-col fixed item-col-check" > 
                                                         <label class="item-check" >
                                                         <input type="checkbox" class="checkbox" name="turma" value="{{$bolsa->id}}">
                                                         <span></span>
                                                         </label>
                                                     </div>
-                                                    <div class="item-col item-col-sales" >
+
+
+                                                    <div class="item-col item-col codigo">
                                                         <div class="item-heading">id</div>
-                                                        <div style="width:20px;"> <a class="btn btn-primary btn-sm" href="./analisar/{{$bolsa->id}} ">{{$bolsa->id}} </a></div>
+                                                        <div > <a href="./analisar/{{$bolsa->id}} ">{{$bolsa->id}} </a></div>
                                                     </div>
                                         
                                                     
-                                                    <div class="item-col fixed pull-left item-col-title">
-                                                    <div class="item-heading">Pessoa</div>
-                                                    <div class="">
-                                                        
-                                                             <div>{{$bolsa->getNomePessoa()}}</div> 
-
-                            
+                                                    <div class="item-col item-col-title pessoa">
+                                                        <div class="item-heading">Pessoa</div>
+                                                        <div>{{$bolsa->getNomePessoa()}}</div> 
                                                     </div>
-                                                </div>
-                                                    <div class="item-col item-col-sales">
+
+
+                                                    <div class="item-col item-col pedidoem" >
                                                         <div class="item-heading">Data</div>
                                                         <div> 
-                                                            <div><small>{{$bolsa->created_at->format('d/m/Y')}}</small></div>
+                                                            <small>{{$bolsa->created_at->format('d/m/Y')}}</small>
                                                         </div>
                                                     </div>
-                                                    <div class="item-col item-col-sales">
-                                                        <div class="item-heading">Matricula</div>
+
+
+
+                                                    <div class="item-col item-col">
+                                                        <div class="item-heading">Tipo</div>
                                                      
                                                         <div><small>{{$bolsa->desconto_str->nome}}</small></div>
                                                      
                                                     </div>
                                                      
                                                    
-                                                    <div class="item-col item-col-sales">
+                                                    <div class="item-col item-col">
                                                         <div class="item-heading">Status</div>
-                                                        <div> <small>{{$bolsa->status}}</small></div>
+                                                        <div> @if($bolsa->status == 'analisando')
+                                                            <span class="badge badge-pill badge-warning">
+                                                            @elseif($bolsa->status == 'ativa')
+                                                            <span class="badge badge-pill badge-success">
+                                                            @elseif($bolsa->status == 'indeferida')
+                                                            <span class="badge badge-pill badge-danger">
+                                                            @elseif($bolsa->status == 'cancelada')
+                                                            <span class="badge badge-pill badge-danger">
+                                                            @elseif($bolsa->status == 'expirada')
+                                                            <span class="badge badge-pill badge-secondary">
+                                                            @else
+                                                            <span>
+                                                            @endif
+                                                            {{$bolsa->status}}</span>
+                                                        </div>
                                                     </div>
+
 
                                                     <div class="item-col fixed item-col-actions-dropdown">
                                                         <div class="item-actions-dropdown">

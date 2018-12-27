@@ -208,18 +208,21 @@ class BolsaController extends Controller
            
 
             //se já tiver duas matriculas na bolsa retorna erro
-            if(count($matriculas)>= self::max_matriculas)
+            if(count($matriculas)>= self::max_matriculas )
                 return redirect()->back()->withErrors(['Erro: Já consta uma solicitação de bolsa aberta com o máximo de matrículas permitida.']);
 
             else{
+
+
                  
 
                 // instancia primeira matricula fornecida
                 $matricula =  \App\Matricula::find($request->matricula[0]);
 
                 // a matricula in
-                if($matriculas->first()->matricula == $matricula->id)
-                    return redirect()->back()->withErrors(['Já existe uma solicitação de bolsa para esta matícula.']);
+                if(count($matriculas)>0)
+                    if($matriculas->first()->matricula == $matricula->id)
+                        return redirect()->back()->withErrors(['Já existe uma solicitação de bolsa para esta matícula.']);
 
                 $bolsa_matricula = new BolsaMatricula();
                 $bolsa_matricula->bolsa = $bolsa->id;
@@ -387,7 +390,7 @@ class BolsaController extends Controller
         return view('relatorios.bolsistas')->with('bolsas',$bolsas);
     }
 
-    public function ajusteBolsaSemMatricula(){
+    public function ajusteBolsaSemMatriculaxs(){
         $bolsas = Bolsa::where('matricula',null)->get();
         foreach ($bolsas as $bolsa){
             $matricula = \App\Matricula::where('curso',$bolsa->curso)->where('pessoa',$bolsa->pessoa)->first();
@@ -411,6 +414,41 @@ class BolsaController extends Controller
             $bolsa->save();
         }
     }
+    public function ajusteBolsaSemMatricula(){
+        $bolsas = Bolsa::whereIn('status',['ativa','analisando'])->get();
+        foreach ($bolsas as $bolsa){
+            if (isset($bolsa->matricula)){
+                $matricula = \App\Matricula::find($bolsa->matricula);
+                if($matricula){
+                
+                    if($matricula->status!='espera'){
+                        $bolsa->status = 'expirada';
+                        $bolsa->save();
+                    }
+                    else{
+                        $matriculas = \App\Matricula::where('pessoa',$bolsa->pessoa)->where('status','espera')->get();
+                        foreach($matriculas as $mt){
+                            $bolsa_m = new BolsaMatricula();
+                            $bolsa_m->pessoa = $bolsa->pessoa;
+                            $bolsa_m->bolsa = $bolsa->id;
+                            $bolsa_m->matricula = $mt->id;
+                            $programa = $mt->getPrograma();
+                            $bolsa_m->programa = $programa->id;
+                            $bolsa_m->save();
+
+                        }
+                    }
+
+                   
+
+                   
+                }
+            }
+
+        }
+        return "Bolsas processadas";
+    }
+
 
 
 }

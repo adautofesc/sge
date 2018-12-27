@@ -58,7 +58,8 @@
                 	<label class="item-check" id="select-all-items">
 						<input type="checkbox" class="checkbox" name="usuarios" value="{{ $pessoa->id }}">
 						<span></span>
-					</label> </div>                
+					</label> 
+                </div>                
                 <div class="item-col fixed pull-left item-col-title">
                     <div class="item-heading">Pessoa</div>
                     <div>                        

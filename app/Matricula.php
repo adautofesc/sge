@@ -85,8 +85,10 @@ class Matricula extends Model
 	public function getPrograma(){
 
 		$inscricoes = $this->getInscricoes();
-
-		return $inscricoes->first()->turma->programa;
+		if(count($inscricoes)>0)
+			return $inscricoes->first()->turma->programa;
+		else
+			return \App\Programa::find(1);
 
 	}
 

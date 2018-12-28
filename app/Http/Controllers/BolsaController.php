@@ -59,7 +59,14 @@ class BolsaController extends Controller
                             break;
                         case 'apagar':
                             $atendimento = AtendimentoController::novoAtendimento('Solicitação de bolsa '.$bolsa->id.' excluída.',$bolsa->pessoa);
+                            $matriculas = $bolsa->getMatriculas();
+                            foreach($matriculas as $matricula){
+                                $matricula->delete();
+                            }
+
                             $bolsa->delete();
+                            return redirect('/')->withErrors(['Bolsa excluída com sucesso.']);
+
                             break;
                         case 'reativar':
                             $bolsa->status = 'analisando';
@@ -129,6 +136,7 @@ class BolsaController extends Controller
 
         $bolsa = Bolsa::join('bolsa_matriculas','bolsas.id','=','bolsa_matriculas.bolsa')
                 ->where('bolsas.status','ativa')
+                ->where('bolsa_matriculas.matricula',$matricula)
                 ->first();
         /*
         $bolsa = Bolsa::where('pessoa',$pessoa)->where(function($query) use ($matricula) {
@@ -138,7 +146,7 @@ class BolsaController extends Controller
         //*/
        
         if($bolsa)
-            return $bolsa->desconto;
+            return $bolsa;
         else
             return null;
 

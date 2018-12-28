@@ -168,10 +168,25 @@
                                     <div><small>{{count($matricula->inscricoes)}} Disciplina(s) </small></div>
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
-                                    @if(isset($matricula->desconto->id))
-                                    @if($matricula->desconto->id > 0)
-                                         <small><span class="text-success"> <i class=" fa fa-heart"></i> bolsista</span></small>&nbsp;
-                                    @endif
+
+                                    @if($matricula->getBolsas())
+
+                                        @if($matricula->getBolsas()->status == 'ativa')
+                                         <small><span class="text-success" title="{{$matricula->getBolsas()->tipo->nome.' - '.$matricula->getBolsas()->status}}"> <i class=" fa fa-flag"></i> RD {{$matricula->getBolsas()->bolsa}} </span></small>&nbsp;
+
+                                        @elseif($matricula->getBolsas()->status == 'analisando')
+                                        <small><span class="text-warning" title="{{$matricula->getBolsas()->tipo->nome.' - '.$matricula->getBolsas()->status}}"> <i class=" fa fa-flag"></i> RD {{$matricula->getBolsas()->bolsa}} </span></small>&nbsp;
+
+                                        @elseif($matricula->getBolsas()->status == 'cancelada')
+                                        <small><span class="text-danger" title="{{$matricula->getBolsas()->tipo->nome.' - '.$matricula->getBolsas()->status}}"> <i class=" fa fa-flag"></i> RD {{$matricula->getBolsas()->bolsa}} </span></small>&nbsp;
+
+                                        @elseif($matricula->getBolsas()->status == 'expirada')
+                                        <small><span class="text-secondar" title="{{$matricula->getBolsas()->tipo->nome.' - '.$matricula->getBolsas()->status}}"> <i class=" fa fa-flag"></i> RD {{$matricula->getBolsas()->bolsa}} </span></small>&nbsp;
+                                        
+                                        @else
+                                        <small><span title="{{$matricula->getBolsas()->tipo->nome.' - '.$matricula->getBolsas()->status}}"> <i class=" fa fa-flag"></i> RD {{$matricula->getBolsas()->bolsa}} </span></small>&nbsp;
+                                        @endif
+                                    
                                     @endif
                                     @if($matricula->obs!='')
                                     <small class="text-info" title="{{ $matricula->obs}}"><i class=" fa fa-info text-info" ></i> Obs</small>

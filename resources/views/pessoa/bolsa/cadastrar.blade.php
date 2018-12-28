@@ -18,7 +18,7 @@
 {{csrf_field()}}
     <div class="card card-block">
     	<div class="subtitle-block">
-            <h3 class="subtitle"><i class=" fa fa-heart "></i> Solicitação de Bolsa / Desconto</h3>
+            <h3 class="subtitle"><i class=" fa fa-flag"></i> Solicitação de Bolsa / Desconto</h3>
             <small>Para solicitação do desconto, o aluno deve se matricular no curso pretendido.</small>
         </div>
 		<div class="form-group row"> 
@@ -103,7 +103,7 @@
                             <tbody>
                                 @foreach($bolsas as $bolsa)
                                 <tr>
-                                    <td class="col-md-1">{{$bolsa->id}}</td>
+                                    <td class="col-md-1"><a href="/juridico/bolsas/analisar/{{$bolsa->id}}" title="Clique para acessar a análise">{{$bolsa->id}}</a></td>
                                     <td class="col-md-3">{{$bolsa->desconto_str->nome}}</td>
                                     <td class="col-md-2">{{$bolsa->matriculas->implode('matricula',', ')}}</td>
                                      <td class="col-md-1">

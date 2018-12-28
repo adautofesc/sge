@@ -53,6 +53,21 @@ class Matricula extends Model
 		}
 	}
 
+	public function getBolsas(){
+		$bolsa = Bolsa::join('bolsa_matriculas','bolsas.id','=','bolsa_matriculas.bolsa')
+                ->where('bolsa_matriculas.matricula',$this->id)
+                ->first();
+
+               
+        if($bolsa){
+        	$tipo = \App\Desconto::find($bolsa->desconto);
+        	$bolsa->tipo = $tipo->first();
+        }
+        return $bolsa;
+
+
+	}
+
 	public function getDescontoAttribute($value){
 		//return $value;
 		//return 100;
@@ -60,7 +75,7 @@ class Matricula extends Model
 		$valor = \App\Http\Controllers\BolsaController::verificaBolsa($this->pessoa,$this->id);
 		
 			if($valor)
-				return $valor;
+				return $valor->desconto;
 			else
 				return null;
 	}

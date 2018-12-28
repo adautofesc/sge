@@ -36,8 +36,9 @@
                                         <small> <strong>Solicitado em: </strong>{{$bolsa->created_at->format('d/m/Y')}} <strong>Alterada em: </strong>{{$bolsa->updated_at->format('d/m/Y')}} 
                                             <br>
                                             @foreach($bolsa->getMatriculas() as $matricula)
-                                            <strong>Matrícula: </strong> {{$matricula}} <strong>Curso: </strong> {{$bolsa->id}}</small><br>
+                                            <strong>Matrícula: </strong> {{$matricula->matricula}} <strong>Curso: </strong>{{$matricula->getNomeCurso()}}<br>
                                             @endforeach
+                                            </small>
                                         </p> <small>
                                             @if(file_exists('documentos/bolsas/requerimentos/'.$bolsa->id.'.pdf'))
                                                 <a href="/documentos/bolsas/requerimentos/{{$bolsa->id}}.pdf" title="Visualizar documentos;">
@@ -52,8 +53,9 @@
                                                     <i class=" fa fa-file-text "></i> Visualizar documentos do parecer.</a><br>
                                              @else
                                                 <a href="/pessoa/bolsa/parecer/{{$bolsa->id}}" style="color:orange;" title="Enviar parecer">
-                                                    <i class=" fa fa-cloud-upload"></i> Enviar parecer digitalizado.</a><br><br>
+                                                    <i class=" fa fa-cloud-upload"></i> Enviar parecer digitalizado.</a><br>
                                             @endif
+                                            <i class=" fa fa-trash-o " style="color:red;"></i> <a href="#" onclick="alterarStatusIndividual('apagar',{{$bolsa->id}})" style="color:red">Excluir esta solicitação. </a><br><br>
                                         </small>
                                         @else
                                         <br>
@@ -145,7 +147,7 @@ function alterarStatusIndividual(status,id){
             alert('Nenhum item selecionado');
         else
         if(confirm('Deseja realmente alterar as bolsas selecionadas?'))
-            $(location).attr('href','./status/'+status+'/'+id);
+            $(location).attr('href','../status/'+status+'/'+id);
 
     
 }
@@ -160,7 +162,7 @@ function alterarStatus(status){
             alert('Nenhum item selecionado');
         else
         if(confirm('Deseja realmente alterar as bolsas selecionadas?'))
-            $(location).attr('href','./status/'+status+'/'+selecionados);
+            $(location).attr('href','../status/'+status+'/'+selecionados);
 
     
 }

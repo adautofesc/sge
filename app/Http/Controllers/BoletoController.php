@@ -712,10 +712,15 @@ class BoletoController extends Controller
 
 
 				//se ele estiver na coleção
-				if($devedor){
+				if(isset($devedor)){
 
 					//soma valor do boleto atual	
-					$devedor->divida +=  $boleto->valor;					
+					$devedor->divida +=  $boleto->valor;
+					$lancamentos = $boleto->getLancamentos();
+					foreach($lancamentos as $lancamento){
+						$devedor->pendencias[] = $lancamento->referencia. ' mt'.$lancamento->matricula.' R$'.number_format($lancamento->valor,2,',','.');
+					}
+					//$devedor->pendencias->push($boleto->getLancamentos());				
 				}
 
 				//se não tiver na coleção
@@ -749,7 +754,11 @@ class BoletoController extends Controller
 						PessoaController::notificarErro($pessoa->id,2);
 						continue;
 					}
-					$pessoa->pendencias = $boleto->getLancamentos();
+					$lancamentos = $boleto->getLancamentos();
+					foreach($lancamentos as $lancamento){
+						$pessoa->pendencias[] = $lancamento->referencia. ' mt'.$lancamento->matricula.' R$'.number_format($lancamento->valor,2,',','.');
+					}
+					
 					$pessoa->boleto = $boleto;
 					$pessoa->vencimento= $boleto->vencimento;
 
@@ -775,7 +784,7 @@ class BoletoController extends Controller
 			header('Content-Type: application/vnd.ms-excel');
 	        header('Content-Disposition: attachment;filename="'. 'cobranca' .'.xls"'); 
 	        header('Cache-Control: max-age=0');
-
+			
 	        
 	        $planilha =  new Spreadsheet();
         	$arquivo = new Xls($planilha);
@@ -792,7 +801,7 @@ class BoletoController extends Controller
 
 	        $linha = 2;
 
-
+	       
 			$devedores = $this->relatorioDevedores();
 
 			foreach($devedores as $pessoa){
@@ -808,8 +817,8 @@ class BoletoController extends Controller
 				        $referencias='';
 				        $valor=0;
 
-
-
+				//dd($pessoa->pendencias);
+				/*
 				foreach($pessoa->pendencias as $pendencia){
 
 
@@ -817,14 +826,15 @@ class BoletoController extends Controller
 
 						 //dd($pendencia);
 						$referencias .= $pendencia->referencia. '; R$ '.$pendencia->valor. '; Mt.'.$pendencia->matricula.';'. "\n";
-						$valor += $pendencia->valor;
+						//$valor += $pendencia->valor;
 
 				       
 			    	}//end if($pendencia->valor>0)
 		    	}// end foreach($pessoa->pendencias as $pendencia)
+		    	*/
 
-		    	$planilha->setCellValue('G'.$linha, $referencias);
-		        $planilha->setCellValue('H'.$linha, $valor);
+		    	$planilha->setCellValue('G'.$linha, implode(";\n",$pessoa->pendencias));
+		        $planilha->setCellValue('H'.$linha, 'R$ '.number_format($pessoa->divida,2,',','.'));
 		     
 
 		    	$linha++;

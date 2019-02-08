@@ -988,7 +988,7 @@ class PessoaController extends Controller
 
 	}
 	public static function notificarErro($pessoa,$erro){
-		//Erros 1 = CPF, 2 = Endereço, 3 = Atestado vencido, 4 = telefone
+		//Erros 1 = CPF, 2 = Endereço, 3 = Atestado vencido, 4 = telefone, 5 - gerar boleto, 6 - enviar remessa
 
 		switch($erro){
 			case 1:

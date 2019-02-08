@@ -249,14 +249,14 @@ class TurmaController extends Controller
             "dias"=>"required",
             "dt_inicio"=>"date|required",
             "dt_termino"=>"date|required",
-            "hr_inicio"=>"date_format:'H:i'|required",
-            "hr_termino"=>"date_format:'H:i'|required",
+            "hr_inicio"=>"required",
+            "hr_termino"=>"required",
             "vagas"=>"numeric|required",
             "valor"=>"numeric|required"
 
 
         ]);
-        dd($request);
+        //dd($request);
 
 
 
@@ -906,10 +906,10 @@ class TurmaController extends Controller
     public function getPlano($professor,$tipo,$curso){
 
         print 'Carregando...';
-       
+      /* 
         if($tipo)
             $url = "https://script.google.com/macros/s/AKfycbwY09oq3lCeWL3vHoxdXmocjVPnCEeZMVQgzhgl-J0WNOQPzQc/exec?id_pro=".$professor."&id_disciplina=".$curso."&tipo=plano";
-        else
+        else*/
             $url = "https://script.google.com/macros/s/AKfycbwY09oq3lCeWL3vHoxdXmocjVPnCEeZMVQgzhgl-J0WNOQPzQc/exec?id_pro=".$professor. "&id_curso=".$curso."&tipo=plano";
         //return $url;
 
@@ -1001,6 +1001,19 @@ class TurmaController extends Controller
     public function modificarRequisitosView($turma){
         
 
+    }
+
+    public function atualizarInscritos(){
+        $turmas = Turma::select(['id','matriculados'])->get();
+        foreach($turmas as $turma){
+            $inscritos = Inscricao::where('turma',$turma->id)->whereIn('status',['regular','pendente','finalizada','finalizado'])->count();
+            if($turma->matriculados != $inscritos){
+                $turma->matriculados = $inscritos;
+                $turma->save();
+            }
+
+        }
+        return "Turmas atualizadas.";
     }
 
 

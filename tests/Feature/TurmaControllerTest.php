@@ -18,7 +18,7 @@ class TurmaControllerTest extends TestCase
     public function testVerificarQuantidadeDeMatriculados(){
     	$erros =0;
     	$divergentes = ' ';
-    	$turmas = Turma::all();
+    	$turmas = Turma::whereIn('status',['lancada','espera','inscricao','andamento','iniciada']);
     	foreach($turmas as $turma){
     		$inscritos = \App\Inscricao::where('turma',$turma->id)->whereIn('status',['regular','pendente'])->get();
     		if(count($inscritos)!=$turma->matriculados){

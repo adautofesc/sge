@@ -31,39 +31,41 @@ class BoletoController extends Controller
 		//$pessoas = \DB::select("select distinct pessoa from lancamentos where status is null and  boleto is null group by pessoa"); //seleciona pessoas com matriculas ativas/pendentes
 
 
-		$pessoas = Lancamento::distinct('pessoa')->where('status',null)->where('boleto',null)->groupBy('pessoa')->paginate(50);
+		$pessoas = Lancamento::distinct('pessoa')->where('status',null)->where('pessoa','>','0')->where('boleto',null)->groupBy('pessoa')->paginate(50);
 
 		//dd($pessoas);
 
 		foreach($pessoas as $pessoa){
-			$valor=0;
+			//if($pessoa->pessoa>0){
+				//dd($pessoa);
+				$valor=0;
+				$lancamentos = Lancamento::where('status',null)
+					->where('boleto',null)
+					->where('pessoa',$pessoa->pessoa)
+					->get();
+				//dd($lancamentos);
+				foreach($lancamentos as $lancamento){
+					$valor = $valor + $lancamento->valor;
+				}
 
-	
-			$lancamentos = Lancamento::where('status',null)
-				->where('boleto',null)
-				->where('pessoa',$pessoa->pessoa)
-				->get();
-			foreach($lancamentos as $lancamento){
-				$valor = $valor + $lancamento->valor;
-			}
-
-			if(count($lancamentos)>0 && $valor>0 ){// tem lancamentos? é maior que zero?
-				$boleto = new Boleto; //cria boleto
-				$boleto->vencimento = $vencimento;
-				$boleto->pessoa = $pessoa->pessoa;
-				$boleto->status = 'gravado';
-				$boleto->valor = $valor;
-				if($pessoa->pessoa>0){
+				if(count($lancamentos)>0 && $valor>0 ){// tem lancamentos? é maior que zero?
+					$boleto = new Boleto; //cria boleto
+					$boleto->vencimento = $vencimento;
+					$boleto->pessoa = $pessoa->pessoa;
+					$boleto->status = 'gravado';
+					$boleto->valor = $valor;
+					//if($pessoa->pessoa>0){
 					$boleto->save();
 					foreach($lancamentos as $lancamento){ //para cada lancamento
 						$lancamento->boleto = $boleto->id;
 						$lancamento->save();
 					}
-				$boletos++;
+					$boletos++;
 
-				}
+					//}//
 
-			}
+				}//if lancamentos e valor>0
+			//}//end if pessoa>0
 		}
 
 		return view('financeiro.boletos.gerador', compact('pessoas'));
@@ -396,15 +398,32 @@ class BoletoController extends Controller
 		    ]
 		);
 		
-		$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->get();
+		$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->paginate(500);
+
 		if(count($boletos) == 0)
 			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Nenhum boleto encontrado']);
+
+
 		foreach($boletos as $boleto){
-			$boleto_completo = $this->gerarBoleto($boleto);
+			try{ //tentar gerar boleto completo
+				$boleto_completo = $this->gerarBoleto($boleto);
+			}
+			catch(\Exception $e){
+				PessoaController::notificarErro($boleto->pessoa,5);
+				continue;
+			}
+			
+			
+			try{//tentar gerar remessa desse boleto
+				$remessa->addBoleto($boleto_completo);
+			}
+			catch(\Exception $e){
+				PessoaController::notificarErro($boleto->pessoa,6);
+				continue;
+			}
 			if($boleto->status == 'cancelar'){
 				$boleto_completo->baixarBoleto();
 				$boleto->status='cancelado';	
-
 			}
 			else{
 				
@@ -414,15 +433,13 @@ class BoletoController extends Controller
 
 			$boleto->remessa = intval(date('ymdHi'));
 			$boleto->save();
-
-			$remessa->addBoleto($boleto_completo);
 	
 		}
 		
 		//dd($remessa);
 		$remessa->save( 'remessas/'.date('YmdHi').'.rem');
 		$arquivo = date('YmdHi').'.rem';
-		return view('financeiro.remessa.arquivo',compact('arquivo'));
+		return view('financeiro.remessa.arquivo',compact('boletos'))->with('arquivo',$arquivo);
 
 	}
 	public function downloadRemessa($arquivo){
@@ -463,6 +480,11 @@ class BoletoController extends Controller
 			}
 			if($boleto->status == 'emitido'){
 				$boleto->status = 'cancelar';
+				$boleto->save();
+				LancamentoController::cancelarPorBoleto($id);
+			}
+			if($boleto->status == 'divida'){
+				$boleto->status = 'cancelado';
 				$boleto->save();
 				LancamentoController::cancelarPorBoleto($id);
 			}
@@ -677,8 +699,11 @@ class BoletoController extends Controller
 		 * [Gera relatório (view) com todos boletos em aberto]
 		 * @return [type] [description]
 		 */
-		public function relatorioBoletosAbertos(){
+		public function relatorioBoletosAbertos($ativos=1){
+			if($ativos)
 			$boletos = Boleto::whereIn('status',['emitido','gravado','impresso'])->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
+			else
+				$boletos = Boleto::where('status','divida')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
 
 			foreach($boletos as $boleto){
 				$boleto->aluno = \App\Pessoa::find($boleto->pessoa);
@@ -687,16 +712,22 @@ class BoletoController extends Controller
 
 			}
 			
-			return view('relatorios.boletos_vencidos')->with('boletos',$boletos);
+			return view('relatorios.boletos_vencidos')->with('boletos',$boletos)->with('ativos',$ativos);
 		}
 
 		/**
 		 * Json com pessoas, seu saldo devedor e endereços
 		 * @return [json] [lista de pessoa com seu saldo devedor]
 		 */
-		public function relatorioDevedores(){
+		public function relatorioDevedores($ativos=1){
+
+
 			//seleciona boletos de status emitidos, vencido ordenado por pessoa
-			$boletos = Boleto::whereIn('status',['emitido','gravado','impresso'])->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
+			if($ativos)
+				$boletos = Boleto::whereIn('status',['emitido','gravado','impresso'])->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
+			else
+				$boletos = Boleto::where('status','divida')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
+			
 
 			//dd($boletos);
 
@@ -777,7 +808,7 @@ class BoletoController extends Controller
 		 * Transforma relatorio de devedores em Xls
 		 * @return [type] [description]
 		 */
-		public function relatorioDevedoresXls(){
+		public function relatorioDevedoresXls($ativos=1){
 			//header para XLS
 
 			
@@ -802,7 +833,7 @@ class BoletoController extends Controller
 	        $linha = 2;
 
 	       
-			$devedores = $this->relatorioDevedores();
+			$devedores = $this->relatorioDevedores($ativos);
 
 			foreach($devedores as $pessoa){
 
@@ -847,12 +878,12 @@ class BoletoController extends Controller
 
 			
 		}
-		public function relatorioDevedoresSms(){
+		public function relatorioDevedoresSms($ativos=1){
 			header('Content-Type: text/plain');
 	        header('Content-Disposition: attachment;filename="'. 'cobranca-sms' .'.txt"'); /*-- $filename is  xsl filename ---*/
 	        header('Cache-Control: max-age=0');
 
-	        $devedores = $this->relatorioDevedores();
+	        $devedores = $this->relatorioDevedores($ativos);
 	        $contador=0;
 	        $linha  = 'FESC - '."\n";
 	        $linha .= 'ATENÇÂO. Constatamos pendências relacionadas a seu cadastro. Por favor, entre em contato conosco.'."\n";
@@ -905,6 +936,105 @@ class BoletoController extends Controller
 
 			return count($boletos)." boletos atualizados.";
 		}
+
+	
+	/**
+	*
+	* Metodo para colocar os boletos abertos do ano como dívida
+	*
+	**/	
+	public function dividaAtiva(){
+		$boletos = Boleto::whereIn('status',['emitido'])->where('vencimento','<',date('2018-12-31'))->paginate(1000);
+			
+		$beneficiario = new \Eduardokum\LaravelBoleto\Pessoa([
+		    'documento' => '45.361.904/0001-80',
+		    'nome'      => 'Fundação Educacional São Carlos',
+		    'cep'       => '13560-230',
+		    'endereco'  => 'Rua São Sebastiao, 2828, ',
+		    'bairro' => ' Vila Nery',
+		    'uf'        => 'SP',
+		    'cidade'    => 'São Carlos',
+		]);
+		$remessa = new \Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab240\Banco\Bb(
+		    [
+		        'agencia'      => '0295',
+		        'carteira'     => 17,
+		        'conta'        => 52822,
+		        'convenio'     => 2838669,
+		        'variacaoCarteira' => '019',
+		        'beneficiario' => $beneficiario,
+		    ]
+		);
+		
+
+		if(count($boletos) == 0)
+			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Nenhum boleto encontrado']);
+
+
+		foreach($boletos as $boleto){
+			try{ //tentar gerar boleto completo
+				$boleto_completo = $this->gerarBoleto($boleto);
+			}
+			catch(\Exception $e){
+				PessoaController::notificarErro($boleto->pessoa,5);
+				continue;
+			}
+			
+			
+			try{//tentar gerar remessa desse boleto
+				$remessa->addBoleto($boleto_completo);
+			}
+			catch(\Exception $e){
+				PessoaController::notificarErro($boleto->pessoa,6);
+				continue;
+			}
+			if($boleto->status == 'emitido'){
+				$boleto_completo->baixarBoleto();
+				$boleto->status='divida';	
+			}
+			else{
+				
+				$boleto->status='emitido';
+				
+			}
+
+			
+			$boleto->save();
+
+		}
+		$remessa->save( 'remessas/'.date('YmdHi').'.rem');
+		$arquivo = date('YmdHi').'.rem';
+		return view('financeiro.remessa.arquivo',compact('boletos'))->with('arquivo',$arquivo);
+	}
+
+	public function limparDebitos(){
+		$matriculas = array();
+		/*
+		1 - selecionar todos debitos da divida ativa
+		para cada boleto pegar os lançamentos
+		para cada lançamento
+		verificar SE tem o termo de matricula
+			SIM - blza
+			NÃO - cancelar o Boleto
+		*/
+		$boletos = Boleto::where('status','divida')->get();
+		foreach ($boletos as $boleto){
+			$boleto->getLancamentos();
+			foreach($boleto->lancamentos as $lancamento){
+				if(!file_exists('documentos/matriculas/termos/'.$lancamento->matricula.'.pdf')){
+					$matriculas[] = $lancamento->matricula;
+					$boleto_obj = Boleto::find($boleto->id);
+					$boleto_obj->status = 'cancelado';
+					$boleto_obj->save();
+				}
+
+
+			}
+		}
+		return $matriculas;
+
+
+	}
 
 		
 

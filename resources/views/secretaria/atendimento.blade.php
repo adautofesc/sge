@@ -459,7 +459,7 @@
                                     @elseif($boleto->status == 'cancelado')
                                     <div class="badge badge-pill badge-danger">cancelado</div>
                                     @else
-                                    <div class="badge badge-pill badge-secondary">gravado</div>
+                                    <div class="badge badge-pill badge-secondary">{{$boleto->status}}</div>
 
                                     @endif
 
@@ -478,7 +478,7 @@
 
 
 
-                                        @elseif($boleto->status == 'emitido')
+                                        @elseif($boleto->status == 'emitido' || $boleto->status == 'divida')
                                         <a href="{{asset('financeiro/boletos/imprimir/').'/'.$boleto->id}}" title="Imprimir Boleto" ><i class=" fa fa-print " ></i></a>
                                         <a href="#" onclick="cancelarBoleto({{$boleto->id}});" title="Cancelar Boleto" ><i class=" fa fa-times " ></i></a>
                                         
@@ -486,6 +486,8 @@
                                         
                                         <a href="{{asset('financeiro/boletos/imprimir').'/'.$boleto->id}}"  title="Imprimir"><i class=" fa fa-print "></i></a>
                                         <a href="#" onclick="reativarBoleto({{$boleto->id}});" title="Reativar Boleto"><i class=" fa fa-undo "></i></a>
+                                        
+
                                         
                                         @endif
                                         
@@ -533,6 +535,8 @@
                                         <a href="{{asset('financeiro/lancamentos/editar').'/'.$lancamento->id}}" title="Editar parcela"> <i class="fa fa-pencil-square-o "></i></a>&nbsp;
                                          
                             
+                                
+
                                         @endif
                                       
                                     </div>

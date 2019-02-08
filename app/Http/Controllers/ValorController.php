@@ -44,7 +44,7 @@ class ValorController extends Controller
             //dd($turma->parceria->id);
             $fesc=[84,85,86];
             if(!in_array($turma->local->id,$fesc)){
-                 return ValorController::retornarZero('Parcerias/Ação Social');
+                 return ValorController::retornarZero('Turma fora da fesc');
 
             }
             if(isset($turma->parceria))

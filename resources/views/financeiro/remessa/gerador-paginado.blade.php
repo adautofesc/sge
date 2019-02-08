@@ -1,12 +1,12 @@
 @extends('layout.app')
-@section('titulo')Gerador de Boletos @endsection
+@section('titulo')Gerador de arquivo de remessa @endsection
 @section('pagina')
 </body>
 <header>
     
 
     <script type="text/javascript">
-    	@if($pessoas->hasMorePages())
+    	@if($boletos->hasMorePages())
     	var next = true;
     	@else
     	var next = false;
@@ -14,11 +14,12 @@
     	@endif
     	function loadNext(){
     		if(next){
-    		    setTimeout(location.reload(), 2000);
+    			setTimeout(location.reload(), 2000);
     		}
     		else{
     			
                 $('#botao').fadeIn('slow');
+                $('#boletos').fadeIn('slow');
     		}
 
     	}
@@ -43,24 +44,23 @@
 <div class="title-block">
     <div class="row">
         <div class="col-md-7">
-            <h3 class="title">Geração de Boletos</h3>
-            <p class="title-description">Processando página {{$pessoas->currentPage()}} de {{$pessoas->lastPage()}}. </p>
+            <h3 class="title">Geração de Arquivo de Remessa </h3>
+            <p class="title-description">Processando página {{$boletos->currentPage()}} de {{$boletos->lastPage()}}. </p>
         </div>
     </div>
 </div>
-<p>{{ceil($pessoas->currentPage()*100/$pessoas->lastPage())}}% processado... Total restante: {{$pessoas->total()}}</p>
+<p>{{ceil($boletos->currentPage()*100/$boletos->lastPage())}}% processado...</p>
 
 <div id="progressbar"></div>
 <br>
-<a id="botao" href="/financeiro/boletos/home" class="btn btn-primary" style="display:none;">Exportar Boletos</a>
-
+<a id="botao" href="{{asset('/financeiro/boletos/remessa/download')}}/{{$arquivo}}" class="btn btn-warning" style="display:none;">Baixar arquivo.</a>
+<a id="boletos" href="/financeiro/boletos/home" class="btn btn-primary" style="display:none;">Menu Boletos</a>
 
 
 
     </div>
     <img src="{{asset('/img/loading.gif')}}" with="25px" height="25px">
     <div id="progressbar"><div class="progress-label">Processando...</div></div>
-    
   
   </body>
 </html>
@@ -73,7 +73,7 @@
   <script>
   $( function() {
     $( "#progressbar" ).progressbar({
-      value: {{ceil($pessoas->currentPage()*100/$pessoas->lastPage())}}
+      value: {{ceil($boletos->currentPage()*100/$boletos->lastPage())}}
     });
   } );
   </script>

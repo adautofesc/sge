@@ -735,6 +735,7 @@ class LancamentoController extends Controller
 	}
 	public function create(Request $r){
 
+
 		
 
 		if(isset($r->matriculas)){
@@ -744,7 +745,7 @@ class LancamentoController extends Controller
 				foreach($r->matriculas as $matricula){
 
 					$matricula = Matricula::find($matricula);
-					//dd($matricula->valor->parcelas);
+					//dd($matricula);
 
 					if($r->parcela>5 && $matricula->valor->parcelas<6)
 						$parcela=$r->parcela-6;

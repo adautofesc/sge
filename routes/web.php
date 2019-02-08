@@ -152,6 +152,7 @@ Route::middleware('login') ->group(function(){
 	// Financeiro
 	Route::middleware('liberar.recurso:14')->prefix('financeiro')->group(function(){
 		Route::get('/','painelController@financeiro');
+		Route::get('limpar-debitos','BoletoController@limparDebitos');
 
 		Route::prefix('lancamentos')->group(function(){
 			Route::get('home',  function(){ return view('financeiro.lancamentos.home'); });
@@ -175,6 +176,7 @@ Route::middleware('login') ->group(function(){
 			Route::get('imprimir/{id}','BoletoController@imprimir');
 
 			Route::get('registrar/{id}','BoletoController@registrar');//registrar para o banco
+			Route::get('divida-ativa','BoletoController@dividaAtiva');// envia boletos para divida ativa;
 
 			Route::get('listar-por-pessoa','BoletoController@listarPorPessoa');
 			Route::get('cancelar/{id}','BoletoController@cancelar');
@@ -187,6 +189,7 @@ Route::middleware('login') ->group(function(){
 			Route::get('novo/{pesssoa}', 'BoletoController@novo');//precisa de middleware
 			Route::post('novo/{pesssoa}', 'BoletoController@create');//precisa de middleware
 			Route::get('/lote-csv', 'BoletoController@gerarArquivoCSV');
+
 
 			
 
@@ -221,8 +224,11 @@ Route::middleware('login') ->group(function(){
 		});
 		Route::prefix('relatorios')->group(function(){
 				Route::get('boletos', 'BoletoController@relatorioBoletosAbertos');
+				Route::get('boletos/{ativos}', 'BoletoController@relatorioBoletosAbertos');
 				Route::get('/cobranca-xls', 'BoletoController@relatorioDevedoresXls');
+				Route::get('/cobranca-xls/{ativos}', 'BoletoController@relatorioDevedoresXls');
 				Route::get('/cobranca-sms', 'BoletoController@relatorioDevedoresSms');
+				Route::get('/cobranca-sms/{ativos}', 'BoletoController@relatorioDevedoresSms');
 			});
 
 
@@ -290,6 +296,7 @@ Route::middleware('login') ->group(function(){
 			Route::get('modificar-requisitos/{id}','RequisitosController@editRequisitosTurma');
 			Route::post('turmas-requisitos','RequisitosController@editRequisitosTurma');
 			Route::post('modificar-requisitos/{id}','RequisitosController@storeRequisitosTurma');
+			Route::get('atualizar-inscritos','TurmaController@atualizarInscritos');
 
 
 

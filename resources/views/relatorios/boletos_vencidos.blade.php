@@ -26,7 +26,11 @@
 		<br/>
 		<div class="title-block">
 			<center>
+			@if($ativos==1)	
             <h3 class="title"> Relatório de Boletos Vencidos</h3></center>
+            @else
+            <h3 class="title"> Relatório de Cobranças da Dívida Ativa</h3></center>
+            @endif
         </div>
         <br/>
         <div class="row">

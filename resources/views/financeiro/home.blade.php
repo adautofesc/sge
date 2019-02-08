@@ -71,6 +71,36 @@
         </div>
 
     </div>
+    <div class="row">
+        
+        <div class="col-md-6 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Dívida Ativa</p>
+                    </div>
+                </div>
+                <div class="card-block">
+                    <div>
+                        <a href="{{asset('/')}}financeiro/relatorios/boletos/0" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-file-text-o "></i>
+                        &nbsp;&nbsp;Relação de cobranças</a>
+                    </div>
+                    <div>
+                        <a href="{{asset('/')}}financeiro/relatorios/cobranca-xls/0" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-table "></i>
+                        &nbsp;&nbsp;Mala direta de cobrança (xls)</a>
+                    </div>   
+                    <div>
+                        <a href="{{asset('/')}}financeiro/relatorios/cobranca-sms/0" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-envelope"></i>
+                        &nbsp;&nbsp;Mala direta SMS (txt)</a>
+                    </div>             
+                </div>
+            </div>
+        </div>
+
+    </div>
 </section>
 
 @endsection

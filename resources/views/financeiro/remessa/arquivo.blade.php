@@ -20,6 +20,7 @@
                     </div>
                 </div>
                 <div class="card-block">
+                    <p>{{ceil($boletos->currentPage()*100/$boletos->lastPage())}}% processado... Total restante: {{$boletos->total()}}</p>
                 
              
                     <div>

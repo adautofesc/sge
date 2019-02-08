@@ -34,7 +34,7 @@ class CepUtils{
        
 
         if($status["http_code"]== 400 || $status["http_code"]== 500)
-        		return 'ERRO.';
+        		return '.';//erro
 
         curl_close($ch);
 
@@ -45,7 +45,7 @@ class CepUtils{
         $ws = json_decode($result);
        
         if(isset($ws->erro) || !$ws)
-        		return 'ERRO.';
+        		return '.';//erro
 
 
 
@@ -65,7 +65,7 @@ class CepUtils{
 
 	public static function bairroCompativel($cep){
 		$bairro_cep = CepUtils::getBairro($cep);
-		if($bairro_cep == 'ERRO.')
+		if($bairro_cep == '.')//erro
 			return 0;
 
 

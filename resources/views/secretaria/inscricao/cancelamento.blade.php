@@ -67,7 +67,11 @@
                     <span>Insatisfação com as aulas</span>
                     </label><br>
                     <label>
-                   <input class="checkbox" type="checkbox"  name="cancelamento[10]" value="Outros/prefiro não dizer." >
+                   <input class="checkbox" type="checkbox"  name="cancelamento[10]" value="Transferência de turma" >
+                    <span>Transferencia de turma</span>
+                    </label><br>
+                    <label>
+                    <input class="checkbox" type="checkbox"  name="cancelamento[11]" value="Outros/prefiro não dizer." >
                     <span>Outro(s)/prefiro não dizer.</span>
                     </label><br>
                    

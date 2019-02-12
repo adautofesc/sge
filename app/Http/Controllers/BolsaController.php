@@ -43,9 +43,9 @@ class BolsaController extends Controller
                             $atendimento = AtendimentoController::novoAtendimento('Bolsa '.$bolsa->id.' aprovada.',$bolsa->pessoa);
                             break;
                         case 'negar':
-                            $bolsa->status = 'indefirida';
+                            $bolsa->status = 'indeferida';
                             $bolsa->save();
-                            $atendimento = AtendimentoController::novoAtendimento('Bolsa '.$bolsa->id.' indefirida.',$bolsa->pessoa);
+                            $atendimento = AtendimentoController::novoAtendimento('Bolsa '.$bolsa->id.' indeferida.',$bolsa->pessoa);
                             break;
                         case 'analisando':
                             $bolsa->status = 'analisando';

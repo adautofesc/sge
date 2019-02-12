@@ -1,7 +1,7 @@
 @extends('layout.app')
 @section('pagina')
 <div class="title-block">
-    <h3 class="title"> Confirmação de horários de matrícula</h3>
+    <h3 class="title"> Confirmação de horários de matrículas</h3>
 </div>
 
 @include('inc.errors')
@@ -20,6 +20,7 @@
 @foreach($cursos as $curso)
 
  <div class="card card-primary" id="{{$curso->id}}">
+
                 <div class="card-header">
                     <div class="header-block"><!--
                     <a href="#" title="Remover" onclick="rmItem('{{$curso->id}}');"><span class="fa fa-times" style="color: white"></span></a>-->
@@ -35,9 +36,13 @@
         <div class="title-block center">
 
             @foreach($curso->turmas as $turma)
-            <div class="subtitle-block  row lista">
+
+            <div class="subtitle-block  row lista ">
+             
+            
+            
                 <div class="col-xs-6">
-                    <strong>Turma</strong> {{$turma->id}}<br/>
+                    <strong>Turma</strong> {{$turma->id}}<br/>vagas:{{$turma->vagas}} matriculados: {{$turma->matriculados}}
                     <strong>Disciplina</strong> {{$turma->disciplina->nome}}<br/>
                     <strong>Prof.</strong> {{$turma->professor->nome_simples}}<br/>
                     <strong>Local</strong> {{$turma->local->nome}}<br/>
@@ -66,7 +71,7 @@
         <div class="title-block center">
             <h3 class="title"> Turma: {{$curso->turmas->first()->id}}</h3>
         </div>            
-            <strong>Prof.</strong> {{$curso->turmas->first()->professor->nome_simples}}<br/>
+            <strong>Prof.</strong> {{$curso->turmas->first()->professor->nome_simples}}<br/>vagas:{{$turma->vagas}} matriculados: {{$turma->matriculados}}
             <strong>Local</strong> {{$curso->turmas->first()->local->nome}}<br/>
             <strong>Início:</strong> {{$curso->turmas->first()->data_inicio}} <strong>Término</strong> {{$curso->turmas->first()->data_termino}}<br/>
 

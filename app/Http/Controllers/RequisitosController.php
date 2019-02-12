@@ -39,7 +39,7 @@ class RequisitosController extends Controller
      */
     public function store(Request $request)
     {
-        dd('teste');
+        //dd('teste');
         $this->validate($request, [
             'nome'=>'required|max:150|min:3'
             ]);

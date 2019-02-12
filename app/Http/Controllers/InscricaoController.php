@@ -11,14 +11,19 @@ use Illuminate\Http\Request;
 use App\Atendimento;
 use App\Classe;
 use Session;
-
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 
 class InscricaoController extends Controller
 {
+    public function gravarInscricoes(Request $r){
+        return $r;
+        return 'função gravar inscricoes chamada.';
+    }
+
+
     /**
-     * Edição de Inscrição
+     * Edição de Inscrição (view)
      * @param  [type] $id [description]
      * @return [type]     [description]
      */
@@ -132,6 +137,7 @@ class InscricaoController extends Controller
         $turmas=TurmaController::csvTurmas($request->atividades);
         $cursos=collect();
         $uati=0;
+        //dd('hi');
 
         //separa curso de disciplina, criando os lista de cursos e soma total
         foreach($turmas as $turma){

@@ -13,78 +13,77 @@
 
 Route::get('/', 'painelController@index');
 
-//testes / procedimentos temporários
-
-Route::get('/bolsa/gerador', 'BolsaController@gerador');
 
 
-Route::get('/corrigir-boletos','BoletoController@corrigirBoletosSemParcelas');
+//Publicos**************************************************************
 
-
-
-//Publicos
-
-Route::get('cursos-disponiveis', 'TurmaController@turmasSite');
+Route::get('cursos-disponiveis', 'TurmaController@turmasSite'); 
 Route::get('vagas', 'TurmaController@turmasSite');
-
 Route::get('meuboleto', function(){ return view('financeiro.boletos.meuboleto');});
 Route::post('meuboleto', 'BoletoController@segundaVia');
 Route::get('boleto/{id}','BoletoController@imprimir');
+Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
 
 
+//Login ***********************************************************
 
-//Login
-Route::get('login', 'loginController@login')->name('login');
-Route::get('loginSaved', 'loginController@loginSaved')->name('loginSaved');
-Route::get('recuperarconta/{var}','loginController@recuperarConta');
-Route::post('loginCheck', 'loginController@loginCheck');
-Route::get('loginCheck', 'loginController@logout');
-Route::get('esqueciasenha', 'loginController@viewPwdRescue');
-Route::get('logout','loginController@logout');
-Route::post('recuperaSenha','loginController@pwdRescue');
-Route::get('recuperaSenha','loginController@viewPwdRescue');
-Route::get('/trocarminhasenha','loginController@trocarMinhaSenha_view');
-Route::post('/trocarminhasenha','loginController@trocarMinhaSenha_exec');
-Route::get('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_view');
-Route::post('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_exec');
-Route::get('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_view');
-Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec');
-
-
+	Route::get('login', 'loginController@login')->name('login');
+	Route::get('loginSaved', 'loginController@loginSaved')->name('loginSaved');
+	Route::get('recuperarconta/{var}','loginController@recuperarConta');
+	Route::post('loginCheck', 'loginController@loginCheck');
+	Route::get('loginCheck', 'loginController@logout');
+	Route::get('esqueciasenha', 'loginController@viewPwdRescue');
+	Route::get('logout','loginController@logout');
+	Route::post('recuperaSenha','loginController@pwdRescue');
+	Route::get('recuperaSenha','loginController@viewPwdRescue');
+	Route::get('/trocarminhasenha','loginController@trocarMinhaSenha_view');
+	Route::post('/trocarminhasenha','loginController@trocarMinhaSenha_exec');
+	Route::get('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_view');
+	Route::post('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_exec');
+	Route::get('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_view');
+	Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec');
 
 
+//************************************************* Areas restritas para cadastrados ***************************************************
 
-
-
-
-//Areas restritas para cadastrados
 Route::middleware('login') ->group(function(){
+
+
 	Route::get('home', 'painelController@index');
-	Route::get('recadastramento', function(){ return view('pessoa.recadastramento');});
-	Route::post('recadastramento','PessoaController@iniciarRecadastramento');
-	Route::post('recadastrado','PessoaController@gravarRecadastro');
-	Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
+	
 	Route::get('/relatorios/alunos-concluintes','InscricaoController@relatorioConcluintes');
 	Route::get('/relatorios/faixasuati', 'RelatorioController@matriculasUati');
 	Route::get('/relatorios/alunos-posto', 'RelatorioController@alunosPorUnidade');
-	Route::get('testar-classe', 'painelController@testarClasse');
-	Route::post('testar-classe', 'painelController@testarClassePost');
 	Route::get('lista/{id}','painelController@chamada'); //lista de chamada aberta
 	Route::get('turma/{turma}', 'TurmaController@mostrarTurma');
 
-	Route::get('ajusteBolsas', 'BolsaController@ajusteBolsaSemMatricula');
 
-/*
-	Route::get('/descontao','LancamentoController@descontao1');
-	Route::get('/descontao2','LancamentoController@descontao2');
-	Route::get('/executardesconto','BoletoController@atualizarBoletosGravados');
+	//desenvoldedor
+	Route::middleware('liberar.recurso:22')->prefix('dev')->group(function(){
+		Route::get('/','painelController@indexDev');
+		Route::get('testar-classe', 'painelController@testarClasse');
+		Route::post('testar-classe', 'painelController@testarClassePost');
+		Route::get('/bolsa/gerador', 'BolsaController@gerador');
+		Route::get('/corrigir-boletos','BoletoController@corrigirBoletosSemParcelas');
+		Route::get('ajusteBolsas', 'BolsaController@ajusteBolsaSemMatricula');
+		Route::get('curso-matriculas','MatriculaController@corrigirCursoMatricula');
 
-*/
+		/*
+		Route::get('/descontao','LancamentoController@descontao1');
+		Route::get('/descontao2','LancamentoController@descontao2');
+		Route::get('/executardesconto','BoletoController@atualizarBoletosGravados');
 
+		*/
 
+	});
 
 	Route::prefix('pessoa')->group(function(){
 	// Pessoas
+		Route::get('recadastramento', function(){ return view('pessoa.recadastramento');});
+		Route::post('recadastramento','PessoaController@iniciarRecadastramento');
+		Route::post('recadastrado','PessoaController@gravarRecadastro');
+
+
 		Route::get ('listar','PessoaController@listarTodos');//->middleware('autorizar:56')
 		Route::post('listar','PessoaController@procurarPessoa');
 		Route::get ('cadastrar', 'PessoaController@create')->name('pessoa.cadastrar');
@@ -93,8 +92,9 @@ Route::middleware('login') ->group(function(){
 		Route::get ('mostrar/{var}','PessoaController@mostrar');
 		Route::get('buscarapida/{var}','PessoaController@liveSearchPessoa');
 		Route::get('apagar-atributo/{var}','PessoaController@apagarAtributo');
-		Route::prefix('atestado')->group(function(){
 
+	//Atestado
+		Route::prefix('atestado')->group(function(){
 			Route::get('cadastrar/{pessoa}','AtestadoController@novo');
 			Route::post('cadastrar/{pessoa}','AtestadoController@create');
 			Route::get('arquivar/{atestado}', 'AtestadoController@apagar');
@@ -103,6 +103,7 @@ Route::middleware('login') ->group(function(){
 			Route::get('listar', 'AtestadoController@listar');
 
 		});
+	//Bolsa
 		Route::middleware('liberar.recurso:18')->prefix('bolsa')->group(function(){ //criar novo código
 			Route::get('cadastrar/{pessoa}','BolsaController@nova');
 			Route::post('cadastrar/{pessoa}','BolsaController@gravar');
@@ -112,12 +113,10 @@ Route::middleware('login') ->group(function(){
 			Route::get('parecer/{bolsa}','BolsaController@uploadParecerForm');
 			Route::post('parecer/{bolsa}','BolsaController@uploadParecerExec');
 			Route::get('relatorio/fpm','BolsaController@relatorioFPM');
-
-
 		});
 
 		
-		//dependentes
+	//Dependentes
 		Route::get('adicionardependente/{var}','PessoaController@addDependente_view');
 		Route::get('gravardependente/{pessoa}/{dependente}','PessoaController@addDependente_exec');
 		Route::get('removervinculo/{var}','PessoaController@remVinculo_exec');
@@ -125,7 +124,7 @@ Route::middleware('login') ->group(function(){
 		Route::post('adicionarresponsavel/{var}','PessoaController@addResponsavel_exec');
 		Route::get('removerdependente/{var}','PessoaController@remResponsavel_exec');
 		Route::get('buscarendereco/{var}','PessoaController@buscarEndereco');
-		// Editar dados das pessoas
+	// Editar dados das pessoas
 		Route::prefix('editar')->group(function(){
 			Route::get('geral/{id}','PessoaController@editarGeral_view');
 			Route::post('geral/{var}','PessoaController@editarGeral_exec');
@@ -135,7 +134,8 @@ Route::middleware('login') ->group(function(){
 			Route::post('dadosclinicos/{var}','PessoaController@editarDadosClinicos_exec');
 			Route::get('observacoes/{var}','PessoaController@editarObservacoes_view');
 			Route::post('observacoes/{var}','PessoaController@editarObservacoes_exec');
-		});//prfix editar
+		});
+
 		Route::get('matriculas', 'MatriculaController@listarPorPessoa');
 	});//prefix pessoa
 
@@ -363,7 +363,15 @@ Route::middleware('login') ->group(function(){
 			Route::post('renovar/{pessoa}','MatriculaController@renovar');
 			Route::get('duplicar/{matricula}','MatriculaController@duplicar');
 			Route::post('nova/confirmacao', 'InscricaoController@confirmacaoAtividades');
+			
+
+
 			Route::post('nova/gravar', 'MatriculaController@gravar');
+			//Route::post('nova/gravar', 'InscricaoController@gravarInscricoes');
+
+
+
+
 			Route::get('termo/{id}','MatriculaController@termo');
 			Route::get('editar/{id}', 'MatriculaController@editar');
 			Route::post('editar/{id}','MatriculaController@update');

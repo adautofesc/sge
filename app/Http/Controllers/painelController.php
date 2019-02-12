@@ -16,6 +16,8 @@ use LancamentoContoller;
 
 class painelController extends Controller
 {
+
+
     public function index(){
 
     	if(!Session::has('sge_fesc_logged'))
@@ -36,6 +38,12 @@ class painelController extends Controller
         return view('home', compact('dados'));
 	
     }
+
+    public function indexDev(){
+        return view('desenvolvimento.home');
+    } 
+
+    
     public function verTurmasAnterioresCursos(){
         
         $db_turmas=DB::table('tb_turmas')->join('tb_cursos', 'tb_turmas.CurCod','=','tb_cursos.CurCod')->where('tb_turmas.TurDatIni','>','2017-06-01')->where('tb_cursos.CurCod','!=','1416')->whereIn('tb_turmas.LocCod', [1,2,69])->get(['tb_turmas.TurCod','tb_turmas.TurDatIni','tb_cursos.CurDsc','tb_turmas.TurDsc','tb_turmas.LocCod','tb_turmas.ProCod']);

@@ -144,9 +144,10 @@ class LancamentoController extends Controller
 
 			}
 
-
+			/*
 			if($parcela_atual>5 && $matricula->valor->parcelas<6)//se parcelamento < parcela atual
 					$parcela_atual=$parcela_atual-6; //começa parcela novamente
+			*/
 
 			if($parcela_atual <= $matricula->valor->parcelas){
 
@@ -734,6 +735,7 @@ class LancamentoController extends Controller
 		return view('financeiro.lancamentos.novo')->with('pessoa',$id)->with('matriculas',$matriculas);
 	}
 	public function create(Request $r){
+		$erros=array();
 
 
 		
@@ -761,14 +763,17 @@ class LancamentoController extends Controller
 
 							$valor_parcela=($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas;
 							if(!$this->verificaSeLancada($matricula->id,$i) && $valor_parcela > 0  ){ //se não tiver ou for 0
+							$referencia= '01/'.($i+1).'/'.date('Y');
+							$data_util = new \App\classes\Data($referencia);
 							$lancamento=new Lancamento; //gera novo lançamento
 							$lancamento->matricula=$matricula->id;
 							$lancamento->parcela=$i;
 							$lancamento->valor=$valor_parcela;
 							$lancamento->pessoa = $r->pessoa;
-							$lancamento->referencia = "Parcela ".$i.' - '.$matricula->getNomeCurso();
+							$lancamento->referencia = "Parcela referente à ".$data_util->Mes().' - '.$matricula->getNomeCurso(). ' '.$matricula->id;
 							if($lancamento->valor>0)//se for bolsista integral
 								$lancamento->save();
+								$erros[] = 'Parcela referente à '.$data_util->Mes().' da matricula '.$matricula->id.' foi lançada com sucesso.';
 							}
 
 						}
@@ -779,21 +784,30 @@ class LancamentoController extends Controller
 						$referencia= '01/'.($r->parcela+1).'/'.date('Y');
 						$data_util = new \App\classes\Data($referencia);
 
-						if(!$this->verificaSeLancada($matricula->id,$r->parcela) && $valor_parcela > 0  ){ //se não tiver ou for 0
-							$lancamento=new Lancamento; //gera novo lançamento
-							$lancamento->matricula=$matricula->id;
-							$lancamento->parcela=$parcela;
-							$lancamento->valor=$valor_parcela;
-							$lancamento->pessoa = $r->pessoa;
-							$lancamento->referencia = "Parcela ".$data_util->Mes().' - '.$matricula->getNomeCurso();
-							if($lancamento->valor>0)//se for bolsista integral
-								$lancamento->save();
+						if($this->verificaSeLancada($matricula->id,$r->parcela)){
+							$erros[] = 'Parcela referente à '.$data_util->Mes().' da matricula '.$matricula->id.' já consta como lançada.';
+						}
+						else{
+
+							if($valor_parcela > 0  ){ //se não tiver ou for 0
+								$lancamento=new Lancamento; //gera novo lançamento
+								$lancamento->matricula=$matricula->id;
+								$lancamento->parcela=$parcela;
+								$lancamento->valor=$valor_parcela;
+								$lancamento->pessoa = $r->pessoa;
+								$lancamento->referencia = "Parcela ".$data_util->Mes().' - '.$matricula->getNomeCurso();
+								if($lancamento->valor>0){
+									$lancamento->save();
+									$erros[] = 'Parcela referente à '.$data_util->Mes().' da matricula '.$matricula->id.' foi lançada com sucesso.';
+								}
+								else
+									$erros[] = 'Matricula '.$matricula->id.' não gerou parcelas pois o valor da matricula foi zero';
 							}
-							else
-								return redirect(asset('secretaria/atender'.'/'.$r->pessoa))->withErrors(['Parcela já consta em boletos ativos OU pessoa bolsista.']);
+						}
 
 					}
 				}
+				return redirect(asset('secretaria/atender'.'/'.$r->pessoa))->withErrors($erros);
 			}
 
 		}

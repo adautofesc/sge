@@ -869,6 +869,23 @@ where nt.matricula>1');
     }
 
 
+    public function corrigirCursoMatricula(){
+        $matriculas = Matricula::whereIn('status',['ativa','pendente'])->get();
+        $pessoas = array();
+        foreach($matriculas as $matricula){
+         
+
+            if($matricula->curso != $matricula->getIdCurso()){
+                $matricula->curso = $matricula->getIdCurso();
+                unset($matricula->inscricoes);
+                $matricula->save();
+                $all[] = $matricula->pessoa;
+            }
+        }
+        return $pessoas;
+    }
+
+
         
 
 

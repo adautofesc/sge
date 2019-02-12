@@ -39,10 +39,10 @@ class Matricula extends Model
 	}
 
 	public function getNomeCurso(){
-		$curso = Curso::find($this->curso);
+		/*$curso = Curso::find($this->curso);
 		if($curso != null)
 			return $curso->nome;
-		else{
+		else{*/
 			
 			$inscricoes = $this->getInscricoes();
 
@@ -50,7 +50,22 @@ class Matricula extends Model
 			//return 'Matricula sem nome do curso.';
 			
 
-		}
+		
+	}
+
+	public function getIdCurso(){
+		/*$curso = Curso::find($this->curso);
+		if($curso != null)
+			return $curso->nome;
+		else{*/
+			
+			$inscricoes = $this->getInscricoes();
+
+			return $inscricoes->first()->turma->curso->id;
+			//return 'Matricula sem nome do curso.';
+			
+
+		
 	}
 
 	public function getBolsas(){

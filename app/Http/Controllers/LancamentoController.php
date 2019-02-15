@@ -111,6 +111,40 @@ class LancamentoController extends Controller
 		return view('financeiro.lancamentos.processando')->with('matriculas',$matriculas);
 
 	}
+
+	public function gerarTodosLancamentos($matricula){
+		dd($matricula->valor);
+		if($matricula->valor->valor>0){
+			for($i=1;$i<=$matricula->valor->parcelas;$i++){
+				$this->gerarIndividual19($matricula->pessoa, $i,$matricula->id,$matricula->valor->valor/$matricula->valor->parcelas);
+
+			}
+		}
+	}
+
+	public function gerarIndividual19($pessoa,$parcela,$matricula,$valor){
+		if(!$this->verificaSeLancada($matricula,$parcela)){
+			$lancamento = new Lancamento; //gera novo lançamento
+			$lancamento->matricula=$matricula;
+			$lancamento->parcela=$parcela;
+			$lancamento->valor=$valor;
+			$lancamento->pessoa = $pessoa;
+			$lancamento->save();
+		}
+	}
+
+	public function verificaSeLancada19($pessoa,$parcela,$matricula,$valor){
+		$lancamentos=Lancamento::where('matricula',$matricula)
+			->where('parcela',$parcela)
+			->where('status', null)
+			->get();
+		if (count($lancamentos)>0)
+			return true;
+		else
+			return false;
+
+	}
+
 	public function gerarLancamentosPorPessoa($pessoa){
 	
            // colocar um if de parcela, se for menor que 6,  fazer recursivo
@@ -345,7 +379,7 @@ class LancamentoController extends Controller
 	}
 
 
-
+/*
 	public static function cancelamentoMatricula($matricula){
 		if(LancamentoController::ultimaParcelaLancada($matricula) <= 2){ //ultima parcela <2
 			$l_boletos=LancamentoController::retornarBoletos($matricula); //selecionas todos boletos dessa matricula com boleto em aberto
@@ -442,6 +476,9 @@ class LancamentoController extends Controller
 
 		}
 	}
+
+
+
 	public static function atualizaMatricula($matricula){
 		$matricula_ins=Matricula::find($matricula);
 		if($matricula_ins->status != 'cancelada'){
@@ -452,10 +489,7 @@ class LancamentoController extends Controller
 					$valor_parcela_matricula = ($matricula_ins->valor-$matricula_ins->valor_desconto)/$matricula_ins->parcelas;
 					//verificar se o valor da parcela é diferente do valor da matricula
 					if( $valor_parcela_matricula  != $ultimo_lancamento->valor){
-						/**
-						 * ***********************************************************************************
-						 */
-
+						
 						$l_boletos=LancamentoController::retornarBoletos($matricula); //selecionas todos boletos dessa matricula com boleto em aberto
 						//return $l_boletos;
 						if(count($l_boletos)>0){ // se tiver boletos
@@ -558,6 +592,7 @@ class LancamentoController extends Controller
 			}//end if se tem lancamentos
 		}//fim se matricula não estiver cancelada
 	}//end metodo
+*/
 
 	/**
 	 * Cancelar Lancamentos de Matriculas Canceladas (antes do metodo de cancelar lancamentos)]

@@ -40,7 +40,7 @@
                 </li>
                 @foreach($turmas->all() as $turma)
                 @if($turma->programa->id==$programa->id)                                            
-                <li class="item">
+                <li class="item ">
                     <div class="item-row">
                         <div class="item-col fixed item-col-check"> 
 

@@ -135,12 +135,16 @@ class InscricaoController extends Controller
         $valor=0; 
         $todas_turmas=TurmaController::csvTurmas($request->atividades.$request->turmas_anteriores);
         $turmas=TurmaController::csvTurmas($request->atividades);
+        $newturmas=$request->atividades;
         $cursos=collect();
         $uati=0;
         //dd('hi');
 
         //separa curso de disciplina, criando os lista de cursos e soma total
+        //dd($request->atividades);
         foreach($turmas as $turma){
+            if($turma->vagas<=$turma->matriculados)
+                $newturmas = str_replace(','.$turma->id,'',$newturmas);
             if($turma->disciplina==null)
                 $cursos->push($turma->curso);
             else{
@@ -170,7 +174,7 @@ class InscricaoController extends Controller
 
         //return $cursos;
 
-        return view('secretaria.inscricao.confirma-atividades')->with('cursos',$cursos)->with('turmas',$turmas)->with('descontos',$descontos)->with('pessoa',$pessoa)->with('todas_turmas',$todas_turmas)->with('turmas_str',$request->atividades);
+        return view('secretaria.inscricao.confirma-atividades')->with('cursos',$cursos)->with('turmas',$turmas)->with('descontos',$descontos)->with('pessoa',$pessoa)->with('todas_turmas',$todas_turmas)->with('turmas_str',$newturmas);
 
     }
 
@@ -333,9 +337,11 @@ class InscricaoController extends Controller
      */
     public static function cancelarPorMatricula($matricula){
         $inscricoes=Inscricao::where('matricula',$matricula)->whereIn('status',['regular','pendente'])->get();
+
         foreach($inscricoes as $inscricao){
             $inscricao->status = 'cancelada';
             $inscricao->save();
+            InscricaoController::modInscritos($inscricao->turma->id,0,1);
         }
         return $inscricoes;
 

@@ -269,6 +269,28 @@ class BoletoController extends Controller
 		return $cadastrado;
 
 	}
+
+
+	public function gerarCarnes(){
+		
+		
+		
+		//gerar boletos dessas matriculas
+		//gerar pdf dos carnês
+		//gerar csv dos carnês
+		//alterar status para impresso.
+		//gerar arquivo remessa
+		//alterar status para emitido
+
+		$matriculas = Matricula::whereIn('status',['ativa','pendente'])->where('pessoa','31869')->paginate(100);
+		$LC = new LancamentoController;
+		foreach($matriculas as $matricula){
+			$LC->gerarTodosLancamentos($matricula);
+
+		}
+
+		return view('financeiro.carne.fase2')->with('matriculas',$matriculas);
+	}
 	public function cadastarIndividualmente($pessoa){
 		$vencimento = date('Y-m-d 23:23:59', strtotime("+5 days",strtotime(date('Y-m-d')))); 
 

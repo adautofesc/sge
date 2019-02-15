@@ -65,7 +65,7 @@ class ValorController extends Controller
                         break;
                     case 1:
                     	$valor = Valor::where('curso','307')->where('carga','1')->where('ano',substr($inscricoes->first()->turma->data_inicio,-4))->first();
-                        return $valor;
+                        return $this->gerar($valor->valor/$valor->parcelas, qnde de parcelas,
                         break;
                     case 2:
                     case 3:
@@ -163,6 +163,15 @@ class ValorController extends Controller
         $valor->valor = 0;
         $valor->parcelas = 1;
         $valor->referencia = $msg;
+        return $valor;
+
+    }
+
+    public function gerar($valor,$parcelas,$referencia='gerado por alguma função'){
+        $valor = new Valor;
+        $valor->valor = $valor;
+        $valor->parcelas = $parcelas;
+        $valor->referencia = $referencia;
         return $valor;
 
     }

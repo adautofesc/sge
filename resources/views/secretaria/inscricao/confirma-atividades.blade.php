@@ -18,8 +18,8 @@
 
 @endforeach
 @foreach($cursos as $curso)
-
  <div class="card card-primary" id="{{$curso->id}}">
+
 
                 <div class="card-header">
                     <div class="header-block"><!--
@@ -42,7 +42,11 @@
             
             
                 <div class="col-xs-6">
-                    <strong>Turma</strong> {{$turma->id}}<br/>vagas:{{$turma->vagas}} matriculados: {{$turma->matriculados}}
+                    @if($turma->vagas>=$turma->matriculados)
+                    <strong>Turma</strong> {{$turma->id}}<br/>
+                    @else
+                    <strong style="color: red">Turma {{$turma->id}} não possui mais vagas. A inscrição não será gerada.</strong><br/>
+                    @endif
                     <strong>Disciplina</strong> {{$turma->disciplina->nome}}<br/>
                     <strong>Prof.</strong> {{$turma->professor->nome_simples}}<br/>
                     <strong>Local</strong> {{$turma->local->nome}}<br/>
@@ -69,9 +73,13 @@
     @else
 
         <div class="title-block center">
-            <h3 class="title"> Turma: {{$curso->turmas->first()->id}}</h3>
+            @if($curso->turmas->first()->vagas>$curso->turmas->first()->matriculados)
+            <h3 class="title "> Turma: {{$curso->turmas->first()->id}} </h3>
+            @else
+            <h3 class="title " style="color:red"> Turma: {{$curso->turmas->first()->id}} não possui mais vagas. A inscrição não será gerada.</h3>
+            @endif
         </div>            
-            <strong>Prof.</strong> {{$curso->turmas->first()->professor->nome_simples}}<br/>vagas:{{$turma->vagas}} matriculados: {{$turma->matriculados}}
+            <strong>Prof.</strong> {{$curso->turmas->first()->professor->nome_simples}}<br/>vagas:{{$curso->turmas->first()->vagas}} matriculados: {{$curso->turmas->first()->matriculados}}
             <strong>Local</strong> {{$curso->turmas->first()->local->nome}}<br/>
             <strong>Início:</strong> {{$curso->turmas->first()->data_inicio}} <strong>Término</strong> {{$curso->turmas->first()->data_termino}}<br/>
 

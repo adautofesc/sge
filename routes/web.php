@@ -168,12 +168,26 @@ Route::middleware('login') ->group(function(){
 			Route::post('editar/{lancamento}','LancamentoController@update');
 			Route::middleware('liberar.recurso:19')->get('gerar/{parcela}', 'LancamentoController@gerarLancamentos' );//gerar parcela para todas pessoas
 		});
+		Route::prefix('carne')->group(function(){
+			Route::get('gerar', function(){ return view('financeiro.carne.fase1');});
+			Route::get('fase2','BoletoController@gerarCarnes');
+			Route::get('fase3','BoletoController@gerarCarnes2');
+			Route::get('fase4','BoletoController@gerarCarnes');
+			Route::get('fase5','BoletoController@gerarCarnes');
+			Route::get('fase7','BoletoController@gerarCarnes');
+			Route::get('fase8','BoletoController@gerarCarnes');
+			Route::get('concluido','BoletoController@gerarCarnes');
+
+		});
 
 		Route::prefix('boletos')->group(function(){
 			Route::middleware('liberar.recurso:19')->get('home',  function(){ return view('financeiro.boletos.home'); });
 			Route::get('editar/{id}','BoletoController@editar');
 			Route::post('editar/{id}','BoletoController@update');
 			Route::get('imprimir/{id}','BoletoController@imprimir');
+
+			
+
 
 			Route::get('registrar/{id}','BoletoController@registrar');//registrar para o banco
 			Route::get('divida-ativa','BoletoController@dividaAtiva');// envia boletos para divida ativa;

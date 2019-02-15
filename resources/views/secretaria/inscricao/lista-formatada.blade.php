@@ -16,7 +16,7 @@
         <div class="table-flip-scroll">
             <ul class="item-list striped" id="itens-{{$programa->sigla}}">
                 <li class="item item-list-header hidden-sm-down">
-                    <div class="item-row">
+                    <div class="item-row ">
                         <div class="item-col fixed item-col-check">
                             
                         </div>
@@ -41,7 +41,11 @@
                 @foreach($turmas as $turma)
                  @if($turma->programa==$programa)                                       
                 <li class="item">
+                    @if($turma->matriculados>=$turma->vagas)
+                    <div class="item-row" style="color:red">
+                    @else
                     <div class="item-row">
+                    @endif
                         <div class="item-col fixed item-col-check"> 
 
 

@@ -27,7 +27,12 @@
                     <div>
                         <a href="#" onclick="gerarBoletos();" class="btn btn-warning-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-circle-right "></i>
-                        &nbsp;&nbsp;Gerar lote de boletos</a>
+                        &nbsp;&nbsp;Gerar boleto unico com todas parcelas</a>
+                    </div>
+                    <div>
+                        <a href="#" onclick="gerarCarnes();" class="btn btn-danger-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-circle-right "></i>
+                        &nbsp;&nbsp;Gerar lote de Carnês</a>
                     </div>
                     <div>
                         <a href="{{asset('financeiro/boletos/imprimir-lote')}}" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
@@ -93,6 +98,11 @@
     function gerarBoletos(){
         if(confirm("Tem certeza que deseja gerar os boletos desse mês?")){
             window.location.replace("{{asset('financeiro/boletos/gerar-boletos')}}");
+        }
+    }
+    function gerarCarnes(){
+        if(confirm("Tem certeza que deseja gerar os carnês de todos alunos?")){
+            window.location.replace("{{asset('financeiro/carne/gerar')}}");
         }
     }
     function gerarImpressao(){

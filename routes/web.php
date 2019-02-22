@@ -189,11 +189,19 @@ Route::middleware('login') ->group(function(){
 			
 
 
-			Route::get('registrar/{id}','BoletoController@registrar');//registrar para o banco
+			//Route::get('registrar/{id}','BoletoController@registrar');//registrar para o banco
 			Route::get('divida-ativa','BoletoController@dividaAtiva');// envia boletos para divida ativa;
 
 			Route::get('listar-por-pessoa','BoletoController@listarPorPessoa');
-			Route::get('cancelar/{id}','BoletoController@cancelar');
+
+			Route::get('informacoes/{id}','BoletoController@historico');
+
+			Route::get('cancelar/{id}','BoletoController@cancelarView');
+			Route::middleware('liberar.recurso:23')->post('cancelar/{id}','BoletoController@cancelar');
+
+
+
+
 			Route::get('reativar/{id}','BoletoController@reativar');
 			Route::get('gerar-individual/{pessoa}','BoletoController@cadastarIndividualmente');
 			Route::get('gerar','BoletoController@gerar');

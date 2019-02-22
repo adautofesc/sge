@@ -19,7 +19,11 @@
                     </div>
                 </div>
                 <div class="card-block">
-                    Nenhuma opção disponível no momento              
+                    <div>
+                        <a href="/dev/testar-classe" title="Executa classe de teste painelController." target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Metodo de teste </a>
+                    </div>            
                 </div>
             </div>
         </div>

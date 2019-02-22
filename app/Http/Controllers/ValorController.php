@@ -34,9 +34,6 @@ class ValorController extends Controller
             $inscricao_t = \App\Inscricao::where('matricula',$matricula->id)->first();
 
             if($inscricao_t == null){
-                $matricula->status = 'cancelada';
-                $matricula->obs = 'Cancelada automaticamente por falta de inscrições.';
-                $matricula->save();
                 return ValorController::retornarZero('Não há inscrições ativas');
             }
             $turma = \App\Turma::find($inscricao_t->turma->id);
@@ -65,7 +62,8 @@ class ValorController extends Controller
                         break;
                     case 1:
                     	$valor = Valor::where('curso','307')->where('carga','1')->where('ano',substr($inscricoes->first()->turma->data_inicio,-4))->first();
-                        return $this->gerar($valor->valor/$valor->parcelas, qnde de parcelas,
+                        return $valor; 
+                        //return $this->gerar($valor->valor/$valor->parcelas, qnde de parcelas,
                         break;
                     case 2:
                     case 3:

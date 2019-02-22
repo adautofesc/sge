@@ -51,7 +51,7 @@
 		       	<tbody>
 		       		@foreach($boletos as $boleto)
 		       		<tr>
-		       			<td>{{$boleto->id}}</td>
+		       			<td><a href="/financeiro/boletos/informacoes/{{$boleto->id}}">{{$boleto->id}}</a></td>
 		       			<td>{{\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y')}}</td>
 		       			<td><a href="{{asset('/secretaria/atender').'/'.$boleto->aluno->id}}">{{$boleto->aluno->id}}</a></td>
 		       			<td>{{$boleto->aluno->nome}}</td>

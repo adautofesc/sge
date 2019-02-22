@@ -64,6 +64,8 @@ class MatriculaController extends Controller
             //verifica se já possui matricula no curso
             $matriculado=MatriculaController::verificaSeMatriculado($r->pessoa,$curso->id,$turmas->first()->data_inicio);
             if($matriculado==false){
+
+
                 //criar matricula nova
                 $atendimento = AtendimentoController::novoAtendimento("Nova matrícula, código ", $r->pessoa, Session::get('usuario'));
                 //dd($atendimento->id);
@@ -78,8 +80,13 @@ class MatriculaController extends Controller
                     $matricula->status="ativa";    
                 else
                     $matricula->status="espera";
-                $matricula->curso = $curso->id;
+
+
+
+                
                 $matricula->save();
+
+
                 $atendimento->descricao .= $matricula->id;
                 $atendimento->save();
                 $matriculas->push($matricula);
@@ -94,7 +101,12 @@ class MatriculaController extends Controller
                 $matriculas->push($matricula);
                 
             }
-   
+
+            // define numero de parcelas
+            $inscricoes = Inscricao::where('matricula',$matricula->id)->get();
+            dd($inscricoes->first()->turma->valor);
+            $matricula->parcelas = $matricula->getParcelas($inscricoes->first()->turma->valor->parcelas, $matricula->data,$inscricoes->first()->turma->data_inicio);
+            $matricula->save();
         }
         
         return redirect(asset("secretaria/atender").'/'.$r->pessoa);
@@ -102,7 +114,6 @@ class MatriculaController extends Controller
         
 
     }
-    
 
 
 

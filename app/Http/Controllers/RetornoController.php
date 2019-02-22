@@ -251,6 +251,7 @@ class RetornoController extends Controller
 						$boleto->descontos = $linha->valorDesconto;
 						$boleto->retorno = $retorno_id;
 						$boleto->save();
+						\App\Log::alteracaoBoleto($boleto->id,'Boleto processado pelo arquivo de retorno: '.$retorno_id);
 						
 					}
 				}		

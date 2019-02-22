@@ -439,7 +439,7 @@
                        
                             <div class="row lista">
                                 <div class="col-xl-5 " style="line-height:40px !important; padding-left: 30px;">
-                                    <div class="dropdown-toggle"><i class=" fa fa-barcode "></i> &nbsp;<small>Documento nº <b>{{$boleto->id}}</b></small></div>
+                                    <div class="dropdown-toggle"><i class=" fa fa-barcode "></i> &nbsp;<small>Documento nº <b><a href="/financeiro/boletos/informacoes/{{$boleto->id}}">{{$boleto->id}}</a></b></small></div>
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div><small>{{\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/y')}}</small></div>

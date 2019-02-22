@@ -75,10 +75,10 @@
                    <table cellspacing="0" rules="all" border="1" id="FormView1_g1" style="border-color:Black;border-width:1px;border-style:Solid;width:100%;border-collapse:collapse;">
                 <tr>
                     <th align="left" scope="col">CURSO</th>
-                    <th align="left" scope="col">DIAS</th>
-                    <th align="left" scope="col">PROGRAMA</th>
-                    <th align="left" scope="col">INÍCIO</th>
-                    <th align="left" scope="col">TERMINO</th>
+                    <th align="center" scope="col">DIAS</th>
+                    <th align="center" scope="col" width="110px">HORÁRIO</th>
+                    <th align="center" scope="col" width="100px">INÍCIO</th>
+                    <th align="center" scope="col" width="100px">TERMINO</th>
                 </tr>
 
                 @foreach($inscricoes as $insc)
@@ -95,7 +95,7 @@
                             </td>
                             <td>{{ucwords(implode(', ', $insc->turmac->dias_semana )) }}</td>   
                                  
-                            <td>{{$insc->turmac->programa->sigla}}</td>
+                            <td>{{$insc->turmac->hora_inicio}} às {{$insc->turmac->hora_termino}}</td>
                             <td>{{$insc->turmac->data_inicio}}</td>
                             <td>{{$insc->turmac->data_termino}}</td>                           
                             
@@ -111,8 +111,8 @@
                     2. VALOR E CONDIÇÕES DE PAGAMENTO:
                     <br />
                     2.1 O ALUNO pagará à FESC, pela prestação dos serviços ora ajustados, o valor total de
-                    <span id="FormView1_MatVlrPag">R$ {{number_format($matricula->valor->valor-$matricula->valor_desconto, 2, ',', '.')}}</span>, dividido em
-                    <span id="FormView1_CPACod">{{$matricula->valor->parcelas}}</span>
+                    <span id="FormView1_MatVlrPag">R$ {{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas*$matricula->parcelas, 2, ',', '.')}}</span>, dividido em
+                    <span id="FormView1_CPACod">{{$matricula->parcelas}}</span>
                     parcelas de R$ {{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas,2,',','.')}}
                     <span id="FormView1_parcela"></span>
                     cada uma, vencíveis no dia

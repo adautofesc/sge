@@ -329,12 +329,17 @@ class painelController extends Controller
 
     }
     public function testarClasse(){
-        $matriculas = Matricula::select('id')->where('curso',null)->get();
+        $arr_matriculas=array();
+        $matriculas = Matricula::where('status','ativa')->get();
         foreach($matriculas as $matricula){
-            MatriculaController::matriculaSemCurso($matricula);
-        }
+        $matricula->getInscricoes();
+        $matricula->parcelas = $matricula->getParcelas($matricula->valor->parcelas, $matricula->data,$matricula->inscricoes->first()->turma->data_inicio);
+        unset($matricula->inscricoes);
+        $matricula->save();
+        $arr_matriculas[]= 'Matricula '.$matricula->id.' com data de inscricao em '.$matricula->data.' possui '. $matricula->parcelas.' parcelas.';
 
-        return $matriculas;
+        }
+        return $arr_matriculas;
         
     }
 

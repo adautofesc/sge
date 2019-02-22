@@ -26,8 +26,8 @@
                 Tipo
             </label>
             <div class="col-sm-6"> 
-                <select name="desconto" class="c-select form-control boxed" ">
-                    <option selected="true">Selecione uma opção</option>
+                <select name="desconto" class="c-select form-control boxed" required="required">
+                    <option selected="true"></option>
                     @foreach($descontos as $desconto)
                         <option value="{{$desconto->id}}" title="{{$desconto->descricao}}">{{$desconto->nome}}</option>
                     @endforeach

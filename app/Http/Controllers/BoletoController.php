@@ -228,7 +228,10 @@ class BoletoController extends Controller
 			//dd($pessoa);
 			//$pessoa->formataParaMostrar();
 			$boleto->status = 'emitido';
+			$boleto->remessa=intval(date('YmdHi'));
 			$boleto->save();
+
+			LogController::alteracaoBoleto($boleto->id,'Registro do boleto pelo site BB');
 
 			return view('financeiro.boletos.registrar')->with('boleto',$boleto)->with('lancamentos',$str_lancamentos)->with('pessoa',$pessoa)->with('vencido',$vencido);
 
@@ -486,40 +489,49 @@ class BoletoController extends Controller
 
         return view('financeiro.boletos.lista-por-pessoa',compact('boletos'))->with('nome',$nome);
 	}
-	public function cancelar($id){
-		$boleto=Boleto::find($id);
+
+
+	public function cancelarView($id){
+		return view('financeiro.boletos.cancelamento')->with('boleto',$id);
+	}
+	public function cancelar(Request $r){
+
+
+
+		$boleto=Boleto::find($r->boleto);
 
 		if($boleto != null){
 			if($boleto->status == 'impresso'){
 				$boleto->status = 'cancelar';
 				$boleto->save();
-				LancamentoController::cancelarPorBoleto($id);
+				LancamentoController::cancelarPorBoleto($boleto->id);
 			}
 			if($boleto->status == 'gravado'){
 				$boleto->status = 'cancelado';
 				$boleto->save();
-				LancamentoController::atualizaLancamentos($id,null);
+				LancamentoController::atualizaLancamentos($boleto->id,null);
 			}
 			if($boleto->status == 'emitido'){
 				$boleto->status = 'cancelar';
 				$boleto->save();
-				LancamentoController::cancelarPorBoleto($id);
+				LancamentoController::cancelarPorBoleto($boleto->id);
 			}
 			if($boleto->status == 'divida'){
 				$boleto->status = 'cancelado';
 				$boleto->save();
-				LancamentoController::cancelarPorBoleto($id);
+				LancamentoController::cancelarPorBoleto($boleto->id);
 			}
 			if($boleto->status == 'cancelar'){
-				LancamentoController::cancelarPorBoleto($id);
+				LancamentoController::cancelarPorBoleto($boleto->id);
 			}
 			if($boleto->status == 'cancelado'){
-				LancamentoController::cancelarPorBoleto($id);
+				LancamentoController::cancelarPorBoleto($boleto->id);
 			}
 		}
 
-		AtendimentoController::novoAtendimento("Solicitação de cancelamento de boleto: ".$id, $boleto->pessoa, Session::get('usuario'));
-		return redirect($_SERVER['HTTP_REFERER']);
+		LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento. Motivo:' . $r->motivo.$r->motivo2);
+
+		return redirect('/secretaria/atender/'.$boleto->pessoa);
 
 		
 
@@ -1056,6 +1068,13 @@ class BoletoController extends Controller
 		return $matriculas;
 
 
+	}
+	public function historico($id){
+		$boleto = Boleto::find($id);
+		$dados = \App\Log::where('tipo','boleto')->where('codigo',$id)->get();
+		$dados_pessoa = \App\Atendimento::where('descricao','like','%boleto%'.$id."%")->get();
+
+		return view('financeiro.boletos.informacoes')->with('boleto',$boleto)->with('logs',$dados)->with('pessoais',$dados_pessoa);
 	}
 
 		

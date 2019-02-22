@@ -123,6 +123,44 @@ class Matricula extends Model
 	}
 
 
+	/**
+	 * função pra calcular quantas parcelas a pessoa terá que pagar na hora de gerar matricula
+	 * @return [Int] [quantidade de parcelas da matrícula]
+	 */
+	public function getParcelas($parcelas_turma,$dt_mt,$inicio_turma){
+		//transforma data de inicio da turma em objeto de data para descobrir qual semestre é
+		$pp_dt = \DateTime::createFromFormat('d/m/Y', $inicio_turma);
+
+
+		//verifica qual semestre para determinar a data da primeira parcela
+		if($pp_dt->format('m')<8){
+			$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/02/'.$pp_dt->format('Y')); //ou 20/08/2019
+		}
+		else{
+			$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/08/'.$pp_dt->format('Y')); //ou 20/08/2019
+		}
+		
+		//transforma data da matricula em objeto
+		$dt_mt= new \DateTime(date($dt_mt));
+
+		//calcula a diferença entre as datas
+		$interval = $dt_pp->diff($dt_mt);
+		
+
+		//reduz a quantidade de parcelas de acordo com a diferença entre as datas
+		if($interval->invert ==1){
+			return $parcelas_turma;
+		}
+		else{
+			return $parcelas_turma - ceil($interval->days/30);
+
+		}
+
+		return $interval;
+
+	}
+
+
 
 
 

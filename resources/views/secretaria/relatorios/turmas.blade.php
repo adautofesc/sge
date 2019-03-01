@@ -78,7 +78,7 @@
 		<br/>
 		<div class="title-block">
 			<center>
-            <h3 class="title"> Relatório de turmas 1º Semestre 2018 </h3>
+            <h3 class="title"> Relatório de turmas</h3>
             <h5 class="title"> Filtrado por 
             		 @foreach($filtros as $filtro=>$valor)
 		                @if(count($filtros[$filtro]))

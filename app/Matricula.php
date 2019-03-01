@@ -33,6 +33,7 @@ class Matricula extends Model
 
 	}
 	 public function getInscricoes($tipo = 'todas'){
+
 		$inscricoes= \App\Http\Controllers\InscricaoController::inscricoesPorMatricula($this->id,$tipo);
 		$this->inscricoes = $inscricoes;
 		return $inscricoes;
@@ -127,32 +128,49 @@ class Matricula extends Model
 	 * função pra calcular quantas parcelas a pessoa terá que pagar na hora de gerar matricula
 	 * @return [Int] [quantidade de parcelas da matrícula]
 	 */
-	public function getParcelas($parcelas_turma,$dt_mt,$inicio_turma){
+	public function getParcelas(){
+
+		$inscricoes = collect();
+		$inscricoes = $this->getInscricoes();
+		if(count($inscricoes)==0){
+			 unset($this->inscricoes);
+			return 0;
+		}
+
+		$valor_matricula = \App\Http\Controllers\ValorController::valorMatricula($this->id);
+		//return $valor_matricula;
 		//transforma data de inicio da turma em objeto de data para descobrir qual semestre é
-		$pp_dt = \DateTime::createFromFormat('d/m/Y', $inicio_turma);
+		$pp_dt = \DateTime::createFromFormat('d/m/Y', $inscricoes->first()->turma->data_inicio);
+
+		unset($this->inscricoes);
 
 
 		//verifica qual semestre para determinar a data da primeira parcela
 		if($pp_dt->format('m')<8){
-			$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/02/'.$pp_dt->format('Y')); //ou 20/08/2019
+			$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/02/'.$pp_dt->format('Y')); // 20/02/2019
 		}
 		else{
 			$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/08/'.$pp_dt->format('Y')); //ou 20/08/2019
 		}
 		
 		//transforma data da matricula em objeto
-		$dt_mt= new \DateTime(date($dt_mt));
+		$dt_mt= new \DateTime(date($this->data));
 
 		//calcula a diferença entre as datas
 		$interval = $dt_pp->diff($dt_mt);
+		$parcelas = $valor_matricula->parcelas - ceil($interval->days/30);
 		
 
 		//reduz a quantidade de parcelas de acordo com a diferença entre as datas
 		if($interval->invert ==1){
-			return $parcelas_turma;
+			
+			return $valor_matricula->parcelas;
 		}
 		else{
-			return $parcelas_turma - ceil($interval->days/30);
+			if($parcelas >=0)
+				return $parcelas;
+			else
+				return $valor_matricula->parcelas;
 
 		}
 

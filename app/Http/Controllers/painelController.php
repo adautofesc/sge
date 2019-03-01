@@ -328,21 +328,27 @@ class painelController extends Controller
         return $linha.$erros;
 
     }
-    public function testarClasse(){
+    public function atualizarParcelas(){
         $arr_matriculas=array();
-        $matriculas = Matricula::where('status','ativa')->get();
+        $matriculas = Matricula::whereIn('status',['pendente','ativa'])->get();
         foreach($matriculas as $matricula){
-        $matricula->getInscricoes();
-        $matricula->parcelas = $matricula->getParcelas($matricula->valor->parcelas, $matricula->data,$matricula->inscricoes->first()->turma->data_inicio);
-        unset($matricula->inscricoes);
-        $matricula->save();
+            $matricula->parcelas = $matricula->getParcelas();
+           
+            $matricula->save();
+
+   
         $arr_matriculas[]= 'Matricula '.$matricula->id.' com data de inscricao em '.$matricula->data.' possui '. $matricula->parcelas.' parcelas.';
 
         }
         return $arr_matriculas;
         
     }
-
+    public function testarClasse(){
+    $BC = new BoletoController;
+       
+       return $BC->carneFase4();
+        
+    }
 
 
     public function testarClassePost(Request $r){

@@ -25,8 +25,10 @@ class RelatorioController extends Controller
 			$total_vagas = $total_vagas+$turma->vagas;
 			$total_inscricoes = $total_inscricoes+$turma->matriculados;
 		}
-
-		$inscricoes_porcentagem = number_format($total_inscricoes*100/$total_vagas,2,',',' ');
+		if($total_vagas>0)
+			$inscricoes_porcentagem = number_format($total_inscricoes*100/$total_vagas,2,',',' ');
+		else
+			$inscricoes_porcentagem = 0 ;
 
 		
 

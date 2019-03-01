@@ -23,7 +23,8 @@
                         <a href="/dev/testar-classe" title="Executa classe de teste painelController." target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Metodo de teste </a>
-                    </div>            
+                    </div>    
+                            
                 </div>
             </div>
         </div>
@@ -68,4 +69,24 @@
     </div>
 </section>
 
+@endsection
+@section('scripts')
+<script type="text/javascript">
+    function gerarBoletos(){
+        if(confirm("Tem certeza que deseja gerar os boletos desse mês?")){
+            window.location.replace("{{asset('financeiro/boletos/gerar-boletos')}}");
+        }
+    }
+    function gerarCarnes(){
+        if(confirm("Tem certeza que deseja gerar os carnês de todos alunos?")){
+            window.location.replace("{{asset('financeiro/carne/gerar')}}");
+        }
+    }
+    function gerarImpressao(){
+        if(confirm("Os boletos foram todos impressos?")){
+            window.location.replace("{{asset('financeiro/boletos/confirmar-impressao')}}");
+        }
+    }
+
+</script>
 @endsection

@@ -103,10 +103,11 @@ class MatriculaController extends Controller
             }
 
             // define numero de parcelas
-            $inscricoes = Inscricao::where('matricula',$matricula->id)->get();
-            dd($inscricoes->first()->turma->valor);
-            $matricula->parcelas = $matricula->getParcelas($inscricoes->first()->turma->valor->parcelas, $matricula->data,$inscricoes->first()->turma->data_inicio);
+
+           
+            $matricula->parcelas = $matricula->getParcelas();
             $matricula->save();
+            
         }
         
         return redirect(asset("secretaria/atender").'/'.$r->pessoa);

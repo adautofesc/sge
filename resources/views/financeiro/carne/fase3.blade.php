@@ -19,7 +19,7 @@ Gerador de carnês
   </style>
      <script type="text/javascript">
 
-      @if($pessoas->hasMorePages())
+      @if($boletos->hasMorePages())
       var next = true;
       @else
       var next = false;
@@ -28,12 +28,12 @@ Gerador de carnês
       function loadNext(){
         if(next){
           window.setTimeout(function(){
-            mudar('{{$pessoas->nextPageUrl()}}')
+            location.reload()
           }, 2000);
         }
         else{
           
-                setTimeout(mudar('./fase3'), 20000);
+                setTimeout(mudar('./fase4'), 20000);
         }
 
       }
@@ -67,8 +67,8 @@ Gerador de carnês
       <div class="row">
         <div class="col-md-1" style="width: 40px"><img src="{{asset('/img/loading.gif')}}" with="25px" height="25px"></div>
         <div class="col-md-11">
-            <h3 class="title">Fase 2 - geração dos boletos</h3>
-            <p class="title-description">Os boletos estão sendo gerados</p>
+            <h3 class="title">Fase 3 - Associação das parcelas</h3>
+            <p class="title-description">As parcelas estão sendo incluídas nos boletos.</p>
             <br>
         </div>
       </div>
@@ -89,7 +89,17 @@ Gerador de carnês
         </label>
         <div class="col-sm-5"> 
           <div class="input-group">
-           <div id="progressbar2"><div class="progress-label">{{ceil($pessoas->currentPage()*100/$pessoas->lastPage())}}%</div></div>
+           <div id="progressbar2"><div class="progress-label">Concluído</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row"> 
+        <label class="col-sm-2 form-control-label text-xs-right">
+          Associação de parcelas
+        </label>
+        <div class="col-sm-5"> 
+          <div class="input-group">
+           <div id="progressbar7"><div class="progress-label">{{ceil($boletos->currentPage()*100/$boletos->lastPage())}}%</div></div>
           </div>
         </div>
       </div>
@@ -150,7 +160,7 @@ Gerador de carnês
       value: 100
     });
     $( "#progressbar2" ).progressbar({
-      value: {{ceil($pessoas->currentPage()*100/$pessoas->lastPage())}}
+      value: 100
     });
      $( "#progressbar3" ).progressbar({
       value: 0
@@ -163,6 +173,9 @@ Gerador de carnês
     });
         $( "#progressbar6" ).progressbar({
       value: 0
+    });
+        $( "#progressbar7" ).progressbar({
+      value: {{ceil($boletos->currentPage()*100/$boletos->lastPage())}}
     });
   } );
   </script>

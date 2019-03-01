@@ -24,16 +24,17 @@
                     <p> A geração de boleto consiste em relacionar todas parcelas em aberto de uma pessoa e gerar um registro de boleto para posterior impressão. </p>
                     <p><b>Após a impressão dos boletos deve-se realizar a confirmação de impressão</b></p>
                     <p> A Confirmação de impressão muda o <i>status</i> dos boletos para a geração do arquivo de remessa. </p>
+                   <div>
+                        <a href="#" onclick="gerarCarnes();" class="btn btn-danger-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-circle-right "></i>
+                        &nbsp;&nbsp;Gerar Carnês</a>
+                    </div>  
                     <div>
                         <a href="#" onclick="gerarBoletos();" class="btn btn-warning-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-circle-right "></i>
                         &nbsp;&nbsp;Gerar boleto unico com todas parcelas</a>
                     </div>
-                    <div>
-                        <a href="#" onclick="gerarCarnes();" class="btn btn-danger-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-arrow-circle-right "></i>
-                        &nbsp;&nbsp;Gerar lote de Carnês</a>
-                    </div>
+                  
                     <div>
                         <a href="{{asset('financeiro/boletos/imprimir-lote')}}" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-circle-right "></i>

@@ -45,9 +45,13 @@ Class Data
         {
                 $Mes = array(
                 1=>'Janeiro',
+                
                 2=>'Fevereiro',
+                
                 3=>'Março',
+               
                 4=>'Abril',
+
                 5=>'Maio',
                 6=>'Junho',
                 7=>'Julho',
@@ -58,7 +62,7 @@ Class Data
                 12=>'Dezembro'
                 );
 
-                return $Mes[$this->mes];
+                return $Mes[$this->mes*1];
         }
 
         public function Dia()
@@ -73,7 +77,7 @@ Class Data
                 6=>'Sábado'
                 );
 
-                return $Dia[$this->diaSemana];
+                return $Dia[$this->diaSemana*1];
         }
         public static function converteParaBd($d)
         {

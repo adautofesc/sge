@@ -46,7 +46,7 @@ class InscricaoController extends Controller
             return redirect(asset('/secretaria/atender'));
         $str_turmas='';
         $turmas=collect();
-        $incricoes_atuais=Inscricao::where('pessoa',$id_pessoa)->where('status', '<>','cancelada')->get();
+        $incricoes_atuais=Inscricao::where('pessoa',$id_pessoa)->whereIn('status', ['regular','pendente'])->get();
         foreach($incricoes_atuais as $inscricao){
             $str_turmas=$str_turmas.','.$inscricao->turma->id;
             $turma=Turma::find($inscricao->turma->id);
@@ -91,7 +91,7 @@ class InscricaoController extends Controller
     public function verTurmasAtuais($pessoa)
     {
         $turmas=collect();
-        $Inscricaos_atuais=Inscricao::where('pessoa', $pessoa )->where('status', '<>','finalizado')->get();
+        $Inscricaos_atuais=Inscricao::where('pessoa', $pessoa )->whereIn('status', ['regular','pendente'])->get();
         foreach($Inscricaos_atuais as $Inscricao){
             $turma=Turma::find($Inscricao->turma);
             $turmas->push($turma);

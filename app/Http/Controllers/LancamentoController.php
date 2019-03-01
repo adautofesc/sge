@@ -111,12 +111,14 @@ class LancamentoController extends Controller
 		return view('financeiro.lancamentos.processando')->with('matriculas',$matriculas);
 
 	}
+	
 
+	
 	public function gerarTodosLancamentos($matricula){
-		dd($matricula->valor);
+		//dd($matricula->valor);
 		if($matricula->valor->valor>0){
-			for($i=1;$i<=$matricula->valor->parcelas;$i++){
-				$this->gerarIndividual19($matricula->pessoa, $i,$matricula->id,$matricula->valor->valor/$matricula->valor->parcelas);
+			for($i=1;$i<=$matricula->parcelas;$i++){
+				$this->gerarIndividual19($matricula->pessoa, $i,$matricula->id,($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas);
 
 			}
 		}
@@ -124,12 +126,15 @@ class LancamentoController extends Controller
 
 	public function gerarIndividual19($pessoa,$parcela,$matricula,$valor){
 		if(!$this->verificaSeLancada($matricula,$parcela)){
+			$matricula = Matricula::find($matricula);
 			$lancamento = new Lancamento; //gera novo lançamento
-			$lancamento->matricula=$matricula;
+			$lancamento->matricula=$matricula->id;
 			$lancamento->parcela=$parcela;
 			$lancamento->valor=$valor;
 			$lancamento->pessoa = $pessoa;
-			$lancamento->save();
+			$lancamento->referencia = $matricula->getNomeCurso();
+			if($lancamento->valor>0)
+				$lancamento->save();
 		}
 	}
 

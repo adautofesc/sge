@@ -130,6 +130,9 @@ class loginController extends Controller
 						}
 						Session::put('sge_fesc_logged','yes');
 						Session::put('usuario',$usuario->pessoa);
+						$_SERVER['PHP_AUTH_USER'] = 'sge';
+						$_SERVER['PHP_AUTH_USER'] = 'dev1123';
+					
 
 						$usuario = Pessoa::where('id',$usuario->pessoa)->first();
             			$array_nome = explode(' ',$usuario->nome);

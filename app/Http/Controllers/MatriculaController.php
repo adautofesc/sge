@@ -897,6 +897,14 @@ where nt.matricula>1');
         return $pessoas;
     }
 
+    public function arquivo($tipo,$id){
+        //Tipo
+        //inscricao
+        //cancelamento de matricula
+        //cancelamento de inscricao
+
+    }
+
 
         
 

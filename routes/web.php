@@ -52,10 +52,17 @@ Route::middleware('login') ->group(function(){
 
 	Route::get('home', 'painelController@index');
 
+	Route::get('download/{arquivo}',function ($arquivo){
+		// Atenção a divisoria de pasta deve ser a string -.-
+		//use a função str_replace('/','-.-', $arquivo) para codificar a pasta.
+		return App\classes\Arquivo::download($arquivo);
+
+	});
+	/*
 	Route::prefix('arquivo')->group(function(){
 		route::get('/atestado/{id}','AtestadoController@arquivo');
 
-	});
+	});*/
 	Route::get('/atestado/{id}', 'painelController@index');
 	
 	Route::get('/relatorios/alunos-concluintes','InscricaoController@relatorioConcluintes');
@@ -182,9 +189,9 @@ Route::middleware('login') ->group(function(){
 			Route::get('fase3','BoletoController@carneFase3');//associa parcelas aos boletos
 			Route::get('fase4','BoletoController@carneFase4');//gera pdf
 			Route::get('fase5','BoletoController@carneFase5');//confirma impressão
-			Route::get('fase6','BoletoController@carneFase6');//gera xls
-			Route::get('fase7','BoletoController@carneFase7');//gera remessa
-			Route::get('concluido',function(){ return view('financeiro.carne.concluido');});
+			Route::get('fase6','BoletoController@carneFase6');//gera remessa
+			Route::get('fase7','BoletoController@carneFase7');//confirma remessa
+			Route::get('fase8','BoletoController@carneFase8');//download de arquivos
 
 		});
 

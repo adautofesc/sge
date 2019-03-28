@@ -34,8 +34,11 @@ Gerador de carnês
     </div>
 </div>
 <br>
-
-<a id="botao" href="/financeiro/carne/fase1" class="btn btn-primary">Iniciar geração</a>
+@if(isset($_GET['pessoa']))
+<a id="botao" href="/financeiro/carne/fase1/{{$_GET['pessoa']}}" class="btn btn-primary">Iniciar geração</a>
+@else
+<a id="botao" href="/financeiro/carne/fase1/" class="btn btn-primary">Iniciar geração</a>
+@endif
 
 
     

@@ -184,14 +184,14 @@ Route::middleware('login') ->group(function(){
 		});
 		Route::prefix('carne')->group(function(){
 			Route::get('gerar', function(){ return view('financeiro.carne.home');});
-			Route::get('fase1','BoletoController@carneFase1');//gera lancamentos
-			Route::get('fase2','BoletoController@carneFase2');//gera boletos
-			Route::get('fase3','BoletoController@carneFase3');//associa parcelas aos boletos
-			Route::get('fase4','BoletoController@carneFase4');//gera pdf
-			Route::get('fase5','BoletoController@carneFase5');//confirma impressão
-			Route::get('fase6','BoletoController@carneFase6');//gera remessa
-			Route::get('fase7','BoletoController@carneFase7');//confirma remessa
-			Route::get('fase8','BoletoController@carneFase8');//download de arquivos
+			Route::get('fase1/{pessoa?}','BoletoController@carneFase1');//gera lancamentos
+			Route::get('fase2/{pessoa?}','BoletoController@carneFase2');//gera boletos
+			Route::get('fase3/{pessoa?}','BoletoController@carneFase3');//associa parcelas aos boletos
+			Route::get('fase4/{pessoa?}','BoletoController@carneFase4');//gera pdf
+			Route::get('fase5/{pessoa?}','BoletoController@carneFase5');//confirma impressão
+			Route::get('fase6/{pessoa?}','BoletoController@carneFase6');//gera remessa
+			Route::get('fase7/{pessoa?}','BoletoController@carneFase7');//confirma remessa
+			Route::get('fase8/{pessoa?}','BoletoController@carneFase8');//download de arquivos
 
 		});
 

@@ -30,7 +30,7 @@
                                 </li>
                                 @endif
                                 
-                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','19'))
+                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','24'))
                                 <li  >
                                     <a href="{{asset('/financeiro')}}"> <i class="fa fa-usd"></i> Financeiro </a>
                                 </li>

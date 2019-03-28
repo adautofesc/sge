@@ -300,8 +300,12 @@ class BoletoController extends Controller
 		//alterar status para impresso.
 		//gerar arquivo remessa
 		//alterar status para emitido
+	
+			//$matriculas = Matricula::whereIn('status',['ativa','pendente'])->where('pessoa','22610')->paginate(50);
+		
+			$matriculas = Matricula::whereIn('status',['ativa','pendente'])->paginate(50);
 
-		$matriculas = Matricula::whereIn('status',['ativa','pendente'])->paginate(50);
+
 		$LC = new LancamentoController;
 		foreach($matriculas as $matricula){
 			$LC->gerarTodosLancamentos($matricula);
@@ -314,30 +318,32 @@ class BoletoController extends Controller
 
 	//Fase 2 - criação dos boletos dos carnes.
 	public function carneFase2(){
+
 		$boletos = array();
 		////peguei as pessoas que tem parcelas em aberto
-		$pessoas = Lancamento::select('pessoa')
-								->where('boleto',null)
-								->where('status',null)
-								->groupBy('pessoa')
-								->orderBy('pessoa')
-								->orderBy('parcela')
-								//->toSql();
-								->paginate(100);
-		//dd($pessoas);
+		
+			//$pessoas = Lancamento::where('pessoa','22610')->paginate(100);
+		
+			$pessoas = Lancamento::select('pessoa')
+									->where('boleto',null)
+									->where('status',null)
+									->groupBy('pessoa')
+									->orderBy('pessoa')
+									->orderBy('parcela')
+									->paginate(100);
+			//dd($pessoas);
 
 
 		foreach($pessoas as $pessoa){
 
-			//Aqui são gerados os meses.
-			for($i=3;$i<8;$i++){
+			//Aqui são gerados os meses.***************************************************************************************************************************
+			//************************************************************************************************************************ Atenção!
+			for($i=2;$i<8;$i++){
 				//verificar se tem boletoabero
 				$boleto_existente = Boleto::where('pessoa',$pessoa->pessoa)
-											->where('vencimento',date('Y-'.str_pad($i,2, "0", STR_PAD_LEFT).'-20'))
+											->where('vencimento', 'like', date('Y-'.str_pad($i,2, "0", STR_PAD_LEFT).'-20%'))
 											->whereIn('status',['gravado','impresso','emitido','pago'])
 											->get();
-				
-
 				if(count($boleto_existente)==0){
 					$boletos[$pessoa->pessoa][$i] = 'Boleto para '.date('20/'.$i.'/Y') ;
 					$boleto =new Boleto;
@@ -359,11 +365,21 @@ class BoletoController extends Controller
 	}
 	//associação das parcelas com os boletos
 	public function carneFase3(){
-		$boletos = Boleto::where('status','gravado')
-							->where('valor','<=',0)
-							->orderBy('pessoa')
-							->orderBy('vencimento')
-							->paginate(100);
+
+		
+			/*$boletos = Boleto::where('status','gravado')
+								->where('valor','<=',0)
+								->where('pessoa','22610')
+								->orderBy('pessoa')
+								->orderBy('vencimento')
+								->paginate(100);*/
+
+		
+			$boletos = Boleto::where('status','gravado')
+								->where('valor','<=',0)
+								->orderBy('pessoa')
+								->orderBy('vencimento')
+								->paginate(100);
 
 		foreach($boletos as $boleto){
 
@@ -434,13 +450,16 @@ class BoletoController extends Controller
 	}
 	public function carneFase4(){
 
-		//contador******************************
+		//contador
+		/*
 		list($usec, $sec) = explode(' ', microtime());
 		$script_start = (float) $sec + (float) $usec;
-		//**************************
+		*/
 
-
-		$boletos = Boleto::where('status','gravado')->orderBy('pessoa')->paginate(500);
+		
+			//$boletos = Boleto::where('status','gravado')->where('pessoa', '22610')->paginate(500);
+	
+			$boletos = Boleto::where('status','gravado')->orderBy('pessoa')->paginate(500);
 		
 		//$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
 		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
@@ -464,12 +483,13 @@ class BoletoController extends Controller
 		$html->gerarCarne($dest = $html::OUTPUT_SAVE, $save_path = 'documentos/carnes/'.date('Y-m-d_').$_GET['page'].'.pdf');
 
 		//********************* finaliza contador
+		/*
 		list($usec, $sec) = explode(' ', microtime());
 		$script_end = (float) $sec + (float) $usec;
-		$elapsed_time = round($script_end - $script_start, 5);
+		$elapsed_time = round($script_end - $script_start, 5);*/
 		//****************************************************
 
-		$this->logMe(date('Y-m-d H:i:s').' Executado metodo fase 4 em '.$elapsed_time.' secs. Consumindo '.round(((memory_get_peak_usage(true) / 1024) / 1024), 2).' Mb de memória.');
+		//$this->logMe(date('Y-m-d H:i:s').' Executado metodo fase 4 em '.$elapsed_time.' secs. Consumindo '.round(((memory_get_peak_usage(true) / 1024) / 1024), 2).' Mb de memória.');
 
 
 		return view('financeiro.carne.fase4')->with('boletos',$boletos);
@@ -478,7 +498,10 @@ class BoletoController extends Controller
 	}
 
 	public function carneFase5(){
-		$boletos =Boleto::where('status','gravado')->orWhere('status','cancelar')->paginate(500);
+		
+			//$boletos =Boleto::where('status','gravado')->orWhere('status','cancelar')->where('pessoa','22610')->paginate(500);
+		
+			$boletos =Boleto::where('status','gravado')->orWhere('status','cancelar')->paginate(500);
 		foreach($boletos as $boleto){
 			$boleto->status = 'impresso';
 			$boleto->save();
@@ -510,7 +533,10 @@ class BoletoController extends Controller
 		    ]
 		);
 		
-		$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->paginate(500);
+		
+			//$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->where('pessoa', '22610')->paginate(500);
+		
+			$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->paginate(500);
 
 		if(count($boletos) == 0)
 			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Nenhum boleto encontrado']);
@@ -546,7 +572,10 @@ class BoletoController extends Controller
 	}
 
 	public function carneFase7(){
-		$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->paginate(100);
+		
+			//$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->where('pessoa', '22610')->paginate(100);
+		
+			$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->paginate(100);
 		foreach($boletos as $boleto){
 			if($boleto->status == 'cancelar'){
 				$boleto->status = 'cancelado';

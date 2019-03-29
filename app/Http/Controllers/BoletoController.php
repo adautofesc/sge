@@ -301,7 +301,7 @@ class BoletoController extends Controller
 		//gerar arquivo remessa
 		//alterar status para emitido
 	
-			//$matriculas = Matricula::whereIn('status',['ativa','pendente'])->where('pessoa','22610')->paginate(50);
+			//$matriculas = Matricula::whereIn('status',['ativa','pendente'])->where('pessoa','7514')->paginate(50);
 		
 			$matriculas = Matricula::whereIn('status',['ativa','pendente'])->paginate(50);
 
@@ -322,7 +322,7 @@ class BoletoController extends Controller
 		$boletos = array();
 		////peguei as pessoas que tem parcelas em aberto
 		
-			//$pessoas = Lancamento::where('pessoa','22610')->paginate(100);
+			//$pessoas = Lancamento::where('pessoa','7514')->paginate(100);
 		
 			$pessoas = Lancamento::select('pessoa')
 									->where('boleto',null)
@@ -369,7 +369,7 @@ class BoletoController extends Controller
 		
 			/*$boletos = Boleto::where('status','gravado')
 								->where('valor','<=',0)
-								->where('pessoa','22610')
+								->where('pessoa','7514')
 								->orderBy('pessoa')
 								->orderBy('vencimento')
 								->paginate(100);*/
@@ -449,6 +449,7 @@ class BoletoController extends Controller
 
 	}
 	public function carneFase4(){
+		
 
 		//contador
 		/*

@@ -891,6 +891,69 @@ class BoletoController extends Controller
 		
 
 	}
+	public function cancelamentoDireto($id){
+		$boleto=Boleto::find($id);
+
+		if($boleto != null){
+			if($boleto->status == 'impresso'){
+				$boleto->status = 'cancelar';
+				$boleto->save();
+				LancamentoController::cancelarPorBoleto($id);
+			}
+			if($boleto->status == 'gravado'){
+				$boleto->status = 'cancelado';
+				$boleto->save();
+				LancamentoController::atualizaLancamentos($id,null);
+			}
+			if($boleto->status == 'emitido'){
+				$boleto->status = 'cancelar';
+				$boleto->save();
+				LancamentoController::cancelarPorBoleto($id);
+			}
+			if($boleto->status == 'divida'){
+				$boleto->status = 'cancelado';
+				$boleto->save();
+				LancamentoController::cancelarPorBoleto($id);
+			}
+			if($boleto->status == 'cancelar'){
+				LancamentoController::cancelarPorBoleto($id);
+			}
+			if($boleto->status == 'cancelado'){
+				LancamentoController::cancelarPorBoleto($id);
+			}
+		}
+
+		LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento. Motivo: Cancelamento de matrícula');
+
+
+		
+	}
+
+
+
+	public function removeFevereiro(){
+		$matriculas = Matricula::where('data','>=','2019-02-20')->whereIn('status',['ativa','pendente'])->get();
+
+		//dd($matriculas);
+		foreach($matriculas as $matricula){
+			$boletos = Boleto::where('pessoa',$matricula->pessoa)->where('vencimento','like','2019-02-20%')->where('status','emitido')->get();
+			foreach($boletos as $boleto){
+				$boleto->status = 'cancelar';
+				$boleto->save();
+				$lancamentos = Lancamento::where('boleto', $boleto->id)->get();
+				LogController::alteracaoBoleto($boleto->id, 'Boleto cancelado. Sistema lançou erroneamente o boleto de fevereiro');
+				foreach($lancamentos as $lancamento){
+					$lancamento->boleto = null;
+					$lancamento->referencia = substr($lancamento->referencia,23);
+					$lancamento->save();
+				}
+
+			}
+			
+		}
+
+	}
+	
 	public function gerarBoleto(Boleto $boleto){
 		$cliente=Pessoa::find($boleto->pessoa);
 		$cliente=PessoaController::formataParaMostrar($cliente);

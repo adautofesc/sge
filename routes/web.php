@@ -51,6 +51,7 @@ Route::middleware('login') ->group(function(){
 
 
 	Route::get('home', 'painelController@index');
+	Route::get('fevereiro', 'BoletoController@removeFevereiro');
 
 	Route::get('download/{arquivo}',function ($arquivo){
 		// Atenção a divisoria de pasta deve ser a string -.-

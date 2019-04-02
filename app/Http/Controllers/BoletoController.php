@@ -928,6 +928,43 @@ class BoletoController extends Controller
 
 		
 	}
+	public function reimpressaoCarnes(){
+		//contador
+		/*
+		list($usec, $sec) = explode(' ', microtime());
+		$script_start = (float) $sec + (float) $usec;
+		*/
+
+		
+			//$boletos = Boleto::where('status','gravado')->where('pessoa', '22610')->paginate(500);
+	
+			$boletos = Boleto::where('status','emitido')->orderBy('pessoa')->paginate(500);
+		
+		//$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
+		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
+
+
+		foreach($boletos as $boleto){
+			$boleto_completo = $this->gerarBoleto($boleto);
+			//$boleto->status = 'impresso';
+			//$boleto->save();
+			$html->addBoleto($boleto_completo);
+		}
+		//$html->hideInstrucoes();
+		//$html->showPrint();
+		
+		//return $html->gerarCarne();
+		//dd(getcwd());
+		if(!isset($_GET['page']))
+			$_GET['page']=1;
+
+		//$html->gerarCarne($dest = $html::OUTPUT_SAVE, $save_path = 'documentos/carnes/'.date('Y-m-d_').$_GET['page'].'.pdf');
+		$html->gerarCarne($dest = $html::OUTPUT_SAVE, $save_path = 'documentos/carnes/'.date('Y-m-d_').$_GET['page'].'.pdf');
+
+	
+		return view('financeiro.carne.fase4')->with('boletos',$boletos);
+
+	}
 
 
 
@@ -941,7 +978,7 @@ class BoletoController extends Controller
 				$boleto->status = 'cancelar';
 				$boleto->save();
 				$lancamentos = Lancamento::where('boleto', $boleto->id)->get();
-				LogController::alteracaoBoleto($boleto->id, 'Boleto cancelado. Sistema lançou erroneamente o boleto de fevereiro');
+				LogController::alteracaoBoleto($boleto->id, 'Boleto cancelado por lançamento indevido na geração dos carnês.');
 				foreach($lancamentos as $lancamento){
 					$lancamento->boleto = null;
 					$lancamento->referencia = substr($lancamento->referencia,23);

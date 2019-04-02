@@ -402,9 +402,15 @@
                     <div class="header-block">                       
                          <p class="title" style="color:white">Boletos</p>
                          &nbsp;
-                         <a href="{{asset('financeiro/boletos/novo'.'/'.session('pessoa_atendimento'))}}" title="Gerar novo boleto individual" class="text-white te" style="" ><i class=" fa fa-plus-circle "></i></a>
+                         <a href="{{asset('financeiro/boletos/novo'.'/'.session('pessoa_atendimento'))}}" title="Gerar novo boleto individual" class="text-white te" style="" ><i class=" fa fa-plus-circle "></i></a><!--
                          &nbsp;
-                         <a href="#"  onclick="gerarBoletos();" title="Gerar boleto com todas parcelas em aberto para daqui 5 dias úteis." class="text-white te" style="" ><i class=" fa fa-cogs "></i></a>
+                         <a href="#"  onclick="gerarBoletos();" title="Gerar boleto com todas parcelas em aberto para daqui 5 dias úteis." class="text-white te" style="" ><i class=" fa fa-cogs "></i></a>-->
+                         &nbsp;
+                         <a href="/financeiro/boletos/imprimir-carne/{{$pessoa->id}}" target="_blank"  onclick="" title="Imprimir carnê" class="text-white te" style="" ><i class=" fa fa-stack-overflow "></i></a>
+                          &nbsp;
+                         <a href="#"  onclick="cancelarBoletos();" title="Cancelar todos boletos em aberto." class="text-white" style="color:red;" ><i class=" fa fa-times"></i></a>
+                          &nbsp;
+                         <a href="#"  onclick="gerarCarneIndividual();" title="Gerar carnês" class="text-white" style="color:red;" ><i class=" fa fa-cogs"></i></a>
                     </div>
 
 
@@ -561,8 +567,9 @@
                         <p class="title" style="color:white">Parcelas em aberto</p>
                         &nbsp;
                         <a href="{{asset('financeiro/lancamentos/novo'.'/'.session('pessoa_atendimento'))}}" title="Gerar parcela individual" class="text-white te" style="" ><i class=" fa fa-plus-circle "></i></a>
+                        <!--
                         &nbsp;
-                         <a href="#" onclick="gerarLancamentos()"  title="Gerar parcela atual das matriculas ativas" class="text-white te" style="" ><i class=" fa fa-cogs "></i></a>
+                         <a href="#" onclick="gerarLancamentos()"  title="Gerar parcela atual das matriculas ativas" class="text-white te" style="" ><i class=" fa fa-cogs "></i></a>-->
                     </div>
                 </div>
                 <div class="card-block">
@@ -640,6 +647,12 @@
 @endsection
 @section('scripts')
 <script>
+    function gerarCarneIndividual(item)
+  {
+    if(confirm("Confimar geração de todos boletos e parcelas?")){
+        $(location).attr('href','{{asset("/financeiro/boletos/gerar-carne")}}/{{$pessoa->id}}');
+    }
+  }
   function remover(inscricao){
     if(confirm('Tem certeza que deseja cancelar esta inscrição?'))
         window.location.replace("{{asset('secretaria/matricula/inscricao/apagar')}}/"+inscricao);
@@ -660,6 +673,10 @@
   function cancelarBoleto(boleto){
     if(confirm('Tem certeza que deseja cancelar este boleto? Todos lançamentos deste serão cancelados.'))
         window.location.replace("{{asset('/financeiro/boletos/cancelar/')}}/"+boleto);
+  }
+  function cancelarBoletos(){
+    if(confirm('Tem certeza que deseja cancelar todos os boletos futuros?'))
+        window.location.replace("{{asset('/financeiro/boletos/cancelar-todos/')}}/{{$pessoa->id}}");
   }
   function reativarBoleto(boleto){
     if(confirm('Tem certeza que deseja cancelar este boleto? Todos lançamentos deste serão cancelados.'))

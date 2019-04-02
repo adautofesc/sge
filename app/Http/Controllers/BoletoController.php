@@ -100,6 +100,32 @@ class BoletoController extends Controller
 		//return $boletos;
 		return view('financeiro.boletos.lote')->with('boletos',$boletos)->with('boletosx',$boletosx);
 	}
+
+	public function imprimirCarne($pessoa){
+		$boletos = Boleto::where('pessoa',$pessoa)->where('status','emitido')->get();
+		
+		//$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
+		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
+
+
+		foreach($boletos as $boleto){
+			$boleto_completo = $this->gerarBoleto($boleto);
+			//$boleto->status = 'impresso';
+			//$boleto->save();
+			$html->addBoleto($boleto_completo);
+		}
+		//$html->hideInstrucoes();
+		//$html->showPrint();
+		
+		//return $html->gerarCarne();
+		//dd(getcwd());
+		if(!isset($_GET['page']))
+			$_GET['page']=1;
+
+		//$html->gerarCarne($dest = $html::OUTPUT_SAVE, $save_path = 'documentos/carnes/'.date('Y-m-d_').$_GET['page'].'.pdf');
+		return $html->gerarCarne($dest = $html::OUTPUT_STANDARD,$save_path=null);
+
+	}
 	public function gerarArquivoCSV(){
 /*
 		header('Content-Type: text/csv; charset=utf-8');
@@ -289,34 +315,31 @@ class BoletoController extends Controller
 
 	}
 
-	//fase 2
+	//****************************************************************************************************************************************
+	//****************************************************************************************************************************************
+	//****************************************************************************************************************************************
+
+	/**
+	 * Fase 1 - Geração de lançamentos de todas as matriculas.
+	 * @return [view]
+	 */
 	public function carneFase1(){
-		
-		
-		
-		//gerar boletos dessas matriculas
-		//gerar pdf dos carnês
-		//gerar csv dos carnês
-		//alterar status para impresso.
-		//gerar arquivo remessa
-		//alterar status para emitido
-	
-			//$matriculas = Matricula::whereIn('status',['ativa','pendente'])->where('pessoa','7514')->paginate(50);
-		
-			$matriculas = Matricula::whereIn('status',['ativa','pendente'])->paginate(50);
 
-
+		$matriculas = Matricula::whereIn('status',['ativa','pendente'])->paginate(50);
 		$LC = new LancamentoController;
 		foreach($matriculas as $matricula){
 			$LC->gerarTodosLancamentos($matricula);
 
 		}
-
 		return view('financeiro.carne.fase1')->with('matriculas',$matriculas);
+
 	}
 
-
-	//Fase 2 - criação dos boletos dos carnes.
+	
+	/**
+	 * Fase 2 - criação dos boletos por meses
+	 * @return [View]
+	 */
 	public function carneFase2(){
 
 		$boletos = array();
@@ -336,8 +359,7 @@ class BoletoController extends Controller
 
 		foreach($pessoas as $pessoa){
 
-			//Aqui são gerados os meses.***************************************************************************************************************************
-			//************************************************************************************************************************ Atenção!
+			//Aqui são gerados os meses.******************************************************************** Atenção!
 			for($i=2;$i<8;$i++){
 				//verificar se tem boletoabero
 				$boleto_existente = Boleto::where('pessoa',$pessoa->pessoa)
@@ -363,7 +385,12 @@ class BoletoController extends Controller
 
 
 	}
-	//associação das parcelas com os boletos
+	
+
+	/**
+	 * Fase 3  - Associação das parcelas (lançamentos) com os boletos.
+	 * @return [View]
+	 */
 	public function carneFase3(){
 
 		
@@ -644,7 +671,15 @@ class BoletoController extends Controller
 
 	}
 
+	//****************************************************************************************************************************************
+	//**************************************************************************************************************************************** fim do gerador
+	//****************************************************************************************************************************************
 
+	/**
+	 * Gerar boletos unicos e individuais para 5 dias corridos
+	 * @param  [type]
+	 * @return [type]
+	 */
 	public function cadastarIndividualmente($pessoa){
 		$vencimento = date('Y-m-d 23:23:59', strtotime("+5 days",strtotime(date('Y-m-d')))); 
 
@@ -700,50 +735,6 @@ class BoletoController extends Controller
 			
 		}//fim se qnde de lancamentos = 0
 		return redirect($_SERVER['HTTP_REFERER']);
-	}
-
-
-	public static function proximoMes(){
-		$mes = str_pad(date('m')+1,2,"0",STR_PAD_LEFT);
-		return date('Y') . '-' . $mes .'-20 23:59:59';
-	}
-
-	public static function relancarBoleto($id){
-		$boleto_antigo=Boleto::find($id);
-		$lancamentos = Lancamento::select('matricula')->distinct('matricula')->where('boleto',$id)->get();
-
-		$lancamentos_sintetizados=Lancamento::select(\DB::raw('distinct(matriculas.pessoa), sum(lancamentos.valor) as valor'))
-						->join('matriculas','lancamentos.matricula','matriculas.id')
-						->groupBy('matriculas.pessoa')
-						->whereIn('lancamentos.matricula',$lancamentos)
-						->where(function($query){
-							$query->where('lancamentos.status','!=','cancelado')->orwhere('lancamentos.status', null);
-						})							
-						->get(); //soma todas parcelas em aberto e agrupa por pessoa
-
-		$proxvencimento= BoletoController::proximoMes();//pega proxima data de vencimento
-
-		foreach($lancamentos_sintetizados as $ls){// para cada lancamento sintetizado _acho que sí vai rolar um mesmo.
-			if($ls->valor>0){
-			if(!BoletoController::verificaSeCadastrado($ls->pessoa,$ls->valor,$proxvencimento) ) {//verifica se já não foi gerado
-			//gerar boleto
-				
-					$boleto = new Boleto;
-					$boleto->pessoa=$ls->pessoa;
-					$boleto->vencimento=$proxvencimento;
-					$boleto->valor=$ls->valor;
-
-					//return $boleto;
-
-					$boleto->save();
-					return $boleto->id;
-					
-				}
-			}
-			else return 0;
-			//LancamentosController::atualizaLancamentos(22563,0,$boleto->id);
-		}
-
 	}
 	
 	
@@ -891,7 +882,7 @@ class BoletoController extends Controller
 		
 
 	}
-	public function cancelamentoDireto($id){
+	public function cancelamentoDireto($id,$motivo){
 		$boleto=Boleto::find($id);
 
 		if($boleto != null){
@@ -923,74 +914,98 @@ class BoletoController extends Controller
 			}
 		}
 
-		LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento. Motivo: Cancelamento de matrícula');
-
-
+		LogController::alteracaoBoleto($boleto->id, $motivo);
 		
 	}
-	public function reimpressaoCarnes(){
-		//contador
-		/*
-		list($usec, $sec) = explode(' ', microtime());
-		$script_start = (float) $sec + (float) $usec;
-		*/
-
-		
-			//$boletos = Boleto::where('status','gravado')->where('pessoa', '22610')->paginate(500);
-	
-			$boletos = Boleto::where('status','emitido')->orderBy('pessoa')->paginate(500);
-		
-		//$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
-		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
 
 
+	public function cancelarTodosVw($pessoa){
+		$pessoa = Pessoa::find($pessoa);
+		if($pessoa)
+			return view('financeiro.boletos.cancelamento-todos')->with('pessoa', $pessoa);
+		else
+			return Redirect::back()->withErrors(['Pessoa não encontrada']);
+	}
+
+
+	public function cancelarTodos(Request $r){
+		$boletos = Boleto::where('pessoa',$r->pessoa)->where('vencimento', '>', date('Y-m-d H:i:s'))->get();
+		//dd($boletos);
 		foreach($boletos as $boleto){
-			$boleto_completo = $this->gerarBoleto($boleto);
-			//$boleto->status = 'impresso';
-			//$boleto->save();
-			$html->addBoleto($boleto_completo);
+			$this->cancelamentoDireto($boleto->id,$r->motivo.$r->motivo2);
 		}
-		//$html->hideInstrucoes();
-		//$html->showPrint();
-		
-		//return $html->gerarCarne();
-		//dd(getcwd());
-		if(!isset($_GET['page']))
-			$_GET['page']=1;
-
-		//$html->gerarCarne($dest = $html::OUTPUT_SAVE, $save_path = 'documentos/carnes/'.date('Y-m-d_').$_GET['page'].'.pdf');
-		$html->gerarCarne($dest = $html::OUTPUT_SAVE, $save_path = 'documentos/carnes/'.date('Y-m-d_').$_GET['page'].'.pdf');
-
-	
-		return view('financeiro.carne.fase4')->with('boletos',$boletos);
-
+		return redirect('/secretaria/atender/'.$r->pessoa);
 	}
 
 
 
-	public function removeFevereiro(){
-		$matriculas = Matricula::where('data','>=','2019-02-20')->whereIn('status',['ativa','pendente'])->get();
 
-		//dd($matriculas);
+
+	/**
+	 * Gerador de parcelas e boletos 
+	 * @param  [integer] Pessoa
+	 * @return [type]
+	 */
+	public function gerarCarneIndividual($pessoa){
+
+		$matriculas = Matricula::whereIn('status',['ativa','pendente'])->where('pessoa',$pessoa)->get();
+		$LC = new LancamentoController;
 		foreach($matriculas as $matricula){
-			$boletos = Boleto::where('pessoa',$matricula->pessoa)->where('vencimento','like','2019-02-20%')->where('status','emitido')->get();
-			foreach($boletos as $boleto){
-				$boleto->status = 'cancelar';
-				$boleto->save();
-				$lancamentos = Lancamento::where('boleto', $boleto->id)->get();
-				LogController::alteracaoBoleto($boleto->id, 'Boleto cancelado por lançamento indevido na geração dos carnês.');
-				foreach($lancamentos as $lancamento){
-					$lancamento->boleto = null;
-					$lancamento->referencia = substr($lancamento->referencia,23);
-					$lancamento->save();
+			$LC->gerarTodosLancamentos($matricula);
+
+		}
+
+		$lancamentos = Lancamento::where('pessoa',$pessoa)->where('status', null )->where('boleto',null)->get();
+		//dd($lancamentos);
+
+
+		if(count($lancamentos)>0){
+
+			//Aqui são gerados os meses.******************************************************************** Atenção!
+			if(date('d')>=20)
+				$mes=date('m')+1;
+			else
+				$mes=date('m');
+
+
+			for($i=$mes;$i<8;$i++){
+				//verificar se tem boletoabero
+				$boleto_existente = Boleto::where('pessoa',$pessoa)
+											->where('vencimento', 'like', date('Y-'.str_pad($i,2, "0", STR_PAD_LEFT).'-20%'))
+											->whereIn('status',['gravado','impresso','emitido','pago'])
+											->get();
+				if(count($boleto_existente)==0){
+				
+					$boleto =new Boleto;
+					$boleto->vencimento = date('Y-'.$i.'-20');
+					$boleto->pessoa = $pessoa;
+					$boleto->status = 'gravado';
+					$boleto->valor = 0;
+					if($boleto->pessoa > 0)
+						$boleto->save();
 				}
+				
+
 
 			}
-			
 		}
+		
+
+
+
 
 	}
+
+
+
+
+
 	
+	/**
+	 * Gerador de boleto para impressão ou remessa.
+	 * @param  Boleto
+	 * @return [type]
+	 */
 	public function gerarBoleto(Boleto $boleto){
 		$cliente=Pessoa::find($boleto->pessoa);
 		$cliente=PessoaController::formataParaMostrar($cliente);
@@ -1067,27 +1082,13 @@ class BoletoController extends Controller
 
 		}
 
-		/*
-		public function corrigirBoletos(){
-			$boletos = \DB::select("select distinct boleto from lancamentos l join boletos b on l.boleto = b.id where vencimento like '2018-03-28 23:59:00' and parcela = 0 group by b.id");
-			foreach($boletos as $boleto){
-				$lancamentos=Lancamento::where('boleto',$boleto->boleto)
-								->get();
-
-				foreach($lancamentos as $lancamento){
-					$lancamento->boleto=null;
-					$lancamento->save();
-				}
-				$boletao = Boleto::find($boleto->boleto);
-				$boletao->delete();
-
-			}
-		}*/
 		public function novo($pessoa){
 			$lancamentos = Lancamento::where('pessoa',$pessoa)->where('boleto',null)->where('status',null)->get();
 			return view('financeiro.boletos.novo')->with('lancamentos',$lancamentos)->with('pessoa',$pessoa);
 
 		}
+
+
 		public function create(Request $r){
 			if($r->valor >0){
 				if(isset($r->lancamentos)){

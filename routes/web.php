@@ -183,7 +183,7 @@ Route::middleware('login') ->group(function(){
 			Route::post('editar/{lancamento}','LancamentoController@update');
 			Route::middleware('liberar.recurso:19')->get('gerar/{parcela}', 'LancamentoController@gerarLancamentos' );//gerar parcela para todas pessoas
 		});
-		Route::prefix('carne')->group(function(){
+		Route::middleware('liberar.recurso:19')->prefix('carne')->group(function(){
 			Route::get('gerar', function(){ return view('financeiro.carne.home');});
 			Route::get('fase1/{pessoa?}','BoletoController@carneFase1');//gera lancamentos
 			Route::get('fase2/{pessoa?}','BoletoController@carneFase2');//gera boletos
@@ -194,6 +194,7 @@ Route::middleware('login') ->group(function(){
 			Route::get('fase7/{pessoa?}','BoletoController@carneFase7');//confirma remessa
 			Route::get('fase8/{pessoa?}','BoletoController@carneFase8');//download de arquivos
 
+
 		});
 
 		Route::prefix('boletos')->group(function(){
@@ -201,19 +202,16 @@ Route::middleware('login') ->group(function(){
 			Route::get('editar/{id}','BoletoController@editar');
 			Route::post('editar/{id}','BoletoController@update');
 			Route::get('imprimir/{id}','BoletoController@imprimir');
-
-			
-
-
+			Route::get('imprimir-carne/{pessoa}','BoletoController@imprimirCarne');
 			//Route::get('registrar/{id}','BoletoController@registrar');//registrar para o banco
 			Route::get('divida-ativa','BoletoController@dividaAtiva');// envia boletos para divida ativa;
-
 			Route::get('listar-por-pessoa','BoletoController@listarPorPessoa');
-
 			Route::get('informacoes/{id}','BoletoController@historico');
-
 			Route::get('cancelar/{id}','BoletoController@cancelarView');
+			Route::get('gerar-carne/{pessoa}','BoletoController@gerarCarneIndividual');
 			Route::middleware('liberar.recurso:23')->post('cancelar/{id}','BoletoController@cancelar');
+			Route::middleware('liberar.recurso:23')->get('cancelar-todos/{id}','BoletoController@cancelarTodosVw');
+			Route::middleware('liberar.recurso:23')->post('cancelar-todos/{id}','BoletoController@cancelarTodos');
 
 
 

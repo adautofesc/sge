@@ -377,6 +377,16 @@ class MatriculaController extends Controller
         $matricula->save();
         $insc=InscricaoController::cancelarPorMatricula($matricula->id);
         
+        //cacelar os boletos automaticamente
+        if($r->cancelar_boletos == true){
+            $boleto_controller = new BoletoController;
+            $boletos = \App\Boleto::where('pessoa',$matricula->pessoa)->where('vencimento', '>', date('Y-m-d H:i:s'))->get();
+            //dd($boletos);
+            foreach($boletos as $boleto){
+                $boleto_controller->cancelamentoDireto($boleto->id,'Cancelamento de matrícula.');
+
+            }
+        }
         //LancamentoController::cancelamentoMatricula($id);
         if(count($r->cancelamento))
         AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id. " motivo: ".implode(', ',$r->cancelamento), $matricula->pessoa, Session::get('usuario'));

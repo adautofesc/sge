@@ -102,13 +102,17 @@ class BoletoController extends Controller
 	}
 
 	public function imprimirCarne($pessoa){
-		$boletos = Boleto::where('pessoa',$pessoa)->where('status','emitido')->get();
+		$boletos = Boleto::where('pessoa',$pessoa)->whereIn('status',['emitido','gravado','impresso'])->get();
 		
 		//$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
 		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
 
 
 		foreach($boletos as $boleto){
+			if($boleto->status == 'gravado'){
+				$boleto->status = 'impresso';
+				$boleto->save();
+			}
 			$boleto_completo = $this->gerarBoleto($boleto);
 			//$boleto->status = 'impresso';
 			//$boleto->save();
@@ -873,6 +877,7 @@ class BoletoController extends Controller
 			if($boleto->status == 'cancelado'){
 				LancamentoController::cancelarPorBoleto($boleto->id);
 			}
+
 		}
 
 		LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento. Motivo:' . $r->motivo.$r->motivo2);
@@ -914,7 +919,7 @@ class BoletoController extends Controller
 			}
 		}
 
-		LogController::alteracaoBoleto($boleto->id, $motivo);
+		LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento. Motivo: '.$motivo);
 		
 	}
 
@@ -961,7 +966,7 @@ class BoletoController extends Controller
 
 		if(count($lancamentos)>0){
 
-			//Aqui são gerados os meses.******************************************************************** Atenção!
+			//Aqui são gerados os meses.******************************************************************** Atenção! Fase 2
 			if(date('d')>=20)
 				$mes=date('m')+1;
 			else
@@ -983,13 +988,76 @@ class BoletoController extends Controller
 					$boleto->valor = 0;
 					if($boleto->pessoa > 0)
 						$boleto->save();
+				}//endif
+			}//endfor
+
+			//************************************************************************************************ fase 3
+			$boletos = Boleto::where('status','gravado')
+								->where('valor','<=',0)
+								->where('pessoa',$pessoa)
+								->orderBy('vencimento')
+								->get();
+
+			foreach($boletos as $boleto){
+
+				//pegar primeira parcela livre de cada matricula
+				$inscricoes = Lancamento::where('pessoa',$boleto->pessoa)
+										->where('boleto',null)
+										->where('valor','>',0)
+										->where('status',null)
+										->orderBy('parcela')
+										->groupBy('matricula')->get();
+
+				$data_util = new \App\classes\Data(\App\classes\Data::converteParaUsuario($boleto->vencimento));
+
+				foreach($inscricoes as $inscricao){
+					$inscricao->boleto = $boleto->id;
+					$inscricao->referencia = 'Parcela de '.$data_util->Mes().' - '.$inscricao->referencia;
+					$boleto->valor = $boleto->valor+$inscricao->valor;
+					$inscricao->save();	
+					$boleto->save();		
 				}
 				
+				//pegar primeiro desconto da cada matrícula
+				$descontos = Lancamento::where('pessoa',$boleto->pessoa)
+										->where('boleto',null)
+										->where('valor','<',0)
+										->where('status',null)
+										->orderBy('parcela')
+										->groupBy('matricula')
+										->get();
 
+				foreach($descontos as $desconto){
+					$desconto->boleto = $boleto->id;
+					$boleto->valor = $boleto->valor+$desconto->valor;
+					$desconto->save();
+				}
 
+				//enquanto o boleto nao tiver valor, acrescentar parcela, senão, apagar boleto.
+				while($boleto->valor <=0){
+					$inscricao = Lancamento::where('pessoa',$boleto->pessoa)
+											->where('boleto',null)
+											->where('valor','>',0)
+											->where('status',null)
+											->orderBy('parcela')
+											->first();
+					if($inscricao){
+						$inscricao->boleto = $boleto->id;
+						$inscricao->save();	
+						$boleto->valor = $boleto->valor+$inscricao->valor;	
+						$boleto->save();
+
+					}
+					else{
+						$boleto->forceDelete();
+						break;
+					}
+				}
 			}
-		}
-		
+
+		}//endif lancamentos (fase 2)
+
+		return redirect()->back();
 
 
 

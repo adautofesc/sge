@@ -177,6 +177,7 @@ Route::middleware('login') ->group(function(){
 			Route::get('gerar-individual/{pessoa}','LancamentoController@gerarLancamentosPorPessoa');
 			Route::get('cancelar/{lancamento}','LancamentoController@cancelar');
 			Route::get('excluir/{lancamento}', 'LancamentoController@excluir');
+			Route::get('excluir-abertos/{pessoa}', 'LancamentoController@excluirAbertos');
 			Route::get('reativar/{lancamento}','LancamentoController@reativar');
 			Route::get('relancar/{lancamento}','LancamentoController@relancarParcela');
 			Route::get('editar/{lancamento}','LancamentoController@editar');

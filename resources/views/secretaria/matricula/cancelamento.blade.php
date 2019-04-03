@@ -98,6 +98,17 @@
                 </div>
             </div>        
         </div>
+        <div class="form-group row"> 
+            <label class="col-sm-2 form-control-label text-xs-right">ATENÇÂO!</label>
+            <div class="col-sm-10"> 
+                <div>
+                    <label>
+                    <input class="checkbox" type="checkbox" name="cancelar_boletos" checked="checked" >
+                    <span>Cancelar boletos</span>
+                    </label>
+                </div>
+            </div>
+        </div>
 
 		<div class="form-group row">
 			<label class="col-sm-2 form-control-label text-xs-right"></label>

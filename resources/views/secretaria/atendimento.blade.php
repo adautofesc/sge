@@ -564,9 +564,11 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Parcelas em aberto</p>
+                        <p class="title" style="color:white" title="O conjunto de lançamentos de cada matrícula geram os boletos.">Lançamentos (parcelas)</p>
                         &nbsp;
                         <a href="{{asset('financeiro/lancamentos/novo'.'/'.session('pessoa_atendimento'))}}" title="Gerar parcela individual" class="text-white te" style="" ><i class=" fa fa-plus-circle "></i></a>
+                        &nbsp;
+                         <a href="#"  onclick="excluirLancamentos();" title="Excluir todos lançamentos (parcelas) em aberto." class="text-white" style="color:red;" ><i class=" fa fa-times"></i></a>
                         <!--
                         &nbsp;
                          <a href="#" onclick="gerarLancamentos()"  title="Gerar parcela atual das matriculas ativas" class="text-white te" style="" ><i class=" fa fa-cogs "></i></a>-->
@@ -579,15 +581,16 @@
                                 <div class="col-xl-5 " style="line-height:40px !important; padding-left: 30px;">
                                     <div><i class=" fa fa-usd "></i> &nbsp;<small><b>Referência</b></small></div>
                                 </div>
+                                <div class="col-xl-1" style="line-height:40px !important;">
+                                    <div><small><b>Matricula</b></small></div>
+                                </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div><small><b>Parcela</b></small></div>
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div title="Vencimento"><small><b>Valor</b></small></div>
                                 </div>
-                                <div class="col-xl-1" style="line-height:40px !important;">
-                                    <div><small><b>Status</b></small></div>
-                                </div>
+                                
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div>
                                         <small><b>Opções</b></small>
@@ -604,7 +607,10 @@
                             <div class="row">
                                                          
                                 <div class="col-xl-5" style="line-height:40px !important; padding-left: 50px;">
-                                    <div></i> &nbsp;<small>{{$lancamento->referencia}} {{$lancamento->matricula}}</small></div>
+                                    <div></i> &nbsp;<small>{{$lancamento->referencia}}</small></div>
+                                </div>
+                                <div class="col-xl-1" style="line-height:40px !important;">
+                                    <div><small>{{$lancamento->matricula}}</small></div>
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div><small>Parcela {{$lancamento->parcela}} </small></div>
@@ -613,9 +619,7 @@
                                     <div><small>R$ {{$lancamento->valor}}</small></div>
                                 </div>
                               
-                                <div class="col-xl-1" style="line-height:40px !important;">
-                                    <div><small>{{$lancamento->status}}</small></div>
-                                </div>
+                                
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div>
                                         @if($lancamento->status == null)
@@ -723,6 +727,13 @@ function excluirParcela(id){
 
     if(confirm("Deseja excluir a parcela "+id)){
          $(location).attr('href','{{asset("/financeiro/lancamentos/excluir").'/'}}'+id);
+    }
+
+}
+function excluirLancamentos(){
+
+    if(confirm("Deseja excluir TODAS as parcelas em aberto")){
+         $(location).attr('href','{{asset("/financeiro/lancamentos/excluir-abertos")}}/{{$pessoa->id}}');
     }
 
 }

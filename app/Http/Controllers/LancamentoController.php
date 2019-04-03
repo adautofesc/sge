@@ -710,6 +710,15 @@ class LancamentoController extends Controller
 
 		return redirect($_SERVER['HTTP_REFERER']);
 	}
+	public function excluirAbertos($pessoa){
+
+		$lancamentos = Lancamento::where('pessoa',$pessoa)->where('status',null)->where('boleto',null)->get();
+		foreach($lancamentos as $lancamento){
+			$lancamento->delete();
+		}
+
+		return redirect()->back()->withErrors(['Lançamentos excluídos']);
+	}
 	public function reativar($id){
 		$lancamento = Lancamento::find($id);
 		if($lancamento != null){

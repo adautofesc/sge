@@ -110,7 +110,7 @@
                         &nbsp;&nbsp;Lista de atestados</a>
                     </div>
                     <div>
-                        <a href="#" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="secretaria/upload" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-archive "></i>
                         &nbsp;&nbsp;Enviar documentos em lote</a>
                     </div>

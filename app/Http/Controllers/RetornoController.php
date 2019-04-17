@@ -13,7 +13,7 @@ class RetornoController extends Controller
 			foreach($arquivos as $arquivo){
 				//dd($arquivo);
 				if (!empty($arquivo)) {
-		            $arquivo->move('retornos',$arquivo->getClientOriginalName());
+		            $arquivo->move('documentos/retornos',$arquivo->getClientOriginalName());
 		        }
 
 			}
@@ -23,7 +23,7 @@ class RetornoController extends Controller
 
 		public function listarRetornos(){
 
-			chdir( 'retornos/' );
+			chdir( 'documentos/retornos/' );
 			$files = glob("{*.ret}", GLOB_BRACE);
 			rsort($files);
 
@@ -90,7 +90,7 @@ class RetornoController extends Controller
 			return view('financeiro.retorno.lista', compact('retornos'))->with('processado',true);
 		}
 		public function listarRetornosComErro(){
-			chdir( 'retornos/' );
+			chdir( 'documentos/retornos/' );
 			$files = glob("{*.ret_ERRO}", GLOB_BRACE);
 			rsort($files);
 
@@ -149,15 +149,17 @@ class RetornoController extends Controller
 		}
 
 		public function retorno($arquivo){
-			$arquivo='retornos/'.$arquivo;
+			$arquivo='documentos/retornos/'.$arquivo;
 			$retorno = new \Eduardokum\LaravelBoleto\Cnab\Retorno\Cnab240\Banco\Bb($arquivo);
 			$retorno->processar();
 			dd($retorno);
 
 		}
 		public function analisarArquivo($arquivo){
-			$arquivo='retornos/'.$arquivo;
-			//return $arquivo;
+			$arquivo='documentos/retornos/'.$arquivo;
+			if(!file_exists($arquivo))
+				return "Arquivo ".$arquivo." não encontrado.";
+			
 			$titulos_baixados=array();
 			try{
 				$retorno = new \Eduardokum\LaravelBoleto\Cnab\Retorno\Cnab240\Banco\Bb($arquivo);
@@ -184,17 +186,23 @@ class RetornoController extends Controller
 			$taxas=0;
 			$descontos=0;
 			$liquidado=0;
+
 			foreach($detalhes as $linha){
-				//dd($linha);$linha->dataCredito  str_replace('2838669','',$linha->nossoNumero)*1
+				//dd($linha);
+				/*
+				if($linha->ocorrencia == '02')
+					return "Registrado Boleto ".$linha->nossoNumero;*/
+
+				
 				
 				 // se o começo é o da carteira de boletos
-				if($linha->valorRecebido >0){
+				
 					$titulos_baixados[$linha->nossoNumero]['id'] = $linha->nossoNumero;
 					$titulos_baixados[$linha->nossoNumero]['data'] = $linha->dataOcorrencia;
 					$titulos_baixados[$linha->nossoNumero]['valor'] = 'R$ '.number_format($linha->valorRecebido+$linha->valorTarifa+$linha->valorMulta+$linha->valorMora,2,',','.');
 					$boleto = Boleto::find(str_replace('2838669','',$linha->nossoNumero)*1);
 					if($boleto != null){
-						$titulos_baixados[$linha->nossoNumero]['boleto_status'] = $boleto->status;
+						$titulos_baixados[$linha->nossoNumero]['boleto_status'] = $linha->ocorrenciaTipo.') '.$linha->ocorrenciaDescricao.' '.$linha->error;
 					}
 					else{
 						$titulos_baixados[$linha->nossoNumero]['boleto_status'] = 'Nro. Inválido';
@@ -205,7 +213,7 @@ class RetornoController extends Controller
 					$acrescimos = $acrescimos + $linha->valorMulta + $linha->valorMora;
 					$taxas = $taxas+$linha->valorTarifa;
 					$descontos = $descontos+$linha->valorDesconto;
-				}	
+					
 						
 			}
 
@@ -214,7 +222,7 @@ class RetornoController extends Controller
 
 		}
 		public function processarArquivo($arquivo){
-			$arquivo='retornos/'.$arquivo;
+			$arquivo='documentos/retornos/'.$arquivo;
 			$retorno = new \Eduardokum\LaravelBoleto\Cnab\Retorno\Cnab240\Banco\Bb($arquivo);
 			$retorno->processar();
 			//dd($retorno);
@@ -234,33 +242,46 @@ class RetornoController extends Controller
 
 			foreach($detalhes as $linha){
 				//dd($linha);
+				$boleto= Boleto::find(str_replace('2838669','',$linha->nossoNumero)*1);//procura o boleto no banco
+				if(!is_null($boleto)){
 
-				if($linha->valorRecebido > 0 ){ // se o começo é o da carteira de boletos
-					$titulos_baixados[str_replace('2838669','',$linha->nossoNumero)*1] = $linha->dataOcorrencia;
-					$boleto= Boleto::find(str_replace('2838669','',$linha->nossoNumero)*1);//procura o boleto no banco
-					if($boleto != null){ //se o boleto estiver no sistema
-						if($boleto->status == 'pago' || $boleto->status == 'cancelar' || $boleto->status == 'cancelado'){
-							// se o boleto já tiver sido pago, ou estivesse programado pra ser cancelado, reembolsar na proxima parcela
-							$lancamento=LancamentoController::lancarDesconto($boleto->id,$boleto->valor);
-						}
-							
-						$boleto->status = 'pago';
-						$boleto->pagamento = \Carbon\Carbon::createFromFormat('d/m/Y H:i:s', $data, 'Europe/London');
-						$boleto->pago = $linha->valor;
-						$boleto->encargos = $linha->valorMulta + $linha->valorMora + $linha->valorIOF;
-						$boleto->descontos = $linha->valorDesconto;
-						$boleto->retorno = $retorno_id;
-						$boleto->save();
-						LogController::alteracaoBoleto($boleto->id,'Boleto processado pelo arquivo de retorno: '.$retorno_id);
-						
+					switch($linha->ocorrenciaTipo){
+						case 1: //Liquidação
+							$boleto->status = 'pago';
+							$boleto->pagamento = \Carbon\Carbon::createFromFormat('d/m/Y H:i:s', $data, 'Europe/London');
+							$boleto->pago = $linha->valor;
+							$boleto->encargos = $linha->valorMulta + $linha->valorMora + $linha->valorIOF;
+							$boleto->descontos = $linha->valorDesconto;
+							$boleto->retorno = $retorno_id;
+							$boleto->save();
+						break;
+						case 3: //Entrada confirmada
+							if($boleto->status == 'gravado' || $boleto->status == 'impresso'){
+								$boleto->status = 'emitido';
+								$boleto->save();
+							}
+						break;
+						case 2:
+						case 6:// Baixas
+							$boleto->status = 'cancelado';
+							$boleto->save();
+						break;
+						case 9:
+							if($boleto->status == 'cancelar'){
+								$boleto->status = 'cancelado';
+								$boleto->save();
+							}
+						break;
+						//9 -  entrada rejeitada
 					}
+					LogController::alteracaoBoleto($boleto->id,'Boleto processado pelo arquivo de retorno: '.$retorno_id.': '.$linha->ocorrenciaDescricao.' '.$linha->error);
 				}		
 			}
 			rename($arquivo, $arquivo.'_PROC');
-			return redirect(asset('financeiro/boletos/retorno/analisar'.'/'.substr($arquivo,9).'_PROC'))->withErrors([$arquivo.' foi processado com sucesso']);
+			return redirect(asset('financeiro/boletos/retorno/analisar'.'/'.substr($arquivo,20).'_PROC'))->withErrors([$arquivo.' foi processado com sucesso']);
 		}
 		public function reProcessarArquivo($arquivo){
-			$arquivo='retornos/'.$arquivo;
+			$arquivo='documentos/retornos/'.$arquivo;
 			$retorno = new \Eduardokum\LaravelBoleto\Cnab\Retorno\Cnab240\Banco\Bb($arquivo);
 			$retorno->processar();
 			//dd($retorno);
@@ -281,41 +302,49 @@ class RetornoController extends Controller
 			//return $retorno_existe;
 
 			foreach($detalhes as $linha){
-				//dd($linha);
+				$boleto= Boleto::find(str_replace('2838669','',$linha->nossoNumero)*1);//procura o boleto no banco
+				if(!is_null($boleto)){
 
-				if($linha->valorRecebido > 0 ){ // se o começo é o da carteira de boletos
-					$boleto= Boleto::find(str_replace('2838669','',$linha->nossoNumero)*1);//procura o boleto no banco
-					if($boleto != null){ //se o boleto estiver no sistema
-						if($boleto->status == 'cancelar' || $boleto->status == 'cancelado'){
-							// se o boleto já tiver sido pago, ou estivesse programado pra ser cancelado, reembolsar na proxima parcela
-							$lancamento=LancamentoController::lancarDesconto($boleto->id,$boleto->valor);
-						}
-							
-						$boleto->status = 'pago';
-						$boleto->pagamento = \Carbon\Carbon::createFromFormat('d/m/Y H:i:s', $data, 'Europe/London');;
-						$boleto->pago = $linha->valor;
-						$boleto->encargos = $linha->valorMulta + $linha->valorMora + $linha->valorIOF;
-						$boleto->descontos = $linha->valorDesconto;
-						$boleto->save();
-						
+					switch($linha->ocorrenciaTipo){
+						case 1: //liquidação
+							$boleto->status = 'pago';
+							$boleto->pagamento = \Carbon\Carbon::createFromFormat('d/m/Y H:i:s', $data, 'Europe/London');
+							$boleto->pago = $linha->valor;
+							$boleto->encargos = $linha->valorMulta + $linha->valorMora + $linha->valorIOF;
+							$boleto->descontos = $linha->valorDesconto;
+							$boleto->retorno = $retorno_id;
+							$boleto->save();
+							break;
+						case 3:// Entrada confirmada
+							if($boleto->status == 'gravado' || $boleto->status == 'impresso'){
+								$boleto->status = 'emitido';
+								$boleto->save();
+							}
+							break;
+						case 2:// Baixas
+						case 6:
+							$boleto->status = 'cancelado';
+							$boleto->save();
+							break;
 					}
-				}		
+					LogController::alteracaoBoleto($boleto->id,'Boleto processado pelo arquivo de retorno: '.$retorno_id.": ".$linha->ocorrenciaDescricao.' '.$linha->error);
+				}				
 			}
 			if(substr($arquivo,-4) != 'PROC'){
 				rename($arquivo, $arquivo.'_PROC');
 				$arquivo = $arquivo.'_PROC';
 			}
 			
-			return redirect(asset('financeiro/boletos/retorno/analisar'.'/'.substr($arquivo,9)))->withErrors([$arquivo.' foi reprocessado.']);
+			return redirect(asset('financeiro/boletos/retorno/analisar'.'/'.substr($arquivo,20)))->withErrors([$arquivo.' foi reprocessado.']);
 		}
 		
 		public function marcarErro($arquivo){
-			$arquivo='retornos/'.$arquivo;
+			$arquivo='documentos/retornos/'.$arquivo;
 			rename($arquivo, $arquivo.'_ERRO');
 			return redirect($_SERVER['HTTP_REFERER'])->withErrors([$arquivo.' foi descartado pois apresentou erro ao ser analisado. Faça um novo upload ou gere outro arquivo de retorno no BB e tente novamente.']);
 		}
 		public function marcarProcessado($arquivo){
-			$arquivo='retornos/'.$arquivo;
+			$arquivo='documentos/retornos/'.$arquivo;
 			rename($arquivo, $arquivo.'_PROC');
 			return redirect(asset('financeiro/boletos/retorno/arquivos'))->withErrors([$arquivo.' foi marcado como processado.']);
 		}

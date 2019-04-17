@@ -36,7 +36,7 @@
                       <tbody>
                      @foreach($titulos as $titulo)
                         <tr>
-                          <th scope="row">{{$titulo['id']}}</th>
+                          <th scope="row"><a href="/financeiro/boletos/informacoes/{{str_replace('2838669','',$titulo['id'])*1}}">{{$titulo['id']}}</a></th>
                           <td>{{$titulo['data']}}</td>
                           <td>{{$titulo['valor']}}</td>
                           <td>{{$titulo['boleto_status']}}</td>
@@ -80,10 +80,10 @@
                
                 <div class="card-block">
                     @if($processado == false)
-                    <a class="btn btn-primary" href="#" onclick="processar('{{substr($arquivo,9)}}');">Processar</a>
+                    <a class="btn btn-primary" href="#" onclick="processar('{{substr($arquivo,20)}}');">Processar</a>
                     @endif
-                    <a class="btn btn-primary" href="#" onclick="reprocessar('{{substr($arquivo,9)}}');">Reprocessar</a>
-                    <a class="btn btn-primary" href="#" onclick="descartar('{{substr($arquivo,9)}}');">Descartar</a>
+                    <a class="btn btn-primary" href="#" onclick="reprocessar('{{substr($arquivo,20)}}');">Reprocessar</a>
+                    <a class="btn btn-primary" href="#" onclick="descartar('{{substr($arquivo,20)}}');">Descartar</a>
                     <a class="btn btn-primary" href="{{asset('/financeiro/boletos/retorno/arquivos')}}">Arquivos</a>
 
 
@@ -107,6 +107,7 @@
     }
     function reprocessar(item){
         if(confirm('Tem certeza que quer REPROCESSAR o arquivo? Os títulos pagos não serão processados.')){
+            alert("{{asset('/financeiro/boletos/retorno/reprocessar/')}}/"+item);
             window.location.replace("{{asset('/financeiro/boletos/retorno/reprocessar/')}}/"+item);
 
         }

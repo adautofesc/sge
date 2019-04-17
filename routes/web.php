@@ -385,6 +385,11 @@ Route::middleware('login') ->group(function(){
 		Route::get('turma/{turma}', 'InscricaoController@verInscricoes');
 		Route::post('turma/{turma}', 'InscricaoController@inscreverAlunoLote');
 
+		Route::get('upload','SecretariaController@uploadGlobal_vw');
+		Route::post('upload','SecretariaController@uploadGlobal');
+
+
+
 
 		Route::prefix('matricula')->group(function(){
 			Route::get('/nova/{pessoa}','InscricaoController@novaInscricao');

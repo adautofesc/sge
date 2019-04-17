@@ -610,10 +610,10 @@ class BoletoController extends Controller
 			$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->paginate(100);
 		foreach($boletos as $boleto){
 			if($boleto->status == 'cancelar'){
-				$boleto->status = 'cancelado';
+				//$boleto->status = 'cancelado';
 			}
 			else{
-				$boleto->status = 'emitido';
+				//$boleto->status = 'emitido';
 				$boleto->remessa = date('YmdHis');
 
 			}
@@ -795,6 +795,12 @@ class BoletoController extends Controller
 				PessoaController::notificarErro($boleto->pessoa,6);
 				continue;
 			}
+
+			if($boleto->status == 'cancelar')
+				$boleto_completo->baixarBoleto();
+				
+		
+			/*
 			if($boleto->status == 'cancelar'){
 				$boleto_completo->baixarBoleto();
 				$boleto->status='cancelado';	
@@ -804,6 +810,7 @@ class BoletoController extends Controller
 				$boleto->status='emitido';
 				
 			}
+			 */
 
 			$boleto->remessa = intval(date('ymdHi'));
 			$boleto->save();
@@ -811,8 +818,12 @@ class BoletoController extends Controller
 		}
 		
 		//dd($remessa);
-		$remessa->save( 'documentos/remessas/'.date('Ymd').'_'.$_GET["page"].'rem');
-		$arquivo = date('Ymd').'_'.$_GET["page"].'.rem';
+		if(isset($_GET["page"]))
+			$page = $_GET["page"];
+		else
+			$page = 1;
+		$remessa->save( 'documentos/remessas/'.date('Ymd').'_'.$page.'.rem');
+		$arquivo = date('Ymd').'_'.$page.'.rem';
 		return view('financeiro.remessa.arquivo',compact('boletos'))->with('arquivo',$arquivo);
 
 	}
@@ -1595,10 +1606,15 @@ class BoletoController extends Controller
 	}
 	public function historico($id){
 		$boleto = Boleto::find($id);
-		$dados = \App\Log::where('tipo','boleto')->where('codigo',$id)->get();
-		$dados_pessoa = \App\Atendimento::where('descricao','like','%boleto%'.$id."%")->get();
-
-		return view('financeiro.boletos.informacoes')->with('boleto',$boleto)->with('logs',$dados)->with('pessoais',$dados_pessoa);
+		if(!is_null($boleto)){
+			$pessoa= Pessoa::find($boleto->pessoa);
+			$dados = \App\Log::where('tipo','boleto')->where('codigo',$id)->get();
+			$dados_pessoa = \App\Atendimento::where('descricao','like','%boleto%'.$id."%")->get();
+			return view('financeiro.boletos.informacoes')->with('boleto',$boleto)->with('logs',$dados)->with('pessoais',$dados_pessoa)->with('pessoa',$pessoa);
+		}
+		else{
+			return view('financeiro.boletos.informacoes');
+		}
 	}
 
 		

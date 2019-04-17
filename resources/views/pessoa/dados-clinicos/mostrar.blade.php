@@ -61,7 +61,7 @@
                         </a> 
                         @if(file_exists('documentos/atestados/'.$atestado->id.'.pdf'))
                             
-                                <a href="{{'/documentos/atestados/'.$atestado->id.'.pdf'}}" target="_blank"><i class="fa fa-file"></i></a>
+                                <a href="/download/{{str_replace('/','-.-', 'documentos/atestados/'.$atestado->id.'.pdf')}}" target="_blank"><i class="fa fa-file"></i></a>
                              
                         @endif
                             Atestado nº {{$atestado->id}}

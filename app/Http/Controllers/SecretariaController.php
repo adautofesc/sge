@@ -143,4 +143,43 @@ class SecretariaController extends Controller
 
 		return view('secretaria.atendimento', compact('pessoa'))->with('matriculas',$matriculas)->with('boletos',$boletos)->with('lancamentos',$lancamentos)->with('inscricoes',$inscricoes)->with('errosPessoa',$errosMsg)->with('atestado',$atestado);
 	}
+	public function uploadGlobal_vw(){
+		return view('secretaria.upload-global');
+	}
+	public function uploadGlobal(Request $r){
+		$arquivos = $r->file('arquivos');
+            foreach($arquivos as $arquivo){
+                //dd($arquivo);
+                if (!empty($arquivo)) {
+                    //$arquivo->move('documentos/pprocessar', $arquivo->getClientOriginalName());
+                    switch (substr($arquivo->getClientOriginalName(), 5,2)) {
+                    	case 'MT':
+                    		 $arquivo->move('documentos/matriculas/termos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		break;
+                    	case 'CM':
+                    		$arquivo->move('documentos/matriculas/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		break;
+                    	case 'CI':
+                    		$arquivo->move('documentos/inscricoes/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		break;
+                    	case 'AM':
+                    		$arquivo->move('documentos/atestados/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		break;
+                    	case 'RD':
+                    		$arquivo->move('documentos/bolsas/requerimentos', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		break;
+                    	default :
+                    		return 'O arquivo "'.$arquivo->getClientOriginalName().'" não segue o padrão de nomenclatura FESC_XX----.pdf, verifique o nome e envie novamente.';
+                    		break;
+
+
+                    }
+                }
+            }
+		return view('secretaria.upload-global')->withErrors(["Arquivos enviados com sucesso."]);
+	}
+
+	public function processar($arquivo){
+
+	}
 }

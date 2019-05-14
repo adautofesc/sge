@@ -19,7 +19,7 @@ class RequisitosController extends Controller
     public function index()
     {
         $requisitos=$this->listar();
-        return view('pedagogico.curso.requisito.lista', compact('requisitos'));
+        return view('pedagogico.curso.requisito.lista', compact('requisitos'))->with('filtros',['nome'=>0,'descricao'=>1,'importancia'=>2]);
     }
 
     /**
@@ -124,7 +124,7 @@ class RequisitosController extends Controller
 
     public static function listar()
     {
-        $requisitos=Requisito::all();
+        $requisitos=Requisito::paginate(50);
         return $requisitos;
     }
 

@@ -44,10 +44,15 @@
                 </div>
                 <div class="card-block">
                      <div>
-                        <a href="/secretaria/relatorios/turmas"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="/relatorios/turmas"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Alunos 1º Semestre de 2018</a>
-                    </div>            
+                        &nbsp;&nbsp;Relatório de Turmas</a>
+                    </div>
+                    <div>
+                        <a href="/relatorios/inscricoes"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Relatório de Inscrições</a>
+                    </div>        
                 </div>
             </div>
         </div>

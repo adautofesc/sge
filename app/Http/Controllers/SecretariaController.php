@@ -11,6 +11,8 @@ use App\Lancamento;
 use App\Inscricao;
 use Session;
 use App\classes\Strings;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 class SecretariaController extends Controller
 {
@@ -154,19 +156,165 @@ class SecretariaController extends Controller
                     //$arquivo->move('documentos/pprocessar', $arquivo->getClientOriginalName());
                     switch (substr($arquivo->getClientOriginalName(), 5,2)) {
                     	case 'MT':
-                    		 $arquivo->move('documentos/matriculas/termos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		if(!file_exists('documentos/matriculas/termos/'.preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf'))
+                    			$arquivo->move('documentos/matriculas/termos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		else
+                    			$arquivo->move('documentos/matriculas/termos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'_'.date('Ymd').'pdf');
+                    		$msg[$arquivo->getClientOriginalName()] = 'Arquivo '.$arquivo->getClientOriginalName().' carregado com sucesso.';
+                    		break;
+
+                    	case 'CM':
+                    		if(!file_exists('documentos/matriculas/cancelamentos/'.preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf'))
+                    			$arquivo->move('documentos/matriculas/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		else
+                    			$arquivo->move('documentos/matriculas/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'_'.date('Ymd').'pdf');
+                    		$msg[$arquivo->getClientOriginalName()] = 'Arquivo '.$arquivo->getClientOriginalName().' carregado com sucesso.';
+                    		break;
+                 
+                    	case 'CI':
+                    		if(!file_exists('documentos/inscricoes/cancelamentos/'.preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf'))
+                    			$arquivo->move('documentos/inscricoes/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		else
+                    			$arquivo->move('documentos/inscricoes/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'_'.date('Ymd').'pdf');
+                    		$msg[$arquivo->getClientOriginalName()] = 'Arquivo '.$arquivo->getClientOriginalName().' carregado com sucesso.';
+                    		break;
+                  
+                    	case 'AM':
+                    		if(!file_exists('documentos/atestados/'.preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf'))
+                    			$arquivo->move('documentos/atestados/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		else
+                    			$arquivo->move('documentos/atestados/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'_'.date('Ymd').'pdf');
+                    		$msg[$arquivo->getClientOriginalName()] = 'Arquivo '.$arquivo->getClientOriginalName().' carregado com sucesso.';
+                    		break;
+                    		
+                    	case 'RD':
+                    	case 'RQ':
+                    		if(!file_exists('documentos/bolsas/requerimentos/'.preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf'))
+                    			$arquivo->move('documentos/bolsas/requerimentos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		else
+                    			$arquivo->move('documentos/bolsas/requerimentos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'_'.date('Ymd').'pdf');
+                    		$msg[$arquivo->getClientOriginalName()] = 'Arquivo '.$arquivo->getClientOriginalName().' carregado com sucesso.';
+                    		break;
+                    		
+                    	case 'PA':
+                    		if(!file_exists('documentos/bolsas/pareceres/'.preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf'))
+                    			$arquivo->move('documentos/bolsas/pareceres/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		else
+                    			$arquivo->move('documentos/bolsas/pareceres/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'_'.date('Ymd').'pdf');
+                    		$msg[$arquivo->getClientOriginalName()] = 'Arquivo '.$arquivo->getClientOriginalName().' carregado com sucesso.';
+                    		break;
+                    		
+                    	default :
+                    		$msg[$arquivo->getClientOriginalName()] = 'O arquivo "'.$arquivo->getClientOriginalName().'" não segue o padrão de nomenclatura FESC_XX----.pdf, verifique o nome e envie novamente.';
+                    		break;
+
+
+                    }
+                }
+            }
+		return view('secretaria.upload-global')->withErrors($msg);
+	}
+
+	public function processar($arquivo){
+
+	}
+	public function processarDocumentos(){
+
+		$dir_iterator = new RecursiveDirectoryIterator('documentos/pprocessar/');
+		$iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
+
+		foreach ($iterator as $arquivo) {
+		   if($arquivo->isFile()){
+			   	switch (substr($arquivo->getFilename(), 5,2)) {
+                	case 'MT':
+                		 if(!file_exists('documentos/matriculas/termos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf'))
+                		 	rename( $arquivo,'documentos/matriculas/termos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf');
+                		 else
+                		 	rename( $arquivo,'documentos/matriculas/termos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'_'.date('Ymd').'.pdf');
+                		//$arquivo->move('documentos/matriculas/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo));
+                		 //$arquivo->move('documentos/matriculas/termos/', preg_replace( '/[^0-9]/is', '', $arquivo));
+                		 $msgs[$arquivo->getFilename()] = $arquivo->getFilename(). 'processado com sucesso';
+                		break;
+                	case 'CM':
+                		if(!file_exists('documentos/matriculas/cancelamentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf'))
+                		 	rename( $arquivo,'documentos/matriculas/cancelamentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf');
+                		 else
+                		 	rename( $arquivo,'documentos/matriculas/cancelamentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'_'.date('Ymd').'.pdf');
+                		//$arquivo->move('documentos/matriculas/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo));
+                		$msgs[$arquivo->getFilename()] = $arquivo->getFilename(). ' processado com sucesso';
+                		break;
+                	case 'CI':
+                		if(!file_exists('documentos/inscricoes/cancelamentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf'))
+                		 	rename( $arquivo,'documentos/inscricoes/cancelamentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf');
+                		 else
+                		 	rename( $arquivo,'documentos/inscricoes/cancelamentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'_'.date('Ymd').'.pdf');
+                		//$arquivo->move('documentos/inscricoes/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo));
+                		$msgs[$arquivo->getFilename()] = $arquivo->getFilename(). ' processado com sucesso';
+                		break;
+                	case 'AM':
+                		if(!file_exists('documentos/atestados/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf'))
+                		 	rename( $arquivo,'documentos/atestados/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf');
+                		 else
+                		 	rename( $arquivo,'documentos/atestados/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'_'.date('Ymd').'.pdf');
+                		//$arquivo->move('documentos/atestados/', preg_replace( '/[^0-9]/is', '', $arquivo));
+                		$msgs[$arquivo->getFilename()] = $arquivo->getFilename(). ' processado com sucesso';
+                		break;
+                	case 'RD':
+                	case 'RQ':
+                		if(!file_exists('documentos/bolsas/requerimentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf'))
+                		 	rename( $arquivo,'documentos/bolsas/requerimentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf');
+                		 else
+                		 	rename( $arquivo,'documentos/bolsas/requerimentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'_'.date('Ymd').'.pdf');
+                		//$arquivo->move('documentos/bolsas/requerimentos', preg_replace( '/[^0-9]/is', '', $arquivo));
+                		$msgs[$arquivo->getFilename()] = $arquivo->getFilename(). ' processado com sucesso';
+                		break;
+                	case 'PA':
+                		if(!file_exists('documentos/bolsas/pareceres/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf'))
+                		 	rename( $arquivo,'documentos/bolsas/pareceres/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf');
+                		 else
+                		 	rename( $arquivo,'documentos/bolsas/pareceres/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'_'.date('Ymd').'.pdf');
+                		//$arquivo->move('documentos/atestados/', preg_replace( '/[^0-9]/is', '', $arquivo));
+                		$msgs[$arquivo->getFilename()] = $arquivo->getFilename(). ' processado com sucesso';
+                		break;
+                	default :
+                		$msgs[$arquivo->getFilename()]= 'Erro: O arquivo "'.$arquivo.'" não segue o padrão de nomenclatura FESC_XX----.pdf, verifique o nome e envie novamente.';
+                		break;
+
+	            }
+		   }
+		}
+		return view('secretaria.arquivos-processados')->with('logs',$msgs);
+
+
+
+
+
+/*
+
+
+
+		chdir( 'documentos/pprocessar/' );
+		$arquivos = glob("{*.pdf}", GLOB_BRACE);
+		dd($arquivos);
+		foreach($arquivos as $arquivo){
+                //dd($arquivo);
+                if (!empty($arquivo)) {
+                    //$arquivo->move('documentos/pprocessar', $arquivo->getClientOriginalName());
+                    switch (substr($arquivo, 5,2)) {
+                    	case 'MT':
+                    		 $arquivo->move('documentos/matriculas/termos/', preg_replace( '/[^0-9]/is', '', $arquivo));
                     		break;
                     	case 'CM':
-                    		$arquivo->move('documentos/matriculas/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		$arquivo->move('documentos/matriculas/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo));
                     		break;
                     	case 'CI':
-                    		$arquivo->move('documentos/inscricoes/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		$arquivo->move('documentos/inscricoes/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo));
                     		break;
                     	case 'AM':
-                    		$arquivo->move('documentos/atestados/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		$arquivo->move('documentos/atestados/', preg_replace( '/[^0-9]/is', '', $arquivo));
                     		break;
                     	case 'RD':
-                    		$arquivo->move('documentos/bolsas/requerimentos', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		$arquivo->move('documentos/bolsas/requerimentos', preg_replace( '/[^0-9]/is', '', $arquivo));
                     		break;
                     	default :
                     		return 'O arquivo "'.$arquivo->getClientOriginalName().'" não segue o padrão de nomenclatura FESC_XX----.pdf, verifique o nome e envie novamente.';
@@ -175,11 +323,6 @@ class SecretariaController extends Controller
 
                     }
                 }
-            }
-		return view('secretaria.upload-global')->withErrors(["Arquivos enviados com sucesso."]);
-	}
-
-	public function processar($arquivo){
-
+            }*/
 	}
 }

@@ -23,6 +23,8 @@ Route::get('meuboleto', function(){ return view('financeiro.boletos.meuboleto');
 Route::post('meuboleto', 'BoletoController@segundaVia');
 Route::get('boleto/{id}','BoletoController@imprimir');
 Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
+Route::get('ipca','ValorController@getIPCA');
+Route::get('correcao-valor','ValorController@correcaoValor');
 
 
 //Login ***********************************************************
@@ -294,6 +296,8 @@ Route::middleware('login') ->group(function(){
 			Route::get('/status/{status}/{bolsas}','BolsaController@alterarStatus');
 			Route::get('analisar/{bolsa}','BolsaController@analisar');
 			Route::post('analisar/{bolsa}','BolsaController@gravarAnalise');
+			Route::get('desvincular/{matricula}/{bolsa}','BolsaController@desvincular');
+
 
 		});
 		Route::middleware('liberar.recurso:16')->prefix('documentos')->group(function(){
@@ -378,6 +382,7 @@ Route::middleware('login') ->group(function(){
 		Route::get('atendimento','SecretariaController@atender');
 		Route::get('atender','SecretariaController@atender')->name('secretaria.atender');
 		Route::get('atender/{var}','SecretariaController@atender');
+		Route::get('processar-documentos','SecretariaController@processarDocumentos');
 
 		Route::get('turmas', 'TurmaController@listarSecretaria')->name('secretaria.turmas');
 		Route::get('turmas-disponiveis/{turmas}/{filtros}', 'TurmaController@turmasDisponiveis');

@@ -173,4 +173,89 @@ class ValorController extends Controller
         return $valor;
 
     }
+
+    public function getIPCA($data_inicial='201901' ,$data_final = null){
+        $acumulado = 0;
+        if($data_final ==null)
+            $data_final=date('Ym');
+
+        //https://api.bcb.gov.br/dados/serie/bcdata.sgs.10844/dados?formato=json
+        
+        $url = "http://api.sidra.ibge.gov.br/values/t/1419/p/".$data_inicial."-".$data_final."/n1/all/h/n/v/63/c315/7169/d/v63%205?formato=json";
+
+        $ch = curl_init();
+        //não exibir cabeçalho
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        // redirecionar se hover
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        // desabilita ssl
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        // Will return the response, if false it print the response
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        //envia a url
+        curl_setopt($ch, CURLOPT_URL, $url);
+        //executa o curl
+        $result = curl_exec($ch);
+        //encerra o curl
+
+        $status = curl_getinfo($ch);
+
+        if($status["http_code"]== 400 || $status["http_code"]== 500)
+                throw new \Exception("Erro ".$status["http_code"]. " ao acessar URL com os dados IPCA em ValorController:getIPCA-> ".$url, 1);
+                
+        curl_close($ch);
+
+
+        $ws = json_decode($result);
+        //dd($ws);
+       
+       
+        if(isset($ws->erro) || !$ws)
+                throw new \Exception("Erro ao processar dados do IPCA. Verifique o status do serviço do IBGE: ".$ws->erro, 1);
+
+
+        return $ws;
+                
+        
+    }
+
+
+    function jurosSimples($valor, $taxa, $parcelas) {
+            $taxa = $taxa / 100;
+     
+            $m = $valor * (1 + $taxa * $parcelas);
+            $valParcela = number_format($m / $parcelas, 2, ",", ".");
+     
+            return $valParcela;
+    }
+     
+    function jurosComposto($valor, $taxa, $parcelas) {
+            $taxa = $taxa / 100;
+     
+            $valParcela = $valor * pow((1 + $taxa), $parcelas);
+            $valParcela = number_format($valParcela / $parcelas, 2, ",", ".");
+     
+            return $valParcela;
+    }
+
+    function correcaoValor($valor='66', $vencimento = '2018-09-20'){
+        //calcula os dias
+        $vencimento_formatado = strtotime($vencimento);
+        $margem = strtotime("+1 month", $vencimento_formatado);
+        $data__atual_formatada = strtotime(date('Y-m-d'));
+        $diferenca = (($data__atual_formatada - $vencimento_formatado)/86400)-1;
+
+        //calcula correcao
+        $taxa_acumulada_anterior= $this->getIPCA( date('Ym', $margem));
+        $taxa_acumulada= $this->getIPCA( date('Ym', $vencimento_formatado));
+     
+
+
+
+
+        return   $valor_taxa;
+        //
+    }
+
+
 }

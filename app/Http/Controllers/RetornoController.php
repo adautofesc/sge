@@ -52,6 +52,7 @@ class RetornoController extends Controller
 
 			return view('financeiro.retorno.lista')->with('arquivos',$arquivos);
 		}
+		
 		public function listarRetornosProcessados(){
 			$retornos = Retorno::orderByDesc('id')->paginate(50);
 

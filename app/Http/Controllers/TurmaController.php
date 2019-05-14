@@ -153,6 +153,36 @@ class TurmaController extends Controller
             $turmas = $turmas->whereIn('turmas.status', $filtros['status']); 
         }
 
+        if(isset($filtros['pordata']) && count($filtros['pordata'])){
+            $str1 = substr($filtros['pordata'][0],1,10);
+            if($str1 == 'undefinedt'){
+                $str2 = substr($filtros['pordata'][0],11,10);
+            }
+            else{
+                try{
+                    $data1 = \DateTime::createFromFormat('Y-m-d', $str1);
+                    if($data1 && $data1->format('Y-m-d') === $str1){
+                       $turmas = $turmas->where('data_inicio','>=',$data1);
+                    }
+                    
+                    $str2 = substr($filtros['pordata'][0],12,10);
+                }
+                catch(\Exception $e){
+                    unset($filtros['pordata']);
+                }
+            }
+
+            /*
+            pega os primeiros caracteres
+            tenta transformar em data
+            verifica se é data válida
+            filtra turmas com a data de inicio nessa data
+            pega os ultimos caracteres
+            verifica se é data valida
+            filtra turmas com sata de termino <= data fornecida*/
+            
+        }
+
         $turmas = $turmas->orderBy('cursos.nome')->orderBy('disciplinas.nome');
         /*
 

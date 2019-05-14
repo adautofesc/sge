@@ -379,6 +379,7 @@ class MatriculaController extends Controller
         
         //cacelar os boletos automaticamente
         if($r->cancelar_boletos == true){
+            //cancela os boletos
             $boleto_controller = new BoletoController;
             $boletos = \App\Boleto::where('pessoa',$matricula->pessoa)->where('vencimento', '>', date('Y-m-d H:i:s'))->get();
             //dd($boletos);
@@ -386,6 +387,9 @@ class MatriculaController extends Controller
                 $boleto_controller->cancelamentoDireto($boleto->id,'Cancelamento de matrícula.');
 
             }
+            //apagar lançamentos
+            $LC = new LancamentoController;
+            $LC->excluirSemBoletosPorMatricula($matricula->id);
         }
         //LancamentoController::cancelamentoMatricula($id);
         if(count($r->cancelamento))
@@ -393,7 +397,13 @@ class MatriculaController extends Controller
         else
             AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id, $matricula->pessoa, Session::get('usuario'));
 
-        //verifica numero de parcelas existentes  se <=2 e cancela os boletos atuais se for o caso
+        //cancelar a bolsa se houver
+        $bolsa = $matricula->getBolsas();
+        if($bolsa){
+        $bmc = new BolsaController;
+        $bmc->unLinkMe($matricula->id,$bolsa->id);
+        }
+
       
        
         return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula)->with('inscricoes',$insc);

@@ -172,19 +172,19 @@
                                     @if($matricula->getBolsas())
 
                                         @if($matricula->getBolsas()->status == 'ativa')
-                                         <small><span class="text-success" title="{{$matricula->getBolsas()->tipo->nome.' - '.$matricula->getBolsas()->status}}"> <i class=" fa fa-flag"></i> RD {{$matricula->getBolsas()->bolsa}} </span></small>&nbsp;
+                                         <small><span class="text-success" title="{{$matricula->getBolsas()->tipo->nome.' - '.$matricula->getBolsas()->status}}"> <i class=" fa fa-flag"></i> RD {{$matricula->getBolsas()->id}} </span></small>&nbsp;
 
                                         @elseif($matricula->getBolsas()->status == 'analisando')
-                                        <small><span class="text-warning" title="{{$matricula->getBolsas()->tipo->nome.' - '.$matricula->getBolsas()->status}}"> <i class=" fa fa-flag"></i> RD {{$matricula->getBolsas()->bolsa}} </span></small>&nbsp;
+                                        <small><span class="text-warning" title="{{$matricula->getBolsas()->tipo->nome.' - '.$matricula->getBolsas()->status}}"> <i class=" fa fa-flag"></i> RD {{$matricula->getBolsas()->id}} </span></small>&nbsp;
 
                                         @elseif($matricula->getBolsas()->status == 'cancelada')
-                                        <small><span class="text-danger" title="{{$matricula->getBolsas()->tipo->nome.' - '.$matricula->getBolsas()->status}}"> <i class=" fa fa-flag"></i> RD {{$matricula->getBolsas()->bolsa}} </span></small>&nbsp;
+                                        <small><span class="text-danger" title="{{$matricula->getBolsas()->tipo->nome.' - '.$matricula->getBolsas()->status}}"> <i class=" fa fa-flag"></i> RD {{$matricula->getBolsas()->id}} </span></small>&nbsp;
 
                                         @elseif($matricula->getBolsas()->status == 'expirada')
-                                        <small><span class="text-secondar" title="{{$matricula->getBolsas()->tipo->nome.' - '.$matricula->getBolsas()->status}}"> <i class=" fa fa-flag"></i> RD {{$matricula->getBolsas()->bolsa}} </span></small>&nbsp;
+                                        <small><span class="text-secondar" title="{{$matricula->getBolsas()->tipo->nome.' - '.$matricula->getBolsas()->status}}"> <i class=" fa fa-flag"></i> RD {{$matricula->getBolsas()->id}} </span></small>&nbsp;
                                         
                                         @else
-                                        <small><span title="{{$matricula->getBolsas()->tipo->nome.' - '.$matricula->getBolsas()->status}}"> <i class=" fa fa-flag"></i> RD {{$matricula->getBolsas()->bolsa}} </span></small>&nbsp;
+                                        <small><span title="{{$matricula->getBolsas()->tipo->nome.' - '.$matricula->getBolsas()->status}}"> <i class=" fa fa-flag"></i> RD {{$matricula->getBolsas()->id}} </span></small>&nbsp;
                                         @endif
                                     
                                     @endif
@@ -348,6 +348,12 @@
                                              <i class=" fa fa-times" style="color:white;"></i>
                                          </a>
                                          &nbsp;
+                                        <a href="{{asset('/secretaria/matricula/inscricao/trocar/').'/'.$inscricao->id}}"                                
+                                            title="Transferir Inscrição" 
+                                            class="badge badge-pill badge-warning">
+                                            <i class=" fa fa-retweet " style="color:white;"></i>
+                                        </a>
+                                          &nbsp;
                                         <a href="{{asset('/secretaria/matricula/inscricao/editar/').'/'.$inscricao->id}}"                                
                                             title="Editar Inscrição" 
                                             class="badge badge-pill badge-primary">

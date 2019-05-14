@@ -29,7 +29,7 @@
     <div class="card-block">
         <div class="form-group row"> 
             <label class="col-sm-2 form-control-label text-xs-right">
-                Valor
+                Valor total
             </label>
             <div class="col-sm-2"> 
                 R$ <strong>{{ number_format(str_replace(',', '.', $matricula->valor->valor),2,',','.') }}</strong>.
@@ -57,7 +57,7 @@
                 Saldo
             </label>
             <div class="col-sm-6"> 
-                <b id="parcelas">{{$matricula->parcelas}}</b> parcela(s) de <small>R$</small> <b><span id="saldo_final_parcelado">{{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas,2,',','.')}}</span></b> = <small>R$</small> <b><span id="saldo_final">{{number_format(($matricula->valor->valor-$matricula->valor_desconto),2,',','.')}}</span></b>. 
+                <b id="parcelas">{{$matricula->parcelas}}</b> parcela(s) de <small>R$</small> <b><span id="saldo_final_parcelado">{{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas,2,',','.')}}</span></b> = <small>R$</small> <b><span id="saldo_final">{{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas*$matricula->parcelas,2,',','.')}}</span></b>. 
             </div>
         </div>
     

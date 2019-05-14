@@ -115,9 +115,9 @@
                         &nbsp;&nbsp;Enviar documentos em lote</a>
                     </div>
                     <div>
-                        <a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Termos de Cancelamento</a>
+                        <a href="secretaria/processar-documentos" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Processa documentos enviados por FTP para pasta temporária">
+                        <i class=" fa fa-cogs "></i>
+                        &nbsp;&nbsp;Processar documentos</a>
                     </div>
                     <div>
                         <a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left">

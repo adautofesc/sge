@@ -24,6 +24,17 @@
                 document.write('<link rel="stylesheet" id="theme-style" href="css/app.css">');
             }
         </script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics --
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139666750-1"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-139666750-1');
+        </script>-->
+
     </head>
 
     <body>
@@ -35,14 +46,14 @@
                             <div class="logo"> <span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div> SGE <i>FESC</i></h1>
                     </header>
                     <div class="auth-content">
-
-                        @include('inc.errors')
+        
+                        <small>@include('inc.errors')</small>
 
                         <h5 class="text-xs-center">Segunda via de boleto Online</h5>
                         <br>
                         <form id="login-form" action="" method="POST" novalidate="">
                         {{csrf_field()}}
-                            <div class="form-group"> <label for="cpf">CPF</label> <input type="number" class="form-control underlined" name="cpf" id="cpf" max-size="11" placeholder="CPF sem pontos ou traços com 11 dígitos" required> </div>
+                            <div class="form-group"> <label for="cpf">CPF</label> <input class="form-control underlined" name="cpf" id="cpf" max-size="11" placeholder="CPF" required> </div>
                             <div class="form-group"> <label for="nascimento">Nascimento</label> <input type="text" class="form-control underlined" name="nascimento" id="nascimento" title="Sua data de nascimento completa ex. 01/01/1950" placeholder="00/00/0000" required> </div>
                             
                             <div class="form-group"> <button type="submit" class="btn btn-block btn-primary">Acessar</button>
@@ -56,7 +67,7 @@
                             </div>
                             <div class="form-group">
                                 <p class="text-muted text-xs-center">Boleto vencido? Retire asua segunda via no <a href="https://www63.bb.com.br/portalbb/boleto/boletos/hc21e.bbx" target="_blank" title="Clique aqui para acessar">site do Banco do Brasil.</a></p>
-                                <p><small>Atualizado em 11/05/2018</small></p>
+                                <p><small>Atualizado em 06/04/2019</small></p>
                             </div>
                         </form>
                     </div>
@@ -71,23 +82,6 @@
                 <div class="color-secondary"></div>
             </div>
         </div>
-        <script>
-            (function(i, s, o, g, r, a, m)
-            {
-                i['GoogleAnalyticsObject'] = r;
-                i[r] = i[r] || function()
-                {
-                    (i[r].q = i[r].q || []).push(arguments)
-                }, i[r].l = 1 * new Date();
-                a = s.createElement(o),
-                    m = s.getElementsByTagName(o)[0];
-                a.async = 1;
-                a.src = g;
-                m.parentNode.insertBefore(a, m)
-            })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-            ga('create', 'UA-80463319-2', 'auto');
-            ga('send', 'pageview');
-        </script>
         <script src="{{asset('js/vendor.js')"></script>
         <script src="{{asset('js/app.js')"></script>
     </body>

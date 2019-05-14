@@ -85,22 +85,30 @@ class BolsaController extends Controller
     }
 
 
+    /*
+    Função que verificaa bolsa no financeiro.
+     */
     public static function verificaBolsa($pessoa,$matricula){
 
 
         //********************************************* aqui colocar a validade dos descontos
+        
 
-        $bolsa = Bolsa::join('bolsa_matriculas','bolsas.id','=','bolsa_matriculas.bolsa')
-                ->where('bolsas.status','ativa')
-                ->where('bolsa_matriculas.matricula',$matricula)
-                ->first();
+        $bmatricula = BolsaMatricula::where('matricula',$matricula)->first();
+        //dd($bmatricula);
+        if($bmatricula){
+            $bolsa = Bolsa::where('id',$bmatricula->bolsa)->where('status','ativa')->where('validade','>',date('Y-m-d'))->first();
+        }
+        else
+            return null;
+        
         /*
         $bolsa = Bolsa::where('pessoa',$pessoa)->where(function($query) use ($matricula) {
             $query->where('matricula',$matricula)
             ->orWhere('matricula2',$matricula);
         })->where('status','ativa')->first();
         //*/
-       
+     
         if($bolsa)
             return $bolsa;
         else
@@ -217,6 +225,7 @@ class BolsaController extends Controller
         $bolsa->pessoa = $request->pessoa;
         $bolsa->desconto = $request->desconto;
         $bolsa->rematricula = $request->rematricula;
+        $bolsa->validade = date('Y-12-31');
         $bolsa->status = 'analisando';
         $bolsa->save();
 
@@ -314,7 +323,7 @@ class BolsaController extends Controller
             $bolsa = Bolsa::find($bolsa_i);
             if($bolsa){
                 $bolsa->status = $r->parecer;
-                $bolsa->obs = $r->obs."\n"."Atualizado em ".date('d/m/Y').' parecer: '.$r->parecer.' por '.session('nome_usuario');
+                $bolsa->obs = $r->obs."\n".date('d/m/Y').' parecer: '.$r->parecer.' por '.session('nome_usuario');
                 $bolsa->save();
             }
         }
@@ -411,6 +420,37 @@ class BolsaController extends Controller
 
         }
         return "Bolsas processadas";
+    }
+    public function unLinkMe($matricula,$bolsa){
+        $bolsa_matricula = BolsaMatricula::where('matricula',$matricula)->where('bolsa',$bolsa)->first();
+        if($bolsa_matricula == null)
+            return false;
+        $bolsa_matricula->delete();
+
+        $bolsa = Bolsa::find($bolsa);
+        //dd($bolsa->getMatriculas());
+        $bolsa->obs = $bolsa->obs."\n".date('d/m/Y').' matricula desvinculada: '.$matricula.' por '.session('nome_usuario');
+        if(count($bolsa->getMatriculas())==0){
+            $bolsa->status = 'cancelada';
+            $bolsa->obs = $bolsa->obs."\n".date('d/m/Y').' Bolsa cancelada por extinção de matrículas';
+
+        }
+        $bolsa->save();
+
+        return true;
+
+    }
+    public function desvincular($matricula,$bolsa){
+        if($this->unLinkMe($matricula,$bolsa)){
+            return redirect()->back()->withErrors(["Matricula ".$matricula." foi desvinculado com sucesso da bolsa ".$bolsa]);
+        }
+        else{
+            return redirect()->back()->withErrors(["Erro ao desvincular matrícula."]);
+        }
+
+
+
+        
     }
 
 

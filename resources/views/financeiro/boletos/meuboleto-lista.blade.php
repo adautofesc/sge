@@ -44,7 +44,7 @@
                         <h5 class="text-xs-center">Segunda via de boleto Online</h5>
                         <br>
                         <h3 class="text-xs-center"><b>{{$nome}}</b></h3>
-                        <br>
+                        <br><small>
                         <table class="table">
                       <thead>
                         <tr>
@@ -65,8 +65,8 @@
                         </tr>
                     @endforeach
                       </tbody>
-                    </table>
-                    <p> Qualquer divergência de valores entre em contato conosco: 3372-1308.</p>
+                    </table></small>
+                    <p><small> Qualquer divergência de valores entre em contato conosco: 3372-1308.</small></p>
                     </div>
                 </div>
             </div>

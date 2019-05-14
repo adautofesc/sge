@@ -68,17 +68,26 @@ class Matricula extends Model
 
 		
 	}
-
+	// mostra bolsa quando mostrar a matrícula;
+	// update bolsas set validade = '2019-12-31' where status = 'ativa'
 	public function getBolsas(){
-		$bolsa = Bolsa::join('bolsa_matriculas','bolsas.id','=','bolsa_matriculas.bolsa')
-                ->where('bolsa_matriculas.matricula',$this->id)
-                ->first();
 
-               
+		$bmatricula = BolsaMatricula::where('matricula',$this->id)->first();
+		//dd($bmatricula);
+		if($bmatricula){
+			
+			$bolsa = Bolsa::where('id',$bmatricula->bolsa)->where('status','ativa')->where('validade','>',date('Y-m-d'))->first();
+			//dd($bolsa);
+		}
+		else
+			return null;
+		
+		
         if($bolsa){
         	$tipo = \App\Desconto::find($bolsa->desconto);
         	$bolsa->tipo = $tipo->first();
         }
+
         return $bolsa;
 
 

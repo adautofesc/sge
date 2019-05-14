@@ -36,12 +36,17 @@
                                         <small> <strong>Solicitado em: </strong>{{$bolsa->created_at->format('d/m/Y')}} <strong>Alterada em: </strong>{{$bolsa->updated_at->format('d/m/Y')}} 
                                             <br>
                                             @foreach($bolsa->getMatriculas() as $matricula)
-                                            <strong>Matrícula: </strong> {{$matricula->matricula}} <strong>Curso: </strong>{{$matricula->getNomeCurso()}}<br>
+                                            <strong>Matrícula: </strong> {{$matricula->matricula}} 
+                                            <strong>Curso: </strong>{{$matricula->getNomeCurso()}} &nbsp;&nbsp;
+                                            <a href="#" title="Desvincular esta matrícula da bolsa" onclick="unLinkMe('{{$matricula->matricula}}','{{$bolsa->id}}');">
+                                                <i class=" fa fa-unlink " style="color:red;"></i>
+                                            </a>
+                                            <br>
                                             @endforeach
                                             </small>
                                         </p> <small>
                                             @if(file_exists('documentos/bolsas/requerimentos/'.$bolsa->id.'.pdf'))
-                                                <a href="/documentos/bolsas/requerimentos/{{$bolsa->id}}.pdf" title="Visualizar documentos;">
+                                                <a href="/download/{{str_replace('/','-.-', "/documentos/bolsas/requerimentos/".$bolsa->id.".pdf")}}" title="Visualizar documentos;">
                                                     <i class=" fa fa-file-text "></i> Visualizar documentos do requerimento</a><br>
                                             @else
                                                 <a href="/pessoa/bolsa/upload/{{$bolsa->id}}" title="Enviar requerimento">
@@ -49,7 +54,7 @@
 
                                             @endif
                                              @if(file_exists('documentos/bolsas/pareceres/'.$bolsa->id.'.pdf'))
-                                                <a href="/documentos/bolsas/pareceres/{{$bolsa->id}}.pdf" title="Visualizar documentos;">
+                                                <a href="/download/{{str_replace('/','-.-', "/documentos/bolsas/pareceres/".$bolsa->id.".pdf")}}" title="Visualizar documentos;">
                                                     <i class=" fa fa-file-text "></i> Visualizar documentos do parecer.</a><br>
                                              @else
                                                 <a href="/pessoa/bolsa/parecer/{{$bolsa->id}}" style="color:orange;" title="Enviar parecer">
@@ -90,7 +95,9 @@
                                         <small><strong>Análise:</strong></small></strong>
                                     </label>
                                     <div class="col-sm-6"> 
-                                        <textarea rows="5" class="form-control" id="formGroupExampleInput7" maxlength="500" name="obs">@if(isset($bolsa)){{$bolsa->obs}}@else  Documentação confere. @endif</textarea>
+                                        <small>
+                                        <textarea rows="5" class="form-control" id="formGroupExampleInput7" maxlength="500" name="obs" style="font-size:10px;" >@if(isset($bolsa)){{$bolsa->obs}}@else  Documentação confere. @endif</textarea>
+                                        </small>
                                     </div>
                                 </div>
 
@@ -166,7 +173,11 @@ function alterarStatus(status){
 
     
 }
-
+function unLinkMe(matricula,bolsa){
+    if(confirm("Deseja desvincular a matricula "+matricula+" da bolsa "+bolsa+" ?")){
+        $(location).attr('href','../desvincular/'+matricula+'/'+bolsa);
+    }
+}
 
 </script>
 

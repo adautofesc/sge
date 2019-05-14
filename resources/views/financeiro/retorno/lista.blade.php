@@ -61,9 +61,13 @@
                     @if(isset($retornos))
                         @foreach($retornos as $retorno)
                         <div>
+                            @if(strlen($retorno->nome_arquivo)>40)
+                            <a href="{{asset('/financeiro/boletos/retorno/analisar/')}}/{{substr($retorno->nome_arquivo,20)}}_PROC" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                            @else
                             <a href="{{asset('/financeiro/boletos/retorno/analisar/')}}/{{substr($retorno->nome_arquivo,9)}}_PROC" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                            @endif
                             <i class=" fa fa-sign-in "></i>                         
-                                ID:{{$retorno->id}} {{ \Carbon\Carbon::parse($retorno->data_processamento)->format('d/m/Y')}} <small> {{$retorno->nome_arquivo}}_PROC </small> </a>
+                                ID:{{$retorno->id}} {{ \Carbon\Carbon::parse($retorno->data_processamento)->format('d/m/Y')}} y<small> {{$retorno->nome_arquivo}}_PROC </small> </a>
                         </div>
 
 

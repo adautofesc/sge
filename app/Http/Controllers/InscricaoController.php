@@ -294,6 +294,7 @@ class InscricaoController extends Controller
         //existe mesmo essa inscrição?
         if($insc==null)
             return redirect($_SERVER['HTTP_REFERER'])->withErrors(["Inscrição não encontrada"]);
+
         //return $insc->turma->id."teste";
         if($insc->status == 'cancelada')
             return redirect($_SERVER['HTTP_REFERER'])->withErrors(["Inscrição já está cancelada"]);
@@ -307,23 +308,18 @@ class InscricaoController extends Controller
 
         //atualiza matricula para caso não tiver mais inscrições
         $matricula = MatriculaController::atualizar($insc->matricula);
-
         $inscricoes = Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','pendente'])->count();
-
         $pessoa = Pessoa::find($insc->pessoa->id);
-
         if($inscricoes>0){
             if(count($r->cancelamento))
-            AtendimentoController::novoAtendimento("Cancelamento da inscrição ".$insc->id. " motivo: ".implode(', ',$r->cancelamento), $matricula->pessoa, Session::get('usuario'));
+                AtendimentoController::novoAtendimento("Cancelamento da inscrição ".$insc->id. " motivo: ".implode(', ',$r->cancelamento), $matricula->pessoa, Session::get('usuario'));
             else
                 AtendimentoController::novoAtendimento("Cancelamento da inscrição ".$insc->id, $matricula->pessoa, Session::get('usuario'));
-
             return view('juridico.documentos.cancelamento-inscricao')->with('pessoa',$pessoa)->with('inscricao',$insc);
         }
-
         else{
             if(count($r->cancelamento))
-            AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id. " motivo: ".implode(', ',$r->cancelamento), $matricula->pessoa, Session::get('usuario'));
+                AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id. " motivo: ".implode(', ',$r->cancelamento), $matricula->pessoa, Session::get('usuario'));
             else
                 AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id, $matricula->pessoa, Session::get('usuario'));
             return redirect('/secretaria/matricula/imprimir-cancelamento/'.$matricula->id);
@@ -376,7 +372,8 @@ class InscricaoController extends Controller
 
 
     /**
-     * Modifica a quantidade de pessoas inscritas na turma
+     * Modifica a quantidade de pessoas inscritas na turma.
+     * chamado pela route: 
      *
      * @param  \App\Turma  $turma
      * @param  $operaçao - 0 reduz, 1 aumenta

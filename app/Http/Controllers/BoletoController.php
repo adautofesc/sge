@@ -943,7 +943,11 @@ class BoletoController extends Controller
 			return Redirect::back()->withErrors(['Pessoa não encontrada']);
 	}
 
-
+	/**
+	 * Cancelar todos boletos FUTUROS
+	 * @param  Request $r [POST pessoa e motivo]
+	 * @return [type]     [description]
+	 */
 	public function cancelarTodos(Request $r){
 		$boletos = Boleto::where('pessoa',$r->pessoa)->where('vencimento', '>', date('Y-m-d H:i:s'))->get();
 		//dd($boletos);
@@ -1113,7 +1117,7 @@ class BoletoController extends Controller
 		    //'documento' => $cliente->cpf > 0 ? $cliente->cpf : PessoaController::notificarCPFInvalido($cliente->id), //verificar cpf
 		    'nome'      =>  str_replace(['º','ª','°'],'',substr($cliente->nome,0,37)), //nome até x cara
 		    'cep'       => preg_match('/^[0-9]{5,5}([- ]?[0-9]{3,3})?$/', $cliente->cep) ? $cliente->cep : '13970-000' ,
-		    'endereco'  => str_replace(['º','ª','°'], '',$cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->complemento),
+		    'endereco'  => str_replace(['º','ª','°'], '',$cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->end_complemento),
 		    'bairro' => substr(($cliente->bairro=='Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro),0,15),
 		    'uf'        => $cliente->estado,
 		    'cidade'    => $cliente->cidade,
@@ -1232,37 +1236,37 @@ class BoletoController extends Controller
 
 		}
 		public function segundaVia(Request $request){
+			//dd($request);
 			$this->validate($request, [
 				'cpf'=>'required'
 							
 
 			]);
-			$cpf_alt = str_pad($request->cpf,11,'0');
-			$cpf_alt = \App\classes\Strings::mask($cpf_alt,"###.###.###-##");
-			$dados_pessoa = \App\PessoaDadosGerais::where('valor','like',$request->cpf)->first();
-			//dd($dados_pessoa);
+			$cpf_alt = preg_replace( '/[^0-9]/is', '', $request->cpf);
+			$cpf_alt_formated = \App\classes\Strings::mask(str_pad($cpf_alt,11,'0'),"###.###.###-##");
+
+			if($cpf_alt == '' || $cpf_alt_formated == '')
+				return redirect('/meuboleto')->withErrors(["Desculpe, mas os dados fornecidos não são validos: ".$cpf_alt ]);
+
+
+			$dados_pessoa = \App\PessoaDadosGerais::where('valor','like',$cpf_alt)->orWhere('valor','like',$cpf_alt_formated)->first();
 			if($dados_pessoa){
 				$pessoa = Pessoa::find($dados_pessoa->pessoa);
-				
+					
 					$boletos = Boleto::where('pessoa',$pessoa->id)
-						->where(function($query){ $query
-							->where('status','impresso')
-							->orwhere('status', 'gravado')
-							->orwhere('status', 'emitido');
-					})->get();
+							->where('status','emitido')
+							->get();
+					
 					return view('financeiro.boletos.meuboleto-lista',compact('boletos'))->with('nome',$pessoa->nome);
 
-
-				
-
-				
-					//return redirect('/meuboleto')->withErrors(["Desculpe, os dados estão incorretos. Verifique e tente novamente."]);
 			}
 			else
-				return redirect('/meuboleto')->withErrors(["Desculpe, não encontramos registro com os dados informados."]);
+
+				return redirect('/meuboleto')->withErrors(["Desculpe, não encontramos registro com os dados informados. Verifique o preenchimento e tente novamente. Caso o problema persistir entre em contato conosco pelo telefone 3372-1308 ou 3372-1325."]);
 
 
 		}
+		
 		
 		/**
 		 * [Gera relatório (view) com todos boletos em aberto]

@@ -157,6 +157,15 @@ class TurmaController extends Controller
             $str1 = substr($filtros['pordata'][0],1,10);
             if($str1 == 'undefinedt'){
                 $str2 = substr($filtros['pordata'][0],11,10);
+                try{
+                    $data2 = \DateTime::createFromFormat('Y-m-d', $str2);
+                    if($data2 && $data2->format('Y-m-d') === $str2){
+                       $turmas = $turmas->where('data_termino','<=',$data2);
+                    }
+                }
+                catch(\Exception $e){
+                    unset($filtros['pordata']);
+                }
             }
             else{
                 try{
@@ -165,7 +174,17 @@ class TurmaController extends Controller
                        $turmas = $turmas->where('data_inicio','>=',$data1);
                     }
                     
-                    $str2 = substr($filtros['pordata'][0],12,10);
+
+                }
+                catch(\Exception $e){
+                    unset($filtros['pordata']);
+                }
+                $str2 = substr($filtros['pordata'][0],12,10);
+                try{
+                    $data2 = \DateTime::createFromFormat('Y-m-d', $str2);
+                    if($data2 && $data2->format('Y-m-d') === $str2){
+                       $turmas = $turmas->where('data_termino','<=',$data2);
+                    }
                 }
                 catch(\Exception $e){
                     unset($filtros['pordata']);

@@ -358,10 +358,7 @@ class BolsaController extends Controller
             return redirect(asset('secretaria/atender'));
     }
 
-    public function relatorioFPM(){
-        $bolsas = Bolsa::where('desconto','3')->get();
-        return view('relatorios.bolsistas')->with('bolsas',$bolsas);
-    }
+   
 
     public function ajusteBolsaSemMatriculaxs(){
         $bolsas = Bolsa::where('matricula',null)->get();

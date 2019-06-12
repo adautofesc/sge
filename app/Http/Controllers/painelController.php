@@ -382,6 +382,15 @@ class painelController extends Controller
         else
             return "Nenhum aluno cadastrado para esta turma.";
     }
+    public function chamadaMultipla($ids){
+        $turmas_arr = explode(',',$ids);
+        $turmas = \App\Turma::whereIn('id',$turmas_arr)->get();
+        foreach($turmas as $turma){
+            $turma->inscritos =\App\Inscricao::where('turma',$turma->id)->where('status','<>','cancelada')->get();
+            $turma->inscritos = $turma->inscritos->sortBy('pessoa.nome');
+        }
+        return view('pedagogico.frequencia.multiplas',compact('turmas'));
+    }
 
 
 

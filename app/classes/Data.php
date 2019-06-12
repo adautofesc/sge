@@ -117,8 +117,12 @@ Class Data
             if ($data_nasc[1] < $data[1])
             return $anos;
         }
+        public static function semestres(){
+            $semestres = \DB::select( \DB::raw('select CASE WHEN month(data_termino)<=7 THEN 1 else 2 end as semestre,year(data_termino)as ano FROM turmas GROUP BY semestre,ano order by ano DESC, semestre DESC'));
+            return $semestres;
+        }
 }
-
+// $data = \Carbon\Carbon::parse($tr->data)->format('d').' de '.$mes.' de '.\Carbon\Carbon::parse($tr->data)->format('Y');
 /* para retornar uma data específica por extenso 
 $Data = new Data('14/12/1988');//dia em que nasci ^^
 echo $Data->getData();

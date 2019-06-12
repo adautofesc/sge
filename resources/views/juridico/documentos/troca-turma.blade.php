@@ -1,10 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 transitional//EN" "http://www.w3.org/tr/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 <link rel="stylesheet" href="{{asset('/')}}/css/vendor.css"/>
-<title>Troca de turma - Fesc</title>
+<title>tr->turmaoca de turma - Fesc</title>
 <style type="text/css">
 	h5{
 		font-size: 1.3em;
@@ -56,7 +56,7 @@
 				</p>
 			</div>
 			<div class="col-4" tyle="margin-bottom: 0;" align="right">
-				<img src="/img/code39.php?code=TI{{$inscricao->id}}">
+				<img src="/img/code39.php?code=tr{{$tr->id}}">
 			
 			</div>
 
@@ -65,7 +65,7 @@
 	
 		<div class="title-block">
 			<center>
-            <h5> <strong>TRANSFERENCIA DE TURMA {{$inscricao->id}}</strong></h5></center>
+            <h5> <strong>TRANSFERENCIA Nº{{$tr->id}}</strong></h5></center>
         </div>
 
 
@@ -76,19 +76,20 @@
 	        		Eu, {{$pessoa->nome}}, alun{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} regularmente matriculad{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} nesta instituição no ano de {{date("Y")}}, venho pela presente, SOLICITAR A TROCA DAS SEGUINTES TURMAS:
 		       </p>
 		       <ul>
+		       	
 		       
-		       		@if(isset($inscricao->turma->disciplina->nome))
-		       		<li> {{$inscricao->turma->curso->nome}},{{$inscricao->turma->disciplina->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}  das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
+		       		@if(isset($tr->anterior->turma->disciplina->nome))
+		       		<li> {{$tr->anterior->turma->curso->nome}},{{$tr->anterior->turma->disciplina->nome}} Cod. {{$tr->anterior->turma->id}} ({{implode(',',$tr->anterior->turma->dias_semana)}}  das  {{$tr->anterior->turma->hora_inicio}} às {{$tr->anterior->turma->hora_termino}})</li>
 		       		@else
-		       		<li> {{$inscricao->turma->curso->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}. das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
+		       		<li> {{$tr->anterior->turma->curso->nome}} Cod. {{$tr->anterior->turma->id}} ({{implode(',',$tr->anterior->turma->dias_semana)}}. das  {{$tr->anterior->turma->hora_inicio}} às {{$tr->anterior->turma->hora_termino}})</li>
 		       		@endif
 
 		       		<li>Para a turma</li>
 
-		       		@if(isset($inscricao->turma->disciplina->nome))
-		       		<li> {{$inscricao->turma->curso->nome}},{{$inscricao->turma->disciplina->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}  das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
+		       		@if(isset($tr->nova->turma->disciplina->nome))
+		       		<li> {{$tr->nova->turma->curso->nome}},{{$tr->nova->turma->disciplina->nome}} Cod. {{$tr->nova->turma->id}} ({{implode(',',$tr->nova->turma->dias_semana)}}  das  {{$tr->nova->turma->hora_inicio}} às {{$tr->nova->turma->hora_termino}})</li>
 		       		@else
-		       		<li> {{$inscricao->turma->curso->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}. das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
+		       		<li> {{$tr->nova->turma->curso->nome}} Cod. {{$tr->nova->turma->id}} ({{implode(',',$tr->nova->turma->dias_semana)}}. das  {{$tr->nova->turma->hora_inicio}} às {{$tr->nova->turma->hora_termino}})</li>
 		       		@endif
 
 
@@ -96,7 +97,7 @@
 		       </ul>
 		       <p style="margin-top: 8%" align="center">
 
-		       São Carlos, {{$inscricao->updated_at->format('d')}} de {{(new \App\classes\Data($inscricao->updated_at->format('d/m/Y')))->mes()}} de {{$inscricao->updated_at->format('Y')}}.
+		       São Carlos, {{$data}}.
 		       
 		       </p>
 		       <center>
@@ -127,11 +128,14 @@
 				</p>
 			</div>
 			<div class="col-xs-6" tyle="margin-bottom: 0;" align="right">
-				<img src="/img/code39.php?code=TI{{$inscricao->id}}">
+				<img src="/img/code39.php?code=tr{{$tr->id}}">
 			
 			</div>
         </div>
-			
+        <div class="title-block">
+			<center>
+            <h5> <strong>TRANSFERENCIA Nº {{$tr->id}}</strong></h5></center>
+        </div>
 			
        
 
@@ -143,23 +147,26 @@
 	        		Eu, {{$pessoa->nome}}, alun{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} regularmente matriculad{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} nesta instituição no ano de {{date("Y")}}, venho pela presente, SOLICITAR A TROCA DAS SEGUINTES TURMAS:
 		       </p>
 		       <ul>
-		      		@if(isset($inscricao->turma->disciplina->nome))
-		       		<li> {{$inscricao->turma->curso->nome}},{{$inscricao->turma->disciplina->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}  das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
-		       		@else
-		       		<li> {{$inscricao->turma->curso->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}. das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
-		       		@endif
-		       		
-		       		<li>Para a turma</li>
-
-		       		@if(isset($inscricao->turma->disciplina->nome))
-		       		<li> {{$inscricao->turma->curso->nome}},{{$inscricao->turma->disciplina->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}  das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
-		       		@else
-		       		<li> {{$inscricao->turma->curso->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}. das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
-		       		@endif
 		       
+		       		@if(isset($tr->anterior->turma->disciplina->nome))
+		       		<li> {{$tr->anterior->turma->curso->nome}},{{$tr->anterior->turma->disciplina->nome}} Cod. {{$tr->anterior->turma->id}} ({{implode(',',$tr->anterior->turma->dias_semana)}}  das  {{$tr->anterior->turma->hora_inicio}} às {{$tr->anterior->turma->hora_termino}})</li>
+		       		@else
+		       		<li> {{$tr->anterior->turma->curso->nome}} Cod. {{$tr->anterior->turma->id}} ({{implode(',',$tr->anterior->turma->dias_semana)}}. das  {{$tr->anterior->turma->hora_inicio}} às {{$tr->anterior->turma->hora_termino}})</li>
+		       		@endif
+
+		       		<li style="list-style-type: none">Para a turma</li>
+
+		       		@if(isset($tr->nova->turma->disciplina->nome))
+		       		<li> {{$tr->nova->turma->curso->nome}},{{$tr->nova->turma->disciplina->nome}} Cod. {{$tr->nova->turma->id}} ({{implode(',',$tr->nova->turma->dias_semana)}}  das  {{$tr->nova->turma->hora_inicio}} às {{$tr->nova->turma->hora_termino}})</li>
+		       		@else
+		       		<li> {{$tr->nova->turma->curso->nome}} Cod. {{$tr->nova->turma->id}} ({{implode(',',$tr->nova->turma->dias_semana)}}. das  {{$tr->nova->turma->hora_inicio}} às {{$tr->nova->turma->hora_termino}})</li>
+		       		@endif
+
+
+		    
 		       </ul>
 		       <p  align="center">
-		       		São Carlos, {{$inscricao->updated_at->format('d')}} de {{(new \App\classes\Data($inscricao->updated_at->format('d/m/Y')))->mes()}} de {{$inscricao->updated_at->format('Y')}}.
+		       		   São Carlos, {{$data}}.
 		       </p>
 		       <center>
 		       <p style="border-top: solid 1px black; width: 30%; margin-top: 5%" align="center" >

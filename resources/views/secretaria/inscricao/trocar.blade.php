@@ -52,7 +52,7 @@
                 	@foreach($turmas as $turma)
 							
 	                    <label>
-	                    <input class="radio" type="radio" name="status" value="{{$turma->id}}" {{($turma->vagas-$turma->matriculados)<=0?'disabled="True"':''}}>
+	                    <input class="radio" type="radio" name="turma" value="{{$turma->id}}" {{($turma->vagas-$turma->matriculados)<=0?'disabled="True"':''}}>
 	                    @if(isset($turma->disciplina->id))
 	                    	<span>{{$turma->id.' - '.implode(', ',$turma->dias_semana)
 	                    	.' das '.$turma->hora_inicio
@@ -73,11 +73,28 @@
 	                    @endif
 	                    </label><br>
                     @endforeach
+                    <label>
+                    	<input class="radio" type="radio" name="turma" value="0">
+                    	<span> Outra: </span><input type="number" name="turma_alternativa" placeholder="Código da turma">
+                    </label></br>
                 	</small>
                 </div>
             </div>        
         </div>
-		@endif            
+		@endif 
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Motivo 
+			</label>
+			<div class="col-sm-6"> 
+				<select class="c-select form-control boxed" name="motivo" required>
+					<option value="1">1 - Horário incompatível</option>
+					<option value="2">2 - Disciplina não correspondeu as expectativas</option>
+					<option value="3">3 - Atividade muito intensa</option>
+					<option value="4">4 - Problemas com o professor</option>
+				</select> 
+			</div>
+		</div>       
 		<div class="form-group row">
 			<label class="col-sm-2"></label>
 			<div class="col-sm-10 col-sm-offset-2">

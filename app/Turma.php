@@ -155,6 +155,13 @@ class Turma extends Model
 
 	}
 
+	public function getInscricoes(){
+
+		$this->inscricoes = $inscricoes = Inscricao::where('turma',$this->id)->get();
+		//return $inscricoes;
+		
+	}
+
 
     
 

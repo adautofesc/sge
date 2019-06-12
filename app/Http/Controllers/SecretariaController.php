@@ -97,6 +97,11 @@ class SecretariaController extends Controller
 			 //listar inscrições de cada matricula;
 			 foreach($matriculas as $matricula){
 			 	$matricula->getInscricoes();
+			 	foreach($matricula->inscricoes as $inscricao){
+			 		if($inscricao->status == 'transferida')
+			 			$inscricao->transferencia = $inscricao->getTransferencia();
+
+			 	}
 
 			 }
 
@@ -156,51 +161,58 @@ class SecretariaController extends Controller
                     //$arquivo->move('documentos/pprocessar', $arquivo->getClientOriginalName());
                     switch (substr($arquivo->getClientOriginalName(), 5,2)) {
                     	case 'MT':
-                    		if(!file_exists('documentos/matriculas/termos/'.preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf'))
-                    			$arquivo->move('documentos/matriculas/termos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		if(!file_exists('documentos/matriculas/termos/'.(preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'.pdf'))
+                    			$arquivo->move('documentos/matriculas/termos/',(preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'.pdf');
                     		else
-                    			$arquivo->move('documentos/matriculas/termos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'_'.date('Ymd').'pdf');
+                    			$arquivo->move('documentos/matriculas/termos/', (preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'_'.date('Ymd').'pdf');
                     		$msg[$arquivo->getClientOriginalName()] = 'Arquivo '.$arquivo->getClientOriginalName().' carregado com sucesso.';
                     		break;
 
                     	case 'CM':
-                    		if(!file_exists('documentos/matriculas/cancelamentos/'.preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf'))
-                    			$arquivo->move('documentos/matriculas/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		if(!file_exists('documentos/matriculas/cancelamentos/'.(preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'.pdf'))
+                    			$arquivo->move('documentos/matriculas/cancelamentos/', (preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'.pdf');
                     		else
-                    			$arquivo->move('documentos/matriculas/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'_'.date('Ymd').'pdf');
+                    			$arquivo->move('documentos/matriculas/cancelamentos/', (preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'_'.date('Ymd').'pdf');
                     		$msg[$arquivo->getClientOriginalName()] = 'Arquivo '.$arquivo->getClientOriginalName().' carregado com sucesso.';
                     		break;
                  
                     	case 'CI':
-                    		if(!file_exists('documentos/inscricoes/cancelamentos/'.preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf'))
-                    			$arquivo->move('documentos/inscricoes/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		if(!file_exists('documentos/inscricoes/cancelamentos/'.(preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'.pdf'))
+                    			$arquivo->move('documentos/inscricoes/cancelamentos/', (preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'.pdf');
                     		else
-                    			$arquivo->move('documentos/inscricoes/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'_'.date('Ymd').'pdf');
+                    			$arquivo->move('documentos/inscricoes/cancelamentos/', (preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'_'.date('Ymd').'pdf');
                     		$msg[$arquivo->getClientOriginalName()] = 'Arquivo '.$arquivo->getClientOriginalName().' carregado com sucesso.';
                     		break;
                   
                     	case 'AM':
-                    		if(!file_exists('documentos/atestados/'.preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf'))
-                    			$arquivo->move('documentos/atestados/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		if(!file_exists('documentos/atestados/'.(preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'.pdf'))
+                    			$arquivo->move('documentos/atestados/', (preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'.pdf');
                     		else
-                    			$arquivo->move('documentos/atestados/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'_'.date('Ymd').'pdf');
+                    			$arquivo->move('documentos/atestados/',(preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'_'.date('Ymd').'pdf');
                     		$msg[$arquivo->getClientOriginalName()] = 'Arquivo '.$arquivo->getClientOriginalName().' carregado com sucesso.';
                     		break;
                     		
                     	case 'RD':
                     	case 'RQ':
-                    		if(!file_exists('documentos/bolsas/requerimentos/'.preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf'))
-                    			$arquivo->move('documentos/bolsas/requerimentos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		if(!file_exists('documentos/bolsas/requerimentos/'.(preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'.pdf'))
+                    			$arquivo->move('documentos/bolsas/requerimentos/', (preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'.pdf');
                     		else
-                    			$arquivo->move('documentos/bolsas/requerimentos/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'_'.date('Ymd').'pdf');
+                    			$arquivo->move('documentos/bolsas/requerimentos/', (preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'_'.date('Ymd').'pdf');
                     		$msg[$arquivo->getClientOriginalName()] = 'Arquivo '.$arquivo->getClientOriginalName().' carregado com sucesso.';
                     		break;
                     		
                     	case 'PA':
-                    		if(!file_exists('documentos/bolsas/pareceres/'.preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf'))
-                    			$arquivo->move('documentos/bolsas/pareceres/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+                    		if(!file_exists('documentos/bolsas/pareceres/'.(preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'.pdf'))
+                    			$arquivo->move('documentos/bolsas/pareceres/', (preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'.pdf');
                     		else
-                    			$arquivo->move('documentos/bolsas/pareceres/', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'_'.date('Ymd').'pdf');
+                    			$arquivo->move('documentos/bolsas/pareceres/', (preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'_'.date('Ymd').'pdf');
+                    		$msg[$arquivo->getClientOriginalName()] = 'Arquivo '.$arquivo->getClientOriginalName().' carregado com sucesso.';
+                    		break;
+                    	case 'TR':
+                    		if(!file_exists('documentos/inscricoes/transferencias/'.(preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'.pdf'))
+                    			$arquivo->move('documentos/inscricoes/transferencias/', (preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'.pdf');
+                    		else
+                    			$arquivo->move('documentos/inscricoes/transferencias/', (preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName())*1).'_'.date('Ymd').'pdf');
                     		$msg[$arquivo->getClientOriginalName()] = 'Arquivo '.$arquivo->getClientOriginalName().' carregado com sucesso.';
                     		break;
                     		
@@ -227,52 +239,60 @@ class SecretariaController extends Controller
 		   if($arquivo->isFile()){
 			   	switch (substr($arquivo->getFilename(), 5,2)) {
                 	case 'MT':
-                		 if(!file_exists('documentos/matriculas/termos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf'))
-                		 	rename( $arquivo,'documentos/matriculas/termos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf');
+                		 if(!file_exists('documentos/matriculas/termos/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'.pdf'))
+                		 	rename( $arquivo,'documentos/matriculas/termos/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'.pdf');
                 		 else
-                		 	rename( $arquivo,'documentos/matriculas/termos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'_'.date('Ymd').'.pdf');
+                		 	rename( $arquivo,'documentos/matriculas/termos/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'_'.date('Ymd').'.pdf');
                 		//$arquivo->move('documentos/matriculas/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo));
                 		 //$arquivo->move('documentos/matriculas/termos/', preg_replace( '/[^0-9]/is', '', $arquivo));
                 		 $msgs[$arquivo->getFilename()] = $arquivo->getFilename(). 'processado com sucesso';
                 		break;
                 	case 'CM':
-                		if(!file_exists('documentos/matriculas/cancelamentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf'))
-                		 	rename( $arquivo,'documentos/matriculas/cancelamentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf');
+                		if(!file_exists('documentos/matriculas/cancelamentos/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'.pdf'))
+                		 	rename( $arquivo,'documentos/matriculas/cancelamentos/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'.pdf');
                 		 else
-                		 	rename( $arquivo,'documentos/matriculas/cancelamentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'_'.date('Ymd').'.pdf');
+                		 	rename( $arquivo,'documentos/matriculas/cancelamentos/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'_'.date('Ymd').'.pdf');
                 		//$arquivo->move('documentos/matriculas/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo));
                 		$msgs[$arquivo->getFilename()] = $arquivo->getFilename(). ' processado com sucesso';
                 		break;
                 	case 'CI':
-                		if(!file_exists('documentos/inscricoes/cancelamentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf'))
-                		 	rename( $arquivo,'documentos/inscricoes/cancelamentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf');
+                		if(!file_exists('documentos/inscricoes/cancelamentos/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'.pdf'))
+                		 	rename( $arquivo,'documentos/inscricoes/cancelamentos/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'.pdf');
                 		 else
-                		 	rename( $arquivo,'documentos/inscricoes/cancelamentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'_'.date('Ymd').'.pdf');
+                		 	rename( $arquivo,'documentos/inscricoes/cancelamentos/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'_'.date('Ymd').'.pdf');
                 		//$arquivo->move('documentos/inscricoes/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo));
                 		$msgs[$arquivo->getFilename()] = $arquivo->getFilename(). ' processado com sucesso';
                 		break;
                 	case 'AM':
-                		if(!file_exists('documentos/atestados/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf'))
-                		 	rename( $arquivo,'documentos/atestados/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf');
+                		if(!file_exists('documentos/atestados/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'.pdf'))
+                		 	rename( $arquivo,'documentos/atestados/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'.pdf');
                 		 else
-                		 	rename( $arquivo,'documentos/atestados/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'_'.date('Ymd').'.pdf');
+                		 	rename( $arquivo,'documentos/atestados/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'_'.date('Ymd').'.pdf');
                 		//$arquivo->move('documentos/atestados/', preg_replace( '/[^0-9]/is', '', $arquivo));
                 		$msgs[$arquivo->getFilename()] = $arquivo->getFilename(). ' processado com sucesso';
                 		break;
                 	case 'RD':
                 	case 'RQ':
-                		if(!file_exists('documentos/bolsas/requerimentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf'))
-                		 	rename( $arquivo,'documentos/bolsas/requerimentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf');
+                		if(!file_exists('documentos/bolsas/requerimentos/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'.pdf'))
+                		 	rename( $arquivo,'documentos/bolsas/requerimentos/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'.pdf');
                 		 else
-                		 	rename( $arquivo,'documentos/bolsas/requerimentos/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'_'.date('Ymd').'.pdf');
+                		 	rename( $arquivo,'documentos/bolsas/requerimentos/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'_'.date('Ymd').'.pdf');
                 		//$arquivo->move('documentos/bolsas/requerimentos', preg_replace( '/[^0-9]/is', '', $arquivo));
                 		$msgs[$arquivo->getFilename()] = $arquivo->getFilename(). ' processado com sucesso';
                 		break;
                 	case 'PA':
-                		if(!file_exists('documentos/bolsas/pareceres/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf'))
-                		 	rename( $arquivo,'documentos/bolsas/pareceres/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'.pdf');
+                		if(!file_exists('documentos/bolsas/pareceres/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'.pdf'))
+                		 	rename( $arquivo,'documentos/bolsas/pareceres/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'.pdf');
                 		 else
-                		 	rename( $arquivo,'documentos/bolsas/pareceres/'. preg_replace( '/[^0-9]/is', '', $arquivo->getFilename()).'_'.date('Ymd').'.pdf');
+                		 	rename( $arquivo,'documentos/bolsas/pareceres/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'_'.date('Ymd').'.pdf');
+                		//$arquivo->move('documentos/atestados/', preg_replace( '/[^0-9]/is', '', $arquivo));
+                		$msgs[$arquivo->getFilename()] = $arquivo->getFilename(). ' processado com sucesso';
+                		break;
+                	case 'TR':
+                		if(!file_exists('documentos/inscricoes/transferencias/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'.pdf'))
+                		 	rename( $arquivo,'documentos/inscricoes/transferencias/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'.pdf');
+                		 else
+                		 	rename( $arquivo,'documentos/inscricoes/transferencias/'. (preg_replace( '/[^0-9]/is', '', $arquivo->getFilename())*1).'_'.date('Ymd').'.pdf');
                 		//$arquivo->move('documentos/atestados/', preg_replace( '/[^0-9]/is', '', $arquivo));
                 		$msgs[$arquivo->getFilename()] = $arquivo->getFilename(). ' processado com sucesso';
                 		break;

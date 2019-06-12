@@ -255,27 +255,46 @@ class RetornoController extends Controller
 							$boleto->descontos = $linha->valorDesconto;
 							$boleto->retorno = $retorno_id;
 							$boleto->save();
+							LogController::alteracaoBoleto($boleto->id,'Pagamento confirmado, retorno: '.$retorno_id.': '.$linha->ocorrenciaDescricao.' '.$linha->error);
 						break;
 						case 3: //Entrada confirmada
 							if($boleto->status == 'gravado' || $boleto->status == 'impresso'){
 								$boleto->status = 'emitido';
 								$boleto->save();
+								LogController::alteracaoBoleto($boleto->id,'Boleto registrado, retorno: '.$retorno_id.': '.$linha->ocorrenciaDescricao.' '.$linha->error);
 							}
 						break;
-						case 2:
-						case 6:// Baixas
-							$boleto->status = 'cancelado';
-							$boleto->save();
-						break;
-						case 9:
+						case 2://baixa
 							if($boleto->status == 'cancelar'){
 								$boleto->status = 'cancelado';
 								$boleto->save();
+								LogController::alteracaoBoleto($boleto->id,'Boleto cancelado, retorno: '.$retorno_id.': '.$linha->ocorrenciaDescricao.' '.$linha->error);
 							}
+
+						case 9://reieição
+							if($linha->ocorrenciaDescricao == 'Entrada Rejeitada, Entrada para Título já Cadastrado'){
+								if($boleto->status != 'pago' ){
+									$boleto->status = 'emitido';
+									$boleto->save();
+								}
+								
+							}elseif($boleto->status == 'cancelar'){
+								$boleto->status = 'cancelado';
+								$boleto->save();
+								LogController::alteracaoBoleto($boleto->id,'Boleto cancelado e rejeitado, retorno: '.$retorno_id.': '.$linha->ocorrenciaDescricao.' '.$linha->error);
+							}
+							elseif($boleto->status != 'pago'){
+								$boleto->status = 'erro';
+								$boleto->save();
+								LogController::alteracaoBoleto($boleto->id,'Erro ao registrar, retorno: '.$retorno_id.': '.$linha->ocorrenciaDescricao.' '.$linha->error);
+							}
+
+							
+							
 						break;
-						//9 -  entrada rejeitada
+						
 					}
-					LogController::alteracaoBoleto($boleto->id,'Boleto processado pelo arquivo de retorno: '.$retorno_id.': '.$linha->ocorrenciaDescricao.' '.$linha->error);
+					//LogController::alteracaoBoleto($boleto->id,'Boleto processado pelo arquivo de retorno: '.$retorno_id.': '.$linha->ocorrenciaDescricao.' '.$linha->error);
 				}		
 			}
 			rename($arquivo, $arquivo.'_PROC');
@@ -303,11 +322,12 @@ class RetornoController extends Controller
 			//return $retorno_existe;
 
 			foreach($detalhes as $linha){
+				//dd($linha);
 				$boleto= Boleto::find(str_replace('2838669','',$linha->nossoNumero)*1);//procura o boleto no banco
 				if(!is_null($boleto)){
 
 					switch($linha->ocorrenciaTipo){
-						case 1: //liquidação
+						case 1: //Liquidação
 							$boleto->status = 'pago';
 							$boleto->pagamento = \Carbon\Carbon::createFromFormat('d/m/Y H:i:s', $data, 'Europe/London');
 							$boleto->pago = $linha->valor;
@@ -315,21 +335,45 @@ class RetornoController extends Controller
 							$boleto->descontos = $linha->valorDesconto;
 							$boleto->retorno = $retorno_id;
 							$boleto->save();
-							break;
-						case 3:// Entrada confirmada
+							LogController::alteracaoBoleto($boleto->id,'Pagamento confirmado');
+						break;
+						case 3: //Entrada confirmada
 							if($boleto->status == 'gravado' || $boleto->status == 'impresso'){
 								$boleto->status = 'emitido';
 								$boleto->save();
+								LogController::alteracaoBoleto($boleto->id,'Registro confirmado');
 							}
-							break;
-						case 2:// Baixas
-						case 6:
-							$boleto->status = 'cancelado';
-							$boleto->save();
-							break;
+						break;
+						case 2://baixa
+							if($boleto->status == 'cancelar'){
+								$boleto->status = 'cancelado';
+								$boleto->save();
+								LogController::alteracaoBoleto($boleto->id,'Baixa confirmada');
+							}
+
+						case 9://reieição
+							if($linha->ocorrenciaDescricao == 'Entrada Rejeitada, Entrada para Título já Cadastrado'){
+								if($boleto->status != 'pago' ){
+									$boleto->status = 'emitido';
+									$boleto->save();
+								}
+								
+							}elseif($boleto->status == 'cancelar'){
+								$boleto->status = 'cancelado';
+								$boleto->save();
+								LogController::alteracaoBoleto($boleto->id,'Boleto cancelado e rejeitado: '.$linha->ocorrenciaDescricao);
+							}
+							elseif($boleto->status != 'pago'){
+								$boleto->status = 'erro';
+								$boleto->save();
+								LogController::alteracaoBoleto($boleto->id,'Boleto rejeitado: '.$linha->ocorrenciaDescricao);
+							}
+							
+						break;
+						//9 -  entrada rejeitada
 					}
-					LogController::alteracaoBoleto($boleto->id,'Boleto processado pelo arquivo de retorno: '.$retorno_id.": ".$linha->ocorrenciaDescricao.' '.$linha->error);
-				}				
+					LogController::alteracaoBoleto($boleto->id,'Boleto processado pelo arquivo de retorno: '.$retorno_id.': '.$linha->ocorrenciaDescricao.' '.$linha->error);
+				}		
 			}
 			if(substr($arquivo,-4) != 'PROC'){
 				rename($arquivo, $arquivo.'_PROC');

@@ -191,16 +191,23 @@ class TurmaController extends Controller
                 }
             }
 
-            /*
-            pega os primeiros caracteres
-            tenta transformar em data
-            verifica se é data válida
-            filtra turmas com a data de inicio nessa data
-            pega os ultimos caracteres
-            verifica se é data valida
-            filtra turmas com sata de termino <= data fornecida*/
-            
         }
+        if(isset($filtros['periodo']) && count($filtros['periodo'])){
+               
+                foreach($filtros['periodo'] as $filtro=>$valor){
+
+                    $semestre = substr($valor, 0,1);
+                    $ano= substr($valor, 1,4);
+                    if($semestre==1)
+                         $turmas = $turmas->whereBetween('data_inicio',[$ano.'-01-01',$ano.'-06-30']);
+                    else
+                        $turmas = $turmas->whereBetween('data_inicio',[$ano.'-06-01',$ano.'-12-31']);
+                }
+
+
+                //$turmas = $turmas->whereIn('turmas.status', $filtros['status']); 
+        }
+            
 
         $turmas = $turmas->orderBy('cursos.nome')->orderBy('disciplinas.nome');
         /*
@@ -227,7 +234,7 @@ class TurmaController extends Controller
 
         }
         */
-
+        //dd($turmas->toSql());
         $turmas = $turmas->paginate($ipp);
 
         return $turmas;
@@ -252,7 +259,7 @@ class TurmaController extends Controller
         $professores = $professores->sortBy('nome_simples');
         $locais = Local::select(['id','sigla','nome'])->orderBy('sigla')->get();
 
-        return view('secretaria.listar-turmas', compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$_SESSION['filtro_turmas']);
+        return view('secretaria.listar-turmas', compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$_SESSION['filtro_turmas'])->with('periodos',\App\classes\Data::semestres());
     }
 
     /**

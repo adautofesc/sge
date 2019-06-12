@@ -130,5 +130,8 @@ class Pessoa extends Model
 
 		return $pessoa;
 	}
+	public function getIdade(){
+		return \App\classes\Data::calculaIdade($this->nascimento);
+	}
 
 }

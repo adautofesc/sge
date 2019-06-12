@@ -70,7 +70,7 @@ class InscricaoController extends Controller
      */
     public static function verificaSeInscrito($pessoa,$turma)
     {
-        $existe=Inscricao::where('turma',$turma)->where('pessoa',$pessoa)->where('status','<>','cancelada')->get();
+        $existe=Inscricao::where('turma',$turma)->where('pessoa',$pessoa)->whereIn('status', ['regular',])->get();
         if(count($existe))
             return $existe->first()->id;
         else
@@ -305,14 +305,17 @@ class InscricaoController extends Controller
         //grava canelamento
         $insc->status='cancelada';
         $insc->save();
+        LogController::registrar('inscricao',$insc->id,'Cancelamento, motivo: '.implode(', ',$r->cancelamento));
 
         //atualiza matricula para caso não tiver mais inscrições
         $matricula = MatriculaController::atualizar($insc->matricula);
+
         $inscricoes = Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','pendente'])->count();
         $pessoa = Pessoa::find($insc->pessoa->id);
         if($inscricoes>0){
             if(count($r->cancelamento))
                 AtendimentoController::novoAtendimento("Cancelamento da inscrição ".$insc->id. " motivo: ".implode(', ',$r->cancelamento), $matricula->pessoa, Session::get('usuario'));
+
             else
                 AtendimentoController::novoAtendimento("Cancelamento da inscrição ".$insc->id, $matricula->pessoa, Session::get('usuario'));
             return view('juridico.documentos.cancelamento-inscricao')->with('pessoa',$pessoa)->with('inscricao',$insc);
@@ -337,6 +340,7 @@ class InscricaoController extends Controller
         foreach($inscricoes as $inscricao){
             $inscricao->status = 'cancelada';
             $inscricao->save();
+            LogController::registrar('inscricao',$inscricao->id,'Cancelamento');
             InscricaoController::modInscritos($inscricao->turma->id,0,1);
         }
         return $inscricoes;
@@ -356,6 +360,7 @@ class InscricaoController extends Controller
         if($inscricao->status == 'regular' || $inscricao->status == 'pendente' ){
             $inscricao->status = 'finalizada';
             $inscricao->save();
+            LogController::registrar('inscricao',$inscricao->id,'Finalização');
             AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id.' finalizada.', $inscricao->pessoa->id, Session::get('usuario'));
              //atualiza a matricula. caso não houver matriculas ativas, finalizar.
             MatriculaController::atualizar($inscricao->matricula);
@@ -415,7 +420,13 @@ class InscricaoController extends Controller
         $inscricoes = $inscricoes->sortBy('pessoa.nome');
         foreach ($inscricoes as $inscricao) {
             $inscricao->telefone = \App\PessoaDadosContato::getTelefone($inscricao->pessoa->id);
-            
+
+            $inscricao->atestado = $inscricao->getAtestado();
+            if($inscricao->atestado){
+                $inscricao->atestado->validade =  $inscricao->atestado->calcularVencimento($turma->programa->id);
+                //dd($inscricao->atestado);
+            }
+           
         }
         //return $inscricoes;
         return view('pedagogico.turma.dados',compact('turma'))->with('inscricoes',$inscricoes);
@@ -523,6 +534,7 @@ class InscricaoController extends Controller
             if($inscricao->status == 'cancelada'){
                 $inscricao->status = 'regular';
                 $inscricao->save();
+                LogController::registrar('inscricao',$inscricao->id,'Reativação');
                 AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id." reativada.", $inscricao->pessoa->id, Session::get('usuario'));
                 InscricaoController::modInscritos($inscricao->turma->id,1,1);
                 return redirect($_SERVER['HTTP_REFERER']);
@@ -541,71 +553,6 @@ class InscricaoController extends Controller
 
 
 
-    /**
-     * [relatorioConcluintes description]
-     * @param  integer $turma [description]
-     * @return [type]         [description]
-     */
-    public function relatorioConcluintes($turma=0){
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="'. 'relatorio' .'.xls"'); /*-- $filename is  xsl filename ---*/
-        header('Cache-Control: max-age=0');
-
-        $tabela =  new Spreadsheet();
-        $arquivo = new Xls($tabela);
-
-        $planilha = $tabela->getActiveSheet();
-        $planilha->setCellValue('A1', 'ALUNOS PENDENTES - Gerado em '.date('d/m/Y'));
-        $planilha->setCellValue('A2', 'Nome');
-        $planilha->setCellValue('B2', 'Programa');
-        $planilha->setCellValue('C2', 'Curso');
-        $planilha->setCellValue('D2', 'Professor');
-        $planilha->setCellValue('E2', 'Local');
-        $planilha->setCellValue('F2', 'Carga Horária');
-        $planilha->setCellValue('G2', 'Início');
-        $planilha->setCellValue('H2', 'Termino');
-        $linha = 3;
-
-        if($turma ==0){
-            $concluintes = Inscricao::join('turmas', 'inscricoes.turma','=','turmas.id')
-            ->where('inscricoes.status','pendente')
-            ->whereIn('turmas.programa',[1,2])
-            ->get();
-
-                //->toSql();
-                
-           // dd($concluintes);
-           
-           
-        }
-            
-        foreach($concluintes as $concluinte){ 
-
-                $planilha->setCellValue('A'.$linha, $concluinte->pessoa->nome);
-                $planilha->setCellValue('B'.$linha, $concluinte->turma->programa->sigla);
-                $planilha->setCellValue('C'.$linha, $concluinte->turma->curso->nome);
-                $planilha->setCellValue('D'.$linha, $concluinte->turma->professor->nome);
-                $planilha->setCellValue('E'.$linha, $concluinte->turma->local->nome);
-                $planilha->setCellValue('F'.$linha, $concluinte->turma->carga);
-                $planilha->setCellValue('G'.$linha, $concluinte->turma->data_inicio);
-                $planilha->setCellValue('H'.$linha, $concluinte->turma->data_termino);
-
-                $linha++;
-                /*
-                $aluno->turma = $concluinte->turma->id;
-                $aluno->nome = $concluinte->pessoa->nome;
-                $aluno->programa = $concluinte->turma->programa->sigla;
-                $aluno->curso = $concluinte->turma->curso->nome;
-                $aluno->professor = $concluinte->turma->professor->nome;
-                $aluno->unidade = $concluinte->turma->local->nome;
-                $aluno->carga= $concluinte->turma->carga;
-                $aluno->inicio =  $concluinte->turma->data_inicio;
-                $aluno->termino =  $concluinte->turma->data_termino;*/   
-        }
-        
-        return $arquivo->save('php://output', 'xls');
-        //return $formandos;
-    }
 
 
     public function trocarView($id){
@@ -613,9 +560,29 @@ class InscricaoController extends Controller
         if(!$inscricao)
             return redirect()->back()->withErrors('Inscrição não encontrada.');
 
-       // return $inscricao;
+        //pegar idade da pessoa
+        $pessoa = \App\Pessoa::find($inscricao->pessoa->id);
 
-        $turmas_compativeis = Turma::where('curso',$inscricao->turma->curso->id)->whereIn('status',['inscricao','iniciada','espera'])->whereColumn('matriculados','<',"vagas")->get();
+        //dd($pessoa->getIdade());
+
+       // se não for hidro
+       // 898 = hidro
+       // 1493 = hidro 18+
+        if($inscricao->turma->curso->id ==898)//se for hidro, listar os as turmas hidro e hidro+18
+            $turmas_compativeis = Turma::whereIn('curso',[898,1493])->whereIn('status',['inscricao','iniciada'])->whereColumn('matriculados','<',"vagas")->orderBy('dias_semana')->orderBy('hora_inicio')->get();
+        elseif($inscricao->turma->curso->id ==1493){ //se for hidro 18+
+            if($pessoa->getIdade()>39) //se for >=40 anos mostrar todas hidros
+                $turmas_compativeis = Turma::whereIn('curso',[898,1493])->whereIn('status',['inscricao','iniciada'])->whereColumn('matriculados','<',"vagas")->orderBy('dias_semana')->orderBy('hora_inicio')->get();
+            else //mostrar só as hidros 18+
+                $turmas_compativeis = Turma::where('curso',1493)->whereIn('status',['inscricao','iniciada'])->whereColumn('matriculados','<',"vagas")->orderBy('dias_semana')->orderBy('hora_inicio')->get();
+
+        }
+
+           
+        else //senão mostrar turmas do curso correspondente.
+          $turmas_compativeis = Turma::where('curso',$inscricao->turma->curso->id)->whereIn('status',['inscricao','iniciada'])->whereColumn('matriculados','<',"vagas")->orderBy('dias_semana')->orderBy('hora_inicio')->get();
+
+            
 
 
         //dd($inscricao->turma->curso->id);
@@ -626,15 +593,38 @@ class InscricaoController extends Controller
 
     }
     public function trocarExec(Request $r){
+
+        //verifica se escolheu turma
+        if($r->turma >0)
+            $turma = $r->turma;
+        else // não escolheu verifica se digitou turma alternativa
+            $turma = $r->turma_alternativa;
+        $turma_obj = \App\Turma::find($turma);
+        if($turma_obj == null) // não existe essa turma alternativa?
+            return redirect()->back()->withErrors(['Turma inválida.']);
+
         $inscricao = Inscricao::find($r->inscricao);
-        $inscricao_nova = $this->inscreverAluno($inscricao->pessoa->id,$r->turma,$inscricao->matricula);
+
+        $inscricao_nova = $this->inscreverAluno($inscricao->pessoa->id,$turma,$inscricao->matricula);
+
+
+        $turma_obj->matriculados++;
+        $turma_obj->save();
+
         $inscricao->status = 'transferida';
         $inscricao->save();
-        AtendimentoController::novoAtendimento('Transferencia da turma '.$inscricao->turma->id.' para turma '.$r->turma, $inscricao->pessoa->id, Session::get('usuario'));
+
+        $turma_anterior = Turma::find($inscricao->turma->id);
+        $turma_anterior->matriculados--;
+        $turma_anterior->save();
 
 
-        
-        return redirect('/secretaria/atender/'.$inscricao->pessoa->id)->withErrors(['Transferência efetuada.']);
+        $transferencia = TransferenciaController::gravarRegistro($inscricao->matricula,$inscricao->id,$inscricao_nova->id,$r->motivo); 
+        LogController::registrar('inscricao',$inscricao->id,'Transferência de turma');
+        AtendimentoController::novoAtendimento('Transferencia da turma '.$inscricao->turma->id.' para turma '.$turma, $inscricao->pessoa->id, Session::get('usuario'));
+
+   
+        return redirect('/secretaria/matricula/inscricao/imprimir/transferencia/'.$transferencia->id);
 
     }
 
@@ -653,20 +643,7 @@ class InscricaoController extends Controller
 
         return view('juridico.documentos.cancelamento-inscricao')->with('pessoa',$pessoa)->with('inscricao',$insc);
     }
-    public function imprimirTransferencia($inscricao){
 
-
-        $insc=Inscricao::find($inscricao);
-
-        //existe mesmo essa inscrição?
-        if($insc==null)
-            return redirect($_SERVER['HTTP_REFERER'])->withErrors(["Inscrição não encontrada"]);
-
-        $pessoa = Pessoa::find($insc->pessoa->id);
-
-
-        return view('juridico.documentos.troca-turma')->with('pessoa',$pessoa)->with('inscricao',$insc);
-    }
 
 
 }

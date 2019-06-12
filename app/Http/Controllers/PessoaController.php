@@ -386,7 +386,7 @@ class PessoaController extends Controller
 
 		$pessoa->nome=Strings::converteNomeParaUsuario($pessoa->nome);
 		$pessoa->nome_registro=Strings::converteNomeParaUsuario($pessoa->nome_registro);
-		$pessoa->idade=Data::calculaIdade($pessoa->nascimento);
+		$pessoa->idade= $pessoa->getIdade();
 		//$pessoa->aniversario=$pessoa->nascimento;
 		$pessoa->nascimento=Data::converteParaUsuario($pessoa->nascimento);
 		

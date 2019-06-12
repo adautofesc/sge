@@ -1823,7 +1823,7 @@ span a {
   border-radius: 0.2rem; }
 
 .title {
-  font-size: 1.45rem;
+  font-size: 1.1rem;/*1,45*/
   font-weight: 600;
   margin-bottom: 0; }
   .title.l {
@@ -1846,7 +1846,7 @@ span a {
       display: none; } }
 
 .subtitle {
-  font-size: 1.2rem;
+  font-size: 0.9rem;
   margin: 0;
   color: #7e8e9f; }
 

@@ -329,10 +329,8 @@
                                         </a>
                                         @if(file_exists('documentos/inscricoes/cancelamentos/'.$inscricao->id.'.pdf'))
                                             &nbsp;
-                                            <a href="/documentos/inscricoes/cancelamentos/{{$inscricao->id}}.pdf" target="_blank" class="badge badge-pill badge-primary">  <i class=" fa fa-file-text-o " title="Termo de cancelamento disponível" style="color:white;"></i>
+                                            <a href="/download/{{str_replace('/','-.-', 'documentos/inscricoes/cancelamentos/'.$inscricao->id.'.pdf')}}" target="_blank" class="badge badge-pill badge-primary">  <i class=" fa fa-file-text-o " title="Termo de cancelamento disponível" style="color:white;"></i>
                                             </a>
-                                        @else
-                                            &nbsp;<a href="{{asset('secretaria/matricula/uploadglobal/0/0/1').'/'.$inscricao->id}}" class="badge badge-pill badge-primary"><i class="fa fa-cloud-upload " title="Enviar Termo de Cancelamento de disciplina" style="color:white;"></i></a>
                                         @endif
                                         <a a href="{{asset('secretaria/matricula/inscricao/imprimir/cancelamento'.'/'.$inscricao->id)}}" 
                                             title="Imprimir cancelamento"
@@ -369,17 +367,17 @@
                                     -->
                                         
 
-
+                                        
                                         @elseif($inscricao->status == 'transferida')
                                         &nbsp;
-                                        @if(file_exists('documentos/inscricoes/transferencias/'.$inscricao->id.'.pdf'))
+                                        @if(file_exists('documentos/inscricoes/transferencias/'.$inscricao->transferencia->id.'.pdf'))
                                             &nbsp;
-                                            <a href="/documentos/inscricoes/transferencias/{{$inscricao->id}}.pdf" target="_blank" class="badge badge-pill badge-primary">  <i class=" fa fa-file-text-o " title="Formulário de transferencia disponível" style="color:white;"></i>
+                                            <a href="/download/{{str_replace('/','-.-', '/documentos/inscricoes/transferencias/'.$inscricao->transferencia->id.'.pdf')}}"  target="_blank" class="badge badge-pill badge-primary">  <i class=" fa fa-file-text-o " title="Formulário de transferencia disponível" style="color:white;"></i>
                                             </a>
                                         @else
                                             &nbsp;<a href="#" class="badge badge-pill badge-primary"><i class="fa fa-cloud-upload " title="Enviar formulário de transferencia de turma" style="color:white;"></i></a>
                                         @endif
-                                          <a a href="{{asset('secretaria/matricula/inscricao/imprimir/transferencia'.'/'.$inscricao->id)}}" 
+                                          <a href="{{asset('secretaria/matricula/inscricao/imprimir/transferencia/'.$inscricao->transferencia->id) }} " 
                                             title="Imprimir transferência"
                                             class="badge badge-pill badge-primary">
                                             <i class=" fa fa-print " style="color:white;"></i>

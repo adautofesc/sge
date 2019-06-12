@@ -67,9 +67,9 @@
                             </div>
                         </div>
                         <div class="action dropdown "> 
-                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Professor
+                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Professor
                             </button>
-                            <div class="dropdown-menu" style="height:30em;px;overflow-y:scroll;" aria-labelledby="dropdownMenu1"> 
+                            <div class="dropdown-menu" style="height:30em;px;overflow-y:scroll;" aria-labelledby="dropdownMenu2"> 
                                 @foreach($professores as $professor)
                                 @if(isset($filtros['professor']) && array_search($professor->id,$filtros['professor']) !== false)
                                 <a class="dropdown-item" href="?filtro=professor&valor={{$professor->id}}&remove=1">
@@ -84,9 +84,9 @@
                             </div>
                         </div>
                         <div class="action dropdown "> 
-                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Local
+                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Local
                             </button>
-                            <div class="dropdown-menu" style="height:30em;px;overflow-y:scroll;" aria-labelledby="dropdownMenu1">
+                            <div class="dropdown-menu" style="height:30em;px;overflow-y:scroll;" aria-labelledby="dropdownMenu3">
                                  @if(isset($filtros['local']) && array_search(84,$filtros['local']) !== false)
                                
                                     <a class="dropdown-item" href="?filtro=local&valor=84&remove=1" title="Remover filtro: Campus 1">
@@ -195,9 +195,9 @@
                         </div>
                    -->
                         <div class="action dropdown "> 
-                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Status
+                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Status
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenu4"> 
                                 @if(isset($filtros['status']))
 
                                 <a class="dropdown-item" href="?filtro=status&valor=inscricao{{array_search('inscricao',$filtros['status'])!==false?'&remove=1':''}}">
@@ -242,7 +242,28 @@
                                 
                                 @endif
                             </div>
+
                         </div>
+                        
+                        <div class="action dropdown" >
+
+                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Período
+                            </button>
+                            <div class="dropdown-menu "  aria-labelledby="dropdownMenu5"> 
+                                @foreach($periodos as $periodo)
+                                @if(isset($filtros['periodo']) && array_search($periodo->semestre.$periodo->ano,$filtros['periodo']) !== false)
+                                <a class="dropdown-item" href="?filtro=periodo&valor={{$periodo->semestre.$periodo->ano}}&remove=1" style="text-decoration: none;">
+                                    <i class="fa fa-check-circle-o icon"></i> {{$periodo->semestre.'º Sem. '.$periodo->ano}}
+                                </a> 
+                                @else
+                                <a class="dropdown-item" href="?filtro=periodo&valor={{$periodo->semestre.$periodo->ano}}" style="text-decoration: none;">
+                                    <i class="fa fa-circle-o icon"></i> {{$periodo->semestre.'º Sem. '.$periodo->ano}}
+                                </a> 
+                                @endif
+                                @endforeach
+                            </div>
+                        </div>
+
                 
          
                     </div>
@@ -270,27 +291,36 @@
                     <div class="row">
                         <div class="col-xs-12 text-xs-right">
                             <div class="action dropdown pull-right "> 
-                                <a href="/pedagogico/turmas/" class="btn btn-primary rounded-s"><i class="fa fa-th-list"></i> Turmas no pedagógico</a>
-                                <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Com os selecionados...
+                                <a href="/pedagogico/turmas/" class="btn btn-primary btn-sm rounded-s"><i class="fa fa-th-list"></i> Turmas no pedagógico</a>
+                                <button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenuAction" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Com os selecionados...
                                 </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('inscricao')">
-                                        <i class="fa fa-circle-o icon"></i>Abrir Matrículas
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuAction"> 
+                                    <a class="dropdown-item" style="line-height: 30px; text-decoration: none;" href="#" onclick="alterarStatus('inscricao')">
+                                        <i class="fa fa-circle-o icon"></i> Abrir Matrículas
                                     </a> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('espera')">
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('espera')" style="line-height: 30px; text-decoration: none">
                                         <i class="fa fa-clock-o icon"></i> Suspender Matrículas
                                     </a>
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('andamento')" >
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('andamento')"  style="line-height: 30px;text-decoration: none;">
                                         <i class="fa fa-check-circle icon"></i> Iniciada / parar matrículas
                                     </a>
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('iniciada')" >
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('iniciada')" style="line-height: 30px;text-decoration: none;">
                                         <i class="fa fa-check-circle-o icon"></i> Iniciada / c/matrículas abertas 
                                     </a>
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('encerrada')" >
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('encerrada')" style="line-height: 30px;text-decoration: none;" >
                                         <i class="fa fa-minus-circle icon"></i> Encerrar Turmas
                                     </a>
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('cancelada')" >
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('cancelada')" style="line-height: 30px;text-decoration: none;">
                                         <i class="fa fa-ban icon"></i> Cancelar Turmas
+                                    </a>
+                                     <a class="dropdown-item" href="#" style="line-height: 20px;text-decoration: none;">
+                                       ----------------------------
+                                    </a>
+                                     <a class="dropdown-item" href="#" onclick="getDados();" style="line-height: 30px;text-decoration: none;">
+                                        <i class="fa fa-group icon"></i> Dados da(s) turma(s)
+                                    </a>
+                                     <a class="dropdown-item" href="#" onclick="getListas();" style="line-height: 30px;text-decoration: none;">
+                                        <i class="fa fa-list-ol icon"></i> Imprimir listas
                                     </a>
                                 </div>
                              </div>
@@ -350,15 +380,30 @@
                                                     <div class="item-heading">Curso/atividade</div>
                                                     <div class="">
                                                         
-                                                             <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}}- <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->status. ' - Começa em  ' .$turma->data_inicio}}</small></div> 
+                                                             <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}}  
+                                                                @if($turma->status == 'andamento' || $turma->status == 'iniciada' )
+                                                                    <span  class="badge badge-pill badge-success" style="font-size: 0.8rem">
+                                                                @elseif($turma->status == 'espera' || $turma->status == 'lancada' || $turma->status == 'inscricao' )
+                                                                     <span  class="badge badge-pill badge-info" style="font-size: 0.8rem">
+                                                                @elseif($turma->status == 'cancelada')
+                                                                     <span  class="badge badge-pill badge-danger" style="font-size: 0.8rem">
+                                                                @else
+                                                                     <span  class="badge badge-pill badge-secondary" style="font-size: 0.8rem">
+                                                                @endif
+                                                                     <i class="fa fa-{{$turma->icone_status}} icon"></i> {{$turma->status}}
+                                                                    </span>
+                                                                     <small>Início em 
+
+
+                                                                {{$turma->data_inicio}}</small></div> 
 
                                                        @if(isset($turma->disciplina))
-                                                        <a href="{{asset('secretaria/turma/'.$turma->id)}}" target="_blank" class="" title="Ver inscritos na turma">
+                                                        <a href="{{asset('secretaria/turma/'.$turma->id)}}"  title="Abrir dados da turma">
                                                             <h4 class="item-title"> {{$turma->disciplina->nome}}</h4>       
                                                             <small>{{$turma->curso->nome}}</small>
                                                         </a>
                                                        @else
-                                                        <a href="{{asset('secretaria/turma/'.$turma->id)}}" target="_blank" class="" title="Ver descrição em outra janela">
+                                                        <a href="{{asset('secretaria/turma/'.$turma->id)}}"   title="Abrir dados da turma">
                                                             <h4 class="item-title"> {{$turma->curso->nome}}</h4>           
                                                         </a>
                                                         @endif
@@ -470,6 +515,30 @@ function alterarStatus(status){
             $(location).attr('href','{{route('turmas')}}/status/'+status+'/'+selecionados);
 
     
+}
+function getDados(){
+    var selecionados='';
+        $("input:checkbox[name=turma]:checked").each(function () {
+            selecionados+=this.value+',';
+
+        });
+        if(selecionados=='')
+            alert('Nenhum item selecionado');
+        else
+            $(location).attr('href','/relatorios/dados-turmas/'+selecionados);
+
+}
+function getListas(){
+    var selecionados='';
+        $("input:checkbox[name=turma]:checked").each(function () {
+            selecionados+=this.value+',';
+
+        });
+        if(selecionados=='')
+            alert('Nenhum item selecionado');
+        else
+            $(location).attr('href','/listas/'+selecionados);
+
 }
 
 

@@ -16,7 +16,7 @@ class PessoaDadosContato extends Model
     	return $this->hasOne('App\TipoDado','dado'); // (Pessoa::class)
     }
     public static function getTelefone($id){
-    	$telefones = PessoaDadosContato::where('pessoa',$id)->whereIn('dado',[2,9])->get();
+    	$telefones = PessoaDadosContato::where('pessoa',$id)->whereIn('dado',[2,9])->where('valor','<>','')->orderByDesc('id')->limit(3)->get();
     	return $telefones;
 
     }

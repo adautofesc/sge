@@ -335,6 +335,26 @@
                                 <button type="button" name="inicio"  class="btn btn-sm btn-primary " onclick="addFiltroData()">Aplicar</button>
                             </div>
                         </div>
+
+
+
+                        <div class="action dropdown" style="float: left; margin-right: 10px;"> 
+                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Período
+                            </button>
+                            <div class="dropdown-menu " style="height:10em;px;overflow-y:scroll;" aria-labelledby="dropdownMenu1"> 
+                                @foreach($periodos as $periodo)
+                                @if(isset($filtros['periodo']) && array_search($periodo->semestre.$periodo->ano,$filtros['periodo']) !== false)
+                                <a class="dropdown-item" href="?filtro=periodo&valor={{$periodo->semestre.$periodo->ano}}&remove=1">
+                                    <i class="fa fa-check-circle-o icon"></i> {{$periodo->semestre.'º Sem. '.$periodo->ano}}
+                                </a> 
+                                @else
+                                <a class="dropdown-item" href="?filtro=periodo&valor={{$periodo->semestre.$periodo->ano}}">
+                                    <i class="fa fa-circle-o icon"></i> {{$periodo->semestre.'º Sem. '.$periodo->ano}}
+                                </a> 
+                                @endif
+                                @endforeach
+                            </div>
+                        </div>
                 
          
                     </div>
@@ -347,20 +367,22 @@
     </div>
         <div class="row ">
         <div class="col-xl-12">
+            <small>
         	<table class="table table-striped table-condensed">
         		<thead>
-        			<th class="col-md-1 col-sm-1" >Turma</th>
-        			<th class="col-md-3 col-sm-3">Curso</th>
-        			<th class="col-md-3 col-sm-3">Dia/Horário</th>
-        			<th class="col-md-2 col-sm-2">Professor</th>
-        			<th class="col-md-1 col-sm-1">Local</th>
-        			<th class="col-md-2 col-sm-2">Vagas/Ocupadas</th>
+        			<th  width="5%" >Turma</th>
+        			<th>Curso</th>
+                    <th>Início</th>
+        			<th>Dia/Horário</th>
+        			<th>Professor</th>
+        			<th>Local</th>
+        			<th>Vagas/Ocupadas</th>
         		</thead>
         		<tbody>
         			 @foreach($turmas as $turma)
         			<tr>
-        				<td class="col-md-1 col-sm-1">{{$turma->id}}</td>
-        				<td class="col-md-3 col-sm-3">
+        				<td>{{$turma->id}}</td>
+        				<td >
         					@if(isset($turma->disciplina))
                             	
                                  {{$turma->disciplina->nome}}     
@@ -372,14 +394,16 @@
                             
                             @endif
                         </td>
-        				<td class="col-md-3 col-sm-3">{{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}</td>
-        				<td class="col-md-2 col-sm-2">{{$turma->professor->nome_simples}}</td>
-        				<td class="col-md-1 col-sm-1">{{$turma->local->sigla}}</td>
-        				<td class="col-md-2 col-sm-2">{{$turma->vagas}} / {{$turma->matriculados}}</td>
+                        <td>{{$turma->data_inicio}}</td>
+        				<td>{{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}</td>
+        				<td>{{$turma->professor->nome_simples}}</td>
+        				<td>{{$turma->local->sigla}}</td>
+        				<td>{{$turma->vagas}} / {{$turma->matriculados}}</td>
         			</tr>
         			@endforeach
         		</tbody>
         	</table>
+        </small>
 
          
             <!-- /.card -->
@@ -400,7 +424,7 @@
         
             inicio = document.getElementsByName("data_inicio")[0].value;
             termino = document.getElementsByName("data_termino")[0].value;
-            window.location.href = './turmas/?filtro=pordata&valor=i'+inicio+'t'+termino;
+            window.location.href = './inscricoes/?filtro=pordata&valor=i'+inicio+'t'+termino;
         }
     </script>
 </body>

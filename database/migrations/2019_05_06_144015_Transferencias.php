@@ -19,11 +19,12 @@ class Transferencias extends Migration
             $table->unsignedInteger('anterior');
             $table->unsignedInteger('nova');
             $table->dateTime('data');
-            $table->unsignedInteger('pessoa');
-            $table->foreign('pessoa')->references('id')->on('pessoas')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('motivo',200);
+            $table->unsignedInteger('responsavel');
+            $table->foreign('responsavel')->references('id')->on('pessoas')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('matricula')->references('id')->on('matriculas')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('anterior')->references('id')->on('inscricoes')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('nova')->references('id')->on('inscricoes')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('anterior')->references('id')->on('turmas')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('nova')->references('id')->on('turmas')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

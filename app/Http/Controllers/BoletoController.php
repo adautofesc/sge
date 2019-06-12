@@ -1620,6 +1620,36 @@ class BoletoController extends Controller
 			return view('financeiro.boletos.informacoes');
 		}
 	}
+	public function reativarCancelados(){
+		$boletos = collect();
+		$logs = \App\Log::where('tipo','boleto')->where('evento','like','%Tarifas%')->get();
+		
+		foreach($logs as $log){
+			$logao = \App\Log::where('tipo','boleto')->where('codigo',$log->codigo)->where('evento','like','%cancelamento%')->get();
+			$logao2 = \App\Log::where('tipo','boleto')->where('codigo',$log->codigo)->where('evento','like','%Boleto cancelado%')->get();
+			$logao3 = \App\Atendimento::where('descricao','like','Solicitação de cancelamento de boleto: '.$log->codigo)->get();
+			
+
+
+			if((count($logao)==0) && (count($logao2)==0) && (count($logao3)==0)){
+				$boleto = \App\Boleto::find($log->codigo);
+
+				if($boleto!=null && $boleto->status=='cancelado'){
+					$boleto->status = 'emitido';
+					$boleto->save();
+	
+					$boletos->push($boleto);
+				
+				}
+			}
+		
+		}
+	
+
+
+		return $boletos;
+		
+	}
 
 		
 

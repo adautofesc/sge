@@ -29,5 +29,19 @@ class Inscricao extends Model
 		return $curso->curso;
 
 	}
+	public function getTransferencia(){
+
+		$tr = Transferencia::where('anterior',$this->id)->first();
+		//dd($tr);
+		return $tr;
+
+
+	}
+	public function getAtestado(){
+		$atestado = \App\Atestado::where('pessoa',$this->pessoa->id)->orderByDesc('id')->first();
+		
+
+		return $atestado;
+	}
 
 }

@@ -69,6 +69,7 @@ Route::middleware('login') ->group(function(){
 
 	});*/
 	Route::get('/atestado/{id}', 'painelController@index');
+
 	
 
 	Route::get('lista/{id}','painelController@chamada'); //lista de chamada aberta
@@ -455,9 +456,10 @@ Route::middleware('login') ->group(function(){
 		Route::get('dados-turmas/{turmas}', 'RelatorioController@dadosTurmas');
 		Route::get('matriculas/{programa}','RelatorioController@matriculasPrograma');
 		Route::get('inscricoes','RelatorioController@inscricoes');
-		Route::get('concluintes','RelatorioController@alunosConcluintes');
+		Route::get('alunos-turmas','RelatorioController@alunosTurmasExport');
 		Route::get('faixasuati', 'RelatorioController@matriculasUati');
 		Route::get('alunos-posto', 'RelatorioController@alunosPorUnidade');
+		Route::get('bolsas-fpm','RelatorioController@bolsasFPM');
 		Route::get('bolsas','RelatorioController@bolsas');
 
 

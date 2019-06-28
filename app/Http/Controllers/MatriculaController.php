@@ -830,11 +830,14 @@ where nt.matricula>1');
                     //senao cria uma nova
                     $matricula = MatriculaController::gerarMatricula($r->pessoa,$r->novaturma[$turma],'espera');
 
+
                 }
 
                 //atribui matricula a inscricao
                 $inscricao->matricula = $matricula->id;
                 $inscricao->save();
+                $matricula->parcelas = $matricula->getParcelas();
+                $matricula->save();
             }
         }
         return redirect("/secretaria/atender/".$r->pessoa."?mostrar=todos")->with('dados["alert_sucess"]',['Turmas rematriculadas com sucesso']);

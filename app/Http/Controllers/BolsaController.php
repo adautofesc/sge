@@ -162,8 +162,8 @@ class BolsaController extends Controller
         //$curso = \App\Curso::find($matricula->curso);
 
         //verifica se qnde de matriculas escolhidas ultrapassa o limite (max)
-        if(count($request->matricula) > self::max_matriculas)
-            return redirect()->back()->withErrors(['Mais de duas matrículas selecionadas.']);
+        //if(count($request->matricula) > self::max_matriculas)
+            //return redirect()->back()->withErrors(['Mais de duas matrículas selecionadas.']);
 
 
         //procura bolsas ativas dessa pessoa
@@ -180,10 +180,11 @@ class BolsaController extends Controller
            
 
             //se já tiver duas matriculas na bolsa retorna erro
+            /*
             if(count($matriculas)>= self::max_matriculas )
                 return redirect()->back()->withErrors(['Erro: Já consta uma solicitação de bolsa aberta com o máximo de matrículas permitida.']);
-
-            else{
+            */
+            //else{
 
 
                  
@@ -205,7 +206,7 @@ class BolsaController extends Controller
                 return redirect()->back()->withErrors(['Matrícula inserida na bolsa com sucesso.']);
 
 
-            }
+            //}
         }
         else{
             if(date('m')>11)

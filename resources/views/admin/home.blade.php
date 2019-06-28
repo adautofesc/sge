@@ -52,7 +52,12 @@
                         <a href="/relatorios/inscricoes"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Relatório de Inscrições</a>
-                    </div>        
+                    </div> 
+                    <div>
+                        <a href="/relatorios/bolsas/"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Relatório de Bolsas</a>
+                    </div>         
                 </div>
             </div>
         </div>

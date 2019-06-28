@@ -91,9 +91,9 @@
                 </div>
                 <div class="card-block">
                      <div>
-                        <a href="{{asset('/relatorios/alunos-concluintes')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="#" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-table "></i>
-                        &nbsp;&nbsp;Concluintes (Excel)</a>
+                        &nbsp;&nbsp;Em construção</a>
                     </div>
 
                 </div>

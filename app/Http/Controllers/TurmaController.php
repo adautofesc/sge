@@ -518,7 +518,7 @@ class TurmaController extends Controller
 
         // se não tiver nenhuma turma atual
         if(count($turmas_af)==0){
-            $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.carga as carga','turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
+            $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.carga as carga','turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid','turmas.valor')
                 -> whereIn('turmas.status', ['inscricao','iniciada'])
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
@@ -529,7 +529,7 @@ class TurmaController extends Controller
                 //dd($turmas);
 
             
-            //return $turmas;
+            //dd($turmas);
             $programas=Programa::get();
             //return $turmas;
             return view('secretaria.inscricao.lista-formatada', compact('turmas'))->with('programas',$programas);

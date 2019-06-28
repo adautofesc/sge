@@ -320,7 +320,10 @@
                                         <i class="fa fa-group icon"></i> Dados da(s) turma(s)
                                     </a>
                                      <a class="dropdown-item" href="#" onclick="getListas();" style="line-height: 30px;text-decoration: none;">
-                                        <i class="fa fa-list-ol icon"></i> Imprimir listas
+                                        <i class="fa fa-print icon"></i> Imprimir listas
+                                    </a>
+                                    <a class="dropdown-item" href="#" onclick="exportar();" style="line-height: 30px;text-decoration: none;">
+                                        <img src="/img/excel.png" width="17px;"> Exportar alunos ativos
                                     </a>
                                 </div>
                              </div>
@@ -538,6 +541,18 @@ function getListas(){
             alert('Nenhum item selecionado');
         else
             $(location).attr('href','/listas/'+selecionados);
+
+}
+function exportar(){
+    var selecionados='';
+        $("input:checkbox[name=turma]:checked").each(function () {
+            selecionados+=this.value+',';
+
+        });
+        if(selecionados=='')
+            alert('Nenhum item selecionado');
+        else
+            $(location).attr('href','/relatorios/alunos-turmas?turmas='+selecionados);
 
 }
 

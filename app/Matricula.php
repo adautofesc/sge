@@ -168,6 +168,7 @@ class Matricula extends Model
 		//calcula a diferença entre as datas
 		$interval = $dt_pp->diff($dt_mt);
 		$parcelas = $valor_matricula->parcelas - ceil($interval->days/30);
+
 		
 
 		//reduz a quantidade de parcelas de acordo com a diferença entre as datas

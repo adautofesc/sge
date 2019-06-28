@@ -22,7 +22,7 @@ class RelatorioController extends Controller
      * @param  integer $turma [description]
      * @return [type]         [description]
      */
-    public function alunosConcluintes($turma=0){
+    public function alunosTurmasExport(Request $request){
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="'. 'relatorio' .'.xls"'); /*-- $filename is  xsl filename ---*/
         header('Cache-Control: max-age=0');
@@ -31,7 +31,7 @@ class RelatorioController extends Controller
         $arquivo = new Xls($tabela);
 
         $planilha = $tabela->getActiveSheet();
-        $planilha->setCellValue('A1', 'ALUNOS PENDENTES - Gerado em '.date('d/m/Y'));
+        $planilha->setCellValue('A1', 'Gerado em '.date('d/m/Y'));
         $planilha->setCellValue('A2', 'Nome');
         $planilha->setCellValue('B2', 'Programa');
         $planilha->setCellValue('C2', 'Curso');
@@ -40,10 +40,12 @@ class RelatorioController extends Controller
         $planilha->setCellValue('F2', 'Carga Horária');
         $planilha->setCellValue('G2', 'Início');
         $planilha->setCellValue('H2', 'Termino');
+        $planilha->setCellValue('I2', 'Telefone(s)');
+      
         $linha = 3;
 
-        if($turma ==0){
-            $concluintes = Inscricao::join('turmas', 'inscricoes.turma','=','turmas.id')
+        if(!isset($request->turmas)){
+            $concluintes = \App\Inscricao::join('turmas', 'inscricoes.turma','=','turmas.id')
             ->where('inscricoes.status','pendente')
             ->whereIn('turmas.programa',[1,2])
             ->get();
@@ -54,8 +56,20 @@ class RelatorioController extends Controller
            
            
         }
+        else{
+        	$turmas = explode(',',$request->turmas);
+
+
+        	$concluintes = \App\Inscricao::join('turmas', 'inscricoes.turma','=','turmas.id')
+            ->whereIn('inscricoes.status',['ativa','pendente','regular','finalizada'])
+            ->whereIn('turmas.id', $turmas)
+            ->get();
+            //return $concluintes;
+
+        }
             
         foreach($concluintes as $concluinte){ 
+        	
 
                 $planilha->setCellValue('A'.$linha, $concluinte->pessoa->nome);
                 $planilha->setCellValue('B'.$linha, $concluinte->turma->programa->sigla);
@@ -65,7 +79,8 @@ class RelatorioController extends Controller
                 $planilha->setCellValue('F'.$linha, $concluinte->turma->carga);
                 $planilha->setCellValue('G'.$linha, $concluinte->turma->data_inicio);
                 $planilha->setCellValue('H'.$linha, $concluinte->turma->data_termino);
-
+                $planilha->setCellValue('I'.$linha, $concluinte->pessoa->getTelefones()->implode("valor",", "));
+               
                 $linha++;
                 /*
                 $aluno->turma = $concluinte->turma->id;
@@ -80,7 +95,8 @@ class RelatorioController extends Controller
         }
         
         return $arquivo->save('php://output', 'xls');
-        //return $formandos;
+        //return $concluintes;
+        
     }
 
 	public function turmas(Request $request){
@@ -219,7 +235,7 @@ class RelatorioController extends Controller
 		return count($pessoas). ' pessoas com '.$qnde_matriculas .' matrículas.' ;
 	}
 
-	 public function bolsas(){
+	 public function bolsasFPM(){
         $bolsas = \App\Bolsa::where('desconto','3')->get();
         return view('relatorios.bolsistas')->with('bolsas',$bolsas);
     }
@@ -246,6 +262,67 @@ class RelatorioController extends Controller
     	
     	return $lista;
 
+    }
+
+
+    /*
+    
+Subquery
+
+$employees = DB::table('gb_employee')
+                            ->whereNotIn('employee_id', function($query) use ($client_id)
+                            {
+                                $query->select('gb_emp_client_empid')
+                                      ->from('gb_emp_client_lines')
+                                      ->where('gb_emp_client_clientid',$client_id);
+                            })
+                            ->get();
+
+Agrupamento de parâmetro
+
+Event::where('status' , 0)
+     ->where(function($q) {
+         $q->where('type', 'private')
+           ->orWhere('type', 'public');
+     })
+     ->get();
+     */
+
+    public function bolsas(Request $request){
+    	$programas=Programa::all();
+    	$descontos = \App\Desconto::orderBy('nome')->get();
+
+    	$bolsas = \App\Bolsa::select('*');
+    	if(isset($request->tipo)){
+
+    		if(isset($request->periodo)){
+    			
+
+    		}
+
+
+    		if($request->tipo=='Registros'){
+    			
+
+    		}
+    		if($request->tipo=='Resultados'){
+    			
+
+    		}
+    		if($request->tipo=='Comparativo'){
+    			
+
+    		}
+    	
+    	
+    	
+    	
+    	}
+    	else{
+    		return "Tipo não especificado";
+    	}
+
+    	return view('relatorios.bolsas')->with('programas',$programas)->with('descontos',$descontos)->with('periodos',\App\classes\Data::semestres());
     }
 
 

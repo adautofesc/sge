@@ -790,6 +790,7 @@ where nt.matricula>1');
                                         ->where('dias_semana',implode(',', $inscricao->turma->dias_semana))
                                         ->where('hora_inicio',$inscricao->turma->hora_inicio)
                                         ->where('data_inicio','>',\Carbon\Carbon::createFromFormat('d/m/Y', $inscricao->turma->data_termino)->format('Y-m-d'))
+                                        ->where('vagas', $inscricao->turma->vagas)
                                         ->where('status','inscricao')
                                         ->get();
                 }

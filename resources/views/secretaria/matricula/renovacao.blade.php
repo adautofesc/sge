@@ -39,7 +39,9 @@
     <div class="card card-block">
     	<div class="title-block">
             <h3 class="title"><i class=" fa fa-check-square-o "></i> Renovação de matrículas. </h3>
+            <p><small>Relação de turmas com o mesmo professor, dias da semana, horário, data de inicio maior que a data de termino da turma atual e com inscrições abertas.</small></p>
         </div>
+
 
         
 
@@ -148,8 +150,10 @@
                                 </div>
                                 <input type="hidden" name="novaturma[{{$inscricao->turma->id}}]" value="{{$inscricao->proxima_turma->first()->id}}">
                                 @else
-                                <p align="center"><i class="fa fa-warning"></i><br/>Nenhuma turma com professor,<br> dia e horário compatível.<br/>
-                                 <input type="text" name="novaturma[{{$inscricao->turma->id}}]" title="Digite aqui o código da turma de continuaçõa que teve seu horário alterado." placeholder="Código da turma alternativa"/></p>
+                                <p align="center"><i class="fa fa-warning"></i><br/>Nenhuma turma com professor,<br> dia e horário compatível.<br/><a href="/secretaria/matricula/nova/{{$pessoa->id}}">Proceder com nova matrícula.</a>
+                                    <!-- 
+                                 <input type="text" name="novaturma[{{$inscricao->turma->id}}]" title="Digite aqui o código da turma de continuaçõa que teve seu horário alterado." placeholder="Código da turma alternativa"/>-->
+                                </p>
 
                                 @endif
                             </div>

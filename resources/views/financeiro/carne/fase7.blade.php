@@ -17,42 +17,9 @@ Gerador de carnês
     text-shadow: 1px 1px 0 #fff;
   }
   </style>
-     <script type="text/javascript">
-
-      @if($boletos->hasMorePages())
-      var next = true;
-      @else
-      var next = false;
-
-      @endif
-      function loadNext(){
-       if(next){
-          window.setTimeout(function(){
-            location.reload();
-          }, 2000);
-        }
-        else{
-          window.setTimeout( function(){
-            mudar('./fase8');
-          }, 2000)
-          
-                
-        }
-
-      }
-      function mudar(url='#'){
-        /*
-        if(url=='')
-          url = '#';*/
-        //alert('chamado no goTo>'+url);
-        window.location.replace(url);
-      }
-        
-
-    </script>
     
   </header>
-  <body onload="loadNext();">
+  <body>
 
     <!-- conteúdo da página -->
     
@@ -62,90 +29,50 @@ Gerador de carnês
     <div class="row">
         <div class="col-md-7">
             <h3 class="title">Geração de Carnês</h3>
-            <p class="title-description">Gerando arquivos de remessa.</p>
+            <p class="title-description">Completo.</p>
         </div>
     </div>
 </div>
 <div class="card card-block">
       <div class="row">
-        <div class="col-md-1" style="width: 40px"><img src="{{asset('/img/loading.gif')}}" with="25px" height="25px"></div>
+        <div class="col-md-1" style="width: 40px"><em class="fa fa-check-square-o" style="font-size: 20pt; color: green;"></em></div>
         <div class="col-md-11">
-            <h3 class="title">Fase 7 - Gravando remessa em boletos/h3>
-            <p class="title-description">Mudando status dos boletos para emitido ou cancelado </p>
+            <h3 class="title">Geração concluída com sucesso.</h3>
+            <p class="title-description">Verifique os arquivos gerados</p>
             <br>
         </div>
       </div>
       <div class="form-group row"> 
         <label class="col-sm-2 form-control-label text-xs-right">
-          Lançamentos
+          Download 
         </label>
         <div class="col-sm-5"> 
-          <div class="input-group">
-           <div id="progressbar"><div class="progress-label">Concluído</div></div>
-          </div>
+         
+          <div class="input-group"><a href="/download/{{str_replace('/','-.-','/documentos/carnes/carnes_'.date('Ymd').'.zip')}}">Clique Aqui para baixar o Zip</a></div>
+          
+        </div>
+      </div>
+      <div class="form-group row"> 
+        <label class="col-sm-2 form-control-label text-xs-right">
+          PDF's
+        </label>
+        <div class="col-sm-5"> 
+          @foreach($carnes as $carne)
+          <div class="input-group"><a href="/download/{{str_replace('/','-.-','/documentos/carnes/'.$carne)}}">{{$carne}}</a></div>
+          @endforeach
+        </div>
+      </div>
+      <div class="form-group row"> 
+        <label class="col-sm-2 form-control-label text-xs-right">
+          Remessas
+        </label>
+        <div class="col-sm-5"> 
+          @foreach($remessas as $remessa)
+          <div class="input-group"><a href="/download/{{str_replace('/','-.-','/documentos/remessas/'.$remessa)}}">{{$remessa}}</a></div>
+          @endforeach
         </div>
       </div>
 
-       <div class="form-group row"> 
-        <label class="col-sm-2 form-control-label text-xs-right">
-          Boletos
-        </label>
-        <div class="col-sm-5"> 
-          <div class="input-group">
-           <div id="progressbar2"><div class="progress-label">Concluído</div></div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row"> 
-        <label class="col-sm-2 form-control-label text-xs-right">
-          Associação de parcelas
-        </label>
-        <div class="col-sm-5"> 
-          <div class="input-group">
-           <div id="progressbar7"><div class="progress-label">Concluído</div></div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row"> 
-        <label class="col-sm-2 form-control-label text-xs-right">
-          Arquivo PDF
-        </label>
-        <div class="col-sm-5"> 
-          <div class="input-group">
-           <div id="progressbar3"><div class="progress-label">Concluído</div></div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row"> 
-        <label class="col-sm-2 form-control-label text-xs-right">
-          Remessa
-        </label>
-        <div class="col-sm-5"> 
-          <div class="input-group">
-           <div id="progressbar4"><div class="progress-label">Concluído</div></div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row"> 
-        <label class="col-sm-3 form-control-label text-xs-right">
-          Atualizando status
-        </label>
-        <div class="col-sm-5"> 
-          <div class="input-group">
-           <div id="progressbar5"><div class="progress-label">{{ceil($boletos->currentPage()*100/$boletos->lastPage())}}%</div></div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row"> 
-        <label class="col-sm-2 form-control-label text-xs-right">
-          Finalizando
-        </label>
-        <div class="col-sm-5"> 
-          <div class="input-group">
-           <div id="progressbar6"><div class="progress-label">Aguardando...</div></div>
-          </div>
-        </div>
-      </div>
 </div>
     
   
@@ -157,29 +84,5 @@ Gerador de carnês
   <link rel="stylesheet" href="/resources/demos/style.css">
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <script>
-  $( function() {
-    $( "#progressbar" ).progressbar({
-      value: 100
-    });
-    $( "#progressbar2" ).progressbar({
-      value: 100
-    });
-     $( "#progressbar3" ).progressbar({
-       value: 100
-    });
-      $( "#progressbar4" ).progressbar({
-      value: 100
-    });
-       $( "#progressbar5" ).progressbar({
-      value: {{ceil($boletos->currentPage()*100/$boletos->lastPage())}}
-    });
-        $( "#progressbar6" ).progressbar({
-      value: 0
-    });
-        $( "#progressbar7" ).progressbar({
-     value: 100
-    });
-  } );
-  </script>
+
 @endsection

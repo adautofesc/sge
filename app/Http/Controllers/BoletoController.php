@@ -364,7 +364,7 @@ class BoletoController extends Controller
 		foreach($pessoas as $pessoa){
 
 			//Aqui são gerados os meses.******************************************************************** Atenção!
-			for($i=2;$i<8;$i++){
+			for($i=8;$i<13;$i++){
 				//verificar se tem boletoabero
 				$boleto_existente = Boleto::where('pessoa',$pessoa->pessoa)
 											->where('vencimento', 'like', date('Y-'.str_pad($i,2, "0", STR_PAD_LEFT).'-20%'))
@@ -491,7 +491,9 @@ class BoletoController extends Controller
 		
 			//$boletos = Boleto::where('status','gravado')->where('pessoa', '22610')->paginate(500);
 	
-			$boletos = Boleto::where('status','gravado')->orderBy('pessoa')->paginate(500);
+			$boletos = Boleto::where('status','gravado')->orderBy('pessoa')->orderBy('vencimento')->paginate(500);
+
+			//dd($boletos);
 		
 		//$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
 		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
@@ -529,6 +531,10 @@ class BoletoController extends Controller
 
 	}
 
+	/**
+	 * [Fase 5 - Muda Status dos boletos para IMPRESSO]
+	 * @return [type] [description]
+	 */
 	public function carneFase5(){
 		
 			//$boletos =Boleto::where('status','gravado')->orWhere('status','cancelar')->where('pessoa','22610')->paginate(500);
@@ -543,6 +549,10 @@ class BoletoController extends Controller
 
 	}
 
+	/**
+	 * [Fase 6 - Gerar arquivos de remessas]
+	 * @return [type] [description]
+	 */
 	public function carneFase6(){
 
 			$beneficiario = new \Eduardokum\LaravelBoleto\Pessoa([
@@ -603,33 +613,16 @@ class BoletoController extends Controller
 		return view('financeiro.carne.fase6',compact('boletos'))->with('arquivo',$arquivo);
 	}
 
+	/**
+	 * Fase 7 - Compactar todos arquivos gerados e retornar ela com os arquivos.
+	 * @return [type] [description]
+	 */
 	public function carneFase7(){
-		
-			//$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->where('pessoa', '22610')->paginate(100);
-		
-			$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->paginate(100);
-		foreach($boletos as $boleto){
-			if($boleto->status == 'cancelar'){
-				//$boleto->status = 'cancelado';
-			}
-			else{
-				//$boleto->status = 'emitido';
-				$boleto->remessa = date('YmdHis');
-
-			}
-
-			$boleto->save();
-		}
-
-		return view('financeiro.carne.fase7',compact('boletos'));
-	}
-
-	public function carneFase8(){
 		//gerar zip
 		
 		//dd(getcwd());
 		$zip = new ZipArchive();
-		$filename = 'documentos/carnes/carnes_'.date('Ymd').'zip';
+		$filename = 'documentos/carnes/carnes_'.date('Ymd').'.zip';
 		if($zip->open( $filename , ZipArchive::CREATE ) === FALSE){
 			dd("Erro ao criar arquivo Zip.");
 		}
@@ -671,7 +664,7 @@ class BoletoController extends Controller
 		//retornar arquivo zip.
 
 
-		return view('financeiro.carne.fase8')->with('remessas',$remessas)->with('carnes',$carnes);
+		return view('financeiro.carne.fase7')->with('remessas',$remessas)->with('carnes',$carnes);
 
 	}
 
@@ -988,7 +981,7 @@ class BoletoController extends Controller
 				$mes=date('m');
 
 
-			for($i=$mes;$i<8;$i++){
+			for($i=8;$i<13;$i++){//i = mes. trocar o 8 por $mes
 				//verificar se tem boletoabero
 				$boleto_existente = Boleto::where('pessoa',$pessoa)
 											->where('vencimento', 'like', date('Y-'.str_pad($i,2, "0", STR_PAD_LEFT).'-20%'))

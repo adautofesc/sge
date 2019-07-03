@@ -195,8 +195,7 @@ Route::middleware('login') ->group(function(){
 			Route::get('fase4/{pessoa?}','BoletoController@carneFase4');//gera pdf
 			Route::get('fase5/{pessoa?}','BoletoController@carneFase5');//confirma impressão
 			Route::get('fase6/{pessoa?}','BoletoController@carneFase6');//gera remessa
-			Route::get('fase7/{pessoa?}','BoletoController@carneFase7');//confirma remessa
-			Route::get('fase8/{pessoa?}','BoletoController@carneFase8');//download de arquivos
+			Route::get('fase7/{pessoa?}','BoletoController@carneFase7');//download de arquivos
 
 
 		});

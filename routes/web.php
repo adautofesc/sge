@@ -25,7 +25,7 @@ Route::get('boleto/{id}','BoletoController@imprimir');
 Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
 Route::get('ipca','ValorController@getIPCA');
 //Route::get('correcao-valor','ValorController@correcaoValor');
-//Route::get('cancelados','BoletoController@reativarCancelados');
+Route::get('boletos-com-erros','BoletoController@analisarBoletosComErro');
 
 
 
@@ -363,6 +363,7 @@ Route::middleware('login') ->group(function(){
 		Route::post('cadastrardisciplina','DisciplinaController@store');
 		Route::get('pedagogico/editardisciplina/{var}','DisciplinaController@edit');
 		Route::get('disciplina/mostrar/{var}','DisciplinaController@show');
+		Route::get('editardisciplina/{var}','DisciplinaController@edit');
 		Route::post('editardisciplina/{var}','DisciplinaController@update');
 		Route::get('apagardisciplina','DisciplinaController@destroy');
 			//Requisitos

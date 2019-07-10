@@ -1644,6 +1644,57 @@ class BoletoController extends Controller
 		
 	}
 
+	/**
+	 * Redução do numero de boletos com erro no sistema e sem descriao.
+	 * @return [type] [description]
+	 */
+	public function analisarBoletosComErro(){
+
+		$boletos = Boleto::where('status','erro')->orWhere('status','')->get();
+
+		foreach($boletos as $boleto){
+			$query1= \App\Log::where('tipo','boleto')->where('codigo',$boleto->id)->where('evento','like','%cancelamento%')->count();
+			$query2 = \App\Log::where('tipo','boleto')->where('codigo',$boleto->id)->where('evento','like','%Boleto cancelado%')->count();
+			$query3 = \App\Atendimento::where('descricao','like','Solicitação de cancelamento de boleto: '.$boleto->id)->count();
+			$query4 = \App\Lancamento::where('boleto',$boleto->id)->where('status','cancelado')->count();
+			if($query1 || $query2 || $query3 || $query4){
+				$boleto->status = 'cancelado';
+				$boleto->save();
+			}
+			else{
+				//implementar ia pra ver se os boletos dos outros meses estão pagos ou cancelados
+				$ano = substr($boleto->vencimento,0,4);
+				$mes = substr($boleto->vencimento,5,2);
+				$boleto_posterior = Boleto::where('pessoa',$boleto->pessoa)->where('vencimento', 'like',$ano.'-'.($mes+1).'%')->first();
+				$boleto_anterior = Boleto::where('pessoa',$boleto->pessoa)->where('vencimento', 'like',$ano.'-'.($mes-1).'%')->first();
+				if($boleto_anterior and $boleto_posterior){
+					if($boleto_anterior->status == 'pago' and $boleto_posterior->status == 'pago')
+						$boleto->status = 'pago';
+					elseif($boleto_anterior->status == 'cancelado' and $boleto_posterior->status == 'cancelado')
+						$boleto->status = 'cancelado';
+					elseif($boleto_anterior->status == 'emitido' and $boleto_posterior->status == 'emitido')
+						$boleto->status = 'emitido';
+					elseif($boleto_anterior->status == 'divida' and $boleto_posterior->status == 'divida')
+						$boleto->status = 'divida';
+					/**
+					if($boleto_anterior->status == '' and $boleto_posterior->status == '')
+						$boleto->status = '';
+					**/
+					$boleto->save();
+
+
+				}
+			}
+		}
+
+		
+	
+
+
+		return count($boletos);
+		
+	}
+
 		
 
 }

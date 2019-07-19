@@ -563,7 +563,7 @@ class TurmaController extends Controller
             //return $lst;
 
             // seleciona todas as turmas disponíveis (tira da lista aquelas que conflitam)
-            $turmas=Turma::select('*', 'turmas.id as id', 'turmas.carga as carga','turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid')
+            $turmas=Turma::select('*', 'turmas.id as id', 'turmas.carga as carga','turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid','turmas.valor')
                 -> whereIn('turmas.status', ['inscricao','iniciada'])
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')

@@ -148,7 +148,7 @@ class MatriculaController extends Controller
         $pessoa=Pessoa::find($matricula->pessoa);
         $pessoa=PessoaController::formataParaMostrar($pessoa);
         
-        $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->where('status','<>','cancelada')->get();
+        $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->whereIn('status',['regular','pendente','finalizada'])->get();
         foreach($inscricoes as $inscricao){
             $inscricao->turmac=Turma::find($inscricao->turma->id);
         }

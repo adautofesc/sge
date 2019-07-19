@@ -329,7 +329,7 @@ class BoletoController extends Controller
 	 */
 	public function carneFase1(){
 
-		$matriculas = Matricula::whereIn('status',['ativa','pendente'])->paginate(50);
+		$matriculas = Matricula::whereIn('status',['ativa','pendente','espera'])->paginate(50);
 		$LC = new LancamentoController;
 		foreach($matriculas as $matricula){
 			$LC->gerarTodosLancamentos($matricula);
@@ -961,7 +961,7 @@ class BoletoController extends Controller
 	 */
 	public function gerarCarneIndividual($pessoa){
 
-		$matriculas = Matricula::whereIn('status',['ativa','pendente'])->where('pessoa',$pessoa)->get();
+		$matriculas = Matricula::whereIn('status',['ativa','pendente', 'espera'])->where('pessoa',$pessoa)->get();
 		$LC = new LancamentoController;
 		foreach($matriculas as $matricula){
 			$LC->gerarTodosLancamentos($matricula);

@@ -47,6 +47,7 @@ class ValorController extends Controller
             if(isset($turma->parceria))
                 return ValorController::retornarZero('Parcerias/Ação Social');
 
+            
             if($turma->programa->id == 4)
                 return ValorController::retornarZero('Escola Municipal de Governo');
 

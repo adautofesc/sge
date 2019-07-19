@@ -153,13 +153,17 @@ class Matricula extends Model
 
 		unset($this->inscricoes);
 
-
-		//verifica qual semestre para determinar a data da primeira parcela
-		if($pp_dt->format('m')<8){
-			$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/02/'.$pp_dt->format('Y')); // 20/02/2019
-		}
+		// verifica se a inscrição é para turma que começa em agosto, se for atribui 5 parcelas
+		if($pp_dt->format('m')==8)
+			return 5;
 		else{
-			$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/08/'.$pp_dt->format('Y')); //ou 20/08/2019
+			//verifica qual semestre para determinar a data da primeira parcela
+			if($pp_dt->format('m')<8){
+				$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/02/'.$pp_dt->format('Y')); // 20/02/2019
+			}
+			else{
+				$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/08/'.$pp_dt->format('Y')); //ou 20/08/2019
+			}
 		}
 		
 		//transforma data da matricula em objeto

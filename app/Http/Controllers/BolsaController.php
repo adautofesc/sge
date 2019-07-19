@@ -221,6 +221,17 @@ class BolsaController extends Controller
             return redirect()->back()->withErrors(['Bolsa já solicitada.']);
 
 
+        if($request->desconto ==10){
+            foreach($request->matricula as $matricula){
+                $obj_matricula = \App\Matricula::find($matricula);
+                $programa_matricula = $obj_matricula ->getPrograma();
+                if($programa_matricula->id != 4)
+                    return redirect()->back()->withErrors(['Turma não destinada para desconto EMG.']);
+
+            }
+            
+        }
+
 
         $bolsa = new Bolsa;
         $bolsa->pessoa = $request->pessoa;

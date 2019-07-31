@@ -40,13 +40,13 @@
                     <div> <span>Pessoa</span> </div>
                 </div>
                 <div class="item-col item-col-header item-col-sales">
-                    <div> <span>Login</span> </div>
+                    <div> <span>Cargo</span> </div>
                 </div>
                 <div class="item-col item-col-header item-col-sales">
-                    <div> <span>Validade</span> </div>
+                    <div> <span>Telefone</span> </div>
                 </div>
                 <div class="item-col item-col-header item-col-sales">
-                    <div> <span>Status</span> </div>
+                    <div> <span>Opções</span> </div>
                 </div>
                 <div class="item-col item-col-header fixed item-col-actions-dropdown"> </div>
             </div>
@@ -63,7 +63,7 @@
                 <div class="item-col fixed pull-left item-col-title">
                     <div class="item-heading">Pessoa</div>
                     <div>                        
-                        <h4 class="item-title">{{$pessoa->nome}} </h4>
+                        <h4 class="item-title"><a href="/gestaopessoal/atender/{{$pessoa->id}}">{{$pessoa->nome}}</a> </h4>
                     </div>
                 </div>
                 <div class="item-col item-col-sales">
@@ -78,25 +78,23 @@
                     </div>
                 </div> 
                 <div class="item-col item-col-sales">
-                    <div class="item-heading">Status</div>
+                    <div class="item-heading">Opções</div>
                     <div>{{$pessoa->status}}</div>
                 </div> 
 
                 <div class="item-col fixed item-col-actions-dropdown">
                     <div class="item-actions-dropdown">
-                        <a class="item-actions-toggle-btn"> <span class="inactive">
-				<i class="fa fa-cog"></i>
-			</span> <span class="active">
-			<i class="fa fa-chevron-circle-right"></i>
-			</span> </a>
+                        <a class="item-actions-toggle-btn"> 
+                            <span class="inactive">
+                                <i class="fa fa-cog"></i>
+                			</span> 
+                            <span class="active">
+                	            <i class="fa fa-chevron-circle-right"></i>
+			                </span> 
+                        </a>
                         <div class="item-actions-block">
                             <ul class="item-actions-list">
-                                <li>
-                                    <a class="remove" onclick=remover({{$pessoa->id}}) href="#" title="Remover relação institucional"> <i class="fa fa-times-circle "></i> </a>
-                                </li>
-                                <li>
-                                    <a class="edit"  onclick=alterar(2,{{$pessoa->id}}) href="#" title="Vincular pessoa a Programa Educacional"> <i class="fa fa-indent"></i> </a>
-                                </li>
+                        
                                 <li>
                                     <a class="edit"  onclick=atender({{$pessoa->id}}) href="#" title="Atender"> <i class="fa fa-th-list"></i> </a>
                                 </li>

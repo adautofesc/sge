@@ -1,5 +1,6 @@
 @extends('layout.app')
 @section('pagina')
+@include('inc.errors')
 <div class="title-block">
                         <h3 class="title"> {{$pessoa->nome}} 
                         	@if(isset($pessoa->nome_resgistro))
@@ -61,7 +62,10 @@
 									Relação Institucional
 								</label>
 								<div class="col-sm-2"> 
-									{{$pessoa->relacao_institucional}}
+									@foreach($pessoa->relacoes_institucionais as $relacao_institucional)
+									{{$relacao_institucional->valor}} <a href="/gestaopessoal/remover-relacao/{{$relacao_institucional->id}}" class="badge badge-pill badge-danger" style="text-decoration: none; color: white;" title="Excluir Relação Institucional">X</a><br>
+									@endforeach
+
 								</div>
 								<label class="col-sm-2 form-control-label text-xs-right">
 									Contratado(a) em
@@ -105,6 +109,7 @@
 							@endif
                         </div>
                         <div><br></div>
+
                         <div class="subtitle-block">
                         	<h3 class="subtitle"> Opções de atendimento de Gestão Pessoal</h3>
                     	</div>
@@ -118,14 +123,18 @@
 											</div>
 										</div>
 										<div class="card-block">
-											<div><a href="{{asset('pessoa/cadastraracesso').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-plus-circle "></i>  Criar acesso</a></div>
+
+											
 											@if($pessoa->acesso)
-											<div><a href="{{asset('pessoa/trocarsenha').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-check-square-o"></i> Trocar senha</a></div>
+											<div><a href="{{asset('pessoa/trocarsenha').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-unlock"></i> Trocar senha</a></div>
 											
 											<div><a href="#" onclick="cancelarAcesso()" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-times-circle"></i> Cancelar Acesso</a></div>
-											<div><a href="{{asset('admin/credenciais').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-times-circle"></i> Credenciais</a></div>
+											<div><a href="{{asset('admin/credenciais').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-key"></i> Credenciais</a></div>
+											@else
+											<div><a href="{{asset('pessoa/cadastraracesso').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-asterisk "></i>  Criar acesso</a></div>
+
 											@endif
-											<div><a href="{{asset('gestaopessoal/relacaoinstitucional').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-times-circle"></i> Rel. Institucional</a></div>
+											<div><a href="{{asset('gestaopessoal/relacaoinstitucional').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-puzzle-piece"></i> Rel. Institucional</a></div>
 											
 										</div>
 										

@@ -7,10 +7,10 @@
 <form method="POST">
     <div class="card card-block">
 		<div class="form-group row"> 
-			<label class="col-sm-9 form-control-label text-xs-right">
-				Qual o cargo ocupado por "{{$nome}}" na FESC?
+			<label class="col-sm-2 form-control-label text-xs-left">
+				Qual o cargo ocupado por <strong>"{{$nome}}"</strong> neste momento na FESC?
 			</label>
-			<div class="col-sm-3"> 
+			<div class="col-sm-2"> 
 				<select name="cargo" class="form-control form-control-sm">
 					<option>Nenhum</option>
 					<option value="Administrador">Administrador</option>
@@ -23,6 +23,7 @@
 					<option value="Coordenador de Programa">Coordenador de Programa</option>
 					<option value="Diretor">Diretor</option>
 					<option value="Educador">Educador</option>
+					<option value="Educador de Parceria">Educador de parceria</option>
 					<option value="Estagiário">Estagiário</option>
 					<option value="Gestor">Gestor</option>
 					<option value="Operacional">Operacional</option>
@@ -37,13 +38,14 @@
 		
 	
 		<div class="form-group row"> 
-			<label class="col-sm-2 form-control-label text-xs-right">
+			<label class="col-sm-2 form-control-label text-xs-left">
 				
 			</label>
 			<div class="col-sm-8"> 
 				{{ csrf_field() }}
 				<input type="hidden" name="pessoa" value="{{$id}}">
 				<button type="submit" name="btn_sub" value='3'  class="btn btn-primary">Salvar Informação</button>
+				
 			
 				<!-- 
 				<button type="submit" class="btn btn-primary"> Cadastrar</button> 

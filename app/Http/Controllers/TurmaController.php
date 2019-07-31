@@ -273,7 +273,7 @@ class TurmaController extends Controller
         $programas=Programa::get();
         $requisitos=RequisitosController::listar();
         //$cursos=Curso::getCursosPrograma(); ok
-        $professores=PessoaDadosAdministrativos::getFuncionarios('Educador');
+        $professores=PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
         $unidades=Local::get(['id' ,'nome']);
         $parcerias=Parceria::orderBy('nome')->get();
         //Locais=Local::getLocaisPorUnidade($unidade);

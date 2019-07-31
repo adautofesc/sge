@@ -967,11 +967,12 @@ class PessoaController extends Controller
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
 		if(!loginController::autorizarDadosPessoais($request->pessoa))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional, não está acessivel ou não existe.']));
-
+		/*
 		$rel_atual=PessoaDadosAdministrativos::where('pessoa',$request->pessoa)->where('dado',16)->first();
 
 		if($rel_atual)
 			$rel_atual->delete();
+		*/
 		$nova_relacao=new PessoaDadosAdministrativos;
 		//$nova_relacao->timestamps=false;
 		$nova_relacao->dado=16;

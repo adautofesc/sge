@@ -947,8 +947,10 @@ class TurmaController extends Controller
 
 
        if( isset($ws{0}->url) )
-
             return redirect( $ws{0}->url);
+
+        elseif(isset($ws{0}->url_pdf))
+            return redirect( $ws{0}->url_pdf);
 
         else
 
@@ -1060,7 +1062,7 @@ class TurmaController extends Controller
     }
 
     public function atualizarInscritos(){
-        $turmas = Turma::select(['id','matriculados'])->get();
+        $turmas = Turma::select(['id','matriculados'])->whereIn('status',['inscricao','andamento','iniciada','espera'])->get();
         foreach($turmas as $turma){
             $inscritos = Inscricao::where('turma',$turma->id)->whereIn('status',['regular','pendente','finalizada','finalizado'])->count();
             if($turma->matriculados != $inscritos){

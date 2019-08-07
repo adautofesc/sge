@@ -381,6 +381,9 @@
                                                                 <li>
                                                                     <a class="edit" title="Editar" href="#" onclick="editar({{$turma->id}})"> <i class="fa fa-pencil"></i> </a>
                                                                 </li>
+                                                                 <li>
+                                                                    <a href="/chamada/{{$turma->id}}/0/pdf" class="edit" target="_blank"> <i class="fa fa-print"></i> </a>
+                                                                </li>
                                                             </ul>
                                                         </div>
                                                     </div>

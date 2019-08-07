@@ -88,7 +88,7 @@
                 -->
                     <div>
                         <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/documentos/oficios/2018004.pdf" target="_blank">Calendário</a>
+                        &nbsp;&nbsp;<a href="/download/{{str_replace('/','-.-', 'documentos/oficios/2018004.pdf')}}" target="_blank">Calendário</a>
                     </div>
                     <!--
                     <div>
@@ -123,15 +123,15 @@
 
                     <div>
                         <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/documentos/formularios/formulario_turmas.doc" target="_blank" title="Formulário de definição de Turmas e horários">Formulário de Horário</a>
+                        &nbsp;&nbsp;<a href="/download/{{str_replace('/','-.-', 'documentos/formularios/formulario_turmas.doc')}}" target="_blank" title="Formulário de definição de Turmas e horários">Formulário de Horário</a>
                     </div>
                     <div>
                         <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/documentos/formularios/inscricao.doc" target="_blank" title="Inscrição para os cursos de parceria.">Formulário de Inscrição em Turmas</a>
+                        &nbsp;&nbsp;<a href="/download/{{str_replace('/','-.-', 'documentos/formularios/inscricao.doc')}}" target="_blank" title="Inscrição para os cursos de parceria.">Formulário de Inscrição em Turmas</a>
                     </div>
                     <div>
                         <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/documentos/usolivre.pdf" target="_blank">Formulário de cadastro no Uso Livre</a>
+                        &nbsp;&nbsp;<a href="/download/{{str_replace('/','-.-', 'documentos/usolivre.pdf')}}" target="_blank">Formulário de cadastro no Uso Livre</a>
                     </div>
     
                 

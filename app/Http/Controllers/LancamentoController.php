@@ -117,6 +117,7 @@ class LancamentoController extends Controller
 	public function gerarTodosLancamentos($matricula){
 		//dd($matricula->valor);
 		if($matricula->valor->valor>0){
+
 			for($i=1;$i<=$matricula->parcelas;$i++){
 				$this->gerarIndividual19($matricula->pessoa, $i,$matricula->id,($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas);
 

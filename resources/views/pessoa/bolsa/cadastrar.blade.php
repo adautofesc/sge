@@ -126,14 +126,14 @@
                                     <td style="font-size: 1.3em;" class="col-md-2">
                                         <a href="../imprimir/{{$bolsa->id}}" title="Imprimir Requerimento e Parecer"><i class=" fa fa-print "></i></a>&nbsp;
                                          @if(file_exists('documentos/bolsas/requerimentos/'.$bolsa->id.'.pdf'))
-                                        <a href="/documentos/bolsas/requerimentos/{{$bolsa->id}}.pdf" title="Visualizar documentos;">
+                                        <a href="/download/{{str_replace('/','-.-', 'documentos/bolsas/requerimentos/'.$bolsa->id.'.pdf')}}" title="Visualizar documentos;">
                                             <i class=" fa fa-file-text "></i></a>&nbsp;
                                         @else
                                          <a href="../upload/{{$bolsa->id}}" title="Enviar requerimento"><i class=" fa fa-cloud-upload"></i></a>&nbsp;
                                         @endif
                                         
                                         @if(file_exists('documentos/bolsas/pareceres/'.$bolsa->id.'.pdf'))
-                                        <a href="/documentos/bolsas/pareceres/{{$bolsa->id}}.pdf" title="Visualizar Parecer" >
+                                        <a href="/download/{{str_replace('/','-.-', 'documentos/bolsas/pareceres/'.$bolsa->id.'.pdf')}}" title="Visualizar Parecer" >
                                             <i class=" fa fa-file-text-o "></i></a>&nbsp;
                                         @else
                                         <a href="../parecer/{{$bolsa->id}}" style="color:#52BCD3;" title="Enviar parecer"><i class=" fa fa-cloud-upload"></i></a>&nbsp;

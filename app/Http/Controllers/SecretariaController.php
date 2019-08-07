@@ -66,9 +66,13 @@ class SecretariaController extends Controller
 			 //listar inscrições de cada matricula;
 			 foreach($matriculas as $matricula){
 			 	$matricula->getInscricoes();
+			 	foreach($matricula->inscricoes as $inscricao){
+			 		if($inscricao->status == 'transferida')
+			 			$inscricao->transferencia = $inscricao->getTransferencia();
+			 	}
 			 }
 
-			 $inscricoes = Inscricao::where('pessoa',$id)->where('matricula',null)->get();
+			 //$inscricoes = Inscricao::where('pessoa',$id)->where('matricula',null)->get();
 
 			 //listar Boletos
 			 $boletos = Boleto::where('pessoa',$id)->orderBy('id','desc')->limit(20)->get();
@@ -105,13 +109,13 @@ class SecretariaController extends Controller
 
 			 }
 
-			 $inscricoes = Inscricao::where('pessoa',$id)
+			 /*$inscricoes = Inscricao::where('pessoa',$id)
 			 	->where('matricula',null)
 			 	->where(function($query){ $query
 							->where('status','regular')
 							->orwhere('status', 'pendente');
 					})
-			 	->get();
+			 	->get();*/
 
 			 //dd($inscricoes);
 
@@ -136,7 +140,7 @@ class SecretariaController extends Controller
 
 		}
 		//return $matriculas;
-		$atestado = \App\Atestado::where('pessoa',$id)->first();
+		$atestado = \App\Atestado::where('pessoa',$id)->orderByDesc('id')->first();
 		if($atestado){
 			if(isset($atividades_aquaticas))
 				$atestado->validade = $atestado->calcularVencimento(12);
@@ -148,7 +152,7 @@ class SecretariaController extends Controller
 		
 
 
-		return view('secretaria.atendimento', compact('pessoa'))->with('matriculas',$matriculas)->with('boletos',$boletos)->with('lancamentos',$lancamentos)->with('inscricoes',$inscricoes)->with('errosPessoa',$errosMsg)->with('atestado',$atestado);
+		return view('secretaria.atendimento', compact('pessoa'))->with('matriculas',$matriculas)->with('boletos',$boletos)->with('lancamentos',$lancamentos)->with('errosPessoa',$errosMsg)->with('atestado',$atestado);
 	}
 	public function uploadGlobal_vw(){
 		return view('secretaria.upload-global');

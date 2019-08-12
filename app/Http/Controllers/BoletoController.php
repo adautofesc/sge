@@ -765,23 +765,22 @@ class BoletoController extends Controller
 		    ]
 		);
 		
-		$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->paginate(500);
+		$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->paginate(400);
 
 		if(count($boletos) == 0)
 			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Nenhum boleto encontrado']);
 
-
 		foreach($boletos as $boleto){
-			try{ //tentar gerar boleto completo
+
+			try{
 				$boleto_completo = $this->gerarBoleto($boleto);
 			}
 			catch(\Exception $e){
 				PessoaController::notificarErro($boleto->pessoa,5);
 				continue;
 			}
-			
-			
-			try{//tentar gerar remessa desse boleto
+					
+			try{
 				$remessa->addBoleto($boleto_completo);
 			}
 			catch(\Exception $e){
@@ -791,33 +790,22 @@ class BoletoController extends Controller
 
 			if($boleto->status == 'cancelar')
 				$boleto_completo->baixarBoleto();
-				
-		
-			/*
-			if($boleto->status == 'cancelar'){
-				$boleto_completo->baixarBoleto();
-				$boleto->status='cancelado';	
-			}
-			else{
-				
-				$boleto->status='emitido';
-				
-			}
-			 */
 
 			$boleto->remessa = intval(date('ymdHi'));
 			$boleto->save();
+			
 	
 		}
-		
-		//dd($remessa);
+
 		if(isset($_GET["page"]))
 			$page = $_GET["page"];
 		else
 			$page = 1;
+
 		$remessa->save( 'documentos/remessas/'.date('Ymd').'_'.$page.'.rem');
 		$arquivo = date('Ymd').'_'.$page.'.rem';
-		return view('financeiro.remessa.arquivo',compact('boletos'))->with('arquivo',$arquivo);
+
+		return view('financeiro.remessa.gerador-paginado',compact('boletos'))->with('arquivo',$arquivo);
 
 	}
 	public function downloadRemessa($arquivo){

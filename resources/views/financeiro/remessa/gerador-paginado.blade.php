@@ -14,12 +14,11 @@
     	@endif
     	function loadNext(){
     		if(next){
-    			setTimeout(location.reload(), 2000);
+    			setTimeout(mudar('{{$boletos->nextPageUrl()}}'), 2000);
     		}
     		else{
     			
-                $('#botao').fadeIn('slow');
-                $('#boletos').fadeIn('slow');
+                $('.btn').fadeIn('slow');
     		}
 
     	}
@@ -53,8 +52,10 @@
 
 <div id="progressbar"></div>
 <br>
-<a id="botao" href="{{asset('/financeiro/boletos/remessa/download')}}/{{$arquivo}}" class="btn btn-warning" style="display:none;">Baixar arquivo.</a>
-<a id="boletos" href="/financeiro/boletos/home" class="btn btn-primary" style="display:none;">Menu Boletos</a>
+@for($i=1;$i<=$boletos->lastPage();$i++)
+<a href="{{asset('/financeiro/boletos/remessa/download')}}/{{date('Ymd').'_'.$i.'.rem'}}" target="_blank" class="btn btn-warning" style="display:none;">Baixar arquivo {{$i}}</a><br>
+@endfor
+<a  href="/financeiro/boletos/home" class="btn btn-primary" style="display:none;">Menu Boletos</a>
 
 
 

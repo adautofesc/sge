@@ -274,7 +274,7 @@ class loginController extends Controller
 		if($r->userid != Session::get('usuario'))
 			return $this->logout();
 		$this->validate($r , [
-			'novasenha'=>'required|between:6,10',
+			'novasenha'=>'required|between:6,25',
 			'confirmanovasenha'=>'required|same:novasenha'
 		]);
 		$usuario=PessoaDadosAcesso::where('pessoa', Session::get('usuario'))->first();
@@ -394,7 +394,7 @@ class loginController extends Controller
 
 		$this->validate($request, [
 			'pessoa'=>'required|integer',
-			'nova_senha'=>'required|between:6,10',
+			'nova_senha'=>'required|between:6,25',
 			'repetir_senha'=>'required|same:nova_senha'
 			]);
 		$pessoa=Pessoa::find($request->pessoa);

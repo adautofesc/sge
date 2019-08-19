@@ -51,4 +51,22 @@ class Bolsa extends Model
 		$tipo = Desconto::find($this->desconto);
 	
 	}
+
+	public function getPrograma(){
+
+		$programa = array();
+		$bolsa_matriculas = $this->getMatriculas();
+
+		
+		foreach($bolsa_matriculas as $bolsa_matricula){
+			$matricula = Matricula::find($bolsa_matricula->matricula);
+			if(!in_array($matricula->getPrograma()->sigla, $programa))
+				$programa[] = $matricula->getPrograma()->sigla; 
+
+
+		}
+
+		//dd($programa);
+		return $programa;
+	}
 }

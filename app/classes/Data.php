@@ -121,6 +121,20 @@ Class Data
             $semestres = \DB::select( \DB::raw('select CASE WHEN month(data_termino)<=7 THEN 1 else 2 end as semestre,year(data_termino)as ano FROM turmas GROUP BY semestre,ano order by ano DESC, semestre DESC'));
             return $semestres;
         }
+
+        public static function periodoSemestre($valor){
+            $semestre = substr($valor, 0,1);
+            $ano= substr($valor, 1,4);
+
+            if($semestre == 1)
+                $datas = [($ano-1).'-11-20%', $ano.'-06-30'];
+            else
+                $datas = [$ano.'-07-01%',$ano.'-11-19'];
+
+            return $datas;
+
+
+        }
 }
 // $data = \Carbon\Carbon::parse($tr->data)->format('d').' de '.$mes.' de '.\Carbon\Carbon::parse($tr->data)->format('Y');
 /* para retornar uma data específica por extenso 

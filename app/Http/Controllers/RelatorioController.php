@@ -235,7 +235,7 @@ class RelatorioController extends Controller
 		return count($pessoas). ' pessoas com '.$qnde_matriculas .' matrículas.' ;
 	}
 
-	 public function bolsasFPM(){
+	 public function bolsasFuncionariosMunicipais(){
         $bolsas = \App\Bolsa::where('desconto','3')->get();
         return view('relatorios.bolsistas')->with('bolsas',$bolsas);
     }
@@ -289,20 +289,51 @@ Event::where('status' , 0)
      */
 
     public function bolsas(Request $request){
+        $filtros =Array();
     	$programas=Programa::all();
     	$descontos = \App\Desconto::orderBy('nome')->get();
+        $bolsas =  \App\Bolsa::select('*');
 
-    	$bolsas = \App\Bolsa::select('*');
+        //dd($request->descontos);
+        if(isset($request->descontos)){
+           
+            $bolsas = $bolsas->whereIn('desconto',$request->descontos);
+        }
+        if(isset($request->status)){
+           
+            $bolsas = $bolsas->whereIn('status',$request->status);
+        }
+
+        if(isset($request->periodos)){
+            if(count($request->periodos)==1){
+                $intervalo = \App\classes\Data::periodoSemestre($request->periodos[0]);
+                $bolsas = $bolsas->whereBetween('created_at', $intervalo);
+            }      
+            else{
+                //Parameter Grouping
+                $bolsas = $bolsas->where(function ($query) use ($request){
+                    foreach($request->periodos as $periodo){
+                        $intervalo = \App\classes\Data::periodoSemestre($periodo);
+                        $query = $query->orWhereBetween('created_at', $intervalo);
+                    }
+
+                });
+            }
+               
+        }
+
+    	
     	if(isset($request->tipo)){
-
-    		if(isset($request->periodo)){
-    			
-
-    		}
 
 
     		if($request->tipo=='Registros'){
-    			
+
+    			 $bolsas = $bolsas->get();
+
+
+
+                 //dd($bolsas);
+              
 
     		}
     		if($request->tipo=='Resultados'){
@@ -315,14 +346,24 @@ Event::where('status' , 0)
     		}
     	
     	
+        	if (count($bolsas)>1){
+                foreach($bolsas as $bolsa){
+                   $bolsa->nome = $bolsa->getNomePessoa();
+                }
+                $bolsas = $bolsas->sortBy('nome');
+            }
     	
-    	
-    	}
-    	else{
-    		return "Tipo não especificado";
     	}
 
-    	return view('relatorios.bolsas')->with('programas',$programas)->with('descontos',$descontos)->with('periodos',\App\classes\Data::semestres());
+           return view('relatorios.bolsas')
+                    ->with('programas',$programas)
+                    ->with('descontos',$descontos)
+                    ->with('bolsas', $bolsas)
+                    ->with('periodos',\App\classes\Data::semestres());
+    	
+       
+
+    
     }
 
 

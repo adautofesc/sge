@@ -836,82 +836,46 @@ class BoletoController extends Controller
 	public function cancelarView($id){
 		return view('financeiro.boletos.cancelamento')->with('boleto',$id);
 	}
+
+
+
 	public function cancelar(Request $r){
-
-
-
-		$boleto=Boleto::find($r->boleto);
-
-		if($boleto != null){
-			if($boleto->status == 'impresso'){
-				$boleto->status = 'cancelar';
-				$boleto->save();
-				LancamentoController::cancelarPorBoleto($boleto->id);
-			}
-			if($boleto->status == 'gravado'){
-				$boleto->status = 'cancelado';
-				$boleto->save();
-				LancamentoController::atualizaLancamentos($boleto->id,null);
-			}
-			if($boleto->status == 'emitido'){
-				$boleto->status = 'cancelar';
-				$boleto->save();
-				LancamentoController::cancelarPorBoleto($boleto->id);
-			}
-			if($boleto->status == 'divida'){
-				$boleto->status = 'cancelado';
-				$boleto->save();
-				LancamentoController::cancelarPorBoleto($boleto->id);
-			}
-			if($boleto->status == 'cancelar'){
-				LancamentoController::cancelarPorBoleto($boleto->id);
-			}
-			if($boleto->status == 'cancelado'){
-				LancamentoController::cancelarPorBoleto($boleto->id);
-			}
-
-		}
-
-		LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento. Motivo:' . $r->motivo.$r->motivo2);
-
-		return redirect('/secretaria/atender/'.$boleto->pessoa);
-
-		
+		$this->cancelamentoDireto($r->boleto, $r->motivo.' '.$r->motivo2);
+		return redirect('/secretaria/atender/');
 
 	}
+
+
+
 	public function cancelamentoDireto($id,$motivo){
 		$boleto=Boleto::find($id);
 
 		if($boleto != null){
-			if($boleto->status == 'impresso'){
-				$boleto->status = 'cancelar';
-				$boleto->save();
-				LancamentoController::cancelarPorBoleto($id);
-			}
-			if($boleto->status == 'gravado'){
-				$boleto->status = 'cancelado';
-				$boleto->save();
-				LancamentoController::atualizaLancamentos($id,null);
-			}
-			if($boleto->status == 'emitido'){
-				$boleto->status = 'cancelar';
-				$boleto->save();
-				LancamentoController::cancelarPorBoleto($id);
-			}
-			if($boleto->status == 'divida'){
-				$boleto->status = 'cancelado';
-				$boleto->save();
-				LancamentoController::cancelarPorBoleto($id);
-			}
-			if($boleto->status == 'cancelar'){
-				LancamentoController::cancelarPorBoleto($id);
-			}
-			if($boleto->status == 'cancelado'){
-				LancamentoController::cancelarPorBoleto($id);
-			}
-		}
 
-		LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento. Motivo: '.$motivo);
+			switch($boleto->status){
+				case 'impresso':
+				case 'gravado':
+				case 'divida':
+					$boleto->status = 'cancelado';
+					$boleto->save();
+					break;
+				case 'emitido':
+				case 'erro':
+					$boleto->status = 'cancelar';
+					$boleto->save();
+					break;
+				default :
+					$boleto->status = 'cancelar';
+					$boleto->save();
+					break;
+			}
+			LancamentoController::cancelarPorBoleto($boleto->id);
+			LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento. Motivo: '.$motivo);
+			
+
+		}
+		else
+			return redirect()->back()->withErrors(['Boleto não encontrado']);
 		
 	}
 

@@ -85,29 +85,44 @@
                             <ul class="dropdown-menu" style="width: 400px;">
                             	<li> <a href="#">Caso não haja seleção todos serão usados todos</a></li>
                             @foreach($descontos as $desconto)
-					          <li><a href="#"  data-value="{{$desconto->id}}" tabIndex="-1"><input type="checkbox" name="descontos" value="{{$desconto->id}}"/>&nbsp;{{$desconto->nome}}</a></li>
+					          <li><a href="#"  data-value="{{$desconto->id}}" tabIndex="-1"><input type="checkbox" name="descontos[]" value="{{$desconto->id}}"/>&nbsp;{{$desconto->nome}}</a></li>
 					        @endforeach
 					        </ul>
                 </div>
+                <!--
                 <div class="action dropdown" style="float: left; margin-right: 10px;"> 
                             <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Programa
                             </button>
 
                             <ul class="dropdown-menu" >
                             @foreach($programas as $programa)
-					          <li><a href="#"  data-value="{{$programa->id}}" tabIndex="-1"><input type="checkbox" name="programas" value="{{$programa->id}}"/>&nbsp;{{$programa->sigla}}</a></li>
+					          <li><a href="#"  data-value="{{$programa->id}}" tabIndex="-1"><input type="checkbox" name="programas[]" value="{{$programa->id}}"/>&nbsp;{{$programa->sigla}}</a></li>
 					        @endforeach
 					        </ul>
 
-                </div>
+                </div>-->
                 <div class="action dropdown" style="float: left; margin-right: 10px;"> 
                             <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Período
                             </button>
 
                             <ul class="dropdown-menu" >
                             @foreach($periodos as $periodo)
-					          <li><a href="#"  data-value="{{$periodo->semestre.$periodo->ano}}" tabIndex="-1"><input type="checkbox" name="periodos" value="{{$periodo->semestre.$periodo->ano}}"/>&nbsp;{{$periodo->semestre.'º Sem. '.$periodo->ano}}</a></li>
+					          <li><a href="#"  data-value="{{$periodo->semestre.$periodo->ano}}" tabIndex="-1"><input type="checkbox" name="periodos[]" value="{{$periodo->semestre.$periodo->ano}}"/>&nbsp;{{$periodo->semestre.'º Sem. '.$periodo->ano}}</a></li>
 					        @endforeach
+					        </ul>
+
+                </div>
+                <div class="action dropdown" style="float: left; margin-right: 10px;"> 
+                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Estado
+                            </button>
+
+                            <ul class="dropdown-menu" >
+                            
+					          <li><a href="#"  data-value="ativa" tabIndex="-1"><input type="checkbox" name="status[]" value="ativa"/>&nbsp;Ativa</a></li>
+					          <li><a href="#"  data-value="analisando" tabIndex="-1"><input type="checkbox" name="status[]" value="analisando"/>&nbsp;Analisando</a></li>
+					          <li><a href="#"  data-value="cancelado" tabIndex="-1"><input type="checkbox" name="status[]" value="cancelada"/>&nbsp;Cancelada</a></li>
+					          <li><a href="#"  data-value="expirada" tabIndex="-1"><input type="checkbox" name="status[]" value="expirada"/>&nbsp;Expirada</a></li>
+					       
 					        </ul>
 
                 </div>
@@ -137,26 +152,45 @@
 		<div class="title-block">
 			<center>
             <h3 class="title"> Relatório de bolsistas </h3>
-            <h5 class="title"> Filtrado por Funcionários públicos municipais.
+            <h5 class="title"> Filtros: 
             		 
             </h5></center>
         </div>
         <br>
         <br>
-        Total de bolsistas: <strong>XXX</strong> .
+
+        @if(isset($bolsas))
+        Total de bolsas: <strong>{{count($bolsas)}}</strong> .
         <br/>
+        
+
         <div class="row">
             <div class="col-sm-12">
                 <table>
                     <thead >
-                        <th width="5%">ID</th>
-                        <th width="50%">Nome</th>
-                        <th width="30%">Data da solicitação</th>
-                        <th width="15%">Matrícula ou curso:</th>
+                        <th width="22rem">ID</th>
+                        <th width="12%">Pessoa</th>
+                        <th width="40%">Nome</th>
+                        <th width="20%">Solicitado em</th>
+                        <th width="13%">Programa</th>
+                        <th width="10%">Status</th>
                     </thead>
                     <tbody>
+                    	@foreach($bolsas as $bolsa)
+                    	<tr>
+                    		<td><a href="/juridico/bolsas/analisar/{{$bolsa->id}}">{{$bolsa->id}}</a></td>
+                    		<td><a href="/secretaria/atender/{{$bolsa->pessoa}}">{{$bolsa->pessoa}}</a></td>
+                    		<td>{{$bolsa->getNomePessoa()}}</td>
+                    		<td>{{$bolsa->created_at->format('d/m/y H:i')}}</td>
+                    		<td>{{implode(', ', $bolsa->getPrograma()) }}</td>
+                    		<td>{{$bolsa->status}}</td>
+                    	</tr>
+
+
+                    	@endforeach
+
                     
-                </tbody>
+                	</tbody>
                 </table>
 
 
@@ -165,6 +199,7 @@
          
              </div>
         </div>
+        @endif
         
 
         	

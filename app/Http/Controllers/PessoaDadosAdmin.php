@@ -13,4 +13,11 @@ class PessoaDadosAdmin extends Controller
     	return redirect()->back()->withErrors(['Relação removida com sucesso.']);
 
     }
+
+    public static function listarProfessores(){
+
+        $professores=PessoaDadosAdministrativos::getFuncionarios('Educador');
+        return view('docentes.lista-professores',compact('professores'));
+
+    }
 }

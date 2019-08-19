@@ -460,7 +460,7 @@ Route::middleware('login') ->group(function(){
 		Route::get('alunos-turmas','RelatorioController@alunosTurmasExport');
 		Route::get('faixasuati', 'RelatorioController@matriculasUati');
 		Route::get('alunos-posto', 'RelatorioController@alunosPorUnidade');
-		Route::get('bolsas-fpm','RelatorioController@bolsasFPM');
+		Route::get('bolsas-fpm','RelatorioController@bolsasFuncionariosMunicipais');
 		Route::get('bolsas','RelatorioController@bolsas');
 
 

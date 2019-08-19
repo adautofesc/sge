@@ -486,6 +486,11 @@
                                         <a href="{{asset('financeiro/boletos/editar/').'/'.$boleto->id}}"  title="Editar Boleto" ><i class=" fa fa-pencil-square-o "></i></a>
                                         <a href="#" onclick="cancelarBoleto({{$boleto->id}});" title="Cancelar Boleto" ><i class=" fa fa-times "></i></a>
 
+                                        @elseif($boleto->status == 'erro')
+                                        <a href="{{asset('financeiro/boletos/imprimir/').'/'.$boleto->id}}" title="Imprimir Boleto" ><i class=" fa fa-print " ></i></a>
+                                        <a href="#" onclick="reativarBoleto({{$boleto->id}});" title="Reativar Boleto"><i class=" fa fa-undo "></i></a>
+                                        <a href="#" onclick="cancelarBoleto({{$boleto->id}});" title="Cancelar Boleto" ><i class=" fa fa-times " ></i></a>
+
 
 
 

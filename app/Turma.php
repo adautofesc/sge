@@ -162,6 +162,13 @@ class Turma extends Model
 		
 	}
 
+	public function getNomeCurso(){
+		if(isset($this->disciplina))
+                return $this->disciplina->nome;
+            else
+                return $this->curso->nome;
+    }
+
 
     
 

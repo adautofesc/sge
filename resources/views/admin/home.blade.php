@@ -27,11 +27,25 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Contratos</p>
+                        <p class="title" style="color:white">Relatórios TCE</p>
                     </div>
                 </div>
                 <div class="card-block">
-                    Nenhuma opção disponível no momento              
+                    <div>
+                        <a href="/relatorios/tce-alunos/2018"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Relatório contendo todos os alunos, indicando os respectivos cursos, cargas horárias previstas e efetivamente realizadas">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Alunos 2018</a>
+                    </div>
+                    <div>
+                        <a href="/relatorios/tce-educadores/2018"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Relatório contendo todos os Educadores, os respectivos cursos, cargas horárias previstas e efetivamente realizadas em 2018;">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Educadores 2018</a>
+                    </div>
+                    <div>
+                        <a href="/relatorios/tce-turmas/2018"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Relatório de todas as turmas do Exercício de 2018, contendo todos os cursos ministrados pela FESC, com indicação dos horários, professores e alunos matriculados">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Turmas 2018</a>
+                    </div>         
                 </div>
             </div>
         </div>

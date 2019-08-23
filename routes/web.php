@@ -462,6 +462,11 @@ Route::middleware('login') ->group(function(){
 		Route::get('alunos-posto', 'RelatorioController@alunosPorUnidade');
 		Route::get('bolsas-fpm','RelatorioController@bolsasFuncionariosMunicipais');
 		Route::get('bolsas','RelatorioController@bolsas');
+		Route::get('tce-alunos/{ano}','RelatorioController@tceAlunos');
+		Route::get('tce-educadores/{ano}','RelatorioController@tceEducadores');
+		Route::get('tce-turmas/{ano}','RelatorioController@tceTurmas');
+
+
 
 
 

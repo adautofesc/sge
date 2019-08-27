@@ -9,8 +9,8 @@
                    @include('inc.errors')
                     <div class="subtitle-block">
                         <h3 class="subtitle"> 
-                        @if(isset($dados['nome']))
-                        	{{$dados['nome']}}
+                        @if(isset($pessoa->nome))
+                        	{{$pessoa->nome}}
                         
                         </h3>
                     </div>
@@ -23,14 +23,14 @@
                                     Observações
                                 </label>
                                 <div class="col-sm-10"> 
-                                    <textarea rows="4" class="form-control boxed" name="obs" maxlength="150">{{$dados['obs']}}</textarea> 
+                                    <textarea rows="4" class="form-control boxed" name="obs" maxlength="150">{{$obs}}</textarea> 
                                 </div>
                             </div>                                
                                                
                             <div class="form-group row">
                                 <label class="col-sm-2 form-control-label text-xs-right"></label>
                                 <div class="col-sm-10 col-sm-offset-2"> 
-                                    <input type="hidden" name="pessoa" value="{{$dados['id']}}">
+                                    <input type="hidden" name="pessoa" value="{{$pessoa->id}}">
                                     <button type="submit" name="btn_sub" value='1' class="btn btn-primary">Salvar</button>
                                    
                                    

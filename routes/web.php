@@ -26,6 +26,9 @@ Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
 Route::get('ipca','ValorController@getIPCA');
 //Route::get('correcao-valor','ValorController@correcaoValor');
 Route::get('boletos-com-erros','BoletoController@analisarBoletosComErro');
+route::get('profile',function(){
+	return view('pessoa.profile');
+});
 
 
 
@@ -104,7 +107,7 @@ Route::middleware('login') ->group(function(){
 
 
 		Route::get ('listar','PessoaController@listarTodos');//->middleware('autorizar:56')
-		Route::post('listar','PessoaController@procurarPessoa');
+		Route::post('listar','PessoaController@procurarPessoasAjax');
 		Route::get ('cadastrar', 'PessoaController@create')->name('pessoa.cadastrar');
 		Route::post('cadastrar','PessoaController@gravarPessoa');
 		Route::get ('mostrar','PessoaController@listarTodos');//->middleware(['autorizar:56', 'privacy'])
@@ -150,8 +153,8 @@ Route::middleware('login') ->group(function(){
 			Route::post('contato/{var}','PessoaController@editarContato_exec');
 			Route::get('dadosclinicos/{var}','PessoaController@editarDadosClinicos_view');
 			Route::post('dadosclinicos/{var}','PessoaController@editarDadosClinicos_exec');
-			Route::get('observacoes/{var}','PessoaController@editarObservacoes_view');
-			Route::post('observacoes/{var}','PessoaController@editarObservacoes_exec');
+			Route::get('observacoes/{var}','PessoaDadosGeraisController@editarObservacoes_view');
+			Route::post('observacoes/{var}','PessoaDadosGeraisController@editarObservacoes_exec');
 		});
 
 		Route::get('matriculas', 'MatriculaController@listarPorPessoa');
@@ -281,7 +284,7 @@ Route::middleware('login') ->group(function(){
 		Route::get('atender/','painelController@atendimentoPessoalPara');
 		Route::get('atender/{var}','painelController@atendimentoPessoalPara');
 		Route::get('funcionarios','PessoaController@listarFuncionarios');
-		Route::get('remover-relacao/{id}','PessoaDadosAdmin@excluir');
+		Route::get('remover-relacao/{id}','PessoaDadosAdminController@excluir');
 		Route::get('relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_view');
 		Route::post('relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_exec');
 	});
@@ -381,6 +384,7 @@ Route::middleware('login') ->group(function(){
 		
 		Route::get('/','painelController@secretaria')->name('secretaria');
 		Route::get('pre-atendimento','SecretariaController@iniciarAtendimento');
+		Route::post('pre-atendimento','SecretariaController@buscaPessoaAtendimento');
 		Route::get('atendimento','SecretariaController@atender');
 		Route::get('atender','SecretariaController@atender')->name('secretaria.atender');
 		Route::get('atender/{var}','SecretariaController@atender');

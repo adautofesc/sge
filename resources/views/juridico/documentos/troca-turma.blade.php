@@ -4,7 +4,7 @@
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 <link rel="stylesheet" href="{{asset('/')}}/css/vendor.css"/>
-<title>tr->turmaoca de turma - Fesc</title>
+<title>Troca de  turma - Fesc</title>
 <style type="text/css">
 	h5{
 		font-size: 1.3em;
@@ -78,19 +78,12 @@
 		       <ul>
 		       	
 		       
-		       		@if(isset($tr->anterior->turma->disciplina->nome))
-		       		<li> {{$tr->anterior->turma->curso->nome}},{{$tr->anterior->turma->disciplina->nome}} Cod. {{$tr->anterior->turma->id}} ({{implode(',',$tr->anterior->turma->dias_semana)}}  das  {{$tr->anterior->turma->hora_inicio}} às {{$tr->anterior->turma->hora_termino}})</li>
-		       		@else
-		       		<li> {{$tr->anterior->turma->curso->nome}} Cod. {{$tr->anterior->turma->id}} ({{implode(',',$tr->anterior->turma->dias_semana)}}. das  {{$tr->anterior->turma->hora_inicio}} às {{$tr->anterior->turma->hora_termino}})</li>
-		       		@endif
+		       		<li>{{$tr->anterior->turma->getNomeCurso()}} Cod. {{$tr->anterior->turma->id}} ({{implode(',',$tr->anterior->turma->dias_semana)}}  das  {{$tr->anterior->turma->hora_inicio}} às {{$tr->anterior->turma->hora_termino}}) {{$tr->anterior->turma->local->nome}}</li>
+		       		
+		       		<li style="list-style-type: none">Para a turma</li>
 
-		       		<li>Para a turma</li>
-
-		       		@if(isset($tr->nova->turma->disciplina->nome))
-		       		<li> {{$tr->nova->turma->curso->nome}},{{$tr->nova->turma->disciplina->nome}} Cod. {{$tr->nova->turma->id}} ({{implode(',',$tr->nova->turma->dias_semana)}}  das  {{$tr->nova->turma->hora_inicio}} às {{$tr->nova->turma->hora_termino}})</li>
-		       		@else
-		       		<li> {{$tr->nova->turma->curso->nome}} Cod. {{$tr->nova->turma->id}} ({{implode(',',$tr->nova->turma->dias_semana)}}. das  {{$tr->nova->turma->hora_inicio}} às {{$tr->nova->turma->hora_termino}})</li>
-		       		@endif
+		       	
+		       		<li>{{$tr->nova->turma->getNomeCurso()}} Cod. {{$tr->nova->turma->id}} ({{implode(',',$tr->nova->turma->dias_semana)}}  das  {{$tr->nova->turma->hora_inicio}} às {{$tr->nova->turma->hora_termino}}) {{$tr->nova->turma->local->nome}}</li>
 
 
 		    
@@ -148,19 +141,13 @@
 		       </p>
 		       <ul>
 		       
-		       		@if(isset($tr->anterior->turma->disciplina->nome))
-		       		<li> {{$tr->anterior->turma->curso->nome}},{{$tr->anterior->turma->disciplina->nome}} Cod. {{$tr->anterior->turma->id}} ({{implode(',',$tr->anterior->turma->dias_semana)}}  das  {{$tr->anterior->turma->hora_inicio}} às {{$tr->anterior->turma->hora_termino}})</li>
-		       		@else
-		       		<li> {{$tr->anterior->turma->curso->nome}} Cod. {{$tr->anterior->turma->id}} ({{implode(',',$tr->anterior->turma->dias_semana)}}. das  {{$tr->anterior->turma->hora_inicio}} às {{$tr->anterior->turma->hora_termino}})</li>
-		       		@endif
-
+		       
+		       		<li>{{$tr->anterior->turma->getNomeCurso()}} Cod. {{$tr->anterior->turma->id}} ({{implode(',',$tr->anterior->turma->dias_semana)}}  das  {{$tr->anterior->turma->hora_inicio}} às {{$tr->anterior->turma->hora_termino}}) {{$tr->anterior->turma->local->nome}}</li>
+		       		
 		       		<li style="list-style-type: none">Para a turma</li>
 
-		       		@if(isset($tr->nova->turma->disciplina->nome))
-		       		<li> {{$tr->nova->turma->curso->nome}},{{$tr->nova->turma->disciplina->nome}} Cod. {{$tr->nova->turma->id}} ({{implode(',',$tr->nova->turma->dias_semana)}}  das  {{$tr->nova->turma->hora_inicio}} às {{$tr->nova->turma->hora_termino}})</li>
-		       		@else
-		       		<li> {{$tr->nova->turma->curso->nome}} Cod. {{$tr->nova->turma->id}} ({{implode(',',$tr->nova->turma->dias_semana)}}. das  {{$tr->nova->turma->hora_inicio}} às {{$tr->nova->turma->hora_termino}})</li>
-		       		@endif
+		       	
+		       		<li>{{$tr->nova->turma->getNomeCurso()}} Cod. {{$tr->nova->turma->id}} ({{implode(',',$tr->nova->turma->dias_semana)}}  das  {{$tr->nova->turma->hora_inicio}} às {{$tr->nova->turma->hora_termino}}) {{$tr->nova->turma->local->nome}}</li>
 
 
 		    

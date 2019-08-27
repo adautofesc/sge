@@ -5,16 +5,17 @@
 	<h3 class="title"> Atendimento Geral<span class="sparkline bar" data-type="bar"></span> </h3>
 </div>
 @include('inc.errors')
-<form name="item">
+<form name="item" method="post">
     <div class="card card-block">
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Nome
 			</label>
 			<div class="col-sm-8"> 
-				<input type="search" id="search"  class="form-control boxed" placeholder="Você pode digitar numero, nome, RG e CPF"> 
+				<input type="search" id="search" name="nome"  class="form-control boxed" placeholder="Você pode digitar numero, nome, RG e CPF"> 
 
 				<input type="hidden" name="id_pessoa">
+				{{ csrf_field() }}
 			</div>
 		</div>
 		
@@ -24,6 +25,19 @@
 			</label>
 			<div class="col-sm-8"> 
 				 <ul class="item-list" id="listapessoas">
+				 	@if(isset($pessoas))
+					 	@foreach($pessoas as $pessoa)
+					 		<li>
+					 			{{$pessoa->numero}} - {{$pessoa->nascimento}} - {{$pessoa->nome}} |
+					 			<a href="{{asset('secretaria/atender')}}/{{$pessoa->id}}">
+					 				Atendimento simples	
+ 								</a>
+ 						
+
+					 		</li>
+
+					 	@endforeach
+				 	@endif
 				 </ul>
 
 				

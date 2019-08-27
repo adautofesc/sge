@@ -449,44 +449,46 @@ class PessoaController extends Controller
 	}
 
 
-	/**
-	 *
-	 * Procurar pessoa e  exibir recultados em uma lista
-	 *
-	 * @param  Request $
-	 *
-	 */
-	public function procurarPessoa(Request $r)
+	
+	public function procurarPessoas($termo)
 	{		
-		if(isset($r->queryword))
+		if(isset($termo))
 			$pessoas=Pessoa::leftjoin('pessoas_dados_gerais', 'pessoas.id', '=', 'pessoas_dados_gerais.pessoa')
-							->where('pessoas.id',$r->queryword)
-							->orwhere('nome', 'like', '%'.$r->queryword."%")
-							->orwhere('nascimento', 'like', '%'.$r->queryword."%")
-							->orwhere('pessoas_dados_gerais.valor', 'like', '%'.$r->queryword."%")					
+							->where('pessoas.id',$termo)
+							->orwhere('nome', 'like', $termo."%")
+							->orwhere('nascimento', 'like', '%'.$termo."%")
+							->orwhere('pessoas_dados_gerais.valor', 'like', '%'.$termo."%")					
 							->orderby('nome')								
 							->groupBy('pessoas.id')							
 							->select('pessoas.id','pessoas.nome','pessoas.nascimento','pessoas.genero')
 							->paginate(35);
-		else
-			return $this->listarTodos();		
-		foreach($pessoas->all() as $pessoa)
-		{
+	
+					
+		foreach($pessoas->all() as $pessoa){
 			$pessoas->$pessoa=$this->formataParaMostrar($pessoa);
+			$pessoa->nome=Strings::converteNomeParaUsuario($pessoa->nome);
+			//$pessoa->nascimento=Data::converteParaUsuario($pessoa->nascimento);
+			$pessoa->numero=str_pad($pessoa->id,7,"0",STR_PAD_LEFT);
 		}
-		return view('pessoa.listar-todos', compact('pessoas'));
+		return $pessoas;
 	}
 
-	
 
-	
+	public function procurarPessoasAjax(Request $r){
+		$pessoas = $this->procurarPessoa($r->queryword);
+		if($pessoas)
+			return view('pessoa.listar-todos', compact('pessoas'));
+		else
+			return $this->listarTodos();
+
+	}
 
 
 	public function liveSearchPessoa($query='')
 	{
 		$pessoas=Pessoa::leftjoin('pessoas_dados_gerais', 'pessoas_dados_gerais.pessoa', '=', 'pessoas.id')
 						->where('pessoas.id',$query)
-						->orwhere('nome', 'like', '%'.$query."%")
+						->orwhere('nome', 'like', $query."%")
 						->orwhere('nascimento', 'like', '%'.$query."%")
 						->orwhere('pessoas_dados_gerais.valor', 'like', '%'.$query."%")
 						->orderby('nome')
@@ -833,63 +835,6 @@ class PessoaController extends Controller
 		
 		return redirect()->back()->withErrors(['Alterções salvas com sucesso.']);
 	}
-
-
-
-	public function editarObservacoes_view($id){
-		if(!GerenciadorAcesso::pedirPermissao(3) && $id != Session::get('usuario') )
-			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
-		if(!loginController::autorizarDadosPessoais($id))
-			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
-
-
-		$dados=$this->dadosPessoa($id);
-
-		return view('pessoa.editar-observacao', compact('dados'));
-
-	}
-	public function editarObservacoes_exec(Request $request){
-		if(!GerenciadorAcesso::pedirPermissao(3) && $request->pessoa != Session::get('usuario') )
-			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
-		if(!loginController::autorizarDadosPessoais($request->pessoa) && $request->pessoa != Session::get('usuario') )
-			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
-
-		$pessoa=Pessoa::find($request->pessoa);
-		if(!$pessoa)
-			return redirect(asset("/pessoa/listar/"));
-
-		$dados=$this->dadosPessoa($pessoa->id);
-
-		if($request->obs != '' || $dados->obs != $request->obs )
-			{
-				$dado=PessoaDadosGerais::where('dado', 5)->where('pessoa',$pessoa->id)->first();
-				if($dado)
-					$dado->delete();
-				$info=new PessoaDadosGerais;					
-				$info->pessoa=$pessoa->id;
-				$info->dado=5;
-				$info->valor=$request->obs;
-				if($info->valor = ''){
-					$dado->valor =' ';
-					$dado->save(); 
-				}
-				else
-				$pessoa->dadosGerais()->save($info);
-			}
-
-
-
-
-
-
-
-		return redirect()->back()->withErrors(['Alterções salvas com sucesso.']);
-
-	}
-
-
-
-
 
 	public function addDependente_view($pessoa)
 	{

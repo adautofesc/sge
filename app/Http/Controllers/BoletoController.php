@@ -932,8 +932,12 @@ class BoletoController extends Controller
 			else
 				$mes=date('m');
 
+			if($mes == 7)
+				$mes = 8;
 
-			for($i=8;$i<13;$i++){//i = mes. trocar o 8 por $mes
+
+
+			for($i=$mes;$i<13;$i++){//i = mes. trocar o 8 por $mes
 				//verificar se tem boletoabero
 				$boleto_existente = Boleto::where('pessoa',$pessoa)
 											->where('vencimento', 'like', date('Y-'.str_pad($i,2, "0", STR_PAD_LEFT).'-20%'))

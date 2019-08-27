@@ -21,8 +21,8 @@
   bottom: false;
   -webkit-transform: translateX(-50%);
           transform: translateX(-50%);
-  height: 100%;
-  width: 18%;
+  height: 180px;
+  width: 180px;
   border: 10px solid #fff;
   border-radius: 100%;
   background: url("https://pbs.twimg.com/media/CdbiubzVIAANj8J.jpg") center no-repeat;

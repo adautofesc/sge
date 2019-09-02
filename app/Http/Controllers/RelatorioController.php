@@ -404,7 +404,7 @@ Event::where('status' , 0)
 
 
 
-    public function tceTurmas($ano = 2018){
+    public function tceTurmasAlunos($ano = 2018){
         if(!is_numeric($ano))
             die('O ano informado é inválido.');
         $turmas = \App\Turma::whereBetween('data_inicio', [($ano-1).'-11-20%',$ano.'-11-20%'])
@@ -422,11 +422,27 @@ Event::where('status' , 0)
             }
             asort($alunos);
             $turma->alunos = $alunos;
-
-
             $turma->nome_curso = $turma->getNomeCurso();
+        }
 
+        $turmas = $turmas->sortBy('nome_curso');
 
+        return view('relatorios.tce-turmas-alunos')
+            ->with('ano',$ano)
+            ->with('turmas',$turmas);
+
+    }
+    
+    public function tceTurmas($ano = 2018){
+        if(!is_numeric($ano))
+            die('O ano informado é inválido.');
+        $turmas = \App\Turma::whereBetween('data_inicio', [($ano-1).'-11-20%',$ano.'-11-20%'])
+            ->where('status', '!=','cancelada')
+            ->orderBy('data_inicio')
+            ->get();
+
+        foreach($turmas as $turma){   
+            $turma->nome_curso = $turma->getNomeCurso();
         }
 
         $turmas = $turmas->sortBy('nome_curso');
@@ -436,7 +452,6 @@ Event::where('status' , 0)
             ->with('turmas',$turmas);
 
     }
-
 
 
     public function tceEducadores($ano = 2018){
@@ -457,8 +472,6 @@ Event::where('status' , 0)
             $educador->turmas = $turmas->sortBy('nome_curso');
 
         }
-
-        //dd($educadores);
         return view('relatorios.tce-educadores')
             ->with('ano',$ano)
             ->with('educadores',$educadores);

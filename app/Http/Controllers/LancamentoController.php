@@ -342,7 +342,7 @@ class LancamentoController extends Controller
 	}
 	public static function relancarLancamento($id){
 		$lancamento = Lancamento :: find($id);
-		if($lancamento != null && !$this->verificaSeLancada($lancamento->matricula,$lancamento->parcela)){
+		if($lancamento != null && !LancamentoController::verificaSeLancada($lancamento->matricula,$lancamento->parcela)){
 		$novo_lancamento = new  Lancamento;
 		$novo_lancamento = $lancamento;
 		$novo_lancamento->boleto = null;
@@ -557,7 +557,7 @@ class LancamentoController extends Controller
 		$lancamento = Lancamento::find($lancamento);
 		if($lancamento != null){
 			$lancamento->boleto = null;
-			$lancamentos->save();
+			$lancamento->save();
 			return redirect($_SERVER['HTTP_REFERER']);
 		}
 		else

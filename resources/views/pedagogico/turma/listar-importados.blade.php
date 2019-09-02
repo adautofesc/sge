@@ -62,7 +62,8 @@
                 	<label class="item-check" id="select-all-items">
 						<input type="checkbox" class="checkbox" name="pessoa[{{$pessoa->id}}]" checked>
 						<span></span>
-					</label> </div>  
+                    </label> 
+                </div>  
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Turma</div>
                     <div><input type="number" class="form-control boxed" name="turma[{{$pessoa->id}}]" value="{{$pessoa->turma}}">  </div>
@@ -82,8 +83,8 @@
                     <div>
                         
                         <input type="text" class="form-control boxed" name="telefone[{{$pessoa->id}}]"
-                        @if(isset($pessoa->telefone))
-                        value="{{$pessoa->telefone}}" 
+                        @if(isset($pessoa->fone))
+                        value="{{$pessoa->fone}}" 
                         @endif
                         >
                     </div>
@@ -92,10 +93,10 @@
                     <div class="item-heading">Genero</div>
                     <div>
                         <label>
-                            <input class="radio" name="genero[{{$pessoa->id}}]" value="M" {{$pessoa->genero=="m"?"checked":""}} type="radio"><span>M</span>
+                            <input class="radio" name="genero[{{$pessoa->id}}]" value="M" {{$pessoa->genero=="M"?"checked":""}} type="radio"><span>M</span>
                         </label>
                         <label>
-                            <input class="radio" name="genero[{{$pessoa->id}}]" value="F" {{$pessoa->genero=="f"?"checked":""}} type="radio"><span>F</span>
+                            <input class="radio" name="genero[{{$pessoa->id}}]" value="F" {{$pessoa->genero=="F"?"checked":""}} type="radio"><span>F</span>
                         </label> 
                     </div>
                 </div> 
@@ -104,9 +105,9 @@
                     <div class="item-actions-dropdown">
                         <a class="item-actions-toggle-btn"> <span class="inactive">
 				<i class="fa fa-cog"></i>
-			</span> <span class="active">
-			<i class="fa fa-chevron-circle-right"></i>
-			</span> </a>
+                </span> <span class="active">
+                <i class="fa fa-chevron-circle-right"></i>
+                </span> </a>
                         <div class="item-actions-block">
                             <ul class="item-actions-list">
                                 <li>
@@ -117,6 +118,43 @@
                     </div>
                 </div>
             </div>
+            <div class="item-row">
+            @if(isset($pessoa->rg))
+            
+                <div class="item-col item-col-sales">
+                    <div class="item-heading">RG</div>
+                    <div><input type="text" class="form-control boxed" name="rg[{{$pessoa->id}}]" value="{{$pessoa->rg}}" title="RG">  </div>
+                </div>  
+
+            
+            @endif
+            @if(isset($pessoa->rg))
+            
+                <div class="item-col item-col-sales">
+                    <div class="item-heading">CPF</div>
+                    <div><input type="text" class="form-control boxed" name="cpf[{{$pessoa->id}}]" value="{{$pessoa->cpf}}" title="CPF">  </div>
+                </div>  
+
+            
+            @endif
+            @if(isset($pessoa->endereco))
+            
+                <div class="item-col item-col-sales">
+                    <div class="item-heading">Endereço</div>
+                    <div><input type="text" class="form-control boxed" name="endereco[{{$pessoa->id}}]" value="{{$pessoa->endereco}}" title="Endereço">  </div>
+                </div>  
+
+    
+            @endif
+            @if(isset($pessoa->cep))
+            
+                <div class="item-col item-col-sales">
+                    <div class="item-heading">CEP</div>
+                    <div><input type="number" class="form-control boxed" name="cep[{{$pessoa->id}}]" value="{{$pessoa->cep}}" title="CEP">  </div>
+                </div> 
+    
+            @endif
+        </div>
         </li>
         @endforeach
 

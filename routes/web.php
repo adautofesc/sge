@@ -469,6 +469,7 @@ Route::middleware('login') ->group(function(){
 		Route::get('tce-alunos/{ano}','RelatorioController@tceAlunos');
 		Route::get('tce-educadores/{ano}','RelatorioController@tceEducadores');
 		Route::get('tce-turmas/{ano}','RelatorioController@tceTurmas');
+		Route::get('tce-turmas-alunos/{ano}','RelatorioController@tceTurmasAlunos');
 
 
 

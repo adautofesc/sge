@@ -765,7 +765,7 @@ class BoletoController extends Controller
 		    ]
 		);
 		
-		$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->paginate(400);
+		$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->paginate(300);
 
 		if(count($boletos) == 0)
 			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Nenhum boleto encontrado']);

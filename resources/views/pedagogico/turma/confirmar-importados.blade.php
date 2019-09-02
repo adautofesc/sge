@@ -17,7 +17,7 @@
 	                </div> 
                 -->
                 </h3>
-                <p class="title-description"> Confirme os dados abaixo, desmarque se for necessário algum aluno e grave os dados </p>
+                <p class="title-description"> Processamento realizado com sucesso!</p>
             </div>
         </div>
     </div>

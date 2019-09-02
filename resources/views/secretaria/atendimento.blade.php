@@ -269,6 +269,9 @@
                                              @if(file_exists('documentos/matriculas/termos/'.$matricula->id.'.pdf'))
                                             <a class="dropdown-item" style="text-decoration: none;"  href="/download/{{str_replace('/','-.-', 'documentos/matriculas/termos/'.$matricula->id.'.pdf')}}"> <i class="fa fa-file-text-o icon"></i> Termo disponivel</a>
                                             @endif
+                                            @if(file_exists('documentos/matriculas/cancelamentos/'.$matricula->id.'.pdf'))
+                                            <a class="dropdown-item" style="text-decoration: none;"  href="/download/{{str_replace('/','-.-', 'documentos/matriculas/cancelamentos/'.$matricula->id.'.pdf')}}"> <i class="fa fa-file-text-o icon"></i> Cancelamento disponivel</a>
+                                            @endif
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" style="text-decoration: none; color:#fe974b;" href="#reativar" onclick="reativar({{$matricula->id}});"> <i class="fa fa-undo icon"></i> Reativar </a>
                                             @endif

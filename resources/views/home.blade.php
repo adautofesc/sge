@@ -18,76 +18,13 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Matrículas/Rematrículas 2019</p>
+                        <p class="title" style="color:white">Mural</p>
                     </div>
                 </div>
                 <div class="card-block">
 
                     <div class="text-xs-left">
-                        <small>
-                        <table class="table">
-                            <tr>
-                                <td>19/11</td>
-                                <td>à</td>
-                                <td>23/11</td>
-                                <td>Rematrícula PID e UNIT</td>
-                            </tr>
-                            <tr>
-                                <td>26/11</td>
-                                <td>à</td>
-                                <td>30/11</td>
-                                <td>Rematrículas Piscina na UAB</td>
-                            </tr>
-                            <tr>
-                                <td>03/12</td>
-                                <td>à</td>
-                                <td>14/12</td>
-                                <td>Rematrículas UATI</td>
-                            </tr>
-                            <tr>
-                                <td>*19/11</td>
-                                <td>à</td>
-                                <td>14/12</td>
-                                <td>Pedidos de bolsa de Rematrículas</td>
-                            </tr>
-
-                            <tr>
-                                <td colspan="4" class="btn-info"><b>MATRICULAS NOVAS</b></td>
-                            </tr>
-                            <tr>
-                                <td>14/01</td>
-                                <td>à</td>
-                                <td>18/01</td>
-                                <td>Matrículas UNIT</td>
-                            </tr>
-                            <tr>
-                                <td>21/01</td>
-                                <td>à</td>
-                                <td>25/01</td>
-                                <td>Matrículas PID</td>
-                            </tr>
-                             <tr>
-                                <td>28/01</td>
-                                <td>à</td>
-                                <td>01/02</td>
-                                <td>Matrículas UATI & Piscina</td>
-                            </tr>
-                             <tr>
-                                <td>14/01</td>
-                                <td>à</td>
-                                <td>29/01</td>
-                                <td>Pedido bolsas alunos novos</td>
-                            </tr> 
-                             <tr>
-                                <td>30/01</td>
-                                <td>à</td>
-                                <td>01/02</td>
-                                <td>Avaliação e divulgação de parecer das bolsas</td>
-                            </tr>                                                            
-                           
-                        </table>
-                        *Aguardando confirmação.
-                    </small>
+                    <img src="{{asset('/img/cartazes_motivacionais/00'.str_pad(rand(1,10),2,"0",STR_PAD_LEFT).'.jpg')}}" alt="Cartaz motivacional" width="100%">
                     </div>
  
                 </div>
@@ -95,6 +32,7 @@
 
 
         </div>
+    
 
 
 
@@ -130,37 +68,31 @@
                 </div>
             </div> 
         </div>
+   
         <div class="col-md-6">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Comunicados & portarias</p>
+                        <p class="title" style="color:white">Links externos</p>
                     </div>
                 </div>
                 <div class="card-block">
-                    <small>
-                    <table class="table">
-                        <thead>
-                            <th>Link</th>
-                            <th>Data</th>
-                            <th>Descrição</th>
-                        </thead>
-                        <tr>
-                            <td><a href="/documentos/oficios/2018004.pdf"><i class="fa fa-file-text-o"></i></a></td>
-                            <td>22/05/18</td>
-                            <td>Calendário Escolar</td>
-                        </tr>
-                        
-
-                    </table>
-                    </small>
+                    
+                        <div class="list-group">
+                            <a class="list-group-item" style="text-decoration:none;" href="http://fescprotocolo.navka.com/sistema/Login.aspx"><i class="fa fa-bookmark"></i> Sistema de Protocolo</a>
+                            <a class="list-group-item" style="text-decoration:none;" href="http://fesc.com.br/portarias/portarias-ano-2019"><i class="fa fa-file-text-o"></i> Portarias</a>
+                            <a class="list-group-item" style="text-decoration:none;" href="http://fesc.com.br/resolucoes-fesc/resolucoes-ano-2019"><i class="fa fa-file-text-o"></i> Resoluções</a>
+                        </div>
+                   
+                    
                 </div>
             </div> 
 
 
         </div>
-    </div>
+    
     @endif
+    </div>
 </section>
 
 @endsection

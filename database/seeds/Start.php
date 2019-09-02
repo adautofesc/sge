@@ -32,11 +32,5 @@ class Start extends Seeder
         	'recurso'=>1
         ]);
 
-        $tipos_dados=array([
-        	'id'=>1
-        ];
-        $bairros=[
-        ];
-
     }
 }

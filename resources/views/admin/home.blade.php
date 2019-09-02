@@ -42,10 +42,15 @@
                         &nbsp;&nbsp;Educadores 2018</a>
                     </div>
                     <div>
-                        <a href="/relatorios/tce-turmas/2018"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Relatório de todas as turmas do Exercício de 2018, contendo todos os cursos ministrados pela FESC, com indicação dos horários, professores e alunos matriculados">
+                        <a href="/relatorios/tce-turmas/2018"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Relatório de todas as turmas do Exercício de 2018, contendo todos os cursos ministrados pela FESC, com indicação dos horários e professores">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Turmas 2018</a>
-                    </div>         
+                    </div>
+                    <div>
+                        <a href="/relatorios/tce-turmas-alunos/2018"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Relatório de todas as turmas do Exercício de 2018, contendo todos os cursos ministrados pela FESC, com indicação dos horários, professores e alunos matriculados">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Turmas/Alunos 2018</a>
+                    </div>      
                 </div>
             </div>
         </div>

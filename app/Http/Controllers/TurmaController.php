@@ -11,6 +11,8 @@ use App\Parceria;
 use App\Pessoa;
 use App\Inscricao;
 use App\CursoRequisito;
+use App\Endereco;
+use App\PessoaDadosContato;
 //use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Session;
@@ -27,10 +29,9 @@ class TurmaController extends Controller
         $turmas = $this->listagemGlobal($request->filtro,$request->valor,$request->removefiltro,$request->remove);
 
         $programas=Programa::all();
-        $professores = PessoaDadosAdministrativos::getFuncionarios('Educador');
+        $professores=PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
         $professores = $professores->sortBy('nome_simples');
         $locais = Local::select(['id','sigla','nome'])->orderBy('sigla')->get();
-        
         return view('pedagogico.turma.listar', compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$_SESSION['filtro_turmas']);
     }
 
@@ -210,7 +211,7 @@ class TurmaController extends Controller
         
         $turmas = $this->listagemGlobal($request->filtro,$request->valor,$request->removefiltro,$request->remove);
         $programas=Programa::all();
-        $professores = PessoaDadosAdministrativos::getFuncionarios('Educador');
+        $professores=PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
         $professores = $professores->sortBy('nome_simples');
         $locais = Local::select(['id','sigla','nome'])->orderBy('sigla')->get();
 
@@ -316,7 +317,7 @@ class TurmaController extends Controller
             $programas=Programa::get();
             $parcerias=Parceria::orderBy('nome')->get();
             //$cursos=Curso::getCursosPrograma(); ok
-            $professores=PessoaDadosAdministrativos::getFuncionarios('Educador');
+            $professores=PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
             $unidades=Local::get();
             //Locais=Local::getLocaisPorUnidade($unidade);
             $dados=collect();
@@ -586,8 +587,12 @@ class TurmaController extends Controller
                 $insc->nascimento=$spreadsheet->getActiveSheet()->getCell('J'.$i)->getFormattedValue();
                 $insc->nascimento = \Carbon\Carbon::createFromFormat('n/d/Y', $insc->nascimento)->format('d/m/Y');
                 $insc->genero=$spreadsheet->getActiveSheet()->getCell('E'.$i)->getValue();
-                $insc->fone=$spreadsheet->getActiveSheet()->getCell('I'.$i)->getValue();
+                $insc->fone=$spreadsheet->getActiveSheet()->getCell('H'.$i)->getValue().' '.$spreadsheet->getActiveSheet()->getCell('I'.$i)->getValue();
                 $insc->turma=$spreadsheet->getActiveSheet()->getCell('S'.$i)->getValue();
+                $insc->rg=$spreadsheet->getActiveSheet()->getCell('F'.$i)->getValue();
+                $insc->cpf=$spreadsheet->getActiveSheet()->getCell('G'.$i)->getValue();
+                $insc->endereco=$spreadsheet->getActiveSheet()->getCell('K'.$i)->getValue();
+                $insc->cep=$spreadsheet->getActiveSheet()->getCell('L'.$i)->getValue();
                 $pessoas->push($insc);
             }
         }
@@ -622,10 +627,31 @@ class TurmaController extends Controller
 
 
                 }
+
+                if(isset($request->rg[$id]) && $request->rg[$id]!=' '){
+                    $dado = \App\PessoaDadosGerais::where('dado','4')->where('pessoa',$pessoa->id)->get();
+                    if(count($dado) == 0){
+                        $doc = new \App\PessoaDadosGerais;
+                        $doc->pessoa = $pessoa->id;
+                        $doc->dado = 4;
+                        $doc->valor = $request->rg[$id];
+                        $doc->save();
+                    }
+                }
+                if(isset($request->cpf[$id]) && $request->cpf[$id]!=' '){
+                    $dado = \App\PessoaDadosGerais::where('dado','3')->where('pessoa',$pessoa->id)->get();
+                    if(count($dado) == 0){
+                        $doc = new \App\PessoaDadosGerais;
+                        $doc->pessoa = $pessoa->id;
+                        $doc->dado = 3;
+                        $doc->valor = $request->cpf[$id];
+                        $doc->save();
+                    }
+                }
                 // se tiver o campo telefone estiver preenchido
                 if(isset($request->telefone[$id])){
                     //procura pra ver se telefone já existe
-                    $dado = PessoaDadosContato::where('dado','2')->where('pessoa',$pessoa->id)->where('valor', $request->telefone[$id]);
+                    $dado = PessoaDadosContato::where('dado','2')->where('pessoa',$pessoa->id)->where('valor', $request->telefone[$id])->get();
                     //cadastra se nao tiver
                     if(count($dado) == 0){
                         $telefone = new PessoaDadosContato;
@@ -635,6 +661,27 @@ class TurmaController extends Controller
                         $telefone->save();
 
                     }
+                }
+                
+                if(isset($request->endereco[$id]) && isset($request->cep[$id])){
+                    $dado = PessoaDadosContato::where('dado','6')->where('pessoa',$pessoa->id)->get();
+                    if(count($dado) == 0){
+                        $endereco = new \App\Endereco;
+                        $endereco->logradouro = $request->endereco[$id];
+                        $endereco->cidade = "São Carlos";
+                        $endereco->estado = "SP";
+                        $endereco->bairro = \App\classes\CepUtils::bairroCompativel($request->cep[$id]);
+                        if($endereco->bairro>0){
+                            $endereco->save();
+                            $dado_contato = new PessoaDadosContato;
+                            $dado_contato->pessoa = $pessoa->id;
+                            $dado_contato->dado = 6;
+                            $dado_contato->valor = $endereco->id;
+                            $dado_contato->save();
+
+                        }
+                    }
+
                 }
                 //verifica se a turma existe
                 $turma = Turma::find($request->turma[$id]);
@@ -671,7 +718,7 @@ class TurmaController extends Controller
             case 'relancar':
                 
                 $programas=Programa::get();
-                $professores=PessoaDadosAdministrativos::getFuncionarios('Educador');
+                $professores=PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
                 $unidades=Local::get(['id' ,'nome']);
                 $parcerias=Parceria::orderBy('nome')->get();
                 $dados=collect();

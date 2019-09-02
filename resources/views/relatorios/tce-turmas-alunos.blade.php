@@ -111,7 +111,11 @@
                         <th width="20%">Início/Termino</th>
                         <th width="12%">Professor</th>
                         
-               
+                        <tr style="border-top: 1px solid gray; line-height:40px;" class="topo">
+                    		<td>Aluno</td>
+                        	<td>Nome</td>
+                        
+                        </tr>
                         
 
         
@@ -120,15 +124,27 @@
                     <tbody>
                     	@foreach($turmas as $turma)
 	                    	<tr style="border-bottom: 1px solid gray; line-height:30px;" >
-	                    		<td>{{$turma->id}}</td>
-	                    		<td>{{$turma->nome_curso}}</td>
-	                    		<td>{{$turma->local->sigla}}</td>
-	                    		<td>{{implode(', ',$turma->dias_semana)}}</td>
-	                    		<td>{{$turma->hora_inicio. ' às '.$turma->hora_termino}}</td>
-	                    		<td>{{$turma->data_inicio .' até '.$turma->data_termino}}</td>
-	                    		<td>{{$turma->professor->nome_simples}}</td>
+	                    		<td><strong>{{$turma->id}}</strong></td>
+	                    		<td><strong>
+	                    			@if(isset($turma->disciplina))
+	                    				{{$turma->disciplina->nome}}
+	                    			@else
+	                    				{{$turma->curso->nome}}
+	                    			@endif
+	                    		</strong></td>
+	                    		<td><strong>{{$turma->local->sigla}}</strong></td>
+	                    		<td><strong>{{implode(', ',$turma->dias_semana)}}</strong></td>
+	                    		<td><strong>{{$turma->hora_inicio. ' às '.$turma->hora_termino}}</strong></td>
+	                    		<td><strong>{{$turma->data_inicio .' até '.$turma->data_termino}}</strong></td>
+	                    		<td><strong>{{$turma->professor->nome_simples}}</strong></td>
 	                    	</tr>
+	                    	@foreach($turma->alunos as $id => $nome)
+	                    	<tr >
+	                    		<td>{{$id}}</td>
 	                    	
+	                    		<td>{{$nome}}</td>
+	                  
+	                    	@endforeach
 
 
                     	@endforeach

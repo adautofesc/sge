@@ -166,7 +166,16 @@ Route::middleware('login') ->group(function(){
 	// Administrativo
 	Route::middleware('liberar.recurso:12')->prefix('administrativo')->group(function(){
 		Route::get('/','painelController@administrativo');
-		Route::get('salasdaunidade/{var}','painelController@salasDaUnidade');
+		Route::get('locais','LocaisController@listar');
+		Route::get('locais/cadastrar','LocaisController@cadastrar');
+		Route::post('locais/cadastrar','LocaisController@store');
+		Route::get('locais/editar/{var}','LocaisController@editar');
+		Route::post('locais/editar/{var}','LocaisController@update');
+		Route::get('locais/apagar/{var}','LocaisController@apagar');
+		Route::get('locais/salas/{id}','SalaController@listarPorLocal');
+		Route::get('salas/cadastrar/{id}','SalaController@cadastrar');
+
+		
 	});
 
 
@@ -507,6 +516,7 @@ Route::middleware('login') ->group(function(){
 		Route::get('importarLocais','painelController@importarLocais');
 		Route::get('atualizar-inscritos','TurmaController@atualizarInscritos');
 		Route::get('inscricoes','InscricaoController@incricoesPorPosto');
+
 		//Route::get('revitaliza', 'MatriculaController@revitaliza');
 		//Route::get('auto-matriculas', 'MatriculaController@autoMatriculas');
 		//Route::get('recupera-inscricoes', 'InscricaoController@recuperarInscricoes');

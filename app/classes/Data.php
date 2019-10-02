@@ -135,6 +135,33 @@ Class Data
 
 
         }
+
+        public static function stringDiaSemana($data){
+                $data_obj = \DateTime::createFromFormat('d/m/Y',$data);
+                switch($data_obj->format('w')){
+                        case 0:
+                        return 'dom';
+                        break;
+                        case 1:
+                        return 'seg';
+                        break;
+                        case 2:
+                        return 'ter';
+                        break;
+                        case 3:
+                        return 'qua';
+                        break;
+                        case 4:
+                        return 'qui';
+                        break;
+                        case 5:
+                        return 'sex';
+                        break;
+                        case 6:
+                        return 'sab';
+                        break;
+                }
+        }
 }
 // $data = \Carbon\Carbon::parse($tr->data)->format('d').' de '.$mes.' de '.\Carbon\Carbon::parse($tr->data)->format('Y');
 /* para retornar uma data específica por extenso 

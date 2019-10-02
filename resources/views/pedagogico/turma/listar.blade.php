@@ -325,7 +325,10 @@
                                                     <div class="item-heading">Curso/atividade</div>
                                                     <div class="">
                                                         
-                                                             <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->status}} <br> {{' De ' .$turma->data_inicio.' a '.$turma->data_termino}}</small></div> 
+                                                            <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - 
+                                                                <i class="fa fa-{{$turma->icone_status}}" title=""></i>
+                                                            <small> {{$turma->status}} <br> {{' De ' .$turma->data_inicio.' a '.$turma->data_termino}}. Sala: {{isset($turma->getSala()->nome)?$turma->getSala()->nome:''}}</small>
+                                                            </div> 
 
                                                        
                                                         @if(isset($turma->disciplina))
@@ -360,7 +363,11 @@
                                                
                                                 <div class="item-col item-col-sales">
                                                     <div class="item-heading">Valor</div>
-                                                    <div>R$ {{number_format($turma->valor,2,',','.')}} </div>
+                                                    <div>                                                    
+                                                        R$ {{number_format($turma->valor,2,',','.')}}<br>
+                                                        Em 0 X <br>
+                                                        R$ 00,00
+                                                    </div>
                                                 </div>
 
                                                 <div class="item-col fixed item-col-actions-dropdown">

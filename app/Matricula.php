@@ -150,6 +150,8 @@ class Matricula extends Model
 		//return $valor_matricula;
 		//transforma data de inicio da turma em objeto de data para descobrir qual semestre é
 		$pp_dt = \DateTime::createFromFormat('d/m/Y', $inscricoes->first()->turma->data_inicio);
+		
+		
 
 		unset($this->inscricoes);
 
@@ -158,11 +160,13 @@ class Matricula extends Model
 			return 5;
 		else{*/
 			//verifica qual semestre para determinar a data da primeira parcela
-			if($pp_dt->format('m')<8){
+			if($pp_dt->format('m')<8 || $valor_matricula->parcelas == 11){
 				$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/02/'.$pp_dt->format('Y')); // 20/02/2019
+				
 			}
 			else{
 				$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/08/'.$pp_dt->format('Y')); //ou 20/08/2019
+				
 			}
 		//}
 		
@@ -172,8 +176,9 @@ class Matricula extends Model
 		//calcula a diferença entre as datas
 		$interval = $dt_pp->diff($dt_mt);
 		$parcelas = $valor_matricula->parcelas - ceil($interval->days/30);
-
 		
+		
+
 
 		//reduz a quantidade de parcelas de acordo com a diferença entre as datas
 		if($interval->invert ==1){

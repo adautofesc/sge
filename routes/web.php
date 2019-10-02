@@ -49,6 +49,7 @@ route::get('profile',function(){
 	Route::post('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_exec');
 	Route::get('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_view');
 	Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec');
+	
 
 
 //************************************************* Areas restritas para cadastrados ***************************************************
@@ -75,8 +76,8 @@ Route::middleware('login') ->group(function(){
 
 	
 
-	Route::get('lista/{id}','painelController@chamada'); //lista de chamada aberta
-	Route::get('listas/{id}','painelController@chamadaMultipla'); //lista de chamada aberta
+	Route::get('lista/{id}','TurmaController@impressao'); //lista de chamada aberta
+	Route::get('listas/{id}','TurmaController@impressaoMultipla'); //lista de chamada aberta
 	Route::get('turma/{turma}', 'TurmaController@mostrarTurma');
 
 
@@ -173,7 +174,17 @@ Route::middleware('login') ->group(function(){
 		Route::post('locais/editar/{var}','LocaisController@update');
 		Route::get('locais/apagar/{var}','LocaisController@apagar');
 		Route::get('locais/salas/{id}','SalaController@listarPorLocal');
+		Route::get('locais/salas-api/{id}','SalaController@listarPorLocalApi');
 		Route::get('salas/cadastrar/{id}','SalaController@cadastrar');
+		Route::post('salas/cadastrar/{id}','SalaController@store');
+		Route::get('salas/alterar/{id}','SalaController@editar');
+		Route::post('salas/alterar/{id}','SalaController@update');
+
+		
+	});
+	Route::middleware('liberar.recurso:12')->prefix('agendamento-salas')->group(function(){
+		Route::get('/','SalaAgendamentoController@agendamento');
+
 
 		
 	});
@@ -493,7 +504,7 @@ Route::middleware('login') ->group(function(){
 		Route::get('turmas-professor', 'TurmaController@listarProfessores');
 		Route::post('turmas-professor', 'TurmaController@turmasProfessor');
 	});
-	Route::get('chamada/{id}/{pg}/{url}','TurmaController@getChamada');
+	Route::get('chamada/{id}/{pg}/{url}/{hide?}','TurmaController@getChamada'); //otpional parameter is used here!
 	Route::get('plano/{professor}/{tipo}/{curso}','TurmaController@getPlano');
 	
 
@@ -529,6 +540,7 @@ Route::middleware('login') ->group(function(){
 
 Route::get('api/chamada/{id}','WebServicesController@apiChamada');
 Route::get('api/turmas','WebServicesController@apiTurmas');
+Route::get('api/salas-api/{id}','SalaController@listarPorLocalApi');
 
 //----------------------------- Errors treatment
 

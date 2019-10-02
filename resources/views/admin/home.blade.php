@@ -15,11 +15,15 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Compras</p>
+                        <p class="title" style="color:white">Configurações</p>
                     </div>
                 </div>
                 <div class="card-block">
-                    Nenhuma opção disponível no momento              
+                    <div>
+                        <a href="administrativo/locais"  target="_self" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Locais de atendimento/parcerias">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Locais/Salas</a>
+                    </div>            
                 </div>
             </div>
         </div>

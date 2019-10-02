@@ -2,8 +2,9 @@
 @section('titulo')Salas cadastradas. @endsection
 @section('pagina')
 <ol class="breadcrumb">
-  <li class="breadcrumb-item"><a href="../../">Início</a></li>
+  <li class="breadcrumb-item"><a href="/">Início</a></li>
   <li class="breadcrumb-item"><a href="/administrativo/">Adminstrativo</a></li>
+  <li class="breadcrumb-item"><a href="/administrativo/locais">locais</a></li>
  
 </ol>
 
@@ -28,7 +29,7 @@
         <div class="row">
             <div class="col-md-9">
                 <small>
-                        <a href="{{asset('/administrativo/salas/cadastrar/'.$local->id)}}" class="btn btn-secondary btn-sm rounded-s text-success" title="Adicionar"><i class=" fa fa-plus"> Adicionar</i></a>
+                        <a href="{{asset('/administrativo/salas/cadastrar/'.$local->id)}}" class="btn btn-secondary btn-sm rounded-s text-success" title="Adicionar"><i class=" fa fa-plus"> Adicionar Sala</i></a>
             
                         <a href="#" onclick="apagar()" class="btn btn-secondary btn-sm rounded-s text-danger" title="Apagar selecionados"><i class=" fa fa-trash-o"> Excluir selecionados</i></a>      
                            
@@ -61,8 +62,11 @@
                         </label>
                     </div>
                 </th>
-            <th>&nbsp;&nbsp;Nome </th>
-                <th>&nbsp;&nbsp;Sigla</th>
+            <th>&nbsp;&nbsp;Nome</th>
+            <th title="capacidade">&nbsp;&nbsp;Cap.</th>
+            <th title="tamanho">&nbsp;&nbsp;Tam.</th>
+            <th>&nbsp;&nbsp;Observações</th>
+            <th>&nbsp;&nbsp;Recursos</th>
                
                 <th style="text-align:right;">&nbsp;&nbsp;Opções</th>
             </thead>
@@ -77,13 +81,29 @@
                             </label> 
                         </div> 
                     </td>
+
                     <td>{{$sala->nome}}</td>
-                    <td>{{$sala->sigla}}</td>
+                    <td title="pessoas">{{$sala->capacidade}} p.</td>
+                    <td>{{$sala->metragem}}m²</td>
+                    <td>{{$sala->obs}}</td>
+                    <td><!--
+                    <ul style="list-style-type:none; padding-left:0%;" id="lista{{$sala->id}}">
+                            <li>
+                                <a href="#" onclick="apagar(123)" class="btn btn-secondary btn-sm rounded-s text-danger" title="Apagar selecionados"><i class=" fa fa-trash-o"></i></a>
+                                teste com um  grande
+                            </li>
+                            <li>
+                                    <a href="#" onclick="apagar()" class="btn btn-secondary btn-sm rounded-s text-danger" title="Apagar selecionados"><i class=" fa fa-trash-o"></i></a>
+                                    teste com um  grande
+                            </li>
+                        </ul>
+                    <input type="text" class="form-control form-control-sm" name="recurso{{$sala->id}}" id="recurso{{$sala->id}}" size="2px" placeholder=" 1 Computador"> 
+                        <a href="#" class="btn btn-secondary btn-sm rounded-s text-success" style="margin-top:5px;" onclick="addrecurso({{$sala->id}})" title="Adicionar recurso à sala"><i class=" fa fa-plus"> Adicionar</i></a>
+                    </td>-->
                     
                     <td style="float:right;">
-                        <!--<a href="#" class="btn btn-secondary btn-sm rounded-s text-info" title="Informações" data-toggle="modal" data-target="#info-modal"><i class=" fa fa-info"> Informações</i></a> -->
-                        <a href="./salas/salas/{{$sala->id}}" class="btn btn-secondary btn-sm rounded-s text-success" title="Salas"><i class=" fa fa-home"> Salas</i></a>   
-                        <a href="./salas/editar/{{$sala->id}}" class="btn btn-secondary btn-sm rounded-s text-dark" title="Editar"><i class=" fa fa-pencil"> Editar</i></a>
+                        <!--<a href="#" class="btn btn-secondary btn-sm rounded-s text-info" title="Informações" data-toggle="modal" data-target="#info-modal"><i class=" fa fa-info"> Informações</i></a> -->  
+                        <a href="/administrativo/salas/alterar/{{$sala->id}}" class="btn btn-secondary btn-sm rounded-s text-dark" title="Modificar dados dessa sala"><i class=" fa fa-pencil"> Alterar</i></a>
                     </td>
                 </tr>
             @endforeach
@@ -160,6 +180,28 @@
 @endsection
 @section('scripts')
 <script>
+function addrecurso(id){
+    var recurso = document.querySelector('#recurso'+id);
+    var lista = document.querySelector('#lista'+id);
+    var item_lista = document.createElement('li');
+    var btn = document.createElement('a');
+    btn.setAttribute('href','#');
+    btn.setAttribute('onclick','apagar()');
+    btn.setAttribute('title','Apagar este recurso')
+    btn.setAttribute('class','btn btn-secondary btn-sm rounded-s text-danger');
+
+    var icon = document.createElement('i');
+    icon.setAttribute('class','fa fa-trash-o')
+
+    var texto_item = document.createTextNode(' '+recurso.value);
+    btn.appendChild(icon);
+    item_lista.appendChild(btn);
+    item_lista.appendChild(texto_item);
+    lista.appendChild(item_lista);
+    recurso.value = '';
+    
+    
+}
 function apagar() 
 {
     var selecionados='';

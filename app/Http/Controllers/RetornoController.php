@@ -276,6 +276,10 @@ class RetornoController extends Controller
 								$boleto->status = 'erro';
 								$boleto->save();
 							}
+							if($boleto->status =='cancelar'){
+								$boleto->status = 'cancelado';
+								$boleto->save();
+							}
 							LogController::alteracaoBoleto($boleto->id,'Boleto rejeitado, retorno: '.$retorno_id.': '.$linha->ocorrenciaDescricao.' '.$linha->error);
 
 

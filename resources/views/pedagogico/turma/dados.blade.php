@@ -130,7 +130,19 @@
                         <i class=" fa fa-arrow-right "></i> 
                         &nbsp;&nbsp;<a href="/lista/{{$turma->id}}" >Lista em branco</a>
                     </div>
-                    
+                    <div>
+                            <i class=" fa fa-arrow-right "></i>
+                            &nbsp;
+                            <a href="/chamada/{{$turma->id}}/0/url/ativos" title="Lista sem nomes de alunos cancelados ou transferidos">Frequência digital (limpa)</a>
+                            <a href="/chamada/{{$turma->id}}/1/url/ativos"> 1 </a>
+                            <a href="/chamada/{{$turma->id}}/2/url/ativos"> 2 </a>
+                            <a href="/chamada/{{$turma->id}}/3/url/ativos"> 3 </a>
+                            <a href="/chamada/{{$turma->id}}/4/url/ativos"> 4 </a>
+                            <a href="/chamada/{{$turma->id}}/0/rel/ativos" title="Atualizar"> <i class=" fa fa-refresh"></i> </a>
+                            <!--
+                            <a href="/chamada/{{$turma->id}}/0/pdf" title="Imprimir"> <i class=" fa fa-print"></i> </a>
+                        -->
+                    </div>
                     <div>
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;
@@ -144,6 +156,7 @@
                         <a href="/chamada/{{$turma->id}}/0/pdf" title="Imprimir"> <i class=" fa fa-print"></i> </a>
                     -->
                     </div>
+                    
                     <div>
                         <i class=" fa fa-arrow-right "></i>
                         @if(isset($turma->disciplina->id))

@@ -398,7 +398,7 @@
                                                                      <small>Início em 
 
 
-                                                                {{$turma->data_inicio}}</small></div> 
+                                                                {{$turma->data_inicio}}. Sala: {{isset($turma->getSala()->nome)?$turma->getSala()->nome:''}}</small></div> 
 
                                                        @if(isset($turma->disciplina))
                                                         <a href="{{asset('secretaria/turma/'.$turma->id)}}"  title="Abrir dados da turma">

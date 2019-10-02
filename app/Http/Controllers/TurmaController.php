@@ -218,6 +218,32 @@ class TurmaController extends Controller
         return view('secretaria.listar-turmas', compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$_SESSION['filtro_turmas'])->with('periodos',\App\classes\Data::semestres());
     }
 
+
+       /**
+    * Lista em Brnco
+    * @param  [type] $id [description]
+    * @return [type]     [description]
+    */
+    public function impressao($id){
+        $inscritos=\App\Inscricao::where('turma',$id)->whereIn('status',['regular','espera','ativa','pendente'])->get();
+        $inscritos= $inscritos->sortBy('pessoa.nome');
+        if(count($inscritos))
+            return view('pedagogico.frequencia.index',compact('inscritos'))->with('i',1);
+        else
+            return "Nenhum aluno cadastrado para esta turma.";
+    }
+    public function impressaoMultipla($ids){
+        $turmas_arr = explode(',',$ids);
+        $turmas = \App\Turma::whereIn('id',$turmas_arr)->get();
+        foreach($turmas as $turma){
+            $turma->inscritos =\App\Inscricao::where('turma',$turma->id)->whereIn('status',['regular','espera','ativa','pendente'])->get();
+            $turma->inscritos = $turma->inscritos->sortBy('pessoa.nome');
+        }
+        return view('pedagogico.frequencia.multiplas',compact('turmas'));
+    }
+
+
+
     /**
      * Show the form for creating a new resource.
      *
@@ -261,10 +287,13 @@ class TurmaController extends Controller
             "hr_inicio"=>"required",
             "hr_termino"=>"required",
             "vagas"=>"numeric|required",
-            "valor"=>"numeric|required"
+            "sala"=>"numeric",
+            "valor"=>"required"
 
 
         ]);
+        
+        //verificar disponibilidade da sala **************************************************************************************
 
         $turma=new Turma;
         $turma->programa=$request->programa;
@@ -279,9 +308,10 @@ class TurmaController extends Controller
         $turma->hora_termino=$request->hr_termino;
         $turma->parceria=$request->parceria;
         $turma->periodicidade=$request->periodicidade;
-        $turma->valor=$request->valor;
+        $turma->valor=str_replace(',','.',$request->valor);
         $turma->vagas=$request->vagas;
         $turma->carga=$request->carga;
+        $turma->sala=$request->sala;
         $turma->atributos=$request->atributo;
         $turma->status='espera';
         $turma->save();
@@ -319,12 +349,14 @@ class TurmaController extends Controller
             //$cursos=Curso::getCursosPrograma(); ok
             $professores=PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
             $unidades=Local::get();
+            $salas= \App\Sala::where('local',$turma->local->id)->get();
             //Locais=Local::getLocaisPorUnidade($unidade);
             $dados=collect();
             $dados->put('programas',$programas);
             $dados->put('professores',$professores);
             $dados->put('unidades',$unidades);
             $dados->put('parcerias', $parcerias);
+            $dados->put('salas',$salas);
             $turma->data_iniciov=Data::converteParaBd($turma->data_inicio);
             $turma->data_terminov=Data::converteParaBd($turma->data_termino);
 
@@ -357,10 +389,12 @@ class TurmaController extends Controller
             "hr_inicio"=>"required",
             "vagas"=>"required",
             "valor"=>"required",
+            "sala"=>"numeric",
             "periodicidade"=>"required"
 
 
         ]);
+        //verificar disponibilidade da sala.
         $turma=Turma::find($request->turmaid);
         $turma->programa=$request->programa;
         $turma->curso=$request->curso;
@@ -372,12 +406,13 @@ class TurmaController extends Controller
         $turma->data_termino=$request->dt_termino;
         $turma->hora_inicio=$request->hr_inicio;
         $turma->hora_termino=$request->hr_termino;
-        $turma->valor=$request->valor;
+        $turma->valor=str_replace(',','.',$request->valor);
         $turma->vagas=$request->vagas;
         $turma->carga=$request->carga;
         $turma->atributos=$request->atributo;
         $turma->periodicidade=$request->periodicidade;
         $turma->parceria = $request->parceria;
+        $turma->sala=$request->sala;
         $turma->update();
         return redirect(asset('/pedagogico/turmas'));
        
@@ -543,15 +578,14 @@ class TurmaController extends Controller
     public function turmasSite(){
 
         
-        $turmas=Turma::select('*', 'turmas.vagas as vagas','turmas.id as id')
-                ->whereIn('turmas.status', ['inscricao','iniciada'])
+        $turmas=Turma::whereIn('turmas.status', ['inscricao','iniciada'])
                 ->whereIn('turmas.local',[84,85,86])
                 ->whereColumn('turmas.vagas','>','turmas.matriculados')
-                ->join('cursos', 'turmas.curso','=','cursos.id')
-                ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id') 
-                ->orderBy('cursos.nome')
-                ->orderBy('disciplinas.nome')
                 ->get();
+        foreach($turmas as $turma){
+            $turma->nome_curso = $turma->getNomeCurso();
+        }
+        $turmas = $turmas->sortBy('nome_curso');
 
         
         return view('pedagogico.turma.turmas-site',compact('turmas'));
@@ -559,14 +593,15 @@ class TurmaController extends Controller
 
  
     public function turmasProfessor(Request $r){
-        $turmas=Turma::select('*', 'turmas.vagas as vagas','turmas.id as id','turmas.matriculados as matriculados')
-                ->whereIn('turmas.status', ['inscricao','iniciada'])
+        $turmas=Turma::whereIn('turmas.status', ['inscricao','iniciada'])
+                ->whereIn('turmas.local',[84,85,86])
+                ->whereColumn('turmas.vagas','>','turmas.matriculados')
                 ->where('professor',$r->professor)
-                ->join('cursos', 'turmas.curso','=','cursos.id')
-                ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
-                ->orderBy('cursos.nome')
-                ->orderBy('disciplinas.nome')
                 ->get();
+        foreach($turmas as $turma){
+            $turma->nome_curso = $turma->getNomeCurso();
+        }
+        $turmas = $turmas->sortBy('nome_curso');
         $professor=Pessoa::find($r->professor);
 
         return view('pedagogico.turma.turmas-site',compact('turmas'))->with('professor',$professor->nomeSimples);
@@ -849,7 +884,7 @@ class TurmaController extends Controller
         $turmas = $turmas->sortBy('weekday');
          return $turmas;
     }
-    public function getChamada($turma_id,$page,$opt){
+    public function getChamada($turma_id,$page,$opt,$mostrar='todos'){
 
         if($opt=='pdf')
             $opt='pdf&rel_pdf=rel_freq';
@@ -860,7 +895,8 @@ class TurmaController extends Controller
         else
             $url = "https://script.google.com/macros/s/AKfycbwY09oq3lCeWL3vHoxdXmocjVPnCEeZMVQgzhgl-J0WNOQPzQc/exec?id=".$turma_id."&portrait=false&tipo=".$opt."&page=".$page;
 
-
+        if($mostrar != 'todos')
+            $url .= '&hide=s';
         print '<div style="font-family:tahoma;font-size:10px;margin:50px auto 0;">Acessando sua lista em: '.$url.'</div><br>';
 
         $ch = curl_init();

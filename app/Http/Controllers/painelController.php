@@ -13,6 +13,7 @@ use App\Http\Controllers\PessoaController;
 use Session;
 use Illuminate\Support\Facades\DB;
 use LancamentoContoller;
+use stdClass;
 
 class painelController extends Controller
 {
@@ -345,9 +346,8 @@ class painelController extends Controller
         
     }
     public function testarClasse(){
-    $BC = new BoletoController;
-       
-       return $BC->carneFase4();
+        $matricula  = \App\Matricula::find('9714');
+        return $matricula->getParcelas();
         
     }
 
@@ -362,39 +362,7 @@ class painelController extends Controller
 
 
     }
-    /*
-    public function apiChamada($id){
-    $inscritos=\App\Inscricao::where('turma',$id)->where('status','<>','cancelada')->get();
-    $inscritos= $inscritos->sortBy('pessoa.nome');
-    return $inscritos;
-    }
-    */
-   
-   /**
-    * Lista em Brnco
-    * @param  [type] $id [description]
-    * @return [type]     [description]
-    */
-    public function chamada($id){
-        $inscritos=\App\Inscricao::where('turma',$id)->where('status','<>','cancelada')->get();
-        $inscritos= $inscritos->sortBy('pessoa.nome');
-        if(count($inscritos))
-            return view('pedagogico.frequencia.index',compact('inscritos'))->with('i',1);
-        else
-            return "Nenhum aluno cadastrado para esta turma.";
-    }
-    public function chamadaMultipla($ids){
-        $turmas_arr = explode(',',$ids);
-        $turmas = \App\Turma::whereIn('id',$turmas_arr)->get();
-        foreach($turmas as $turma){
-            $turma->inscritos =\App\Inscricao::where('turma',$turma->id)->where('status','<>','cancelada')->get();
-            $turma->inscritos = $turma->inscritos->sortBy('pessoa.nome');
-        }
-        return view('pedagogico.frequencia.multiplas',compact('turmas'));
-    }
-
-
-
+ 
 
     	
 }

@@ -167,7 +167,12 @@ class Turma extends Model
                 return $this->disciplina->nome;
             else
                 return $this->curso->nome;
-    }
+	}
+	
+	public function getSala(){
+		$sala = Sala::find($this->sala);
+		return $sala;
+	}
 
 
     

@@ -864,6 +864,8 @@ class BoletoController extends Controller
 					$boleto->status = 'cancelar';
 					$boleto->save();
 					break;
+				case 'pago':
+					break;
 				default :
 					$boleto->status = 'cancelar';
 					$boleto->save();

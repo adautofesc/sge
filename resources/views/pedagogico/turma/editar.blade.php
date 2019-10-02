@@ -74,11 +74,26 @@
 				Unidade
 			</label>
 			<div class="col-sm-6"> 
-				<select class="c-select form-control boxed" name="unidade" required>
+				<select class="c-select form-control boxed" name="unidade" onchange="carregarSalas(this.value)" required>
 					<option>Selecione ums unidade de atendimento</option>
 					@if(isset($dados['unidades']))
 					@foreach($dados['unidades'] as $unidade)
 					<option value="{{$unidade->id}}" {{$unidade->id==$turma->local->id?'selected':''}}>{{$unidade->nome}}</option>
+					@endforeach
+					@endif
+				</select> 
+			</div>
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Sala
+			</label>
+			<div class="col-sm-6"> 
+				<select class="c-select form-control boxed" name="sala" id="select_sala" required>
+					<option>Selecione ums unidade de atendimento</option>
+					@if(isset($dados['salas']))
+					@foreach($dados['salas'] as $sala)
+					<option value="{{$sala->id}}" {{$sala->id==$turma->sala?'selected':''}}>{{$sala->nome}}</option>
 					@endforeach
 					@endif
 				</select> 
@@ -196,7 +211,7 @@
 			<div class="col-sm-4"> 
 				<div class="input-group">
 					<span class="input-group-addon">R$ </span> 
-					<input type="text" class="form-control boxed" name="valor" value="{{$turma->valor}}"  placeholder=""> 
+					<input type="text" class="form-control boxed" name="valor" value="{{number_format($turma->valor,2,',','.')}}" title="Valor TOTAL do curso, somando todas parcelas."> 
 				</div>
 			</div>
 			
@@ -400,6 +415,21 @@ function disciplinaEscolhida(id,nome){
 	$("input[name=disciplina]").val(id);
 	$('#listadisciplinas').hide();
 
+}
+function carregarSalas(local){
+	var salas;
+	$("#select_sala").html('<option>Sem salas cadastradas</option>');
+	$.get("{{asset('api/salas-api/')}}"+"/"+local)
+ 				.done(function(data) 
+ 				{
+ 					$.each(data, function(key, val){
+						console.log(val.nome);
+ 						salas+='<option value="'+val.id+'">'+val.nome+'</option>';
+ 					});
+ 					//console.log(namelist);
+ 					$("#select_sala").html(salas);
+				 });
+				 
 }
 /* ao selecionar a unidade mostra as salas
 $("select[name=unidade]").change( function(){

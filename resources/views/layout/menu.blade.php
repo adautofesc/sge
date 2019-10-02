@@ -13,6 +13,40 @@
                                 <li  >
                                     <a href="{{asset('/administrativo')}}"> <i class="fa fa-bar-chart-o"></i> Administração </a>
                                 </li>
+                    
+                                <li  >
+                                        <a href=""> <i class="fa fa-calendar"></i> Agendamento de salas </a>
+                                        <ul>
+                                            <li>
+                                            <a href="{{asset('/agendamento-salas')}}"> <i class="fa fa-chevron-circle-right"></i> FESC 1 </a>
+                                            </li>
+                                            <li>
+                                                <a href="#"> <i class="fa fa-chevron-circle-right"></i> FESC 2</a>
+                                            </li>
+                                            <li>
+                                                <a href="#"> <i class="fa fa-chevron-circle-right"></i> FESC 3</a>
+                                            </li>
+
+                                        </ul>
+                                    </li>
+                                <li  >
+                                    <a href=""> <i class="fa fa-home"></i> Institucional </a>
+                                    <ul>
+                                        <li>
+                                        <a href="#"> <i class="fa fa-home"></i> Bairros </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{asset('/administrativo/locais')}}"> <i class="fa fa-home"></i> Unidades/Salas</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> <i class="fa fa-home"></i> Mapas/Dados</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> <i class="fa fa-home"></i> Telefones/Contatos</a>
+                                        </li>
+                
+                                    </ul>
+                                </li>
                                 @endif
                                  @if(unserialize(Session('recursos_usuario'))->contains('recurso','21'))
                                 <li  >

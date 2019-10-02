@@ -28,9 +28,9 @@
         <div class="row">
             <div class="col-md-9">
                 <small>
-                        <a href="{{asset('/administrativo/locais/cadastrar')}}" class="btn btn-secondary btn-sm rounded-s text-success" title="Adicionar"><i class=" fa fa-plus"> Adicionar</i></a>
+                        <a href="{{asset('/administrativo/locais/cadastrar')}}" class="btn btn-secondary btn-sm rounded-s text-success" title="Adicionar"><i class=" fa fa-plus"> Novo Local</i></a>
             
-                        <a href="#" onclick="apagar()" class="btn btn-secondary btn-sm rounded-s text-danger" title="Apagar selecionados"><i class=" fa fa-trash-o"> Excluir selecionados</i></a>      
+                        <!-- <a href="#" onclick="apagar()" class="btn btn-secondary btn-sm rounded-s text-danger" title="Apagar selecionados"><i class=" fa fa-trash-o"> Excluir selecionados</i></a>-->      
                            
                 </small>
 
@@ -83,7 +83,7 @@
                     <td style="float:right;">
                         <!--<a href="#" class="btn btn-secondary btn-sm rounded-s text-info" title="Informações" data-toggle="modal" data-target="#info-modal"><i class=" fa fa-info"> Informações</i></a> -->
                         <a href="./locais/salas/{{$local->id}}" class="btn btn-secondary btn-sm rounded-s text-success" title="Salas"><i class=" fa fa-home"> Salas</i></a>   
-                        <a href="./locais/editar/{{$local->id}}" class="btn btn-secondary btn-sm rounded-s text-dark" title="Editar"><i class=" fa fa-pencil"> Editar</i></a>
+                        <a href="./locais/editar/{{$local->id}}" class="btn btn-secondary btn-sm rounded-s text-dark" title="Editar"><i class=" fa fa-pencil"> Alterar</i></a>
                     </td>
                 </tr>
             @endforeach

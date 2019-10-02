@@ -37,28 +37,36 @@
                                 <td><small>{{$turma->id}}</small></td>
                                 <td title="Inicio: {{$turma->data_inicio}}"><small>{{implode(', ',$turma->dias_semana)}}</small></td>
                                 <td><small>{{$turma->hora_inicio}}h</small></td>
-                                <td><small>
-                                    <a href="/chamada/{{$turma->id}}/0/url" target="_blank">
+                                <td>
+                                    <a href="/chamada/{{$turma->id}}/0/url/todos" target="_blank" title="Chamada com alunos desistentes/transferidos">
+                                    
+                                        <i class=" fa fa-indent "></i></a>
+                                    &nbsp;
+                                    <small>
+                                    <a href="/chamada/{{$turma->id}}/0/url/ativos" target="_blank" title="Chamada de alunos ativos">
                                         
-                                        @if(isset($turma->disciplina))
-                                         {{$turma->disciplina->nome}}
-                                         @else
-                                          {{$turma->curso->nome}}
-                                        @endif
+                                        {{$turma->getNomeCurso()}}
 
                                     </a>
+                                    
                                     </small>
                                 </td>
                             
                                 <td>
                                     <a href="/lista/{{$turma->id}}" title="Impressão de lista em branco" target="_blank">
                                         <i class=" fa fa-print "></i></a>&nbsp;
-                                        @if(isset($turma->disciplina->id))
-                                        <a href="/plano/{{$turma->professor->id}}/1/{{$turma->disciplina->id}}" title="Plano de ensino" target="_blank">
-                                            <i class=" fa fa-clipboard "></i></a>
-                                        @else
-                                           <a href="/plano/{{$turma->professor->id}}/0/{{$turma->curso->id}}" title="Plano de ensino" target="_blank"><i class=" fa fa-clipboard "></i></a>
-                                        @endif
+                                   
+                                    @if(isset($turma->disciplina->id))
+                                    <a href="/plano/{{$turma->professor->id}}/1/{{$turma->disciplina->id}}" title="Plano de ensino" target="_blank">
+                                        <i class=" fa fa-clipboard "></i>
+                                    </a>
+                                    @else
+                                    <a href="/plano/{{$turma->professor->id}}/0/{{$turma->curso->id}}" title="Plano de ensino" target="_blank">
+                                        <i class=" fa fa-clipboard "></i>
+                                    </a>
+                                    @endif
+                                    
+
                                   
 
                                     

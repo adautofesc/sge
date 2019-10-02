@@ -2,15 +2,15 @@
 @section('titulo')Criando novo requisito @endsection
 @section('pagina')
 <ol class="breadcrumb">
-  <li class="breadcrumb-item"><a href="../../../">Início</a></li>
-  <li class="breadcrumb-item"><a href="../../">Administrativo</a></li>
-  <li class="breadcrumb-item"><a href="../">Locais</a></li>
+  <li class="breadcrumb-item"><a href="/">Início</a></li>
+  <li class="breadcrumb-item"><a href="/administrativo">Administrativo</a></li>
+  <li class="breadcrumb-item"><a href="/administrativo/locais">Locais</a></li>
  
 </ol>
 
 
   <div class="title-block">
-        <h3 class="title"> <i class=" fa fa-asterisk "></i> Cadastro </h3>
+        <h3 class="title"> <i class=" fa fa-asterisk "></i> Novo local </h3>
         <small>Locais de atendimento & Parcerias</small>
     </div>
     <form name="item" method="POST">

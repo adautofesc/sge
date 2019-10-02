@@ -1,15 +1,5 @@
 <?php
 
-/*
-update turmas set carga=100 where valor = 550 and programa in('1','2') and carga is null;
-update turmas set carga=80 where valor = 440 and programa in('1','2') and  carga is null;
-update turmas set carga=60 where valor = 330 and programa in('1','2') and  carga is null;
-update turmas set carga=40 where valor = 220 and programa in('1','2') and  carga is null;
-update turmas set carga=60 where valor = 660 and programa in('12') and  carga is null;
-update turmas set carga=40 where valor = 440 and programa in('12') and  carga is null;
-update turmas set carga=30 where valor = 330 and programa in('12') and  carga is null;
- */
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;

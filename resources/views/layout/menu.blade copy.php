@@ -4,14 +4,80 @@
                             <div class="brand">
                                 <div class="logo"> <span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div>SGE <i>FESC</i></div>
                         </div>
+                        @if(unserialize(Session('recursos_usuario'))->contains('recurso','18'))
+                        <div class="input-group input-group-sm"> 
+                            <input type="text" class="form-control boxed rounded-s" name="data" placeholder="Nome, RG ou CPF" value="">
+                            <span class="input-group-btn">
+                                <button class="btn btn-secondary rounded-s btn-sm" type="submit" title="Filtrar resultados">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                        @endif
                         <nav class="menu">
                             <ul class="nav metismenu" id="sidebar-menu">
                                 <li  class="active">
                                     <a href="{{asset('/')}}"> <i class="fa fa-home"></i> Home </a>
                                 </li>
+                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','18'))
+                                <li  >
+                                    <a href=""> <i class="fa fa-stack-overflow"></i> Atendimento </a>
+                                    <ul>
+                                        <li>
+                                                
+                                        <a href="{{asset('/secretaria')}}"> <i class="fa fa-home"></i> Home </a>
+                                        </li>
+                                        <li>
+                                        <a href="{{asset('secretaria/pre-atendimento')}}"> <i class="fa fa-asterisk"></i> Novo atendimento</a>
+                                        </li>
+                                        @if(session('pessoa_atendimento'))
+                                        <li>
+                                        <a href="{{asset('secretaria/atender').'/'.session('pessoa_atendimento')}}"> <i class="fa fa-arrow-right"></i> Retomar atendimento</a>
+                                        </li>
+                                        @endif
+                                    
+                                    </ul>
+                                </li>
+                                @endif
                                 @if(unserialize(Session('recursos_usuario'))->contains('recurso','12'))
                                 <li  >
                                     <a href="{{asset('/administrativo')}}"> <i class="fa fa-bar-chart-o"></i> Administração </a>
+                                </li>
+                    
+                                <li  >
+                                        <a href=""> <i class="fa fa-calendar"></i> Agendamento de salas </a>
+                                        <ul>
+                                            <li>
+                                                <a href="/agendamento-salas"> <i class="fa fa-home"></i> Agenda</a>
+                                            </li>
+                                            
+                                            <li>
+                                                <a href="#" title="Eventos de somente um dia"><i class="fa fa-calendar-o icon"></i>&nbsp;Eventos </a>
+                                            </li>
+                           
+                                            <li>
+                                                <a href="#"><i class="fa fa-edit icon"></i> Inscrições em eventos</a>
+                                            </li>
+
+                                        </ul>
+                                    </li>
+                                <li  >
+                                    <a href=""> <i class="fa fa-home"></i> Institucional </a>
+                                    <ul>
+                                        <li>
+                                        <a href="#"> <i class="fa fa-home"></i> Bairros </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{asset('/administrativo/locais')}}"> <i class="fa fa-home"></i> Unidades/Salas</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> <i class="fa fa-home"></i> Mapas/Dados</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"> <i class="fa fa-home"></i> Telefones/Contatos</a>
+                                        </li>
+                
+                                    </ul>
                                 </li>
                                 @endif
                                  @if(unserialize(Session('recursos_usuario'))->contains('recurso','21'))
@@ -47,28 +113,29 @@
                         
                                 @if(unserialize(Session('recursos_usuario'))->contains('recurso','17'))
                                 <li  >
-                                    <a href="{{asset('/pedagogico')}}"> <i class="fa fa-th-list"></i> Pedagógico </a>
+                                    <a href="{{asset('/pedagogico')}}"> <i class="fa fa-th-list"></i> Turmas </a>
                                 </li>
+                                
                                 @endif
-                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','18'))
                                 <li  >
-                                    <a href=""> <i class="fa fa-stack-overflow"></i> Secretaria </a>
-                                    <ul>
-                                        <li>
-                                        <a href="{{asset('/secretaria')}}"> <i class="fa fa-home"></i> Home </a>
-                                        </li>
-                                        <li>
-                                        <a href="{{asset('secretaria/pre-atendimento')}}"> <i class="fa fa-asterisk"></i> Novo atendimento</a>
-                                        </li>
-                                        @if(session('pessoa_atendimento'))
-                                        <li>
-                                        <a href="{{asset('secretaria/atender').'/'.session('pessoa_atendimento')}}"> <i class="fa fa-arrow-right"></i> Retomar atendimento</a>
-                                        </li>
-                                        @endif
-                                    
-                                    </ul>
-                                </li>
-                                @endif
+                                    <a href=""> <i class="fa fa-home"></i> Turmas </a>
+                                        <ul>
+                                            <li>
+                                                <input type="text" size="5" style="margin-left:50px;"><button>Consultar</button>
+                                            </li>
+                                            <li>
+                                                <a href="{{asset('/administrativo/locais')}}"> <i class="fa fa-home"></i> Listar</a>
+                                            </li>
+                                            <li>
+                                                <a href="#"> <i class="fa fa-home"></i> Cadastrar</a>
+                                            </li>
+                                            <li>
+                                                <a href="#"> <i class="fa fa-home"></i> Relatórios</a>
+                                            </li>
+                    
+                                        </ul>
+                                    </li>
+                                
                                 
                             </ul>
                         </nav>

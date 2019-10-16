@@ -84,8 +84,12 @@
 		       		@endif
 
 		       	@endforeach
-		       </ul>
-		       <p style="margin-top: 8%" align="center">
+			   </ul>
+			   @if(isset($boletos) && $boletos>0)
+			   <p style="font-size:16px; font-weight: bold;" align="center">
+				Estou ciente também de que existem boletos vencidos e não pagos, sujeito a sanções descritas no Termo de Matrícula.</p>
+			   @endif
+		       <p style="margin-top: 20px;" align="center">
 		       	São Carlos, {{$matricula->updated_at->format('d')}} de {{(new \App\classes\Data($matricula->updated_at->format('d/n/Y')))->mes()}} de {{$matricula->updated_at->format('Y')}}.
 		       </p>
 		       <center>
@@ -142,7 +146,11 @@
 		       		<li> {{$inscricao->turma->curso->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}. das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
 		       		@endif
 		       	@endforeach
-		       </ul>
+			   </ul>
+			   @if(isset($boletos) && $boletos>0)
+			   <p style="font-size:16px;font-weight: bold;" align="center">
+				Estou ciente também de que existem boletos vencidos e não pagos, sujeito a sanções descritas no Termo de Matrícula.</p>
+			   @endif
 		       <p  align="center">
 		       		São Carlos, {{$matricula->updated_at->format('d')}} de {{(new \App\classes\Data($matricula->updated_at->format('d/n/Y')))->mes()}} de {{$matricula->updated_at->format('Y')}}.
 		       </p>

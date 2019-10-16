@@ -220,7 +220,7 @@ class BolsaController extends Controller
         if($this->vericaSeSolicitado($request->pessoa,$request->matricula))
             return redirect()->back()->withErrors(['Bolsa já solicitada.']);
 
-
+        /****************************** Varifica se a bolsa é EMG para impedir cadastro em turmas não emg
         if($request->desconto ==10){
             foreach($request->matricula as $matricula){
                 $obj_matricula = \App\Matricula::find($matricula);
@@ -231,6 +231,7 @@ class BolsaController extends Controller
             }
             
         }
+        */
 
 
         $bolsa = new Bolsa;
@@ -238,7 +239,10 @@ class BolsaController extends Controller
         $bolsa->desconto = $request->desconto;
         $bolsa->rematricula = $request->rematricula;
         $bolsa->validade = date('Y-12-31');
-        $bolsa->status = 'analisando';
+        if($request->desconto == 7 || $request->desconto == 8)
+            $bolsa->status = 'ativa';
+        else 
+            $bolsa->status = 'analisando';
         $bolsa->save();
 
 
@@ -251,6 +255,11 @@ class BolsaController extends Controller
             $programa_matricula = $obj_matricula ->getPrograma();
             $bolsa_matricula->programa = $programa_matricula->id;
             $bolsa_matricula->save();
+            if($bolsa->status == 'analisando'){
+                $matricula_obj = \App\Matricula::find($matricula);
+                $matricula_obj->status = 'pendente';
+                $matricula_obj->save();
+            }
             
         }
 

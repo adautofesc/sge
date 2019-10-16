@@ -145,6 +145,12 @@ class SecretariaController extends Controller
 
 
 		}
+		$boleto_vencido = $boletos->whereIn('status',['emitido','divida'])->where('vencimento','<',\Carbon\Carbon::today()->toDateString());
+		//dd(count($boleto_vencido)>0);
+		if(count($boleto_vencido)>0)
+			$devedor=true;
+		else 
+			$devedor=false;
 		//return $matriculas;
 		$atestado = \App\Atestado::where('pessoa',$id)->orderByDesc('id')->first();
 		if($atestado){
@@ -154,11 +160,18 @@ class SecretariaController extends Controller
 				$atestado->validade = $atestado->calcularVencimento(3);
 
 		}
+		
 
 		
 
 
-		return view('secretaria.atendimento', compact('pessoa'))->with('matriculas',$matriculas)->with('boletos',$boletos)->with('lancamentos',$lancamentos)->with('errosPessoa',$errosMsg)->with('atestado',$atestado);
+		return view('secretaria.atendimento', compact('pessoa'))
+			->with('matriculas',$matriculas)
+			->with('boletos',$boletos)
+			->with('lancamentos',$lancamentos)
+			->with('errosPessoa',$errosMsg)
+			->with('atestado',$atestado)
+			->with('devedor',$devedor);
 	}
 	public function uploadGlobal_vw(){
 		return view('secretaria.upload-global');

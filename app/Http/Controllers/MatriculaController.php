@@ -129,6 +129,17 @@ class MatriculaController extends Controller
         $matricula->valor_desconto=$r->valordesconto;
         $matricula->status = $r->status;
         $matricula->obs=$r->obs;
+        //procurar matricula na lista de matriculas/bolsas e se tiver lá com a bolsa pendente, impedir a ativação da bolsa
+        $bolsa = \App\Bolsa::select(['bolsas.id', 'bolsas.status'])
+                        ->join('bolsa_matriculas','bolsa_matriculas.bolsa','bolsas.id')
+                        ->where('bolsa_matriculas.matricula',$matricula->id)
+                        ->first();
+        if(isset($bolsa) && $bolsa->status <> 'ativa'){
+            return redirect()->back()->withErrors(['Bolsa pendente para esta matrícula. Resolva a pendência antes']);
+        }
+
+
+
         $matricula->save();
 
         AtendimentoController::novoAtendimento("Matrícula atualizada.", $matricula->pessoa, Session::get('usuario'));
@@ -145,6 +156,10 @@ class MatriculaController extends Controller
         $matricula=Matricula::find($matricula);
         if(!$matricula)
             return view("error-404");
+        
+        if($matricula->status == 'pendente'){
+            return redirect()->back()->withErrors(['Matrículas pendentes não podem ser impressas. Altere o status em opções/editar']);
+        }
         $pessoa=Pessoa::find($matricula->pessoa);
         $pessoa=PessoaController::formataParaMostrar($pessoa);
         
@@ -152,6 +167,7 @@ class MatriculaController extends Controller
         foreach($inscricoes as $inscricao){
             $inscricao->turmac=Turma::find($inscricao->turma->id);
         }
+
 
         //return $pessoa;
 
@@ -404,9 +420,13 @@ class MatriculaController extends Controller
         $bmc->unLinkMe($matricula->id,$bolsa->id);
         }
 
-      
+        $boletos = \App\Boleto::select('boletos.id as num_boleto, boletos.status')
+        ->join('lancamentos','lancamentos.boleto','boletos.id')
+        ->where('boletos.status','emitido')
+        ->where('lancamentos.matricula',$matricula->id)
+        ->get();
        
-        return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula)->with('inscricoes',$insc);
+        return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula)->with('inscricoes',$insc)->with('boletos',count($boletos));
     }
 
 
@@ -465,7 +485,7 @@ class MatriculaController extends Controller
         $matricula=Matricula::find($id);
         $matricula->status='ativa';
         $matricula->save();
-        AtendimentoController::novoAtendimento("Ativação de matrícula com pendencia ou cancelada.", $pessoa, Session::get('usuario'));
+        AtendimentoController::novoAtendimento("Ativação de matrícula com pendencia ou cancelada.", $matricula->pessoa, Session::get('usuario'));
     }
 
 
@@ -893,6 +913,7 @@ where nt.matricula>1');
     }
 
     public function imprimirCancelamento($matricula){
+        
         $matricula = Matricula::find($matricula);
         if(!$matricula)
             return redirect()->back()->withErrors('Matrícula não encontrada para gerar a impressão.');
@@ -900,8 +921,16 @@ where nt.matricula>1');
 
         $inscricoes = Inscricao::where('matricula',$matricula->id)->where('updated_at', $matricula->updated_at)->get();
 
+        $boletos = \App\Boleto::select('boletos.id as num_boleto, boletos.status')
+                    ->join('lancamentos','lancamentos.boleto','boletos.id')
+                    ->where('boletos.status','emitido')
+                    ->where('lancamentos.matricula',$matricula->id)
+                    ->get();
+
+                 
         //return $inscricoes;
-        return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula)->with('inscricoes',$inscricoes);
+        
+        return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula)->with('inscricoes',$inscricoes)->with('boletos',count($boletos));
     }
 
 

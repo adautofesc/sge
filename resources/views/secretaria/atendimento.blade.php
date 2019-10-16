@@ -41,13 +41,17 @@
                     </div>
                 </div>
                 <div class="card-block">
+                    @if($devedor == false)
                     <div><a href="{{asset('/secretaria/matricula/nova').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-plus-circle "></i>  <small>Nova Matrícula</small></a></div>
                     
                     <div><a href="/secretaria/matricula/renovar/{{$pessoa->id}}" class="btn btn-warning-outline col-xs-12 text-xs-left"><i class="fa fa-check-square-o"></i> <small> Renovar (Rematricula) </small> </a></div>
+                    @else 
+                    <div><span class="text-danger text-center"> <i class="fa fa-warning"></i></span></div>
+                    <div><span class="text-danger"> <strong>Atenção:</strong> boletos em aberto. Regularize para liberar a matrícula. </span></div>
                     <!--
                     <div><a href="#" class="btn btn-secondary col-xs-12 text-xs-left" title="Rematrículas encerradas."><i class="fa fa-check-square-o"></i> <small> Rematricula ENCERRADA </small> </a></div>
                     -->
-                  
+                  @endif
 
                 </div>
                 
@@ -224,11 +228,12 @@
                                             <!-- <a class="dropdown-item disabled" style="text-decoration: none;" href="#"> <i class="fa fa-archive icon"></i> Histórico</a>-->
 
 
-
-
+                                            @if($matricula->status =='ativa')
+                                            <a class="dropdown-item" style="text-decoration: none;"  href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}"> <i class="fa fa-print icon"></i> Imprimir termo</a>
+                                            @endif
                                             @if($matricula->status =='ativa'||$matricula->status =='pendente')
                                             <a class="dropdown-item" style="text-decoration: none;"  href="{{asset('/secretaria/matricula/editar/').'/'.$matricula->id}}"> <i class="fa fa-pencil-square-o icon"></i> Editar matrícula</a>
-                                            <a class="dropdown-item" style="text-decoration: none;"  href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}"> <i class="fa fa-print icon"></i> Imprimir termo</a>
+                                            
                                             <a class="dropdown-item" style="text-decoration: none;"  href="/secretaria/matricula/uploadglobal/1/1/1/{{$matricula->id}}"> <i class="fa fa-cloud-upload icon"></i> (Re)Enviar termo</a>
                                             @if(file_exists('documentos/matriculas/termos/'.$matricula->id.'.pdf'))
                                             <a class="dropdown-item" style="text-decoration: none;"  href="/download/{{str_replace('/','-.-', 'documentos/matriculas/termos/'.$matricula->id.'.pdf')}}"> <i class="fa fa-file-text-o icon"></i> Termo disponivel</a>
@@ -349,12 +354,20 @@
                                              <i class=" fa fa-times" style="color:white;"></i>
                                          </a>
                                          &nbsp;
+                                         @if($devedor == false)
                                         <a href="{{asset('/secretaria/matricula/inscricao/trocar/').'/'.$inscricao->id}}"                                
                                             title="Transferir Inscrição" 
                                             class="badge badge-pill badge-warning">
                                             <i class=" fa fa-retweet " style="color:white;"></i>
                                         </a>
                                           &nbsp;
+                                        @else 
+                                        <a href="#"                                
+                                            title="Transferência não pode ser realizada com débitos em aberto." 
+                                            class="badge badge-pill badge-secondary disabled">
+                                            <i class=" fa fa-retweet " style="color:white;"></i>
+                                        </a>
+                                        @endif
                                         <a href="{{asset('/secretaria/matricula/inscricao/editar/').'/'.$inscricao->id}}"                                
                                             title="Editar Inscrição" 
                                             class="badge badge-pill badge-primary">

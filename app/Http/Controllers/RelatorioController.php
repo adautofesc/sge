@@ -409,6 +409,7 @@ Event::where('status' , 0)
             die('O ano informado é inválido.');
         $turmas = \App\Turma::whereBetween('data_inicio', [($ano-1).'-11-20%',$ano.'-11-20%'])
             ->where('status', '!=','cancelada')
+            
             ->orderBy('data_inicio')
             ->get();
 
@@ -475,6 +476,40 @@ Event::where('status' , 0)
         return view('relatorios.tce-educadores')
             ->with('ano',$ano)
             ->with('educadores',$educadores);
+    }
+    public function alunosConselho($ano = 2018){
+        if(!is_numeric($ano))
+             die('O ano informado é inválido.');
+        $alunos = array();
+        $inscricoes = \App\Inscricao::whereBetween('created_at', [($ano-1).'-11-20%',$ano.'-11-20%'])
+            ->orderBy('pessoa')
+            ->get();
+
+        //dd($inscricoes);
+        foreach($inscricoes as $inscricao){
+            if(!in_array($inscricao->pessoa, $alunos)){
+ 
+                if($inscricao->pessoa && $inscricao->status=='regular' && in_array($inscricao->turma->programa->id,[3,12])){
+                    //dd($inscricao->pessoa->id);
+                    $alunos[$inscricao->pessoa->id]['nome'] = $inscricao->pessoa->nome;
+                    $alunos[$inscricao->pessoa->id]['dados'] = \App\Pessoa::find($inscricao->pessoa->id);
+                    $alunos[$inscricao->pessoa->id]['inscricoes'][] = $inscricao;
+                }
+            }
+
+        }
+        $alunos = array_values(array_sort($alunos, function ($value) {
+            return $value['nome'];
+        }));
+
+        //dd($alunos);
+
+       
+        return view('relatorios.alunos-conselho')
+            ->with('ano',$ano)
+            ->with('alunos',$alunos);
+
+
     }
 
 

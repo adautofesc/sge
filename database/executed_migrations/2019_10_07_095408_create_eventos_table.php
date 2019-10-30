@@ -25,7 +25,9 @@ class CreateEventosTable extends Migration
             $table->unsignedInteger('responsavel');
             $table->unsignedInteger('sala');
             $table->enum('auto_insc',['sim','nao']);
-            $table->string('obs',200);
+            $table->string('obs',200)->nullable();
+            $table->enum('pago',['sim','nao']);
+            $table->decimal('valor',10,5);
             $table->foreign('responsavel')->references('id')->on('pessoas')->onDelete('restrict')->onUpdate('cascade');
             $table->foreign('sala')->references('id')->on('salas')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();

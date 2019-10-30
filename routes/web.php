@@ -11,6 +11,8 @@
 |
 */
 
+use App\Http\Controllers\AulaController;
+
 Route::get('/', 'painelController@index');
 
 
@@ -79,6 +81,9 @@ Route::middleware('login') ->group(function(){
 	Route::get('lista/{id}','TurmaController@impressao'); //lista de chamada aberta
 	Route::get('listas/{id}','TurmaController@impressaoMultipla'); //lista de chamada aberta
 	Route::get('turma/{turma}', 'TurmaController@mostrarTurma');
+	Route::get('frequencia/{turma}','TurmaController@frequencia');
+	Route::get('nchamada/{turma}/{aula?}','AulaController@novaChamada');
+	Route::post('nchamada/{turma}/{aula?}','AulaController@gravarChamada');
 
 
 	//desenvoldedor
@@ -90,6 +95,8 @@ Route::middleware('login') ->group(function(){
 		Route::get('/corrigir-boletos','BoletoController@corrigirBoletosSemParcelas');
 		Route::get('ajusteBolsas', 'BolsaController@ajusteBolsaSemMatricula');
 		Route::get('curso-matriculas','MatriculaController@corrigirCursoMatricula');
+		route::get('gerar-aulas/{turma}','AulaController@gerarAulas');
+		Route::get('add-recesso','DiaNaoLetivoController@ViewAddRecesso');
 
 		/*
 		Route::get('/descontao','LancamentoController@descontao1');
@@ -362,6 +369,7 @@ Route::middleware('login') ->group(function(){
 			Route::post('turmas-requisitos','RequisitosController@editRequisitosTurma');
 			Route::post('modificar-requisitos/{id}','RequisitosController@storeRequisitosTurma');
 			Route::get('atualizar-inscritos','TurmaController@atualizarInscritos');
+			Route::get('aulas/{turma}','AulaController@viewAulasTurma');
 
 
 
@@ -490,6 +498,7 @@ Route::middleware('login') ->group(function(){
 		Route::get('tce-educadores/{ano}','RelatorioController@tceEducadores');
 		Route::get('tce-turmas/{ano}','RelatorioController@tceTurmas');
 		Route::get('tce-turmas-alunos/{ano}','RelatorioController@tceTurmasAlunos');
+		Route::get('alunos-conselho/{ano}','RelatorioController@alunosConselho');
 
 
 
@@ -503,8 +512,9 @@ Route::middleware('login') ->group(function(){
 		Route::get('/','painelController@docentes');
 		Route::get('turmas-professor', 'TurmaController@listarProfessores');
 		Route::post('turmas-professor', 'TurmaController@turmasProfessor');
+		Route::get('frequencia/{turma}','FrequenciaController@listaChamada');
 	});
-	Route::get('chamada/{id}/{pg}/{url}/{hide?}','TurmaController@getChamada'); //otpional parameter is used here!
+	Route::get('chamada/{id}/{pg}/{url}/{hide?}','TurmaController@getChamada'); //optional parameter is used here!
 	Route::get('plano/{professor}/{tipo}/{curso}','TurmaController@getPlano');
 	
 

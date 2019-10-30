@@ -1022,6 +1022,21 @@ class TurmaController extends Controller
         return "Turmas atualizadas.";
     }
 
+    public function frequencia(int $turma){
+        $aulas = \App\Aula::where('turma',$turma)->get();
+        $frequencias = \App\Frequencia::whereIn('aula',$aulas);
+        $inscritos=\App\Inscricao::where('turma',$turma)->whereIn('status',['regular','espera','ativa','pendente'])->get();
+        $inscritos= $inscritos->sortBy('pessoa.nome');
+        if(count($inscritos))
+            return view('pedagogico.frequencia.index',compact('inscritos'))->with('i',1);
+        else
+            return "Nenhum aluno cadastrado para esta turma.";
+
+        return $aulas.$frequencias;
+    }
+
+    
+
 
         
         

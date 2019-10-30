@@ -38,6 +38,7 @@
                                 <td title="Inicio: {{$turma->data_inicio}}"><small>{{implode(', ',$turma->dias_semana)}}</small></td>
                                 <td><small>{{$turma->hora_inicio}}h</small></td>
                                 <td>
+                                    <!--
                                     <a href="/chamada/{{$turma->id}}/0/url/todos" target="_blank" title="Chamada com alunos desistentes/transferidos">
                                     
                                         <i class=" fa fa-indent "></i></a>
@@ -49,13 +50,27 @@
 
                                     </a>
                                     
+                                    </small>-->
+                                   
+                                    <a href="/docentes/frequencia/{{$turma->id}}" target="_blank" title="Lista de chamada preenchida (inclui desistentes)">
+                                    
+                                        <i class=" fa fa-indent "></i></a>
+                                    &nbsp;
+                                    <small>
+                                    <a href="/nchamada/{{$turma->id}}" title="Chamada OnLine">
+                                        
+                                        {{$turma->getNomeCurso()}}
+
+                                    </a>
+                                    
                                     </small>
                                 </td>
                             
                                 <td>
                                     <a href="/lista/{{$turma->id}}" title="Impressão de lista em branco" target="_blank">
                                         <i class=" fa fa-print "></i></a>&nbsp;
-                                   
+
+                                
                                     @if(isset($turma->disciplina->id))
                                     <a href="/plano/{{$turma->professor->id}}/1/{{$turma->disciplina->id}}" title="Plano de ensino" target="_blank">
                                         <i class=" fa fa-clipboard "></i>
@@ -67,7 +82,7 @@
                                     @endif
                                     
 
-                                  
+                                
 
                                     
                                 </td>

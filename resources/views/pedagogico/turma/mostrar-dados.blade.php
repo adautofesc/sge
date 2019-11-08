@@ -146,6 +146,62 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
+                        <p class="title" style="color:white">Aulas</p>
+                    </div>
+                </div>
+                <div class="card-block">
+                    <form method="post">
+                        {{csrf_field()}}
+                    <div>
+                        <div>
+                            Com as selecionadas
+                            <select name="acao" onchange="mudarGeral(this);">
+                                <option value="">Escolha após selecionar as aulas</option>
+                                <option value="adiar">Adiar</option>
+                                <option value="atribuir">Atribuir</option>
+                                <option value="cancelar">Cancelar</option>
+                            </select>
+                        </div>
+                        <table class="table table-sm">
+                            <thead>
+                                <th><input type="checkbox" id="selectAll" onclick="marcardesmarcar(this)"></th>
+                                <th>Data</th>
+                                <th>status</th>
+                                <th>Opções</th>
+                                <tbody>
+                                @foreach($aulas as $aula)
+                                    <tr>
+                                        <td><input type="checkbox" class="checkboxx" id="{{$aula->id}}"></td>
+                                        <td>{{$aula->data->format('d/m')}}</td>
+                                        <td><span class="badge badge-pill badge-{{$aula->badge}}">{{$aula->status}}</span></td>
+                                        <td>
+                                        @if($aula->status == 'planejada' || $aula->status == 'prevista' )
+                                            <a href="#" title="Visualizar aula"><i class="fa fa-eye"></i></a>&nbsp;
+                                            <a href="#" title="Atribuir a professor substituto"><i class="fa fa-briefcase"></i></a>&nbsp;
+                                            <a href="#" title="Adiar aula"><i class="fa fa-calendar-o"></i></a>&nbsp;
+                                        <a href="#{{$aula->id}}" onclick="cancelar('{{$aula->id}}')" title="Cancelar"><i class="fa fa-ban"></i></a>&nbsp;
+                                        @elseif($aula->status == 'cancelada') 
+                                            carregar motivo.
+                                        @elseif($aula->status == 'executada')
+                                            <a href="#" title="Visualizar aula"><i class="fa fa-eye"></i></a>&nbsp;
+                                        @elseif($aula->status == 'adiada')
+                                        @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                   
+                                </tbody>
+                            </thead>
+                        </table>
+                    </div>
+                    </form>
+                </div>   
+            </div>
+        </div> 
+        <div class="col-md-6 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
                         <p class="title" style="color:white">Requisitos</p>
                     </div>
                 </div>
@@ -170,7 +226,38 @@
 
     </div>
 </section>
-
-
+@endsection
+@section('scripts');
+<script>
+function cancelar(id){
+    if(confirm('Confirmar cancelamento dessa aula?')){
+        window.location.href = "/pedagogico/aulas/mudar-status/"+id+"/cancelar";
+    }
    
+
+}
+function mudarGeral(field){
+    var selecionados;
+    if(confirm('Confirmar a alteração das aulas selecionadas?')){
+        $('.checkboxx').each(function(){
+
+            if($(this).is(":checked") == true){
+                selecionados +=','+$(this).prop('id'); 
+            }
+            
+        });
+        console.log(selecionados);
+        console.log(field.value);
+        window.location.href = "/pedagogico/aulas/mudar-status/"+selecionados+"/"+field.value;
+    }
+}
+
+function marcardesmarcar(campo){
+	$(".checkboxx").each(
+		function(){
+			$(this).prop("checked", campo.checked)
+		}
+	);
+}
+</script>
 @endsection

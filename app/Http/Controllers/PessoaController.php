@@ -214,6 +214,8 @@ class PessoaController extends Controller
 					$endereco->numero=$request->numero_endereco;
 					$endereco->complemento=mb_convert_case($request->complemento_endereco, MB_CASE_UPPER, 'UTF-8');
 					$endereco->bairro=$request->bairro;
+					if($endereco->bairro == 0)
+						$endereco->bairro_str=$request->bairro_str;
 					$endereco->cidade=mb_convert_case($request->cidade, MB_CASE_UPPER, 'UTF-8');
 					$endereco->estado=$request->estado;
 					$endereco->cep=preg_replace( '/[^0-9]/is', '',$request->cep);

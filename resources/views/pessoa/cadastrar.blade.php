@@ -124,7 +124,14 @@
 
 
                     <div class="card card-block">
-                            
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label text-xs-right" >CEP</label>
+                            <div class="col-sm-4"> 
+                                <input type="text" class="form-control boxed" placeholder="00000-000" name="cep"  onkeyup="mycep();"> 
+                            </div> 
+                            <label class="col-sm-6 form-control-label text-danger" id="cepstatus" >&nbsp;</label>
+                             
+                        </div>
                             <div class="form-group row">
                                 <label class="col-sm-2 form-control-label text-xs-right">Logradouro</label>
                                 <div class="col-sm-10"> 
@@ -133,17 +140,17 @@
                             </div>
                             <div class="form-group row">
                                 <label class="col-sm-2 form-control-label text-xs-right">Número</label>
-                                <div class="col-sm-4"> 
+                                <div class="col-sm-2"> 
                                     <input type="text" class="form-control boxed" placeholder="" name="numero_endereco"> 
                                 </div>  
                                 <label class="col-sm-2 form-control-label text-xs-right">Complemento</label>
-                                <div class="col-sm-4"> 
+                                <div class="col-sm-2"> 
                                     <input type="text" class="form-control boxed" placeholder="" name="complemento_endereco"> 
-                                </div>  
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-2 form-control-label text-xs-right">Bairro</label>
-                                <div class="col-sm-4"> 
+                                </div> 
+                                
+            
+                                <label class="col-sm-1 form-control-label text-xs-right">Bairro</label>
+                                <div class="col-sm-3"> 
                                     <input id="bairro" type="text" class="form-control boxed"  name="bairro_str"> 
                                     <!--
                                     <select class="c-select form-control boxed" name='bairro'>
@@ -157,21 +164,16 @@
                                 </div> 
                                  <input type="hidden" name="bairro" required>
                                     <ul class="item-list" id="listabairros" style="display:none; width:auto; 
-       height:auto;  
-       position:absolute; 
-       z-index:100; 
-       top:50px; 
-       padding:20px;
-       margin-left:300px;
-       background-color: white;
-       overflow-y: hidden;
-       border:1px solid #d0d0d0">
+                                        height:auto;  
+                                        float:inherit;
+                                        padding:20px;
+                                        margin-left:75%;
+                                        background-color: white;
+                                        overflow-y: hidden;
+                                        border:1px solid #d0d0d0">
 
                                     </ul> 
-                                <label class="col-sm-2 form-control-label text-xs-right">CEP</label>
-                                <div class="col-sm-4"> 
-                                    <input type="text" class="form-control boxed" placeholder="00000-000" name="cep"> 
-                                </div>  
+                               
                             </div>
                             <div class="form-group row">
                                 <label class="col-sm-2 form-control-label text-xs-right">Cidade</label>
@@ -437,14 +439,61 @@ function vincularEndereco(id,nome) {
                   
 
                 });
+                
 }
 function enviar(){
    if( $('[name=rua]').val()!='' && $('[name=bairro]').val()==''){
         alert('O bairro não foi escolhido na lista. Por favor, preencha o campo novamente e selecione o bairro nas opções que aparecem ao lado.');
         return false;
     }
+    if ($('[name=rua]').val()!='' && $('[name=numero]').val()==''){
+        alert('Número não digitado no endereço.');
+        return false;
+    }
 
     return true;
+}
+function mycep(){
+    var cep = $('[name=cep]').val();
+    $('[name=rua]').val('Carregando dados a partir do CEP...');
+    if(cep.length == 8 || cep.length==9){
+        
+        $.get("https://viacep.com.br/ws/"+cep+"/json/"+"/")
+                .done(function(data) 
+                {
+                    if(!data.logradouro){
+                        console.log(data);
+                        $('[name=rua]').val('CEP não localizado');
+                    }
+                    else {
+                        $('[name=rua]').val(data.logradouro);
+                        $('[name=bairro_str]').val(data.bairro);
+                        $('[name=bairro]').val(0);
+                        $('[name=cep]').val(data.cep);
+                        $('[name=cidade]').val(data.localidade);
+                        $('[name=estado]').val(data.uf);
+                    
+                    }
+
+                    /*
+                    $.each(data, function(key, val){
+                        $('#rua').val(val.logradouro);
+                        $("#listapessoas").html(''); 
+                        $("#vincular").val()='';
+                        console.log(val.logradouro);                       
+                    });
+                    */
+                  
+
+                })
+                .fail(function() {
+                    console.log('erro ao conectar com viacep');
+                    $("#cepstatus").html('Erro ao conectar ao serviço de consulta de CEP');
+                    $('[name=rua]').val('');
+
+                });
+    }
+   
 }
 </script>
 @endsection

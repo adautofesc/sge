@@ -158,6 +158,41 @@ class AulaController extends Controller
         return redirect(asset('/docentes'))->withErrors(['Chamada registrada.']);
 
     }
+    public function alterar($aulas, $acao){
+        
+        
+        $aulas = explode(',',$aulas);
+
+        //dd($aulas);
+        foreach($aulas as $aula){
+            if(is_numeric($aula)){
+                switch($acao){
+                    case 'adiar':
+                    $this->alterarStatus($aula,'adiada');
+                    break;
+                    case 'cancelar':
+                    $this->alterarStatus($aula,'cancelada');
+                    break;
+                    
+
+                }
+            }
+                
+        }
+
+        return redirect()->back()->withErrors(['Alterações concluídas']);
+
+        
+    }
+
+    public function alterarStatus(int $aula_int,string $status){
+        $aula = Aula::find($aula_int);
+        if(isset($aula->id)){
+            $aula->status = $status;
+            $aula->save();
+        }
+
+    }
 
 
 }

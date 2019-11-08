@@ -52,12 +52,9 @@
                                     
                                     </small>-->
                                    
-                                    <a href="/docentes/frequencia/{{$turma->id}}" target="_blank" title="Lista de chamada preenchida (inclui desistentes)">
                                     
-                                        <i class=" fa fa-indent "></i></a>
-                                    &nbsp;
                                     <small>
-                                    <a href="/nchamada/{{$turma->id}}" title="Chamada OnLine">
+                                    <a href="/docentes/chamada/{{$turma->id}}" title="Chamada OnLine">
                                         
                                         {{$turma->getNomeCurso()}}
 
@@ -67,6 +64,10 @@
                                 </td>
                             
                                 <td>
+                                    <a href="/docentes/frequencia/{{$turma->id}}" target="_blank" title="Lista de chamada preenchida (inclui desistentes)">
+                                
+                                        <i class=" fa fa-indent "></i></a>
+                                    &nbsp;
                                     <a href="/lista/{{$turma->id}}" title="Impressão de lista em branco" target="_blank">
                                         <i class=" fa fa-print "></i></a>&nbsp;
 

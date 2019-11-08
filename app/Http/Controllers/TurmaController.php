@@ -51,8 +51,31 @@ class TurmaController extends Controller
         $inscricoes=Inscricao::where('turma','=', $turma->id)->where('status','<>','cancelada')->get();
         $inscricoes->sortBy('pessoa.nome');
         $requisitos = CursoRequisito::where('para_tipo','turma')->where('curso',$turma->id)->get();
+        $aulas = \App\Aula::where('turma',$turma->id)->get();
+        foreach($aulas as $aula){
+            //$aula->data = \DateTime::createFromFormat('Y-m-d H:i:s',$aula->data);
+            switch($aula->status){
+                case 'prevista': 
+                    $aula->badge = 'secondary';
+                    break;
+                case 'planejada': 
+                    $aula->badge = 'primary';
+                    break;
+                case 'executada': 
+                    $aula->badge = 'success';
+                    break;
+                case 'cancelada': 
+                    $aula->badge = 'danger';
+                    break;
+                case 'adiada': 
+                    $aula->badge = 'warning';
+                    break;
+            }
+           
+        }
+        
         //return $inscricoes;
-        return view('pedagogico.turma.mostrar-dados',compact('turma'))->with('inscricoes',$inscricoes)->with('requisitos',$requisitos);
+        return view('pedagogico.turma.mostrar-dados',compact('turma'))->with('inscricoes',$inscricoes)->with('requisitos',$requisitos)->with('aulas',$aulas);
 
 
     }

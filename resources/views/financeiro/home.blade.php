@@ -51,6 +51,11 @@
                     </div>
                 </div>
                 <div class="card-block">
+                        <div>
+                            <a href="{{asset('/')}}financeiro/cobranca/cartas" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                            <i class=" fa fa-envelope "></i>
+                            &nbsp;&nbsp;Cartas de cobrança</a>
+                        </div>
                     <div>
                         <a href="{{asset('/')}}financeiro/relatorios/boletos" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-file-text-o "></i>
@@ -63,7 +68,7 @@
                     </div>   
                     <div>
                         <a href="{{asset('/')}}financeiro/relatorios/cobranca-sms" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-envelope"></i>
+                        <i class=" fa fa-comment"></i>
                         &nbsp;&nbsp;Mala direta cobrança SMS (txt)</a>
                     </div>             
                 </div>

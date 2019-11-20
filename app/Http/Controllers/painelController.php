@@ -362,6 +362,43 @@ class painelController extends Controller
 
 
     }
+
+    //essa função atualiza os boletos com divida ativa
+    public function importarStatusBoletos(){
+        $boletos_alterados=collect();
+        $input='./documentos/dividas_2018.xlsx';
+        //$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($input);
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $spreadsheet = $reader->load($input);
+        for($i=2;$i<=162;$i++){
+            $insc= (object)[];
+            $insc->cpfAlu=$spreadsheet->getActiveSheet()->getCell('B'.$i)->getValue();
+            $insc->boletoVenc=$spreadsheet->getActiveSheet()->getCell('C'.$i)->getFormattedValue();
+            
+            $insc->boletoVenc = \DateTime::createFromFormat('d/m/Y',$insc->boletoVenc);
+            //dd($insc);
+            $pessoa_db=\App\PessoaDadosGerais::where('valor', $insc->cpfAlu)->first();
+
+            if(isset($pessoa_db->pessoa) && $pessoa_db->pessoa>0){
+               
+                $boleto = \App\Boleto::where('pessoa',$pessoa_db->pessoa)->where('vencimento','like',$insc->boletoVenc->format('Y-m-d').'%')->first();
+
+                //$boletos_alterados[] = $boleto.$pessoa_db->pessoa.'.'.$insc->boletoVenc->format('Y-m-d');
+                if(isset($boleto->id)){
+                    $boletos_alterados[] = $boleto;
+                    if($boleto->status != $spreadsheet->getActiveSheet()->getCell('F'.$i)->getValue()){
+                        $boleto->status = $spreadsheet->getActiveSheet()->getCell('F'.$i)->getValue();
+                        $boleto->save();
+                        LogController::alteracaoBoleto($boleto->id,'Processamento em lote D.A. Navka em '.date('d/m/Y').': '.$spreadsheet->getActiveSheet()->getCell('F'.$i)->getValue());
+                    }
+                }
+            }
+            
+
+        }
+        return $boletos_alterados;
+
+    }
  
 
     	

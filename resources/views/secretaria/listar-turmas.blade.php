@@ -1,5 +1,10 @@
  @extends('layout.app')
 @section('pagina')
+<style>
+    .nolinkdec{
+        text-decoration-style: none;
+    }
+</style>
 <div class="title-block">
     <h3 class="title"> Todas as turmas</h3>
     <div class="row">
@@ -15,7 +20,7 @@
             @foreach($filtros as $filtro=>$valor)
                 @if(count($filtros[$filtro]))
 
-                    <a href="?removefiltro={{$filtro}}" title="Remover este filtro">
+                    <a href="?removefiltro={{$filtro}}" class="nolinkdec" title="Remover este filtro">
                         <i class="fa fa-remove" style="color:red"></i>
                         {{$filtro}}
                     </a>
@@ -33,7 +38,7 @@
     <form>
     <div class="row ">
         <div class="col-sm-12">
-            <div class=" card card-block rounded-s small">
+            <div class=" card card-block rounded-s small" style="height:4rem;">
                 <div class="form-group row "> 
                     <!--
                     <div class="col-sm-3"> 
@@ -48,7 +53,7 @@
                     <div class="col-sm-8"> 
                         
                         <div class="action dropdown "> 
-                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Programa
+                            <button class="btn  rounded-s btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Programa
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
                                 @foreach($programas as $programa)
@@ -67,7 +72,7 @@
                             </div>
                         </div>
                         <div class="action dropdown "> 
-                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Professor
+                            <button class="btn  rounded-s btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Professor
                             </button>
                             <div class="dropdown-menu" style="height:30em;px;overflow-y:scroll;" aria-labelledby="dropdownMenu2"> 
                                 @foreach($professores as $professor)
@@ -84,7 +89,7 @@
                             </div>
                         </div>
                         <div class="action dropdown "> 
-                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Local
+                            <button class="btn  rounded-s btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Local
                             </button>
                             <div class="dropdown-menu" style="height:30em;px;overflow-y:scroll;" aria-labelledby="dropdownMenu3">
                                  @if(isset($filtros['local']) && array_search(84,$filtros['local']) !== false)
@@ -195,7 +200,7 @@
                         </div>
                    -->
                         <div class="action dropdown "> 
-                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Status
+                            <button class="btn  rounded-s btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Status
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenu4"> 
                                 @if(isset($filtros['status']))
@@ -247,7 +252,7 @@
                         
                         <div class="action dropdown" >
 
-                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Período
+                            <button class="btn  rounded-s btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Período
                             </button>
                             <div class="dropdown-menu "  aria-labelledby="dropdownMenu5"> 
                                 @foreach($periodos as $periodo)
@@ -284,14 +289,16 @@
 <form name="item" class="form-inline">
 	<section class="section">
     <div class="row ">
+            
         <div class="col-xl-12">
             <div class="card sameheight-item">
                 <div class="card-block">
                     <!-- Nav tabs -->
                     <div class="row">
+                        
                         <div class="col-xs-12 text-xs-right">
+                                <a href="/pedagogico/turmas/cadastrar" class="btn btn-secondary text-success btn-sm rounded-s" ><i class="fa fa-asterisk"></i> Nova Turma</a>&nbsp;
                             <div class="action dropdown pull-right "> 
-                                <a href="/pedagogico/turmas/" class="btn btn-primary btn-sm rounded-s"><i class="fa fa-th-list"></i> Turmas no pedagógico</a>
                                 <button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenuAction" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Com os selecionados...
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuAction"> 
@@ -313,6 +320,12 @@
                                     <a class="dropdown-item" href="#" onclick="alterarStatus('cancelada')" style="line-height: 30px;text-decoration: none;">
                                         <i class="fa fa-ban icon"></i> Cancelar Turmas
                                     </a>
+                                    <a class="dropdown-item" href="#" onclick="alterarlote('relancar')" style="line-height: 30px;text-decoration: none;">
+                                            <i class="fa fa-retweet icon"></i> Relançar Turmas
+                                        </a>
+                                    <a class="dropdown-item" href="#" onclick="alterarlote('requisitos')" style="line-height: 30px;text-decoration: none;">
+                                            <i class="fa fa-sign-in icon"></i> Alterar requisitos
+                                        </a>
                                      <a class="dropdown-item" href="#" style="line-height: 20px;text-decoration: none;">
                                        ----------------------------
                                     </a>
@@ -398,15 +411,15 @@
                                                                      <small>Início em 
 
 
-                                                                {{$turma->data_inicio}}. Sala: {{isset($turma->getSala()->nome)?$turma->getSala()->nome:''}}</small></div> 
+                                                                {{$turma->data_inicio}}.</small></div> 
 
                                                        @if(isset($turma->disciplina))
-                                                        <a href="{{asset('secretaria/turma/'.$turma->id)}}"  title="Abrir dados da turma">
+                                                        <a href="{{asset('turmas/'.$turma->id)}}"  title="Abrir dados da turma">
                                                             <h4 class="item-title"> {{$turma->disciplina->nome}}</h4>       
                                                             <small>{{$turma->curso->nome}}</small>
                                                         </a>
                                                        @else
-                                                        <a href="{{asset('secretaria/turma/'.$turma->id)}}"   title="Abrir dados da turma">
+                                                        <a href="{{asset('turmas/'.$turma->id)}}"   title="Abrir dados da turma">
                                                             <h4 class="item-title"> {{$turma->curso->nome}}</h4>           
                                                         </a>
                                                         @endif
@@ -417,6 +430,7 @@
                                                         <div class="item-heading">Professor(a)</div>
                                                         <div> {{$turma->professor->nome_simples}}
                                                             <div>{{$turma->local->sigla}}</div>
+                                                            <div title="Sala"><small>{{isset($turma->getSala()->nome)?$turma->getSala()->nome:''}}</small></div>
                                                         </div>
                                                     </div>
                                                     <div class="item-col item-col-sales">
@@ -427,7 +441,9 @@
                                                    
                                                     <div class="item-col item-col-sales">
                                                         <div class="item-heading">Valor</div>
-                                                        <div>R$ {{number_format($turma->valor,2,',','.')}} </div>
+                                                        <div>R$ {{number_format($turma->valor,2,',','.')}}<br>
+                                                            Em {{$turma->parcelas}}X <br>
+                                                                R$ {{number_format($turma->valor/$turma->parcelas,2,',','.')}}</div>
                                                     </div>
 
                                                     <div class="item-col fixed item-col-actions-dropdown">
@@ -441,13 +457,22 @@
                                                                 </span>
                                                             </a>
                                                             <div class="item-actions-block">
-                                                                <ul class="item-actions-list">
+                                                                <ul class="item-actions-list">                                     
                                                                     <li>
-                                                                     <a class="remove" title="Cancelar" href="#" onclick=cancelar({{$turma->id}})> <i class="fa fa-ban "></i> </a>
-                                                                </li>
-                                                                
-                                                                </li>
+                                                                         <a class="remove" title="Cancelar" href="#" onclick=cancelar({{$turma->id}})> <i class="fa fa-ban "></i> </a>
+                                                                    </li>
+                                                                    <li>
+                                                                         <a class="remove" href="#" title="Apagar" onclick=apagar({{$turma->id}})> <i class="fa fa-trash-o "></i> </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="edit" title="Editar" href="#" onclick="editar({{$turma->id}})"> <i class="fa fa-pencil"></i> </a>
+                                                                    </li>
+                                                                     <li>
+                                                                        <a href="/chamada/{{$turma->id}}/0/pdf" class="edit" target="_blank"> <i class="fa fa-print"></i> </a>
+                                                                    </li>
                                                                 </ul>
+                                                                
+                                                                
                                                             </div>
                                                         </div>
                                                     </div>
@@ -516,6 +541,20 @@ function alterarStatus(status){
         else
         if(confirm('Deseja realmente alterar as turmas selecionadas?'))
             $(location).attr('href','{{route('turmas')}}/status/'+status+'/'+selecionados);
+
+    
+}
+function alterarlote(status){
+     var selecionados='';
+        $("input:checkbox[name=turma]:checked").each(function () {
+            selecionados+=this.value+',';
+
+        });
+        if(selecionados=='')
+            alert('Nenhum item selecionado');
+        else
+        if(confirm('Deseja realmente '+status+' as turmas selecionadas?'))
+            $(location).attr('href','{{route('turmas')}}/alterar/'+status+'/'+selecionados);
 
     
 }

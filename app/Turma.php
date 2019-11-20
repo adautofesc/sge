@@ -78,6 +78,39 @@ class Turma extends Model
 			return 0;
 
 	}
+
+	public function getParcelas(){
+		$inicio = \DateTime::createFromFormat('d/m/Y', $this->data_inicio);
+		switch($this->periodicidade){
+			case 'mensal' :
+				$parcelas = 1;
+				break;
+			case 'bimestral' :
+				$parcelas = 2;
+				break;
+			case 'trimestral' :
+				$parcelas = 3;
+				break;
+			case 'semestral' :
+				$parcelas = 5;
+				break;
+			case 'anual' :
+				if($inicio->format('Y') > '2019' && ($this->programa->id == 12 || $this->programa->id == 2))
+					$parcelas = 10;
+				else 
+					$parcelas = 11;
+				break;
+			case 'eventual' :
+				$parcelas = 1;
+				break;
+			default :
+				$parcelas = 5;
+				break;
+		}
+		return $parcelas;
+	}
+
+
 	public function setAtributosAttribute($value){
 		if(count($value))
 			$this->attributes['atributos'] = implode(',',$value);	

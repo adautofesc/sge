@@ -26,74 +26,35 @@
                           </span>
                     </div><!-- /input-group -->
                     <div>
-                        <a href="{{route('turmas')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="/turmas/listar" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-bookmark "></i>
                         &nbsp;&nbsp;Listar</a>
                     </div>
+                    <!--
                     <div>
                         <a href="{{route('turmas.cadastrar')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-plus-circle "></i>
                         &nbsp;&nbsp;Cadastrar</a>
                     </div>
-                    <div>
-                        <a href="{{route('turmas.expiradas')}}" class="btn btn-danger-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-minus-square "></i>
-                        &nbsp;&nbsp;Encerrar Expiradas</a>
-                    </div> 
+                     -->
                                        
                                    
                 </div>
             </div>  
         </div>
+        
         <div class="col-md-4 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Cursos / Atividades</p>
-                    </div>
-                </div>
-                <div class="card-block">
-                    <div>
-                        <a href="{{asset('/pedagogico/cadastrarcurso')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-plus-circle "></i>
-                        &nbsp;&nbsp;Cadastrar</a>
-                    </div>
-                    <div>
-                        <a href="{{asset('pedagogico/cursos')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-toggle-right  "></i>
-                        &nbsp;&nbsp;Cursos/atividades</a></div>
-                    
-                    <div>
-                        <a href="{{asset('pedagogico/disciplinas')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-toggle-down "></i>
-                        &nbsp;&nbsp;Disciplinas</a>
-                    </div>
-                    <div>
-                        <a href="{{asset('pedagogico/cursos/requisitos')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-check-square-o "></i>
-                        &nbsp;&nbsp;Requisitos</a>
-                    </div>
-                    <div>
-                        <p class="btn btn-secondary col-xs-12 text-xs-left">
-                        <i class=" fa fa-file-text-o "></i>
-                        &nbsp;&nbsp;Projetos</p>
-                    </div>
-                               
-                </div>
-            </div>  
-        </div>
-        <div class="col-md-4 center-block">
-            <div class="card card-primary">
-                <div class="card-header">
-                    <div class="header-block">
-                        <p class="title" style="color:white">Relatórios</p>
+                        <p class="title" style="color:white">Docentes</p>
                     </div>
                 </div>
                 <div class="card-block">
                      <div>
-                        <a href="#" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-table "></i>
-                        &nbsp;&nbsp;Em construção</a>
+                         <ul>
+                             <li>Lista com nomes dos professores de seu programa.</li>
+                         </ul>
                     </div>
 
                 </div>

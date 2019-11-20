@@ -85,11 +85,26 @@
 				Unidade
 			</label>
 			<div class="col-sm-6"> 
-				<select class="c-select form-control boxed" name="unidade" >
-					<option value = "0">Selecione ums unidade de atendimento</option>
+				<select class="c-select form-control boxed" name="unidade" onchange="carregarSalas(this.value)" required>
+					<option>Selecione ums unidade de atendimento</option>
 					@if(isset($dados['unidades']))
 					@foreach($dados['unidades'] as $unidade)
 					<option value="{{$unidade->id}}">{{$unidade->nome}}</option>
+					@endforeach
+					@endif
+				</select> 
+			</div>
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Sala
+			</label>
+			<div class="col-sm-6"> 
+				<select class="c-select form-control boxed" name="sala" id="select_sala" required>
+					<option>Selecione ums unidade de atendimento</option>
+					@if(isset($dados['salas']))
+					@foreach($dados['salas'] as $sala)
+					<option value="{{$sala->id}}">{{$sala->nome}}</option>
 					@endforeach
 					@endif
 				</select> 
@@ -421,6 +436,22 @@ function disciplinaEscolhida(id,nome){
 	$("input[name=disciplina]").val(id);
 	$('#listadisciplinas').hide();
 
+}
+
+function carregarSalas(local){
+	var salas;
+	$("#select_sala").html('<option>Sem salas cadastradas</option>');
+	$.get("{{asset('api/salas-api/')}}"+"/"+local)
+ 				.done(function(data) 
+ 				{
+ 					$.each(data, function(key, val){
+						console.log(val.nome);
+ 						salas+='<option value="'+val.id+'">'+val.nome+'</option>';
+ 					});
+ 					//console.log(namelist);
+ 					$("#select_sala").html(salas);
+				 });
+				 
 }
 /* ao selecionar a unidade mostra as salas
 $("select[name=unidade]").change( function(){

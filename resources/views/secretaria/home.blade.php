@@ -69,7 +69,7 @@
                 </div>
                 <div class="card-block">
                     <div>
-                        <a href="{{route('secretaria.turmas')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="{{route('turmas')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Liberação de Matrículas</a>
                     </div>

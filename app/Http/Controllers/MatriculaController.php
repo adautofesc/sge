@@ -256,6 +256,7 @@ class MatriculaController extends Controller
     /**
      * Listar Matriculas por pessoa
      * @return [type] [description]
+     **/
      
     public function listarPorPessoa(){
         if(!Session::get('pessoa_atendimento'))
@@ -267,7 +268,7 @@ class MatriculaController extends Controller
         return view('secretaria.matricula.lista-por-pessoa',compact('matriculas'))->with('nome',$nome)->with('pessoa_id',Session::get('pessoa_atendimento'));
 
     }
-    */
+    
 
 
 
@@ -328,9 +329,6 @@ class MatriculaController extends Controller
 
         }
            
-        
-
-
     }
 
 
@@ -593,10 +591,6 @@ class MatriculaController extends Controller
 
     }
 
-
-
-
-
     //seleciona pessoas que tem mais de uma matricula no curso da uati
     public function arrumarMultiplasUati(){
         $pessoas=\DB::select('select pessoa, matricula from (
@@ -802,7 +796,8 @@ where nt.matricula>1');
                 
              //listar inscrições de cada matricula;
              foreach($matriculas as $matricula){
-                $matricula->getInscricoes();
+                $matricula->inscricoes = \App\Inscricao::where('matricula',$matricula->id)->where('status','regular')->get();
+                //$matricula->getInscricoes();
                 //dd($matricula);
                 foreach($matricula->inscricoes as $inscricao){
                     
@@ -948,6 +943,21 @@ where nt.matricula>1');
             }
         }
         return $pessoas;
+    }
+    public static function alterarStatus($itens,$status){
+        $matriculas_array=explode(',',$itens);
+        foreach($matriculas_array as $matricula_id){
+            if(is_numeric($matricula_id)){
+                $matricula = Matricula::find($matricula_id);
+                if(isset($matricula->id)){
+                    LogController::registrar('matricula',$matricula->id,'Alteração de status na matricula de '.strtoupper($matricula->status).' para '.strtoupper($status));
+                    $matricula->status = $status;
+                    $matricula->save();
+                    //atulizar inscrições
+                }
+                    
+            }
+        }
     }
 
     public function arquivo($tipo,$id){

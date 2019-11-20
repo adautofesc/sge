@@ -23,7 +23,12 @@
                         <a href="administrativo/locais"  target="_self" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Locais de atendimento/parcerias">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Locais/Salas</a>
-                    </div>            
+                    </div> 
+                    <div>
+                        <a href="agendamento-salas"  target="_self" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Locais de atendimento/parcerias">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Agendamento de salas</a>
+                    </div>              
                 </div>
             </div>
         </div>
@@ -58,6 +63,7 @@
                 </div>
             </div>
         </div>
+        
         <div class="col-md-4 center-block">
             <div class="card card-primary">
                 <div class="card-header">
@@ -84,6 +90,44 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-md-4 center-block">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <div class="header-block">
+                            <p class="title" style="color:white">Cursos / Atividades</p>
+                        </div>
+                    </div>
+                    <div class="card-block">
+                        <div>
+                            <a href="{{asset('/pedagogico/cadastrarcurso')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                            <i class=" fa fa-plus-circle "></i>
+                            &nbsp;&nbsp;Cadastrar</a>
+                        </div>
+                        <div>
+                            <a href="{{asset('pedagogico/cursos')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                            <i class=" fa fa-toggle-right  "></i>
+                            &nbsp;&nbsp;Cursos/atividades</a></div>
+                        
+                        <div>
+                            <a href="{{asset('pedagogico/disciplinas')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                            <i class=" fa fa-toggle-down "></i>
+                            &nbsp;&nbsp;Disciplinas</a>
+                        </div>
+                        <div>
+                            <a href="{{asset('pedagogico/cursos/requisitos')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                            <i class=" fa fa-check-square-o "></i>
+                            &nbsp;&nbsp;Requisitos</a>
+                        </div>
+                        <div>
+                            <p class="btn btn-secondary col-xs-12 text-xs-left">
+                            <i class=" fa fa-file-text-o "></i>
+                            &nbsp;&nbsp;Projetos</p>
+                        </div>
+                                   
+                    </div>
+                </div>  
+            </div>
 
     </div>
 </section>

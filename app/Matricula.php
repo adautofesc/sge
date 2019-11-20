@@ -160,7 +160,7 @@ class Matricula extends Model
 			return 5;
 		else{*/
 			//verifica qual semestre para determinar a data da primeira parcela
-			if($pp_dt->format('m')<8 || $valor_matricula->parcelas == 11){
+			if($pp_dt->format('m')<8 || $valor_matricula->parcelas == 11 || $valor_matricula->parcelas == 10){
 				$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/02/'.$pp_dt->format('Y')); // 20/02/2019
 				
 			}

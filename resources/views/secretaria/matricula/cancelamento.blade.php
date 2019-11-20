@@ -90,7 +90,11 @@
                     <span>Transferencia de turma</span>
                     </label><br>
                     <label>
-                   <input class="checkbox" type="checkbox"  name="cancelamento[11]" value="Outros/prefiro não dizer." >
+                        <input class="checkbox" type="checkbox"  name="cancelamento[11]" value="Curso cancelado pela instituição" >
+                         <span>Cancelado pela instituição</span>
+                         </label><br>
+                    <label>
+                   <input class="checkbox" type="checkbox"  name="cancelamento[12]" value="Outros/prefiro não dizer." >
                     <span>Outro(s)/prefiro não dizer.</span>
                     </label><br>
                    

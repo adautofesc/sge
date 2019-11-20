@@ -145,14 +145,16 @@ class SecretariaController extends Controller
 
 
 		}
-		$boleto_vencido = $boletos->whereIn('status',['emitido','divida'])->where('vencimento','<',\Carbon\Carbon::today()->toDateString());
-		//dd(count($boleto_vencido)>0);
-		if(count($boleto_vencido)>0)
+		$vencimento = \Carbon\Carbon::today()->addDays(-5);
+		$boleto_vencido = $boletos->whereIn('status',['emitido','divida','ABERTO EXECUTADO'])->where('vencimento','<',$vencimento->toDateString());
+		//dd($boleto_vencido);
+		if(count($boleto_vencido)>0)	
 			$devedor=true;
 		else 
 			$devedor=false;
 		//return $matriculas;
 		$atestado = \App\Atestado::where('pessoa',$id)->orderByDesc('id')->first();
+
 		if($atestado){
 			if(isset($atividades_aquaticas))
 				$atestado->validade = $atestado->calcularVencimento(12);

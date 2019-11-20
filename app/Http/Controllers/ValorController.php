@@ -104,7 +104,10 @@ class ValorController extends Controller
                                 $valor->parcelas = 5;
                                 break;
                             case 'anual' :
-                                $valor->parcelas = 11;
+                                if($inscricao->turma->programa->id == 12 || $inscricao->turma->programa->id == 2)
+                                    $valor->parcelas = 10;
+                                else 
+                                    $valor->parcelas = 11;
                                 break;
                             case 'eventual' :
                                 $valor->parcelas = 1;

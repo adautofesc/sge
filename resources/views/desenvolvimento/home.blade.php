@@ -45,7 +45,12 @@
                         <a href="/pedagogico/turmas/atualizar-inscritos" title="Atualiza o quantidade de vagas e inscritos nas turmas" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Atualizar vagas</a>
-                    </div>             
+                    </div>  
+                    <div>
+                            <a href="{{route('turmas.expiradas')}}" class="btn btn-danger-outline col-xs-12 text-xs-left">
+                            <i class=" fa fa-minus-square "></i>
+                            &nbsp;&nbsp;Encerrar Expiradas</a>
+                        </div>           
                 </div>
             </div>
         </div>

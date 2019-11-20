@@ -46,7 +46,7 @@
 	padding:0px 3px 0px 3px;
 	vertical-align:bottom;
 }
---></style>
+</style>
 @foreach($turmas as $turma)
 @php($i=1)
 <table cellpadding="0" cellspacing="0" dir="ltr" style="table-layout:fixed;font-size:11pt;font-family:Calibri;width:0px; page-break-after: always;" xmlns="http://www.w3.org/1999/xhtml">
@@ -467,7 +467,7 @@
 		<td colspan="2" data-sheets-formula="=IF(R6C35=&quot;Semestral&quot;;R[0]C[-2]+7;IF(WEEKDAY(R[0]C[-2])=2;R[0]C[-2]+2;R[0]C[-2]+5))" data-sheets-numberformat="[null,5,&quot;dd\&quot;/\&quot;mm&quot;,1]" data-sheets-value="{&quot;1&quot;:3,&quot;3&quot;:42702}" rowspan="1" style="border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;background-color:#cccccc;font-size:8pt;color:#000000;text-align:center;">
 		&nbsp;</td>
 	</tr>
-
+	@if(isset($turma->inscritos) && count($turma->inscritos)>0)
 	@foreach($turma->inscritos as $inscrito)
 	<tr style="height:16px;">
 		<td data-sheets-value="{&quot;1&quot;:3,&quot;3&quot;:1}" style="border-right:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;font-size:8pt;color:#000000;text-align:center;">
@@ -540,6 +540,7 @@
 		</td>
 	</tr>
 	@endforeach
+	@endif
 
 
 

@@ -106,7 +106,7 @@
                             
                         </tbody>
                     </table>
-                    <a href="/turma/{{$turma->id}}"> Acessar turma pelo pedagógico.</a>
+                    <a href="/turmas/dados-gerais/{{$turma->id}}"> Acessar turma pelo pedagógico.</a>
 
                     
                 </div>     
@@ -188,7 +188,10 @@
                     </div>
                 </div>
                 <div class="card-block" style="font-size: 0.8em;">
-
+                    <div>
+                        <i class=" fa fa-arrow-right "></i> 
+                        &nbsp;&nbsp;<a href="/turmas/editar/{{$turma->id}}" title="Formulário de definição de Turmas e horários">Editar dados da turma</a>
+                    </div>
                     <div>
                         <i class=" fa fa-arrow-right "></i> 
                         &nbsp;&nbsp;<a href="#" target="_blank" title="Formulário de definição de Turmas e horários">Nenhum documento cadastrado</a>

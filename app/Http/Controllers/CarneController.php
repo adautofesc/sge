@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Boleto;
+use ZipArchive;
 
 class CarneController extends Controller
 {
+	private const vencimento = 10;
     /**
 	 * Fase 1 - Geração de lançamentos de todas as matriculas.
 	 * @return [view]
@@ -48,16 +50,16 @@ class CarneController extends Controller
 		foreach($pessoas as $pessoa){
 
 			//Aqui são gerados os meses.******************************************************************** Atenção!
-			for($i=8;$i<13;$i++){
+			for($i=2;$i<8;$i++){
 				//verificar se tem boletoabero
 				$boleto_existente = Boleto::where('pessoa',$pessoa->pessoa)
-											->where('vencimento', 'like', date('Y-'.str_pad($i,2, "0", STR_PAD_LEFT).'-20%'))
+											->where('vencimento', 'like', date('Y-'.str_pad($i,2, "0", STR_PAD_LEFT).'-'.$this::vencimento.'%'))
 											->whereIn('status',['gravado','impresso','emitido','pago'])
 											->get();
 				if(count($boleto_existente)==0){
-					$boletos[$pessoa->pessoa][$i] = 'Boleto para '.date('20/'.$i.'/Y') ;
+					$boletos[$pessoa->pessoa][$i] = 'Boleto para '.date( $this::vencimento.'/'.$i.'/Y') ;
 					$boleto =new Boleto;
-					$boleto->vencimento = date('Y-'.$i.'-20');
+					$boleto->vencimento = date('Y-'.$i.'-'.$this::vencimento);
 					$boleto->pessoa = $pessoa->pessoa;
 					$boleto->status = 'gravado';
 					$boleto->valor = 0;
@@ -163,6 +165,9 @@ class CarneController extends Controller
 
 
 	}
+	/**
+	 * Gerar PDF's
+	 */
 	public function carneFase4(){
 		
 
@@ -375,26 +380,33 @@ class CarneController extends Controller
 		if(count($lancamentos)>0){
 
 			//Aqui são gerados os meses.******************************************************************** Atenção! Fase 2
-			if(date('d')>=20)
+			if(date('d')>=$this::vencimento)
 				$mes=date('m')+1;
 			else
 				$mes=date('m');
 
+				/*
 			if($mes == 7)
-				$mes = 8;
+				$mes = 8;*/
+
+			
+			if($mes>=8)
+				$meses = 13;
+			else 
+				$meses = 8;
 
 
 
-			for($i=$mes;$i<13;$i++){//i = mes. trocar o 8 por $mes
+			for($i=$mes;$i<$meses;$i++){//i = mes. trocar o 8 por $mes
 				//verificar se tem boletoabero
 				$boleto_existente = Boleto::where('pessoa',$pessoa)
-											->where('vencimento', 'like', date('Y-'.str_pad($i,2, "0", STR_PAD_LEFT).'-20%'))
+											->where('vencimento', 'like', date('Y-'.str_pad($i,2, "0", STR_PAD_LEFT).'-'.$this::vencimento.'%'))
 											->whereIn('status',['gravado','impresso','emitido','pago'])
 											->get();
 				if(count($boleto_existente)==0){
 				
 					$boleto =new Boleto;
-					$boleto->vencimento = date('Y-'.$i.'-20');
+					$boleto->vencimento = date('Y-'.$i.'-'.$this::vencimento);
 					$boleto->pessoa = $pessoa;
 					$boleto->status = 'gravado';
 					$boleto->valor = 0;

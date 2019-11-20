@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Bolsa;
 use App\BolsaMatricula;
+use App\Matricula;
 use Illuminate\Http\Request;
 
 
@@ -40,26 +41,31 @@ class BolsaController extends Controller
                         case 'aprovar':
                             $bolsa->status = 'ativa';
                             $bolsa->save();
+                            $this->alterarStatusMatricula($bolsa,'ativa');
                             $atendimento = AtendimentoController::novoAtendimento('Bolsa '.$bolsa->id.' aprovada.',$bolsa->pessoa);
                             break;
                         case 'negar':
                             $bolsa->status = 'indeferida';
                             $bolsa->save();
+                            $this->alterarStatusMatricula($bolsa,'cancelada');
                             $atendimento = AtendimentoController::novoAtendimento('Bolsa '.$bolsa->id.' indeferida.',$bolsa->pessoa);
                             break;
                         case 'analisando':
                             $bolsa->status = 'analisando';
                             $bolsa->save();
+                            $this->alterarStatusMatricula($bolsa,'espera');
                             $atendimento = AtendimentoController::novoAtendimento('Bolsa '.$bolsa->id.' em análise.',$bolsa->pessoa);
                             break;
                         case 'cancelar':
                             $bolsa->status = 'cancelada';
                             $bolsa->save();
+                            $this->alterarStatusMatricula($bolsa,'ativa');
                             $atendimento = AtendimentoController::novoAtendimento('Bolsa '.$bolsa->id.' cancelada.',$bolsa->pessoa);
                             break;
                         case 'apagar':
                             $atendimento = AtendimentoController::novoAtendimento('Solicitação de bolsa '.$bolsa->id.' excluída.',$bolsa->pessoa);
                             $matriculas = $bolsa->getMatriculas();
+                            $this->alterarStatusMatricula($bolsa,'ativa');
                             foreach($matriculas as $matricula){
                                 $matricula->delete();
                             }
@@ -71,6 +77,7 @@ class BolsaController extends Controller
                         case 'reativar':
                             $bolsa->status = 'analisando';
                             $bolsa->save();
+                            $this->alterarStatusMatricula($bolsa,'pendente');
                             $atendimento = AtendimentoController::novoAtendimento('Solicitação de bolsa '.$bolsa->id.' reativada.',$bolsa->pessoa);
                            
                             break;
@@ -82,6 +89,14 @@ class BolsaController extends Controller
         return redirect()->back()->withErrors(['Bolsa(s) processadas.']);
 
 
+    }
+
+
+    public function alterarStatusMatricula($bolsa,$status){
+        $matriculas = $bolsa->getMatriculas(); 
+        foreach($matriculas as $mat){
+            MatriculaController::alterarStatus($mat->id,$status);
+        }
     }
 
 
@@ -167,10 +182,24 @@ class BolsaController extends Controller
 
 
         //procura bolsas ativas dessa pessoa
-        $bolsa = Bolsa::where('pessoa',$request->pessoa)->whereIn('status',['ativa','analisando'])->where('desconto',$request->desconto)->first();
+        if(date('m')>=11)
+            $bolsa = Bolsa::where('pessoa',$request->pessoa)
+                ->whereIn('status',['ativa','analisando'])
+                ->where('desconto',$request->desconto)
+                ->WhereYear('validade',date('Y', strtotime("+12 months",strtotime(date('Y')))))
+                ->get();
+               
+            else
+                $bolsa = Bolsa::where('pessoa',$request->pessoa)
+                ->whereIn('status',['ativa','analisando'])
+                ->where('desconto',$request->desconto)
+                ->WhereYear('validade',date('Y', date('Y')))
+                ->get();
+             
+        //$bolsa = Bolsa::where('pessoa',$request->pessoa)->whereIn('status',['ativa','analisando'])->where('desconto',$request->desconto)->WhereYear('validade',date('Y'))->get()
 
         //se houver bolsa
-        if($bolsa){
+        if(isset($bolsa->id)){
 
             //pega as matriculas da bolsa
             $matriculas = \App\BolsaMatricula::where('bolsa',$bolsa->id)->get();
@@ -209,14 +238,14 @@ class BolsaController extends Controller
             //}
         }
         else{
-            if(date('m')>11)
+            if(date('m')>=11)
                 $validade = date('Y-12-31 23:23:59', strtotime("+12 months",strtotime(date('Y-m-d')))); 
             else
                 $validade = date('Y-12-31 23:23:59'); 
             //gerar bolsa
         }
 
-
+        //dd($this->vericaSeSolicitado($request->pessoa,$request->matricula));
         if($this->vericaSeSolicitado($request->pessoa,$request->matricula))
             return redirect()->back()->withErrors(['Bolsa já solicitada.']);
 
@@ -277,13 +306,28 @@ class BolsaController extends Controller
 
     }
     public function vericaSeSolicitado($pessoa,$matricula){
-        $bolsa = Bolsa::where('pessoa',$pessoa)->where('matricula',$matricula)->whereIn('status',['ativa','analisando'])->get();
-
-        //dd(is_array($bolsa));
-        if(count($bolsa))
-            return true;
+        
+        $bmatricula = BolsaMatricula::where('matricula',$matricula)->orderByDesc('id')->first();
+        //dd($bmatricula);
+        if(isset($bmatricula->id)){
+            $bolsa = Bolsa::find($bmatricula->bolsa);
+            
+            if(isset($bolsa->id)){
+                if($bolsa->status == 'ativa' || $bolsa->status == 'analisando')
+                    return true;
+                else
+                    return false;
+            }
+            else{    
+                return false;
+            }
+        }
         else
             return false;
+        
+     
+        
+
 
     }
     public function imprimir($bolsa){

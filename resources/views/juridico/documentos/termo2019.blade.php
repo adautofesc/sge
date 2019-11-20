@@ -15,9 +15,6 @@
             text-decoration: none;
             /*text-align:left;*/
         }
-        #FormView1_MatDiaPag{
-            font-size: 14pt;
-        }
     </style>
 <link href="../App_Themes/ob12/CardView/sprite.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/CardView/spriteAccessible.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/CardView/styles.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/Editors/sprite.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/Editors/spriteAccessible.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/Editors/styles.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/GridView/sprite.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/GridView/spriteAccessible.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/GridView/styles.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/PivotGrid/sprite.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/PivotGrid/spriteAccessible.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/PivotGrid/styles.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/VerticalGrid/sprite.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/VerticalGrid/spriteAccessible.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/VerticalGrid/styles.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/Web/sprite.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/Web/spriteAccessible.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/Web/styles.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/XtraReports/sprite.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/XtraReports/spriteAccessible.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/XtraReports/styles.css" type="text/css" rel="stylesheet" /></head>
 <body onload="javascript:self.printt();">
@@ -66,6 +63,7 @@
                             RG
                             <span id="FormView1_Label1">{{$pessoa->rg}}</span>
                     , doravante denominado ALUNO<br>
+                    REPRESENTANTE LEGAL: ....................................................................................................... endereço:  ...................................................................................., bairro: ............................, cidade: SÃO CARLOS SP, CEP ......................., fone: ........................................, CPF nº ......................................................., RG ................................, e-mail: ...............................<br>
                     Têm justo  e acordado o seguinte:</br>
                 </p>
 
@@ -76,12 +74,11 @@
                     
                    <table cellspacing="0" rules="all" border="1" id="FormView1_g1" style="border-color:Black;border-width:1px;border-style:Solid;width:100%;border-collapse:collapse;">
                 <tr>
-                    <th align="left" scope="col">&nbsp; CURSO</th>
-                    <th align="center" scope="col" width="100px">&nbsp; DIAS</th>
-                    <th align="center" scope="col" width="110px">&nbsp; HORÁRIO</th>
-                    <th align="center" scope="col" width="180px">&nbsp; INÍCIO/TERMINO</th>
-        
-                    <th align="center" scope="col">&nbsp; LOCAL/SALA</th>
+                    <th align="left" scope="col">CURSO</th>
+                    <th align="center" scope="col">DIAS</th>
+                    <th align="center" scope="col" width="110px">HORÁRIO</th>
+                    <th align="center" scope="col" width="100px">INÍCIO</th>
+                    <th align="center" scope="col" width="100px">TERMINO</th>
                 </tr>
 
                 @foreach($inscricoes as $insc)
@@ -99,9 +96,8 @@
                             <td>{{ucwords(implode(', ', $insc->turmac->dias_semana )) }}</td>   
                                  
                             <td>{{$insc->turmac->hora_inicio}} às {{$insc->turmac->hora_termino}}</td>
-                            <td align>{{$insc->turmac->data_inicio}} a {{$insc->turmac->data_termino}}</td>
-                             
-                            <td><small>{{$insc->turmac->local->nome.' <br>sala '.($insc->turmac->getSala())->nome}}<small></td>                             
+                            <td>{{$insc->turmac->data_inicio}}</td>
+                            <td>{{$insc->turmac->data_termino}}</td>                           
                             
                            
                                
@@ -112,59 +108,48 @@
 
             </table>
                 <p>
-                    <strong> 2. VALOR E CONDIÇÕES DE PAGAMENTO</strong>
-                        <br />
-                        2.1 O ALUNO pagará à FESC, pela prestação dos serviços ora ajustados, o valor total de
-                        <span id="FormView1_MatVlrPag">R$ {{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas*$matricula->parcelas, 2, ',', '.')}}</span>, dividido em
-                        <span id="FormView1_CPACod">{{$matricula->parcelas}}</span>
-                        parcelas de R$ {{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas,2,',','.')}}
-                        <span id="FormView1_parcela"></span>
-                        cada uma, vencíveis no dia
-                        <strong><span id="FormView1_MatDiaPag">10
-                        de cada mês</span></strong>, após o início das aulas e através de boleto bancário;
-                        <br />
-                        2.2 Se o vencimento do prazo cair em feriado, considera-se prorrogado o prazo até o primeiro dia útil seguinte;
-                        <br />
-                        <strong>2.3 O não pagamento no prazo estipulado acarretará multa de 2% (dois por cento) sobre o valor da parcela em atraso, juros de mora de 1% (um por cento) ao mês (0,33% ao dia), bem como a atualização monetária pelo índice IPCA/IBGE até a data do efetivo pagamento;
-                        <br /></strong>
-                        2.4 As parcelas vencidas e não pagas serão inscritas na Dívida Ativa da Fazenda Pública, e cobradas mediante procedimento administrativo e, se necessário, judicial.<br>
-                    <strong> 3. VIGÊNCIA</strong>
-                        <br />
-                        3.1 O Contrato vigorará pelo prazo de duração do serviço educacional contratado, permanecendo, em caso de parcelamento, inalteradas as obrigações financeiras ajustadas.
-                        <br>
-                        3.2 Os serviços educacionais contratados terão duração, período de férias escolares, feriados e pontos facultativos estabelecidos em Resolução do Conselho Diretor da FESC e de acordo com as Portarias Municipais, que estabelecem os feriados nacionais, estadual e municipais e declara os dias de Ponto Facultativo do ano letivo para os órgãos e entidades da Administração Pública direta e indireta do Poder Executivo Municipal.
-                        <br>
-                    <strong>4. CERTIFICADO</strong> 
-                        <br />
-                        4.1 No caso em que o curso/oficina é certificado, o aluno deverá ter no mínimo 75% de presença efetiva, isto é, comparecer em no mínimo 75% das aulas. A apresentação de atestado médico não abona as faltas.
-                        <br>
-                        4.2 Para que seja admitida a presença, será tolerado o atrazo de no máximo 10 (dez) minutos;
-                        <br>
-                        4.3 Será considerado sem aproveitamento o aluno que deixar de comparecer a mais de 25% do total de aulas ofertadas, caso em perderá o direito ao certificado de conclusão, o que não o exime de pagamento das mensalidades em aberto, se houver.
-                        <br>
-                    <strong>5.	CANCELAMENTO</strong><br>                  
-                        5.1 A não quitação de qualquer parcela no prazo estipulado implicará no CANCELAMENTO SUMÁRIO DA MATRÍCULA, ficando automaticamente rescindido o presente termo de prestação de serviços educacionais, independentemente de qualquer notificação;
-                        <br>
-                        5.2 A desistência da continuidade no serviço educacional pelo(a) Aluno(a) e/ou Representante Legal após o pagamento somente será aceita se o pedido for formalizado e protocolado na Secretaria Escolar ou enviado ao e-mail: secretaria{{'@'}}fesc.saocarlos.sp.gov.br.
-                        <br>
-                    <strong>6.  DA PRIORIDADE DE MATRÍCULAS</strong><br>
-                        6.1. Aos alunos dos cursos não certificados da Universidade Aberta da Terceira Idade que tiverem assiduidade superior a 75% e apresentarem rendimento atribuído pelos Educadores “com aproveitamento” terão prioridade de matrícula em período antecessor ao período de matrículas abertas a novos alunos e alunos evadidos ou classificados como rendimento “sem aproveitamento.
-                        <br>
-                    <strong>7. OBRIGAÇÕES GERAIS</strong><br />
-                        7.1 O ALUNO regularmente matriculado fica submetido aos Regimentos Internos, disponibilizados no site FESC.SAOCARLOS.SP.GOV.BR, submetendo-se às suas disposições, bem como às demais obrigações constantes da legislação aplicável à FESC.
-                        <br>                      
-                        7.2 A prestação de serviços educacionais pode contemplar o oferecimento de aulas, atividades culturais, reuniões, apresentações e outras previstas em calendário escolar, a critério da FESC.
-                        <br>
-                        7.3 O aluno fica ciente, ainda que a FESC não disponibiliza qualquer serviço de estacionamento, vigilância ou guarda de veículos de qualquer natureza.
-                        <br>
-                        7.4 A FESC reserva-se o direito de alterar a data prevista para início ou cancelar o serviço educacional, hipóteses em que restituirá os valores pagos, se houver, sem qualquer acréscimo. Dentre as hipóteses de cancelamento do serviço educacional, inclui-se o não atingimento da quantidade mínima de alunos para a abertura de turma(s) para qualquer curso.
-                        <br>
-                        7.5 O(A) Aluno(a) e/ou seu Representante Legal e o(s) Responsável(is) Financeiro(s) se obrigam a manter sempre atualizados os dados fornecidos no Contrato, especialmente o endereço, e-mail celular, assumindo integral responsabilidade pelos danos decorrentes de eventual desatualização.
-                        <br>
-                        7.6 O aluno declara neste termo, estar em plenas condições de saúde, apto a realizar atividades físicas e não portar nenhuma moléstia contagiosa que possa prejudicar os demais alunos da FESC. Não obstante a declaração de saúde, é dever do aluno apresentar atestado médico específico para a prática da(s) atividade(s) contratada(s), comprometendo-se a apresentar o original do atestado médico no primeiro dia de aula e renová-lo anualmente, sob pena de ser proibido o seu acesso enquanto não regularizada a pendência.
-                        <br>
-                    <strong>8.	FORO</strong><br>
-                        8.1 Fica eleito o Foro da Comarca de São Carlos para dirimir quaisquer controvérsias oriundas do presente ajuste.
+                    2. VALOR E CONDIÇÕES DE PAGAMENTO:
+                    <br />
+                    2.1 O ALUNO pagará à FESC, pela prestação dos serviços ora ajustados, o valor total de
+                    <span id="FormView1_MatVlrPag">R$ {{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas*$matricula->parcelas, 2, ',', '.')}}</span>, dividido em
+                    <span id="FormView1_CPACod">{{$matricula->parcelas}}</span>
+                    parcelas de R$ {{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas,2,',','.')}}
+                    <span id="FormView1_parcela"></span>
+                    cada uma, vencíveis no dia
+                    <span id="FormView1_MatDiaPag">20</span>
+                    de cada mês, após o início das aulas e através de boleto bancário;
+                    <br />
+                    2.2 Se o vencimento do prazo cair em feriado, considera-se prorrogado o prazo até o primeiro dia útil seguinte;
+                    <br />
+                    <strong>2.3 O não pagamento no prazo estipulado acarretará multa de 2% (dois por cento) sobre o valor da parcela em atraso, juros de mora de 1% (um por cento) ao mês (0,33% ao dia), bem como a atualização monetária pelo índice IPCA/IBGE até a data do efetivo pagamento;
+                    <br /></strong>
+                    2.4 As parcelas vencidas e não pagas serão inscritas na Dívida Ativa da Fazenda Pública, e cobradas mediante procedimento administrativo e, se necessário, judicial.<br>
+                    3. VIGÊNCIA:
+                    <br />
+                    3.1 O Contrato vigorará pelo prazo de duração do serviço educacional contratado, permanecendo, em caso de parcelamento, inalteradas as obrigações financeiras ajustadas.
+                    <br>
+                    4. CERTIFICADO: 
+                    <br />
+                    4.1 No caso em que o curso/oficina é certificado, o aluno deverá ter no mínimo 75% de presença efetiva, isto é, comparecer em no mínimo 75% das aulas. A apresentação de atestado médico não abona as faltas.
+                    <br>
+                    4.2 Para que seja admitida a presença, será tolerado o atrazo de no máximo 10 (dez) minutos;<br>
+                    <strong>4.3 Será considerado sem aproveitamento o aluno que deixar de comparecer a mais de 25% do total de aulas ofertadas, caso em perderá o direito ao certificado de conclusão, o que não o exime de pagamento das mensalidades em aberto, se houver.  </strong><br>
+                    5.	CANCELAMENTO:<br>                  
+                    5.1 A desistência da continuidade no serviço educacional pelo(a) Aluno(a) e/ou Representante Legal somente será aceita nas seguintes condições:
+                    <strong><br>
+                    I. se o pedido for formalizado e protocolado na Secretaria escolar ou enviado ao e-mail fesc{{'@'}}fesc.saocarlos.sp.gov.br;<br>
+                    5.2 A simples ausência às aulas e às demais atividades acadêmicas exigidas não caracterizam desistência e tampouco exime o pagamento das parcelas, tendo em vista a disponibilidade di serviço e a vaga garantida, mesmo que o aluno apresente atestado médico de justificativa de faltas;</strong><br>
+                    5.3 A desistência formalizada até o dia do vencimento da parcela eximirá o pagamento da respectiva mensalidade e das subsequentes.<br>             
+                    6.	OBRIGAÇÕES Gerais<br />
+                    6.1 O ALUNO regularmente matriculado fica submetido aos Regimentos Internos, disponibilizados no site http://fesc.saocarlos.sp.gov.br, submetendo-se às suas disposições, bem como às demais obrigações constantes da legislação aplicável à FESC.
+                    <br />
+                    6.2 A prestação de serviços educacionais pode contemplar o oferecimento de aulas, atividades culturais, reuniões, apresentações e outras previstas em alendário escolar, a critério da FESC;<br>[
+                    6.3 O aluno fica ciente, ainda que a FESC não disponibiliza qualaquer serviço de estacionamento, vigilância ou guarda de veículos de qualquer natureza;<br>
+                    6.4 A FESC reserva-se o direito de alterar a data prevista para início ou cancelar o serviço educacional, hipóteses em que restituirá os valores pagos, se houver, sem qualquer acréscimo. Dentre as hipóteses de cancelamento do serviço educacional, inclui-se o não atingimento da quantidade mínima de alunos para a abertura de turma(s) para qualquer curso;<br>
+                    6.5 O(A) Aluno(a) e/ou seu Representante Legal e o(s) Responsável(is) Financeiro(s) se obrigam a manter sempre atualizados os dados fornecidos no Contrato, especialmente o endereço, e-mail e celular, assumindo integral responsabilidade pelos danos decorrentes de eventual desatualização. <br>
+                    6.6 O aluno declara neste termo, estar em plenas condições de saúde, apto a realizar atividades físicas e não portar nenhuma moléstia contagiosa que possa prejudicar os demais alunos da FESC. Não obstante a declaração de saúde, é dever do aluno apresentar atestado médico específico para a prática da(s) atividade(s) contratada(s), comprometendo-se a apresentar o original do atestado médico no primeiro dia de aula e renová-lo semestalmente para as atividades aquaticas e anualmente para demais atividades físicas, sob pena de ser proibido o seu acesso enquanto não regularizada a pendência.<br>
+                    7.	FORO<br>
+                    7.1 Fica eleito o Foro da Comarca de São Carlos para dirimir quaisquer controvérsias oriundas do presente ajuste.
                 </p>
 
                 
@@ -174,25 +159,21 @@
                                 <span id="FormView1_data_atual">{{date("d/m/Y")}}</span>
                     </p>
                 </div>
-                
-                                <table border="0" cellpadding="2" cellspacing="2" width="100%" style="height:100px;">
+                </br></br>
+                                <table border="0" cellpadding="2" cellspacing="2" width="100%">
                                     <tr>
-                                    <td align="center" style="text-align:center;">
-                                        <img src="{{asset('img/dir_sign.jpg')}}" width="150px"  /></br>
-                                        __________________________________</spam><br/>
-                                            Fernando Henrique Carvalho
-                                            </br>
-                                            <strong>Diretor Presidente da FESC</strong>
-                                       
-                                        <td align="center" style="text-align:center;">
-                                            <br><br><br><br><br>
-                                            <span>
-                                            __________________________________</spam><br/>
+                                        <td align="center">__________________________________</br>
 
+                                            <strong>Diretor(a) Presidente</strong>
+                                            </br>
+                                            <strong>Fundação Educacional São Carlos</strong>
+                                        </br>
+                                            </br>
+                                        <td align="center">__________________________________</br>
 
                                             <span id="FormView1_AluNomAss">{{$pessoa->nome}}</span>
                                             </br>
-                                            <strong>Aluno(a) ou Responsável por procuração.</strong>
+                                            <strong>Nome do Aluno ou responsável</strong>
                                             </br><span id="FormView1_MatResNomLabel"></span>
                                             </br>
                                         </td>

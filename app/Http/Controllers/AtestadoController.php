@@ -38,7 +38,7 @@ class AtestadoController extends Controller
 
 	}
 	public function listar(){
-		$atestados = Atestado::orderBy('validade','desc')->paginate(50);
+		$atestados = Atestado::orderByDesc('id')->paginate(50);
 		foreach($atestados as $atestado){
 			$atestado->pessoa = \App\Pessoa::getNome($atestado->pessoa);
 			$atestado->validade = \Carbon\Carbon::parse($atestado->validade)->format('d/m/Y');
@@ -46,6 +46,9 @@ class AtestadoController extends Controller
 			$atestado->por = \App\Pessoa::getNome($atestado->atendente);
 		}
 		return view('pessoa.dados-clinicos.listar',compact('atestados'));
+	}
+	public function buscar(Request $r){
+		
 	}
 	public function editar($id){
 		$atestado = Atestado::find($id);

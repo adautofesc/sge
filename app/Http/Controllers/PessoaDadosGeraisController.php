@@ -46,5 +46,33 @@ class PessoaDadosGeraisController extends Controller
 		return redirect()->back()->withErrors(['Alterções salvas com sucesso.']);
 	}
 
+	public static function gravarDocumento(int $pessoa, $documento, $numero=0){
+		
+		switch($documento){
+			case "rg": 
+				$tipo = 3;
+			break;
+				
+			case "cpf" : 
+				$tipo = 4;
+			break;	
+			default : 
+			 die('Tipo de dado não especificado. PessoaDadosController 60');
+			break;			
+		}
+		$existente = PessoaDadosGerais::where('dado',$tipo)->where('pessoa',$pessoa)->get();
+		if(is_null($existente) && $numero !=0 && $numero!=' '){
+			$doc = new PessoaDadosGerais;
+			$doc->dado = $tipo;
+			$doc->valor = preg_replace( '/[^0-9]/is', '', $numero);
+			$doc->save();
+		}
+		else {
+			$doc = null;
+		}
+		return $doc;
+
+	}
+
 
 }

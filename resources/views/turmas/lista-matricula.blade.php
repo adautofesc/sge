@@ -90,7 +90,12 @@
                        
                         <div class="item-col item-col-sales">
                             <div class="item-heading">Valor</div>
-                            <div>R$ {{number_format($turma->valor,2,',','.')}} </div>
+                            <div>R$ {{number_format($turma->valor,2,',','.')}}<br>
+                                Em {{$turma->parcelas}}X <br>
+                                    @if($turma->parcelas>0)
+                                    R$ {{number_format($turma->valor/$turma->parcelas,2,',','.')}}
+                                    @endif
+                             </div>
                         </div>
 
                         <div class="item-col fixed item-col-actions-dropdown">

@@ -33,7 +33,7 @@ class TurmaController extends Controller
         $professores = $professores->sortBy('nome_simples');
         $locais = Local::select(['id','sigla','nome'])->orderBy('sigla')->get();
         $periodos = \App\classes\Data::semestres();
-        return view('pedagogico.turma.listar', compact('turmas'))
+        return view('turmas.listar-pedagogico', compact('turmas'))
             ->with('programas',$programas)
             ->with('professores', $professores)
             ->with('locais',$locais)
@@ -81,7 +81,7 @@ class TurmaController extends Controller
         }
         
         //return $inscricoes;
-        return view('pedagogico.turma.mostrar-dados',compact('turma'))->with('inscricoes',$inscricoes)->with('requisitos',$requisitos)->with('aulas',$aulas);
+        return view('turmas.dados-pedagogico',compact('turma'))->with('inscricoes',$inscricoes)->with('requisitos',$requisitos)->with('aulas',$aulas);
 
 
     }
@@ -253,7 +253,7 @@ class TurmaController extends Controller
         $professores = $professores->sortBy('nome_simples');
         $locais = Local::select(['id','sigla','nome'])->orderBy('sigla')->get();
 
-        return view('secretaria.listar-turmas', compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$_SESSION['filtro_turmas'])->with('periodos',\App\classes\Data::semestres());
+        return view('turmas.listar-secretaria', compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$_SESSION['filtro_turmas'])->with('periodos',\App\classes\Data::semestres());
     }
 
 
@@ -402,7 +402,7 @@ class TurmaController extends Controller
 
             //return $turma;
 
-            return view('pedagogico.turma.editar',compact('dados'))->with('turma',$turma);
+            return view('turmas.editar',compact('dados'))->with('turma',$turma);
         }
         else
             return $this->index();
@@ -505,7 +505,7 @@ class TurmaController extends Controller
                 }
             }
         }
-        return redirect('/turmas')->withErrors($msgs);
+        return redirect()->back()->withErrors($msgs);
     }
     public function turmasDisponiveis($turmas_atuais='0',$ordered_by='')
     {
@@ -522,18 +522,16 @@ class TurmaController extends Controller
         }
 
         if(count($turmas_af)==0){
-            $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.carga as carga','turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid','turmas.valor')
-                -> whereIn('turmas.status', ['inscricao','iniciada'])
-                ->join('cursos', 'turmas.curso','=','cursos.id')
-                ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
-                ->whereNotIn('turmas.id', $lst)
-                ->orderBy('cursos.nome')
-                ->orderBy('disciplinas.nome')
-                ->get();
-
+            $turmas = Turma::whereIn('turmas.status', ['inscricao','iniciada'])
+                            ->get();
+                            
+            foreach($turmas as $turma){
+                $turma->parcelas = $turma->getParcelas();
+            }
+            $turmas = $turmas->SortBy('cursos.nome')->SortBy('disciplinas.nome');
             $programas=Programa::get();
            
-            return view('secretaria.inscricao.lista-formatada', compact('turmas'))->with('programas',$programas);
+            return view('turmas.lista-matricula', compact('turmas'))->with('programas',$programas);
         }
 
         else{
@@ -551,20 +549,20 @@ class TurmaController extends Controller
 
             }
 
-            $turmas=Turma::select('*', 'turmas.id as id', 'turmas.carga as carga','turmas.programa as programa','turmas.vagas as vagas' ,'disciplinas.id as disciplinaid','cursos.id as cursoid','turmas.valor')
-                -> whereIn('turmas.status', ['inscricao','iniciada'])
-                ->join('cursos', 'turmas.curso','=','cursos.id')
-                ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id')
-                ->whereNotIn('turmas.id', $lst)
-                ->orderBy('cursos.nome')
-                ->orderBy('disciplinas.nome')
-                ->get();
+            $turmas = Turma::whereIn('turmas.status', ['inscricao','iniciada'])
+                            ->whereNotIn('turmas.id', $lst)
+                            ->get();
+            foreach($turmas as $turma){
+                $turma->parcelas = $turma->getParcelas();
+                $turma->nome_curso = $turma->getNomeCurso();
+            }
+            $turmas = $turmas->SortBy('nome_curso');
             
 
 
         }
         $programas=Programa::get();
-        return view('secretaria.inscricao.lista-formatada', compact('turmas'))->with('programas',$programas);
+        return view('turmas.lista-matricula', compact('turmas'))->with('programas',$programas);
         
     }
     public function turmasEscolhidas($lista='0'){
@@ -628,7 +626,7 @@ class TurmaController extends Controller
         $turmas = $turmas->sortBy('nome_curso');
 
         
-        return view('pedagogico.turma.turmas-site',compact('turmas'));
+        return view('turmas.turmas-site',compact('turmas'));
     }
 
  
@@ -644,7 +642,7 @@ class TurmaController extends Controller
         $turmas = $turmas->sortBy('nome_curso');
         $professor=Pessoa::find($r->professor);
 
-        return view('pedagogico.turma.turmas-site',compact('turmas'))->with('professor',$professor->nomeSimples);
+        return view('turmas.turmas-site',compact('turmas'))->with('professor',$professor->nomeSimples);
 
     }
     
@@ -655,25 +653,36 @@ class TurmaController extends Controller
         $highestRow = $worksheet->getHighestRow();
         $pessoas = collect();
         for($i=2;$i<=$highestRow;$i++){
-            if($spreadsheet->getActiveSheet()->getCell('D'.$i)->getValue() != null){
+            if($worksheet->getCell('D'.$i)->getValue() != null){
                 $insc= (object)[];
                 $insc->id = $i;
-                $insc->nome=$spreadsheet->getActiveSheet()->getCell('D'.$i)->getValue();
-                $insc->nascimento=$spreadsheet->getActiveSheet()->getCell('J'.$i)->getFormattedValue();
-                $insc->nascimento = \Carbon\Carbon::createFromFormat('n/d/Y', $insc->nascimento)->format('d/m/Y');
-                $insc->genero=$spreadsheet->getActiveSheet()->getCell('E'.$i)->getValue();
-                $insc->fone=$spreadsheet->getActiveSheet()->getCell('H'.$i)->getValue().' '.$spreadsheet->getActiveSheet()->getCell('I'.$i)->getValue();
-                $insc->turma=$spreadsheet->getActiveSheet()->getCell('S'.$i)->getValue();
-                $insc->rg=$spreadsheet->getActiveSheet()->getCell('F'.$i)->getValue();
-                $insc->cpf=$spreadsheet->getActiveSheet()->getCell('G'.$i)->getValue();
-                $insc->endereco=$spreadsheet->getActiveSheet()->getCell('K'.$i)->getValue();
-                $insc->cep=$spreadsheet->getActiveSheet()->getCell('L'.$i)->getValue();
+                $insc->nome=$worksheet->getCell('A'.$i)->getValue();
+                $insc->nascimento=$worksheet->getCell('G'.$i)->getFormattedValue();
+                try{
+                    $insc->nascimento = \Carbon\Carbon::createFromFormat('d/m/Y', $insc->nascimento)->format('d/m/Y');
+                }
+                catch(\Exception $e){
+                    $insc->nascimento = 'Erro ao carregar!:'.$e->getMessage();
+                }
+                $insc->genero=$worksheet->getCell('B'.$i)->getValue();
+
+                $insc->fone=$worksheet->getCell('E'.$i)->getValue().' '.$worksheet->getCell('F'.$i)->getValue();
+                $insc->rg=$worksheet->getCell('C'.$i)->getValue();
+                $insc->cpf=$worksheet->getCell('D'.$i)->getValue();
+                $insc->endereco=$worksheet->getCell('H'.$i)->getValue();
+                $insc->numero=$worksheet->getCell('I'.$i)->getValue();
+                $insc->bairro=$worksheet->getCell('K'.$i)->getValue();
+                $insc->complemento=$worksheet->getCell('J'.$i)->getValue();
+                $insc->cep=$worksheet->getCell('L'.$i)->getValue();
+                $insc->cidade=$worksheet->getCell('M'.$i)->getValue();
+                $insc->estado=$worksheet->getCell('N'.$i)->getValue();
+                $insc->turma=$worksheet->getCell('O'.$i)->getValue();
                 $pessoas->push($insc);
             }
         }
         $pessoas = $pessoas->sortBy('nome');
 
-        return view('pedagogico.turma.listar-importados')->with('pessoas',$pessoas)->with('arquivo',$request->arquivo);
+        return view('turmas.listar-importados')->with('pessoas',$pessoas)->with('arquivo',$request->arquivo);
     }
 
 
@@ -686,75 +695,46 @@ class TurmaController extends Controller
             
             if($key == 'on'){ //se o checkbox estiver marcado
                 //verifica se já está cadastrado
-                $cadastrado = Pessoa::where('nome','like',$request->nome[$id])->where('nascimento',$nascimento)->get();
-                if(count($cadastrado) > 0 ){
-                    // ja ta cadastrado
-                    $pessoa = $cadastrado->first();
+                
+                if(isset($request->cpf[$id])){
+                    $buscar_porcpf = \App\PessoaDadosGerais::where('dado',3)->where('valor',preg_replace( '/[^0-9]/is', '', $request->cpf[$id]))->first();
+                    if(!is_null($buscar_porcpf))
+                        $pessoa = Pessoa::find($buscar_porcpf->pessoa);
                 }
-                else{
-                    //não cadastrado, cadastrar a pessoa
-                    $pessoa = new Pessoa;
-                    $pessoa->nome = $request->nome[$id];
-                    $pessoa->nascimento = $nascimento;
-                    $pessoa->genero = $request->genero[$id];
-                    $pessoa->por = \Session::get('usuario');
-                    $pessoa->save();
-
-
+                if(!isset($pessoa) && !is_null($pessoa)){
+                    $cadastrado = Pessoa::where('nome','like',$request->nome[$id])->where('nascimento',$nascimento)->first();
+                    if(!is_null($cadastrado))
+                        $pessoa = $cadastrado;
                 }
-
-                if(isset($request->rg[$id]) && $request->rg[$id]!=' '){
-                    $dado = \App\PessoaDadosGerais::where('dado','4')->where('pessoa',$pessoa->id)->get();
-                    if(count($dado) == 0){
-                        $doc = new \App\PessoaDadosGerais;
-                        $doc->pessoa = $pessoa->id;
-                        $doc->dado = 4;
-                        $doc->valor = $request->rg[$id];
-                        $doc->save();
-                    }
-                }
-                if(isset($request->cpf[$id]) && $request->cpf[$id]!=' '){
-                    $dado = \App\PessoaDadosGerais::where('dado','3')->where('pessoa',$pessoa->id)->get();
-                    if(count($dado) == 0){
-                        $doc = new \App\PessoaDadosGerais;
-                        $doc->pessoa = $pessoa->id;
-                        $doc->dado = 3;
-                        $doc->valor = $request->cpf[$id];
-                        $doc->save();
-                    }
-                }
-                // se tiver o campo telefone estiver preenchido
-                if(isset($request->telefone[$id])){
-                    //procura pra ver se telefone já existe
-                    $dado = PessoaDadosContato::where('dado','2')->where('pessoa',$pessoa->id)->where('valor', $request->telefone[$id])->get();
-                    //cadastra se nao tiver
-                    if(count($dado) == 0){
-                        $telefone = new PessoaDadosContato;
-                        $telefone->pessoa = $pessoa->id;
-                        $telefone->dado = '2';
-                        $telefone->valor = $request->telefone[$id];
-                        $telefone->save();
-
-                    }
-                }
+                if(!isset($pessoa) && !is_null($pessoa))
+                    $pessoa = PessoaController::cadastrarPessoa($request->nome[$id],$request->genero[$id],\DateTime::createFromFormat('d/m/Y',$request->nascimento[$id]));
+                
+                PessoaDadosGeraisController::gravarDocumento($pessoa->id,'rg',$request->rg[$id]);
+                PessoaDadosGeraisController::gravarDocumento($pessoa->id,'cpf',$request->cpf[$id]);
+                PessoaDadosContatoController::gravarTelefone($pessoa->id,$request->telefone[$id]);
+               
                 
                 if(isset($request->endereco[$id]) && isset($request->cep[$id])){
                     $dado = PessoaDadosContato::where('dado','6')->where('pessoa',$pessoa->id)->get();
                     if(count($dado) == 0){
                         $endereco = new \App\Endereco;
                         $endereco->logradouro = $request->endereco[$id];
-                        $endereco->cidade = "São Carlos";
-                        $endereco->estado = "SP";
-                        $endereco->bairro = \App\classes\CepUtils::bairroCompativel($request->cep[$id]);
-                        if($endereco->bairro>0){
-                            $endereco->save();
-                            $dado_contato = new PessoaDadosContato;
-                            $dado_contato->pessoa = $pessoa->id;
-                            $dado_contato->dado = 6;
-                            $dado_contato->valor = $endereco->id;
-                            $dado_contato->save();
-
-                        }
+                        $endereco->cidade = $request->cidade[$id];
+                        $endereco->estado = $request->estado[$id];
+                        $endereco->cep = preg_replace( '/[^0-9]/is', '', $request->cep[$id]);
+                        $bairro = \App\classes\CepUtils::bairroCompativel(preg_replace( '/[^0-9]/is', '', $request->cep[$id]));  
+                        $endereco->bairro_str = $request->bairro[$id];       
+                        
+                        if($bairro>0)
+                            $endereco->bairro = $bairro;
+                        else
+                            $endereco->bairro = 0;
+                        $endereco->save();
+                        $dado_contato = new PessoaDadosContato;
+                        $dado_contato->pessoa = $pessoa->id;
+                        $dado_contato->dado = 6;
+                        $dado_contato->valor = $endereco->id;
+                        $dado_contato->save();
                     }
 
                 }
@@ -762,7 +742,7 @@ class TurmaController extends Controller
                 $turma = Turma::find($request->turma[$id]);
                 if($turma != null){
                     //Inscreve a pessoa (ele verifica antes se a pessoa está inscrita)
-                    if(InscricaoController::inscreverAlunoSemMatricula($pessoa->id,$turma->id)){
+                    if(InscricaoController::inscreverAluno($pessoa->id,$turma->id)){
                         $cadastrados[]=$id;
                     }
                 }
@@ -772,7 +752,32 @@ class TurmaController extends Controller
             
         }
         //return $cadastrados;
-        return view('pedagogico.turma.confirmar-importados')->with('cadastrados',$cadastrados)->with('pessoas',$request->nome);
+        return view('turmas.confirmar-importados')->with('cadastrados',$cadastrados)->with('pessoas',$request->nome);
+    }
+
+    /**
+     * Modifica a quantidade de pessoas inscritas na turma.
+     * @param  \App\Turma  $turma
+     * @param  $operaçao - 0 reduz, 1 aumenta
+     * @param  $qnde - numero para adicionar ou reduzir
+     * @return \Illuminate\Http\Response
+     */
+    public static function modInscritos($turma,$operacao,$qnde){
+        $turma=Turma::find($turma);
+        if($turma){
+            switch ($operacao) {
+                case '1':
+                    $turma->matriculados=$turma->matriculados+$qnde;
+                    break;
+                case '0':
+                    $turma->matriculados=$turma->matriculados-$qnde;
+                    break;
+                default:
+                    $turma->matriculados=$turma->matriculados+$qnde;
+                    break;
+            }
+            $turma->save();
+        }
     }
 
 
@@ -807,7 +812,7 @@ class TurmaController extends Controller
 
                 //dd($dados);
 
-                return view('pedagogico.turma.recadastrar',compact('dados'))->with('turmas',$turmas);
+                return view('turmas.recadastrar',compact('dados'))->with('turmas',$turmas);
                 break;
 
             case 'requisitos':
@@ -1073,6 +1078,8 @@ class TurmaController extends Controller
 
     public function frequencia(int $turma){
         $aulas = \App\Aula::where('turma',$turma)->get();
+        if(count($aulas) == 0)
+            dd("sem aulas cadastradas pra essa turma. Cadastrar?");
         $frequencias = \App\Frequencia::whereIn('aula',$aulas);
         $inscritos=\App\Inscricao::where('turma',$turma)->whereIn('status',['regular','espera','ativa','pendente'])->get();
         $inscritos= $inscritos->sortBy('pessoa.nome');

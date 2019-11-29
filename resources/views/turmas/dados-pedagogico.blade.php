@@ -15,8 +15,20 @@
         das {{$turma->hora_inicio}} às {{$turma->hora_termino}} - 
         Prof(a). {{$turma->professor->nome_simples}}
         <br>
-        <i class="fa fa-{{$turma->icone_status}} icon"></i> Status: {{$turma->status}} . Início em {{$turma->data_inicio}} Término em {{$turma->data_termino}}
-    </p> 
+        @if($turma->status == 'andamento' || $turma->status == 'iniciada' )
+        <span  class="badge badge-pill badge-success" style="font-size: 0.8rem">
+        @elseif($turma->status == 'espera' || $turma->status == 'lancada' || $turma->status == 'inscricao' )
+         <span  class="badge badge-pill badge-info" style="font-size: 0.8rem">
+        @elseif($turma->status == 'cancelada')
+         <span  class="badge badge-pill badge-danger" style="font-size: 0.8rem">
+        @else
+         <span  class="badge badge-pill badge-secondary" style="font-size: 0.8rem">
+        @endif
+
+            <i class="fa fa-{{$turma->icone_status}} icon"></i> {{$turma->status}}
+        </span>
+        Início em {{$turma->data_inicio}} Término em {{$turma->data_termino}}
+    </p>
 </div>
 @include('inc.errors')
 <section class="section">
@@ -25,7 +37,7 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Alunos inscritos</p>
+                    <p class="title" style="color:white">Inscritos: {{$turma->matriculados}} alunos para {{$turma->vagas}} vagas</p>
                     </div>
                 </div>
 

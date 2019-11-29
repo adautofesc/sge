@@ -16,7 +16,7 @@ class Inscricao extends Model
 	}
 
 	public function getTurmaAttribute($value){
-		$curso=Turma::where('id',$value)->get(['id','programa','carga','curso','disciplina','professor','local','dias_semana','hora_inicio','hora_termino','data_inicio','data_termino','status'])->first();
+		$curso=Turma::where('id',$value)->get(['id','programa','carga','curso','disciplina','professor','local','dias_semana','hora_inicio','hora_termino','data_inicio','data_termino','vagas','status'])->first();
 		return $curso;
 	}
 	public function setTurma($value){

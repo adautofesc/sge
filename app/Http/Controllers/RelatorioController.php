@@ -42,6 +42,7 @@ class RelatorioController extends Controller
         $planilha->setCellValue('G2', 'Início');
         $planilha->setCellValue('H2', 'Termino');
         $planilha->setCellValue('I2', 'Telefone(s)');
+        $planilha->setCellValue('J2', 'Turma');
       
         $linha = 3;
 
@@ -81,6 +82,7 @@ class RelatorioController extends Controller
                 $planilha->setCellValue('G'.$linha, $concluinte->turma->data_inicio);
                 $planilha->setCellValue('H'.$linha, $concluinte->turma->data_termino);
                 $planilha->setCellValue('I'.$linha, $concluinte->pessoa->getTelefones()->implode("valor",", "));
+                $planilha->setCellValue('J'.$linha, $concluinte->turma->id);
                
                 $linha++;
                 /*

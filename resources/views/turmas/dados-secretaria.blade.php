@@ -42,7 +42,7 @@
                     
                     <div class="col-md-9">
 
-                        <p class="title" style="color:white">Alunos inscritos </p>
+                        <p class="title" style="color:white">Inscritos: {{$turma->matriculados}} alunos para {{$turma->vagas}} vagas</p>
                     </div>
                     <div class="col-md-3">
                         <div class="text-md-right">
@@ -184,17 +184,52 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white" >Formulários</p>
+                        <p class="title" style="color:white" >Opções</p>
                     </div>
                 </div>
-                <div class="card-block" style="font-size: 0.8em;">
+                <div class="card-block" style="font-size: 0.9em;">
                     <div>
-                        <i class=" fa fa-arrow-right "></i> 
+                        <div class="action dropdown"> 
+                            <button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenuAction" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Alterar Status
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuAction"> 
+                                <a class="dropdown-item" style="line-height: 30px; text-decoration: none;" href="#" onclick="alterarStatus('inscricao')">
+                                    <i class="fa fa-circle-o icon"></i> Abrir Matrículas
+                                </a> 
+                                <a class="dropdown-item" href="#" onclick="alterarStatus('espera')" style="line-height: 30px; text-decoration: none">
+                                    <i class="fa fa-clock-o icon"></i> Suspender Matrículas
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="alterarStatus('andamento')"  style="line-height: 30px;text-decoration: none;">
+                                    <i class="fa fa-check-circle icon"></i> Iniciada / parar matrículas
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="alterarStatus('iniciada')" style="line-height: 30px;text-decoration: none;">
+                                    <i class="fa fa-check-circle-o icon"></i> Iniciada / c/matrículas abertas 
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="alterarStatus('encerrada')" style="line-height: 30px;text-decoration: none;" >
+                                    <i class="fa fa-minus-circle icon"></i> Encerrar Turmas
+                                </a>
+                               
+                                <a class="dropdown-item" href="#" onclick="alterarOpcoes('relancar')" style="line-height: 30px;text-decoration: none;">
+                                        <i class="fa fa-retweet icon"></i> Relançar Turmas
+                                    </a>
+                                <a class="dropdown-item" href="#" onclick="alterarOpcoes('requisitos')" style="line-height: 30px;text-decoration: none;">
+                                        <i class="fa fa-sign-in icon"></i> Alterar requisitos
+                                    </a>
+                                 
+                            </div>
+                         </div>
+                    </div>
+                    <div>
+                        <i class=" fa fa-pencil "></i> 
                         &nbsp;&nbsp;<a href="/turmas/editar/{{$turma->id}}" title="Formulário de definição de Turmas e horários">Editar dados da turma</a>
                     </div>
                     <div>
-                        <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="#" target="_blank" title="Formulário de definição de Turmas e horários">Nenhum documento cadastrado</a>
+                        <i class=" fa fa-ban text-warning"></i> 
+                        &nbsp;&nbsp;<a href="#" target="_blank" onclick="cancelar();" title="Cancelar turma" class="text-warning">Cancelar</a>
+                    </div>
+                    <div>
+                        <i class=" fa fa-trash text-danger"></i> 
+                        &nbsp;&nbsp;<a href="#" target="_blank" onclick="apagar();" title="Apagar turma" class="text-danger">Apagar</a>
                     </div>
                   
     
@@ -331,6 +366,34 @@ function remover(inscricao){
     if(confirm('Tem certeza que deseja remover esta inscrição?'))
         window.location.replace("{{asset('secretaria/matricula/inscricao/apagar')}}/"+inscricao);
 }
+
+function apagar(){
+    if(confirm("Deseja mesmo apagar essa turma?"))
+        $(location).attr('href','{{route('turmas')}}/apagar/{{$turma->id}}');
+
+}
+
+function editar(){
+        $(location).attr('href','{{route('turmas')}}/editar/{{$turma->id}}');
+
+}
+function cancelar(){
+    if(confirm("Deseja mesmo cancelar essa turma?"))
+        $(location).attr('href','{{route('turmas')}}/status/cancelada/{{$turma->id}}');
+
+}
+function alterarStatus(status){
+     
+        if(confirm('Deseja realmente alterar o status dessa turma para '+status+' ?'))
+            $(location).attr('href','{{route('turmas')}}/status/'+status+'/{{$turma->id}}');
+
+    
+}
+function alterarOpcoes(status){
+    if(confirm('Deseja realmente '+status+' dessa turma?'))
+            $(location).attr('href','{{route('turmas')}}/alterar/'+status+'/{{$turma->id}}');
+}
+
 
 </script>
 

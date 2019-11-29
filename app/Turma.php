@@ -211,6 +211,12 @@ class Turma extends Model
 		return $sala;
 	}
 
+	public function atualizarInscritos($num){
+		$this->matriculados = $num;
+		$this->save();
+		return $num;
+	}
+
 
     
 

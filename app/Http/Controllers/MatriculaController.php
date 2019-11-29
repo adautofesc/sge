@@ -4,20 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Matricula;
 use App\Turma;
-use App\Programa;
 use App\Desconto;
 use App\Pessoa;
 use Illuminate\Http\Request;
-use App\Atendimento;
-use App\Classe;
 use App\Inscricao;
 use Session;
-use App\Lancamento;
-use App\PessoaDadosGerais;
-use App\PessoaDadosContato;
-use App\Endereco;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 
 ini_set('upload_max_filesize', '4194304');
 
@@ -64,9 +56,6 @@ class MatriculaController extends Controller
             //verifica se já possui matricula no curso
             $matriculado=MatriculaController::verificaSeMatriculado($r->pessoa,$curso->id,$turmas->first()->data_inicio);
             if($matriculado==false){
-
-
-                //criar matricula nova
                 $atendimento = AtendimentoController::novoAtendimento("Nova matrícula, código ", $r->pessoa, Session::get('usuario'));
                 //dd($atendimento->id);
                 $matricula=new Matricula();
@@ -80,13 +69,7 @@ class MatriculaController extends Controller
                     $matricula->status="ativa";    
                 else
                     $matricula->status="espera";
-
-
-
-                
                 $matricula->save();
-
-
                 $atendimento->descricao .= $matricula->id;
                 $atendimento->save();
                 $matriculas->push($matricula);
@@ -127,21 +110,15 @@ class MatriculaController extends Controller
         $matricula=Matricula::find($r->id);
         $matricula->desconto=$r->fdesconto;
         $matricula->valor_desconto=$r->valordesconto;
-        $matricula->status = $r->status;
         $matricula->obs=$r->obs;
-        //procurar matricula na lista de matriculas/bolsas e se tiver lá com a bolsa pendente, impedir a ativação da bolsa
         $bolsa = \App\Bolsa::select(['bolsas.id', 'bolsas.status'])
                         ->join('bolsa_matriculas','bolsa_matriculas.bolsa','bolsas.id')
                         ->where('bolsa_matriculas.matricula',$matricula->id)
                         ->first();
-        if(isset($bolsa) && $bolsa->status <> 'ativa'){
-            return redirect()->back()->withErrors(['Bolsa pendente para esta matrícula. Resolva a pendência antes']);
-        }
-
-
-
+        if(isset($bolsa) && $bolsa->status <> 'ativa')
+            return redirect()->back()->withErrors(['Bolsa pendente para esta matrícula. Resolva a pendência antes']); 
         $matricula->save();
-
+        MatriculaController::alterarStatus($matricula->id,$r->status);
         AtendimentoController::novoAtendimento("Matrícula atualizada.", $matricula->pessoa, Session::get('usuario'));
         //LancamentoController::atualizaMatricula($matricula->id);
         return redirect(asset('secretaria/atender'));
@@ -191,67 +168,6 @@ class MatriculaController extends Controller
     }
     
    
-   /**
-    * Importa inscrições feitas através de planilha externa
-    * @return [type] [description]
-    */
-    public function importarMatriculas(){
-        //importava matriculas de um aquuivo XLSX
-        $registros=collect();
-        
-
-        $input='./matriculas.xlsx';
-        //$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($input);
-        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-        $spreadsheet = $reader->load($input);
-        for($i=2;$i<=919;$i++){
-            $insc= (object)[];
-            $insc->cpfAlu=$spreadsheet->getActiveSheet()->getCell('G'.$i)->getValue();
-            $pessoa_db=PessoaDadosGerais::where('valor', $insc->cpfAlu)->first();
-            if(count($pessoa_db)==0){
-                $pessoa=new Pessoa();
-                $pessoa->nome=$spreadsheet->getActiveSheet()->getCell('D'.$i)->getValue();
-                $pessoa->genero=$spreadsheet->getActiveSheet()->getCell('E'.$i)->getValue();
-                $pessoa->nascimento=$spreadsheet->getActiveSheet()->getCell('J'.$i)->getFormattedValue();
-                $pessoa->por=0;
-                $pessoa->save();
-                $dados_gerais= new PessoaDadosGerais;
-                $dados_gerais->pessoa=$pessoa->id;
-                $dados_gerais->dado=3; //cpf
-                $dados_gerais->valor=$insc->cpfAlu;
-                $dados_gerais->save();
-                $pessoa_db=$dados_gerais;
-                $dados_gerais= new PessoaDadosGerais;
-                $dados_gerais->pessoa=$pessoa->id;
-                $dados_gerais->dado=4; //rg
-                $dados_gerais->valor=$spreadsheet->getActiveSheet()->getCell('F'.$i)->getValue();
-                $dados_gerais->save();
-                $endereco=new Endereco;
-                $endereco->logradouro=$spreadsheet->getActiveSheet()->getCell('K'.$i)->getValue();
-                $endereco->cidade="São Carlos";
-                $endereco->estado="SP";
-                $endereco->bairro=0;
-                $endereco->cep=$spreadsheet->getActiveSheet()->getCell('L'.$i)->getValue();
-                $endereco->save();
-                $dados_contato= new PessoaDadosContato;
-                $dados_contato->pessoa=$pessoa->id;
-                $dados_contato->dado=6;
-                $dados_contato->valor=$endereco->id;
-                $dados_contato->save();
-                $dados_contato= new PessoaDadosContato;
-                $dados_contato->pessoa=$pessoa->id;
-                $dados_contato->dado=2;
-                $dados_contato->valor=$spreadsheet->getActiveSheet()->getCell('H'.$i)->getValue().$spreadsheet->getActiveSheet()->getCell('I'.$i)->getValue();
-                $dados_contato->save();
-            }
-            if(InscricaoController::inscreverAluno($pessoa_db->pessoa,$spreadsheet->getActiveSheet()->getCell('S'.$i)->getValue())==null)
-                $registros->push($insc);   
-        }
-        return  $registros;
-
-    }
-
-
 
     /**
      * Listar Matriculas por pessoa
@@ -418,13 +334,9 @@ class MatriculaController extends Controller
         $bmc->unLinkMe($matricula->id,$bolsa->id);
         }
 
-        $boletos = \App\Boleto::select('boletos.id as num_boleto, boletos.status')
-        ->join('lancamentos','lancamentos.boleto','boletos.id')
-        ->where('boletos.status','emitido')
-        ->where('lancamentos.matricula',$matricula->id)
-        ->get();
-       
-        return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula)->with('inscricoes',$insc)->with('boletos',count($boletos));
+        
+        //return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula)->with('inscricoes',$insc)->with('boletos',count($boletos));
+        return redirect('/secretaria/matricula/imprimir-cancelamento/'.$matricula->id);
     }
 
 
@@ -440,55 +352,41 @@ class MatriculaController extends Controller
     public static function atualizar($id){
 
         $matricula = Matricula::find($id);
-        if($matricula){
+        if(isset($matricula->id)){
             $inscricoes = InscricaoController::inscricoesPorMatricula($id,'todas');
-            if($inscricoes){
-                //verifica se tem matricula regular      
-                foreach($inscricoes as $inscricao){
-                    if ($inscricao->status =='regular')
-                        return $matricula;
+            $regulares = $inscricoes->where('status','regular');
+            if(count($regulares)>0){
+                $matricula->status = 'ativa';
+                $matricula->save();
+                return $matricula;
+            }              
+            else{
+                $pendentes = $inscricoes->where('status','pendente');
+                if(count($pendentes)>0){
+                    $matricula->status = 'pendente';
+                    $matricula->save();
+                    return $matricula;
                 }
-
-
-
-                //verifica se tem alguma finalizada
-                foreach($inscricoes as $inscricao){
-                    if ($inscricao->status =='finalizada'){
+                else{
+                    $finalizadas = $inscricoes->where('status','finalizada');
+                    if(count($finalizadas)>0){
                         $matricula->status = 'expirada';
                         $matricula->save();
                         return $matricula;
                     }
+                    else{
+                        $matricula->status = 'cancelada';
+                        $matricula->save();
+                        return $matricula;
+                    }
                 }
+            }  
+        }  
+        else
+            dd('Erro em MatriculaController::atualizar -> Matrícula não encontrada');  
 
-                //senão cancelar
-                $matricula->status = 'cancelada';
-                $matricula->save();
-                
-                return $matricula;
-            }
-
-        }
+        return false;   
     }
-
-
-
-
-
-    /**
-     * Ativador de Matrícula
-     * @param  [type] $id [description]
-     * @return [type]     [description]
-     */
-    public function ativarMatricula($id){
-        $matricula=Matricula::find($id);
-        $matricula->status='ativa';
-        $matricula->save();
-        AtendimentoController::novoAtendimento("Ativação de matrícula com pendencia ou cancelada.", $matricula->pessoa, Session::get('usuario'));
-    }
-
-
-
-
 
     /**
      * Editar Matrícula
@@ -506,44 +404,6 @@ class MatriculaController extends Controller
 
     }
     
-
-
-
-    /**
-     * Numero de inscrições
-     * @param  [type] $matricula [description]
-     * @return [type]            [description]
-     */
-    public static function numeroInscritos($matricula){
-        $inscritos=Inscricao::where('matricula',$matricula)->count();
-        return $inscritos;
-    }
-
-
-
-
-    public static function regularizarCancelamentos(){
-        //pega todas matriculas com status de ativo sem inscricoes regulares
-        $matriculas = Matricula::select( '*', 'matriculas.status as status', 'matriculas.id as id')
-                    ->join('inscricoes','inscricoes.matricula','matriculas.id')
-                    ->where('matriculas.status','ativa')
-                    ->where('inscricoes.status','cancelada')
-                    ->get();
-        /*pega todas matriculas com valor de 100
-        $matriculas = Matricula::select( '*', 'matriculas.status as status', 'matriculas.id as id')
-                    ->join('inscricoes','inscricoes.matricula','matriculas.id')
-                    ->where('matriculas.status','ativa')
-                    ->where('matriculas.valor', 100)
-                    ->get();*/
-
-    return view('secretaria.matricula.lista-geral', compact('matriculas'));
-
-
-    }
-
-
-
-
 
     /**
      * Modificador de Matrículas
@@ -565,69 +425,6 @@ class MatriculaController extends Controller
 
     }
 
-
-
-
-    /**
-     * Modificador de Matrícula individual
-     * Atribui código do curso na matrícula ativas ou pendentes sem esse código. Cancela caso não tiver incrição
-     * @param  [Matricula] $matricula [objeto matrícula]
-     * @return [type]            [description]
-     */
-    static public function matriculaSemCurso($matricula){
-        $inscricao = Inscricao::where('matricula',$matricula->id)->first();
-        if(!$inscricao){
-            $matricula->status = 'cancelada';
-            $matricula->obs = 'Cancelada automaticamente por falta de inscrições.';
-            $matricula->save();
-        }
-        else{
-            $matricula->curso = $inscricao->turma->curso->id;
-            $matricula->save();
-        }
-
-
-
-
-    }
-
-    //seleciona pessoas que tem mais de uma matricula no curso da uati
-    public function arrumarMultiplasUati(){
-        $pessoas=\DB::select('select pessoa, matricula from (
-        }
-select distinct(pessoa),count(id)as matricula from matriculas where curso = 307 group by pessoa)as nt
-where nt.matricula>1');
-
-        foreach($pessoas as $pessoa ){
-            $matriculap = '';
-            $matriculas = Matricula::where('pessoa',$pessoa->pessoa)->where('curso',307)->get();
-            foreach($matriculas as $matricula){
-                if($matricula->status != 'cancelada'){
-                    if($matriculap == ''){
-                        $matriculap = $matricula->id;
-                    }
-                    else{
-                        $matricula->status = 'cancelada';
-                        $matricula->save();
-                        $inscricoes = Inscricao::where('matricula',$matricula->id)->get();
-                        foreach($inscricoes as $inscricao){
-                            $inscricao->matricula = $matriculap;
-                            $inscricao->save();
-                        }
-
-
-                    }
-
-                }
-
-            }
-
-        }
-        return "metodo executado";
-
-
-
-    }
     public function atualizaTodasMatriculas(){
         $matriculas=Matricula::all();
         foreach($matriculas as $matricula){
@@ -643,7 +440,6 @@ where nt.matricula>1');
         foreach($inscricoes as $inscricao){
             InscricaoController::reativar($inscricao->id);  
         }
-
         $insc = Inscricao::where('matricula',$id)->where('status','regular')->get();
         if(count($insc)>0){
             $matricula->save();
@@ -654,44 +450,58 @@ where nt.matricula>1');
             return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Nenhuma inscrição REGULAR para a matrícula']);
     }
 
+
+    /**
+     * view de upload de termo
+     */
     public function uploadTermo_vw($matricula){
         return view('secretaria.matricula.upload-termo')->with('matricula',$matricula);
     }
+
+    /**
+     * Execução de upload de termo
+     */
     public function uploadTermo(Request $r){
-        $arquivo = $r->file('arquivo');
-            
-                if (!empty($arquivo)) {
-                    $arquivo->move('documentos/matriculas/termos',$r->matricula.'.pdf');
-                }
+        $arquivo = $r->file('arquivo');                  
+            if (!empty($arquivo)) 
+                $arquivo->move('documentos/matriculas/termos',$r->matricula.'.pdf');         
 
             return redirect(asset('secretaria/atender'));
     }
+
+    /**
+     * Execução de upload em lote
+     */
     public function uploadTermosLote(Request $r){
         $arquivos = $r->file('arquivos');
-            foreach($arquivos as $arquivo){
-                //dd($arquivo);
-                if (!empty($arquivo)) {
-                    $arquivo->move('documentos/matriculas/termos', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
-                }
-
-            }
+        foreach($arquivos as $arquivo){
+            //dd($arquivo);
+            if (!empty($arquivo)) 
+                $arquivo->move('documentos/matriculas/termos', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
+        }
         return redirect(asset('secretaria/matricula/upload-termo-lote'))->withErrors(['Enviados'.count($arquivos).' arquivos.']);
     }
+
+    /**
+     * view de upload de cancelamento de matricula
+     */
     public function uploadCancelamentoMatricula_vw($matricula){
         return view('secretaria.matricula.upload-termo')->with('matricula',$matricula);
     }
+
+    /**
+     * Execução de upload de cancelamento
+     */
     public function uploadCancelamentoMatricula(Request $r){
         $arquivos = $r->file('arquivos');
             foreach($arquivos as $arquivo){
-                //dd($arquivo);
-                if (!empty($arquivo)) {
-                    $arquivo->move('documentos/matriculas/cancelamentos', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
-                }
-
+                if (!empty($arquivo)) 
+                    $arquivo->move('documentos/matriculas/cancelamentos', preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');    
             }
         return redirect(asset('secretaria/atender'))->withErrors(['Enviados'.count($arquivos).' arquivos.']);
         
     }
+
     /**
      * [uploadGlobal_vw description]
      * @param  [type] $tipo  [ 0 = inscricao, 1 = matricula, 2 atestado]
@@ -727,6 +537,7 @@ where nt.matricula>1');
      * @return [type]     [description]
      */
     public function uploadGlobal(Request $r){
+
         switch($r->tipo){
             case 0:
                 $pasta = 'inscricoes/';
@@ -738,11 +549,11 @@ where nt.matricula>1');
                 $pasta = 'atestados/';
                 break;        
         }
+
         switch ($r->operacao) {
             case 0 :
                 $pasta = $pasta.'cancelamentos/';
                 break;
-            
             case 1:
                 switch($r->tipo){
                     case 0:
@@ -756,29 +567,20 @@ where nt.matricula>1');
                         break;        
                 }
                 break;
-
-
         }
-        //dd($r);
-
         if($r->qnde == 0){
-
             $arquivos = $r->file('arquivos');
             foreach($arquivos as $arquivo){
-                //dd($arquivo);
-                if (!empty($arquivo)) {
-                    $arquivo->move('documentos/'.$pasta, preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');
-                }
+                if (!empty($arquivo)) 
+                   $arquivo->move('documentos/'.$pasta, preg_replace( '/[^0-9]/is', '', $arquivo->getClientOriginalName()).'.pdf');            
             }
             return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Enviados'.count($arquivos).' arquivos.']);
         }
         else{
             $arquivo = $r->file('arquivos');
-            if (!empty($arquivo)) {
-                    $arquivo->move('documentos/'.$pasta, $r->valor.'.pdf');
-            }
+            if (!empty($arquivo)) 
+                    $arquivo->move('documentos/'.$pasta, $r->valor.'.pdf');       
             return redirect(asset('secretaria/atender'))->withErrors(['Arquivo enviado.']);
-
         }   
     }
 
@@ -787,8 +589,7 @@ where nt.matricula>1');
      * @param  [Integer] pessoa 
      * @return [View]      
      */
-    public function renovar_vw($pessoa)
-    {
+    public function renovar_vw($pessoa){
        $pessoa = \App\Pessoa::cabecalho($pessoa);
        $matriculas = Matricula::where('pessoa', $pessoa->id)
                 ->whereIn('status',['ativa','pendente'])
@@ -797,23 +598,35 @@ where nt.matricula>1');
              //listar inscrições de cada matricula;
              foreach($matriculas as $matricula){
                 $matricula->inscricoes = \App\Inscricao::where('matricula',$matricula->id)->where('status','regular')->get();
-                //$matricula->getInscricoes();
-                //dd($matricula);
-                foreach($matricula->inscricoes as $inscricao){
-                    
+                foreach($matricula->inscricoes as $inscricao){  
                     $inscricao->proxima_turma = \App\Turma::where('professor',$inscricao->turma->professor->id)
-                                        ->where('dias_semana',implode(',', $inscricao->turma->dias_semana))
-                                        ->where('hora_inicio',$inscricao->turma->hora_inicio)
-                                        ->where('data_inicio','>',\Carbon\Carbon::createFromFormat('d/m/Y', $inscricao->turma->data_termino)->format('Y-m-d'))
-                                        ->where('vagas', $inscricao->turma->vagas)
-                                        ->where('status','inscricao')
-                                        ->get();
+                                                            ->where('dias_semana',implode(',', $inscricao->turma->dias_semana))
+                                                            ->where('hora_inicio',$inscricao->turma->hora_inicio)
+                                                            ->where('data_inicio','>',\Carbon\Carbon::createFromFormat('d/m/Y', $inscricao->turma->data_termino)->format('Y-m-d'))
+                                                            ->where('vagas', $inscricao->turma->vagas)
+                                                            ->where('status','inscricao')
+                                                            ->get();
+                    //dd($inscricao->turma->vagas);
                 }
              }
-        //dd($matriculas);
+        return view('secretaria.matricula.renovacao',compact('pessoa'))->with('matriculas',$matriculas);
 
-       return view('secretaria.matricula.renovacao',compact('pessoa'))->with('matriculas',$matriculas);
+    }
 
+    /**
+     * Usando em valorController para setar o curso da matrícula
+     */
+    static public function matriculaSemCurso($matricula){
+        $inscricao = Inscricao::where('matricula',$matricula->id)->first();
+        if(!$inscricao){
+            $matricula->status = 'cancelada';
+            $matricula->obs = 'Cancelada automaticamente por falta de inscrições.';
+            $matricula->save();
+        }
+        else{
+            $matricula->curso = $inscricao->turma->curso->id;
+            $matricula->save();
+        }
     }
 
 
@@ -833,23 +646,10 @@ where nt.matricula>1');
         foreach($r->turmas as $turma){
             //verifica se existe turma de continuação
             if(isset($r->novaturma[$turma])){
-
-                //inscreve pessoa na nova turma
                 $inscricao = InscricaoController::inscreverAlunoSemMatricula($r->pessoa,$r->novaturma[$turma]);
-
-                //procurar matricula em espera ja existente do mesmo curso
                 $matricula = Matricula::where('pessoa',$r->pessoa)->where('status','espera')->where('curso', $inscricao->turma->curso->id)->first();
-                
-                if($matricula == null){
-
-
-                    //senao cria uma nova
-                    $matricula = MatriculaController::gerarMatricula($r->pessoa,$r->novaturma[$turma],'espera');
-
-
-                }
-
-                //atribui matricula a inscricao
+                if($matricula == null)
+                    $matricula = MatriculaController::gerarMatricula($r->pessoa,$r->novaturma[$turma],'espera'); 
                 $inscricao->matricula = $matricula->id;
                 $inscricao->save();
                 $matricula->parcelas = $matricula->getParcelas();
@@ -881,9 +681,8 @@ where nt.matricula>1');
         $nova->resp_financeiro = $original->resp_financeiro;
         $nova->obs = '';
         $nova->save();
-
         $nova->atendimento = AtendimentoController::novoAtendimento("Matrícula ".$nova->id." copiada da matricula ".$original->id, $nova->pessoa, Session::get('usuario'));
-        
+
         return redirect('/secretaria/atender/'.$nova->pessoa)->withErrors(['Matricula duplicada.']);
     }
 
@@ -913,37 +712,19 @@ where nt.matricula>1');
         if(!$matricula)
             return redirect()->back()->withErrors('Matrícula não encontrada para gerar a impressão.');
         $pessoa = Pessoa::find($matricula->pessoa);
-
         $inscricoes = Inscricao::where('matricula',$matricula->id)->where('updated_at', $matricula->updated_at)->get();
+        $vencimento = \Carbon\Carbon::today()->addDays(-5);    
+        $boletos = \App\Boleto::where('pessoa',$pessoa->id)
+            ->whereIn('status',['emitido','divida','ABERTO EXECUTADO'])
+            ->where('vencimento','<',$vencimento->toDateString())
+            ->orderBy('id','desc')
+            ->get();
 
-        $boletos = \App\Boleto::select('boletos.id as num_boleto, boletos.status')
-                    ->join('lancamentos','lancamentos.boleto','boletos.id')
-                    ->where('boletos.status','emitido')
-                    ->where('lancamentos.matricula',$matricula->id)
-                    ->get();
-
-                 
-        //return $inscricoes;
-        
         return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula)->with('inscricoes',$inscricoes)->with('boletos',count($boletos));
     }
 
 
-    public function corrigirCursoMatricula(){
-        $matriculas = Matricula::whereIn('status',['ativa','pendente'])->get();
-        $pessoas = array();
-        foreach($matriculas as $matricula){
-         
 
-            if($matricula->curso != $matricula->getIdCurso()){
-                $matricula->curso = $matricula->getIdCurso();
-                unset($matricula->inscricoes);
-                $matricula->save();
-                $all[] = $matricula->pessoa;
-            }
-        }
-        return $pessoas;
-    }
     public static function alterarStatus($itens,$status){
         $matriculas_array=explode(',',$itens);
         foreach($matriculas_array as $matricula_id){
@@ -953,7 +734,7 @@ where nt.matricula>1');
                     LogController::registrar('matricula',$matricula->id,'Alteração de status na matricula de '.strtoupper($matricula->status).' para '.strtoupper($status));
                     $matricula->status = $status;
                     $matricula->save();
-                    //atulizar inscrições
+                    InscricaoController::atualizarPorMatricula($matricula->id,$matricula->status); 
                 }
                     
             }

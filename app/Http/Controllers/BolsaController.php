@@ -173,132 +173,79 @@ class BolsaController extends Controller
 
         ]);
 
-        //$matricula = \App\Matricula::find($request->matricula);
-        //$curso = \App\Curso::find($matricula->curso);
-
-        //verifica se qnde de matriculas escolhidas ultrapassa o limite (max)
-        //if(count($request->matricula) > self::max_matriculas)
-            //return redirect()->back()->withErrors(['Mais de duas matrículas selecionadas.']);
-
-
-        //procura bolsas ativas dessa pessoa
-        if(date('m')>=11)
+        if(date('m')>=11){
             $bolsa = Bolsa::where('pessoa',$request->pessoa)
                 ->whereIn('status',['ativa','analisando'])
                 ->where('desconto',$request->desconto)
                 ->WhereYear('validade',date('Y', strtotime("+12 months",strtotime(date('Y')))))
-                ->get();
-               
-            else
-                $bolsa = Bolsa::where('pessoa',$request->pessoa)
+                ->first();
+        }      
+        else{
+            $bolsa = Bolsa::where('pessoa',$request->pessoa)
                 ->whereIn('status',['ativa','analisando'])
                 ->where('desconto',$request->desconto)
                 ->WhereYear('validade',date('Y', date('Y')))
-                ->get();
-             
-        //$bolsa = Bolsa::where('pessoa',$request->pessoa)->whereIn('status',['ativa','analisando'])->where('desconto',$request->desconto)->WhereYear('validade',date('Y'))->get()
+                ->first();
+        }    
 
-        //se houver bolsa
         if(isset($bolsa->id)){
+            $matriculas = \App\BolsaMatricula::where('bolsa',$bolsa->id)->whereIn('matricula',[$request->matricula[0]])->get();
+            
+            if(count($matriculas)>0)
+                    return redirect()->back()->withErrors(['Já existe uma solicitação de bolsa para esta matícula.']);
 
-            //pega as matriculas da bolsa
-            $matriculas = \App\BolsaMatricula::where('bolsa',$bolsa->id)->get();
-            //dd($matriculas);
-           
+            $bolsa_matricula = new BolsaMatricula();
+            $bolsa_matricula->bolsa = $bolsa->id;
+            $bolsa_matricula->pessoa = $bolsa->pessoa;
+            $bolsa_matricula->matricula = $request->matricula[0];
+            $bolsa_matricula->programa = \App\Matricula::find($bolsa_matricula->matricula)->getPrograma()->id;
+            $bolsa_matricula->save();
 
-           
-
-            //se já tiver duas matriculas na bolsa retorna erro
-            /*
-            if(count($matriculas)>= self::max_matriculas )
-                return redirect()->back()->withErrors(['Erro: Já consta uma solicitação de bolsa aberta com o máximo de matrículas permitida.']);
-            */
-            //else{
-
-
-                 
-
-                // instancia primeira matricula fornecida
-                $matricula =  \App\Matricula::find($request->matricula[0]);
-
-                // a matricula in
-                if(count($matriculas)>0)
-                    if($matriculas->first()->matricula == $matricula->id)
-                        return redirect()->back()->withErrors(['Já existe uma solicitação de bolsa para esta matícula.']);
-
-                $bolsa_matricula = new BolsaMatricula();
-                $bolsa_matricula->bolsa = $bolsa->id;
-                $bolsa_matricula->pessoa = $bolsa->pessoa;
-                $bolsa_matricula->matricula = $matricula->id;
-                $bolsa_matricula->programa = \App\Matricula::find($bolsa_matricula->matricula)->getPrograma()->id;
-                $bolsa_matricula->save();
-                return redirect()->back()->withErrors(['Matrícula inserida na bolsa com sucesso.']);
-
-
-            //}
+            return redirect()->back()->withErrors(['Matrícula inserida na bolsa com sucesso.']);  
         }
         else{
             if(date('m')>=11)
                 $validade = date('Y-12-31 23:23:59', strtotime("+12 months",strtotime(date('Y-m-d')))); 
             else
                 $validade = date('Y-12-31 23:23:59'); 
-            //gerar bolsa
-        }
+            
+        
+            if($this->vericaSeSolicitado($request->pessoa,$request->matricula))
+                return redirect()->back()->withErrors(['Bolsa já solicitada.']);
 
-        //dd($this->vericaSeSolicitado($request->pessoa,$request->matricula));
-        if($this->vericaSeSolicitado($request->pessoa,$request->matricula))
-            return redirect()->back()->withErrors(['Bolsa já solicitada.']);
+            $bolsa = new Bolsa;
+            $bolsa->pessoa = $request->pessoa;
+            $bolsa->desconto = $request->desconto;
+            $bolsa->rematricula = $request->rematricula;
+            $bolsa->validade = $validade;
 
-        /****************************** Varifica se a bolsa é EMG para impedir cadastro em turmas não emg
-        if($request->desconto ==10){
+            if($request->desconto == 7 || $request->desconto == 8)
+                $bolsa->status = 'ativa';
+            else 
+                $bolsa->status = 'analisando';
+
+            $bolsa->save();
+
             foreach($request->matricula as $matricula){
+
+                $bolsa_matricula = new BolsaMatricula();
+                $bolsa_matricula->bolsa = $bolsa->id;
+                $bolsa_matricula->pessoa = $bolsa->pessoa;
+                $bolsa_matricula->matricula = $matricula;
+
                 $obj_matricula = \App\Matricula::find($matricula);
                 $programa_matricula = $obj_matricula ->getPrograma();
-                if($programa_matricula->id != 4)
-                    return redirect()->back()->withErrors(['Turma não destinada para desconto EMG.']);
+                $bolsa_matricula->programa = $programa_matricula->id;
+                $bolsa_matricula->save();
 
+                if($bolsa->status == 'analisando'){
+                    $matricula_obj = \App\Matricula::find($matricula);
+                    $matricula_obj->status = 'pendente';
+                    $matricula_obj->save();
+                }
             }
             
         }
-        */
-
-
-        $bolsa = new Bolsa;
-        $bolsa->pessoa = $request->pessoa;
-        $bolsa->desconto = $request->desconto;
-        $bolsa->rematricula = $request->rematricula;
-        $bolsa->validade = date('Y-12-31');
-        if($request->desconto == 7 || $request->desconto == 8)
-            $bolsa->status = 'ativa';
-        else 
-            $bolsa->status = 'analisando';
-        $bolsa->save();
-
-
-        foreach($request->matricula as $matricula){
-            $bolsa_matricula = new BolsaMatricula();
-            $bolsa_matricula->bolsa = $bolsa->id;
-            $bolsa_matricula->pessoa = $bolsa->pessoa;
-            $bolsa_matricula->matricula = $matricula;
-            $obj_matricula = \App\Matricula::find($matricula);
-            $programa_matricula = $obj_matricula ->getPrograma();
-            $bolsa_matricula->programa = $programa_matricula->id;
-            $bolsa_matricula->save();
-            if($bolsa->status == 'analisando'){
-                $matricula_obj = \App\Matricula::find($matricula);
-                $matricula_obj->status = 'pendente';
-                $matricula_obj->save();
-            }
-            
-        }
-
-        //dd($bolsa);
-        
-
-        
-
-        
-        
 
         $atendimento = AtendimentoController::novoAtendimento('Solicitação de Bolsa',$request->pessoa);
 

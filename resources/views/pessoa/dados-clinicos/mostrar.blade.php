@@ -58,6 +58,9 @@
                         @foreach($atestados as $atestado)
                         <a href="#" onclick="desativarAtestado('{{$atestado->id}}')" title="Apagar Atestado" class="btn btn-danger btn-sm">
                             <i class="fa fa-times"></i>
+                        </a>
+                        <a href="/pessoa/atestado/editar/{{$atestado->id}}" title="Editar Atestado" class="btn btn-primary btn-sm">
+                            <i class="fa fa-pencil"></i>
                         </a> 
                         @if(file_exists('documentos/atestados/'.$atestado->id.'.pdf'))
                             

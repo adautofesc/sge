@@ -101,7 +101,7 @@ Route::middleware('login') ->group(function(){
 		Route::get('turmasjson','TurmaController@turmasJSON');
 		Route::get('inscritos/{turma}','InscricaoController@verInscritos');
 		Route::get('lista/{id}','painelController@chamada');
-		Route::get('importar', function(){ return view('pedagogico.turma.upload');});
+		Route::get('importar', function(){ return view('turmas.upload');});
 		Route::middleware('liberar.recurso:18')->post('importar', 'TurmaController@uploadImportaTurma' );
 		Route::post('processar-importacao', 'TurmaController@processarImportacao');
 		Route::get('expiradas','TurmaController@processarTurmasExpiradas')->name('turmas.expiradas');
@@ -125,7 +125,7 @@ Route::middleware('login') ->group(function(){
 		Route::get('/bolsa/gerador', 'BolsaController@gerador');
 		Route::get('/corrigir-boletos','BoletoController@corrigirBoletosSemParcelas');
 		Route::get('ajusteBolsas', 'BolsaController@ajusteBolsaSemMatricula');
-		Route::get('curso-matriculas','MatriculaController@corrigirCursoMatricula');
+		
 		Route::get('importar-status-boletos','painelController@importarStatusBoletos');
 		Route::get('add-recesso','DiaNaoLetivoController@ViewAddRecesso');
 
@@ -551,8 +551,8 @@ Route::middleware('login') ->group(function(){
 		Route::get('turmas-professor', 'TurmaController@listarProfessores');
 		Route::post('turmas-professor', 'TurmaController@turmasProfessor');
 		Route::get('frequencia/{turma}','FrequenciaController@listaChamada');
-		Route::get('chamada/{turma}/{aula?}','AulaController@novaChamada');
-		Route::post('nchamada/{turma}/{aula?}','AulaController@gravarChamada');
+		Route::get('chamada/{turma}/{aula?}','FrequenciaController@novaChamada');
+		Route::post('chamada/{turma}/{aula?}','FrequenciaController@gravarChamada');
 	});
 	Route::get('chamada/{id}/{pg}/{url}/{hide?}','TurmaController@getChamada'); //optional parameter is used here!
 	Route::get('plano/{professor}/{tipo}/{curso}','TurmaController@getPlano');

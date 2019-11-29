@@ -101,7 +101,7 @@
                             <td>{{$insc->turmac->hora_inicio}} às {{$insc->turmac->hora_termino}}</td>
                             <td align>{{$insc->turmac->data_inicio}} a {{$insc->turmac->data_termino}}</td>
                              
-                            <td><small>{{$insc->turmac->local->nome.' <br>sala '.($insc->turmac->getSala())->nome}}<small></td>                             
+                            <td><small>{{$insc->turmac->local->nome}} <br>sala {{($insc->turmac->getSala())->nome}}<small></td>                             
                             
                            
                                

@@ -27,7 +27,7 @@
 			<div class="col-sm-3"> 
 				<input type="date" class="form-control boxed" name="emissao" value="{{$atestado->emissao}}" placeholder="" > 
 			</div>
-		</div>
+        </div>
 		<div class="form-group row"> 
             <label class="col-sm-2 form-control-label text-xs-right">
                 Arquivo

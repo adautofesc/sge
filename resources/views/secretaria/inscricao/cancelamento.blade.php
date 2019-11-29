@@ -90,6 +90,7 @@
 			<div class="col-sm-10 col-sm-offset-2"> 
 				<input type="hidden" name="pessoa" value="{{$pessoa->id}}">
                 <input type="hidden" name="inscricao" value="{{$inscricao->id}}">
+                <input type="hidden" name="matricula" value="{{$inscricao->matricula}}">
                 <button type="submit" name="btn"  class="btn btn-danger">SALVAR</button>
                 <button type="reset" name="btn"  class="btn btn-primary">Restaurar</button>
                 <button type="cancel" name="btn" class="btn btn-primary" onclick="history.back(-2);return false;">Cancelar</button>

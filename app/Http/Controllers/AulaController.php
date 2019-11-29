@@ -14,6 +14,7 @@ class AulaController extends Controller
 {
     public function gerarAulas(int $turma){   
         $turma = Turma::find($turma);
+        $aulas = collect();
         $data_iteracao = \DateTime::createFromFormat('d/m/Y', $turma->data_inicio);
         $data_mal = \DateTime::createFromFormat('d/m/Y','08/07/2020');
         $termino = \DateTime::createFromFormat('d/m/Y', $turma->data_termino); 
@@ -22,7 +23,7 @@ class AulaController extends Controller
                 $letivo = DiaNaoLetivoController::eLetivo($data_iteracao);
                 if($letivo){     
                     if(AulaController::eNova($data_iteracao,$turma->id)){  
-                        $aulas[] = AulaController::criar($data_iteracao,$turma->id);
+                        $aulas->push(AulaController::criar($data_iteracao,$turma->id));
                         $data_iteracao->add(new \DateInterval('P1D'));
                     }
                     else
@@ -88,7 +89,7 @@ class AulaController extends Controller
        $aula->turma = $turma;
        $aula->status = 'prevista';
        $aula->save();
-       return 'Aula ' . $aula->id .' cadastrada dia '.$data->format('d/m/Y').' na turma '.$turma;
+       return $aula;
     }
 
 
@@ -105,59 +106,7 @@ class AulaController extends Controller
 
     }
 
-    public function novaChamada(int $turma){
-        $aulas = \App\Aula::where('turma',$turma)->whereIn('status',['prevista','planejada'])->orderBy('data')->get();
-        /*
-        foreach($aulas as $aula){
-            $aula->data = \DateTime::createFromFormat('Y-m-d',$aula->data);
-        }*/
-        $turma = Turma::find($turma);
 
-        $turma->getInscricoes('regulares');
-
-        $aulas_anteriores = \App\Aula::where('turma',$turma->id)->whereIn('status',['executada','adiada','cancelada'])->orderByDesc('data')->get();
-        foreach($aulas_anteriores as $aula_anterior){
-            if($aula_anterior->status == 'executada')
-                $aula_anterior->conteudo = $aula_anterior->getConteudo();
-            else
-                $aula_anterior->conteudo = 'Aula '.$aula_anterior->status;
-            $aula_anterior->ocorrencia = $aula_anterior->getOcorrencia();
-        }
-
-        //dd($aulas_anteriores);
-
-        return view('frequencias.chamada')->with('turma',$turma)->with('aulas',$aulas)->with('anteriores',$aulas_anteriores);
-
-    }
-
-    public function gravarChamada(Request $req){
-        $FC = new FrequenciaController;
-        $aula = Aula::find($req->aula);
-    
-        if(!is_null($req->conteudo)){
-            $info = new AulaDado();
-            $info->dado = 23;
-            $info->aula = $req->aula;
-            $info->valor = $req->conteudo;
-            $info->save();
-        }
-        if(!is_null($req->ocorrencia)){
-            $info = new AulaDado();
-            $info->dado = 24;
-            $info->aula = $req->aula;
-            $info->valor = $req->ocorrencia;
-            $info->save();
-        }
-        foreach($req->aluno as $aluno){  
-            $FC->novaFrequencia($req->aula,$aluno);
-        }
-
-        $aula->status = 'executada';
-        $aula->save();
-        
-        return redirect(asset('/docentes'))->withErrors(['Chamada registrada.']);
-
-    }
     public function alterar($aulas, $acao){
         
         

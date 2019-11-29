@@ -165,7 +165,7 @@ class RequisitosController extends Controller
 
         //return $requisitos;
         //dd($turma);
-        return view('pedagogico.turma.turma-requisitos', compact('requisitos'))->with('turma',$turma);
+        return view('turmas.turma-requisitos', compact('requisitos'))->with('turma',$turma);
     }
     public function storeRequisitosTurma(Request $r){
 

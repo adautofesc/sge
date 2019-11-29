@@ -1187,6 +1187,23 @@ class PessoaController extends Controller
 		return redirect()->back();
 	}
 
+	/**
+	 * Cadastra as pessoas diretamente por função;
+	 * @param [$nome] Nome da pessoa
+	 * @param[$genero] Como a pessoa gostaria de ser tratada
+	 * @param[$nascimento] Data de nascimento da pessoa
+	 */
+	public static function cadastrarPessoa($nome, $genero, \DateTime $nascimento){
+		$pessoa = new Pessoa;
+			$pessoa->nome=mb_convert_case($nome, MB_CASE_UPPER, 'UTF-8');
+			$pessoa->nascimento = $nascimento->format('Y-m-d');
+			$pessoa->genero = $genero;
+			$pessoa->por = \Session::get('usuario');
+			$pessoa->save();
+		return $pessoa;
+
+	}
+
 
 
 

@@ -1,11 +1,11 @@
 @extends('layout.app')
-@section('titulo')Alunos importados @endsection
+@section('titulo')Importação de alunos @endsection
 @section('pagina')
 <div class="title-search-block">
     <div class="title-block">
         <div class="row">
             <div class="col-md-6">
-                <h3 class="title"> Lista de pessoas encontradas  
+                <h3 class="title"> Lista de pessoas importadas 
                 <!--                
 	                <div class="action dropdown"> 
 	                	<button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mais ações...
@@ -17,7 +17,7 @@
 	                </div> 
                 -->
                 </h3>
-                <p class="title-description"> Confirme os dados abaixo, desmarque se for necessário algum aluno e grave os dados </p>
+                <p class="title-description"> Confirme os dados abaixo, desmarque se necessário e/ou modifique os dados. Após isso clique em GRAVAR para efetivar a importação.  </p>
             </div>
         </div>
     </div>
@@ -66,82 +66,113 @@
                 </div>  
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Turma</div>
-                    <div><input type="number" class="form-control boxed" name="turma[{{$pessoa->id}}]" value="{{$pessoa->turma}}">  </div>
+                    <div><input type="number" class="form-control boxed" name="turma[{{$pessoa->id}}]" value="{{$pessoa->turma}}" maxlength="10" title="Código da turma">  </div>
                 </div>              
                 <div class="item-col fixed item-col-title">
                     <div class="item-heading">Nome</div>
                     <div>             
-                            <input type="text" class="form-control boxed" name="nome[{{$pessoa->id}}]" value="{{$pessoa->nome}}"> 
+                            <input type="text" class="form-control boxed" name="nome[{{$pessoa->id}}]" value="{{$pessoa->nome}}" maxlength="250" title="Nome da pessoa"> 
                     </div>
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Nascimento</div>
-                    <div> <input type="text" class="form-control boxed" name="nascimento[{{$pessoa->id}}]" value="{{$pessoa->nascimento}}"> </div>
+                    <div> <input type="text" class="form-control boxed" name="nascimento[{{$pessoa->id}}]" value="{{$pessoa->nascimento}}" maxlength="11" title="Nascimento"> </div>
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Contato</div>
                     <div>
                         
-                        <input type="text" class="form-control boxed" name="telefone[{{$pessoa->id}}]"
+                        <input type="text" class="form-control boxed" name="telefone[{{$pessoa->id}}]" maxlength="12" title="Telefone"
                         @if(isset($pessoa->fone))
                         value="{{$pessoa->fone}}" 
                         @endif
                         >
                     </div>
                 </div> 
+                @if(isset($pessoa->rg))
+            
+                    <div class="item-col item-col-sales">
+                        <div class="item-heading">RG</div>
+                        <div><input type="text" class="form-control boxed" name="rg[{{$pessoa->id}}]" value="{{$pessoa->rg}}" title="RG" maxlength="14">  </div>
+                    </div>  
+
+                
+                @endif
+                @if(isset($pessoa->rg))
+                
+                    <div class="item-col item-col-sales">
+                        <div class="item-heading">CPF</div>
+                        <div><input type="text" class="form-control boxed" name="cpf[{{$pessoa->id}}]" value="{{$pessoa->cpf}}" title="CPF" maxlength="14">  </div>
+                    </div>  
+
+                
+                @endif
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Genero</div>
                     <div>
-                        <label>
+                        <label title="Gênero Masculino">
                             <input class="radio" name="genero[{{$pessoa->id}}]" value="M" {{$pessoa->genero=="M"?"checked":""}} type="radio"><span>M</span>
                         </label>
-                        <label>
+                        <label title="Gênero Feminino">
                             <input class="radio" name="genero[{{$pessoa->id}}]" value="F" {{$pessoa->genero=="F"?"checked":""}} type="radio"><span>F</span>
                         </label> 
                     </div>
                 </div> 
 
-                <div class="item-col fixed item-col-actions-dropdown">
-                    <div class="item-actions-dropdown">
-                        <a class="item-actions-toggle-btn"> <span class="inactive">
-				<i class="fa fa-cog"></i>
-                </span> <span class="active">
-                <i class="fa fa-chevron-circle-right"></i>
-                </span> </a>
-                        <div class="item-actions-block">
-                            <ul class="item-actions-list">
-                                <li>
-                                    <a class="remove" href="{{asset('secretaria/atender').'/'}}" title="Relizar atendimento"> <i class="fa fa-th-large "></i> </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
             <div class="item-row">
-            @if(isset($pessoa->rg))
             
-                <div class="item-col item-col-sales">
-                    <div class="item-heading">RG</div>
-                    <div><input type="text" class="form-control boxed" name="rg[{{$pessoa->id}}]" value="{{$pessoa->rg}}" title="RG">  </div>
-                </div>  
-
-            
-            @endif
-            @if(isset($pessoa->rg))
-            
-                <div class="item-col item-col-sales">
-                    <div class="item-heading">CPF</div>
-                    <div><input type="text" class="form-control boxed" name="cpf[{{$pessoa->id}}]" value="{{$pessoa->cpf}}" title="CPF">  </div>
-                </div>  
-
-            
-            @endif
             @if(isset($pessoa->endereco))
             
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Endereço</div>
-                    <div><input type="text" class="form-control boxed" name="endereco[{{$pessoa->id}}]" value="{{$pessoa->endereco}}" title="Endereço">  </div>
+                    <div><input type="text" class="form-control boxed" name="endereco[{{$pessoa->id}}]" value="{{$pessoa->endereco}}" title="Endereço" maxlength="150">  </div>
+                </div>  
+
+    
+            @endif
+            @if(isset($pessoa->numero))
+            
+                <div class="item-col item-col-sales">
+                    <div class="item-heading">Número</div>
+                    <div><input type="text" class="form-control boxed" name="numero[{{$pessoa->id}}]" value="{{$pessoa->numero}}" title="Numero Endereço" max="5">  </div>
+                </div>  
+
+    
+            @endif
+            @if(isset($pessoa->complemento))
+            
+                <div class="item-col item-col-sales">
+                    <div class="item-heading">Complemento</div>
+                    <div><input type="text" class="form-control boxed" name="complemento[{{$pessoa->id}}]" value="{{$pessoa->complemento}}" title="Complemento" maxlength="20">  </div>
+                </div>  
+
+    
+            @endif
+            @if(isset($pessoa->bairro))
+            
+                <div class="item-col item-col-sales">
+                    <div class="item-heading">Bairro</div>
+                    <div><input type="text" class="form-control boxed" name="bairro[{{$pessoa->id}}]" value="{{$pessoa->bairro}}" title="Bairro" maxlength="200">  </div>
+                </div>  
+
+    
+            @endif
+            @if(isset($pessoa->cidade))
+            
+                <div class="item-col item-col-sales">
+                    <div class="item-heading">Cidade</div>
+                    <div><input type="text" class="form-control boxed" name="cidade[{{$pessoa->id}}]" value="{{$pessoa->cidade}}" title="Cidade" maxlength="50">  </div>
+                </div>  
+
+    
+            @endif
+            @if(isset($pessoa->estado))
+            
+                <div class="item-col item-col-sales">
+                    <div class="item-heading">UF</div>
+                    <div><input type="text" class="form-control boxed" name="estado[{{$pessoa->id}}]" value="{{$pessoa->estado}}" title="UF" maxlength="2">  </div>
                 </div>  
 
     
@@ -150,7 +181,7 @@
             
                 <div class="item-col item-col-sales">
                     <div class="item-heading">CEP</div>
-                    <div><input type="number" class="form-control boxed" name="cep[{{$pessoa->id}}]" value="{{$pessoa->cep}}" title="CEP">  </div>
+                    <div><input type="text" class="form-control boxed" name="cep[{{$pessoa->id}}]" value="{{$pessoa->cep}}" title="CEP" maxlength="8">  </div>
                 </div> 
     
             @endif

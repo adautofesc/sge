@@ -360,12 +360,12 @@
                                                                {{$turma->data_inicio}}.</small></div> 
 
                                                       @if(isset($turma->disciplina))
-                                                       <a href="{{asset('turma/'.$turma->id)}}"  title="Abrir dados da turma">
+                                                       <a href="{{asset('turmas/dados-gerais/'.$turma->id)}}"  title="Abrir dados da turma">
                                                            <h4 class="item-title"> {{$turma->disciplina->nome}}</h4>       
                                                            <small>{{$turma->curso->nome}}</small>
                                                        </a>
                                                       @else
-                                                       <a href="{{asset('turma/'.$turma->id)}}"   title="Abrir dados da turma">
+                                                       <a href="{{asset('turmas/dados-gerais/'.$turma->id)}}"   title="Abrir dados da turma">
                                                            <h4 class="item-title"> {{$turma->curso->nome}}</h4>           
                                                        </a>
                                                        @endif

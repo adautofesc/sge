@@ -69,9 +69,9 @@
 <script type="text/javascript">
     function abreTurma(){
         if($("#turma").val()!='')
-            window.open('/turma/'+$("#turma").val(),'Mostrar Turma');
+            location.href = '/turmas/dados-gerais/'+$("#turma").val(),'Mostrar Turma';
         else
-            alert('Ops, cadê o código da turma?');
+            alert('Ops, faltou o código da turma');
     }
 </script>
 @endsection

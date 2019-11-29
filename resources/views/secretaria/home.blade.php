@@ -82,7 +82,7 @@
                         &nbsp;&nbsp;Relatórios</a>
                     </div>
                     <div>
-                        <a href="{{asset('pedagogico/turmas/importar')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="{{asset('turmas/importar')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-file-text "></i>
                         &nbsp;&nbsp;Importar alunos de planilha</a>
                     </div>
@@ -177,15 +177,15 @@
 <script type="text/javascript">
     function abreTurma(){
         if($("#turma").val()!='')
-            window.open('/secretaria/turma/'+$("#turma").val(),'Mostrar Turma');
+            location.href = '/turmas/'+$("#turma").val();
         else
-            alert('Ops, cadê o código da turma?');
+            alert('Ops, faltou o código da turma');
     }
     function abreMatricula(){
         if($("#matricula").val()!='')
-            window.open('/secretaria/matricula/'+$("#matricula").val(),'Mostrar Matricula');
+            location.href = '/secretaria/matricula/'+$("#matricula").val();
         else
-            alert('Ops, cadê o código da turma?');
+            alert('Ops, faltou o código da turma');
     }
 </script>
 @endsection

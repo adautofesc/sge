@@ -386,7 +386,7 @@ class painelController extends Controller
                 if(isset($boleto->id)){
                     $boletos_alterados[] = $boleto;
                     if($boleto->status != $spreadsheet->getActiveSheet()->getCell('F'.$i)->getValue()){
-                        $boleto->status = $spreadsheet->getActiveSheet()->getCell('F'.$i)->getValue();
+                        $boleto->status = strtolower($spreadsheet->getActiveSheet()->getCell('F'.$i)->getValue());
                         $boleto->save();
                         LogController::alteracaoBoleto($boleto->id,'Processamento em lote D.A. Navka em '.date('d/m/Y').': '.$spreadsheet->getActiveSheet()->getCell('F'.$i)->getValue());
                     }

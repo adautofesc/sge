@@ -159,7 +159,11 @@ class InscricaoController extends Controller
                 return Inscricao::find(InscricaoController::verificaSeInscrito($aluno,$turma->id));
         if($matricula==0){
             if(MatriculaController::verificaSeMatriculado($aluno,$turma->curso->id,$turma->data_inicio)==false){
-                $matricula_obj=MatriculaController::gerarMatricula($aluno,$turma->id,'ativa');
+                if($turma->status == 'andamento' || $turma->status == 'iniciada')
+                    $status="ativa";    
+                else
+                    $status="espera";
+                $matricula_obj=MatriculaController::gerarMatricula($aluno,$turma->id,$status);
                 $matricula=$matricula_obj->id;
             }
             else{
@@ -212,7 +216,7 @@ class InscricaoController extends Controller
      */
     public function inscreverAlunoLote($turma,Request $r){
         $inscricao=InscricaoController::inscreverAluno($r->id_pessoa,$turma);
-        return redirect(asset('/secretaria/turma/'.$turma));
+        return redirect()->back()->withErrors(['Inscrição efetuada.']);
 
     }
 

@@ -54,10 +54,11 @@
 
         <div class="form-group row"> 
             <label class="col-sm-2 form-control-label text-xs-right">
-                Saldo
+                Parcelas
             </label>
             <div class="col-sm-6"> 
-                <b id="parcelas">{{$matricula->parcelas}}</b> parcela(s) de <small>R$</small> <b><span id="saldo_final_parcelado">{{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas,2,',','.')}}</span></b> = <small>R$</small> <b><span id="saldo_final">{{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas*$matricula->parcelas,2,',','.')}}</span></b>. 
+                <input type="number" class="form control boxed" name="parcelas" value="{{$matricula->parcelas}}" style="width:5rem;"><br>
+                <b id="parcelas">{{$matricula->parcelas}}</b> parcela(s) de <small>R$</small> <b><span id="saldo_final_parcelado">{{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->parcelas,2,',','.')}}</span></b> = <small>R$</small> <b><span id="saldo_final">{{number_format(($matricula->valor->valor-$matricula->valor_desconto),2,',','.')}}</span></b>. 
             </div>
         </div>
     

@@ -90,7 +90,7 @@ class SecretariaController extends Controller
 
 			 }
 			 $boletos = Boleto::where('pessoa',$id)
-			 	->whereIn('status',['gravado','impresso','emitido','divida','ABERTO EXECUTADO'])
+			 	->whereIn('status',['gravado','impresso','emitido','divida','aberto executado'])
 	
 			 	->orderBy('id','desc')
 			 	->get();
@@ -103,7 +103,7 @@ class SecretariaController extends Controller
 		}
 		
 		$vencimento = \Carbon\Carbon::today()->addDays(-5);
-		$boleto_vencido = $boletos->whereIn('status',['emitido','divida','ABERTO EXECUTADO'])->where('vencimento','<',$vencimento->toDateString());
+		$boleto_vencido = $boletos->whereIn('status',['emitido','divida','aberto executado'])->where('vencimento','<',$vencimento->toDateString());
 		if(count($boleto_vencido)>0)	
 			$devedor=true;
 		else 
@@ -113,13 +113,19 @@ class SecretariaController extends Controller
 		$atestado = \App\Atestado::where('pessoa',$id)->orderByDesc('id')->first();
 		
 		if($atestado){
-			$atividades_aquaticas = $matriculas->whereIn('status',['ativa','pendente'])->WhereIn('curso',['898','1151','1152','1493']);
-			if(count($atividades_aquaticas)>0)
+			$atividades_aquaticas = $matriculas->whereIn('status',['ativa','pendente','espera'])->WhereIn('curso',['898','1151','1152','1493']);
+			if(count($atividades_aquaticas)>0){
 				$atestado->validade = $atestado->calcularVencimento(12);
-			else
+			}
+				
+			else{
 				$atestado->validade = $atestado->calcularVencimento(3);
+			}
+				
 
 		}
+
+		
 
 		return view('secretaria.atendimento', compact('pessoa'))
 			->with('matriculas',$matriculas)

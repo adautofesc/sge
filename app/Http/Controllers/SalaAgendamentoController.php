@@ -11,17 +11,28 @@ use stdClass;
 class SalaAgendamentoController extends Controller
 {
     public function agendamento(Request $req){ //data-> para pegar a turmas turmas que tem naquele dia. //local
+
         $salas = Sala::where('local',84)->orderBy('nome')->get();
-        if(!$req->data)
-            $data = date('d/m/Y');
-        else
-            $data = \DateTime::createFromFormat('Y-m-d',$req->data)->format('d/m/Y');
-        $dia_semana = \App\classes\Data::stringDiaSemana($data);
+        if(!$req->data){
+            $data = new \DateTime('now');
+        }
+            
+        else{
+            $data = \DateTime::createFromFormat('Y-m-d',$req->data);
+        }
+            
+        $dia_semana = \App\classes\Data::stringDiaSemana($data->format('d/m/Y'));
 
         //dd($dia_semana);
         $eventos=collect();
 
-        $turmas = Turma::whereIn('status',['andamento','iniciada'])->where('sala','<>',null)->where('dias_semana','like','%'.$dia_semana.'%')->get();
+        $turmas = Turma::whereNotIn('status',['cancelado','cancelada'])
+            ->where('sala','>',0)
+            ->where('dias_semana','like','%'.$dia_semana.'%')
+            ->where('data_inicio','<=',$data->format('Y-m-d'))
+            ->where('data_termino','>=',$data->format('Y-m-d'))
+
+            ->get();
         //dd($turmas);
         
         foreach($turmas as $turma){

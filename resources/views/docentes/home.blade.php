@@ -10,6 +10,7 @@
     </div>
 </div>
 <section class="section">
+ @include('inc.errors')
     <div class="row">
         <div class="col-md-7 center-block">
             <div class="card card-primary">
@@ -54,7 +55,7 @@
                                    
                                     
                                     <small>
-                                    <a href="/docentes/chamada/{{$turma->id}}" title="Chamada OnLine">
+                                    <a href="/docentes/frequencia/nova-aula/{{$turma->id}}" title="Chamada OnLine">
                                         
                                         {{$turma->getNomeCurso()}}
 
@@ -64,7 +65,7 @@
                                 </td>
                             
                                 <td>
-                                    <a href="/docentes/frequencia/{{$turma->id}}" target="_blank" title="Lista de chamada preenchida (inclui desistentes)">
+                                    <a href="/docentes/frequencia/listar/{{$turma->id}}" target="_blank" title="Lista de chamada preenchida (inclui desistentes)">
                                 
                                         <i class=" fa fa-indent "></i></a>
                                     &nbsp;

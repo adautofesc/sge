@@ -66,17 +66,17 @@
                 </div>  
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Turma</div>
-                    <div><input type="number" class="form-control boxed" name="turma[{{$pessoa->id}}]" value="{{$pessoa->turma}}" maxlength="10" title="Código da turma">  </div>
+                    <div><input type="number" class="form-control boxed" name="turma[{{$pessoa->id}}]" value="{{$pessoa->turma}}" maxlength="10" title="Código da turma" required="required">  </div>
                 </div>              
                 <div class="item-col fixed item-col-title">
                     <div class="item-heading">Nome</div>
                     <div>             
-                            <input type="text" class="form-control boxed" name="nome[{{$pessoa->id}}]" value="{{$pessoa->nome}}" maxlength="250" title="Nome da pessoa"> 
+                            <input type="text" class="form-control boxed" name="nome[{{$pessoa->id}}]" value="{{$pessoa->nome}}" maxlength="250" title="Nome da pessoa" required="required"> 
                     </div>
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Nascimento</div>
-                    <div> <input type="text" class="form-control boxed" name="nascimento[{{$pessoa->id}}]" value="{{$pessoa->nascimento}}" maxlength="11" title="Nascimento"> </div>
+                    <div> <input type="date" class="form-control boxed" name="nascimento[{{$pessoa->id}}]" value="{{$pessoa->nascimento}}" maxlength="11" title="Nascimento" required="required"> </div>
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Contato</div>
@@ -111,7 +111,7 @@
                     <div class="item-heading">Genero</div>
                     <div>
                         <label title="Gênero Masculino">
-                            <input class="radio" name="genero[{{$pessoa->id}}]" value="M" {{$pessoa->genero=="M"?"checked":""}} type="radio"><span>M</span>
+                            <input class="radio" name="genero[{{$pessoa->id}}]" value="M" {{$pessoa->genero=="M"?"checked":""}} type="radio" required><span>M</span>
                         </label>
                         <label title="Gênero Feminino">
                             <input class="radio" name="genero[{{$pessoa->id}}]" value="F" {{$pessoa->genero=="F"?"checked":""}} type="radio"><span>F</span>

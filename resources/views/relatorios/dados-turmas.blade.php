@@ -24,19 +24,23 @@ page-break-before: always;
 	@foreach($turmas as $turma)
 	<div class="container">
 		<div class="row">
-			<div class="col-xs-2">
+			<div class="col-xs-1" >
 			<img src="{{asset('/')}}/img/logofesc.png" width="65"/>
 			</div>
-			<div class="col-xs-4">
+			<div class="col-xs-4" style="margin-left: 1rem;">
 			<p style="font-size: 0.6rem;">
 			<strong>FUNDAÇÃO EDUCACIONAL SÃO CARLOS</strong><br/>
 			Rua São Sebastião, 2828, Vila Nery <br/>
 			São Carlos - SP. CEP 13560-230<br/>
-			Tel.: (16) 3372-1308 e 3372-1325<br/><br/>
+			Tel.: (16) 3372-1308 e 3372-1325<br/>
 			<i>Emitido em: {{date('d/m/Y H:i')}}</i>
 			</p>
 			</div>
-			<div class="col-xs-6">
+            <div class="col-xs-2" style="margin-left: -1rem; text-align: center">
+                <img src="https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=https://sistema.fesc.com.br/docentes/frequencia/nova-aula/{{$turma->id}}&choe=UTF-8" width="100px" title="Link para a chamada dessa turma">
+                 
+            </div>
+			<div class="col-xs-5">
 					 <h3 class="title" style="font-size: 1rem;">Turma {{$turma->id}} - 
         @if(!empty($turma->disciplina->nome))
             {{$turma->disciplina->nome}} / 
@@ -45,6 +49,7 @@ page-break-before: always;
 
     </h3>
     <p class="title-description" style="font-size: 0.7rem">
+        
         @foreach($turma->dias_semana as $dia)
             {{ucwords($dia)}}, 
         @endforeach
@@ -83,7 +88,7 @@ page-break-before: always;
                         	@php($a = 0)
                             @foreach($turma->inscricoes as $inscricao)
                             @php($a++)
-                            <tr style="line-height: 0.6rem">
+                            <tr style="line-height: 0.3rem">
                                 <td>
                                     <!--
                                     <small>

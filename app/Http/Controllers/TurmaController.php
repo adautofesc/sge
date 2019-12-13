@@ -15,7 +15,7 @@ use App\Endereco;
 use App\PessoaDadosContato;
 //use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Session;
+
 
 class TurmaController extends Controller
 {
@@ -227,6 +227,7 @@ class TurmaController extends Controller
         foreach($turmas as $turma){
             $turma->parcelas = Turma::find($turma->id);
             $turma->parcelas = $turma->getParcelas();
+            $turma->getSala();
         }
 
         //dd($turmas);
@@ -650,19 +651,21 @@ class TurmaController extends Controller
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         $spreadsheet = $reader->load($request->arquivo);
         $worksheet = $spreadsheet->getActiveSheet();
-        $highestRow = $worksheet->getHighestRow();
+        $highestRow = $worksheet->getHighestDataRow();
+        if($highestRow>51)
+            return redirect()->back()->withErrors('Erro: o arquivo importado não pode ter mais de 50 registros neste momento.');
         $pessoas = collect();
         for($i=2;$i<=$highestRow;$i++){
-            if($worksheet->getCell('D'.$i)->getValue() != null){
+            if($worksheet->getCell('A'.$i)->getValue() != null){
                 $insc= (object)[];
                 $insc->id = $i;
                 $insc->nome=$worksheet->getCell('A'.$i)->getValue();
                 $insc->nascimento=$worksheet->getCell('G'.$i)->getFormattedValue();
                 try{
-                    $insc->nascimento = \Carbon\Carbon::createFromFormat('d/m/Y', $insc->nascimento)->format('d/m/Y');
+                    $insc->nascimento = \Carbon\Carbon::createFromFormat('d/m/Y', $insc->nascimento)->format('Y-m-d');
                 }
                 catch(\Exception $e){
-                    $insc->nascimento = 'Erro ao carregar!:'.$e->getMessage();
+                    
                 }
                 $insc->genero=$worksheet->getCell('B'.$i)->getValue();
 
@@ -688,10 +691,11 @@ class TurmaController extends Controller
 
 
     public function processarImportacao(Request $request){
+        //dd($request);
         $cadastrados = array();
 
         foreach ($request->pessoa as $id=>$key){ // para cada elemento do array pessoa (campo checkbox)
-            $nascimento = \Carbon\Carbon::createFromFormat('d/m/Y', $request->nascimento[$id])->format('Y-m-d');
+            $nascimento = \Carbon\Carbon::createFromFormat('Y-m-d', $request->nascimento[$id])->format('Y-m-d');
             
             if($key == 'on'){ //se o checkbox estiver marcado
                 //verifica se já está cadastrado
@@ -700,18 +704,30 @@ class TurmaController extends Controller
                     $buscar_porcpf = \App\PessoaDadosGerais::where('dado',3)->where('valor',preg_replace( '/[^0-9]/is', '', $request->cpf[$id]))->first();
                     if(!is_null($buscar_porcpf))
                         $pessoa = Pessoa::find($buscar_porcpf->pessoa);
+                    else{
+                        $pessoa = Pessoa::where('nome','like',$request->nome[$id])->where('nascimento',$nascimento)->first();
+                        if(is_null($pessoa))
+                            $pessoa = PessoaController::cadastrarPessoa($request->nome[$id],$request->genero[$id],\DateTime::createFromFormat('Y-m-d',$request->nascimento[$id]));        
+                    }
                 }
-                if(!isset($pessoa) && !is_null($pessoa)){
-                    $cadastrado = Pessoa::where('nome','like',$request->nome[$id])->where('nascimento',$nascimento)->first();
-                    if(!is_null($cadastrado))
-                        $pessoa = $cadastrado;
+                else{
+                    $pessoa = Pessoa::where('nome','like',$request->nome[$id])->where('nascimento',$nascimento)->first();
+                    if(is_null($pessoa))
+                        $pessoa = PessoaController::cadastrarPessoa($request->nome[$id],$request->genero[$id],\DateTime::createFromFormat('Y-m-d',$request->nascimento[$id]));
                 }
-                if(!isset($pessoa) && !is_null($pessoa))
-                    $pessoa = PessoaController::cadastrarPessoa($request->nome[$id],$request->genero[$id],\DateTime::createFromFormat('d/m/Y',$request->nascimento[$id]));
+
+                //dd($pessoa);
                 
-                PessoaDadosGeraisController::gravarDocumento($pessoa->id,'rg',$request->rg[$id]);
-                PessoaDadosGeraisController::gravarDocumento($pessoa->id,'cpf',$request->cpf[$id]);
-                PessoaDadosContatoController::gravarTelefone($pessoa->id,$request->telefone[$id]);
+              
+
+                
+                   
+                if(isset($request->rg[$id]))
+                    PessoaDadosGeraisController::gravarDocumento($pessoa->id,'rg',$request->rg[$id]);
+                if(isset($request->cpf[$id]))
+                    PessoaDadosGeraisController::gravarDocumento($pessoa->id,'cpf',$request->cpf[$id]);
+                if(isset($request->telefone[$id]))
+                    PessoaDadosContatoController::gravarTelefone($pessoa->id,$request->telefone[$id]);
                
                 
                 if(isset($request->endereco[$id]) && isset($request->cep[$id])){
@@ -719,11 +735,15 @@ class TurmaController extends Controller
                     if(count($dado) == 0){
                         $endereco = new \App\Endereco;
                         $endereco->logradouro = $request->endereco[$id];
-                        $endereco->cidade = $request->cidade[$id];
-                        $endereco->estado = $request->estado[$id];
+                        if(isset($request->cidade[$id]))
+                            $endereco->cidade = $request->cidade[$id];
+                        if(isset($request->estado[$id]))
+                            $endereco->estado = $request->estado[$id];
+
                         $endereco->cep = preg_replace( '/[^0-9]/is', '', $request->cep[$id]);
                         $bairro = \App\classes\CepUtils::bairroCompativel(preg_replace( '/[^0-9]/is', '', $request->cep[$id]));  
-                        $endereco->bairro_str = $request->bairro[$id];       
+                        if(isset($endereco->bairro_str))
+                            $endereco->bairro_str = $request->bairro[$id];       
                         
                         if($bairro>0)
                             $endereco->bairro = $bairro;

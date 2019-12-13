@@ -60,6 +60,7 @@ class AulaController extends Controller
         else {
             try {
                 $aula->delete();
+                //apagra presenças
                 $msg = "Aula do dia " . $aula->data . "foi apagada.";
             }
             catch(\Exception $exception){
@@ -142,6 +143,8 @@ class AulaController extends Controller
         }
 
     }
+
+
 
 
 }

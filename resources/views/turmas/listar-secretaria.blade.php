@@ -295,8 +295,12 @@
                 <div class="card-block">
                     <!-- Nav tabs -->
                     <div class="row">
-                        
-                        <div class="col-xs-12 text-xs-right">
+                        <div class="col-xs-7">
+                                {{ $turmas->links() }}
+                        </div>
+                            
+                        <div class="col-xs-5 text-xs-right">
+                                
                                 <a href="/pedagogico/turmas/cadastrar" class="btn btn-secondary text-success btn-sm rounded-s" ><i class="fa fa-asterisk"></i> Nova Turma</a>&nbsp;
                             <div class="action dropdown pull-right "> 
                                 <button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenuAction" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Com os selecionados...
@@ -430,7 +434,7 @@
                                                         <div class="item-heading">Professor(a)</div>
                                                         <div> {{$turma->professor->nome_simples}}
                                                             <div>{{$turma->local->sigla}}</div>
-                                                            <div title="Sala"><small>{{isset($turma->getSala()->nome)?$turma->getSala()->nome:''}}</small></div>
+                                                            <div title="Sala"><small>{{isset($turma->sala->nome)?$turma->sala->nome:''}}</small></div>
                                                         </div>
                                                     </div>
                                                     <div class="item-col item-col-sales">

@@ -75,10 +75,10 @@
                     <button class="btn  rounded-s btn-secondary dropdown-toggle btn-sm" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Adicionar Evento
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
-                        <a class="dropdown-item" href="#" onclick="alterarStatus('aprovar')">
+                        <a class="dropdown-item" href="/eventos/cadastrar/unico" >
                             <i class="fa fa-calendar-o icon"></i>Evento único
                         </a> 
-                        <a class="dropdown-item" href="#" onclick="alterarStatus('negar')">
+                        <a class="dropdown-item" href="/eventos/cadastrar/multiplos">
                             <i class="fa fa-calendar icon"></i>Evento vários dias
                         </a> 
                      
@@ -91,7 +91,7 @@
             <div class="col-md-4">
                 <h3 class="title">FESC 1 </h3>
 
-                <p class="title-description">{{$data}}</p>
+                <p class="title-description">{{$data->format('d/m/y')}}</p>
                 
                 
             </div>
@@ -103,7 +103,7 @@
         <form class="form-inline" method="GET">
         {{csrf_field()}}
             <div class="input-group input-group-sm"> 
-            <input type="date" class="form-control boxed rounded-s" name="data" placeholder="Escolha uma data" value="{{\DateTime::createFromFormat('d/m/Y',$data)->format('Y-m-d')}}">
+            <input type="date" class="form-control boxed rounded-s" name="data" placeholder="Escolha uma data" value="{{$data->format('Y-m-d')}}">
                 <span class="input-group-btn">
                     <button class="btn btn-secondary rounded-s" type="submit" title="Filtrar resultados">
                         <i class="fa fa-filter"></i>

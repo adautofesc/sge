@@ -33,9 +33,16 @@ class SalaController extends Controller
 
 
 
-    public function listarporLocalApi($id_local){
+    public function listarPorLocalApi($id_local){
         $this->sanitizeId($id_local);
         $salas = Sala::where('local',$id_local)->orderBy('nome')->get();
+        return $salas;
+
+    }
+
+    public function listarLocaveisPorLocalApi($id_local){
+        $this->sanitizeId($id_local);
+        $salas = Sala::where('local',$id_local)->where('locavel','s')->orderBy('nome')->get();
         return $salas;
 
     }

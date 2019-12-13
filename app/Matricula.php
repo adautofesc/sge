@@ -55,14 +55,14 @@ class Matricula extends Model
 	}
 
 	public function getIdCurso(){
-		/*$curso = Curso::find($this->curso);
-		if($curso != null)
-			return $curso->nome;
-		else{*/
+		
 			
 			$inscricoes = $this->getInscricoes();
 
-			return $inscricoes->first()->turma->curso->id;
+			if(!is_null($inscricoes))
+				return $inscricoes->first()->turma->curso->id;
+			else 
+				return 0;
 			//return 'Matricula sem nome do curso.';
 			
 

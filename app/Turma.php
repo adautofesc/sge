@@ -189,7 +189,7 @@ class Turma extends Model
 	}
 
 	public function getInscricoes($tipo){
-		if($tipo == null)
+		if($tipo == null || $tipo == 'todas')
 			$this->inscricoes = $inscricoes = Inscricao::where('turma',$this->id)->get();
 		else 
 			$this->inscricoes = $inscricoes = Inscricao::where('turma',$this->id)->where('status','regular')->get();
@@ -207,8 +207,8 @@ class Turma extends Model
 	}
 	
 	public function getSala(){
-		$sala = Sala::find($this->sala);
-		return $sala;
+		$this->sala = Sala::find($this->sala);
+		return $this->sala;
 	}
 
 	public function atualizarInscritos($num){

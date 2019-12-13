@@ -7,7 +7,7 @@
 	FESC - Termo de Matrícula
 </title>
     <style type="text/css">
-        * {
+        p,.texto {
             font-family: Tahoma, MS Sans Serif, Arial, Sans Serif;
             font-size: 12pt;
             text-align: justify;
@@ -18,20 +18,31 @@
         #FormView1_MatDiaPag{
             font-size: 14pt;
         }
+        .header-tabela{
+            font-family: Tahoma, MS Sans Serif, Arial, Sans Serif;
+            font-size: 10pt;
+            text-align: justify;
+            /*color:#000000;*/
+            text-decoration: none;
+
+        }
+        .corpo-tabela{
+            font-family: Tahoma, MS Sans Serif, Arial, Sans Serif;
+            font-size: 10pt;
+            text-align: left;
+            /*color:#000000;*/
+            text-decoration: none;
+
+        }
     </style>
-<link href="../App_Themes/ob12/CardView/sprite.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/CardView/spriteAccessible.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/CardView/styles.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/Editors/sprite.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/Editors/spriteAccessible.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/Editors/styles.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/GridView/sprite.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/GridView/spriteAccessible.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/GridView/styles.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/PivotGrid/sprite.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/PivotGrid/spriteAccessible.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/PivotGrid/styles.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/VerticalGrid/sprite.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/VerticalGrid/spriteAccessible.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/VerticalGrid/styles.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/Web/sprite.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/Web/spriteAccessible.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/Web/styles.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/XtraReports/sprite.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/XtraReports/spriteAccessible.css" type="text/css" rel="stylesheet" /><link href="../App_Themes/ob12/XtraReports/styles.css" type="text/css" rel="stylesheet" /></head>
-<body onload="javascript:self.printt();">
+</head>
+<body onload="javascript:self.print();">
 
     <form name="form1" method="post" action="./ImpMatriculas.aspx?MatCod=68264" id="form1">
 <div>
 <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="1QTT+qa6d04akHRCYfwmXQbkItvk6vxzYkXFLKNOMwtvVT9K0q9Ix8i4ZmUcAW6A69azNrW9UxG3ijzzx8iXY2OKV3Bu41VN4KSFm3aQUqv2rh4MNb9d6uMeBOR+cfpfdSRDS77tuDVqlc2w+FTXf1jsD+GXcWQu7bF1MnGQmFJ1yHeRsD5VDYS5BUKQP5niEy0UaeR1d+Jxa6h6wcAgoi0EOCndpEHdViSRG98bDIfZA4uHS3rZKLr+41QDBtPTpzmOrNzyNfo9R/dHaA+32WDMhFxgoHrV5gaDqd4gitVdH6osj/dHNUjLg7+d+iMoQ2h6FXybySv1LO3ZxlHJcHWM5KWkVW7b2D8kH/LFi/OkBDaEnIniJG+88fTNa64yOGDRpnw2q6HkNiPQfxQVBOrakEGwO/4M3oLX2v5Ps2GOCFQDz+PXk3cYsguv3EXg2ulmqRfW5w7W2x7k0TvhX4TYaAdGCvE7Dbm9N0cWPyn5452xr49n8lQx2XGXUsUOb4CZfwLmFMBhyeYcs4JO5C9v+92vK6E2dJzyHvHqN+EH6yj8MK25S5hi0dEkT5jdf2rWLGlLsM6CJHm+gcIjJ6+iwrWkoy9ob0pldJggwzyLY5ITviGMZEuR2+xmNdIJk8zHKW83UiVZCoBu5/wy458ebFff37vCNzyUoQVsfkFq0eEwmQUigI6NkF2/DUp2QXtZk3mAJjoChtv4JZZgMbjHH53xOlYoaEflBfq9FThTyd0mK3DNgJBsPAzR0VPG/KMdHcmhO1fTDQouYKXYxoO6xgIt+Y+DNKeXgH0yhhbNYU7coGtWYiYSjBxa+c75R3GUdepXZF7HEqdfLxI1VDTaMkSEuNTfh5VEDv73UAHcnSHA78ptaAdEwxSbKiFcky7G5krX0q+pq0V68gI37buXlFwNfLYaDN+LMa7YNn7jrC8Hc8fh5rI9F4q4thLT0B7oiyCfLLMXfFKPAJnebnwNaFtZrz6/iFWp7ZYflTo594NB9j3XKRoyAooTWiaNp/gNHP19B0lSTHSj/my/eHNZEhQZg4Fb/7HSpSDOw1RJKPIttuEEjHAJvLmxl33aHdbE8iB/ld7K1gxI7GPOy0T8UxXyL4udsvf1lhW3jCFRIAq+fbmXN3hqc/3/Vrh40CGL84NAkmez+XNn181ec+1ZyTrsPSnSVYgArZ3D5t8WhqKja9Mq5EMDNx+Zw8XhwHcIPWm2fFjDEwO7WYRGhtcsBdwyImGaiBFsA1w7M7KIYUO29BxVNK9MEL7nMS3VUMn0MoSjwE0RyOpKfmFJkJ8f1z+asbwl/uADlUTr5N1Xlo21X+dIDP1liPZHV0X4APC+DIvZwm2hPFiBjN8XSVK/5UawV8bKikayC5y/pS/iDcP4Rcv4oTXAzQi3y6TzECx2wACvkFrHdyzl4rHMdpVbS+5gE5bPpKtA5Y0Mmzpcr92ieMSfHm5nZaAFuSVdcXiS8QmAhrtyDMSpWKN5ypS9PgdJtDek4znEojSqedvXI+sh7u+J2ApMzG8DZdDya8za9Oe8xrF3TUH/QYFScucPM3UFQ2jawagHxiTFvDvnEe4x3mC3jBAUbF7bH34IODl/e2dMHgwDwbcROwcnUyduKz7My0UHhaJ5sXiFvR0=" />
 </div>
 
-<div>
-
-	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="6FE0350C" />
-	<input type="hidden" name="__VIEWSTATEENCRYPTED" id="__VIEWSTATEENCRYPTED" value="" />
-</div>
         <table cellspacing="6" cellpadding="6" border="0" id="FormView1" style="width:100%;">
 	<tr>
 		<td colspan="2">
@@ -40,7 +51,7 @@
                         <td>
                             <img id="FormView1_Image1" src="{{asset('img/logo.jpg')}}" style="border-width:0px;" />
                         </td>
-                        <td width="100%" align="center" style="text-align: center">
+                        <td width="100%" align="center" style="text-align: center" class="texto">
                             <strong>TERMO DE MATRICULA Nº &nbsp;<span id="FormView1_CurDesTit">{{$matricula->id}}</span></strong></div>
                         </td>
                         <td><img src="/img/code39.php?code=MT{{$matricula->id}}">
@@ -75,19 +86,19 @@
                     <strong>1.1</strong> O presente formaliza a inscrição do ALUNO nas seguinte atividades:</p>
                     
                    <table cellspacing="0" rules="all" border="1" id="FormView1_g1" style="border-color:Black;border-width:1px;border-style:Solid;width:100%;border-collapse:collapse;">
-                <tr>
-                    <th align="left" scope="col">&nbsp; CURSO</th>
-                    <th align="center" scope="col" width="100px">&nbsp; DIAS</th>
-                    <th align="center" scope="col" width="110px">&nbsp; HORÁRIO</th>
-                    <th align="center" scope="col" width="180px">&nbsp; INÍCIO/TERMINO</th>
+                <tr class="header-tabela">
+                    <th align="left" scope="col">&nbsp;CURSO </th>
+                    <th align="center" scope="col" width="80px">&nbsp;DIAS </th>
+                    <th align="center" scope="col" width="50px" >&nbsp;HORÁRIO </th>
+                    <th align="center" scope="col" width="100px">&nbsp;DE/ATE </th>
         
                     <th align="center" scope="col">&nbsp; LOCAL/SALA</th>
                 </tr>
 
                 @foreach($inscricoes as $insc)
 
-                        <tr>
-                          
+                        <tr class="corpo-tabela">
+     
                             <td>
 
                                 @if($insc->turma->disciplina==null)
@@ -99,13 +110,14 @@
                             <td>{{ucwords(implode(', ', $insc->turmac->dias_semana )) }}</td>   
                                  
                             <td>{{$insc->turmac->hora_inicio}} às {{$insc->turmac->hora_termino}}</td>
-                            <td align>{{$insc->turmac->data_inicio}} a {{$insc->turmac->data_termino}}</td>
+                            <td align>{{$insc->turmac->data_inicio}} à {{$insc->turmac->data_termino}}</td>
                              
-                            <td><small>{{$insc->turmac->local->nome}} <br>sala {{($insc->turmac->getSala())->nome}}<small></td>                             
-                            
-                           
-                               
-                        
+                            <td>{{$insc->turmac->local->nome}} <br>
+                                @if(isset($insc->turmac->sala->nome))
+                                sala {{$insc->turmac->sala->nome}}
+                                @endif
+                            </td>
+
                         </tr>
                     @endforeach
 
@@ -175,7 +187,7 @@
                     </p>
                 </div>
                 
-                                <table border="0" cellpadding="2" cellspacing="2" width="100%" style="height:100px;">
+                                <table border="0" cellpadding="2" cellspacing="2" width="100%" style="height:100px;" class="texto">
                                     <tr>
                                     <td align="center" style="text-align:center;">
                                         <img src="{{asset('img/dir_sign.jpg')}}" width="150px"  /></br>

@@ -7,6 +7,9 @@
 <title>Lista de frequência</title>
 <meta content="Sheets" name="generator" />
 <style type="text/css"><!--br {mso-data-placement:same-cell;}
+body{
+	font-family:Calibri;
+}
 .auto-style1 {
 	text-align: center;
 	vertical-align: middle;
@@ -44,7 +47,7 @@
 }
 .datas{
 	border-right:1px solid #000000;
-	border-bottom:1px solid #000000;
+	border-top:1px solid #000000;
 	overflow:hidden;
 	padding:0px 3px 0px 3px;
 	vertical-align:middle;
@@ -62,13 +65,60 @@
 
 
 }
+.default{
+	overflow:hidden;
+	padding:0px 3px 0px 3px;
+	vertical-align:middle;
+}
+@media print {
+            .hide-onprint { 
+                display: none;
+			}
+}
 </style>
+<script>
+	function todos(){
+		location.href = location.href+'?filtrar=todos';
+	}
+</script>
 </head>
 
 <body>
+<div class="hide-onprint">
+	<button onclick="todos()">Visualizar ocultos</button>
+</div>
+<table width="100%">
+	<tr>
+		<td style="width:40rem;">&nbsp;</td>
+		<td class="titulo" align="center">
+			<strong>FUNDAÇÃO EDUCACIONAL SÃO CARLOS</strong><br>
+			<span class="subtitulo">{{$inscritos->first()->turma->programa->nome}}</span>
+		</td>
+		<td>&nbsp;</td>
+		
+	</tr>
+	<tr>
+		<td><strong>RELATÓRIO DE FREQUÊNCIA</strong> <br>
+			<span class="nome-curso">{{$inscritos->first()->turma->getNomeCurso()}}</span>
+		</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td >{{$inscritos->first()->turma->local->nome}} / 
+			@if(isset($inscritos->first()->turma->sala->nome))
+				{{$inscritos->first()->turma->sala->nome}}
+			@endif
+			<br>
+			TURMA: {{$inscritos->first()->turma->id}} - {{implode($inscritos->first()->turma->dias_semana,',')}} feiras das {{$inscritos->first()->turma->hora_inicio}} às {{$inscritos->first()->turma->hora_termino}}
 
-
-
+		</td>
+		<td >&nbsp;
+		</td>
+		<td  align="right" ><strong>Início:</strong>&nbsp;{{$inscritos->first()->turma->data_inicio}}<br>
+			<strong>Termino:</strong>&nbsp;{{$inscritos->first()->turma->data_termino}}</td>
+	</tr>
+</table>
 <table cellpadding="0" cellspacing="0" dir="ltr" style="table-layout:fixed;font-size:11pt;font-family:Calibri;width:0px;" xmlns="http://www.w3.org/1999/xhtml">
 	<colgroup>
 		<col width="31" />
@@ -77,84 +127,20 @@
 		@for($col=1;$col<=count($aulas);$col++)
 		<col width="18" />
 		@endfor
-		
-
 
 		<col width="38" />
 		<col width="60" />
 	</colgroup>
-	<tr>
-		<td class="stilo1" colspan="5">
-		</td>
-		
-		<td class="auto-style1" colspan="19" class="stilo1">
-		<strong>FUNDAÇÃO EDUCACIONAL SÃO CARLOS</strong></td>
-		<td class="stilo1" colspan="8">
-		</td>
-		
-		<td colspan="2" rowspan="3" style="overflow: hidden; padding: 0px 3px 0px 3px; vertical-align: bottom;">
-		</td>
-	</tr>
-	<tr>
-		<td class="stilo2" colspan="5"></td>
-	
-		<td class="auto-style2" colspan="19" class="stilo2" valign="top">
-		<strong>{{$inscritos->first()->turma->programa->nome}}</strong></td>
-		<td class="stilo2" colspan="8">
-		</td>
 
-	</tr>
-	<tr style="height:26px;">
-		<td class="auto-style3" colspan="2" data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;RELATÓRIO DE FREQUÊNCIA&quot;}" rowspan="1" style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:bottom;font-family:Arial;font-weight:bold;color:#000000;">
-		RELATÓRIO DE FREQUÊNCIA</td>
-		<td class="stilo3" colspan="30">
-		</td>
-		
-	</tr>
-	<tr style="height:20px;">
-		<td colspan="34" data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Oficina de Photoscape&quot;}" rowspan="1" style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:bottom;font-family:Arial;font-size:10pt;font-weight:normal;color:#000000;">
-		{{$inscritos->first()->turma->curso->nome}}
-		@if(isset($inscritos->first()->turma->disciplina->nome))
-		- {{$inscritos->first()->turma->disciplina->nome}}
-		@endif
-	</td>
-	</tr>
-	<tr style="height:31px;">
-		<td class="stilo3" colspan="10">
-		</td>
-		
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:bottom;font-size:8pt;font-weight:bold;color:#000000;text-align:right;" colspan="5">
-		Início</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:bottom;font-size:8pt;color:#000000;" colspan="3">
-		{{$inscritos->first()->turma->data_inicio}}</td>
-	</tr>
-	<tr style="height:17px;">
-		<td colspan="2" data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;CRAS São Carlos VIII&quot;}" rowspan="1" style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:bottom;font-family:Arial;font-size:8pt;font-weight:normal;color:#000000;">
-		{{$inscritos->first()->turma->local->nome}}</td>
-		<td class="stilo3" colspan="10">
-		</td>
-		
-		<td  style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:bottom;font-size:8pt;font-weight:bold;color:#000000;text-align:right;" colspan="5">
-		Término</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:bottom;font-size:8pt;color:#000000;" colspan="3">{{$inscritos->first()->turma->data_termino}}
-		</td>
-	</tr>
-	<tr style="height:23px;">
-		<td colspan="11" data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;TURMA: 2ª feiras das 08h às 10h&quot;}" rowspan="1" style="border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:top;font-family:Arial;font-size:8pt;font-weight:normal;color:#000000;">
-		TURMA: {{$inscritos->first()->turma->id}} - {{implode($inscritos->first()->turma->dias_semana,',')}} feiras das {{$inscritos->first()->turma->hora_inicio}} às {{$inscritos->first()->turma->hora_termino}}</td>
-		<td class="stilo4" colspan="{{count($aulas)}}}">
-		</td>
-		
-	</tr>
-	<tr style="height:17px;">
-		<td colspan="1" data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;No&quot;}" rowspan="2" style="border-right:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;font-size:8pt;color:#000000;text-align:center;">
+	<tr style="height:17px;"" >
+		<td colspan="1" rowspan="2" style="border-top:1px solid #000000;border-right:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;font-size:8pt;color:#000000;text-align:center;">
 		<span>
-		<div style="max-height:37px">
+		<div style="max-height:37px;"  >
 			No</div>
 		</span></td>
-		<td colspan="1" data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Aluno&quot;}" rowspan="2" style="border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;background-color:#cccccc;font-size:10pt;font-weight:bold;color:#000000;">
+		<td colspan="1"  rowspan="2" style="border-top:1px solid #000000;border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;background-color:#cccccc;font-size:10pt;font-weight:bold;color:#000000;">
 		<span>
-		<div style="max-height:37px">
+		<div style="max-height:37px" >
 			Aluno</div>
 		</span></td>
 
@@ -205,7 +191,7 @@
 	<tr style="height:16px;background-color:#cccccc;">
 	@endif
 
-		<td data-sheets-value="{&quot;1&quot;:3,&quot;3&quot;:1}" style="border-right:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;font-size:8pt;color:#000000;text-align:center;">
+		<td  style="border-right:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;font-size:8pt;color:#000000;text-align:center;">
 		{{$ordem++}}</td>
 		<td style="border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
 			@if(strlen($inscrito->pessoa->nome)>36)
@@ -239,65 +225,65 @@
 		</td>
 		<td class="stilo3">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
 		<td class="stilo3">
 		</td>
@@ -307,23 +293,23 @@
 	<tr style="height:20px;">
 		<td colspan="6" data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Educador:  Adauto Inocêncio de Oliveira Jr.&quot;}" rowspan="1" style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:bottom;color:#000000;">
 		Educador: {{$inscrito->turma->professor->nome}}</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
-		<td style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+		<td class="default">
 		</td>
 		<td colspan="18" data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Coordenador: Marco Antonio Lozano Porta Lopes&quot;}" style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;color:#000000;">
 		Coordenador: </td>

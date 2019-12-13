@@ -10,6 +10,7 @@
         </div>
     </div>
 </div>
+@include('inc.errors')
 <section class="section">
     <div class="row">
         <div class="col-md-10 center-block">

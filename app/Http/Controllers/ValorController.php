@@ -79,7 +79,6 @@ class ValorController extends Controller
     		else
     		{
 
-    			//pega a primeira inscricao da matricula
     			$inscricao = \App\Inscricao::where('matricula',$matricula->id)->first();
                 if(!$inscricao){
                     return ValorController::retornarZero('Não há inscrições ativas');
@@ -120,32 +119,13 @@ class ValorController extends Controller
                         $valor->referencia = 'parcelas temporaria';
                         return $valor;
                     }
-                
 
-               
-
-
-                
                 if(isset($valor))
                     return $valor;//number_format($valor->valor,2,',','.');
                 else
 
-                    throw new \Exception("Erro ao acessar valor da turma:".$inscricao->turma->id.' Matrricula:'.$matricula->id, 1);
-                    
-                    /*$valor = new Valor;
-                        $valor->valor = 0;
-                        $valor->parcelas = 1;
-                        $valor->referencia = 'Valor não disponível no tabela de valores.';
-                        return $valor;*/
-                     
-                    
-                    
-                
-
-    			//pegar programa e  carga horária
-    			//listar se existe algum valor com programa e curso
-    				//se sim retornar o valor
-    				//se não verificar programa e carga horária
+                    throw new \Exception("Erro ao acessar valor da turma:".$inscricao->turma->id.' Matrricula:'.$matricula->id .'. Verifique se a turma está com seu valor devidamente atribuído ou se são foi escolhido a parceria.', 1);
+             
     		}
     	}
 

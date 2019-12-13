@@ -47,10 +47,10 @@
                         &nbsp;&nbsp;Atualizar vagas</a>
                     </div>  
                     <div>
-                            <a href="{{route('turmas.expiradas')}}" class="btn btn-danger-outline col-xs-12 text-xs-left">
-                            <i class=" fa fa-minus-square "></i>
-                            &nbsp;&nbsp;Encerrar Expiradas</a>
-                        </div>           
+                        <a href="{{route('turmas.expiradas')}}" class="btn btn-danger-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-minus-square "></i>
+                        &nbsp;&nbsp;Encerrar Expiradas</a>
+                    </div>           
                 </div>
             </div>
         </div>
@@ -66,7 +66,12 @@
                         <a href="/secretaria/relatorios/turmas"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Alunos 1º Semestre de 2018</a>
-                    </div>            
+                    </div>  
+                    <div>
+                        <a href="/dev/importar-status-boletos"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Processar arquivo de dívida ativa.</a>
+                    </div>               
                 </div>
             </div>
         </div>

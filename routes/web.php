@@ -115,6 +115,12 @@ Route::middleware('login') ->group(function(){
 
 	});
 
+	Route::prefix('eventos')->group(function(){
+		Route::get('cadastrar/{tipo?}','EventoController@cadastrar_view');
+		Route::post('cadastrar/{tipo?}','EventoController@cadastrar_exec');
+
+	});
+
 //**************************************************************************SETORES******************************** */
 
 	//desenvoldedor
@@ -550,9 +556,16 @@ Route::middleware('login') ->group(function(){
 		Route::get('/','painelController@docentes');
 		Route::get('turmas-professor', 'TurmaController@listarProfessores');
 		Route::post('turmas-professor', 'TurmaController@turmasProfessor');
-		Route::get('frequencia/{turma}','FrequenciaController@listaChamada');
-		Route::get('chamada/{turma}/{aula?}','FrequenciaController@novaChamada');
-		Route::post('chamada/{turma}/{aula?}','FrequenciaController@gravarChamada');
+		
+		Route::prefix('frequencia')->group( function(){
+			Route::get('listar/{turma}','FrequenciaController@listaChamada');
+			Route::get('nova-aula/{turma}/{aula?}','FrequenciaController@novaChamada_view');
+			Route::post('nova-aula/{turma}/{aula?}','FrequenciaController@novaChamada_exec');
+			Route::get('editar-aula/{aula}','FrequenciaController@editarChamada_view');
+			Route::post('editar-aula/{aula}','FrequenciaController@editarChamada_exec');
+			Route::get('apagar-aula/{aula}','FrequenciaController@novaChamada');
+		});
+		
 	});
 	Route::get('chamada/{id}/{pg}/{url}/{hide?}','TurmaController@getChamada'); //optional parameter is used here!
 	Route::get('plano/{professor}/{tipo}/{curso}','TurmaController@getPlano');
@@ -591,6 +604,7 @@ Route::middleware('login') ->group(function(){
 Route::get('api/chamada/{id}','WebServicesController@apiChamada');
 Route::get('api/turmas','WebServicesController@apiTurmas');
 Route::get('api/salas-api/{id}','SalaController@listarPorLocalApi');
+Route::get('api/salas-locaveis-api/{id}','SalaController@listarLocaveisPorLocalApi');
 
 //----------------------------- Errors treatment
 

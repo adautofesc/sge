@@ -111,6 +111,7 @@ class MatriculaController extends Controller
         $matricula->desconto=$r->fdesconto;
         $matricula->valor_desconto=$r->valordesconto;
         $matricula->obs=$r->obs;
+        $matricula->parcelas = $r->parcelas;
         $bolsa = \App\Bolsa::select(['bolsas.id', 'bolsas.status'])
                         ->join('bolsa_matriculas','bolsa_matriculas.bolsa','bolsas.id')
                         ->where('bolsa_matriculas.matricula',$matricula->id)
@@ -119,6 +120,7 @@ class MatriculaController extends Controller
             return redirect()->back()->withErrors(['Bolsa pendente para esta matrícula. Resolva a pendência antes']); 
         $matricula->save();
         MatriculaController::alterarStatus($matricula->id,$r->status);
+
         AtendimentoController::novoAtendimento("Matrícula atualizada.", $matricula->pessoa, Session::get('usuario'));
         //LancamentoController::atualizaMatricula($matricula->id);
         return redirect(asset('secretaria/atender'));
@@ -143,6 +145,8 @@ class MatriculaController extends Controller
         $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->whereIn('status',['regular','pendente','finalizada'])->get();
         foreach($inscricoes as $inscricao){
             $inscricao->turmac=Turma::find($inscricao->turma->id);
+            $inscricao->turmac->getSala();
+
         }
 
 
@@ -277,12 +281,15 @@ class MatriculaController extends Controller
         $matricula->pessoa=$pessoa;
         $matricula->atendimento=$atendimento->id;
         $matricula->data=date('Y-m-d');
-        $matricula->parcelas=$turma->tempo_curso;
-        $matricula->dia_venc=20;
+        $matricula->dia_venc=10;
         $matricula->status=$status_inicial;
         $matricula->valor=str_replace(',','.',$turma->valor);
         $matricula->curso = $turma->curso->id;
         $matricula->save();
+
+        $matricula->getParcelas();
+        $matricula->save();
+
 
         return $matricula;
 

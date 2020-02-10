@@ -57,9 +57,9 @@
 						<label class="item-check">
 						<input class="checkbox" type="checkbox" checked="true" name="aluno[]" value="{{$inscricao->pessoa->id}}">
 						@if($inscricao->status!= 'regular')
-						<span ><small class="text-danger">({{$inscricao->status}})</small> {{$inscricao->pessoa->nome}}</span>
+						<span ><small class="text-danger">({{$inscricao->status}})</small> {{$inscricao->pessoa->nome_simples}}</span>
 						@else 
-						<span>{{$inscricao->pessoa->nome}}</span>
+						<span title="{{$inscricao->pessoa}}">{{$inscricao->pessoa->nome_simples}}</span>
 						@endif
 						</label>
 					</div>
@@ -126,8 +126,9 @@
 					{{$aula_anterior->data->format('d/m/Y')}}<br>
 					@if($aula_anterior->status == 'executada')	
 					<a href="/docentes/frequencia/editar-aula/{{$aula_anterior->id}}" title="Editar dados"><i class=" fa fa-edit"></i></a>
-						&nbsp;
+						&nbsp;<!--
 					<a href="#" title="Apagar aula" onclick="apagarAula('{{$aula_anterior->id}}','{{$aula_anterior->data->format('d/m/Y')}}')"><i class=" fa fa-trash"></i></a>
+						-->
 					@endif
 					</td>
 					<td>

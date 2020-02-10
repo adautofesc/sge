@@ -35,5 +35,13 @@ class WebServicesController extends Controller
     public function apiTurmas(){
         $turmas = Turma::whereIn('status',[2,4])->get();
         return $turmas;
-    }
+	}
+	
+	public function listaProfessores(){
+		$professores=\App\PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
+		$sorted = $professores->sortBy('nome_simples');
+		$sorted->values()->all();
+		
+		return response()->json($sorted, 200);
+	}
 }

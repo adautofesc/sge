@@ -105,13 +105,13 @@ class painelController extends Controller
     public function administrativo(){
         return view('admin.home');
     }
-    public function docentes(){
+    public function docentes($semestre=0){
 
-
-        $turmas = \App\Http\Controllers\TurmaController::listarTurmasDocente(session('usuario'));
+        $semestres = \App\classes\Data::semestres();
+        $turmas = \App\Http\Controllers\TurmaController::listarTurmasDocente(session('usuario'),$semestre);
                     
         
-        return view('docentes.home')->with('turmas',$turmas);
+        return view('docentes.home')->with('turmas',$turmas)->with('semestres',$semestres)->with('semestre_selecionado',$semestre);
 
 
 

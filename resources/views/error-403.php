@@ -35,6 +35,7 @@
                         <h2 class="error-sub-title"> Sem permissão para este recurso</h2>
                     </div>
                     <div class="error-container">
+                        <!--
                         <p>Procurando algum outro recurso?</p>
                         <div class="row">
                             <div class="col-xs-12">
@@ -42,7 +43,7 @@
                         <button class="btn btn-primary" type="button">Procurar</button>
                       </span> </div>
                             </div>
-                        </div> <br>
+                        </div> <br>-->
                         <a class="btn btn-primary" href="."> <i class="fa fa-angle-left"></i> Voltar para o painel </a>
                     </div>
                 </div>

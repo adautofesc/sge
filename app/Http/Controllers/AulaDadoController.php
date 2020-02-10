@@ -13,7 +13,7 @@ class AulaDadoController extends Controller
      * 24 ocorrencia
      ***********
      */
-    public function createDadoAula(int $aula, $conteudo, int $tipo ){
+    public static function createDadoAula(int $aula,  string $tipo, string $conteudo ){
         if(!is_null($conteudo) && $conteudo <> ''){
             $info = new AulaDado();
             $info->dado = $tipo;
@@ -23,14 +23,21 @@ class AulaDadoController extends Controller
             return $info;
         }
     }
-    public function updateDadoAula(int $aula, $conteudo, int $tipo){
+    public static function updateDadoAula(int $aula, string $tipo, string $conteudo){
         $dado = AulaDado::where('aula',$aula)->where('dado',$tipo)->first();
         if(isset($dado->id)){
             if($dado->valor <> $conteudo)
                 $dado->valor = $conteudo;
                 $dado->save();
         }
-        else $this->createDadoAula($aula,$conteudo, $tipo);
+        else 
+            createDadoAula($aula,$tipo, $conteudo);
 
+    }
+    public function limparDado(Request $r){
+        $dados = AulaDado::where('aula',$r->aula)->where('dado',$r->dado)->get();
+        foreach($dados as $info){
+            $info->delete();
+        }
     }
 }

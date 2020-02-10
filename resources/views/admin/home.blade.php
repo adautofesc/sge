@@ -28,7 +28,12 @@
                         <a href="agendamento-salas"  target="_self" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Locais de atendimento/parcerias">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Agendamento de salas</a>
-                    </div>              
+                    </div> 
+                    <div>
+                        <a href="cobranca-automatica"  target="_self" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Testar Cobrança Automatizada">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Cobrança automatizada</a>
+                    </div>               
                 </div>
             </div>
         </div>

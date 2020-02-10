@@ -118,13 +118,23 @@ Class Data
             return $anos;
         }
         public static function semestres(){
-            $semestres = \DB::select( \DB::raw('select CASE WHEN month(data_termino)<=7 THEN 1 else 2 end as semestre,year(data_termino)as ano FROM turmas GROUP BY semestre,ano order by ano DESC, semestre DESC'));
+            $semestres = \DB::select( \DB::raw('select CASE WHEN month(data_termino)<=7 THEN 1 else 2 end as semestre,year(data_termino)as ano FROM turmas where deleted_at is null GROUP BY semestre,ano order by ano DESC, semestre DESC'));
             return $semestres;
         }
 
         public static function periodoSemestre($valor){
-            $semestre = substr($valor, 0,1);
-            $ano= substr($valor, 1,4);
+            if($valor==0){
+				if(date('m')<8)
+					$semestre = 1;
+				else
+					$semestre = 2;
+				$ano = date('Y');
+			}
+			else{
+				$semestre = substr($valor, 0,1);
+            	$ano= substr($valor, 1,4);
+			}    
+            
 
             if($semestre == 1)
                 $datas = [($ano-1).'-11-20%', $ano.'-06-30'];

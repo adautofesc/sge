@@ -28,10 +28,10 @@
 <body>
 	<div class="container">
 		<div class="row" style="margin-bottom: 0;">
-			<div class="col-xs-2" tyle="margin-bottom: 0;">
+			<div class="col-xs-2" style="margin-bottom: 0;">
 				<img src="{{asset('/')}}/img/logofesc.png" width="80"/>
 			</div>
-			<div class="col-xs-8" tyle="margin-bottom: 0;">
+			<div class="col-xs-7" style="margin-bottom: 0;" >
 				<p>
 					<small><small>
 						<strong>
@@ -42,7 +42,7 @@
 					</small></small>
 				</p>
 			</div>
-			<div class="col-2" tyle="margin-bottom: 0;">
+			<div class="col-xs-3 pull-right" style="margin-bottom: 0;">
 				<img src="/img/code39.php?code=RD{{$bolsa->id}}">
 			
 			</div>
@@ -145,7 +145,7 @@
 			<div class="col-xs-2" tyle="margin-bottom: 0;">
 				<img src="{{asset('/')}}/img/logofesc.png" width="80"/>
 			</div>
-			<div class="col-xs-8" tyle="margin-bottom: 0;">
+			<div class="col-xs-7" tyle="margin-bottom: 0;">
 				<p>
 					<small><small>
 						<strong>
@@ -156,7 +156,7 @@
 					</small></small>
 				</p>
 			</div>
-			<div class="col-2" tyle="margin-bottom: 0;">
+			<div class="col-xs-3" style="margin-bottom: 0;">
 			<img src="/img/code39.php?code=PA{{$bolsa->id}}">
 			</div>
 

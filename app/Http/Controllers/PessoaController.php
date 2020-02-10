@@ -374,6 +374,8 @@ class PessoaController extends Controller
 			$pessoa->$tipoDado=$dado['valor'];
 		}
 		
+		
+		
 		$dependentes= $pessoa->dadosGerais->where('pessoa',$pessoa->id)->where('dado',7);
 		
 		foreach($dependentes as $dependente)
@@ -422,7 +424,7 @@ class PessoaController extends Controller
 			$pessoa->bairro_alt=$endereco->bairro_str;
 		}
 		
-
+		//dd($pessoa);
 		return $pessoa;
 
 	}

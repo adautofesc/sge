@@ -116,7 +116,7 @@ class MatriculaController extends Controller
                         ->join('bolsa_matriculas','bolsa_matriculas.bolsa','bolsas.id')
                         ->where('bolsa_matriculas.matricula',$matricula->id)
                         ->first();
-        if(isset($bolsa) && $bolsa->status <> 'ativa')
+        if(isset($bolsa) && $bolsa->status == 'analisando')
             return redirect()->back()->withErrors(['Bolsa pendente para esta matrícula. Resolva a pendência antes']); 
         $matricula->save();
         MatriculaController::alterarStatus($matricula->id,$r->status);

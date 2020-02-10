@@ -1526,7 +1526,7 @@ label,
 
 .logo {
   display: inline-block;
-  width: 45px;
+  width: 35px;
   height: 25px;
   vertical-align: middle;
   margin-right: 5px;
@@ -1534,25 +1534,27 @@ label,
   .logo .l {
     width: 11px;
     height: 11px;
-    border-radius: 50%;
+    border-radius: 40%;
     background-color: #7867A7;
     position: absolute; }
     .logo .l.l1 {
+
       bottom: 0;
-      left: 0; }
+      left: 0;
+      background-color: white; 
+      
+    }
+      
     .logo .l.l2 {
-      width: 7px;
-      height: 7px;
-      bottom: 13px;
-      left: 10px; }
+      top: 1;
+      left: 0; }
     .logo .l.l3 {
-      width: 7px;
-      height: 7px;
-      bottom: 4px;
-      left: 17px; }
+      
+      bottom: 0px;
+      left: 14px; }
     .logo .l.l4 {
-      bottom: 13px;
-      left: 25px; }
+      top: 0px;
+      left: 14px;  }
     .logo .l.l5 {
       bottom: 0;
       left: 34px; }

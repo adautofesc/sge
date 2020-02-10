@@ -25,7 +25,7 @@ class Aula extends Model
     }
 
     public function getConteudo(){
-        $conteudo = AulaDado::where('aula',$this->id)->where('dado',23)->get();
+        $conteudo = AulaDado::where('aula',$this->id)->where('dado','conteudo')->get();
         if(count($conteudo))
             return $conteudo->implode('valor','. ');
         else
@@ -33,11 +33,20 @@ class Aula extends Model
     }
 
     public function getOcorrencia(){
-        $ocorrencias = AulaDado::where('aula',$this->id)->where('dado',24)->get();
+        $ocorrencias = AulaDado::where('aula',$this->id)->where('dado','ocorrencia')->get();
         if(count($ocorrencias))
             return $ocorrencias->implode('valor','. ');
         else
             return 'Nenhuma ocorrência registrada.';
+
+    }
+
+    public function getDados($dado){
+        $dados = AulaDado::where('aula',$this->id)->where('dado',$dado)->get();
+        if(count($dados))
+            return $dados->implode('valor','. ');
+        else
+            return '';
 
     }
 }

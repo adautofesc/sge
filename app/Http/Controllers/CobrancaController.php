@@ -19,7 +19,7 @@ class CobrancaController extends Controller
 
 			//seleciona boletos de status emitidos, vencido ordenado por pessoa
 			if($ativos)
-				$boletos = Boleto::whereIn('status',['emitido','gravado','impresso'])->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->limit(10)->get();
+				$boletos = Boleto::whereIn('status',['emitido','gravado','impresso'])->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
 			else
 				$boletos = Boleto::where('status','divida')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
 			
@@ -110,10 +110,10 @@ class CobrancaController extends Controller
 		public function relatorioDevedoresXls($ativos=1){
 			//header para XLS
 
-			/*
+			
 			header('Content-Type: application/vnd.ms-excel');
 	        header('Content-Disposition: attachment;filename="'. 'cobranca' .'.xls"'); 
-	        header('Cache-Control: max-age=0');*/
+	        header('Cache-Control: max-age=0');
 			
 	        
 	        $planilha =  new Spreadsheet();
@@ -177,6 +177,34 @@ class CobrancaController extends Controller
 
 			
 		}
+
+		public function cobrancaAutomatica(){
+			
+			$boletos = Boleto::where('pessoa',$id)
+			 	->whereIn('status',['gravado','impresso','emitido','divida','aberto executado'])
+	
+			 	->orderBy('id','desc')
+			 	->get();
+			 foreach($boletos as $boleto){
+			 	$boleto->getLancamentos();
+			 }
+			
+			$lancamentos = Lancamento::where('pessoa',$id)->where('boleto',null)->where('status',null)->get();
+
+			
+			$dt_limite_pendencia = \Carbon\Carbon::today()->addDays(-10);
+			$dt_limite_cancelamento = \Carbon\Carbon::today()->addDays(-17);
+
+			$boleto_pendencia= $boletos->whereIn('status',['emitido','divida','aberto executado'])->where('vencimento','<',$dt_limite_pendencia->toDateString());
+			$boleto_cancelar= $boletos->whereIn('status',['emitido','divida','aberto executado'])->where('vencimento','<',$dt_limite_cancelamento->toDateString());
+			
+			return $boletos;
+			
+			return 'cobranca automatica rodando';
+			
+		}
+
+
 		public function relatorioDevedoresSms($ativos=1){
 			header('Content-Type: text/plain');
 	        header('Content-Disposition: attachment;filename="'. 'cobranca-sms' .'.txt"'); /*-- $filename is  xsl filename ---*/

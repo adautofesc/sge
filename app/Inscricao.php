@@ -38,7 +38,8 @@ class Inscricao extends Model
 
 	}
 	public function getAtestado(){
-		$atestado = \App\Atestado::where('pessoa',$this->pessoa->id)->orderByDesc('id')->first();
+			$atestado = \App\Atestado::where('pessoa',$this->pessoa->id)->orderByDesc('id')->first();
+		
 		
 
 		return $atestado;

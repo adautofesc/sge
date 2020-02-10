@@ -30,6 +30,7 @@ class SecretariaController extends Controller
 
 
 	public function atender($id=0){
+	
 
 		if($id>0)
 			session('pessoa_atendimento',$id);
@@ -59,6 +60,7 @@ class SecretariaController extends Controller
 	
 		}
 		$errosMsg=\App\PessoaDadosGerais::where('pessoa',$id)->where('dado',20)->get();
+		
 		if(isset($_GET["mostrar"])){
 			 $matriculas=Matricula::where('pessoa', Session::get('pessoa_atendimento'))->orderBy('id','desc')->limit(20)->get();
 			 foreach($matriculas as $matricula){

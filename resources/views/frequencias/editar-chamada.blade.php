@@ -53,9 +53,9 @@
 						<label class="item-check">
 						<input class="checkbox" type="checkbox" name="aluno[]" value="{{$inscricao->pessoa->id}}" {{in_array($inscricao->pessoa->id,$frequencias)?'checked':false}}>
 						@if($inscricao->status!= 'regular')
-						<span ><small class="text-danger">({{$inscricao->status}})</small> {{$inscricao->pessoa->nome}}</span>
+						<span ><small class="text-danger">({{$inscricao->status}})</small> {{$inscricao->pessoa->nome_simples}}</span>
 						@else 
-						<span>{{$inscricao->pessoa->nome}}</span>
+						<span>{{$inscricao->pessoa->nome_simples}}</span>
 						@endif
 						</label>
 					</div>
@@ -124,7 +124,7 @@
 						
 						<a href="#" title="Editar dados"><i class=" fa fa-edit"></i></a>
 						&nbsp;
-						<a href="#" title="Apagar aula"><i class=" fa fa-trash"></i></a>
+						<!--<a href="#" title="Apagar aula"><i class=" fa fa-trash"></i></a>-->
 					</td>
 					<td>
 						{{$aula_anterior->conteudo}} <br>

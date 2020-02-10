@@ -17,10 +17,14 @@
 					<option value="gravado" {{$boleto->status == 'gravado' ? "selected" : ""}} >Gravado</option>
 					<option value="impresso" {{$boleto->status == 'impresso' ? "selected" : ""}} >Impresso</option>
 					<option value="emitido" {{$boleto->status == 'emitido' ? "selected" : ""}}>Enviado ao banco</option>
-					<!--
+					<option value="divida" {{$boleto->status == 'divida' ? "selected" : ""}}>Dívida</option>
 					<option value="cancelar" {{$boleto->status == 'cancelar' ? "selected" : ""}}>Cancelar</option>
 					<option value="cancelado" {{$boleto->status == 'cancelado' ? "selected" : ""}}>Cancelado</option>
-					-->
+					@if(unserialize(Session('recursos_usuario'))->contains('recurso','25'))
+					<option value="renegociado" {{$boleto->status == 'renegociado' ? "selected" : ""}}>Renegociado</option>
+					<option value="pago" {{$boleto->status == 'pago' ? "selected" : ""}}>Pago</option>
+					@endif
+					
 					
 					
 				</select> 

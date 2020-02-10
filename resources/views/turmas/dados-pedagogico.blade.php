@@ -1,7 +1,22 @@
  @extends('layout.app')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 @section('pagina')
 <div class="title-block">
-    <h3 class="title">Turma {{$turma->id}} - 
+    
+    <h3 class="title">
+        @if($turma->status == 'andamento' || $turma->status == 'iniciada' )
+        <span  class="badge badge-pill badge-success" style="font-size: 0.8rem">
+        @elseif($turma->status == 'espera' || $turma->status == 'lancada' || $turma->status == 'inscricao' )
+         <span  class="badge badge-pill badge-info" style="font-size: 0.8rem">
+        @elseif($turma->status == 'cancelada')
+         <span  class="badge badge-pill badge-danger" style="font-size: 0.8rem">
+        @else
+         <span  class="badge badge-pill badge-secondary" style="font-size: 0.8rem">
+        @endif
+
+            <i class="fa fa-{{$turma->icone_status}} icon"></i> {{$turma->status}}
+        </span>
+        Turma {{$turma->id}} - 
         @if(!empty($turma->disciplina->nome))
             {{$turma->disciplina->nome}} / 
         @endif
@@ -15,25 +30,45 @@
         das {{$turma->hora_inicio}} às {{$turma->hora_termino}} - 
         Prof(a). {{$turma->professor->nome_simples}}
         <br>
-        @if($turma->status == 'andamento' || $turma->status == 'iniciada' )
-        <span  class="badge badge-pill badge-success" style="font-size: 0.8rem">
-        @elseif($turma->status == 'espera' || $turma->status == 'lancada' || $turma->status == 'inscricao' )
-         <span  class="badge badge-pill badge-info" style="font-size: 0.8rem">
-        @elseif($turma->status == 'cancelada')
-         <span  class="badge badge-pill badge-danger" style="font-size: 0.8rem">
-        @else
-         <span  class="badge badge-pill badge-secondary" style="font-size: 0.8rem">
+        
+        Início em {{$turma->data_inicio}} Término em {{$turma->data_termino}}. Em: {{$turma->local->nome}}
+        @if(isset($turma->sala))
+        -Sala: {{($turma->getSala())->nome}}
         @endif
-
-            <i class="fa fa-{{$turma->icone_status}} icon"></i> {{$turma->status}}
-        </span>
-        Início em {{$turma->data_inicio}} Término em {{$turma->data_termino}}
     </p>
 </div>
 @include('inc.errors')
+<div class="modal fade in" id="confirm-modal" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header"> 
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar" title="Fechar caixa">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title"><i class="fa fa-info-circle"></i> Título Modal</h4>
+            </div>
+            <div class="modal-body">
+               <!-- conteúdo do modal -->
+               <!--
+               <div>
+                   <input type="text" class="form-control form-control-sm" name="motivo-cancelamento" placeholder="Escreva aqui o motivo"><br>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-primary" onclick="alterar_aula('cancelar',320);" data-dismiss="modal">Confirmar</button> 
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
+                </div>
+            -->
+            
+            </div>
+            
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 <section class="section">
     <div class="row">
-        <div class="col-md-6 center-block">
+        <div class="col-md-9 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
@@ -42,20 +77,62 @@
                 </div>
 
                 <div class="card-block">
-                   <ol>
-                        @foreach($inscricoes as $inscricao)
-                        <li>
-                            {{$inscricao->pessoa->nome}} 
-                        </li>
-                        @endforeach
-                    </ol>
+                    <table class="table table-striped table-condensed" style="font-size: 11px;">
+                        <thead>
+                            <th width="0px">&nbsp;</th>
+                            <th>Nome</th>
+                            <th>Nascimento</th>
+                            <th>Telefone</th>
+                            <th>Atestado</th>
+                        </thead>
+                        <tbody>
+                            @php($a=0)
+                            @foreach($inscricoes as $inscricao)
+                            @php($a++)
+                            <tr>
+                                <td>
+                                   {{$a}}
+                                </td>
+                                <td>                                                                 
+                                    <b>{{$inscricao->pessoa->nome}}</b>  
+                                </td>
+                                <td>
+                                    {{\Carbon\Carbon::parse($inscricao->aluno->nascimento)->format('d/m/y')}} 
+                                </td>
+                                <td>
+                                    @foreach($inscricao->telefone as $telefone)
+                                    {{\App\classes\Strings::formataTelefone($telefone->valor)}}| 
+                                     @endforeach    
+                                </td>
+                                <td>
+                                    @if(isset($inscricao->atestado))
+                                        @if($inscricao->atestado->validade<=date('Y-m-d'))
+                                        <a class="badge badge-pill badge-danger" style="font-size: 10px; text-decoration: none; color:white;" href="#">
+                                            {{\Carbon\Carbon::parse($inscricao->atestado->validade)->format('d/m/y')}}
+                                        </a>
+                                        @else
+                                        <a href="#">
+                                            {{\Carbon\Carbon::parse($inscricao->atestado->validade)->format('d/m/y')}}
+                                        </a>
+                                        @endif
+   
+                                    @endif
+                                    <!--
+                                    <a class="remove" href="#" data-toggle="modal" data-target="#confirm-modal"> <i class="fa fa-trash-o "></i> </a>
+                                    -->
+                                </td>
+                            </tr>
+                            @endforeach
+                            
+                        </tbody>
+                    </table>
                     <a href="/turmas/{{$turma->id}}"> Acessar turma pela secretaria.</a>
 
                     
                 </div>     
             </div>
         </div> 
-        <div class="col-md-6 center-block">
+        <div class="col-md-3 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
@@ -69,11 +146,8 @@
                         &nbsp;&nbsp;<a href="#"> Listas de Frequência Anteriores</a>
                     </div>
                 -->
-                    <div>
-                        <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/lista/{{$turma->id}}" >Lista em branco</a>
-                    </div>
                     
+                    @if(substr($turma->data_inicio,6,4)<2020)
                     <div>
                             <i class=" fa fa-arrow-right "></i>
                             &nbsp;
@@ -110,6 +184,20 @@
                             &nbsp;&nbsp;<a href="/plano/{{$turma->professor->id}}/0/{{$turma->curso->id}}" title="Plano de ensino">Plano de ensino</a>
                         @endif
                     </div>
+                    @else 
+                    <div>
+                        <i class=" fa fa-arrow-right "></i> 
+                        &nbsp;&nbsp;<a href="/docentes/frequencia/listar/{{$turma->id}}" title="Planilha com a frequencia dos alunos" >Frequência</a>
+                    </div>
+                    <div>
+                        <i class=" fa fa-arrow-right "></i> 
+                        &nbsp;&nbsp;<a href="/docentes/frequencia/nova-aula/{{$turma->id}}" title="Página para realizar chamada">Chamada</a>
+                    </div>
+                    @endif
+                    <div>
+                        <i class=" fa fa-arrow-right "></i> 
+                        &nbsp;&nbsp;<a href="/lista/{{$turma->id}}" >Lista em branco</a>
+                    </div>
                     <!--
                     <div>
                         <i class=" fa fa-arrow-right "></i>
@@ -125,7 +213,7 @@
             </div>
         </div>
         
-        <div class="col-md-6 center-block">
+        <div class="col-md-3 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
@@ -151,7 +239,7 @@
                 </div>   
             </div>
         </div> 
-        <div class="col-md-6 center-block">
+        <div class="col-md-9 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
@@ -162,20 +250,34 @@
                     <form method="post">
                         {{csrf_field()}}
                     <div>
-                        <div>
-                            Com as selecionadas
-                            <select name="acao" onchange="mudarGeral(this);">
-                                <option value="">Escolha após selecionar as aulas</option>
-                                <option value="adiar">Adiar</option>
-                                <option value="atribuir">Atribuir</option>
-                                <option value="cancelar">Cancelar</option>
-                            </select>
+                        <div class="row">
+                            <div class="col-xs-3">
+                                Com as selecionadas
+                            </div>
+                            <div class="col-xs-5">
+                               
+                                <select name="acao" onchange="mudarGeral(this);" class="form-control form-control-sm">
+                                    <option value="">Escolha após selecionar as aulas</option>
+                                    <!--<option value="atribuir">Atribuir</option>-->
+                                    <option value="cancelar">Cancelar</option>
+                                    <!--<option value="executar">Marcar como executada</option>-->
+                                    <option value="prevista">Marcar como prevista</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-4 float-right">
+                                <!--
+                                    <a class="btn btn-secondary btn-sm rounded-s" href="#" data-toggle="modal" data-target="#confirm-modal"> 
+                                        <i class="text-success fa fa-plus"></i> <span class="text-success"><small>Adicionar</small></span>
+                                    </a>
+                                -->
+                            </div>
                         </div>
-                        <table class="table table-sm">
+                        <table class="table table-striped table-condensed table-sm" style="font-size: 11px;">
                             <thead>
                                 <th><input type="checkbox" id="selectAll" onclick="marcardesmarcar(this)"></th>
                                 <th>Data</th>
                                 <th>status</th>
+                                <th>Ocorrências</th>
                                 <th>Opções</th>
                                 <tbody>
                                 @foreach($aulas as $aula)
@@ -184,16 +286,29 @@
                                         <td>{{$aula->data->format('d/m')}}</td>
                                         <td><span class="badge badge-pill badge-{{$aula->badge}}">{{$aula->status}}</span></td>
                                         <td>
+                                            @if($aula->status == 'executada')
+                                                {{$aula->getOcorrencia()}}
+                                            @elseif($aula->status == 'cancelada')
+                                                {{$aula->getDados('cancelamento')}}
+                                            @else 
+                                                &nbsp;
+                                            @endif
+                                            
+                                        </td>
+                                        <td>
                                         @if($aula->status == 'planejada' || $aula->status == 'prevista' )
-                                            <a href="#" title="Visualizar aula"><i class="fa fa-eye"></i></a>&nbsp;
-                                            <a href="#" title="Atribuir a professor substituto"><i class="fa fa-briefcase"></i></a>&nbsp;
-                                            <a href="#" title="Adiar aula"><i class="fa fa-calendar-o"></i></a>&nbsp;
-                                        <a href="#{{$aula->id}}" onclick="cancelar('{{$aula->id}}')" title="Cancelar"><i class="fa fa-ban"></i></a>&nbsp;
+                                            
+                                            <!-- <a href="#" onclick="modal_atribuir({{$aula->id}});" title="Atribuir a professor substituto" data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-briefcase"></i></a>&nbsp;-->
+                                            <a href="#" title="Adiar aula" data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-calendar-o"></i></a>&nbsp;
+                                            <a href="#{{$aula->id}}" onclick="modal_cancelar('{{$aula->id}}')" title="Cancelar" data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-ban"></i></a>&nbsp;
                                         @elseif($aula->status == 'cancelada') 
-                                            carregar motivo.
+                                            <a href="#{{$aula->id}}" onclick="modal_cancelar('{{$aula->id}}')" title="Adicionar motivo" data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-plus"></i></a>&nbsp;
+                                            <a href="#" onclick="removerMotivosCancelamento('{{$aula->id}}')" title="Remover Motivos"><i class="fa fa-times"></i></a>&nbsp;
+                                            <a href="#" onclick="alterar_aula('previsionar',{{$aula->id}})"title="Retornar como prevista"><i class="fa fa-undo"></i></a>&nbsp;
                                         @elseif($aula->status == 'executada')
-                                            <a href="#" title="Visualizar aula"><i class="fa fa-eye"></i></a>&nbsp;
+                                            &nbsp;
                                         @elseif($aula->status == 'adiada')
+                                            &nbsp;
                                         @endif
                                         </td>
                                     </tr>
@@ -207,7 +322,7 @@
                 </div>   
             </div>
         </div> 
-        <div class="col-md-6 center-block">
+        <div class="col-md-3 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
@@ -235,32 +350,137 @@
 
     </div>
 </section>
+
 @endsection
 @section('scripts');
 <script>
-function cancelar(id){
-    if(confirm('Confirmar cancelamento dessa aula?')){
-        window.location.href = "/pedagogico/aulas/mudar-status/"+id+"/cancelar";
-    }
-   
+function modal_cancelar(id){
+    $('.modal-title').html('<i class="fa fa-exclamation-triangle text-warning"></i> Motivo do cancelamento');
+    conteudo_modal = '<div>'+
+                '<input type="text" class="form-control form-control-sm" name="motivo-cancelamento" placeholder="Escreva aqui o motivo"><br>'+
+            '</div>'+
+            '<div >'+
+                '<button type="button" class="btn btn-primary" onclick="alterar_aula(\'cancelar\','+id+');" data-dismiss="modal">Confirmar</button> '+
+                '<button type="button" class="btn btn-secondary"  data-dismiss="modal">Cancelar</button> '+
+            '</div>';
 
+    $('.modal-body').html(conteudo_modal);
+   
+        //window.location.href = "/pedagogico/aulas/mudar-status/"+id+"/cancelar";
 }
-function mudarGeral(field){
-    var selecionados;
-    if(confirm('Confirmar a alteração das aulas selecionadas?')){
+function modal_atribuir(id){
+    $('.modal-title').html('<i class="fa fa-exclamation-triangle text-warning"></i> Escolha o professor');
+    conteudo_modal = '<div>'+
+                '<select name="professor" class="form-control form-control-sm">'+
+                    '<option selected="selected">Escolha o professor</option>';
+    
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: "GET",
+        url: "/api/professores"
+        
+        
+    })
+    .done(function(data){
+        $.each(data, function(key, val){
+            console.log(val.nome);
+            conteudo_modal+='<option value="'+val.id+'">'+val.nome_simples+'</option>';
+ 		});
+         conteudo_modal+=
+                '</select>'+
+                '<br>'+
+             '</div>'+
+             '<div>'+
+                 '<button type="button" class="btn btn-primary" onclick="alterar_aula(\'atribuir\','+id+');" data-dismiss="modal">Confirmar</button> '+
+                 '<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> '+
+             '</div>';
+        $('.modal-body').html(conteudo_modal);
+    })
+    .fail(function(jqXHR, textStatus, msg){
+         alert("Desculpe, mas não foi possível carregar a lista de professores");
+    });
+
+    
+    
+}
+
+function alterar_aula(acao,id){
+
+    var cod = [];
+    if(id!=null)
+        cod.push(id);
+
+    else{
         $('.checkboxx').each(function(){
 
             if($(this).is(":checked") == true){
-                selecionados +=','+$(this).prop('id'); 
+             cod.push($(this).prop('id'));
             }
-            
-        });
-        console.log(selecionados);
-        console.log(field.value);
-        window.location.href = "/pedagogico/aulas/mudar-status/"+selecionados+"/"+field.value;
-    }
-}
 
+        });
+
+    }
+    switch(acao){
+        case 'cancelar': 
+            dado = $("input[type=text][name=motivo-cancelamento]").val();
+        break;
+        case 'atribuir': 
+            dado = $("input[type=text][name=professor]").val();
+        break;
+        default: 
+            dado = null;
+        break;
+    }
+    
+    
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: "POST",
+        url: "/aulas/alterar-status",
+        data: { action: acao, aulas: cod, motivo: dado }
+        
+    })
+    .done(function(msg){
+        console.log(msg);
+        location.reload(true);
+    })
+    .fail(function(jqXHR, textStatus, msg){
+         alert("Desculpe, mas não foi possível concluir o cancelamento");
+         console.log('erro ao acessar a url'+'/aulas/mudar-status/'+id+'/cancelar'+msg);
+    });
+
+    //location.reload(true);
+}
+function mudarGeral(field){
+    switch(field.value){
+        case 'cancelar':
+            modal_cancelar(null);
+            $('#confirm-modal').modal('show');
+        break;
+        case 'prevista':
+            alterar_aula('previsionar',null);
+        break;
+    }    
+}
+function removerMotivosCancelamento(id){
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: "POST",
+        url: "/aulas/limpar-dado",
+        data: { aula:id, dado:'cancelamento' }
+        
+    })
+    .done(function(msg){
+        location.reload(true);
+    });
+
+}
 function marcardesmarcar(campo){
 	$(".checkboxx").each(
 		function(){

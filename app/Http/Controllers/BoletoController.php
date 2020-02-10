@@ -38,6 +38,35 @@ class BoletoController extends Controller
 	
 
 	}
+
+	public function alterarStatus(Boleto $boleto, string $status){
+		switch($status){
+			case 'cancelar': 
+				$boleto->status = 'gravado';
+				LogController::alteracaoBoleto($boleto->id,'Boleto gerado');
+			break;
+			case 'reativar':
+				$boleto->status = 'emitido';
+				LogController::alteracaoBoleto($boleto->id,'Boleto reativado');
+			break;
+			case 'renegociar':
+				$boleto->status = 'renegociado';
+				LogController::alteracaoBoleto($boleto->id,'Boleto renegociado');
+			break;
+			case 'inscrever':
+				$boleto->status = 'divida';
+				LogController::alteracaoBoleto($boleto->id,'Boleto inscrito em dívida');
+			break;
+			case 'pago':
+				$boleto->status = 'pago';
+				LogController::alteracaoBoleto($boleto->id,'Boleto pago diretamente à FESC');
+			break;
+			
+
+		}
+
+	}
+
 	public function cadastrar(){ //$parcela/mes/ano
 		$boletos=0;
 		$vencimento=date('Y-m-20 23:59:59');
@@ -490,7 +519,8 @@ class BoletoController extends Controller
 					break;
 			}
 			LancamentoController::cancelarPorBoleto($boleto->id);
-			LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento. Motivo: '.$motivo);
+			LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento.: '.$motivo);
+			LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento por: '.Session::get('nome_usuario'));
 			
 
 		}
@@ -548,18 +578,20 @@ class BoletoController extends Controller
 		if(is_null($cliente->cpf)){	
 			$cliente->cpf = '111.111.111-11';
 
-		//dd($cliente->cpf);
+		
 		}
+		//dd($cliente->cep);
 		$pagador = new \Eduardokum\LaravelBoleto\Pessoa([
 			'documento' => $cliente->cpf,
 		    //'documento' => $cliente->cpf > 0 ? $cliente->cpf : PessoaController::notificarCPFInvalido($cliente->id), //verificar cpf
-		    'nome'      =>  str_replace(['º','ª','°'],'',substr($cliente->nome,0,37)), //nome até x cara
-		    'cep'       => preg_match('/^[0-9]{5,5}([- ]?[0-9]{3,3})?$/', $cliente->cep) ? $cliente->cep : '13970-000' ,
-		    'endereco'  => str_replace(['º','ª','°'], '',$cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->end_complemento),
+		    'nome'      =>  str_replace(['º','ª','°','´','~','^','`','\''],'',substr($cliente->nome,0,37)), //nome até x cara
+		    'cep'       => $cliente->cep ? $cliente->cep : '13560-970' ,
+		    'endereco'  => str_replace(['º','ª','°','´','~','^','`','\''], '',$cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->end_complemento),
 		    'bairro' => substr(($cliente->bairro=='Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro),0,15),
 		    'uf'        => $cliente->estado,
 		    'cidade'    => $cliente->cidade,
 		]);
+		//dd($pagador);
 		$bb = new \Eduardokum\LaravelBoleto\Boleto\Banco\Bb([
 		    'logo' =>'img/logo-small.png',
 		    'dataVencimento' => Carbon::parse($boleto->vencimento),
@@ -645,7 +677,8 @@ class BoletoController extends Controller
 			$boleto->status = 'impresso';
 			$boleto->save();
 			LancamentoController::reativarPorBoleto($id);
-			AtendimentoController::novoAtendimento("Solicitação de reativação de boleto: ".$id, $boleto->pessoa, Session::get('usuario'));
+			LogController::alteracaoBoleto($boleto->id,'Solicitação de reativação de boleto por '.Session::get('nome_usuario'));
+			//AtendimentoController::novoAtendimento("Solicitação de reativação de boleto: ".$id, $boleto->pessoa, Session::get('usuario'));
 			return redirect($_SERVER['HTTP_REFERER']);
 
 
@@ -664,10 +697,14 @@ class BoletoController extends Controller
 		public function update(Request $r){
 			if($r->boleto > 0){
 				$boleto = Boleto::find($r->id);
+				LogController::alteracaoBoleto($boleto->id,'Boleto editado por '.Session::get('nome_usuario'));
+				LogController::alteracaoBoleto($boleto->id,'Boleto editado: '.\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y').'->'.$r->vencimento.' status: '.$boleto->status.' ->'.$r->status) .'por '.Session::get('usuario');
+				
 				$boleto->vencimento = \Carbon\Carbon::createFromFormat('d/m/Y', $r->vencimento, 'Europe/London')->format('Y-m-d 23:59:59');
 				$boleto->valor = str_replace(',','.',$r->valor);
 				$boleto->status = $r->status;
 				$boleto->save();
+
 				
 			}
 			return redirect(asset('secretaria/atendimento'));
@@ -767,7 +804,7 @@ class BoletoController extends Controller
 	*
 	**/	
 	public function dividaAtiva(){
-		$boletos = Boleto::whereIn('status',['emitido'])->where('vencimento','<',date('2018-12-31'))->paginate(1000);
+		$boletos = Boleto::whereIn('status',['emitido'])->whereYear('vencimento','<',date('Y'))->paginate(1000);
 			
 		$beneficiario = new \Eduardokum\LaravelBoleto\Pessoa([
 		    'documento' => '45.361.904/0001-80',
@@ -847,6 +884,7 @@ class BoletoController extends Controller
 				if(!file_exists('documentos/matriculas/termos/'.$lancamento->matricula.'.pdf')){
 					$matriculas[] = $lancamento->matricula;
 					$boleto_obj = Boleto::find($boleto->id);
+					// Falta colocar no histórico do boleto
 					$boleto_obj->status = 'cancelado';
 					$boleto_obj->save();
 				}
@@ -884,7 +922,7 @@ class BoletoController extends Controller
 			if((count($logao)==0) && (count($logao2)==0) && (count($logao3)==0)){
 				$boleto = \App\Boleto::find($log->codigo);
 
-				if($boleto!=null && $boleto->status=='cancelado'){
+				if($boleto!=null && $boleto->status=='cancelar'){
 					$boleto->status = 'emitido';
 					$boleto->save();
 	

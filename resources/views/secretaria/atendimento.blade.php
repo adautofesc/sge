@@ -21,11 +21,14 @@
             <form class="form-inline" method="POST">
             {{csrf_field()}}
                 <div class="input-group"> 
+                    <a href="#" class="btn btn-secondary btn-sm rounded-s" title="Registrar contato"><i class="fa fa-phone"></i></a>&nbsp;
                     @if(isset($_GET['mostrar']))
                     &nbsp;<a href="?" class="btn btn-primary btn-sm rounded-s">Exibir ativos</a>
                     @else
                     &nbsp;<a href="?mostrar=todos" class="btn btn-primary btn-sm rounded-s">Exibir todos</a>
                     @endif
+                    
+                    
                 </div>
             </form>
         </div>
@@ -431,7 +434,11 @@
                           &nbsp;
                          <a href="#"  onclick="cancelarBoletos();" title="Cancelar todos boletos em aberto." class="text-white" style="color:red;" ><i class=" fa fa-times"></i></a>
                           &nbsp;
-                         <a href="#"  onclick="gerarCarneIndividual();" title="Gerar carnês" class="text-white" style="color:red;" ><i class=" fa fa-cogs"></i></a>
+                         <a href="#"  onclick="gerarCarneIndividual();" title="Gerar carnês" class="text-white" ><i class=" fa fa-cogs"></i></a>
+                         &nbsp;
+                         @if(unserialize(Session('recursos_usuario'))->contains('recurso','25'))
+                            <a href="#" title="Alterar boletos para RENEGOCIADO" class="text-white" ><i class=" fa fa-external-link-square" ></i></a>
+                         @endif
                     </div>
 
 
@@ -465,6 +472,7 @@
                         <li >
                        
                             <div class="row lista">
+                                
                                 <div class="col-xl-5 " style="line-height:40px !important; padding-left: 30px;">
                                     <div class="dropdown-toggle"><i class=" fa fa-barcode "></i> &nbsp;<small>Documento nº <b><a href="/financeiro/boletos/informacoes/{{$boleto->id}}">{{$boleto->id}}</a></b></small></div>
                                 </div>
@@ -501,11 +509,13 @@
                                         <a href="{{asset('financeiro/boletos/imprimir/').'/'.$boleto->id}}" title="Imprimir Boleto" ><i class=" fa fa-print "></i></a>
                                         <a href="{{asset('financeiro/boletos/editar/').'/'.$boleto->id}}"  title="Editar Boleto" ><i class=" fa fa-pencil-square-o "></i></a>
                                         <a href="#" onclick="cancelarBoleto({{$boleto->id}});" title="Cancelar Boleto" ><i class=" fa fa-times "></i></a>
+                                        
 
                                         @elseif($boleto->status == 'erro')
                                         <a href="{{asset('financeiro/boletos/imprimir/').'/'.$boleto->id}}" title="Imprimir Boleto" ><i class=" fa fa-print " ></i></a>
                                         <a href="#" onclick="reativarBoleto({{$boleto->id}});" title="Reativar Boleto"><i class=" fa fa-undo "></i></a>
                                         <a href="#" onclick="cancelarBoleto({{$boleto->id}});" title="Cancelar Boleto" ><i class=" fa fa-times " ></i></a>
+                                        
 
 
 
@@ -513,15 +523,20 @@
                                         @elseif($boleto->status == 'emitido' || $boleto->status == 'divida')
                                         <a href="{{asset('financeiro/boletos/imprimir/').'/'.$boleto->id}}" title="Imprimir Boleto" ><i class=" fa fa-print " ></i></a>
                                         <a href="#" onclick="cancelarBoleto({{$boleto->id}});" title="Cancelar Boleto" ><i class=" fa fa-times " ></i></a>
+                                            
                                         
                                         @elseif($boleto->status == 'cancelar')
                                         
                                         <a href="{{asset('financeiro/boletos/imprimir').'/'.$boleto->id}}"  title="Imprimir"><i class=" fa fa-print "></i></a>
                                         <a href="#" onclick="reativarBoleto({{$boleto->id}});" title="Reativar Boleto"><i class=" fa fa-undo "></i></a>
+                                            
                                         
 
                                         
                                         @endif
+                                        @if(unserialize(Session('recursos_usuario'))->contains('recurso','25'))
+                                            <a href="{{asset('financeiro/boletos/editar/').'/'.$boleto->id}}"  title="Editar Boleto" ><i class=" fa fa-edit" ></i></a>
+                                            @endif
                                         
                                        
                                     </div>

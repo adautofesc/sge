@@ -35,6 +35,7 @@
                         <h2 class="error-sub-title"> Página não encontrada </h2>
                     </div>
                     <div class="error-container">
+                        <!--
                         <p>Procurando algum recurso?</p>
                         <div class="row">
                             <div class="col-xs-12">
@@ -43,6 +44,7 @@
                       </span> </div>
                             </div>
                         </div> <br>
+        -->
                         <a class="btn btn-primary" href="."> <i class="fa fa-angle-left"></i> Voltar para o painel </a>
                     </div>
                 </div>

@@ -112,7 +112,8 @@ class BolsaController extends Controller
         $bmatricula = BolsaMatricula::where('matricula',$matricula)->first();
         //dd($bmatricula);
         if($bmatricula){
-            $bolsa = Bolsa::where('id',$bmatricula->bolsa)->where('status','ativa')->where('validade','>',date('Y-m-d'))->first();
+            //$bolsa = Bolsa::where('id',$bmatricula->bolsa)->where('status','ativa')->where('validade','>',date('Y-m-d'))->first();
+            $bolsa = Bolsa::where('id',$bmatricula->bolsa)->where('status','ativa')->first();
         }
         else
             return null;

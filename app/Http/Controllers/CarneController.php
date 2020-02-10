@@ -380,7 +380,8 @@ class CarneController extends Controller
 		if(count($lancamentos)>0){
 
 			//Aqui são gerados os meses.******************************************************************** Atenção! Fase 2
-			if(date('d')>=$this::vencimento)
+			if(date('d')>$this::vencimento)
+			//if(date('d')>=$this::vencimento) -> caso também for cobrar o mes do dia do vencimento
 				$mes=date('m')+1;
 			else
 				$mes=date('m');

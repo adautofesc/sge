@@ -70,7 +70,6 @@ class AulaController extends Controller
             return $msg;
         }
             
-
     }
 
 
@@ -118,11 +117,17 @@ class AulaController extends Controller
             if(is_numeric($aula)){
                 switch($acao){
                     case 'adiar':
-                    $this->alterarStatus($aula,'adiada');
-                    break;
+                        $this->alterarStatus($aula,'adiada');
+                        break;
                     case 'cancelar':
-                    $this->alterarStatus($aula,'cancelada');
-                    break;
+                        $this->alterarStatus($aula,'cancelada');
+                        break;
+                    case 'atribuir':
+                        $this->alterarStatus($aula,'cancelada');
+                        break;
+                    case 'executar':
+                        $this->alterarStatus($aula,'executada');
+                        break;
                     
 
                 }
@@ -135,13 +140,57 @@ class AulaController extends Controller
         
     }
 
-    public function alterarStatus(int $aula_int,string $status){
-        $aula = Aula::find($aula_int);
-        if(isset($aula->id)){
-            $aula->status = $status;
-            $aula->save();
-        }
+    public function alterarStatus(Request $r){
+        $DC = new AulaDadoController;
 
+        $aulas = Aula::whereIn('id',$r->aulas)->get();
+
+        if(isset($r->action)){
+            switch($r->action){
+                case 'cancelar': 
+                    foreach($aulas as $aula){
+                        $aula->status = 'cancelada';
+                        $aula->save();
+                        if(isset($r->motivo))
+                            $DC->createDadoAula($aula->id,'cancelamento',$r->motivo);       
+                    }
+                    return response('',200);
+                break;
+                case 'previsionar' : 
+                    foreach($aulas as $aula){
+                        //$motivos = $DC->
+                        $aula->status = 'prevista';
+                        $aula->save();
+                    }
+                break;
+                case 'adiar' : 
+                    foreach($aulas as $aula){
+                        $DC->createDadoAula($aula->id,'atribuicao',$r->pessoa);   
+                        $aula->status = 'adiada';
+                        $aula->save();
+                        criar(\DateTime::createFromFormat('d/m/Y',$r->dia),$aula->turma); 
+                    }
+                break;
+                case 'atribuir' : 
+                    foreach($aulas as $aula){
+                        $DC->createDadoAula($aula->id,'atribuicao',$r->pessoa);   
+                    }
+                break;
+                case 'executar' : 
+                    foreach($aulas as $aula){
+                        $aula->status = 'executada';
+                        $aula->save();
+                    }
+                break;
+            }
+            return response($r->ids,200);
+
+        }
+       
+
+    }
+    public function cancelamento(Request $r){
+        return response($r->ids,200);
     }
 
 

@@ -87,6 +87,15 @@ Route::middleware('login') ->group(function(){
 	Route::get('frequencia/{turma}','TurmaController@frequencia');
 	
 //******************************************************RECURSOS************************************************************** */	
+	
+	Route::prefix('aulas')->group(function(){
+		//Route::get('/{turma}','AulaController@viewAulasTurma');
+		Route::get('gerar/{turma}','AulaController@gerarAulas');
+		Route::POST('alterar-status','AulaController@alterarStatus');
+		Route::POST('limpar-dado', 'AulaDadoController@limparDado');
+		
+
+	});
 	Route::prefix('turmas')->group(function(){
 		Route::get('cadastrar','TurmaController@create')->name('turmas.cadastrar');
 		Route::middleware('liberar.recurso:18')->post('cadastrar','TurmaController@store');
@@ -414,12 +423,7 @@ Route::middleware('login') ->group(function(){
 
 
 		});
-		Route::prefix('aulas')->group(function(){
-			//Route::get('/{turma}','AulaController@viewAulasTurma');
-			Route::get('gerar/{turma}','AulaController@gerarAulas');
-			Route::get('mudar-status/{aulas}/{acao}','AulaController@alterar');
-
-		});
+		
 		//Cursos
 		Route::get('cursos','CursoController@index');
 		Route::get('cursos/listarporprogramajs/{var}','CursoController@listarPorPrograma');
@@ -553,7 +557,7 @@ Route::middleware('login') ->group(function(){
 	//Docentes
 	
 	Route::middleware('liberar.recurso:13')->prefix('docentes')->group(function(){
-		Route::get('/','painelController@docentes');
+		Route::get('/{semestre?}','painelController@docentes');
 		Route::get('turmas-professor', 'TurmaController@listarProfessores');
 		Route::post('turmas-professor', 'TurmaController@turmasProfessor');
 		
@@ -600,7 +604,8 @@ Route::middleware('login') ->group(function(){
 
 
 });//end middleware login
-
+Route::get('cobranca-automatica','CobrancaController@cobrancaAutomatica');
+Route::get('api/professores','WebServicesController@listaProfessores');
 Route::get('api/chamada/{id}','WebServicesController@apiChamada');
 Route::get('api/turmas','WebServicesController@apiTurmas');
 Route::get('api/salas-api/{id}','SalaController@listarPorLocalApi');

@@ -71,12 +71,12 @@ class Matricula extends Model
 	// mostra bolsa quando mostrar a matrícula;
 	// update bolsas set validade = '2019-12-31' where status = 'ativa'
 	public function getBolsas(){
-
+		
 		$bmatricula = BolsaMatricula::where('matricula',$this->id)->first();
 		//dd($bmatricula);
 		if($bmatricula){
-			
-			$bolsa = Bolsa::where('id',$bmatricula->bolsa)->where('status','ativa')->where('validade','>',date('Y-m-d'))->first();
+			//$bolsa = Bolsa::where('id',$bmatricula->bolsa)->where('status','ativa')->where('validade','>',date('Y-m-d'))->first();
+			$bolsa = Bolsa::where('id',$bmatricula->bolsa)->where('status','ativa')->first();
 			//dd($bolsa);
 		}
 		else
@@ -161,11 +161,11 @@ class Matricula extends Model
 		else{*/
 			//verifica qual semestre para determinar a data da primeira parcela
 			if($pp_dt->format('m')<8 || $valor_matricula->parcelas == 11 || $valor_matricula->parcelas == 10){
-				$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/02/'.$pp_dt->format('Y')); // 20/02/2019
+				$dt_pp= \DateTime::createFromFormat('d/m/Y', '10/02/'.$pp_dt->format('Y')); // 20/02/2019
 				
 			}
 			else{
-				$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/08/'.$pp_dt->format('Y')); //ou 20/08/2019
+				$dt_pp= \DateTime::createFromFormat('d/m/Y', '10/08/'.$pp_dt->format('Y')); //ou 20/08/2019
 				
 			}
 		//}

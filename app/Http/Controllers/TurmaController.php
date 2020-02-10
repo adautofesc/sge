@@ -56,6 +56,18 @@ class TurmaController extends Controller
             return redirect(asset('/turmas'));
         $inscricoes=Inscricao::where('turma','=', $turma->id)->where('status','<>','cancelada')->get();
         $inscricoes->sortBy('pessoa.nome');
+        
+        foreach ($inscricoes as $inscricao) {
+            $inscricao->telefone = \App\PessoaDadosContato::getTelefone($inscricao->pessoa->id);
+            $inscricao->aluno = \App\Pessoa::find($inscricao->pessoa->id);
+
+            $inscricao->atestado = $inscricao->getAtestado();
+            if($inscricao->atestado){
+                $inscricao->atestado->validade =  $inscricao->atestado->calcularVencimento($turma->programa->id);
+                //dd($inscricao->atestado);
+            }
+           
+        }
         $requisitos = CursoRequisito::where('para_tipo','turma')->where('curso',$turma->id)->get();
         $aulas = \App\Aula::where('turma',$turma->id)->get();
         foreach($aulas as $aula){
@@ -945,10 +957,10 @@ class TurmaController extends Controller
         
         return redirect()->back()->withErrors(['Turmas recadastradas com sucesso.']);
     }
-    public static function listarTurmasDocente($docente){
-
-        $turmas = Turma::where('professor', $docente)->whereIn('status',['inscricao','andamento','iniciada'])->orderBy('hora_inicio')->get();
-
+    public static function listarTurmasDocente($docente,$semestre){
+        $intervalo = \App\classes\Data::periodoSemestre($semestre);
+        $turmas = Turma::where('professor', $docente)->whereIn('status',['lancada','espera','inscricao','andamento','iniciada','encerrada'])->whereBetween('data_inicio', $intervalo)->orderBy('hora_inicio')->get();
+        //dd($intervalo);
         foreach($turmas as $turma){
               
             $turma->weekday = \App\classes\Strings::convertWeekDay($turma->dias_semana[0]);

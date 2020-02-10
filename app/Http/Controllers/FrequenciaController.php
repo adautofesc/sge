@@ -5,18 +5,22 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Aula;
 use App\AulaDado;
+use App\Turma;
 use App\Frequencia;
 
 class FrequenciaController extends Controller
 {
     public function listaChamada(int $turma){
-        $aulas = Aula::where('turma',$turma)->get();
+        $turma = Turma::find($turma);
+        $aulas = Aula::where('turma',$turma->id)->get();
         foreach($aulas as $aula){
             $aula->presentes = $aula->getAlunosPresentes();    
         }
-        $inscritos=\App\Inscricao::where('turma',$turma)->whereIn('status',['regular','espera','ativa','pendente'])->get();
+        $inscritos=\App\Inscricao::where('turma',$turma->id)->whereIn('status',['regular','espera','ativa','pendente'])->get();
         $inscritos= $inscritos->sortBy('pessoa.nome');
-        return view('frequencias.lista-unitaria',compact('inscritos'))->with('i',1)->with('aulas',$aulas);
+
+        //dd($aulas);
+        return view('frequencias.lista-unitaria',compact('inscritos'))->with('i',1)->with('aulas',$aulas)->with('turma',$turma);
     }
 
     public function novaFrequencia(int $aula, int $aluno){
@@ -66,12 +70,12 @@ class FrequenciaController extends Controller
     
         if(!is_null($req->conteudo)){
             $auladado = new AulaDadoController;
-            $auladado->createDadoAula($req->aula,$req->conteudo,23);
+            $auladado->createDadoAula($req->aula,'conteudo',$req->conteudo);
             
         }
         if(!is_null($req->ocorrencia)){
             $auladado = new AulaDadoController;
-            $auladado->createDadoAula($req->aula,$req->ocorrencia,24);
+            $auladado->createDadoAula($req->aula,'ocorrencia', $req->ocorrencia);
             
         }
         foreach($req->aluno as $aluno){  
@@ -140,11 +144,11 @@ class FrequenciaController extends Controller
     
         if(!is_null($req->conteudo)){
             $auladado = new AulaDadoController;
-            $conteudo = $auladado->updateDadoAula($aula->id,$req->conteudo,23);
+            $conteudo = $auladado->updateDadoAula($aula->id,$req->conteudo,'conteudo');
         }
         if(!is_null($req->ocorrencia)){
             $auladado = new AulaDadoController;
-            $conteudo = $auladado->updateDadoAula($aula->id,$req->ocorrencia,24);
+            $conteudo = $auladado->updateDadoAula($aula->id,$req->ocorrencia,'ocorrencia');
         }
       
         return redirect(asset('/docentes'))->withErrors(['Chamada da aula '.$aula->id.' atualizada.']);

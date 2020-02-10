@@ -92,31 +92,31 @@ body{
 		<td style="width:40rem;">&nbsp;</td>
 		<td class="titulo" align="center">
 			<strong>FUNDAÇÃO EDUCACIONAL SÃO CARLOS</strong><br>
-			<span class="subtitulo">{{$inscritos->first()->turma->programa->nome}}</span>
+			<span class="subtitulo">{{$turma->programa->nome}}</span>
 		</td>
 		<td>&nbsp;</td>
 		
 	</tr>
 	<tr>
 		<td><strong>RELATÓRIO DE FREQUÊNCIA</strong> <br>
-			<span class="nome-curso">{{$inscritos->first()->turma->getNomeCurso()}}</span>
+			<span class="nome-curso">{{$turma->getNomeCurso()}}</span>
 		</td>
 		<td>&nbsp;</td>
 		<td>&nbsp;</td>
 	</tr>
 	<tr>
-		<td >{{$inscritos->first()->turma->local->nome}} / 
-			@if(isset($inscritos->first()->turma->sala->nome))
-				{{$inscritos->first()->turma->sala->nome}}
+		<td >{{$turma->local->nome}} / 
+			@if(isset($turma->sala->nome))
+				{{$turma->sala->nome}}
 			@endif
 			<br>
-			TURMA: {{$inscritos->first()->turma->id}} - {{implode($inscritos->first()->turma->dias_semana,',')}} feiras das {{$inscritos->first()->turma->hora_inicio}} às {{$inscritos->first()->turma->hora_termino}}
+			TURMA: {{$turma->id}} - {{implode($turma->dias_semana,',')}} feiras das {{$turma->hora_inicio}} às {{$turma->hora_termino}}
 
 		</td>
 		<td >&nbsp;
 		</td>
-		<td  align="right" ><strong>Início:</strong>&nbsp;{{$inscritos->first()->turma->data_inicio}}<br>
-			<strong>Termino:</strong>&nbsp;{{$inscritos->first()->turma->data_termino}}</td>
+		<td  align="right" ><strong>Início:</strong>&nbsp;{{$turma->data_inicio}}<br>
+			<strong>Termino:</strong>&nbsp;{{$turma->data_termino}}</td>
 	</tr>
 </table>
 <table cellpadding="0" cellspacing="0" dir="ltr" style="table-layout:fixed;font-size:11pt;font-family:Calibri;width:0px;" xmlns="http://www.w3.org/1999/xhtml">
@@ -292,7 +292,7 @@ body{
 	</tr>
 	<tr style="height:20px;">
 		<td colspan="6" data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;Educador:  Adauto Inocêncio de Oliveira Jr.&quot;}" rowspan="1" style="overflow:hidden;padding:0px 3px 0px 3px;vertical-align:bottom;color:#000000;">
-		Educador: {{$inscrito->turma->professor->nome}}</td>
+		Educador: {{$turma->professor->nome}}</td>
 		<td class="default">
 		</td>
 		<td class="default">

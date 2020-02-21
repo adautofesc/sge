@@ -31,7 +31,7 @@ class AulaDadoController extends Controller
                 $dado->save();
         }
         else 
-            createDadoAula($aula,$tipo, $conteudo);
+            AulaDadoController::createDadoAula($aula,$tipo, $conteudo);
 
     }
     public function limparDado(Request $r){

@@ -44,4 +44,19 @@ class WebServicesController extends Controller
 		
 		return response()->json($sorted, 200);
 	}
+
+	public function robot(){
+		//fazer com que os boletos vencidos coloquem as matriculas em pendencia/cancelamento
+		$cobranca_controller = new CobrancaController;
+		$cobranca_controller->cobrancaAutomatica();
+
+		//Verificar alunos bolsistas com + de 3 faltas consecutivas
+		$bolsa_controller = new BolsaController;
+		$bolsa_controller->supervisionarFaltas();
+
+		//Verificar excesso de faltas de aluno
+		
+
+
+	}
 }

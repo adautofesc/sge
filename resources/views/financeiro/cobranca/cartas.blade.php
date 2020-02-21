@@ -42,11 +42,19 @@
 		list-style-image: url('{{asset('/img/square.png')}}')
 		
 	}
+	@media print {
+            .hide-onprint { 
+                display: none;
+			}
+}
 	
 </style>
 </head>
 
 <body>
+	<div class="hide-onprint">
+		<button onclick="javascript:location.href='?gravar_contato=1'">Gravar envio das cartas</button>
+	</div>
 	@foreach($devedores as $devedor)
 	<div class="container correio" style="width:50rem;page-break-after:always;">
 		

@@ -57,9 +57,9 @@
 						<label class="item-check">
 						<input class="checkbox" type="checkbox" checked="true" name="aluno[]" value="{{$inscricao->pessoa->id}}">
 						@if($inscricao->status!= 'regular')
-						<span ><small class="text-danger">({{$inscricao->status}})</small> {{$inscricao->pessoa->nome_simples}}</span>
+						<span ><small class="text-danger">({{$inscricao->status}})</small> {{$inscricao->pessoa->nome}}</span>
 						@else 
-						<span title="{{$inscricao->pessoa}}">{{$inscricao->pessoa->nome_simples}}</span>
+						<span title="{{$inscricao->pessoa}}">{{$inscricao->pessoa->nome}}</span>
 						@endif
 						</label>
 					</div>

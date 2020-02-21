@@ -21,10 +21,10 @@
     <div class="header-block header-block-nav">
         <ul class="nav-profile">
 
-            <!-- Notificações
+            <!-- Notificações -->
             <li class="notifications new">
                 <a href="" data-toggle="dropdown"> <i class="fa fa-bell-o"></i> <sup>
-      <span class="counter">8</span>
+      <span class="counter">0</span>
     </sup> </a>
                 <div class="dropdown-menu notifications-dropdown-menu">
                     <ul class="notifications-container">
@@ -62,12 +62,12 @@
                     <footer>
                         <ul>
                             <li> <a href="">
-            Ver tudo
+           <small> Ver tudo </small>
           </a> </li>
                         </ul>
                     </footer>
                 </div>
-            </li>-->
+            </li>
 
             <!-- Menu de perfil -->
             <li class="profile dropdown">

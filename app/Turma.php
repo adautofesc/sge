@@ -217,6 +217,11 @@ class Turma extends Model
 		return $num;
 	}
 
+	public function getAulas(){
+		$this->aulas = Aula::where('turma',$this->id)->orderBy('data')->get();
+		return $this->aulas;
+	}
+
 
     
 

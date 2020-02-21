@@ -199,21 +199,28 @@ body{
 			@else
 			    {{$inscrito->pessoa->nome}}
 			@endif
-		</td>
 
+			@if($inscrito->status != 'regular')
+			&nbsp;<small>({{$inscrito->status}})</small>
+			@endif
+		</td>
+		@php($falta=0)
 		@foreach($aulas as $aula)
 		<td class="presenca">
 		@if(isset($aula->presentes) && in_array($inscrito->pessoa->id,$aula->presentes))
 		    • 
-		@elseif($aula->status == 'executada') 	
+		@elseif($aula->status == 'executada' && $inscrito->status == 'regular' && $inscrito->created_at < $aula->data->format('Y-m-d') ) 
+			@php ($falta++)
 			F
+		@elseif($aula->status == 'executada')
+			-
 		@endif
 		</td>
 		@endforeach
 		
-		<td style="border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:bottom;">
+		<td style="border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;text-align:center;">{{$falta}}
 		</td>
-		<td style="border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:bottom;">
+		<td style="border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
 		</td>
 	</tr>
 	@endforeach

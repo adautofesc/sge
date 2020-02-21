@@ -15,7 +15,11 @@ class CreateTurmaDadosTable extends Migration
     {
         Schema::create('turma_dados', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
+            $table->unsignedInteger('turma');
+            $table->enum('tipo',['professor_extra']);
+            $table->string('dado',300);
+            $table->foreign('turma')->references('id')->on('turmas')->onDelete('cascade')->onUpdate('cascade');
+            
         });
     }
 

@@ -256,6 +256,8 @@ class RetornoController extends Controller
 							$boleto->retorno = $retorno_id;
 							$boleto->save();
 							LogController::alteracaoBoleto($boleto->id,'Pagamento confirmado, retorno: '.$retorno_id.': '.$linha->ocorrenciaDescricao.' '.$linha->error);
+							MatriculaController::liberarMatriculadoBoleto($boleto);
+
 						break;
 						case 3: //Entrada confirmada
 							if($boleto->status == 'gravado' || $boleto->status == 'impresso'){

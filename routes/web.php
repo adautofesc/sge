@@ -155,9 +155,12 @@ Route::middleware('login') ->group(function(){
 
 	Route::prefix('pessoa')->group(function(){
 	// Pessoas
-		Route::get('recadastramento', function(){ return view('pessoa.recadastramento');});
-		Route::post('recadastramento','PessoaController@iniciarRecadastramento');
-		Route::post('recadastrado','PessoaController@gravarRecadastro');
+		//Route::get('recadastramento', function(){ return view('pessoa.recadastramento');});
+		//Route::post('recadastramento','PessoaController@iniciarRecadastramento');
+		//Route::post('recadastrado','PessoaController@gravarRecadastro');
+
+		Route::post('registrar-contato','ContatoController@registrar');
+		Route::get('contato-whatsapp','ContatoController@enviarWhats');
 
 
 		Route::get ('listar','PessoaController@listarTodos');//->middleware('autorizar:56')
@@ -474,6 +477,7 @@ Route::middleware('login') ->group(function(){
 
 		Route::get('upload','SecretariaController@uploadGlobal_vw');
 		Route::post('upload','SecretariaController@uploadGlobal');
+		Route::get('frequencia/{turma}','FrequenciaController@listaChamada');
 
 
 

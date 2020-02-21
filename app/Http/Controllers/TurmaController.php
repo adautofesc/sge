@@ -69,7 +69,7 @@ class TurmaController extends Controller
            
         }
         $requisitos = CursoRequisito::where('para_tipo','turma')->where('curso',$turma->id)->get();
-        $aulas = \App\Aula::where('turma',$turma->id)->get();
+        $aulas = \App\Aula::where('turma',$turma->id)->orderBy('data')->get();
         foreach($aulas as $aula){
             //$aula->data = \DateTime::createFromFormat('Y-m-d H:i:s',$aula->data);
             switch($aula->status){
@@ -1062,8 +1062,10 @@ class TurmaController extends Controller
      * @return [type]        [description]
      */
     public function finalizarTurma(Turma $turma){
-
-        $inscricoes = Inscricao::where('turma', $turma->id)->get();       
+        if($turma->termino < date('Y-m-d'))
+            die('Turma '.$turma->id. ' não pode ser encerrada pois a data de término não foi atingida. Se a turma não ocorreu utilize a opção CANCELAR.');
+        $inscricoes = Inscricao::where('turma', $turma->id)->get();   
+        
         $turma->status = 'encerrada';
         $turma->save();
 

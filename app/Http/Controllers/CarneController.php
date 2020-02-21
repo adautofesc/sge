@@ -9,6 +9,8 @@ use ZipArchive;
 class CarneController extends Controller
 {
 	private const vencimento = 10;
+	private const data_corte = 20;
+	private const dias_adicionais = 5;
     /**
 	 * Fase 1 - Geração de lançamentos de todas as matriculas.
 	 * @return [view]
@@ -380,7 +382,7 @@ class CarneController extends Controller
 		if(count($lancamentos)>0){
 
 			//Aqui são gerados os meses.******************************************************************** Atenção! Fase 2
-			if(date('d')>$this::vencimento)
+			if(date('d')>$this::data_corte)
 			//if(date('d')>=$this::vencimento) -> caso também for cobrar o mes do dia do vencimento
 				$mes=date('m')+1;
 			else
@@ -389,6 +391,8 @@ class CarneController extends Controller
 				/*
 			if($mes == 7)
 				$mes = 8;*/
+			if(date('d')>=5 && date('d') <= $this::data_corte )
+				$primeiro_vencimento = date('d')+$this::dias_adicionais;
 
 			
 			if($mes>=8)
@@ -399,15 +403,20 @@ class CarneController extends Controller
 
 
 			for($i=$mes;$i<$meses;$i++){//i = mes. trocar o 8 por $mes
+				// ->where('vencimento', 'like', date('Y-'.str_pad($i,2, "0", STR_PAD_LEFT).'-'.$this::vencimento.'%'))
 				//verificar se tem boletoabero
-				$boleto_existente = Boleto::where('pessoa',$pessoa)
-											->where('vencimento', 'like', date('Y-'.str_pad($i,2, "0", STR_PAD_LEFT).'-'.$this::vencimento.'%'))
+				$boleto_existente = Boleto::where('pessoa',$pessoa)								
+											->whereYear('vencimento',date('Y'))
+											->whereMonth('vencimento',$i)
 											->whereIn('status',['gravado','impresso','emitido','pago'])
 											->get();
 				if(count($boleto_existente)==0){
 				
 					$boleto =new Boleto;
-					$boleto->vencimento = date('Y-'.$i.'-'.$this::vencimento);
+					if($i==$mes && isset($primeiro_vencimento))
+						$boleto->vencimento = date('Y-'.$i.'-'.$primeiro_vencimento);
+					else
+						$boleto->vencimento = date('Y-'.$i.'-'.$this::vencimento);
 					$boleto->pessoa = $pessoa;
 					$boleto->status = 'gravado';
 					$boleto->valor = 0;

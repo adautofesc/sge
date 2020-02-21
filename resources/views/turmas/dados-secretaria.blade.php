@@ -1,4 +1,5 @@
  @extends('layout.app')
+ <meta name="csrf-token" content="{{ csrf_token() }}">
 @section('pagina')
 <div class="title-block">
     
@@ -33,6 +34,54 @@
 
 </div>
 @include('inc.errors')
+<div class="modal fade in" id="modal-contato" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header"> 
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar" title="Fechar caixa">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title"><i class="fa fa-bullhorn"></i> Registrar contato</h4>
+            </div>
+            <div class="modal-body">
+               
+               <div class="row">
+                <div class="col-xs-3">
+                    <select class="form-control form-control-sm" name="meio">
+                        <option>Meio</option>
+                            <option value="telefone">Telefone</option>
+                            <option value="sms">SMS</option>
+                            <option value="carta">Carta</option>
+                            <option value="pessoa">Pessoal</option>
+                            <option value="email">E-mail</option>
+                            <option value="whatsapp">WhatsApp</option>
+                    </select>
+                </div>
+                <div class="col-xs-9">
+                    <input type="text" class="form-control form-control-sm" name="mensagem" placeholder="Escreva aqui o motivo" maxlength="300"><br>
+                    <input type="hidden" name="pessoa" value="">
+                
+                </div>
+
+                    
+                </div>
+                
+                <div>
+                    <button type="button" class="btn btn-primary" onclick="registrar_contato(null,null);" data-dismiss="modal">Confirmar</button>                
+                    <button type="button" class="btn btn-warning" onclick="registrar_contato(null,'Tentiva de contato telefônico fracassada: caixa postal');" data-dismiss="modal">Caixa postal</button> 
+                    <button type="button" class="btn btn-warning" onclick="registrar_contato(null,'Tentiva de contato telefônico fracassada: número consta como inexistente');" data-dismiss="modal">Inexistente</button> 
+
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
+                </div>
+            
+            
+            </div>
+            
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 @php ($a=0)
 <section class="section">
     <div class="row">
@@ -60,6 +109,7 @@
                             <th>Nome</th>
                             <th>Telefone</th>
                             <th>Atestado</th>
+                            <th>&nbsp;</th>
                         </thead>
                         <tbody>
                             @foreach($inscricoes as $inscricao)
@@ -72,10 +122,11 @@
                                             <i class=" fa fa-times text-white"></i>
                                         </a>
                                     </small>-->
-                                   {{$a}}
+                                   {{$a}} 
+
                                 </td>
                                 <td>
-                                    
+
                                     <a href="{{asset('/secretaria/atender').'/'.$inscricao->pessoa->id}}" title="Abrir tela de atendimento desta pessoa">
                                         <b>{{$inscricao->pessoa->nome}}</b>
                                     </a> 
@@ -87,6 +138,7 @@
                                      
                                    {{\App\classes\Strings::formataTelefone($telefone->valor)}}| 
                                     @endforeach
+
                                     
                                 </td>
                                 <td>
@@ -100,6 +152,10 @@
                                 </span>
 
                                     @endif
+                                </td>
+                                <td>
+                                    <a href="#" class="btn btn-secondary btn-sm rounded-s" onclick="setPessoaContato({{$inscricao->pessoa->id}})" title="Registrar contato" data-toggle="modal" data-target="#modal-contato"><i class="fa fa-phone"></i></a>&nbsp;
+
                                 </td>
                             </tr>
                             @endforeach
@@ -120,20 +176,11 @@
                     </div>
                 </div>
                 <div class="card-block" style="font-size: 0.8em;">
-                    <!--
-                    <div>
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;<a href="#"> Listas de Frequência Anteriores</a>
-                    </div>
-                -->
-                    <div>
-                        <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/lista/{{$turma->id}}" >Lista em branco</a>
-                    </div>
+                    @if(substr($turma->data_inicio,6,4)<2020)
                     <div>
                             <i class=" fa fa-arrow-right "></i>
                             &nbsp;
-                            <a href="/chamada/{{$turma->id}}/0/url/ativos" title="Lista sem nomes de alunos cancelados ou transferidos">Frequência digital (limpa)</a>
+                            <a href="/chamada/{{$turma->id}}/0/url/ativos" title="Lista sem nomes de alunos cancelados ou transferidos" >Frequência digital (limpa)</a>
                             <a href="/chamada/{{$turma->id}}/1/url/ativos"> 1 </a>
                             <a href="/chamada/{{$turma->id}}/2/url/ativos"> 2 </a>
                             <a href="/chamada/{{$turma->id}}/3/url/ativos"> 3 </a>
@@ -143,6 +190,8 @@
                             <a href="/chamada/{{$turma->id}}/0/pdf" title="Imprimir"> <i class=" fa fa-print"></i> </a>
                         -->
                     </div>
+                   
+                    
                     <div>
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;
@@ -156,7 +205,6 @@
                         <a href="/chamada/{{$turma->id}}/0/pdf" title="Imprimir"> <i class=" fa fa-print"></i> </a>
                     -->
                     </div>
-                    
                     <div>
                         <i class=" fa fa-arrow-right "></i>
                         @if(isset($turma->disciplina->id))
@@ -165,16 +213,20 @@
                             &nbsp;&nbsp;<a href="/plano/{{$turma->professor->id}}/0/{{$turma->curso->id}}" title="Plano de ensino">Plano de ensino</a>
                         @endif
                     </div>
-                    <!--
+                    @else 
                     <div>
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Solicitação de equipamentos
+                        <i class=" fa fa-arrow-right "></i> 
+                        &nbsp;&nbsp;<a href="/secretaria/frequencia/{{$turma->id}}" title="Relatório de frequência dos alunos" >Frequência</a>
                     </div>
+                 
+                    @endif
                     <div>
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Solicitação de sala de aula extra
+                        <i class=" fa fa-arrow-right "></i> 
+                        &nbsp;&nbsp;<a href="/lista/{{$turma->id}}" >Lista em branco</a>
+                                            <a href="#" class="btn btn-secondary btn-sm rounded-s" title="Registrar contato" data-toggle="modal" data-target="#modal-contato"><i class="fa fa-phone"></i></a>&nbsp;
+
                     </div>
-                -->
+                    
                 
                 </div>   
             </div>
@@ -392,6 +444,48 @@ function alterarStatus(status){
 function alterarOpcoes(status){
     if(confirm('Deseja realmente '+status+' dessa turma?'))
             $(location).attr('href','{{route('turmas')}}/alterar/'+status+'/{{$turma->id}}');
+}
+
+function setPessoaContato(pessoa){
+    $("input[name=pessoa]").val(pessoa);
+    //alert($("input[name=pessoa]").val());
+}
+
+function registrar_contato(cod,content){
+    if(cod==null)
+        cod = $("input[name=pessoa]").val();
+
+    mensagem =  $("input[type=text][name=mensagem]").val();
+    if(content != null)
+        mensagem += ' '+content;
+
+    meio = $('select[name=meio]').val();
+
+    if(meio == 'Meio'){
+        alert('meio não escolhido');
+        return false;
+    }
+
+    if(meio == 'whatsapp'){
+        window.open('/pessoa/contato-whatsapp?pessoa='+cod+'&msg='+mensagem,'_blank');
+        return true;
+    }
+
+
+    
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: "POST",
+        url: "/pessoa/registrar-contato",
+        data: { meio, mensagem, pessoa:cod }
+        
+    })
+    .fail(function(msg){
+        alert('falha no registro de contato');
+    });
+
 }
 
 

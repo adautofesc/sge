@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="apple-touch-icon" href="{{asset('apple-touch-icon.png') }}">
     <!-- Place favicon.ico in the root directory -->
+    <link rel="icon" href="{{ asset('img/moon.png')}}">
     <link rel="stylesheet" href="{{ asset('css/vendor.css')}}">
     <!-- Theme initialization -->
     <script>

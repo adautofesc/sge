@@ -346,8 +346,11 @@ class painelController extends Controller
         
     }
     public function testarClasse(){
-        $atestado = \App\Atestado::find(2249);
-        return $atestado->calcularVencimento(3);        
+        $bc = new BolsaController;
+        $alunos = $bc->fiscalizarBolsa();
+        return $alunos;
+
+             
     }
 
 

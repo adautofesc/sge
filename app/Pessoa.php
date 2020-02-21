@@ -86,6 +86,8 @@ class Pessoa extends Model
 		$telefones = $this->getTelefones();
 		//dd($telefones);
 		foreach($telefones as $telefone){
+			//dd($telefone->valor);
+			$telefone->valor = preg_replace( '/[^0-9]/is', '', $telefone->valor);
 			if(substr($telefone->valor, 0,1)=='9' || substr($telefone->valor, 2,1)=='9' || substr($telefone->valor, 0,1)=='8' || substr($telefone->valor, 2,1)=='8' ){
 				switch(strlen($telefone->valor)){
 					case 8:
@@ -113,7 +115,7 @@ class Pessoa extends Model
 			
 	}
 	public function getTelefones(){
-		$telefones = PessoaDadosContato::whereIn('dado',[2,9])->where('pessoa',$this->id)->get();
+		$telefones = PessoaDadosContato::whereIn('dado',[2,9])->where('pessoa',$this->id)->orderByDesc('id')->get();
 		return $telefones;
 	}
 

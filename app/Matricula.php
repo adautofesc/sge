@@ -159,22 +159,31 @@ class Matricula extends Model
 		/*if($pp_dt->format('m')==8)
 			return 5;
 		else{*/
-			//verifica qual semestre para determinar a data da primeira parcela
+			//verifica qual semestre para determinar a data limite para geração da primeira parcela
 			if($pp_dt->format('m')<8 || $valor_matricula->parcelas == 11 || $valor_matricula->parcelas == 10){
-				$dt_pp= \DateTime::createFromFormat('d/m/Y', '10/02/'.$pp_dt->format('Y')); // 20/02/2019
+				$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/02/'.$pp_dt->format('Y')); // 20/02/2019
 				
 			}
 			else{
-				$dt_pp= \DateTime::createFromFormat('d/m/Y', '10/08/'.$pp_dt->format('Y')); //ou 20/08/2019
+				$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/08/'.$pp_dt->format('Y')); //ou 20/08/2019
 				
 			}
 		//}
 		
 		//transforma data da matricula em objeto
-		$dt_mt= new \DateTime(date($this->data));
+		//$dt_mt= new \DateTime(date($this->data));
+		//dd($this->data);
+		//$dt_mt= \DateTime::createFromFormat('d/m/Y','21/02/2020');
+		$dt_mt= \DateTime::createFromFormat('Y-m-d',$this->data);
 
 		//calcula a diferença entre as datas
 		$interval = $dt_pp->diff($dt_mt);
+		
+		//dd(ceil($interval->days/30));
+
+		
+
+
 		$parcelas = $valor_matricula->parcelas - ceil($interval->days/30);
 		
 		

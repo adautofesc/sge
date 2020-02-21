@@ -9,6 +9,7 @@
         </div>
     </div>
 </div>
+@include('inc.errors')
 <section class="section">
     <div class="row">
         <div class="col-md-6 center-block">
@@ -69,7 +70,7 @@
                     <div>
                         <a href="{{asset('/')}}financeiro/relatorios/cobranca-sms" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-comment"></i>
-                        &nbsp;&nbsp;Mala direta cobrança SMS (txt)</a>
+                        &nbsp;&nbsp;Enviar cobrança SMS</a>
                     </div>             
                 </div>
             </div>

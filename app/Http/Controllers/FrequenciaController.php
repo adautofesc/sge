@@ -12,10 +12,13 @@ class FrequenciaController extends Controller
 {
     public function listaChamada(int $turma){
         $turma = Turma::find($turma);
-        $aulas = Aula::where('turma',$turma->id)->get();
+        $aulas = Aula::where('turma',$turma->id)->orderBy('data')->get();
         foreach($aulas as $aula){
             $aula->presentes = $aula->getAlunosPresentes();    
         }
+        if(isset($_GET['filtrar']))
+        $inscritos=\App\Inscricao::where('turma',$turma->id)->get();
+        else
         $inscritos=\App\Inscricao::where('turma',$turma->id)->whereIn('status',['regular','espera','ativa','pendente'])->get();
         $inscritos= $inscritos->sortBy('pessoa.nome');
 
@@ -46,6 +49,10 @@ class FrequenciaController extends Controller
         }    
         
         $turma = \App\Turma::find($turma);
+
+        if($turma->professor->id != session('usuario') && !unserialize(Session('recursos_usuario'))->contains('recurso','17'))
+            return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
+
         if(isset($_GET['filtrar']))
             $turma->getInscricoes('todas');
         else
@@ -67,6 +74,11 @@ class FrequenciaController extends Controller
     public function novaChamada_exec(Request $req){
        
         $aula = Aula::find($req->aula);
+
+        $turma = \App\Turma::find($aula->turma);
+        
+        if($turma->professor->id != session('usuario') && !unserialize(Session('recursos_usuario'))->contains('recurso','17'))
+            return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
     
         if(!is_null($req->conteudo)){
             $auladado = new AulaDadoController;
@@ -91,12 +103,19 @@ class FrequenciaController extends Controller
 
 
     public function editarChamada_view(int $aula){
+
         $aula = Aula::find($aula);
+    
         if(!isset($aula->id)){
             return redirect()->back()->withErrors(['Aula inexistente']);
 
         }    
+        
         $turma = \App\Turma::find($aula->turma);
+
+        if($turma->professor->id != session('usuario') && !unserialize(Session('recursos_usuario'))->contains('recurso','17'))
+            return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
+
         if(isset($_GET['filtrar']))
             $turma->getInscricoes('todas');
         else
@@ -119,11 +138,17 @@ class FrequenciaController extends Controller
     }
     public function editarChamada_exec(Request $req){
 
+        
+            
         $aula = Aula::find($req->aula);
         $frequencias = Frequencia::select('aluno')->where('aula', $aula->id)->get();
         $arr_frequencias = $frequencias->pluck('aluno')->toArray();
-
         $turma = \App\Turma::find($req->turma);
+
+        if($turma->professor->id != session('usuario') && !unserialize(Session('recursos_usuario'))->contains('recurso','17'))
+            return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
+
+        
         if(isset($_GET['filtrar']))
             $turma->getInscricoes('todas');
         else
@@ -144,11 +169,11 @@ class FrequenciaController extends Controller
     
         if(!is_null($req->conteudo)){
             $auladado = new AulaDadoController;
-            $conteudo = $auladado->updateDadoAula($aula->id,$req->conteudo,'conteudo');
+            $conteudo = $auladado->updateDadoAula($aula->id,'conteudo',$req->conteudo);
         }
         if(!is_null($req->ocorrencia)){
             $auladado = new AulaDadoController;
-            $conteudo = $auladado->updateDadoAula($aula->id,$req->ocorrencia,'ocorrencia');
+            $conteudo = $auladado->updateDadoAula($aula->id,'ocorrencia',$req->ocorrencia);
         }
       
         return redirect(asset('/docentes'))->withErrors(['Chamada da aula '.$aula->id.' atualizada.']);

@@ -38,6 +38,54 @@
     </p>
 </div>
 @include('inc.errors')
+<div class="modal fade in" id="modal-contato" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header"> 
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar" title="Fechar caixa">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title"><i class="fa fa-bullhorn"></i> Registrar contato</h4>
+            </div>
+            <div class="modal-body">
+               
+               <div class="row">
+                <div class="col-xs-3">
+                    <select class="form-control form-control-sm" name="meio">
+                        <option>Meio</option>
+                            <option value="telefone">Telefone</option>
+                            <option value="sms">SMS</option>
+                            <option value="carta">Carta</option>
+                            <option value="pessoa">Pessoal</option>
+                            <option value="email">E-mail</option>
+                            <option value="whatsapp">WhatsApp</option>
+                    </select>
+                </div>
+                <div class="col-xs-9">
+                    <input type="text" class="form-control form-control-sm" name="mensagem" placeholder="Escreva aqui o motivo" maxlength="300"><br>
+                    <input type="hidden" name="pessoa" value="">
+                
+                </div>
+
+                    
+                </div>
+                
+                <div>
+                    <button type="button" class="btn btn-primary" onclick="registrar_contato(null,null);" data-dismiss="modal">Confirmar</button>                
+                    <button type="button" class="btn btn-warning" onclick="registrar_contato(null,'Tentiva de contato telefônico fracassada: caixa postal');" data-dismiss="modal">Caixa postal</button> 
+                    <button type="button" class="btn btn-warning" onclick="registrar_contato(null,'Tentiva de contato telefônico fracassada: número consta como inexistente');" data-dismiss="modal">Inexistente</button> 
+
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
+                </div>
+            
+            
+            </div>
+            
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 <div class="modal fade in" id="confirm-modal" style="display: none;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -84,6 +132,7 @@
                             <th>Nascimento</th>
                             <th>Telefone</th>
                             <th>Atestado</th>
+                            <th>&nbsp;</th>
                         </thead>
                         <tbody>
                             @php($a=0)
@@ -120,6 +169,10 @@
                                     <!--
                                     <a class="remove" href="#" data-toggle="modal" data-target="#confirm-modal"> <i class="fa fa-trash-o "></i> </a>
                                     -->
+                                </td>
+                                <td>
+                                    <a href="#" class="btn btn-secondary btn-sm rounded-s" onclick="setPessoaContato({{$inscricao->pessoa->id}})" title="Registrar contato" data-toggle="modal" data-target="#modal-contato"><i class="fa fa-phone"></i></a>&nbsp;
+
                                 </td>
                             </tr>
                             @endforeach
@@ -487,6 +540,48 @@ function marcardesmarcar(campo){
 			$(this).prop("checked", campo.checked)
 		}
 	);
+}
+
+function setPessoaContato(pessoa){
+    $("input[name=pessoa]").val(pessoa);
+    //alert($("input[name=pessoa]").val());
+}
+
+function registrar_contato(cod,content){
+    if(cod==null)
+        cod = $("input[name=pessoa]").val();
+
+    mensagem =  $("input[type=text][name=mensagem]").val();
+    if(content != null)
+        mensagem += ' '+content;
+    
+
+    meio = $('select[name=meio]').val();
+
+    if(meio == 'Meio'){
+        alert('meio não escolhido');
+        return false;
+    }
+    if(meio == 'whatsapp'){
+        window.open('/pessoa/contato-whatsapp?pessoa='+cod+'&msg='+mensagem,'_blank');
+        return true;
+    }
+
+
+    
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: "POST",
+        url: "/pessoa/registrar-contato",
+        data: { meio, mensagem, pessoa:cod }
+        
+    })
+    .fail(function(msg){
+        alert('falha no registro de contato');
+    });
+
 }
 </script>
 @endsection

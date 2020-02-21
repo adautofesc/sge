@@ -458,9 +458,78 @@ class BolsaController extends Controller
             return redirect()->back()->withErrors(["Erro ao desvincular matrícula."]);
         }
 
+    }
 
 
-        
+    public function fiscalizarBolsa(){
+        $alunos = array();
+        $matriculas = collect();
+        $array_bolsas = Bolsa::where('status','ativa')
+                    ->whereIn('desconto',[1,2,6,7,8])
+                    ->leftjoin('bolsa_matriculas', 'bolsas.id', '=', 'bolsa_matriculas.bolsa')
+                    ->get();
+        foreach($array_bolsas as $array_bolsa){
+            $matricula = Matricula::find($array_bolsa->matricula);
+            $matricula->getInscricoes();
+            foreach($matricula->inscricoes as $inscricao){
+
+
+                $aulas = $inscricao->turma->getAulas();
+                $aulasexec = $aulas->where('status','executada');
+                $falta=0;
+                //dd($aulasexec);
+
+                foreach($aulasexec as $aula){
+                    $frequencia = \App\Frequencia::where('aula',$aula->id)->where('aluno',$inscricao->pessoa->id);
+                    if(isset($frequencia->id))
+                        $falta=0;
+                    else{
+                        $falta++;
+                        if($falta>=3){
+                            $alunos[$inscricao->pessoa->id] = 'turma '.$inscricao->turma->id.' aluno';
+                            break;
+                        }
+
+                    }
+
+                }
+
+            }
+            //$matriculas->push($matricula);
+        }
+        //return $matriculas;
+        /*
+        foreach($bolsas as $bolsa){
+            $matriculas = $bolsa->getMatriculas();
+            //dd($matriculas);
+            foreach($matriculas as $bmatricula){
+                $matricula = \App\Matricula::find($bmatricula->matricula);
+                $matricula->getInscricoes('regular');
+                foreach($matricula->inscricoes as $inscricao){
+                    $aulas = $inscricao->turma->getAulas();
+                    $aulasexec = $aulas->where('status','executada');
+                    $faltas=0;
+                    dd($aulas)
+                    foreach($aulasexec as $aula){
+                        $frequencia = \Frequencia::where('aula',$aula->id)->where('aluno',$bolsa->pessoa);
+                        if(isset($frequencia->id))
+                            $falta=0;
+                        else{
+                            $falta++;
+                            if($falta>=3)
+                                $alunos->push('turma '.$inscricao->turma->id.' aluno'.$bolsa->pessoa);
+                        }
+
+                    }
+                }
+            }
+
+        }
+        */
+
+        return $alunos;
+
+
     }
 
 

@@ -192,50 +192,62 @@ class CobrancaController extends Controller
 			$lancamentos = Lancamento::where('pessoa',$id)->where('boleto',null)->where('status',null)->get();
 
 			
-			$dt_limite_pendencia = \Carbon\Carbon::today()->addDays(-10);
-			$dt_limite_cancelamento = \Carbon\Carbon::today()->addDays(-17);
+			$dt_limite_pendencia = \Carbon\Carbon::today()->addDays(-3);
+			$dt_limite_cancelamento = \Carbon\Carbon::today()->addDays(-7);
 
 			$boleto_pendencia= $boletos->whereIn('status',['emitido','divida','aberto executado'])->where('vencimento','<',$dt_limite_pendencia->toDateString());
 			$boleto_cancelar= $boletos->whereIn('status',['emitido','divida','aberto executado'])->where('vencimento','<',$dt_limite_cancelamento->toDateString());
 			
-			return $boletos;
+			//return $boletos;
 			
-			return 'cobranca automatica rodando';
+			return 'Cobranca automatica executada';
 			
 		}
 
 
 		public function relatorioDevedoresSms($ativos=1){
+			/*
 			header('Content-Type: text/plain');
 	        header('Content-Disposition: attachment;filename="'. 'cobranca-sms' .'.txt"'); /*-- $filename is  xsl filename ---*/
-	        header('Cache-Control: max-age=0');
-
+			//header('Cache-Control: max-age=0');
+			
+			$CC = new ContatoController;
 	        $devedores = $this->relatorioDevedores($ativos);
 	        $contador=0;
 	        $linha  = 'FESC - '."\n";
-	        $linha .= 'ATENÇÂO. Constatamos pendências relacionadas a seu cadastro. Por favor, entre em contato conosco.'."\n";
+	        $linha .= 'ATENÇÃO. Constatamos pendências relacionadas a seu cadastro. Por favor, entre em contato: 3372-1308'."\n";
 
 	        foreach($devedores as $pessoax){
 	        	$pessoa = \App\Pessoa::find($pessoax->id);
 	        	$pessoa->celular = $pessoa->getCelular();
 	        	if($pessoa->celular == '-')
-	        		continue;
-	        	
-	        	$linha .= $pessoa->celular.';'.$pessoa->nome_simples."\n";
+					continue;
+				else
+				$CC->enviarSMS($linha,[$pessoa->id]);
+	        	//$linha .= $pessoa->celular.';'.$pessoa->nome_simples."\n";
 	        	$contador++;
 	        	
 
 	        }
-	        $linha .= $contador;
+	        //$linha .= $contador;
+			
 
 
-
-			return $linha;
+			return redirect()->back()->withErrors(['Foram enviadas '.$contador.' mensagens SMS.']);
 		}
 	
 
     public function cartas(){
-        $devedores = $this->relatorioDevedores();
+		$devedores = $this->relatorioDevedores();
+		if(isset($_GET['gravar_contato'])){
+			$CC = new ContatoController;
+			foreach($devedores as $pessoa){
+				$CC->novoContato($pessoa->id,'carta','Envio de cobrança amigável',0);
+			}
+		}
+
+		
+		
         
         return view('financeiro.cobranca.cartas',compact('devedores'));
     }

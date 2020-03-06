@@ -1,6 +1,8 @@
 @extends('layout.app')
 @section('titulo')Edição de aula @endsection
+
 @section('pagina')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <ol class="breadcrumb">
   <li class="breadcrumb-item"><a href="/">Início</a></li>
   <li class="breadcrumb-item"><a href="/docentes">Docente</a></li>
@@ -27,7 +29,8 @@
 				</label>
 				
 				<div class="col-sm-2"> 
-						{{$aula->data->format('d/m/Y')}}
+				<input type="date" name="data" value="{{$aula->data->format('Y-m-d')}}">
+						<!-- {{$aula->data->format('d/m/Y')}}-->
 						<input type="hidden" name="aula" value="{{$aula->id}}">
 				</div>
 				
@@ -68,7 +71,7 @@
 					Conteúdo
 				</label>
 				<div class="col-sm-10"> 
-					<textarea class="form-control boxed" id="conteudo" name="conteudo" maxlength="300" rows="4" placeholder="Escreva aqui o resumo do conteúdo de sua aula.">{{$aula->getConteudo()}}</textarea>
+				<textarea class="form-control boxed" id="conteudo" name="conteudo" maxlength="300" rows="4" placeholder="Escreva aqui o resumo do conteúdo de sua aula.">@if(isset($conteudo->valor)){{$conteudo->valor}}@endif</textarea>
 				
 				</div>
 			</div>
@@ -78,7 +81,7 @@
 					Ocorrência
 				</label>
 				<div class="col-sm-10"> 
-					<textarea class="form-control boxed" id="ocorrencia" name="ocorrencia" maxlength="300" rows="4" placeholder="Aponte aqui ocorrências como atrasos ou saída antecipada de alunos.">{{$aula->getOcorrencia()}}</textarea>
+					<textarea class="form-control boxed" id="ocorrencia" name="ocorrencia" maxlength="300" rows="4" placeholder="Aponte aqui ocorrências como atrasos ou saída antecipada de alunos.">@if(isset($ocorrencia->valor)){{$ocorrencia->valor}}@endif</textarea>
 				</div>
 			</div>
 	
@@ -122,9 +125,9 @@
 					<td>
 					{{$aula_anterior->data->format('d/m/Y')}}<br>
 						
-						<a href="#" title="Editar dados"><i class=" fa fa-edit"></i></a>
+						<a href="/docentes/frequencia/editar-aula/{{$aula_anterior->id}}" title="Editar dados"><i class=" fa fa-edit"></i></a>
 						&nbsp;
-						<!--<a href="#" title="Apagar aula"><i class=" fa fa-trash"></i></a>-->
+						<a href="#" title="Apagar aula" onclick="apagarAula('{{$aula_anterior->id}}','{{$aula_anterior->data->format('d/m/Y')}}')"><i class=" fa fa-trash"></i></a>
 					</td>
 					<td>
 						{{$aula_anterior->conteudo}} <br>
@@ -148,6 +151,25 @@ function marcardesmarcar(campo){
 			$(this).prop("checked", campo.checked)
 		}
 	);
+}
+function apagarAula(id,data){
+	if(confirm("Deseja mesmo apagar a aula do dia "+data+" ?"))
+		
+		$.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: "POST",
+        url: "/api/excluir-aulas",
+        data: { id }
+        
+    })
+	.done(function(msg){
+		location.reload(true);
+	})
+    .fail(function(msg){
+        alert('falha ao apagar aula');
+    });
 }
 </script>
 @endsection

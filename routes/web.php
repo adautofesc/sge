@@ -94,6 +94,7 @@ Route::middleware('login') ->group(function(){
 		Route::POST('alterar-status','AulaController@alterarStatus');
 		Route::POST('limpar-dado', 'AulaDadoController@limparDado');
 		
+		
 
 	});
 	Route::prefix('turmas')->group(function(){
@@ -540,6 +541,7 @@ Route::middleware('login') ->group(function(){
 		Route::get('turmas', 'RelatorioController@turmas');
 		Route::get('dados-turmas/{turmas}', 'RelatorioController@dadosTurmas');
 		Route::get('matriculas/{programa}','RelatorioController@matriculasPrograma');
+		//Route::get('matriculas','RelatorioController@matriculas');
 		Route::get('inscricoes','RelatorioController@inscricoes');
 		Route::get('alunos-turmas','RelatorioController@alunosTurmasExport');
 		Route::get('faixasuati', 'RelatorioController@matriculasUati');
@@ -551,6 +553,7 @@ Route::middleware('login') ->group(function(){
 		Route::get('tce-turmas/{ano}','RelatorioController@tceTurmas');
 		Route::get('tce-turmas-alunos/{ano}','RelatorioController@tceTurmasAlunos');
 		Route::get('alunos-conselho/{ano}','RelatorioController@alunosConselho');
+		Route::get('bolsistas-com-3-faltas','RelatorioController@bolsistasComTresFaltas');
 
 
 
@@ -571,7 +574,7 @@ Route::middleware('login') ->group(function(){
 			Route::post('nova-aula/{turma}/{aula?}','FrequenciaController@novaChamada_exec');
 			Route::get('editar-aula/{aula}','FrequenciaController@editarChamada_view');
 			Route::post('editar-aula/{aula}','FrequenciaController@editarChamada_exec');
-			Route::get('apagar-aula/{aula}','FrequenciaController@novaChamada');
+			Route::get('apagar-aula/{aula}','AulaController@apagarAula');
 		});
 		
 	});
@@ -614,6 +617,7 @@ Route::get('api/chamada/{id}','WebServicesController@apiChamada');
 Route::get('api/turmas','WebServicesController@apiTurmas');
 Route::get('api/salas-api/{id}','SalaController@listarPorLocalApi');
 Route::get('api/salas-locaveis-api/{id}','SalaController@listarLocaveisPorLocalApi');
+Route::post('api/excluir-aulas','AulaController@excluir');
 
 //----------------------------- Errors treatment
 

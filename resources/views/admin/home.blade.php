@@ -88,10 +88,32 @@
                         &nbsp;&nbsp;Relatório de Inscrições</a>
                     </div> 
                     <div>
+                    <a href="/relatorios/matriculas/{{date('Y')}}"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Relatório de Matrículas</a>
+                    </div>
+                    <div>
                         <a href="/relatorios/bolsas/"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Relatório de Bolsas</a>
-                    </div>         
+                    </div> 
+                    <div>
+                        <a href="/relatorios/alunos-posto/"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Alunos por unidade</a>
+                    </div>
+                    <div>
+                        <a href="/relatorios/faixasuati/"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Faixas insc. UATI</a>
+                    </div>  
+                    <div>
+                        <a href="/relatorios/bolsistas-com-3-faltas/"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Bolsistas com +3 faltas</a>
+                    </div> 
+                         
+                         
                 </div>
             </div>
         </div>

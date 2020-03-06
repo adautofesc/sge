@@ -42,6 +42,7 @@ class SecretariaController extends Controller
 		else
 			Session::put('pessoa_atendimento',$id);	
 		$pessoa=PessoaController::formataParaMostrar($pessoa);
+		//$pessoa->getTelefones();
 		if(isset($pessoa->telefone))
 			$pessoa->telefone=Strings::formataTelefone($pessoa->telefone);
 		if(isset($pessoa->telefone_alternativo))

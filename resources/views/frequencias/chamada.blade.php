@@ -1,6 +1,8 @@
 @extends('layout.app')
 @section('titulo')Nova aula @endsection
+
 @section('pagina')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <ol class="breadcrumb">
   <li class="breadcrumb-item"><a href="/">Início</a></li>
   <li class="breadcrumb-item"><a href="/docentes">Docente</a></li>
@@ -30,7 +32,7 @@
 						
 						@foreach($aulas as $aula)
 						<option value="{{$aula->id}}">{{$aula->data->format('d/m/Y')}}</option>
-						@endforeach{{$aula->id}}
+						@endforeach
 						
 			
 					</select> 
@@ -126,9 +128,11 @@
 					{{$aula_anterior->data->format('d/m/Y')}}<br>
 					@if($aula_anterior->status == 'executada')	
 					<a href="/docentes/frequencia/editar-aula/{{$aula_anterior->id}}" title="Editar dados"><i class=" fa fa-edit"></i></a>
-						&nbsp;<!--
-					<a href="#" title="Apagar aula" onclick="apagarAula('{{$aula_anterior->id}}','{{$aula_anterior->data->format('d/m/Y')}}')"><i class=" fa fa-trash"></i></a>
-						-->
+						&nbsp;
+					<a href="#" title="Apagar aula" onclick="apagarAula('{{$aula_anterior->id}}','{{$aula_anterior->data->format('d/m/Y')}}')">
+						<i class=" fa fa-trash"></i>
+					</a>
+						
 					@endif
 					</td>
 					<td>
@@ -156,7 +160,22 @@ function marcardesmarcar(campo){
 }
 function apagarAula(id,data){
 	if(confirm("Deseja mesmo apagar a aula do dia "+data+" ?"))
-		location.href= "/docentes/frequencia/pagar-aula/"+id;
+		
+		$.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: "POST",
+        url: "/api/excluir-aulas",
+        data: { id }
+        
+    })
+	.done(function(msg){
+		location.reload(true);
+	})
+    .fail(function(msg){
+        alert('falha ao apagar aula');
+    });
 }
 </script>
 @endsection

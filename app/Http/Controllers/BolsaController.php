@@ -497,35 +497,7 @@ class BolsaController extends Controller
             }
             //$matriculas->push($matricula);
         }
-        //return $matriculas;
-        /*
-        foreach($bolsas as $bolsa){
-            $matriculas = $bolsa->getMatriculas();
-            //dd($matriculas);
-            foreach($matriculas as $bmatricula){
-                $matricula = \App\Matricula::find($bmatricula->matricula);
-                $matricula->getInscricoes('regular');
-                foreach($matricula->inscricoes as $inscricao){
-                    $aulas = $inscricao->turma->getAulas();
-                    $aulasexec = $aulas->where('status','executada');
-                    $faltas=0;
-                    dd($aulas)
-                    foreach($aulasexec as $aula){
-                        $frequencia = \Frequencia::where('aula',$aula->id)->where('aluno',$bolsa->pessoa);
-                        if(isset($frequencia->id))
-                            $falta=0;
-                        else{
-                            $falta++;
-                            if($falta>=3)
-                                $alunos->push('turma '.$inscricao->turma->id.' aluno'.$bolsa->pessoa);
-                        }
-
-                    }
-                }
-            }
-
-        }
-        */
+      
 
         return $alunos;
 

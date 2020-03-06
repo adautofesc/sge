@@ -13,6 +13,7 @@ use Exception;
 class AulaController extends Controller
 {
     public function gerarAulas(int $turma){   
+        
         $turma = Turma::find($turma);
         $aulas = collect();
         $data_iteracao = \DateTime::createFromFormat('d/m/Y', $turma->data_inicio);
@@ -55,21 +56,33 @@ class AulaController extends Controller
 
     public function apagarAula(int $aula){
         $aula = Aula::find($aula);
-        if(is_null($aula))
+        if(is_null($aula)){
             return "aula não encontrada";
+        }
         else {
-            try {
-                $aula->delete();
-                //apagra presenças
-                $msg = "Aula do dia " . $aula->data . "foi apagada.";
-            }
-            catch(\Exception $exception){
-                $msg = "Aula do dia " . $aula->data . " (" . $aula->id . ") não pôde ser apagada: " . $exception->code . " " . $exception->message; 
-
-            }
+            $msg = "Aula do dia " . $aula->data->format('d/m/y') . "foi apagada.";
+            $aula->delete();
+            //apagra presenças
+                
+            
+            
             return $msg;
         }
             
+    }
+
+    public function excluir(Request $r){
+        
+        if(is_array($r->id)){
+            foreach($r->id as $cod){
+                $this->apagarAula($cod);
+            }
+        }
+        else
+            $this->apagarAula($r->id);
+
+
+        return response('done',200);
     }
 
 

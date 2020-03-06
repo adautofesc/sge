@@ -43,10 +43,19 @@ class FrequenciaController extends Controller
 
     public function novaChamada_view(int $turma){
         $aulas = Aula::where('turma',$turma)->whereIn('status',['prevista','planejada'])->orderBy('data')->get();
+        
         if(count($aulas)==0){
             $AULA_CONTROLER = new AulaController;
             $aulas = $AULA_CONTROLER->gerarAulas($turma);
+            if(count($aulas)==0){
+                dd('ERRO: aulas não geradas, por favor verifique as datas de início e termino da turma.');
+            }
+            
         }    
+
+        
+
+        
         
         $turma = \App\Turma::find($turma);
 
@@ -113,6 +122,10 @@ class FrequenciaController extends Controller
         
         $turma = \App\Turma::find($aula->turma);
 
+        $conteudo = AulaDado::where('aula',$aula->id)->where('dado','conteudo')->first();
+        $ocorrencia = AulaDado::where('aula',$aula->id)->where('dado','ocorrencia')->first();
+
+
         if($turma->professor->id != session('usuario') && !unserialize(Session('recursos_usuario'))->contains('recurso','17'))
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
 
@@ -133,7 +146,13 @@ class FrequenciaController extends Controller
             $aula_anterior->ocorrencia = $aula_anterior->getOcorrencia();
         }
 
-        return view('frequencias.editar-chamada')->with('turma',$turma)->with('aula',$aula)->with('anteriores',$aulas_anteriores)->with('frequencias',$arr_frequencias);
+        return view('frequencias.editar-chamada')
+            ->with('turma',$turma)
+            ->with('aula',$aula)
+            ->with('anteriores',$aulas_anteriores)
+            ->with('conteudo',$conteudo)
+            ->with('ocorrencia',$ocorrencia)
+            ->with('frequencias',$arr_frequencias);
 
     }
     public function editarChamada_exec(Request $req){
@@ -141,6 +160,8 @@ class FrequenciaController extends Controller
         
             
         $aula = Aula::find($req->aula);
+        $aula->data = $req->data;
+        $aula->save();
         $frequencias = Frequencia::select('aluno')->where('aula', $aula->id)->get();
         $arr_frequencias = $frequencias->pluck('aluno')->toArray();
         $turma = \App\Turma::find($req->turma);
@@ -155,7 +176,7 @@ class FrequenciaController extends Controller
             $turma->getInscricoes('regulares');
 
         foreach($turma->inscricoes as $inscricao){
-            if(in_array($inscricao->pessoa->id, $req->aluno)){
+            if(isset($req->aluno) && in_array($inscricao->pessoa->id, $req->aluno)){
                 if(!in_array($inscricao->pessoa->id,$arr_frequencias))
                     $this->novaFrequencia($req->aula,$inscricao->pessoa->id);
                 
@@ -171,9 +192,21 @@ class FrequenciaController extends Controller
             $auladado = new AulaDadoController;
             $conteudo = $auladado->updateDadoAula($aula->id,'conteudo',$req->conteudo);
         }
+        else{
+            $dado = AulaDado::where('aula',$aula->id)->where('dado','conteudo')->first();
+            if(isset($dado))
+                $dado->delete();
+
+        }
         if(!is_null($req->ocorrencia)){
             $auladado = new AulaDadoController;
             $conteudo = $auladado->updateDadoAula($aula->id,'ocorrencia',$req->ocorrencia);
+        }
+        else{
+            $dado = AulaDado::where('aula',$aula->id)->where('dado','ocorrencia')->first();
+            if(isset($dado))
+                $dado->delete();
+
         }
       
         return redirect(asset('/docentes'))->withErrors(['Chamada da aula '.$aula->id.' atualizada.']);

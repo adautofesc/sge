@@ -158,7 +158,7 @@ class RelatorioController extends Controller
 		$matriculas_faixa['Matriculas com uma disciplina']= 0;
 		$matriculas_faixa['Com 2 a 3 disciplinas']= 0;
 		$matriculas_faixa['Acima de 3']= 0;
-		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente'])->where('curso','307')->get();
+		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente','espera'])->where('curso','307')->whereBetween('data',[(date('Y')-1).'-11-20', date('Y').'-11-19'])->get();
 		$matriculas_faixa['Matriculas totais'] = count($matriculas);
 		foreach($matriculas as $matricula){
 			$inscricoes = $matricula->getInscricoes();
@@ -218,24 +218,39 @@ class RelatorioController extends Controller
 		
 	}
 
-	public function matriculasPrograma($programa){
+	public function matriculasPrograma($ano){
+        $programas = \App\Programa::all();
+        if($ano == date('Y'))
+            $matriculas = \App\Matricula::whereIn('status',['ativa','pendente','espera'])->whereBetween('data',[($ano-1).'-11-20', $ano.'-11-19'])->get();
+        else
+            $matriculas = \App\Matricula::where('status','expirada')->whereBetween('data',[($ano-1).'-11-20', $ano.'-11-19'])->get();
+        //dd($matriculas);
+        $matriculas_faixa['Matriculas totais'] = count($matriculas);
+        $item = array();
 
-		$qnde_matriculas = 0;
-		$pessoas= Array();
-		
-		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente'])->get();
-		$matriculas_faixa['Matriculas totais'] = count($matriculas);
-		foreach($matriculas as $matricula){
-			$inscricoes = $matricula->getInscricoes();
-			if($inscricoes->first()->turma->programa->id == $programa){
-				if(!in_array($matricula->pessoa,$pessoas))
-					array_push($pessoas,$matricula->pessoa);
-				$qnde_matriculas++;
-			}
-			
+        foreach($programas as $programa){
+            
+        
 
-		}
-		return count($pessoas). ' pessoas com '.$qnde_matriculas .' matrículas.' ;
+
+            
+            $item[$programa->id] = [];
+            
+           
+            foreach($matriculas as $matricula){
+                $inscricoes = $matricula->getInscricoes();
+                if(isset($inscricoes->first()->turma->programa->id )){
+                    if($inscricoes->first()->turma->programa->id == $programa->id){
+                        if(!in_array($matricula->id,$item[$programa->id]))
+                            $item[$programa->id][] = $matricula->id;
+                        
+                    }
+                }
+
+            }
+            
+        }
+        return view('relatorios.matriculas-por-programa')->with('programas',$programas)->with('matriculas',$item)->with('total',count($matriculas))->with('ano',$ano);
 	}
 
 	 public function bolsasFuncionariosMunicipais(){
@@ -332,14 +347,11 @@ Event::where('status' , 0)
     		if($request->tipo=='Registros'){
 
     			 $bolsas = $bolsas->get();
-
-
-
-                 //dd($bolsas);
               
 
     		}
     		if($request->tipo=='Resultados'){
+                $bolsas = $bolsas->select('*',\DB::raw('COUNT(*) as numero'))->groupBy('desconto')->get();
     			
 
     		}
@@ -356,9 +368,11 @@ Event::where('status' , 0)
                 $bolsas = $bolsas->sortBy('nome');
             }
     	
-    	}
+        }
+        //dd($bolsas);
 
            return view('relatorios.bolsas')
+                    ->with('r',$request)
                     ->with('programas',$programas)
                     ->with('descontos',$descontos)
                     ->with('bolsas', $bolsas)
@@ -479,6 +493,11 @@ Event::where('status' , 0)
             ->with('ano',$ano)
             ->with('educadores',$educadores);
     }
+
+
+    /**
+     * Uma lista de alunos regulares para assinatura (usado na votação da eleição do conselho)
+     */
     public function alunosConselho($ano = 2018){
         if(!is_numeric($ano))
              die('O ano informado é inválido.');
@@ -514,6 +533,24 @@ Event::where('status' , 0)
 
     }
 
+    /**
+     * Listar Bolsistas com mais de 3 faltas seguidas
+     */
+    public function bolsistasComTresFaltas(){
+        $bc = new BolsaController;
+        $bolsistas = $bc->fiscalizarBolsa();
+        $pessoas = array();
+        foreach($bolsistas as $bolsista=>$turma){
+            array_push($pessoas, $bolsista);
+        }
+        $bolsas = \App\Bolsa::whereIn('pessoa',$pessoas)->where('status','ativa')->groupBy('pessoa')->get();
+        foreach($bolsas as $bolsa){
+            $bolsa->nome = $bolsa->getNomePessoa();
+        }
+        $bolsasOrdenadas = $bolsas->sortBy('nome');
+        return view('relatorios.bolsistas')->with('bolsas',$bolsasOrdenadas);
+        
+    }
 
 
 

@@ -79,10 +79,14 @@
 		<div class="title-block">
 			<center>
             <h3 class="title"> Relatório de turmas</h3>
-            <h5 class="title"> Filtrado por 
+            <h5 class="title" style="font-size:11px"> Filtrado por 
             		 @foreach($filtros as $filtro=>$valor)
-		                @if(count($filtros[$filtro]))
-		                        <strong>{{$filtro}}</strong>,
+                        @if(count($filtros[$filtro]))
+                                @if($filtro == 'pordata')
+                                <strong>datas</strong>: {{implode(',',$valor)}},
+                                @else
+                                <strong>{{$filtro}}</strong>: {{implode(', ',$valor)}},
+                                @endif
 		                @endif
 		            @endforeach
 
@@ -354,7 +358,8 @@
         			<th class="col-md-3 col-sm-3">Dia/Horário</th>
         			<th class="col-md-2 col-sm-2">Professor</th>
         			<th class="col-md-1 col-sm-1">Local</th>
-        			<th class="col-md-2 col-sm-2">Vagas/Ocupadas</th>
+                    <th class="col-md-1 col-sm-1">Vagas</th>
+                    <th class="col-md-1 col-sm-1">Inscritos</th>
         		</thead>
         		<tbody>
         			 @foreach($turmas as $turma)
@@ -375,7 +380,8 @@
         				<td class="col-md-3 col-sm-3">{{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}</td>
         				<td class="col-md-2 col-sm-2">{{$turma->professor->nome_simples}}</td>
         				<td class="col-md-1 col-sm-1">{{$turma->local->sigla}}</td>
-        				<td class="col-md-2 col-sm-2">{{$turma->vagas}} / {{$turma->matriculados}}</td>
+                        <td class="col-md-1 col-sm-1">{{$turma->vagas}}</td>
+                        <td class="col-md-1 col-sm-1">{{$turma->matriculados}}</td>
         			</tr>
         			@endforeach
         		</tbody>

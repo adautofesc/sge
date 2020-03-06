@@ -72,9 +72,9 @@
                             <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Tipo
                             </button>
                              <ul class="dropdown-menu">
-					          <li><a href="#"  data-value="option1" tabIndex="-1"><input type="radio" name="tipo" value="Registros"/>&nbsp;Registros</a></li>
-					          <li><a href="#"  data-value="option2" tabIndex="-1"><input type="radio" name="tipo" value="Resultados"/>&nbsp;Resultados</a></li>
-					          <li><a href="#"  data-value="option3" tabIndex="-1"><input type="radio" name="tipo" value="Comparativo"/>&nbsp;Comparativo</a></li>
+					          <li><a href="#"  data-value="option1" tabIndex="-1"><input type="radio" @if(isset($r->tipo) && $r->tipo == 'Registros') checked @endif name="tipo" value="Registros"/>&nbsp;Registros</a></li>
+					          <li><a href="#"  data-value="option2" tabIndex="-1"><input type="radio" @if(isset($r->tipo) && $r->tipo == 'Resultados') checked @endif name="tipo" value="Resultados"/>&nbsp;Resultados</a></li>
+					          <li><a href="#"  data-value="option3" tabIndex="-1"><input type="radio" @if(isset($r->tipo) && $r->tipo == 'Comparativos') checked @endif name="tipo" value="Comparativo"/>&nbsp;Comparativo</a></li>
 					       
 					        </ul>
                 </div>
@@ -85,7 +85,7 @@
                             <ul class="dropdown-menu" style="width: 400px;">
                             	<li> <a href="#">Caso não haja seleção todos serão usados todos</a></li>
                             @foreach($descontos as $desconto)
-					          <li><a href="#"  data-value="{{$desconto->id}}" tabIndex="-1"><input type="checkbox" name="descontos[]" value="{{$desconto->id}}"/>&nbsp;{{$desconto->nome}}</a></li>
+					          <li><a href="#"  data-value="{{$desconto->id}}" tabIndex="-1"><input type="checkbox" @if(isset($r->descontos) && in_array($desconto->id,$r->descontos)) checked @endif  name="descontos[]" value="{{$desconto->id}}"/>&nbsp;{{$desconto->nome}}</a></li>
 					        @endforeach
 					        </ul>
                 </div>
@@ -107,7 +107,7 @@
 
                             <ul class="dropdown-menu" >
                             @foreach($periodos as $periodo)
-					          <li><a href="#"  data-value="{{$periodo->semestre.$periodo->ano}}" tabIndex="-1"><input type="checkbox" name="periodos[]" value="{{$periodo->semestre.$periodo->ano}}"/>&nbsp;{{$periodo->semestre.'º Sem. '.$periodo->ano}}</a></li>
+					          <li><a href="#"  data-value="{{$periodo->semestre.$periodo->ano}}" tabIndex="-1"><input type="checkbox"@if(isset($r->periodos) && in_array(($periodo->semestre.$periodo->ano),$r->periodos)) checked @endif  name="periodos[]" value="{{$periodo->semestre.$periodo->ano}}"/>&nbsp;{{$periodo->semestre.'º Sem. '.$periodo->ano}}</a></li>
 					        @endforeach
 					        </ul>
 
@@ -118,10 +118,10 @@
 
                             <ul class="dropdown-menu" >
                             
-					          <li><a href="#"  data-value="ativa" tabIndex="-1"><input type="checkbox" name="status[]" value="ativa"/>&nbsp;Ativa</a></li>
-					          <li><a href="#"  data-value="analisando" tabIndex="-1"><input type="checkbox" name="status[]" value="analisando"/>&nbsp;Analisando</a></li>
-					          <li><a href="#"  data-value="cancelado" tabIndex="-1"><input type="checkbox" name="status[]" value="cancelada"/>&nbsp;Cancelada</a></li>
-					          <li><a href="#"  data-value="expirada" tabIndex="-1"><input type="checkbox" name="status[]" value="expirada"/>&nbsp;Expirada</a></li>
+					          <li><a href="#"  data-value="ativa" tabIndex="-1"><input type="checkbox" @if(isset($r->status) && in_array('ativa',$r->status)) checked @endif name="status[]" value="ativa"/>&nbsp;Ativa</a></li>
+					          <li><a href="#"  data-value="analisando" tabIndex="-1"><input @if(isset($r->status) && in_array('analisando',$r->status)) checked @endif type="checkbox" name="status[]" value="analisando"/>&nbsp;Analisando</a></li>
+					          <li><a href="#"  data-value="cancelado" tabIndex="-1"><input type="checkbox" @if(isset($r->status) && in_array('cancelada',$r->status)) checked @endif name="status[]" value="cancelada"/>&nbsp;Cancelada</a></li>
+					          <li><a href="#"  data-value="expirada" tabIndex="-1"><input type="checkbox" @if(isset($r->status) && in_array('expirada',$r->status)) checked @endif name="status[]" value="expirada"/>&nbsp;Expirada</a></li>
 					       
 					        </ul>
 
@@ -159,14 +159,12 @@
         <br>
         <br>
 
-        @if(isset($bolsas))
+        @if(isset($r->tipo) && $r->tipo == 'Registros')
         Total de bolsas: <strong>{{count($bolsas)}}</strong> .
         <br/>
-        
-
         <div class="row">
             <div class="col-sm-12">
-                <table>
+                <table class="table">
                     <thead >
                         <th width="22rem">ID</th>
                         <th width="12%">Pessoa</th>
@@ -185,21 +183,39 @@
                     		<td>{{implode(', ', $bolsa->getPrograma()) }}</td>
                     		<td>{{$bolsa->status}}</td>
                     	</tr>
-
-
                     	@endforeach
-
-                    
                 	</tbody>
                 </table>
-
-
-       
-                
-         
              </div>
         </div>
-        @endif
+		@elseif(isset($r->tipo) && $r->tipo == 'Resultados')
+		@php $total=0; @endphp
+        <br/>
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table">
+                    <thead >
+                        <th width="22rem">Tipo</th>
+                        <th width="12%">Quantidade</th>
+                       
+                    </thead>
+                    <tbody>
+                    	@foreach($bolsas as $bolsa)
+                    	<tr>
+						<td>{{$bolsa->desconto->nome}}</td>
+						<td>{{$bolsa->numero}}</td>
+						@php $total = $total+$bolsa->numero; @endphp
+                    	</tr>
+						@endforeach
+						<tr>
+							<td><strong>Total</strong></td>
+						<td><strong>{{$total}}</strong></td>
+						</tr>
+                	</tbody>
+                </table>
+             </div>
+        </div>
+		@endif
         
 
         	

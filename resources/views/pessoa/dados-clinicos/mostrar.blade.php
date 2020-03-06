@@ -14,41 +14,58 @@
             <div class="form-group row"> 
                     <label class="col-sm-4 form-control-label text-xs-right">Necesssidades especiais</label>
                     <div class="col-sm-8"> 
-                        @if(isset($pessoa['necessidade_especial']))
-                        {{ $pessoa['necessidade_especial'] }}
-                        @else
-                        <p>Não possui</p>
-                        @endif
+                        <ul>
+
+                        @foreach($pessoa->dadosClinicos->where('dado','necessidade_especial') as $necessidade)
+                        <li>{{$necessidade->valor}} <a href="#" onclick="desativarDado('{{$necessidade->id}}')" title="Apagar necessidade" >
+                            <i class="fa fa-times text-danger"></i>
+                        </a></li>
+
+                        @endforeach
+                        
+                        </ul>
                     </div>
             </div>
             <div class="form-group row"> 
                     <label class="col-sm-4 form-control-label text-xs-right">Medicamentos uso contínuo</label>
                     <div class="col-sm-8"> 
-                        @if(isset($pessoa['medicamentos_continuos']))
-                        {{ $pessoa['medicamentos_continuos'] }}
-                        @else
-                        <p>Não possui</p>
-                        @endif
+                        <ul>
+                            @foreach($pessoa->dadosClinicos->where('dado','medicamento') as $medicamento)
+                            <li>{{$medicamento->valor}} 
+                                <a href="#" onclick="desativarDado('{{$medicamento->id}}')" title="Apagar medicamento" >
+                                    <i class="fa fa-times text-danger"></i>
+                                </a>
+                            </li>
+                            @endforeach
+                        </ul>
                     </div>
             </div>
             <div class="form-group row"> 
                     <label class="col-sm-4 form-control-label text-xs-right">Alergias</label>
                     <div class="col-sm-8"> 
-                        @if(isset($pessoa['alergias']))
-                        {{ $pessoa['alergias'] }}
-                        @else
-                        <p>Não possui</p>
-                        @endif
+                        <ul>
+                            @foreach($pessoa->dadosClinicos->where('dado','alergia') as $alergia)
+                            <li>{{$alergia->valor}} 
+                                <a href="#" onclick="desativarDado('{{$alergia->id}}')" title="Apagar alergia" >
+                                    <i class="fa fa-times text-danger"></i>
+                                </a>
+                            </li>
+                            @endforeach
+                        </ul>
                     </div>
             </div>
             <div class="form-group row"> 
                     <label class="col-sm-4 form-control-label text-xs-right">Doença crônica</label>
                     <div class="col-sm-8"> 
-                        @if(isset($pessoa['doenca_cronica']))
-                        {{ $pessoa['doenca_cronica'] }}
-                        @else
-                        <p>Não possui</p>
-                        @endif
+                        <ul>
+                            @foreach($pessoa->dadosClinicos->where('dado','doenca') as $doenca)
+                            <li>{{$doenca->valor}} 
+                                <a href="#" onclick="desativarDado('{{$doenca->id}}')" title="Apagar doenca" >
+                                    <i class="fa fa-times text-danger"></i>
+                                </a>
+                            </li>
+                            @endforeach
+                        </ul>
                     </div>
             </div>
             <div class="form-group row"> 

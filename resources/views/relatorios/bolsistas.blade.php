@@ -79,7 +79,7 @@
 		<div class="title-block">
 			<center>
             <h3 class="title"> Relatório de bolsistas </h3>
-            <h5 class="title"> Filtrado por Funcionários públicos municipais.
+            <h5 class="title"> Filtrado por mais de 3 faltas consecutivas.
             		 
             </h5></center>
         </div>
@@ -93,8 +93,9 @@
                     <thead >
                         <th width="5%">ID Pessoa</th>
                         <th width="50%">Nome</th>
-                        <th width="30%">Data da solicitação</th>
-                        <th width="15%">Matrícula ou curso:</th>
+						<th width="15%">Data da solicitação</th>
+						<th width="30%">Tipo</th>
+                        
                     </thead>
                     <tbody>
                     @foreach($bolsas as $bolsa)
@@ -105,14 +106,9 @@
                         </td>
                         <td>
                             {{$bolsa->created_at->format('d/m/Y')}}
-                        </td>
-                        <td>
-                            @if(isset($bolsa->matricula))
-                                M{{$bolsa->matricula}}
-                            @else
-                                C{{$bolsa->curso}}
-                            @endif
-                        </td>
+						</td>
+					<td>{{$bolsa->desconto->nome}}</td>
+                        
                     </tr>
                     @endforeach
                 </tbody>

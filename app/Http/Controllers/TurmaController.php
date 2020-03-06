@@ -318,7 +318,7 @@ class TurmaController extends Controller
 
         //return $dados;
 
-        return view('pedagogico.turma.cadastrar',compact('dados'))->with('requisitos',$requisitos);
+        return view('turmas.cadastrar',compact('dados'))->with('requisitos',$requisitos);
     }
 
     /**
@@ -345,8 +345,14 @@ class TurmaController extends Controller
 
 
         ]);
+
+        if(date('Y', strtotime($request->dt_inicio))<date('Y')){
+            return redirect()->back()->withErrors(['Não é possível cadastrar turmas de anos anteriores']);
+            
+        }
         
         //verificar disponibilidade da sala **************************************************************************************
+
 
         $turma=new Turma;
         $turma->programa=$request->programa;
@@ -447,6 +453,13 @@ class TurmaController extends Controller
 
 
         ]);
+        
+
+        if(date('Y', strtotime($request->dt_inicio))<date('Y')){
+            return redirect()->back()->withErrors(['Não é possível modificar dados de turmas de anos anteriores.']);
+            
+        }
+        
         //verificar disponibilidade da sala.
         $turma=Turma::find($request->turmaid);
         $turma->programa=$request->programa;
@@ -850,7 +863,7 @@ class TurmaController extends Controller
             case 'requisitos':
                 $turmas = implode(',',$turmas);
                 $requisitos = \App\Requisito::all();
-                return redirect('/pedagogico/turmas/modificar-requisitos/'.$turmas);
+                return redirect('/turmas/modificar-requisitos/'.$turmas);
 
 
                 break;

@@ -215,7 +215,7 @@ class CobrancaController extends Controller
 	        $devedores = $this->relatorioDevedores($ativos);
 	        $contador=0;
 	        $linha  = 'FESC - '."\n";
-	        $linha .= 'ATENÇÃO. Constatamos pendências relacionadas a seu cadastro. Por favor, entre em contato: 3372-1308'."\n";
+	        $linha .= 'ATENÇÃO. Constatamos pendências em seu cadastro. Por favor, entre em contato: 3372-1308'."\n";
 
 	        foreach($devedores as $pessoax){
 	        	$pessoa = \App\Pessoa::find($pessoax->id);

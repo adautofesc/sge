@@ -120,7 +120,7 @@
          
              </div>
         </div>
-        
+
 
         	
 	<script src="{{asset('/')}}/js/vendor.js">

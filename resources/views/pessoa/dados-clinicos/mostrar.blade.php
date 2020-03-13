@@ -11,63 +11,7 @@
         </div> 
 
     <section class="card card-block">
-            <div class="form-group row"> 
-                    <label class="col-sm-4 form-control-label text-xs-right">Necesssidades especiais</label>
-                    <div class="col-sm-8"> 
-                        <ul>
-
-                        @foreach($pessoa->dadosClinicos->where('dado','necessidade_especial') as $necessidade)
-                        <li>{{$necessidade->valor}} <a href="#" onclick="desativarDado('{{$necessidade->id}}')" title="Apagar necessidade" >
-                            <i class="fa fa-times text-danger"></i>
-                        </a></li>
-
-                        @endforeach
-                        
-                        </ul>
-                    </div>
-            </div>
-            <div class="form-group row"> 
-                    <label class="col-sm-4 form-control-label text-xs-right">Medicamentos uso contínuo</label>
-                    <div class="col-sm-8"> 
-                        <ul>
-                            @foreach($pessoa->dadosClinicos->where('dado','medicamento') as $medicamento)
-                            <li>{{$medicamento->valor}} 
-                                <a href="#" onclick="desativarDado('{{$medicamento->id}}')" title="Apagar medicamento" >
-                                    <i class="fa fa-times text-danger"></i>
-                                </a>
-                            </li>
-                            @endforeach
-                        </ul>
-                    </div>
-            </div>
-            <div class="form-group row"> 
-                    <label class="col-sm-4 form-control-label text-xs-right">Alergias</label>
-                    <div class="col-sm-8"> 
-                        <ul>
-                            @foreach($pessoa->dadosClinicos->where('dado','alergia') as $alergia)
-                            <li>{{$alergia->valor}} 
-                                <a href="#" onclick="desativarDado('{{$alergia->id}}')" title="Apagar alergia" >
-                                    <i class="fa fa-times text-danger"></i>
-                                </a>
-                            </li>
-                            @endforeach
-                        </ul>
-                    </div>
-            </div>
-            <div class="form-group row"> 
-                    <label class="col-sm-4 form-control-label text-xs-right">Doença crônica</label>
-                    <div class="col-sm-8"> 
-                        <ul>
-                            @foreach($pessoa->dadosClinicos->where('dado','doenca') as $doenca)
-                            <li>{{$doenca->valor}} 
-                                <a href="#" onclick="desativarDado('{{$doenca->id}}')" title="Apagar doenca" >
-                                    <i class="fa fa-times text-danger"></i>
-                                </a>
-                            </li>
-                            @endforeach
-                        </ul>
-                    </div>
-            </div>
+            
             <div class="form-group row"> 
                     <label class="col-sm-4 form-control-label text-xs-right">Atestados médicos</label>
                     <div class="col-sm-8">
@@ -97,6 +41,78 @@
              
 
 
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label text-xs-right">Justificativas de ausência</label>
+                <div class="col-sm-6">                 
+                    <input type="text" class="form-control boxed" placeholder="Se não tiver, não preencha." maxlength="150" name="doenca" value="">
+                    <br>
+                    <ul>
+                        @foreach($pessoa->dadosClinicos->where('dado','justificativa') as $dado)
+                        <li>{{$dado->valor}} 
+                            <a href="#" onclick="desativarDado('{{$dado->id}}')" title="Apagar dado" >
+                                <i class="fa fa-times text-danger"></i>
+                            </a>
+                        </li>
+                        @endforeach
+                    </ul>
+                        
+                </div>
+                <div class="col-sm-2">
+                    <button name="btn_sub" value='1' class="btn btn-primary" onclick="cadastrar('doenca',{{$pessoa}})">Adicionar</button>
+                </div>
+
+            </div>
+            <div class="form-group row"> 
+                <label class="col-sm-4 form-control-label text-xs-right">Necesssidades especiais</label>
+                <div class="col-sm-8"> 
+                    <ul>
+
+                    @foreach($pessoa->dadosClinicos->where('dado','necessidade_especial') as $necessidade)
+                    <li>{{$necessidade->valor}} <a href="#" onclick="desativarDado('{{$necessidade->id}}')" title="Apagar necessidade" >
+                        <i class="fa fa-times text-danger"></i>
+                    </a></li>
+
+                    @endforeach
+                    
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group row"> 
+                    <label class="col-sm-4 form-control-label text-xs-right">Medicamentos uso contínuo</label>
+                    <div class="col-sm-8"> 
+                        <ul>
+                            @foreach($pessoa->dadosClinicos->where('dado','medicamento') as $medicamento)
+                            <li>{{$medicamento->valor}} 
+                                
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
+            </div>
+            <div class="form-group row"> 
+                    <label class="col-sm-4 form-control-label text-xs-right">Alergias</label>
+                    <div class="col-sm-8"> 
+                        <ul>
+                            @foreach($pessoa->dadosClinicos->where('dado','alergia') as $alergia)
+                            <li>{{$alergia->valor}} 
+                                
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
+            </div>
+            <div class="form-group row"> 
+                    <label class="col-sm-4 form-control-label text-xs-right">Doença crônica</label>
+                    <div class="col-sm-8"> 
+                        <ul>
+                            @foreach($pessoa->dadosClinicos->where('dado','doenca') as $doenca)
+                            <li>{{$doenca->valor}} 
+                                
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
             </div>
    </section>
 

@@ -410,7 +410,7 @@ class PessoaController extends Controller
 
 		if(isset($pessoa->cpf)){;
 			if(Strings::validaCPF($pessoa->cpf) == false){
-				PessoaController::notificarErro($pessoa->id,1);
+				//PessoaController::notificarErro($pessoa->id,1);
 				$pessoa->cpf = null;
 			}
 		}	
@@ -877,56 +877,7 @@ class PessoaController extends Controller
 
 
 	}
-	public static function notificarErro($pessoa,$erro){
-		//Erros 1 = CPF, 2 = Endereço, 3 = Atestado vencido, 4 = telefone, 5 - gerar boleto, 6 - enviar remessa
-
-		switch($erro){
-			case 1:
-				$dados = \App\PessoaDadosGerais::where('pessoa',$pessoa)
-					->where('dado',20)
-					->where('valor','CPF não foi aprovado pelo validador.')
-					->get();
-				$dado = 'CPF não foi aprovado pelo validador.';
-			break;
-			case 2:
-				$dados = \App\PessoaDadosGerais::where('pessoa',$pessoa)
-					->where('dado',20)
-					->where('valor','Endereço inválido ou insuficiente.')
-					->get();
-				$dado = 'Endereço inválido ou insuficiente.';
-			break;
-			case 3:
-				$dados = \App\PessoaDadosGerais::where('pessoa',$pessoa)
-					->where('dado',20)
-					->where('valor','Atestado médico vencido ou ausente.')
-					->get();
-				$dado = 'Atestado médico vencido ou ausente.';
-			break;
-			case 4:
-				$dados = \App\PessoaDadosGerais::where('pessoa',$pessoa)
-					->where('dado',20)
-					->where('valor','Nenhum telefone válido.')
-					->get();
-				$dado = 'Nenhum telefone válido.';
-			break;
-			default:
-				$dados = \App\PessoaDadosGerais::where('pessoa',$pessoa)
-					->where('dado',20)
-					->where('valor',$erro)
-					->get();
-				$dado = $erro;
-			break;
-		}
-		
-		if(count($dados) == 0){
-			$erro = new \App\PessoaDadosGerais;
-            $erro->pessoa = $pessoa;
-            $erro->dado = 20;
-            $erro->valor= $dado;
-            $erro->save();
-		}
-
-	}
+	
 	public function iniciarRecadastramento(Request $rq){
 		$dado = PessoaDadosGerais::where('dado',3)->where('valor',preg_replace( '/[^0-9]/is', '',$rq->cpf))->get();
 		if(count($dado)>0){

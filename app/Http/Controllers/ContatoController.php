@@ -49,7 +49,7 @@ class ContatoController extends Controller
             $pessoa->celular = $pessoa->getCelular();
             if(strlen($pessoa->celular)>5){
                 $mensagem=substr(urlencode('FESC Informa: '.$mensagem),0,140);
-                $url = 'http://209.133.205.2/painel/api.ashx?action=sendsms&lgn=16997530315&pwd=194996&msg='.$mensagem.'&numbers='.$pessoa->celular;
+                //$url = 'http://209.133.205.2/painel/api.ashx?action=sendsms&lgn=16997530315&pwd=194996&msg='.$mensagem.'&numbers='.$pessoa->celular;
                 $ch = curl_init();
                 //não exibir cabeçalho
                 curl_setopt($ch, CURLOPT_HEADER, false);

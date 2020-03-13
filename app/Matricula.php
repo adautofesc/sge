@@ -26,13 +26,14 @@ class Matricula extends Model
     protected $appends=['valor'];
 
 	public function getValorAttribute($value){
-		//return $value;
 		
 		$valor = \App\Http\Controllers\ValorController::valorMatricula($this->id);
 			return $valor;
 
 	}
-	 public function getInscricoes($tipo = 'todas'){
+
+
+	public function getInscricoes($tipo = 'todas'){
 
 		$inscricoes= \App\Http\Controllers\InscricaoController::inscricoesPorMatricula($this->id,$tipo);
 		$this->inscricoes = $inscricoes;
@@ -40,17 +41,13 @@ class Matricula extends Model
 	}
 
 	public function getNomeCurso(){
-		/*$curso = Curso::find($this->curso);
-		if($curso != null)
-			return $curso->nome;
-		else{*/
-			
+		
 			$inscricoes = $this->getInscricoes();
 
-			return $inscricoes->first()->turma->curso->nome;
-			//return 'Matricula sem nome do curso.';
-			
-
+			if($inscricoes==null)
+				return $inscricoes->first()->turma->curso->nome;
+			else
+				return 'Matrícula sem curso cadastrado';
 		
 	}
 
@@ -63,21 +60,16 @@ class Matricula extends Model
 				return $inscricoes->first()->turma->curso->id;
 			else 
 				return 0;
-			//return 'Matricula sem nome do curso.';
-			
-
-		
 	}
+
+
 	// mostra bolsa quando mostrar a matrícula;
 	// update bolsas set validade = '2019-12-31' where status = 'ativa'
 	public function getBolsas(){
 		
 		$bmatricula = BolsaMatricula::where('matricula',$this->id)->first();
-		//dd($bmatricula);
-		if($bmatricula){
-			//$bolsa = Bolsa::where('id',$bmatricula->bolsa)->where('status','ativa')->where('validade','>',date('Y-m-d'))->first();
+		if($bmatricula){	
 			$bolsa = Bolsa::where('id',$bmatricula->bolsa)->where('status','ativa')->first();
-			//dd($bolsa);
 		}
 		else
 			return null;
@@ -106,8 +98,7 @@ class Matricula extends Model
 	}
 
 	public function getValorDescontoAttribute($value){
-		//return $value;
-		//dd($this);
+
 		if($this->desconto != null){
 			//dd($this->desconto);
 			if($this->desconto->tipo == 'p')
@@ -147,18 +138,12 @@ class Matricula extends Model
 		}
 
 		$valor_matricula = \App\Http\Controllers\ValorController::valorMatricula($this->id);
-		//return $valor_matricula;
+
 		//transforma data de inicio da turma em objeto de data para descobrir qual semestre é
 		$pp_dt = \DateTime::createFromFormat('d/m/Y', $inscricoes->first()->turma->data_inicio);
 		
-		
-
 		unset($this->inscricoes);
 
-		// verifica se a inscrição é para turma que começa em agosto, se for atribui 5 parcelas
-		/*if($pp_dt->format('m')==8)
-			return 5;
-		else{*/
 			//verifica qual semestre para determinar a data limite para geração da primeira parcela
 			if($pp_dt->format('m')<8 || $valor_matricula->parcelas == 11 || $valor_matricula->parcelas == 10){
 				$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/02/'.$pp_dt->format('Y')); // 20/02/2019
@@ -168,30 +153,16 @@ class Matricula extends Model
 				$dt_pp= \DateTime::createFromFormat('d/m/Y', '20/08/'.$pp_dt->format('Y')); //ou 20/08/2019
 				
 			}
-		//}
-		
+				
 		//transforma data da matricula em objeto
-		//$dt_mt= new \DateTime(date($this->data));
-		//dd($this->data);
-		//$dt_mt= \DateTime::createFromFormat('d/m/Y','21/02/2020');
 		$dt_mt= \DateTime::createFromFormat('Y-m-d',$this->data);
 
 		//calcula a diferença entre as datas
 		$interval = $dt_pp->diff($dt_mt);
-		
-		//dd(ceil($interval->days/30));
-
-		
-
-
 		$parcelas = $valor_matricula->parcelas - ceil($interval->days/30);
-		
-		
-
 
 		//reduz a quantidade de parcelas de acordo com a diferença entre as datas
-		if($interval->invert ==1){
-			
+		if($interval->invert ==1){	
 			return $valor_matricula->parcelas;
 		}
 		else{
@@ -201,7 +172,6 @@ class Matricula extends Model
 				return $valor_matricula->parcelas;
 
 		}
-
 		return $interval;
 
 	}

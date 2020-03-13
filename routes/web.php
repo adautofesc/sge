@@ -172,6 +172,8 @@ Route::middleware('login') ->group(function(){
 		Route::get ('mostrar/{var}','PessoaController@mostrar');
 		Route::get('buscarapida/{var}','PessoaController@liveSearchPessoa');
 		Route::get('apagar-atributo/{var}','PessoaController@apagarAtributo');
+		Route::POST('inserir-dado-clinico','PessoaDadosClinicosController@store');
+		Route::delete('apagar-dado-clinico/{id}','PessoaDadosClinicosController@delete');
 
 	//Atestado
 		Route::prefix('atestado')->group(function(){
@@ -209,8 +211,8 @@ Route::middleware('login') ->group(function(){
 			Route::post('geral/{var}','PessoaController@editarGeral_exec');
 			Route::get('contato/{var}','PessoaController@editarContato_view');
 			Route::post('contato/{var}','PessoaController@editarContato_exec');
-			Route::get('dadosclinicos/{var}','PessoaController@editarDadosClinicos_view');
-			Route::post('dadosclinicos/{var}','PessoaController@editarDadosClinicos_exec');
+			Route::get('dadosclinicos/{var}','PessoaDadosClinicosController@editarDadosClinicos_view');
+			Route::post('dadosclinicos/{var}','PessoaDadosClinicosController@editarDadosClinicos_exec');
 			Route::get('observacoes/{var}','PessoaDadosGeraisController@editarObservacoes_view');
 			Route::post('observacoes/{var}','PessoaDadosGeraisController@editarObservacoes_exec');
 		});
@@ -320,9 +322,9 @@ Route::middleware('login') ->group(function(){
 
 			Route::prefix('remessa')->group(function(){
 				Route::get('home',  function(){ return view('financeiro.remessa.home'); });
-				Route::get('gerar', 'BoletoController@gerarRemessa');//precisa de middleware
-				Route::get('download/{file}', 'BoletoController@downloadRemessa');//precisa de middleware
-				Route::get('listar-arquivos', 'BoletoController@listarRemessas');
+				Route::get('gerar', 'RemessaController@gerarRemessa');//precisa de middleware
+				Route::get('download/{file}', 'RemessaController@downloadRemessa');//precisa de middleware
+				Route::get('listar-arquivos', 'RemessaController@listarRemessas');
 			});
 
 
@@ -612,12 +614,16 @@ Route::middleware('login') ->group(function(){
 
 });//end middleware login
 Route::get('cobranca-automatica','CobrancaController@cobrancaAutomatica');
-Route::get('api/professores','WebServicesController@listaProfessores');
-Route::get('api/chamada/{id}','WebServicesController@apiChamada');
-Route::get('api/turmas','WebServicesController@apiTurmas');
-Route::get('api/salas-api/{id}','SalaController@listarPorLocalApi');
-Route::get('api/salas-locaveis-api/{id}','SalaController@listarLocaveisPorLocalApi');
-Route::post('api/excluir-aulas','AulaController@excluir');
+Route::prefix('api')->group(function(){
+    Route::get('professores','WebServicesController@listaProfessores');
+    Route::get('chamada/{id}','WebServicesController@apiChamada');
+    Route::get('turmas','WebServicesController@apiTurmas');
+    Route::get('salas-api/{id}','SalaController@listarPorLocalApi');
+    Route::get('salas-locaveis-api/{id}','SalaController@listarLocaveisPorLocalApi');
+    Route::post('excluir-aulas','AulaController@excluir');
+
+});
+
 
 //----------------------------- Errors treatment
 

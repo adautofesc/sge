@@ -104,32 +104,22 @@ class BolsaController extends Controller
     Função que verificaa bolsa no financeiro.
      */
     public static function verificaBolsa($pessoa,$matricula){
-
-
         //********************************************* aqui colocar a validade dos descontos
-        
-
         $bmatricula = BolsaMatricula::where('matricula',$matricula)->first();
         //dd($bmatricula);
         if($bmatricula){
             //$bolsa = Bolsa::where('id',$bmatricula->bolsa)->where('status','ativa')->where('validade','>',date('Y-m-d'))->first();
             $bolsa = Bolsa::where('id',$bmatricula->bolsa)->where('status','ativa')->first();
+            if($bolsa)
+                return $bolsa;
+            else
+                return null;
+
         }
         else
             return null;
-        
-        /*
-        $bolsa = Bolsa::where('pessoa',$pessoa)->where(function($query) use ($matricula) {
-            $query->where('matricula',$matricula)
-            ->orWhere('matricula2',$matricula);
-        })->where('status','ativa')->first();
-        //*/
      
-        if($bolsa)
-            return $bolsa;
-        else
-            return null;
-
+       
 
     }
 
@@ -140,9 +130,6 @@ class BolsaController extends Controller
      */
     public function nova($pessoa){
         $pessoa = \App\Pessoa::find($pessoa);
-    
-
-
         $matriculas = \App\Matricula::where('pessoa',$pessoa->id)->whereIn('status',['ativa','pendente','espera'])->get();
         $descontos = \App\Desconto::orderBy('nome')->get();
         $bolsas = Bolsa::where('pessoa',$pessoa->id)->get();
@@ -185,7 +172,7 @@ class BolsaController extends Controller
             $bolsa = Bolsa::where('pessoa',$request->pessoa)
                 ->whereIn('status',['ativa','analisando'])
                 ->where('desconto',$request->desconto)
-                ->WhereYear('validade',date('Y', date('Y')))
+                ->WhereYear('validade',date('Y'))
                 ->first();
         }    
 
@@ -220,6 +207,7 @@ class BolsaController extends Controller
             $bolsa->rematricula = $request->rematricula;
             $bolsa->validade = $validade;
 
+            //ativa atutomaticamente os encaminhamentos do caps e saúde
             if($request->desconto == 7 || $request->desconto == 8)
                 $bolsa->status = 'ativa';
             else 
@@ -256,7 +244,6 @@ class BolsaController extends Controller
     public function vericaSeSolicitado($pessoa,$matricula){
         
         $bmatricula = BolsaMatricula::where('matricula',$matricula)->orderByDesc('id')->first();
-        //dd($bmatricula);
         if(isset($bmatricula->id)){
             $bolsa = Bolsa::find($bmatricula->bolsa);
             
@@ -273,11 +260,10 @@ class BolsaController extends Controller
         else
             return false;
         
-     
-        
-
-
     }
+
+
+
     public function imprimir($bolsa){
         setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
         date_default_timezone_set('America/Sao_Paulo');
@@ -297,10 +283,6 @@ class BolsaController extends Controller
 
         $bolsa->matriculas = $matriculas;
         $bolsa->desconto_str = \App\Desconto::find($bolsa->desconto->id);
-
-        //dd($bolsa->desconto_str);
-
-
         $hoje = strftime('%d de %B de %Y', strtotime($bolsa->created_at));
 
 
@@ -325,6 +307,9 @@ class BolsaController extends Controller
         
 
     }
+
+
+
     public function gravarAnalise(Request $r){
          $this->validate($r,[
             'parecer' => 'required',
@@ -349,6 +334,9 @@ class BolsaController extends Controller
     public function uploadForm($bolsa){
         return view('pessoa.bolsa.upload')->with('bolsa',$bolsa);
     }
+
+
+
     public function uploadExec(Request $r){
         $arquivo = $r->file('arquivo');
             
@@ -358,9 +346,15 @@ class BolsaController extends Controller
 
             return redirect(asset('secretaria/atender'));
     }
+
+
+
     public function uploadParecerForm($bolsa){
         return view('pessoa.bolsa.upload-parecer')->with('bolsa',$bolsa);
     }
+
+
+
     public function uploadParecerExec(Request $r){
         $arquivo = $r->file('arquivo');
             
@@ -387,6 +381,8 @@ class BolsaController extends Controller
         return $bolsas;
     }
 
+
+
     public function novaBolsa(){
         $bolsas = Bolsa::all();
         foreach($bolsas as $bolsa){
@@ -397,6 +393,9 @@ class BolsaController extends Controller
             $bolsa->save();
         }
     }
+
+
+
     public function ajusteBolsaSemMatricula(){
         $bolsas = Bolsa::whereIn('status',['ativa','analisando'])->get();
         foreach ($bolsas as $bolsa){
@@ -436,9 +435,7 @@ class BolsaController extends Controller
         if($bolsa_matricula == null)
             return false;
         $bolsa_matricula->delete();
-
         $bolsa = Bolsa::find($bolsa);
-        //dd($bolsa->getMatriculas());
         $bolsa->obs = $bolsa->obs."\n".date('d/m/Y').' matricula desvinculada: '.$matricula.' por '.session('nome_usuario');
         if(count($bolsa->getMatriculas())==0){
             $bolsa->status = 'cancelada';

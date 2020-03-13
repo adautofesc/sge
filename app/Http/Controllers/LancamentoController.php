@@ -156,8 +156,12 @@ class LancamentoController extends Controller
            // colocar um if de parcela, se for menor que 6,  fazer recursivo
            // 
 
-          
-        $parcela_atual = date('m')-1;   
+         //! se dia for >=20  parcela atual = m senão   
+		if(date('d')>=20)
+			$parcela_atual = date('m');
+		else
+		 	$parcela_atual = date('m')-1;
+
 		$matriculas=Matricula::where('pessoa',$pessoa)//pega mas matriculas ativas e pendentes da pessoa
 			->where(function($query){
 				$query->where('status','ativa')->orwhere('status', 'pendente');

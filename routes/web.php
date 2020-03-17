@@ -623,6 +623,7 @@ Route::prefix('api')->group(function(){
     Route::post('excluir-aulas','AulaController@excluir');
 
 });
+Route::get('alerta-covid','painelController@alertaCovid');
 
 
 //----------------------------- Errors treatment

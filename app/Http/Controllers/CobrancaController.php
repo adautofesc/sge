@@ -178,17 +178,47 @@ class CobrancaController extends Controller
 			
 		}
 
-		public function cobrancaAutomatica(){
+
+
+		//verificar boletos em aberto.
+		//Criar notificação para aqueles que estão frequentando
+		//
+		public function cobrancaAutomatica($inicio,$termino){
+			$data_inicio = \DateTime::createFromFormat('Y-m-d',$inicio);
+			$data_termino = \DateTime::createFromFormat('Y-m-d',$termino);
+
 			
 			$boletos = Boleto::where('pessoa',$id)
-			 	->whereIn('status',['gravado','impresso','emitido','divida','aberto executado'])
-	
-			 	->orderBy('id','desc')
-			 	->get();
+				 ->where('status','emitido')
+				 ->whereBetween('vencimento',[$data_inicio->format('Y-m-d'),$data_termino->format('Y-m-d')])	
+			 	 ->orderBy('id','desc')
+				 ->get();
+				 
 			 foreach($boletos as $boleto){
-			 	$boleto->getLancamentos();
+				 
+				 $boleto->getLancamentos();
+				 foreach($boleto->lancamentos as $lancamento){
+					 $frequencias = 0;
+					 $turma = Turma::find($lancamento->turma->id);
+					 $aulas = $turma->getAulasDadas();
+					 foreach($aulas as $aula){
+						 $presenca = Frequencias::count()->where('turma',$turma->id)->whereIn('aula',$aulas)->get();
+						 $frequencias++;
+
+					 }
+					 if($frequencias>3){
+						 //aluno frequentou no perios
+						 //avisar que boletos estão abertos
+					 }
+					 else{
+						 //aluno nao frequentou
+					 }
+
+
+
+				 }
 			 }
-			
+			/*
 			$lancamentos = Lancamento::where('pessoa',$id)->where('boleto',null)->where('status',null)->get();
 
 			
@@ -199,7 +229,7 @@ class CobrancaController extends Controller
 			$boleto_cancelar= $boletos->whereIn('status',['emitido','divida','aberto executado'])->where('vencimento','<',$dt_limite_cancelamento->toDateString());
 			
 			//return $boletos;
-			
+			*/
 			return 'Cobranca automatica executada';
 			
 		}

@@ -212,4 +212,8 @@ class FrequenciaController extends Controller
         return redirect(asset('/docentes'))->withErrors(['Chamada da aula '.$aula->id.' atualizada.']);
 
     }
+
+
+
+   
 }

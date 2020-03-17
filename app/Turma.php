@@ -222,6 +222,14 @@ class Turma extends Model
 		return $this->aulas;
 	}
 
+	public function getAulasDadas($mes){
+		if(is_null($mes))
+			$this->aulas = Aula::where('turma',$this->id)->where('status','executada')->orderBy('data')->get();
+		else
+			$this->aulas = Aula::where('turma',$this->id)->whereMonth('data',$mes)->where('status','executada')->orderBy('data')->get();
+		return $this->aulas;
+	}
+
 
     
 

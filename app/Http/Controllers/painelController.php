@@ -368,7 +368,8 @@ class painelController extends Controller
     public function alertaCovid(){
         $CC = new ContatoController;
         //$msg = "FESC INFORMA: Aulas suspensas por tempo indeterminado. Saiba mais no site fesc.com.br";
-        $msg = "FESC INFORMA: Aulas suspensas A PARTIR DO DIA 17/03 por tempo indeterminado. Duvidas? Ligue 3372-1308";
+        //$msg = "FESC INFORMA: Aulas suspensas A PARTIR DO DIA 17/03 por tempo indeterminado. Duvidas? Ligue 3372-1308";
+        $msg = "FESC INFORMA: Prezados alunos, os boletos do mês de abril, com vencimento em 10/04 serão cancelados.Fique seguro, fique em casa.";
         $matriculas=Matricula::where('status','ativa')->groupBy('pessoa')->get();
         foreach($matriculas as $matricula){
            //$CC->enviarSMS($msg,[$matricula->pessoa]);
@@ -376,6 +377,7 @@ class painelController extends Controller
         return "Notificações enviadas";
 
     }
+
 
     //essa função atualiza os boletos com divida ativa
     public function importarStatusBoletos(){

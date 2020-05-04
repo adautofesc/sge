@@ -8,6 +8,7 @@ use App\Boleto;
 class RemessaController extends Controller
 {
     public function gerarRemessa(){
+		$BC = new BoletoController;
 		$beneficiario = new \Eduardokum\LaravelBoleto\Pessoa([
 		    'documento' => '45.361.904/0001-80',
 		    'nome'      => 'Fundação Educacional São Carlos',
@@ -33,10 +34,11 @@ class RemessaController extends Controller
 		if(count($boletos) == 0)
 			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Nenhum boleto encontrado']);
 
+
 		foreach($boletos as $boleto){
 
 			try{
-				$boleto_completo = $this->gerarBoleto($boleto);
+				$boleto_completo = $BC->gerarBoleto($boleto);
 			}
 			catch(\Exception $e){
 				NotificacaoController::notificarErro($boleto->pessoa,5);
@@ -56,9 +58,12 @@ class RemessaController extends Controller
 
 			$boleto->remessa = intval(date('ymdHi'));
 			$boleto->save();
+
 			
 	
 		}
+
+		//dd($remessa);
 
 		if(isset($_GET["page"]))
 			$page = $_GET["page"];

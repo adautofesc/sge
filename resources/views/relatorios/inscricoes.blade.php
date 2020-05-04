@@ -376,7 +376,8 @@
         			<th>Dia/Horário</th>
         			<th>Professor</th>
         			<th>Local</th>
-        			<th>Vagas/Ocupadas</th>
+        			<th>Vagas</th>
+                    <th>Ocup.</th>
         		</thead>
         		<tbody>
         			 @foreach($turmas as $turma)
@@ -398,7 +399,8 @@
         				<td>{{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}</td>
         				<td>{{$turma->professor->nome_simples}}</td>
         				<td>{{$turma->local->sigla}}</td>
-        				<td>{{$turma->vagas}} / {{$turma->matriculados}}</td>
+        				<td>{{$turma->vagas}} </td>
+                        <td>{{$turma->matriculados}}</td>
         			</tr>
         			@endforeach
         		</tbody>

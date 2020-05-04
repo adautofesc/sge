@@ -550,6 +550,189 @@ Event::where('status' , 0)
         $bolsasOrdenadas = $bolsas->sortBy('nome');
         return view('relatorios.bolsistas')->with('bolsas',$bolsasOrdenadas);
         
+    
+    }
+
+    public function numeroAlunos(Request $r){
+        define("ANO_INICIAL",2018);
+        
+
+        $locais = \App\Local::orderBy('sigla')->whereNotIn('id',[84,85,86])->get();
+
+        
+         
+        for($i=ANO_INICIAL;$i<=date("Y");$i++){
+            if(isset($r->local)){
+                $totais[$i][0] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','andamento','iniciada'])->whereYear('data_termino',$i)->whereIn('local',$r->local)->get();
+                $totais[$i][1] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','andamento','iniciada'])->whereYear('data_termino',$i)->whereIn('local',$r->local)->whereMonth('data_termino','<=',7)->get();
+                $totais[$i][2] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','andamento','iniciada'])->whereYear('data_termino',$i)->whereIn('local',$r->local)->whereMonth('data_termino','>',7)->get();
+            }
+            else{
+                $totais[$i][0] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','andamento','iniciada'])->whereYear('data_termino',$i)->get();
+                $totais[$i][1] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','andamento','iniciada'])->whereYear('data_termino',$i)->whereMonth('data_termino','<=',7)->get();
+                $totais[$i][2] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','andamento','iniciada'])->whereYear('data_termino',$i)->whereMonth('data_termino','>',7)->get();
+
+            }
+
+
+                $alunos[$i][1]['totais'] = Array();
+                $turmas[$i][1]['totais'] = $totais[$i][1]->pluck('id');
+                $inscricoes[$i][1]['totais'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][1]['totais'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][1]['totais'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][1]['totais']))
+                        $alunos[$i][1]['totais'][] = $inscricao->pessoa;
+                }
+                
+                $alunos[$i][1]['ce'] = Array();
+                $turmas[$i][1]['ce'] = $totais[$i][1]->where('programa',12)->pluck('id');
+                $inscricoes[$i][1]['ce'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][1]['ce'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][1]['ce'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][1]['ce']))
+                        $alunos[$i][1]['ce'][] = $inscricao->pessoa;
+                }
+
+                $alunos[$i][1]['emg'] = Array();
+                $turmas[$i][1]['emg'] = $totais[$i][1]->where('programa',4)->pluck('id');
+                $inscricoes[$i][1]['emg'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][1]['emg'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][1]['emg'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][1]['emg']))
+                        $alunos[$i][1]['emg'][] = $inscricao->pessoa;
+                }
+
+                $alunos[$i][1]['pid'] = Array();
+                $turmas[$i][1]['pid'] = $totais[$i][1]->where('programa',2)->pluck('id');
+                $inscricoes[$i][1]['pid'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][1]['pid'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][1]['pid'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][1]['pid']))
+                        $alunos[$i][1]['pid'][] = $inscricao->pessoa;
+                }
+
+                $alunos[$i][1]['uati'] = Array();
+                $turmas[$i][1]['uati'] = $totais[$i][1]->where('programa',3)->pluck('id');
+                $inscricoes[$i][1]['uati'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][1]['uati'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][1]['uati'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][1]['uati']))
+                        $alunos[$i][1]['uati'][] = $inscricao->pessoa;
+                }
+
+                $alunos[$i][1]['unit'] = Array();
+                $turmas[$i][1]['unit'] = $totais[$i][1]->where('programa',1)->pluck('id');
+                $inscricoes[$i][1]['unit'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][1]['unit'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][1]['unit'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][1]['unit']))
+                        $alunos[$i][1]['unit'][] = $inscricao->pessoa;
+                }
+
+
+                //**********************************2semestre */
+
+                
+                
+                $alunos[$i][2]['totais'] = Array();
+                $turmas[$i][2]['totais'] = $totais[$i][2]->pluck('id');
+                $inscricoes[$i][2]['totais'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][2]['totais'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][2]['totais'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][2]['totais']))
+                        $alunos[$i][2]['totais'][] = $inscricao->pessoa;
+                }
+
+                $alunos[$i][2]['emg'] = Array();
+                $turmas[$i][2]['emg'] = $totais[$i][2]->where('programa',4)->pluck('id');
+                $inscricoes[$i][2]['emg'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][2]['emg'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][2]['emg'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][2]['emg']))
+                        $alunos[$i][2]['emg'][] = $inscricao->pessoa;
+                }
+
+                $alunos[$i][2]['ce'] = Array();
+                $turmas[$i][2]['ce'] = $totais[$i][2]->where('programa',12)->pluck('id');
+                $inscricoes[$i][2]['ce'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][2]['ce'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][2]['ce'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][2]['ce']))
+                        $alunos[$i][2]['ce'][] = $inscricao->pessoa;
+                }
+                
+                $alunos[$i][2]['pid'] = Array();
+                $turmas[$i][2]['pid'] = $totais[$i][2]->where('programa',2)->pluck('id');
+                $inscricoes[$i][2]['pid'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][2]['pid'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][2]['pid'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][2]['pid']))
+                        $alunos[$i][2]['pid'][] = $inscricao->pessoa;
+                }
+                
+                $alunos[$i][2]['uati'] = Array();
+                $turmas[$i][2]['uati'] = $totais[$i][2]->where('programa',3)->pluck('id');
+                $inscricoes[$i][2]['uati'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][2]['uati'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][2]['uati'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][2]['uati']))
+                        $alunos[$i][2]['uati'][] = $inscricao->pessoa;
+                }
+
+                $alunos[$i][2]['unit'] = Array();
+                $turmas[$i][2]['unit'] = $totais[$i][2]->where('programa',1)->pluck('id');
+                $inscricoes[$i][2]['unit'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][2]['unit'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][2]['unit'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][2]['unit']))
+                        $alunos[$i][2]['unit'][] = $inscricao->pessoa;
+                }
+
+                //************** anual */
+
+                $alunos[$i][0]['totais'] = Array();
+                $turmas[$i][0]['totais'] = $totais[$i][0]->pluck('id');
+                $inscricoes[$i][0]['totais'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][0]['totais'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][0]['totais'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][0]['totais']))
+                        $alunos[$i][0]['totais'][] = $inscricao->pessoa;
+                }
+
+                $alunos[$i][0]['emg'] = Array();
+                $turmas[$i][0]['emg'] = $totais[$i][0]->where('programa',4)->pluck('id');
+                $inscricoes[$i][0]['emg'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][0]['emg'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][0]['emg'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][0]['emg']))
+                        $alunos[$i][0]['emg'][] = $inscricao->pessoa;
+                }
+
+                $alunos[$i][0]['ce'] = Array();
+                $turmas[$i][0]['ce'] = $totais[$i][0]->where('programa',12)->pluck('id');
+                $inscricoes[$i][0]['ce'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][0]['ce'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][0]['ce'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][0]['ce']))
+                        $alunos[$i][0]['ce'][] = $inscricao->pessoa;
+                }
+
+                $alunos[$i][0]['pid'] = Array();
+                $turmas[$i][0]['pid'] = $totais[$i][0]->where('programa',2)->pluck('id');
+                $inscricoes[$i][0]['pid'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][0]['pid'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][0]['pid'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][0]['pid']))
+                        $alunos[$i][0]['pid'][] = $inscricao->pessoa;
+                }
+
+                $alunos[$i][0]['unit'] = Array();
+                $turmas[$i][0]['unit'] = $totais[$i][0]->where('programa',1)->pluck('id');
+                $inscricoes[$i][0]['unit'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][0]['unit'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][0]['unit'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][0]['unit']))
+                        $alunos[$i][0]['unit'][] = $inscricao->pessoa;
+                }
+
+                $alunos[$i][0]['uati'] = Array();
+                $turmas[$i][0]['uati'] = $totais[$i][0]->where('programa',3)->pluck('id');
+                $inscricoes[$i][0]['uati'] = \DB::table('inscricoes')->select(['pessoa'])->whereIn('turma',$turmas[$i][0]['uati'])->whereIn('status',['regular','pendente','finalizada'])->get();
+                foreach($inscricoes[$i][0]['uati'] as $inscricao){
+                    if(!in_array($inscricao->pessoa,$alunos[$i][0]['uati']))
+                        $alunos[$i][0]['uati'][] = $inscricao->pessoa;
+                }
+                
+           
+        }
+
+        //return $alunos;//select(['id','programa','local','data_termino','status'])->
+
+      
+        return view('relatorios.alunos')->with('locais',$locais)->with('r',$r)->with('alunos',$alunos);
     }
 
 

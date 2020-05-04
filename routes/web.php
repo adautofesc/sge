@@ -540,6 +540,7 @@ Route::middleware('login') ->group(function(){
 	//Relatórios
 
 	Route::prefix('relatorios')->group(function(){
+		Route::get('alunos','RelatorioController@numeroAlunos');
 		Route::get('turmas', 'RelatorioController@turmas');
 		Route::get('dados-turmas/{turmas}', 'RelatorioController@dadosTurmas');
 		Route::get('matriculas/{programa}','RelatorioController@matriculasPrograma');
@@ -624,6 +625,7 @@ Route::prefix('api')->group(function(){
 
 });
 Route::get('alerta-covid','painelController@alertaCovid');
+Route::get('cancelamento-covid','BoletoController@cancelarCovid');
 
 
 //----------------------------- Errors treatment

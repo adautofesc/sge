@@ -41,10 +41,11 @@ class BoletoController extends Controller
 
 	public function alterarStatus(Boleto $boleto, string $status){
 		switch($status){
+			/*
 			case 'cancelar': 
 				$boleto->status = 'gravado';
 				LogController::alteracaoBoleto($boleto->id,'Boleto gerado');
-			break;
+			break;*/
 			case 'reativar':
 				$boleto->status = 'emitido';
 				LogController::alteracaoBoleto($boleto->id,'Boleto reativado');
@@ -913,6 +914,19 @@ class BoletoController extends Controller
 
 		return count($boletos);
 		
+	}
+
+	public function cancelarCovid(){
+		$boletos = Boleto::where('status','emitido')->where('vencimento','like','2020-04-10%')->get();
+		foreach($boletos as $boleto){
+			$boleto->status = 'cancelar';
+			$boleto->save();
+			LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento.: Decreto 120/2020, medidas administrativas sobre a COVID-19');
+		}
+		if(is_array($boletos))
+			return count($boletos).' boletos cancelados';
+		else
+			return 'Nenhum boleto cancelado';
 	}
 
 		

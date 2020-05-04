@@ -77,15 +77,22 @@
                     </div>
                 </div>
                 <div class="card-block">
+                    <!--
                      <div>
                         <a href="/relatorios/turmas"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Relatório de Turmas</a>
                     </div>
+                    -->
+                    <div>
+                        <a href="/relatorios/alunos"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Número de Alunos</a>
+                    </div>
                     <div>
                         <a href="/relatorios/inscricoes"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Relatório de Inscrições</a>
+                        &nbsp;&nbsp;Relatório de Turmas</a>
                     </div> 
                     <div>
                     <a href="/relatorios/matriculas/{{date('Y')}}"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">

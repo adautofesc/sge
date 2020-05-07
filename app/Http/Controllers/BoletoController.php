@@ -917,13 +917,13 @@ class BoletoController extends Controller
 	}
 
 	public function cancelarCovid(){
-		$boletos = Boleto::where('status','emitido')->where('vencimento','like','2020-04-10%')->get();
+		$boletos = Boleto::where('status','emitido')->where('vencimento','like','2020-05-10%')->get();
 		foreach($boletos as $boleto){
 			$boleto->status = 'cancelar';
 			$boleto->save();
-			LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento.: Decreto 120/2020, medidas administrativas sobre a COVID-19');
+			LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento.: Decreto 165/2020, medidas administrativas sobre a COVID-19');
 		}
-		if(is_array($boletos))
+		if($boletos->isNotEmpty())
 			return count($boletos).' boletos cancelados';
 		else
 			return 'Nenhum boleto cancelado';

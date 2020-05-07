@@ -6,18 +6,17 @@ Class Strings
 {
 	public static function converteNomeParaUsuario($s, $e = array('da', 'das', 'de', 'do', 'dos', 'e'))
 	{
-		return join(' ',
-				   array_map(
-					   create_function(
-						   '$s',
-						   'return (!in_array($s, ' . var_export($e, true) . ')) ? mb_convert_case($s, MB_CASE_TITLE, "UTF-8") : $s;'
-					   ),
-					   explode(
-						   ' ',
-						   strtolower($s)
-					   )
-				   )
-			   );
+		$array_names = explode(' ',$s);
+		foreach($array_names as &$name_part){
+			if(in_array($name_part,$e))
+				$name_part = strtolower($name_part);
+			else
+				$name_part = mb_convert_case($name_part,MB_CASE_TITLE,"UTF-8");
+
+		}
+		unset($name_part);
+		return implode(' ',$array_names);
+
 	}
 	/**
 	 *

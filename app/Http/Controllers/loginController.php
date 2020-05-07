@@ -93,7 +93,7 @@ class loginController extends Controller
 
 		$usuario=PessoaDadosAcesso::where('usuario',$request->login)->first();
 
-		if(count($usuario) == 0){
+		if(empty($usuario)){
 			$erros_bd = ['O usuário fornecido não está cadastrado.'];
 			return view('login',compact('erros_bd')); 
 		}
@@ -170,7 +170,7 @@ class loginController extends Controller
 			['valor','like',$request->email],
 			])->get()->first();
 
-		if(count($usuario) == 0){
+		if(empty($usuario)){
 			$erros_bd= ['Desculpe, mas esse e-mail não consta em nosso cadastro.'];
 			return view('login_esqueci_senha', compact('erros_bd'));
 		}
@@ -221,7 +221,7 @@ class loginController extends Controller
         $query=ControleAcessoRecurso::where('pessoa', Session::get('usuario'))
                                     ->where('recurso', $recurso)->first();
         
-        if(count($query))
+        if(!empty($query))
             return True;
         else
             return False;
@@ -240,13 +240,13 @@ class loginController extends Controller
 			if(!loginController::pedirPermissao(4))			
 				return false;	
 		// verifica se a pessoa tem relação institucional
-			$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
+			$relacao_institucional=$pessoa->dadosAdministrativos->where('dado', 16)->count();
 			if($relacao_institucional && !loginController::pedirPermissao(5))
 			{
 				return false;	
 			}
 		// Verifica se a pessoa tem perfil privado.
-			$pessoa_restrita=count($pessoa->dadosGerais->where('dado',17));
+			$pessoa_restrita= $pessoa->dadosGerais->where('dado',17)->count();
 			if($pessoa_restrita && !loginController::pedirPermissao(6))
 				return false;
 		// ja verifiquei tudo pode liberar
@@ -278,7 +278,7 @@ class loginController extends Controller
 			'confirmanovasenha'=>'required|same:novasenha'
 		]);
 		$usuario=PessoaDadosAcesso::where('pessoa', Session::get('usuario'))->first();
-		if(count($usuario)!=1){
+		if(empty($usuario)){
 			$erros_bd= ['Erro ao carregar dados de usuário.'];
 			return view('pessoa.trocar-senha', compact('erros_bd'));
 		}
@@ -372,13 +372,13 @@ class loginController extends Controller
 			$erros_bd= ['Desculpe, você não tem permissão para alterar senha de outras pessoas'];
 			return view('pessoa.cadastrar-acesso', compact('erros_bd'));
 		}
-		$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
+		$relacao_institucional=$pessoa->dadosAdministrativos->where('dado', 16)->count();
 		if($relacao_institucional && !$this->pedirPermissao(10))
 		{
 			$erros_bd= ['Desculpe, você não tem permissão para alterar senha de pessoas ligadas à FESC'];
 			return view('pessoa.cadastrar-acesso', compact('erros_bd'));	
 		}
-		$pessoa_restrita=count($pessoa->dadosGerais->where('dado',17));
+		$pessoa_restrita= $pessoa->dadosGerais->where('dado',17)->count();
 		if($pessoa_restrita && !$this->pedirPermissao(11))
 		{
 			$erros_bd= ['Desculpe, você não tem permissão para alterar senha de pessoas restritas'];
@@ -415,13 +415,13 @@ class loginController extends Controller
 			$erros_bd= ['Desculpe, você não tem permissão para alterar senha de outras pessoas'];
 			return view('pessoa.trocar-senha-usuario', compact('erros_bd'));
 		}
-		$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
+		$relacao_institucional=$pessoa->dadosAdministrativos->where('dado', 16)->count();
 		if($relacao_institucional && !$this->pedirPermissao(10))
 		{
 			$erros_bd= ['Desculpe, você não tem permissão para alterar senha de pessoas ligadas à FESC'];
 			return view('pessoa.trocar-senha-usuario', compact('erros_bd'));	
 		}
-		$pessoa_restrita=count($pessoa->dadosGerais->where('dado',17));
+		$pessoa_restrita= $pessoa->dadosGerais->where('dado',17)->count();
 		if($pessoa_restrita && !$this->pedirPermissao(11))
 		{
 			$erros_bd= ['Desculpe, você não tem permissão para alterar senha de pessoas restritas'];
@@ -520,13 +520,13 @@ class loginController extends Controller
 					$pessoa=Pessoa::find($acesso->pessoa);
 					if(!$pessoa)
 						return view('error-404-alt')->with(array('error'=>['id'=>'404','desc'=>'Código de pessoa não encontrado. LoginController(445) ']));
-					$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
+					$relacao_institucional=$pessoa->dadosAdministrativos->where('dado', 16)->count();
 					if($relacao_institucional && !$this->pedirPermissao(10))
 					{
 						$dados['alert_warning'][]='Desculpe, você não tem permissão para alterar: '.$acesso->usuario.' por ser uma pessoa com relação institucional.';	
 							
 					}
-					$pessoa_restrita=count($pessoa->dadosGerais->where('dado',17));
+					$pessoa_restrita= $pessoa->dadosGerais->where('dado',17)->count();
 					if($pessoa_restrita && !$this->pedirPermissao(11))
 					{
 						$dados['alert_warning'][]='Desculpe, você não tem permissão para alterar: '.$acesso->usuario.' por se tratar de uma pessoa de acesso restrito.';
@@ -550,12 +550,12 @@ class loginController extends Controller
 					$pessoa=Pessoa::find($acesso->pessoa);
 					if(!$pessoa)
 						return view('error-404-alt')->with(array('error'=>['id'=>'404','desc'=>'Código de pessoa não encontrado. LoginController(475) ']));
-					$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
+					$relacao_institucional=$pessoa->dadosAdministrativos->where('dado', 16)->count();
 					if($relacao_institucional && !$this->pedirPermissao(10))
 					{
 						$dados['alert_warning'][]='Desculpe, você não tem permissão para alterar: '.$acesso->login.' por ser uma pessoa ligada à FESC';	
 					}
-					$pessoa_restrita=count($pessoa->dadosGerais->where('dado',17));
+					$pessoa_restrita= $pessoa->dadosGerais->where('dado',17)->count();
 					if($pessoa_restrita && !$this->pedirPermissao(11))
 					{
 						$dados['alert_warning'][]='Desculpe, você não tem permissão para alterar: '.$acesso->login.' por se tratar de uma pessoa de acesso restrito';
@@ -577,12 +577,12 @@ class loginController extends Controller
 					$pessoa=Pessoa::find($acesso->pessoa);
 					if(!$pessoa)
 						return view('error-404-alt')->with(array('error'=>['id'=>'404','desc'=>'Código de pessoa não encontrado. LoginController(502) ']));
-					$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
+					$relacao_institucional=$pessoa->dadosAdministrativos->where('dado', 16)->count();
 					if($relacao_institucional && !$this->pedirPermissao(10))
 					{
 						$dados['alert_warning'][]='Desculpe, você não tem permissão para alterar: '.$acesso->login.' por ser uma pessoa ligada à FESC';	
 					}
-					$pessoa_restrita=count($pessoa->dadosGerais->where('dado',17));
+					$pessoa_restrita= $pessoa->dadosGerais->where('dado',17)->count();
 					if($pessoa_restrita && !$this->pedirPermissao(11))
 					{
 						$dados['alert_warning'][]='Desculpe, você não tem permissão para alterar: '.$acesso->login.' por se tratar de uma pessoa de acesso restrito';

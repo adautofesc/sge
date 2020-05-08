@@ -31,7 +31,7 @@ class RemessaController extends Controller
 		
 		$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->paginate(300);
 
-		if(count($boletos) == 0)
+		if($boletos->count() == 0)
 			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Nenhum boleto encontrado']);
 
 
@@ -44,6 +44,9 @@ class RemessaController extends Controller
 				NotificacaoController::notificarErro($boleto->pessoa,5);
 				continue;
 			}
+			if($boleto->status == 'cancelar' && isset($boleto_completo))
+				$boleto_completo->baixarBoleto();
+
 					
 			try{
 				$remessa->addBoleto($boleto_completo);
@@ -53,8 +56,7 @@ class RemessaController extends Controller
 				continue;
 			}
 
-			if($boleto->status == 'cancelar')
-				$boleto_completo->baixarBoleto();
+			
 
 			$boleto->remessa = intval(date('ymdHi'));
 			$boleto->save();

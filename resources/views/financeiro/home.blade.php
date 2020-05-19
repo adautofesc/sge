@@ -25,11 +25,7 @@
                         <i class=" fa fa-file-text "></i>
                         &nbsp;&nbsp;Retornos</a>
                     </div>
-                    <div>
-                        <a href="{{asset('/')}}financeiro/lancamentos/home" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-calendar "></i>
-                        &nbsp;&nbsp;Parcelas (lançamentos)</a>
-                    </div>
+                   
                     <div>
                         <a href="{{asset('/')}}financeiro/boletos/home" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-barcode "></i>
@@ -40,6 +36,12 @@
                         <i class=" fa fa-file-text-o "></i>
                         &nbsp;&nbsp;Remessas</a>
                     </div>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" placeholder="Número do documento" id="boleto" maxlength="10" size="2">
+                        <span class="input-group-btn">
+                          <button class="btn btn-primary" type="button" onclick="consultarBoleto();">Consultar boleto</button>
+                        </span>
+                    </div><!-- /input-group -->
                               
                 </div>
             </div>
@@ -109,4 +111,20 @@
     </div>
 </section>
 
+@endsection
+@section('scripts')
+<script type="text/javascript">
+    function consultarBoleto(){
+        if($("#turma").val()!='')
+            location.href = '/financeiro/boletos/informacoes/'+$("#boleto").val();
+        else
+            alert('Ops, faltou o número do boleto');
+    }
+    function abreMatricula(){
+        if($("#matricula").val()!='')
+            location.href = '/secretaria/matricula/'+$("#matricula").val();
+        else
+            alert('Ops, faltou o código da turma');
+    }
+</script>
 @endsection

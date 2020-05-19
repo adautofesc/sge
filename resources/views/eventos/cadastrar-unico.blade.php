@@ -12,7 +12,7 @@
 			</label>
 			<div class="col-sm-8"> 
 				<div class="input-group">				
-					<input type="text" class="form-control boxed" name="dt_inicio" placeholder="Título do evento (max 200 caracteres)" maxlength="200" required> 
+					<input type="text" class="form-control boxed" name="nome" placeholder="Título do evento (max 200 caracteres)" maxlength="200" > 
 				</div>
 			</div>
 		</div>
@@ -35,7 +35,7 @@
 			<div class="col-sm-3"> 
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
-					<input type="date" class="form-control boxed" name="data" placeholder="dd/mm/aaaa" required> 
+					<input type="date" class="form-control boxed" name="data_inicio" placeholder="dd/mm/aaaa" required> 
 				</div>
 			</div>
 		</div>
@@ -46,7 +46,7 @@
 				<div class="col-sm-2"> 
 					<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-clock-o"></i></span>  
-						<input type="time" class="form-control boxed" name="dt_inicio" required> 
+						<input type="time" class="form-control boxed" name="h_inicio" required> 
 					</div>
 				</div>
 				<label class="col-sm-1 form-control-label text-xs-right">
@@ -55,7 +55,7 @@
 				<div class="col-sm-2"> 
 					<div class="input-group">
 						<span class="input-group-addon"><i class="fa fa-clock-o"></i></span> 
-						<input type="time" class="form-control boxed" name="dt_termino"  required> 
+						<input type="time" class="form-control boxed" name="h_termino"  required> 
 					</div>
 				</div>
 			</div>
@@ -102,13 +102,25 @@
 					</div>
 				</div>
 		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Auto inscrição?
+			</label>
+			<div class="col-sm-8"> 
+				<div class="input-group">
+					
+					<label><input class="radio" name="autoinsc" value="sim" type="radio"><span>Sim</span></label>
+					<label><input class="radio" name="autoinsc" value="nao" type="radio"><span>Não</span></label>
+				</div>
+			</div>
+		</div>
 
 
 
         
 		<div class="form-group row">
 				<label class="col-sm-2 form-control-label text-xs-right">
-						&nbsp;
+				&nbsp;<input type="hidden" name="tipo" value="{{$tipo}}"/>
 					</label>
 			<div class="col-sm-10 col-sm-offset-3">
 					<button class="btn btn-primary" type="button" name="btn" onclick="event.preventDefault(); validar();" value="1">Salvar</button> 
@@ -203,7 +215,6 @@ function carregarSalas(local){
 		.done(function(data) 
 		{
 			$.each(data, function(key, val){
-				console.log(val.nome);
 				salas+='<option value="'+val.id+'">'+val.nome+'</option>';
 			});
 			//console.log(namelist);
@@ -212,14 +223,18 @@ function carregarSalas(local){
 				 
 }
 function validar(){
-	if($('#id_pessoa').val() == ''){
+	if($('input[name=nome]').val()==''){
+		alert('Nome do evento vazio.');
+		return false;
+	}
+	if($('#id_pessoa').val() == '' ){
 		alert('Selecione uma pessoa da lista de cadastrados ou cadastre uma nova.');
 		return false;
 	}
-	else{
-		document.getElementById("form_evento").submit();
-		return true;
-	}
+	
+	document.getElementById("form_evento").submit();
+	return true;
+	
 		
 }
 

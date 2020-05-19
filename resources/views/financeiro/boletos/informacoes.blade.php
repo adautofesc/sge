@@ -16,7 +16,7 @@
             <div class="col-sm-12"> 
               @if(isset($boleto))
                 <small>
-               <strong>Boleto</strong> {{$boleto->id}}<br>
+                <strong>Boleto</strong> {{$boleto->id}} <a href="/financeiro/boletos/imprimir/{{$boleto->id}}"><i class="fa fa-print"/></i> Imprimir</a><br>
                <strong>Cedente:</strong> {{$pessoa->nome}} <strong>Cod.</strong> <a href="/secretaria/atender/{{$pessoa->id}}">{{$pessoa->id}}</a> <br>
                <strong>Data de vencimento:</strong> {{\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y')}}<br>
                <strong>Valor:</strong> R$ {{$boleto->valor}}<br>

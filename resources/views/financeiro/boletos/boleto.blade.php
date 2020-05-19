@@ -538,7 +538,7 @@ div.barcode {
 		</tr>
 		<tr class="campos">
 			<td class="num_doc">{{ $boleto->dados["numero_documento"]}}</td>
-			<td class="contrato">{{ $boleto->dados["sacado_id"]}}</td>
+			<td class="contrato">{{ $boleto->dados["cpf_sacado"]}}</td>
 			<td class="cpf_cei_cnpj">{{ $boleto->dados["cpf_cnpj"]}}</td>
 			<td class="vencimento">{{ $boleto->dados["data_vencimento"]}}</td>
 			<td class="valor_doc">{{ $boleto->dados["valor_boleto"]}}</td>

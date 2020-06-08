@@ -155,8 +155,9 @@ class InscricaoController extends Controller
     public static function inscreverAluno($aluno,$turma,$matricula=0){
         $atendimento = AtendimentoController::novoAtendimento(' ', $aluno, Session::get('usuario'));
         $turma=Turma::find($turma);
-        if(date('Y', strtotime($turma->data_inicio))<date('Y')){
-            die('Não é possível inscrever alunos em turmas de anos anteriores');
+        //dd($turma);
+        if(substr($turma->data_inicio,-4,4) < date('Y')){
+            die('Não é possível inscrever alunos em turmas de anos anteriores: Turma:'.substr($turma->data_inicio,-4,4).', data: '.date('Y'));
             
         }
         if(InscricaoController::verificaSeInscrito($aluno,$turma->id))

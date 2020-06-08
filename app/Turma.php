@@ -112,7 +112,7 @@ class Turma extends Model
 
 
 	public function setAtributosAttribute($value){
-		if(count($value))
+		if(!empty($value))
 			$this->attributes['atributos'] = implode(',',$value);	
 	}
 	public function getAtributosAttribute($value){

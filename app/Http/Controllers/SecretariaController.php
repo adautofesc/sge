@@ -19,12 +19,14 @@ class SecretariaController extends Controller
     //
     public function iniciarAtendimento()
 	{
+		//dd(Session::all());
 		return view('secretaria.inicio-atendimento');
 	}
 
 	public function buscaPessoaAtendimento(Request $r){
 		$pessoa_controller = new PessoaController;
 		$pessoas = $pessoa_controller->procurarPessoas($r->nome);
+		
 		return view('secretaria.inicio-atendimento')->with('pessoas',$pessoas);
 	}
 

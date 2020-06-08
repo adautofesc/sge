@@ -371,7 +371,8 @@ class painelController extends Controller
         $CC = new ContatoController;
         //$msg = "FESC INFORMA: Aulas suspensas por tempo indeterminado. Saiba mais no site fesc.com.br";
         //$msg = "FESC INFORMA: Aulas suspensas A PARTIR DO DIA 17/03 por tempo indeterminado. Duvidas? Ligue 3372-1308";
-        $msg = "FESC INFORMA: Prezados alunos, os boletos do mês de maio, com vencimento em 10/05 serão cancelados.Fique seguro, fique em casa.";
+        //$msg = "FESC INFORMA: Prezados alunos, os boletos do mês de maio, com vencimento em 10/05 serão cancelados.Fique seguro, fique em casa.";
+        $msg = "FESC INFORMA: Prezados alunos, os boletos do mês de maio, com vencimento em 10/06 serão cancelados.Fique seguro, fique em casa.";
         $matriculas=Matricula::where('status','ativa')->groupBy('pessoa')->get();
         foreach($matriculas as $matricula){
            //$CC->enviarSMS($msg,[$matricula->pessoa]);

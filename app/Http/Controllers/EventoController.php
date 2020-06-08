@@ -9,7 +9,16 @@ use Illuminate\Http\Request;
 
 class EventoController extends Controller
 {
-    public function cadastrar_view($tipo='unico'){
+    public function index(Request $r){
+        $eventos = Evento::where('data_termino','>=',date('Y-m-d'))->orderBy('data_inicio')->get();
+        return $eventos;
+
+    }
+    public function filter(){
+
+    }
+
+    public function create($tipo='unico'){
 
         $locais = Local::all();
         $salas = Sala::where('local',84)->where('locavel','s')->get(); 
@@ -21,12 +30,13 @@ class EventoController extends Controller
                 return view('eventos.cadastrar-unico')->with('locais',$locais)->with('salas',$salas)->with('tipo',$tipo);
         }
     }
-    public function cadastrar_exec(Request $r){
+    public function store(Request $r){
         $evento =  new Evento;
         $evento->tipo = $r->tipo;
         $evento->nome = $r->nome;
         $evento->responsavel = $r->responsavel;
         $evento->data_inicio = $r->data_inicio;
+        $evento->data_termino = $r->data_inicio;
         $evento->horario_inicio = $r->h_inicio;
         $evento->horario_termino = $r->h_termino;
         $evento->sala = $r->sala;
@@ -36,11 +46,20 @@ class EventoController extends Controller
             $evento->data_termino = $r->data_termino;
             $evento->dias_semana = implode(', ',$r->dias_semana);
         }
+        $evento->save();
+        $this->index($r);  
+    }
 
-
-
-        return $evento;
-        
+    public function edit($id){
 
     }
+    public function update(Request $r){
+
+    }
+    public function delete($ids){
+
+    }
+
+    
+
 }

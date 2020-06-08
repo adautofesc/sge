@@ -41,7 +41,7 @@
         <div class="card-title-block">
             <h3 class="title"> Lista de requisitos <small>filtrado por: 
                 @foreach($filtros as $filtro=>$valor)
-                @if(count($filtros[$filtro]))
+                @if(is_array($filtros[$filtro]))
 
                     <a href="?removefiltro={{$filtro}}{{isset($_GET['page'])?'&page='.$_GET['page']:''}}" title="Remover este filtro" style="text-decoration: none;">
                         <i class="fa fa-remove" style="color:red"></i>

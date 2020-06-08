@@ -600,7 +600,7 @@ class TurmaController extends Controller
         foreach($lista as $turma){
             if(is_numeric($turma)){
                 $db_turma=Turma::find($turma);
-                if(count($db_turma)>0)
+                if(isset($db_turma->id))
                     $turmas->push($db_turma);
             }
 

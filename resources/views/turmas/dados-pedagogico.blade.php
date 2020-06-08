@@ -432,7 +432,7 @@ function modal_atribuir(id){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         method: "GET",
-        url: "/api/professores"
+        url: "/services/professores"
         
         
     })

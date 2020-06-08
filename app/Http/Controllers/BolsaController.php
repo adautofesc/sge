@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class BolsaController extends Controller
 {   
     const max_matriculas = 2;
-    public function listar(Request $r = Request){
+    public function listar(Request $r){
         if($r->codigo){
             $bolsas = Bolsa::where('id',$r->codigo)->paginate(10);
             foreach($bolsas as $bolsa){
@@ -27,7 +27,7 @@ class BolsaController extends Controller
             }
         }
 
-        return view('juridico.bolsas.index',compact('bolsas'));
+        return view('bolsas.index',compact('bolsas'));
     }
     
     public function alterarStatus($status,$itens){
@@ -287,7 +287,7 @@ class BolsaController extends Controller
 
 
 
-        return view('juridico.bolsas.requerimento',compact('bolsa'))->with('pessoa',$pessoa)->with('hoje',$hoje);
+        return view('bolsas.requerimento',compact('bolsa'))->with('pessoa',$pessoa)->with('hoje',$hoje);
 
     }
 
@@ -303,7 +303,7 @@ class BolsaController extends Controller
         }else 
             $bolsa=null;
 
-        return view('juridico.bolsas.analisar')->with('bolsa',$bolsa)->with('bolsas',$bolsas);
+        return view('bolsas.analisar')->with('bolsa',$bolsa)->with('bolsas',$bolsas);
         
 
     }

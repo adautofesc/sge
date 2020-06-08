@@ -441,7 +441,7 @@ function disciplinaEscolhida(id,nome){
 function carregarSalas(local){
 	var salas;
 	$("#select_sala").html('<option>Sem salas cadastradas</option>');
-	$.get("{{asset('api/salas-api/')}}"+"/"+local)
+	$.get("{{asset('services/salas-api/')}}"+"/"+local)
  				.done(function(data) 
  				{
  					$.each(data, function(key, val){

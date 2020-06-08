@@ -54,8 +54,6 @@ route::get('profile',function(){
 
 
 
-	
-
 
 //************************************************* Areas restritas para cadastrados ***************************************************
 
@@ -126,8 +124,9 @@ Route::middleware('login') ->group(function(){
 	});
 
 	Route::prefix('eventos')->group(function(){
-		Route::get('cadastrar/{tipo?}','EventoController@cadastrar_view');
-		Route::post('cadastrar/{tipo?}','EventoController@cadastrar_exec');
+		Route::get('cadastrar/{tipo?}','EventoController@create');
+		Route::post('cadastrar/{tipo?}','EventoController@store');
+		Route::get('/','EventoController@index');
 
 	});
 
@@ -370,21 +369,23 @@ Route::middleware('login') ->group(function(){
 		Route::post('relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_exec');
 	});
 
+	Route::middleware('liberar.recurso:21')->prefix('bolsas')->group(function(){
+
+		Route::get('liberacao','BolsaController@listar');
+		Route::get('/status/{status}/{bolsas}','BolsaController@alterarStatus');
+		Route::get('analisar/{bolsa}','BolsaController@analisar');
+		Route::post('analisar/{bolsa}','BolsaController@gravarAnalise');
+		Route::get('desvincular/{matricula}/{bolsa}','BolsaController@desvincular');
+
+
+	});
+
 	// Jurídico
 	Route::prefix('juridico')->group(function(){
 		Route::get('/','painelController@juridico');
 		//Documentos
 		//
-		Route::middleware('liberar.recurso:21')->prefix('bolsas')->group(function(){
-
-			Route::get('liberacao','BolsaController@listar');
-			Route::get('/status/{status}/{bolsas}','BolsaController@alterarStatus');
-			Route::get('analisar/{bolsa}','BolsaController@analisar');
-			Route::post('analisar/{bolsa}','BolsaController@gravarAnalise');
-			Route::get('desvincular/{matricula}/{bolsa}','BolsaController@desvincular');
-
-
-		});
+		
 		Route::middleware('liberar.recurso:16')->prefix('documentos')->group(function(){
 			Route::get('/','DocumentoController@index');
 			Route::get('cadastrar','DocumentoController@cadastrar');
@@ -612,18 +613,18 @@ Route::middleware('login') ->group(function(){
 		//Route::get('importar-bairros', 'EnderecoController@importarBairros');
 	});
 
-
+	Route::get('cobranca-automatica','CobrancaController@cobrancaAutomatica');
+	Route::prefix('services')->group(function(){
+		Route::get('professores','WebServicesController@listaProfessores');
+		Route::get('chamada/{id}','WebServicesController@apiChamada');
+		Route::get('turmas','WebServicesController@apiTurmas');
+		Route::get('salas-api/{id}','SalaController@listarPorLocalApi');
+		Route::get('salas-locaveis-api/{id}','SalaController@listarLocaveisPorLocalApi');
+		Route::post('excluir-aulas','AulaController@excluir');
+	
+	});
 });//end middleware login
-Route::get('cobranca-automatica','CobrancaController@cobrancaAutomatica');
-Route::prefix('api')->group(function(){
-    Route::get('professores','WebServicesController@listaProfessores');
-    Route::get('chamada/{id}','WebServicesController@apiChamada');
-    Route::get('turmas','WebServicesController@apiTurmas');
-    Route::get('salas-api/{id}','SalaController@listarPorLocalApi');
-    Route::get('salas-locaveis-api/{id}','SalaController@listarLocaveisPorLocalApi');
-    Route::post('excluir-aulas','AulaController@excluir');
 
-});
 Route::get('alerta-covid','painelController@alertaCovid');
 Route::get('cancelamento-covid','BoletoController@cancelarCovid');
 

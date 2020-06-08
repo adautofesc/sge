@@ -38,7 +38,7 @@
     </div>
 
 
-    <div class="items-search">
+    <!--<div class="items-search">
         <form class="form-inline" method="GET>
         {{csrf_field()}}
             <div class="input-group"> 
@@ -50,7 +50,19 @@
                 </span>
             </div>
         </form>
-    </div>
+    </div>-->
+    <div class="items-search col-md-3">
+        <div class="header-block header-block-search hidden-sm-down">
+           <form role="search">
+            {{csrf_field()}}
+               <div class="input-group input-group-sm" style="float:right;">
+                   <input type="text" class="form-control" name="codigo" placeholder="Buscar por codigo">
+                   <i class="input-group-addon fa fa-search" onclick="document.forms[0].submit();" style="cursor:pointer;"></i>
+               </div>
+           </form>
+       </div>
+
+   </div>
 </div>
 @include('inc.errors')
 <form name="item" class="form-inline">
@@ -61,29 +73,37 @@
                 <div class="card-block">
                     <!-- Nav tabs -->
                     <div class="row">
-                        <div class="col-xs-12 text-xs-right">
+                        <div class="col-xs-6 text-xs">
+                            {{ $bolsas->links() }}
+                        </div>
+                        <div class="col-xs-6 text-xs-right">
+
+                            
                             <div class="action dropdown pull-right "> 
-                                <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Com os selecionados...
+                                <a href="#" class="btn btn-sm rounded-s btn-secondary" title="Exportar para excel"><img src="/img/excel.svg" alt="excel" width="20px"></a>
+                                <button class="btn btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Com os selecionados...
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
+                
                                     <a class="dropdown-item" href="#" onclick="alterarStatus('aprovar')">
-                                        <i class="fa fa-check-circle-o icon"></i> Aprovar
+                                        <label><i class="fa fa-check-circle-o icon text-success"></i> Aprovar</label>
                                     </a> 
                                     <a class="dropdown-item" href="#" onclick="alterarStatus('negar')">
-                                        <i class="fa fa-ban icon"></i> Negar
+                                        <label><i class="fa fa-ban icon text-danger"></i> Negar</label>
                                     </a> 
                                     <a class="dropdown-item" href="#" onclick="alterarStatus('analisando')">
-                                        <i class="fa fa-clock-o icon"></i> Analisando
+                                        <label><i class="fa fa-clock-o icon text-warning"></i><span> Analisando</span></label>
                                     </a> 
                                     <a class="dropdown-item" href="#" onclick="alterarStatus('cancelar')">
-                                        <i class="fa fa-minus-circle icon"></i> Cancelar
+                                        <label><i class="fa fa-minus-circle icon text-danger"></i> <span> Cancelar</span></label>
                                     </a> 
                                     <a class="dropdown-item" href="#" onclick="alterarStatus('apagar')">
-                                        <i class="fa fa-times-circle icon"></i> Excluir
+                                        <label><i class="fa fa-times-circle icon text-danger"></i> <span> Excluir</span></label>
                                     </a> 
                                     
                                 </div>
                              </div>
+                            
                         </div>
 
                     </div>
@@ -116,7 +136,26 @@
                                                     </div>
 
                                                     <div class="item-col item-col-header ">
-                                                        <div> <span>Tipo</span> </div>
+                                                        <div class="action dropdown pull-right "> 
+                                                            <div id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;">
+                                                                <i class="fa fa-filter"></i> <span >Tipo</span> 
+                                                            </div>
+                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2" id="filtro2" style="padding-left:10px;"> 
+                                                                
+                                                                    <label>
+                                                                        <input class="checkbox" type="checkbox" onclick="parado();">
+                                                                        <span>Option one</span>
+                                                                    </label>
+                                                                    <br>
+                                                                    <label>
+                                                                        <input class="checkbox" type="checkbox" onclick="parado();">
+                                                                        <span>Option two</span>
+                                                                    </label>
+                                                                    <br>
+                                                                    <button class="btn btn-sm btn-primary rounded-s">Aplicar</button>
+                                                                
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                     <div class="item-col item-col-header ">
                                                         <div> <span>Status</span> </div>
@@ -277,6 +316,12 @@ function alterarStatus(status){
         return false;
 
     
+}
+
+function parado(){
+    console.log('parei');
+    //$('#filtro2').css('display','inline');
+    $('#dropdownMenu2').trigger('click');
 }
 
 

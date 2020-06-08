@@ -166,7 +166,7 @@ function apagarAula(id,data){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         method: "POST",
-        url: "/api/excluir-aulas",
+        url: "/services/excluir-aulas",
         data: { id }
         
     })

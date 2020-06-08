@@ -211,7 +211,7 @@ function adicionar(id,nome){
 function carregarSalas(local){
 	var salas;
 	$("#select_sala").html('<option>Sem salas disponíveis</option>');
-	$.get("{{asset('api/salas-locaveis-api/')}}"+"/"+local)
+	$.get("{{asset('services/salas-locaveis-api/')}}"+"/"+local)
 		.done(function(data) 
 		{
 			$.each(data, function(key, val){

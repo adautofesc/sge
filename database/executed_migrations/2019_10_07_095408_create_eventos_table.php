@@ -28,6 +28,7 @@ class CreateEventosTable extends Migration
             $table->string('obs',200)->nullable();
             $table->enum('pago',['sim','nao']);
             $table->decimal('valor',10,5);
+            $table->enum('status',['cadastrado','inscricao','encerrado']);
             $table->foreign('responsavel')->references('id')->on('pessoas')->onDelete('restrict')->onUpdate('cascade');
             $table->foreign('sala')->references('id')->on('salas')->onDelete('restrict')->onUpdate('cascade');
             $table->timestamps();

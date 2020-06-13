@@ -14,6 +14,7 @@ use Session;
 use Illuminate\Support\Facades\DB;
 use LancamentoContoller;
 use stdClass;
+use Illuminate\Support\Facades\Auth;
 
 class painelController extends Controller
 {
@@ -21,17 +22,18 @@ class painelController extends Controller
 
     public function index(){
 
-    	if(!Session::has('sge_fesc_logged'))
-    		return loginController::login();
-    	
-    	else{
-    		$hoje=new Data();
+            if(!Auth::check())
+             return redirect('login');
+        
+        $hoje=new Data();
             $data=$hoje->getData();        
             $dados=['data'=>$data];
             
-    	}
+            $user = Auth::user();
+            //dd($user->recursos);
+            
 
-        if(unserialize(Session('recursos_usuario'))->contains('recurso','18')){
+        if(in_array('18',$user->recursos)){
             $pendencias = \App\PessoaDadosGerais::where('dado',20)->paginate(10);
             return view('home', compact('dados'))->with("pendencias",$pendencias);
 

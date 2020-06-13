@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Session;
+use Auth;
 
 class ChecarLogin
 {
@@ -16,10 +16,14 @@ class ChecarLogin
      */
     public function handle($request, Closure $next)
     {
+    if(Auth::user() && Auth::user()->status==1 && strtotime(Auth::user()->validade) > strtotime(date('Y-m-d')) )
+        return $next($request);
+            
+    else{
+        Auth::logout();
+        return redirect()->route('login')->withErrors(['Login bloqueado ou expirado']);
 
-        if(Session::has('sge_fesc_logged') && Session::get('usuario')>0)
-            return $next($request);
-        else 
-            return redirect()->route('login');
+    }
+        
     }
 }

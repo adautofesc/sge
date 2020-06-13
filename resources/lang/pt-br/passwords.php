@@ -14,9 +14,9 @@ return [
     */
 
     'password' => 'A senha deve possuir no mínimo 6 caracteres e ser igual a confirmação, poderia verificar isso por favor?',
-    'reset'    => 'Parabéns, a sua senha foi redefinida!',
+    'reset'    => 'Feito! Sua senha foi redefinida.',
     'sent'     => 'O link para redefinição de senha foi enviado para o seu e-mail, ok?',
-    'token'    => 'Poxa... O token para recuperação de senha é inválido.',
-    'user'     => 'Caramba... Infelizmente não encontramos nenhum usuário com esse endereço de e-mail!',
+    'token'    => 'Erro. O código para recuperação de senha é inválido.',
+    'user'     => 'Desculpe... Infelizmente não encontramos nenhum usuário com esse e-mail.',
 
 ];

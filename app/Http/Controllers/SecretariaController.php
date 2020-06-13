@@ -10,6 +10,7 @@ use App\Boleto;
 use App\Lancamento;
 use App\Inscricao;
 use Session;
+use Auth;
 use App\classes\Strings;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -55,7 +56,7 @@ class SecretariaController extends Controller
 		if(!Session::get('atendimento')){
 			
 			$atendimento=new Atendimento();
-			$atendimento->atendente=Session::get('usuario');
+			$atendimento->atendente=Auth::user()->pessoa;
 			$atendimento->usuario=$pessoa->id;
 			$atendimento->save();
 			

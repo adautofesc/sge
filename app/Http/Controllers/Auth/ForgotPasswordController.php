@@ -20,6 +20,8 @@ class ForgotPasswordController extends Controller
 
     use SendsPasswordResetEmails;
 
+    protected $redirectTo = '/login';
+
     /**
      * Create a new controller instance.
      *
@@ -29,4 +31,7 @@ class ForgotPasswordController extends Controller
     {
         $this->middleware('guest');
     }
+
+ 
+
 }

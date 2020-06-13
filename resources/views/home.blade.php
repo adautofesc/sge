@@ -36,7 +36,7 @@
 
 
 
-    @if(unserialize(Session('recursos_usuario'))->contains('recurso','18'))
+    @if(in_array('18', Auth::user()->recursos))
 
         <div class="col-md-6 center-block">
             <div class="card card-warning">

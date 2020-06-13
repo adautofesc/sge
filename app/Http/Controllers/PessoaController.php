@@ -18,7 +18,7 @@ use App\classes\Data;
 use App\classes\Strings;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\EnderecoController;
-use Session;
+use Auth;
 
 
 
@@ -37,10 +37,9 @@ class PessoaController extends Controller
 	public function create ($erros='',$sucessos='',$responsavel='')
 	{
 
-		if(!loginController::check())
-			return redirect(asset("/"));
+		
 
-		if(loginController::pedirPermissao(1))
+		if(in_array('1', Auth::user()->recursos))
 		{ // pede permissao para acessar o formulário
 			$bairros=DB::table('bairros_sanca')->get();          
 			$dados=['bairros'=>$bairros,'alert_danger'=>$erros,'alert_sucess'=>$sucessos,'responsavel_por'=>$responsavel];
@@ -60,11 +59,10 @@ class PessoaController extends Controller
  */
 	public function gravarPessoa(Request $request)
 	{	
-		if(!loginController::check())
-			return redirect(asset("/"));
+	
 
 		// Verifica se pode gravar
-			if(!loginController::pedirPermissao(1))
+		if(!in_array('1', Auth::user()->recursos))
 				return redirect(asset('/403')); //vai para acesso não autorizado
 				//Validação dos requisitos
 			$this->validate($request, [
@@ -107,7 +105,7 @@ class PessoaController extends Controller
 			$pessoa->nome=mb_convert_case($request->nome, MB_CASE_UPPER, 'UTF-8');
 			$pessoa->nascimento=$request->nascimento;
 			$pessoa->genero=$request->genero;
-			$pessoa->por=Session::get('usuario');
+			$pessoa->por=  Auth::user()->pessoa;
 			$pessoa->save();//
 		//**************** Dados Gerais
 
@@ -219,7 +217,7 @@ class PessoaController extends Controller
 					$endereco->cidade=mb_convert_case($request->cidade, MB_CASE_UPPER, 'UTF-8');
 					$endereco->estado=$request->estado;
 					$endereco->cep=preg_replace( '/[^0-9]/is', '',$request->cep);
-					$endereco->atualizado_por=Session::get('usuario');
+					$endereco->atualizado_por=  Auth::user()->pessoa;
 					$endereco->save();
 					$id_endereco=$endereco->id;
 				}
@@ -298,22 +296,22 @@ class PessoaController extends Controller
 			return $this->listarTodos();
 
 		// Verifica se o perfil não é proprio
-		if($pessoa->id != Session::get('usuario'))
+		if($pessoa->id !=   Auth::user()->pessoa)
 		{
 		//verifica se pode ver outras pessoas
-		if(!GerenciadorAcesso::pedirPermissao(4) )		
-				return view('error-404-alt')->with(array('error'=>['id'=>'403.41','desc'=>'Seu cadastro não permite que você veja os dados de outra pessoa']));
-				//return $this->listar();	
-		// verifica se a pessoa tem relação institucional
-			$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
-			if($relacao_institucional && !loginController::pedirPermissao(5))
-			{
-				return view('error-404-alt')->with(array('error'=>['id'=>'403.5','desc'=>'Você não possui acesso a dados de pessoas ligadas à instituição.']));		
-			}
-		// Verifica se a pessoa tem perfil privado.
-			$pessoa_restrita=count($pessoa->dadosGerais->where('dado',17));
-			if($pessoa_restrita && !loginController::pedirPermissao(6))
-				return view('error-404-alt')->with(array('error'=>['id'=>'403.6','desc'=>'Esta pessoa possui restrição de acesso aos seus dados']));	
+			if(!in_array('4', Auth::user()->recursos))
+					return view('error-404-alt')->with(array('error'=>['id'=>'403.41','desc'=>'Seu cadastro não permite que você veja os dados de outra pessoa']));
+					//return $this->listar();	
+			// verifica se a pessoa tem relação institucional
+				$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
+				if($relacao_institucional && !in_array('5', Auth::user()->recursos))
+				{
+					return view('error-404-alt')->with(array('error'=>['id'=>'403.5','desc'=>'Você não possui acesso a dados de pessoas ligadas à instituição.']));		
+				}
+			// Verifica se a pessoa tem perfil privado.
+				$pessoa_restrita=count($pessoa->dadosGerais->where('dado',17));
+				if($pessoa_restrita && !in_array('6', Auth::user()->recursos))
+					return view('error-404-alt')->with(array('error'=>['id'=>'403.6','desc'=>'Esta pessoa possui restrição de acesso aos seus dados']));	
 
 		}
 	
@@ -324,8 +322,7 @@ class PessoaController extends Controller
 
 	public function mostrar($id)
 	{	
-		if(!loginController::check())
-			return redirect(asset("/"));
+		
 		$pessoa=$this->dadosPessoa($id);
 
 		//return $pessoa;
@@ -445,10 +442,9 @@ class PessoaController extends Controller
 	 */
 	public function listarTodos()
 	{
-		if(!loginController::check())
-			return redirect(asset("/"));
+		
 
-		if(!GerenciadorAcesso::pedirPermissao(4))
+		if(!in_array('4', Auth::user()->recursos))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.42','desc'=>'Seu cadastro não permite que você veja os dados de outras pessoas']));
 
 		$pessoas=Pessoa::orderBy('nome','ASC')->paginate(35);
@@ -522,7 +518,7 @@ class PessoaController extends Controller
 	{
 		
 
-		if(GerenciadorAcesso::pedirPermissao(8))
+		if(in_array('8', Auth::user()->recursos))
 			return view('pessoa.cadastrar-acesso');
 		else
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.8','desc'=>'Você não pode cadastrar usuários no sistema.']));
@@ -543,7 +539,7 @@ class PessoaController extends Controller
 		
 
 		
-		if(!GerenciadorAcesso::pedirPermissao(3) && $id != Session::get('usuario') )
+		if(!in_array('3', Auth::user()->recursos) && $id != Auth::user()->pessoa)
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
 
 
@@ -577,7 +573,7 @@ class PessoaController extends Controller
 	public function editarGeral_exec(Request $request){
 		$erros=array();
 		
-		if(!GerenciadorAcesso::pedirPermissao(3) && $request->pessoa != Session::get('usuario') )
+		if(!in_array('3', Auth::user()->recursos) && $request->pessoa != Auth::user()->pessoa)
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Desculpe, você não possui autorização para alterar dados de outras pessoas']));
 		$this->validate($request, [
 				'pessoa'=>'required|integer',
@@ -671,9 +667,9 @@ class PessoaController extends Controller
 
 
 		
-		if(!GerenciadorAcesso::pedirPermissao(3) && $id != Session::get('usuario') )
+		if(!in_array('3', Auth::user()->recursos) && $id != Auth::user()->pessoa)
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
-		if(!loginController::autorizarDadosPessoais($id) && $id != Session::get('usuario'))
+		if(!in_array('4', Auth::user()->recursos) && $id != Auth::user()->pessoa)
 			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
 		
 
@@ -688,11 +684,11 @@ class PessoaController extends Controller
 	}
 	public function editarContato_exec(Request $request){
 		
-		if(!GerenciadorAcesso::pedirPermissao(3) && $request->pessoa != Session::get('usuario') )
+		if(!in_array('3', Auth::user()->recursos) && $request->pessoa != Auth::user()->pessoa)
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Desculpe, você não possui autorização para alterar dados de outras pessoas']));
 
-		if(!loginController::autorizarDadosPessoais($request->pessoa) && $request->pessoa != Session::get('usuario'))
-			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
+		if(!in_array('4', Auth::user()->recursos) && $request->pessoa != Auth::user()->pessoa)
+			return view('error-404-alt')->with(array('error'=>['id'=>'403.4','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
 
 	
 		$pessoa=Pessoa::find($request->pessoa);
@@ -761,7 +757,7 @@ class PessoaController extends Controller
 					$endereco->cidade=mb_convert_case($request->cidade, MB_CASE_UPPER, 'UTF-8');
 					$endereco->estado=$request->estado;
 					$endereco->cep=preg_replace( '/[^0-9]/is', '',$request->cep);
-					$endereco->atualizado_por=Session::get('usuario');
+					$endereco->atualizado_por=Auth::user()->pessoa;
 					$endereco->save();
 					$id_endereco=$endereco->id;
 				}
@@ -835,7 +831,7 @@ class PessoaController extends Controller
 
 	}
 	public function relacaoInstitucional_view($id){
-		if(!GerenciadorAcesso::pedirPermissao(3))
+		if(!in_array('3', Auth::user()->recursos))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
 		if(!loginController::autorizarDadosPessoais($id))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel. O código de pessoa também pode ser inválido']));
@@ -852,7 +848,7 @@ class PessoaController extends Controller
 	}
 	public function relacaoInstitucional_exec(Request $request){
 		
-		if(!GerenciadorAcesso::pedirPermissao(3))
+		if(!in_array('3', Auth::user()->recursos))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
 		if(!loginController::autorizarDadosPessoais($request->pessoa))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional, não está acessivel ou não existe.']));

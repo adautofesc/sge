@@ -486,7 +486,7 @@
                           &nbsp;
                          <a href="#"  onclick="gerarCarneIndividual();" title="Gerar carnês" class="text-white" ><i class=" fa fa-cogs"></i></a>
                          &nbsp;
-                         @if(unserialize(Session('recursos_usuario'))->contains('recurso','25'))
+                         @if(in_array('25', Auth::user()->recursos))
                             <a href="#" title="Alterar boletos para RENEGOCIADO" class="text-white" ><i class=" fa fa-external-link-square" ></i></a>
                          @endif
                     </div>
@@ -584,7 +584,7 @@
 
                                         
                                         @endif
-                                        @if(unserialize(Session('recursos_usuario'))->contains('recurso','25'))
+                                        @if(in_array('25', Auth::user()->recursos))
                                             <a href="{{asset('financeiro/boletos/editar/').'/'.$boleto->id}}"  title="Editar Boleto" ><i class=" fa fa-edit" ></i></a>
                                             @endif
                                         

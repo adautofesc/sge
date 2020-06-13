@@ -80,7 +80,7 @@
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Login</div>
-                    <div><a href="{{asset("admin/credenciais/").'/'.$pessoa->pessoa}}"> {{$pessoa->usuario}}</a></div>
+                    <div><a href="{{asset("admin/credenciais/").'/'.$pessoa->pessoa}}"> {{$pessoa->username}}</a></div>
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Validade</div>

@@ -21,7 +21,15 @@
 				Usuário*
 			</label>
 			<div class="col-sm-5"> 
-				<input type="text" name="nome_usuario" class="form-control boxed" placeholder="Sem espaço e sem caracteres especiais"> 
+				<input type="text" name="nome_usuario" class="form-control boxed" placeholder="Sem espaço e sem caracteres especiais" required> 
+			</div>
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				E-mail
+			</label>
+			<div class="col-sm-5"> 
+				<input type="email" name="email" class="form-control boxed" placeholder="Deve-se utilizar o e-mail institucional" required> 
 			</div>
 		</div>
 		<div class="form-group row"> 
@@ -29,7 +37,7 @@
 				Senha*
 			</label>
 			<div class="col-sm-5"> 
-				<input type="password" name="senha" class="form-control boxed" placeholder="Mínimo 6 caracteres"> 
+				<input type="password" name="senha" class="form-control boxed" minlength="8" placeholder="Mínimo 8 caracteres" required> 
 			</div>
 		</div>
 		<div class="form-group row"> 
@@ -37,7 +45,7 @@
 				Repetir senha*
 			</label>
 			<div class="col-sm-5"> 
-				<input type="password" name="repetir_senha" class="form-control boxed" placeholder=""> 
+				<input type="password" name="repetir_senha" class="form-control boxed" minlength="8" required> 
 			</div>
 		</div>
 		<div class="form-group row"> 

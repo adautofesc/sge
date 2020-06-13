@@ -9,7 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
         <!-- Place favicon.ico in the root directory -->
-        <link rel="stylesheet" href="css/vendor.css">
+        <link rel="stylesheet" href="{{asset('css/vendor.css')}}">
         <!-- Theme initialization -->
         <script>
             var themeSettings = (localStorage.getItem('themeSettings')) ? JSON.parse(localStorage.getItem('themeSettings')) :
@@ -17,11 +17,11 @@
             var themeName = themeSettings.themeName || '';
             if (themeName)
             {
-                document.write('<link rel="stylesheet" id="theme-style" href="css/app-' + themeName + '.css">');
+                document.write('<link rel="stylesheet" id="theme-style" href="../../css/app-' + themeName + '.css">');
             }
             else
             {
-                document.write('<link rel="stylesheet" id="theme-style" href="css/app.css">');
+                document.write('<link rel="stylesheet" id="theme-style" href="../../css/app.css">');
             }
         </script>
     </head>
@@ -39,13 +39,27 @@
 
                         @include('inc.errors')
 
-
-                        <p class="text-xs-center">Não podemos recuperar sua senha, mas não se preocupe, vamos lhe enviar um código para que você possa alterar sua senha e voltar a ter acesso. Para isso preencha o campo abaixo.</p>
-                        <form id="login-form" action="/recuperaSenha" method="POST" novalidate="">
+                        <p class="text-xs-center">Redefinição de senha por e-mail.</p>
+                        <form method="POST" action="{{ route('password.update') }}">
                         {{csrf_field()}}
-                            <div class="form-group"> <label for="username">E-mail</label> <input type="email" class="form-control underlined" name="email" id="username" placeholder="Digite aqui seu E-mail" required> </div>
-                            
-                            <div class="form-group"> <button type="submit" class="btn btn-block btn-primary">Pedir uma nova senha</button> </div>
+                            <input type="hidden" name="token" value="{{ $token }}">
+                            <div class="form-group"> 
+                                <label for="email">E-mail</label> 
+     
+                                <input id="email" type="text" class="form-control underlined @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Digite aqui seu e-mail institucional" autofocus>
+                            </div>
+                            <div class="form-group"> 
+                                <label for="password">Senha</label> 
+                                
+                                <input id="password" type="password" class="form-control underlined @error('password') is-invalid @enderror" name="password"  required autocomplete="new-password" placeholder="Minimo 8 caracteres">
+                            </div>
+                            <div class="form-group"> 
+                                <label for="email">Confime a senha</label> 
+                              
+                                <input id="password-confirm" type="password" class="form-control underlined" name="password_confirmation" required autocomplete="new-password">
+                                
+                            </div>
+                            <div class="form-group"> <button type="submit" class="btn btn-block btn-primary">Redefinir senha</button> </div>
                             <div class="form-group">
                                 <small>
                                 <p class="text-muted text-xs-center"> Caso você não tenha cadastrado um endereço de E-mail, terá que comparecer na FESC 1, levando um documento com foto.</p></small>
@@ -64,25 +78,7 @@
                 <div class="color-secondary"></div>
             </div>
         </div>
-        <script>
-            (function(i, s, o, g, r, a, m)
-            {
-                i['GoogleAnalyticsObject'] = r;
-                i[r] = i[r] || function()
-                {
-                    (i[r].q = i[r].q || []).push(arguments)
-                }, i[r].l = 1 * new Date();
-                a = s.createElement(o),
-                    m = s.getElementsByTagName(o)[0];
-                a.async = 1;
-                a.src = g;
-                m.parentNode.insertBefore(a, m)
-            })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-            ga('create', 'UA-80463319-2', 'auto');
-            ga('send', 'pageview');
-        </script>
-        <script src="js/vendor.js"></script>
-        <script src="js/app.js"></script>
+      
     </body>
 
 </html>

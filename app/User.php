@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'pessoa', 'email', 'password',
+        'pessoa', 'username', 'password', 'validade','status',
     ];
 
     /**
@@ -26,6 +26,14 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token','status',
     ];
+
+    public function getRecursosAttribute(){
+        $recursos = \App\ControleAcessoRecurso::select('recurso')->where('pessoa',$this->pessoa)->get();
+        return $recursos->pluck('recurso')->toArray();
+        
+    }
+
+    
 }

@@ -31,11 +31,12 @@ Route::get('boletos-com-erros','BoletoController@analisarBoletosComErro');
 route::get('profile',function(){
 	return view('pessoa.profile');
 });
+Route::get('atribuir-emails','loginController@attribEmail');
 
 
 
 //Login ***********************************************************
-
+/*
 	Route::get('login', 'loginController@login')->name('login');
 	Route::get('loginSaved', 'loginController@loginSaved')->name('loginSaved');
 	Route::get('recuperarconta/{var}','loginController@recuperarConta');
@@ -47,22 +48,28 @@ route::get('profile',function(){
 	Route::get('recuperaSenha','loginController@viewPwdRescue');
 	Route::get('/trocarminhasenha','loginController@trocarMinhaSenha_view');
 	Route::post('/trocarminhasenha','loginController@trocarMinhaSenha_exec');
-	Route::get('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_view');
-	Route::post('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_exec');
+	
 	Route::get('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_view');
 	Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec');
+*/
 
-
-
+Auth::routes();
 
 //************************************************* Areas restritas para cadastrados ***************************************************
 
-Route::middleware('login') ->group(function(){
+Route::middleware(['auth','login']) ->group(function(){
 
 
 
 	Route::get('home', 'painelController@index');
 	Route::get('reimpressao', 'BoletoController@reimpressaoCarnes');
+	Route::get('/trocarminhasenha','loginController@trocarMinhaSenha_view');
+	Route::post('/trocarminhasenha','loginController@trocarMinhaSenha_exec');
+	Route::get('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_view');
+	Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec');
+	Route::get('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_view');
+	Route::post('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_exec');
+
 
 	Route::get('download/{arquivo}',function ($arquivo){
 		// Atenção a divisoria de pasta deve ser a string -.-
@@ -167,7 +174,7 @@ Route::middleware('login') ->group(function(){
 		Route::post('listar','PessoaController@procurarPessoasAjax');
 		Route::get ('cadastrar', 'PessoaController@create')->name('pessoa.cadastrar');
 		Route::post('cadastrar','PessoaController@gravarPessoa');
-		Route::get ('mostrar','PessoaController@listarTodos');//->middleware(['autorizar:56', 'privacy'])
+		Route::middleware('liberar.recurso:18')->get('mostrar','PessoaController@listarTodos');//->middleware(['autorizar:56', 'privacy'])
 		Route::get ('mostrar/{var}','PessoaController@mostrar');
 		Route::get('buscarapida/{var}','PessoaController@liveSearchPessoa');
 		Route::get('apagar-atributo/{var}','PessoaController@apagarAtributo');
@@ -627,6 +634,7 @@ Route::middleware('login') ->group(function(){
 
 Route::get('alerta-covid','painelController@alertaCovid');
 Route::get('cancelamento-covid','BoletoController@cancelarCovid');
+Route::get('renova-login','loginController@sendNewPassword');
 
 
 //----------------------------- Errors treatment
@@ -637,9 +645,12 @@ Route::get('403',function(){
 Route::get('404',function(){
    return view('error-404');
 })->name('404');
-Route::get('500',function(){
-   return view('error-500');
+Route::get('503',function(){
+   return view('error-503');
 });
+Route::get('500',function(){
+	return view('error-500');
+ });
 Route::get('about',function(){
    return "Sistema de Gestão Educacional. Todos direitos reservados";
 });

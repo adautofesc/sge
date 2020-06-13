@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html class="no-js" lang="pt-br">
 
@@ -39,22 +40,30 @@
                         @include('inc.errors')
 
                         <p class="text-xs-center">Preencha os dados para acessar:</p>
-                        <form id="login-form" action="./loginCheck" method="POST" novalidate="">
+                        <form method="POST" action="{{ route('login') }}">
                         {{csrf_field()}}
-                            <div class="form-group"> <label for="username">Login</label> <input type="text" class="form-control underlined" name="login" id="username" placeholder="Digite aqui seu nome de usuário" required> </div>
-                            <div class="form-group"> <label for="password">Senha</label> <input type="password" class="form-control underlined" name="senha" id="password" placeholder="Sua senha" required> </div>
-                            <div class="form-group"> <label for="remember">
-            <input class="checkbox" name="lembrar_senha" id="remember" type="checkbox"> 
-            <span>Lembrar</span>
-          </label> <a href="/esqueciasenha" class="forgot-btn pull-right">Esqueci a senha</a> </div>
-                            <div class="form-group"> <button type="submit" class="btn btn-block btn-primary">Entrar</button>
-                            @if(isset($nome))
-                            <br>
-                            <p>Entrar com login salvo:</p>
-                            <button type="button" onclick="location.replace('/loginSaved');"class="btn btn-block btn-secondary">{{$nome}}</button> 
-                            @endif
-
-
+                            <div class="form-group"> <label for="username">Login</label> 
+                                <!--<input type="text" class="form-control underlined" name="login" id="username" placeholder="Digite aqui seu nome de usuário" required> -->
+                                <input id="username" type="text" class="form-control underlined " name="username" value="{{ old('username') }}" required autocomplete="username" autofocus>
+                            </div>
+                            <div class="form-group "> <label for="password">Senha</label> 
+                                <!--<input type="password" class="form-control underlined" name="senha" id="password" placeholder="Sua senha" required> -->
+                                <input id="password" type="password" class="form-control underlined @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+                            </div>
+                            <div class="form-group"> 
+                                <label for="remember">
+                                    <input class="checkbox" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}> 
+                                    <span>Lembrar</span>
+                                </label> 
+                               
+                                @if (Route::has('password.request'))
+                                    <a class="forgot-btn pull-right" href="{{ route('password.request') }}">
+                                        {{ __('Esqueceu a senha?') }}
+                                    </a>
+                                @endif
+                            </div>
+                            <div class="form-group"> 
+                                <button type="submit" class="btn btn-block btn-primary">Entrar</button>
                             </div>
                             <div class="form-group">
                                 <p class="text-muted text-xs-center">Não tem cadastro? Solicite na FESC 1</p>
@@ -72,25 +81,8 @@
                 <div class="color-secondary"></div>
             </div>
         </div>
-        <script>
-            (function(i, s, o, g, r, a, m)
-            {
-                i['GoogleAnalyticsObject'] = r;
-                i[r] = i[r] || function()
-                {
-                    (i[r].q = i[r].q || []).push(arguments)
-                }, i[r].l = 1 * new Date();
-                a = s.createElement(o),
-                    m = s.getElementsByTagName(o)[0];
-                a.async = 1;
-                a.src = g;
-                m.parentNode.insertBefore(a, m)
-            })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-            ga('create', 'UA-80463319-2', 'auto');
-            ga('send', 'pageview');
-        </script>
-        <script src="{{asset('js/vendor.js')"></script>
-        <script src="{{asset('js/app.js')"></script>
+
+
     </body>
 
 </html>

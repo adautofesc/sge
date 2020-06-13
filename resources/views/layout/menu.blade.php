@@ -9,33 +9,33 @@
                                 <li  class="active">
                                     <a href="{{asset('/')}}"> <i class="fa fa-home"></i> Home </a>
                                 </li>
-                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','12'))
+                                @if(in_array('12', Auth::user()->recursos))
                                 <li  >
                                     <a href="{{asset('/administrativo')}}"> <i class="fa fa-bar-chart-o"></i> Administração </a>
                                 </li>
                                 @endif
-                                 @if(unserialize(Session('recursos_usuario'))->contains('recurso','21'))
+                                @if(in_array('21', Auth::user()->recursos))
                                 <li  >
                                     <a href="{{asset('/bolsas/liberacao')}}"> <i class="fa fa-heart"></i> Bolsas </a>
                                 </li>
                                 @endif
-                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','22'))
+                                @if(in_array('22', Auth::user()->recursos))
                                 <li  >
                                     <a href="{{asset('/dev')}}"> <i class="fa fa-flask"></i> Desenvolvimento </a>
                                 </li>
                                 @endif
-                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','13'))
+                                @if(in_array('13', Auth::user()->recursos))
                                 <li  >
                                     <a href="{{asset('/docentes')}}"> <i class="fa fa-th-large"></i> Docentes </a>
                                 </li>
                                 @endif
                                 
-                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','24'))
+                                @if(in_array('24', Auth::user()->recursos))
                                 <li  >
                                     <a href="{{asset('/financeiro')}}"> <i class="fa fa-usd"></i> Financeiro </a>
                                 </li>
                                 @endif
-                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','15'))
+                                @if(in_array('15', Auth::user()->recursos))
                                 <li  >
                                     <a href="{{asset('/gestaopessoal')}}"> <i class="fa fa-users"></i> Gestão Pessoal </a>
                                 </li>
@@ -45,12 +45,12 @@
                                     <a href="{{asset('/juridico')}}"> <i class="fa fa-bookmark"></i> Jurídico </a>
                                 </li>
                         
-                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','17'))
+                                @if(in_array('17', Auth::user()->recursos))
                                 <li  >
                                     <a href="{{asset('/pedagogico')}}"> <i class="fa fa-th-list"></i> Pedagógico </a>
                                 </li>
                                 @endif
-                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','18'))
+                                @if(in_array('18', Auth::user()->recursos))
                                 <li  >
                                     <a href=""> <i class="fa fa-stack-overflow"></i> Secretaria </a>
                                     <ul>

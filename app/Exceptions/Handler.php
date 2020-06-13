@@ -51,6 +51,9 @@ class Handler extends ExceptionHandler
         }
         //if($exception instanceof  \Symfony\Component\HttpKernel\Exception\NotFoundHttpException)
             //return redirect('404');
+        //if ($this->isHttpException($exception)) {
+            //return redirect($exception->getStatusCode());
+       // }
 
         return parent::render($request, $exception);
     }

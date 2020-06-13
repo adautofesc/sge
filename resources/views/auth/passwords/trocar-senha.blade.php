@@ -12,7 +12,8 @@
 				Senha anterior
 			</label>
 			<div class="col-sm-5"> 
-				<input type="password" name="senha" class="form-control boxed" placeholder="Sua senha anterior"> 
+			<input type="hidden" name="username" value="{{Auth::user()->username}}">
+				<input type="password" name="password" class="form-control boxed" placeholder="Sua senha anterior"> 
 			</div>
 		</div>
 		<div class="form-group row"> 

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Middleware;
+use Auth;
 
 use Closure;
 
@@ -15,10 +16,17 @@ class LiberarRecurso
      */
     public function handle($request, Closure $next, $recurso)
     {
-        foreach(unserialize(Session('recursos_usuario')) as $controle){
+        $user = Auth::user();
+        //dd($user->recursos);
+        if(in_array($recurso,$user->recursos))
+            return $next($request);
+        else
+            return redirect()->route('403');
+
+        /*foreach(unserialize(Session('recursos_usuario')) as $controle){
             if($controle->recurso == $recurso)
                 return $next($request);
-        }
+        }*/
         return redirect()->route('403');
         
             

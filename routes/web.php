@@ -53,7 +53,7 @@ Route::get('atribuir-emails','loginController@attribEmail');
 	Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec');
 */
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 //************************************************* Areas restritas para cadastrados ***************************************************
 

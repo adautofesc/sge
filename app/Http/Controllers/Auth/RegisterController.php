@@ -62,12 +62,12 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        
+       /* 
         return User::create([
             'pessoa' => $data['pessoa'],
             'username' => $data['username'],
             'password' => bcrypt($data['password']),
             'validade' =>'2020-12-31',
-        ]);
+        ]);*/
     }
 }

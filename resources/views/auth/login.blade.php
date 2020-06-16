@@ -39,7 +39,8 @@
 
                         @include('inc.errors')
 
-                        <p class="text-xs-center">Preencha os dados para acessar:</p>
+                    
+                        <p class="text-xs-center alert-info">As credenciais de acesso foram atualizadas, verifique seu e-mail para obtê-las</p>
                         <form method="POST" action="{{ route('login') }}">
                         {{csrf_field()}}
                             <div class="form-group"> <label for="username">Login</label> 

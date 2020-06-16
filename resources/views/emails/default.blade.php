@@ -35,10 +35,10 @@
             <p>Abaixo seguem os seus novos dados para efetuar login no sistema SGE:</p>
             <h5>Usuário: <strong>{{$username}}</strong></h5>
             <h5>Senha: <strong>{{$password}}</strong></h5>
-            <p>Lembramos que todos de manter uma senha segura, pois os dados de nossos alunos e colegas podem ser expostos através de senhas inseguras. </p>
+            <p>Lembramos todos que é importante manter uma senha segura, pois os dados de nossos alunos e colegas podem ser expostos através de senhas inseguras. </p>
             <p>Sua senha poderá ser alterada como anteriormente.</p>
             <p><small><a href="https://sistema.fesc.com.br">Acesse o sistema por aqui.</a></small></p>
-            <p><small>Cordialmente, Adauto.</small></p>
+            <p><small>Cordialmente, SGE.</small></p>
 
 
         </div>

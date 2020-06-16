@@ -440,11 +440,14 @@ class loginController extends Controller
 			$password = '2020Fsc'.rand(0,9).rand(0,9).rand(0,9).rand(0,9);
 			$user->password = bcrypt($password);
 			$user->save();
-			Mail::send('emails.default', ['username' => $user->username , 'password' => $password], function ($message) use($user){
-				$message->from('no-reply@fesc.com.br', 'Atualização de senhas');
-				$message->to($user->email);
-				$message->subject('Atualização de senha');
-				});
+			if(!empty($user->email)){
+				Mail::send('emails.default', ['username' => $user->username , 'password' => $password], function ($message) use($user){
+					$message->from('no-reply@fesc.com.br', 'Atualização de senhas');
+					$message->to($user->email);
+					$message->subject('Atualização de senha');
+					});
+					$emails[]=$user->email;
+			}
 			
 		}
 			
@@ -461,7 +464,7 @@ class loginController extends Controller
 			});
 	*/
 		
-		return $users;
+		return $emails;
 	}
 
 }

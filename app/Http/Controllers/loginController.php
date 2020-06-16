@@ -441,12 +441,12 @@ class loginController extends Controller
 			$user->password = bcrypt($password);
 			$user->save();
 			if(!empty($user->email)){
-				Mail::send('emails.default', ['username' => $user->username , 'password' => $password], function ($message) use($user){
-					$message->from('no-reply@fesc.com.br', 'Atualização de senhas');
+				$emails[]=Mail::send('emails.default', ['username' => $user->username , 'password' => $password], function ($message) use($user){
+					$message->from('no-reply@sge.fesc.com.br', 'SGE FESC');
 					$message->to($user->email);
 					$message->subject('Atualização de senha');
 					});
-					$emails[]=$user->email;
+					
 			}
 			
 		}

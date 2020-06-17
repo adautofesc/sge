@@ -35,5 +35,12 @@ class User extends Authenticatable
         
     }
 
+    public function getPessoa(){
+        return Pessoa::find($this->pessoa);
+
+    }
+
+   
+
     
 }

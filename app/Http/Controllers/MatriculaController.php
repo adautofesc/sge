@@ -9,6 +9,7 @@ use App\Pessoa;
 use Illuminate\Http\Request;
 use App\Inscricao;
 use Session;
+use Auth;
 
 
 ini_set('upload_max_filesize', '4194304');
@@ -56,7 +57,7 @@ class MatriculaController extends Controller
             //verifica se já possui matricula no curso
             $matriculado=MatriculaController::verificaSeMatriculado($r->pessoa,$curso->id,$turmas->first()->data_inicio);
             if($matriculado==false){
-                $atendimento = AtendimentoController::novoAtendimento("Nova matrícula, código ", $r->pessoa, Session::get('usuario'));
+                $atendimento = AtendimentoController::novoAtendimento("Nova matrícula, código ", $r->pessoa, Auth::user()->pessoa);
                 //dd($atendimento->id);
                 $matricula=new Matricula();
                 $matricula->pessoa=$r->pessoa;
@@ -121,7 +122,7 @@ class MatriculaController extends Controller
         $matricula->save();
         MatriculaController::alterarStatus($matricula->id,$r->status);
 
-        AtendimentoController::novoAtendimento("Matrícula atualizada.", $matricula->pessoa, Session::get('usuario'));
+        AtendimentoController::novoAtendimento("Matrícula atualizada.", $matricula->pessoa, Auth::user()->pessoa);
         //LancamentoController::atualizaMatricula($matricula->id);
         return redirect(asset('secretaria/atender'));
     }
@@ -202,18 +203,6 @@ class MatriculaController extends Controller
      */
     public static function verificaSeMatriculado($pessoa,$curso,$data)
     {
-        /*
-        $matriculas_ativas=Matricula::where('pessoa',Session::get('pessoa_atendimento'))
-            ->where('curso',$curso)
-            ->Where(function($query) {
-                $query->where('status','ativa')->orWhere('status','pendente');
-            })->get();
-        if(count($matriculas_ativas) > 0)
-            return $matriculas_ativas->first()->id;  
-        else
-            return false;
-
-            */
         $data = \Carbon\Carbon::createFromFormat('d/m/Y', $data)->format('Y-m-d');
         if($data > date("Y-m-d")){
             if($curso == 307)
@@ -223,7 +212,7 @@ class MatriculaController extends Controller
                 ->Where('status','espera')
                 ->get();
 
-                if(count($matriculas_ativas)>0)
+                if($matriculas_ativas->count()>0)
                     return $matriculas_ativas->first()->id;
                 else
                     return false;
@@ -239,7 +228,7 @@ class MatriculaController extends Controller
                 ->WhereIn('status',['ativa','pendente'])
                 ->get();
 
-                if(count($matriculas_ativas)>0)
+                if($matriculas_ativas->count()>0)
                     return $matriculas_ativas->first()->id;
                 else
                     return false;
@@ -264,7 +253,7 @@ class MatriculaController extends Controller
             ->where('curso',$curso)
             ->where('status','espera')
             ->get();
-        if(count($matriculas_ativas) > 0)
+        if($matriculas_ativas->count() > 0)
             return $matriculas_ativas->first()->id;  
         else
             return false;
@@ -276,7 +265,7 @@ class MatriculaController extends Controller
         $turma=Turma::find($turma_id);
         if($turma==null)
             redirect($_SERVER['HTTP_REFERER']);
-        $atendimento = AtendimentoController::novoAtendimento("Matrícula gerada por adição direta na turma, lote ou rematrícula.", $pessoa, Session::get('usuario'));
+        $atendimento = AtendimentoController::novoAtendimento("Matrícula gerada por adição direta na turma, lote ou rematrícula.", $pessoa, Auth::user()->pessoa);
         $matricula=new Matricula();
         $matricula->pessoa=$pessoa;
         $matricula->atendimento=$atendimento->id;
@@ -329,10 +318,10 @@ class MatriculaController extends Controller
             $LC->excluirSemBoletosPorMatricula($matricula->id);
         }
         //LancamentoController::cancelamentoMatricula($id);
-        if(count($r->cancelamento))
-        AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id. " motivo: ".implode(', ',$r->cancelamento), $matricula->pessoa, Session::get('usuario'));
+        if(!empty($r->cancelamento))
+        AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id. " motivo: ".implode(', ',$r->cancelamento), $matricula->pessoa, Auth::user()->pessoa);
         else
-            AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id, $matricula->pessoa, Session::get('usuario'));
+            AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id, $matricula->pessoa, Auth::user()->pessoa);
 
         //cancelar a bolsa se houver
         $bolsa = $matricula->getBolsas();
@@ -362,21 +351,21 @@ class MatriculaController extends Controller
         if(isset($matricula->id)){
             $inscricoes = InscricaoController::inscricoesPorMatricula($id,'todas');
             $regulares = $inscricoes->where('status','regular');
-            if(count($regulares)>0){
+            if($regulares->count()>0){
                 $matricula->status = 'ativa';
                 $matricula->save();
                 return $matricula;
             }              
             else{
                 $pendentes = $inscricoes->where('status','pendente');
-                if(count($pendentes)>0){
+                if($pendentes->count()>0){
                     $matricula->status = 'pendente';
                     $matricula->save();
                     return $matricula;
                 }
                 else{
                     $finalizadas = $inscricoes->where('status','finalizada');
-                    if(count($finalizadas)>0){
+                    if($finalizadas->count()>0){
                         $matricula->status = 'expirada';
                         $matricula->save();
                         return $matricula;
@@ -448,9 +437,9 @@ class MatriculaController extends Controller
             InscricaoController::reativar($inscricao->id);  
         }
         $insc = Inscricao::where('matricula',$id)->where('status','regular')->get();
-        if(count($insc)>0){
+        if($insc->count()>0){
             $matricula->save();
-            AtendimentoController::novoAtendimento("Reativação de matrícula ".$matricula->id, $matricula->pessoa, Session::get('usuario'));
+            AtendimentoController::novoAtendimento("Reativação de matrícula ".$matricula->id, $matricula->pessoa, Auth::user()->pessoa);
             return redirect($_SERVER['HTTP_REFERER']);
         }
         else
@@ -688,7 +677,7 @@ class MatriculaController extends Controller
         $nova->resp_financeiro = $original->resp_financeiro;
         $nova->obs = '';
         $nova->save();
-        $nova->atendimento = AtendimentoController::novoAtendimento("Matrícula ".$nova->id." copiada da matricula ".$original->id, $nova->pessoa, Session::get('usuario'));
+        $nova->atendimento = AtendimentoController::novoAtendimento("Matrícula ".$nova->id." copiada da matricula ".$original->id, $nova->pessoa, Auth::user()->pessoa);
 
         return redirect('/secretaria/atender/'.$nova->pessoa)->withErrors(['Matricula duplicada.']);
     }

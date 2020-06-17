@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Contato;
 use Illuminate\Http\Request;
-use Session;
+use Auth;
 
 class ContatoController extends Controller
 {
@@ -21,7 +21,7 @@ class ContatoController extends Controller
                 break;
 
             default:
-                $contato = $this->novoContato($r->pessoa,$r->meio,$r->mensagem,Session::get('usuario'));
+                $contato = $this->novoContato($r->pessoa,$r->meio,$r->mensagem,Auth::user()->pessoa);
                 return response($contato,200);
                 break;
         }
@@ -68,7 +68,7 @@ class ContatoController extends Controller
 
                 $ws = json_decode($result);
                 if(isset($ws->msg) && $ws->msg == 'SUCESSO'){
-                    $contato = $this->novoContato($pessoa->id,'sms',urldecode($mensagem).' numero:'.$pessoa->celular,Session::get('usuario'));
+                    $contato = $this->novoContato($pessoa->id,'sms',urldecode($mensagem).' numero:'.$pessoa->celular,Auth::user()->pessoa);
                     return $contato;
                 }
                 else
@@ -84,7 +84,7 @@ class ContatoController extends Controller
             $pessoa = \App\Pessoa::find($_GET['pessoa']);
             if(isset($pessoa->id)){
                 $pessoa->celular =  $pessoa->getCelular();
-                $contato = $this->novoContato($pessoa->id,'whatsapp',$_GET['msg'].' numero:'.$pessoa->celular,Session::get('usuario'));
+                $contato = $this->novoContato($pessoa->id,'whatsapp',$_GET['msg'].' numero:'.$pessoa->celular,Auth::user()->pessoa);
                 return redirect('https://wa.me/55'.$pessoa->celular.'?text='.$_GET['msg']);
             }
         }

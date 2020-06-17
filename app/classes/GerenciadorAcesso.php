@@ -3,7 +3,7 @@
 namespace App\classes;
 
 use App\ControleAcessoRecurso;
-use Session;
+use Auth;
 
 
 class GerenciadorAcesso 
@@ -13,11 +13,11 @@ class GerenciadorAcesso
 
 
 
-        $query=ControleAcessoRecurso::where('pessoa', Session::get('usuario'))
+        $query=ControleAcessoRecurso::where('pessoa', Auth::user()->pessoa)
                                     ->where('recurso', $recurso)->first();
         
 
-        if(count($query))
+        if(!empty($query))
             return True;
         else
             return False;

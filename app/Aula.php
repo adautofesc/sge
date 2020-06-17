@@ -28,7 +28,7 @@ class Aula extends Model
 
     public function getConteudo(){
         $conteudo = AulaDado::where('aula',$this->id)->where('dado','conteudo')->get();
-        if(count($conteudo))
+        if($conteudo->count())
             return $conteudo->implode('valor','. ');
         else
             return 'Nenhum conteúdo registrado.';
@@ -36,7 +36,7 @@ class Aula extends Model
 
     public function getOcorrencia(){
         $ocorrencias = AulaDado::where('aula',$this->id)->where('dado','ocorrencia')->get();
-        if(count($ocorrencias))
+        if($ocorrencias->count())
             return $ocorrencias->implode('valor','. ');
         else
             return 'Nenhuma ocorrência registrada.';
@@ -45,7 +45,7 @@ class Aula extends Model
 
     public function getDados($dado){
         $dados = AulaDado::where('aula',$this->id)->where('dado',$dado)->get();
-        if(count($dados))
+        if($dados->count())
             return $dados->implode('valor','. ');
         else
             return '';

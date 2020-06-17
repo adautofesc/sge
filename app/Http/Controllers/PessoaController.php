@@ -73,14 +73,14 @@ class PessoaController extends Controller
 			]);
 		// Verifica se já tem alguem com mesmo nome e data de nascimento.
 			$pessoanobd=Pessoa::where('nome', $request->nome)->where('nascimento',$request->nascimento)->get();
-			if(count($pessoanobd)) 
+			if($pessoanobd->count()) 
 				return $this->create(['Ops, parece que essa pessoa já está cadastrada no sistema. Encontrado alguém com o mesmo nome e mesma data de nascimento. Pode confirmar isso?']);
 		// se preencheu o CPF
 			if(isset($request->cpf))		 
 			{
 			//se o CPF já está no sistema
 				$cpf_no_sistema=PessoaDadosGerais::where('dado','3')->where('valor',$request->cpf)->get();
-				if (count($cpf_no_sistema)) 
+				if ($cpf_no_sistema->count()) 
 				{
 					$erros_bd=["Desculpe, CPF já cadastrado no sistema."];
 				;
@@ -876,7 +876,7 @@ class PessoaController extends Controller
 	
 	public function iniciarRecadastramento(Request $rq){
 		$dado = PessoaDadosGerais::where('dado',3)->where('valor',preg_replace( '/[^0-9]/is', '',$rq->cpf))->get();
-		if(count($dado)>0){
+		if($dado->count()>0){
 			$pessoa = \App\Pessoa::find($dado->first()->pessoa);
 			if(is_null($pessoa))
 				return redirect($_SERVER['HTTP_REFERER'])->withErrors(['CPF encontrado sem vínculos no sistema. Tente inserir o RG. Caso já tenha inserido, procure a secretaria.']);
@@ -885,7 +885,7 @@ class PessoaController extends Controller
 		}
 		else{
 			$dado = PessoaDadosGerais::where('dado',4)->where('valor',preg_replace( '/[^0-9]/is', '',$rq->cpf))->get();
-			if(count($dado)>0){
+			if($dado->count()>0){
 				$pessoa = \App\Pessoa::find($dado->first()->pessoa);
 				if(is_null($pessoa))
 					return redirect($_SERVER['HTTP_REFERER'])->withErrors(['RG encontrado sem vínculos no sistema. Tente inserir o CPF. Caso já tenha inserido, procure a secretaria.']);
@@ -911,7 +911,7 @@ class PessoaController extends Controller
 			if($request->rg != '')
 			{
 				$dado = PessoaDadosGerais::where('pessoa',$pessoa->id)->where('dado',4)->get();
-				if(count($dado)== 0)
+				if($dado->count()== 0)
 					$info=new PessoaDadosGerais;
 				else
 					$info = $dado->first();					
@@ -926,7 +926,7 @@ class PessoaController extends Controller
 			if($request->cpf != '')
 			{
 				$dado = PessoaDadosGerais::where('pessoa',$pessoa->id)->where('dado',3)->get();
-				if(count($dado)== 0)
+				if($dado->count()== 0)
 					$info=new PessoaDadosGerais;
 				else
 					$info = $dado->first();
@@ -945,7 +945,7 @@ class PessoaController extends Controller
 			if($request->email != '')
 			{
 				$dado = PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',1)->get();
-				if(count($dado)== 0)
+				if($dado->count()== 0)
 					$info=new PessoaDadosContato;
 				else
 					$info = $dado->first();						
@@ -959,7 +959,7 @@ class PessoaController extends Controller
 			if($request->telefone != '')
 			{
 				$dado = PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',2)->get();
-				if(count($dado)== 0)
+				if($dado->count()== 0)
 					$info=new PessoaDadosContato;
 				else
 					$info = $dado->first();					
@@ -973,7 +973,7 @@ class PessoaController extends Controller
 			if($request->tel2 != '')
 			{
 				$dado = PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',9)->get();
-				if(count($dado)== 0)
+				if($dado->count()== 0)
 					$info=new PessoaDadosContato;
 				else
 					$info = $dado->first();						
@@ -987,7 +987,7 @@ class PessoaController extends Controller
 			if($request->tel3 != '')
 			{
 				$dado = PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',10)->get();
-				if(count($dado)== 0)
+				if($dado->count()== 0)
 					$info=new PessoaDadosContato;
 				else
 					$info = $dado->first();						
@@ -1001,7 +1001,7 @@ class PessoaController extends Controller
 			if($request->rua != '')
 			{
 				$dado = PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',6)->get();
-				if(count($dado)== 0){
+				if($dado->count()== 0){
 					$info=new PessoaDadosContato;
 					$endereco=new Endereco;	
 				}
@@ -1016,7 +1016,7 @@ class PessoaController extends Controller
 					$endereco->cidade=mb_convert_case($request->cidade, MB_CASE_UPPER, 'UTF-8');
 					$endereco->estado=$request->estado;
 					$endereco->cep=preg_replace( '/[^0-9]/is', '',$request->cep);
-					$endereco->atualizado_por=Session::get('usuario');
+					$endereco->atualizado_por=Auth::user()->pessoa;
 					$endereco->save();
 					$id_endereco=$endereco->id;
 					$endereco->bairro_str = $request->bairro_str;
@@ -1087,7 +1087,7 @@ class PessoaController extends Controller
 			$pessoa->nome=mb_convert_case($nome, MB_CASE_UPPER, 'UTF-8');
 			$pessoa->nascimento = $nascimento->format('Y-m-d');
 			$pessoa->genero = $genero;
-			$pessoa->por = \Session::get('usuario');
+			$pessoa->por = \Auth::user()->pessoa;
 			$pessoa->save();
 		return $pessoa;
 

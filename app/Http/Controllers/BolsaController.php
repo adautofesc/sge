@@ -179,7 +179,7 @@ class BolsaController extends Controller
         if(isset($bolsa->id)){
             $matriculas = \App\BolsaMatricula::where('bolsa',$bolsa->id)->whereIn('matricula',[$request->matricula[0]])->get();
             
-            if(count($matriculas)>0)
+            if($matriculas->count()>0)
                     return redirect()->back()->withErrors(['Já existe uma solicitação de bolsa para esta matícula.']);
 
             $bolsa_matricula = new BolsaMatricula();

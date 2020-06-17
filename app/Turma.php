@@ -53,15 +53,15 @@ class Turma extends Model
 		{	
 			//procura curso carga.
 			$valorc= Valor::where('curso',$this->curso->id)->where('carga',$this->carga)->where('ano',substr($this->data_inicio,-4))->get();
-			if(count($valorc)!=1)
+			if($valorc->count()!=1)
 
 			//ṕrocura curso
 			$valorc= Valor::where('curso',$this->curso->id)->where('ano',substr($this->data_inicio,-4))->get();
-			if(count($valorc)!=1)
+			if($valorc->count()!=1)
 
 			//programa carga
 			$valorc= Valor::where('programa',$this->programa->id)->where('carga',$this->carga)->where('ano',substr($this->data_inicio,-4))->get();
-			if(count($valorc)!=1)
+			if($valorc->count()!=1)
 
 				//se não tiver na tabela, pega do valor da tabela turma mesmo;
 				return $value;

@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Atendimento;
 use App\Classe;
 use Session;
+use Auth;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 
@@ -60,7 +61,7 @@ class InscricaoController extends Controller
      */
     public static function verificaSeInscrito($pessoa,$turma){
         $existe=Inscricao::where('turma',$turma)->where('pessoa',$pessoa)->whereIn('status', ['regular',])->get();
-        if(count($existe))
+        if($existe->count())
             return $existe->first()->id;
         else
             return False;
@@ -94,7 +95,7 @@ class InscricaoController extends Controller
         if($inscricao != null){
             $inscricao->matricula = $request->matricula;
             $inscricao->save();
-            AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id." modificada para matrícula ".$inscricao->matricula.".", $inscricao->pessoa->id, Session::get('usuario'));
+            AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id." modificada para matrícula ".$inscricao->matricula.".", $inscricao->pessoa->id, Auth::user()->pessoa);
             return redirect(asset('/secretaria/atender/'));
         }
         else
@@ -153,7 +154,7 @@ class InscricaoController extends Controller
      * @return [type]             [description]
      */
     public static function inscreverAluno($aluno,$turma,$matricula=0){
-        $atendimento = AtendimentoController::novoAtendimento(' ', $aluno, Session::get('usuario'));
+        $atendimento = AtendimentoController::novoAtendimento(' ', $aluno, Auth::user()->pessoa);
         $turma=Turma::find($turma);
         //dd($turma);
         if(substr($turma->data_inicio,-4,4) < date('Y')){
@@ -206,7 +207,7 @@ class InscricaoController extends Controller
         $inscricao->pessoa=$aluno;
         $inscricao->turma=$turma->id;
         $inscricao->status='regular';
-        $atendimento = AtendimentoController::novoAtendimento("Inscrição na turma ".$turma->id , $aluno, Session::get('usuario'));
+        $atendimento = AtendimentoController::novoAtendimento("Inscrição na turma ".$turma->id , $aluno, Auth::user()->pessoa);
         $inscricao->atendimento = $atendimento->id;
         $inscricao->save();
         TurmaController::modInscritos($turma->id,1,1);
@@ -245,17 +246,17 @@ class InscricaoController extends Controller
         $inscricoes = Inscricao::where('matricula',$r->matricula)->whereIn('status',['regular','pendente'])->count();
         $pessoa = Pessoa::find($r->pessoa);
         if($inscricoes>0){
-            if(count($r->cancelamento))
-                AtendimentoController::novoAtendimento("Cancelamento da inscrição ".$r->inscricao. " motivo: ".implode(', ',$r->cancelamento), $r->pessoa, Session::get('usuario'));
+            if(!empty($r->cancelamento))
+                AtendimentoController::novoAtendimento("Cancelamento da inscrição ".$r->inscricao. " motivo: ".implode(', ',$r->cancelamento), $r->pessoa, Auth::user()->pessoa);
             else
-                AtendimentoController::novoAtendimento("Cancelamento da inscrição ".$r->inscricao, $r->pessoa, Session::get('usuario'));
+                AtendimentoController::novoAtendimento("Cancelamento da inscrição ".$r->inscricao, $r->pessoa, Auth::user()->pessoa);
             return redirect('/secretaria/matricula/inscricao/imprimir/cancelamento/'.$r->inscricao);
         }
         else{
-            if(count($r->cancelamento))
-                AtendimentoController::novoAtendimento("Cancelamento da matricula ".$r->matricula. " motivo: ".implode(', ',$r->cancelamento), $r->pessoa, Session::get('usuario'));
+            if(!empty($r->cancelamento))
+                AtendimentoController::novoAtendimento("Cancelamento da matricula ".$r->matricula. " motivo: ".implode(', ',$r->cancelamento), $r->pessoa, Auth::user()->pessoa);
             else
-                AtendimentoController::novoAtendimento("Cancelamento da matricula ".$r->matricula, $matricula->pessoa, Session::get('usuario'));
+                AtendimentoController::novoAtendimento("Cancelamento da matricula ".$r->matricula, $matricula->pessoa, Auth::user()->pessoa);
             return redirect('/secretaria/matricula/imprimir-cancelamento/'.$r->matricula);
         }
 
@@ -362,7 +363,7 @@ class InscricaoController extends Controller
             $inscricao->status = 'finalizada';
             $inscricao->save();
             LogController::registrar('inscricao',$inscricao->id,'Finalização');
-            AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id.' finalizada.', $inscricao->pessoa->id, Session::get('usuario'));
+            AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id.' finalizada.', $inscricao->pessoa->id, Auth::user()->pessoa);
              //atualiza a matricula. caso não houver matriculas ativas, finalizar.
             MatriculaController::atualizar($inscricao->matricula);
         }
@@ -381,8 +382,8 @@ class InscricaoController extends Controller
         if (empty($turma))
             return redirect(asset('/secretaria/turmas'));
         $inscricoes=Inscricao::where('turma','=', $turma->id)->whereIn('status',['regular','pendente','finalizada'])->get();
-        if(count($inscricoes) != $turma->matriculados)
-            $turma->atualizarInscritos(count($inscricoes));
+        if($inscricoes->count() != $turma->matriculados)
+            $turma->atualizarInscritos($inscricoes->count());
 
         $inscricoes = $inscricoes->sortBy('pessoa.nome');
         foreach ($inscricoes as $inscricao) {
@@ -470,7 +471,7 @@ class InscricaoController extends Controller
                 $inscricao->status = 'regular';
                 $inscricao->save();
                 LogController::registrar('inscricao',$inscricao->id,'Reativação');
-                AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id." reativada.", $inscricao->pessoa->id, Session::get('usuario'));
+                AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id." reativada.", $inscricao->pessoa->id, Auth::user()->pessoa);
                 TurmaController::modInscritos($inscricao->turma->id,1,1);
                 return redirect($_SERVER['HTTP_REFERER']);
             }
@@ -532,7 +533,7 @@ class InscricaoController extends Controller
         $turma_anterior->save();
         $transferencia = TransferenciaController::gravarRegistro($inscricao->matricula,$inscricao->id,$inscricao_nova->id,$r->motivo); 
         LogController::registrar('inscricao',$inscricao->id,'Transferência de turma');
-        AtendimentoController::novoAtendimento('Transferencia da turma '.$inscricao->turma->id.' para turma '.$turma, $inscricao->pessoa->id, Session::get('usuario'));
+        AtendimentoController::novoAtendimento('Transferencia da turma '.$inscricao->turma->id.' para turma '.$turma, $inscricao->pessoa->id, Auth::user()->pessoa);
         return redirect('/secretaria/matricula/inscricao/imprimir/transferencia/'.$transferencia->id);
 
     }

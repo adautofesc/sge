@@ -116,7 +116,7 @@ class Matricula extends Model
 	public function getPrograma(){
 
 		$inscricoes = $this->getInscricoes();
-		if(count($inscricoes)>0)
+		if($inscricoes->count())
 			return $inscricoes->first()->turma->programa;
 		else
 			return \App\Programa::find(1);
@@ -132,7 +132,7 @@ class Matricula extends Model
 
 		$inscricoes = collect();
 		$inscricoes = $this->getInscricoes();
-		if(count($inscricoes)==0){
+		if($inscricoes->count()==0){
 			 unset($this->inscricoes);
 			return 0;
 		}

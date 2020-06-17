@@ -104,7 +104,7 @@ class CursoController extends Controller
      */
     public function show($id)    {
         $curso=Curso::find($id);
-        if(!count($curso))
+        if(!empty($curso))
              return redirect(asset('/pedagogico/cursos')); 
 
         if(DisciplinaController::disciplinasDoCurso($id))
@@ -125,7 +125,7 @@ class CursoController extends Controller
      */
     public function edit($id)    {
         $curso=Curso::find($id);
-        if(!count($curso))
+        if(!empty($curso))
              return redirect(asset('/pedagogico/cursos'));
         $programas=Programa::all();
         $requisitos=RequisitosController::listar();
@@ -197,7 +197,7 @@ class CursoController extends Controller
 
     public function requisitos($curso)    {
         $curso_requisitos=CursoRequisito::where('curso',$curso)->get();
-        if(count($curso_requisitos)){
+        if($curso_requisitos->count()){
             foreach($curso_requisitos->all() as $requisito) {
                 $requisito=Requisito::find($requisito->requisito);
                 $requisitos[]=$requisito;

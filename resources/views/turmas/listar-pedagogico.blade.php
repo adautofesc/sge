@@ -240,7 +240,7 @@
                                         @endforeach
                                     </div>
                                 </div>
-                                @if(unserialize(Session('recursos_usuario'))->contains('recurso','18'))
+                                @if(in_array('18', Auth::user()->recursos))
                                     <a href="/secretaria/turmas/" class="btn btn-primary btn-sm rounded-s" title="Ver essa lista em modo Secretaria"><i class="fa fa-stack-overflow"></i> Modo Secretaria</a>
                                 @endif
             

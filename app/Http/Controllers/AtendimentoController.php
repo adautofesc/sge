@@ -6,16 +6,17 @@ use Illuminate\Http\Request;
 use App\Atendimento;
 use App\Pessoa;
 use Session;
+use Auth;
 
 class AtendimentoController extends Controller
 {
     //
     public static function novoAtendimento($acao,$pessoa){
     	if($pessoa=='' || $pessoa==0){
-			$pessoa=Session::get('pessoa_atendimento');
+			$pessoa=Auth::user()->pessoa;
 		}
     	$atendimento=new Atendimento;
-		$atendimento->atendente=Session::get('usuario');
+		$atendimento->atendente=Auth::user()->pessoa;
 		$atendimento->usuario=$pessoa;
 		$atendimento->descricao=$acao;
 		$atendimento->save();
@@ -23,7 +24,7 @@ class AtendimentoController extends Controller
 	}
 	public static function abrirAtendimento($pessoa){
 		if($pessoa=='' || $pessoa==0){
-			$pessoa=Session::get('pessoa_atendimento');
+			$pessoa=Auth::user()->pessoa;
 		}
 		
 		$pessoa_obj=Pessoa::find($pessoa);
@@ -37,7 +38,7 @@ class AtendimentoController extends Controller
 
 		if(!Session::get('atendimento')){
 			$atendimento=new Atendimento;
-			$atendimento->atendente=Session::get('usuario');
+			$atendimento->atendente=Auth::user()->pessoa;
 			$atendimento->usuario=$pessoa;
 			$atendimento->save();
 			Session::put('atendimento', $atendimento->id);

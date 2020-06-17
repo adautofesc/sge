@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\classes\GerenciadorAcesso;
 use App\Http\Controllers\loginController;
 use App\PessoaDadosClinicos;
+use Auth;
 
 class PessoaDadosClinicosController extends Controller
 {
@@ -27,7 +28,7 @@ class PessoaDadosClinicosController extends Controller
 
     public function editarDadosClinicos_view($id){
 		
-		if(!GerenciadorAcesso::pedirPermissao(3) && $id != Session::get('usuario') )
+		if(!GerenciadorAcesso::pedirPermissao(3) && $id != Auth::user()->pessoa )
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
 		if(!loginController::autorizarDadosPessoais($id))
 			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
@@ -43,9 +44,9 @@ class PessoaDadosClinicosController extends Controller
 
 	}
 	public function editarDadosClinicos_exec(Request $request){
-		if(!GerenciadorAcesso::pedirPermissao(3) && $request->pessoa != Session::get('usuario') )
+		if(!GerenciadorAcesso::pedirPermissao(3) && $request->pessoa != Auth::user()->pessoa )
 			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
-		if(!loginController::autorizarDadosPessoais($request->pessoa) && $request->pessoa != Session::get('usuario') )
+		if(!loginController::autorizarDadosPessoais($request->pessoa) && $request->pessoa != Auth::user()->pessoa )
 			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel.']));
 
 		$pessoa=Pessoa::find($request->pessoa);

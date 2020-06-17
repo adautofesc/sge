@@ -44,10 +44,10 @@ class FrequenciaController extends Controller
     public function novaChamada_view(int $turma){
         $aulas = Aula::where('turma',$turma)->whereIn('status',['prevista','planejada'])->orderBy('data')->get();
         
-        if(count($aulas)==0){
+        if($aulas->count()==0){
             $AULA_CONTROLER = new AulaController;
             $aulas = $AULA_CONTROLER->gerarAulas($turma);
-            if(count($aulas)==0){
+            if($aulas->count()==0){
                 dd('ERRO: aulas não geradas, por favor verifique as datas de início e termino da turma.');
             }
             
@@ -59,7 +59,7 @@ class FrequenciaController extends Controller
         
         $turma = \App\Turma::find($turma);
 
-        if($turma->professor->id != session('usuario') && !unserialize(Session('recursos_usuario'))->contains('recurso','17'))
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('25', Auth::user()->recursos))
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
 
         if(isset($_GET['filtrar']))
@@ -86,7 +86,7 @@ class FrequenciaController extends Controller
 
         $turma = \App\Turma::find($aula->turma);
         
-        if($turma->professor->id != session('usuario') && !unserialize(Session('recursos_usuario'))->contains('recurso','17'))
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('25', Auth::user()->recursos))
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
     
         if(!is_null($req->conteudo)){
@@ -126,7 +126,7 @@ class FrequenciaController extends Controller
         $ocorrencia = AulaDado::where('aula',$aula->id)->where('dado','ocorrencia')->first();
 
 
-        if($turma->professor->id != session('usuario') && !unserialize(Session('recursos_usuario'))->contains('recurso','17'))
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('25', Auth::user()->recursos))
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
 
         if(isset($_GET['filtrar']))
@@ -166,7 +166,7 @@ class FrequenciaController extends Controller
         $arr_frequencias = $frequencias->pluck('aluno')->toArray();
         $turma = \App\Turma::find($req->turma);
 
-        if($turma->professor->id != session('usuario') && !unserialize(Session('recursos_usuario'))->contains('recurso','17'))
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('25', Auth::user()->recursos))
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
 
         

@@ -31,7 +31,7 @@ class EnderecoController extends Controller
         $bairros=DB::table('bairros_sanca')->get();
         foreach($bairros as $bairro){
             $enderecos=Endereco::where('bairro_str','like','%'.$bairro->nome.'%')->where('bairro',0)->orWhere("bairro", null)->get();
-            if(count($enderecos)>0){
+            if($enderecos->count()>0){
                 foreach ($enderecos as $endereco){   
                         $endereco->bairro=$bairro->id;
                         $endereco->save();
@@ -40,7 +40,7 @@ class EnderecoController extends Controller
 
         }
         $enderecos=Endereco::where('bairro_str','like','%felicia%')->where('bairro',0)->orWhere("bairro", null)->get();
-            if(count($enderecos)>0){
+            if($enderecos->count()>0){
                 foreach ($enderecos as $endereco){   
                         $endereco->bairro=138;
                         $endereco->save();

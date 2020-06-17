@@ -20,7 +20,7 @@
 					<option value="divida" {{$boleto->status == 'divida' ? "selected" : ""}}>Dívida</option>
 					<option value="cancelar" {{$boleto->status == 'cancelar' ? "selected" : ""}}>Cancelar</option>
 					<option value="cancelado" {{$boleto->status == 'cancelado' ? "selected" : ""}}>Cancelado</option>
-					@if(unserialize(Session('recursos_usuario'))->contains('recurso','25'))
+					@if(in_array('25', Auth::user()->recursos))
 					<option value="renegociado" {{$boleto->status == 'renegociado' ? "selected" : ""}}>Renegociado</option>
 					<option value="pago" {{$boleto->status == 'pago' ? "selected" : ""}}>Pago</option>
 					@endif

@@ -148,7 +148,7 @@
 		       </p>
 		       <center>
 		       <p style="border-top: solid 1px black; width: 30%; margin-top: 5%" align="center" >
-		       	{{session("nome_usuario")}} - Servidor da FESC.
+		       	{{(Auth::user()->getPessoa())->nome}} - Servidor da FESC.
 		       </p></center>
         	</div>
         </div>

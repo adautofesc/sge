@@ -132,7 +132,7 @@
 	        	São Carlos, {{$hoje}}.<br><br>
 
 	        	________________________ <br>
-	        	{{Session::get('nome_usuario')}} - Servidor FESC
+	        	{{(Auth::user()->getPessoa())->nome}} - Servidor FESC
 
 
 	        	</small>

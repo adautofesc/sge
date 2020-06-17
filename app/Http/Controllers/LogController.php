@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Session;
+use Auth;
 use App\Log;
 
 class LogController extends Controller
@@ -15,7 +15,7 @@ class LogController extends Controller
     	$log->codigo = $boleto;
     	$log->evento = $motivo;
     	$log->data = date('Y-m-d H:i');
-    	$log->pessoa = Session::get('usuario');
+    	$log->pessoa = Auth::user()->pessoa;
     	$log->save();
     }
     public static function registrar($tipo,$codigo,$evento){
@@ -25,7 +25,7 @@ class LogController extends Controller
         $log->codigo = $codigo;
         $log->evento = $evento;
         $log->data = date('Y-m-d H:i');
-        $log->pessoa = Session::get('usuario');
+        $log->pessoa = Auth::user()->pessoa;
         $log->save();
 
 

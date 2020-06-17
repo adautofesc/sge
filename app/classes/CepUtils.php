@@ -80,7 +80,7 @@ class CepUtils{
 		$bairro_cep = substr($bairro_cep,1);
 		//eturn $bairro_cep;
 		$compativel = DB::table('bairros_sanca')->where('nome','like','%'.$bairro_cep)->get();
-		if(count($compativel)==1)
+		if($compativel->count()==1)
 			return $compativel->first()->id;
 		else
 			return 0;

@@ -38,7 +38,7 @@
 				
 			</label>
 			<div class="col-sm-10 col-sm-offset-2">
-				<input type="hidden" name="userid" value="{{Session::get('usuario')}}">
+				<input type="hidden" name="userid" value="{{Auth::user()->pessoa}}">
 				<button type="submit" class="btn btn-primary">Alterar</button> 
 				
 

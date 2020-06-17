@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use DateTime;
 use Cnab;
 use Session;
+use Auth;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 
@@ -91,7 +92,7 @@ class BoletoController extends Controller
 					$valor = $valor + $lancamento->valor;
 				}
 
-				if(count($lancamentos)>0 && $valor>0 ){// tem lancamentos? é maior que zero?
+				if($lancamentos->count()>0 && $valor>0 ){// tem lancamentos? é maior que zero?
 					$boleto = new Boleto; //cria boleto
 					$boleto->vencimento = $vencimento;
 					$boleto->pessoa = $pessoa->pessoa;
@@ -332,7 +333,7 @@ class BoletoController extends Controller
 			->where('pessoa',$pessoa)
 			->get();
 
-		if(count($lancamentos) > 0){
+		if($lancamentos->count() > 0){
 				
 			//gerar boleto
 			$total=0;
@@ -389,7 +390,7 @@ class BoletoController extends Controller
 			$boleto->status = 'impresso';
 			$boleto->save();
 		}
-		return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Confirmação gravada em '.count($boletos).' boletos']);
+		return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Confirmação gravada em '.$boletos->count().' boletos']);
 
 	}
 	
@@ -546,12 +547,12 @@ class BoletoController extends Controller
 
 		public function consultarBoletosCPF(Request $request){
 			$dados_pessoa = PessoaDadosGerais::where('dado',3)->where('valor',$requent->cpf)->get();
-			if(count($dados_pessoa) == 0){
+			if($dados_pessoa->count() == 0){
 				return "CPF não encontrado.";
 			}
 			foreach($dados_pessoa as $dado){
 				$pessoa = Pessoa::where('id',$dado->pessoa)->where('nascimento',$request->nascimento)->get();
-				if (count($pessoa)>0){
+				if ($pessoa->count()>0){
 					echo "hi";
 				}
 
@@ -592,7 +593,7 @@ class BoletoController extends Controller
 				
 				
 			}
-			AtendimentoController::novoAtendimento("Criação manual de boleto: ".$boleto->id, $boleto->pessoa, Session::get('usuario'));
+			AtendimentoController::novoAtendimento("Criação manual de boleto: ".$boleto->id, $boleto->pessoa, Auth::user()->pessoa);
 			return redirect(asset('secretaria/atender/'.$r->pessoa));
 
 
@@ -604,7 +605,7 @@ class BoletoController extends Controller
 			$boleto->save();
 			LancamentoController::reativarPorBoleto($id);
 			LogController::alteracaoBoleto($boleto->id,'Solicitação de reativação de boleto por '.Session::get('nome_usuario'));
-			//AtendimentoController::novoAtendimento("Solicitação de reativação de boleto: ".$id, $boleto->pessoa, Session::get('usuario'));
+			//AtendimentoController::novoAtendimento("Solicitação de reativação de boleto: ".$id, $boleto->pessoa, Auth::user()->pessoa);
 			return redirect($_SERVER['HTTP_REFERER']);
 
 
@@ -624,7 +625,7 @@ class BoletoController extends Controller
 			if($r->boleto > 0){
 				$boleto = Boleto::find($r->id);
 				LogController::alteracaoBoleto($boleto->id,'Boleto editado por '.Session::get('nome_usuario'));
-				LogController::alteracaoBoleto($boleto->id,'Boleto editado: '.\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y').'->'.$r->vencimento.' status: '.$boleto->status.' ->'.$r->status) .'por '.Session::get('usuario');
+				LogController::alteracaoBoleto($boleto->id,'Boleto editado: '.\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y').'->'.$r->vencimento.' status: '.$boleto->status.' ->'.$r->status) .'por '.Auth::user()->pessoa;
 				
 				$boleto->vencimento = \Carbon\Carbon::createFromFormat('d/m/Y', $r->vencimento, 'Europe/London')->format('Y-m-d 23:59:59');
 				$boleto->valor = str_replace(',','.',$r->valor);
@@ -720,7 +721,7 @@ class BoletoController extends Controller
 				$boleto->save();
 			}
 
-			return count($boletos)." boletos atualizados.";
+			return $boletos->count()." boletos atualizados.";
 		}
 
 	
@@ -753,7 +754,7 @@ class BoletoController extends Controller
 		);
 		
 
-		if(count($boletos) == 0)
+		if($boletos->count() == 0)
 			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Nenhum boleto encontrado']);
 
 
@@ -834,87 +835,9 @@ class BoletoController extends Controller
 			return view('financeiro.boletos.informacoes');
 		}
 	}
-	public function reativarCancelados(){
-		$boletos = collect();
-		$logs = \App\Log::where('tipo','boleto')->where('evento','like','%Tarifas%')->get();
-		
-		foreach($logs as $log){
-			$logao = \App\Log::where('tipo','boleto')->where('codigo',$log->codigo)->where('evento','like','%cancelamento%')->get();
-			$logao2 = \App\Log::where('tipo','boleto')->where('codigo',$log->codigo)->where('evento','like','%Boleto cancelado%')->get();
-			$logao3 = \App\Atendimento::where('descricao','like','Solicitação de cancelamento de boleto: '.$log->codigo)->get();
-			
 
 
-			if((count($logao)==0) && (count($logao2)==0) && (count($logao3)==0)){
-				$boleto = \App\Boleto::find($log->codigo);
 
-				if($boleto!=null && $boleto->status=='cancelar'){
-					$boleto->status = 'emitido';
-					$boleto->save();
-	
-					$boletos->push($boleto);
-				
-				}
-			}
-		
-		}
-	
-
-
-		return $boletos;
-		
-	}
-
-	/**
-	 * Redução do numero de boletos com erro no sistema e sem descriao.
-	 * @return [type] [description]
-	 */
-	public function analisarBoletosComErro(){
-
-		$boletos = Boleto::where('status','erro')->orWhere('status','')->get();
-
-		foreach($boletos as $boleto){
-			$query1= \App\Log::where('tipo','boleto')->where('codigo',$boleto->id)->where('evento','like','%cancelamento%')->count();
-			$query2 = \App\Log::where('tipo','boleto')->where('codigo',$boleto->id)->where('evento','like','%Boleto cancelado%')->count();
-			$query3 = \App\Atendimento::where('descricao','like','Solicitação de cancelamento de boleto: '.$boleto->id)->count();
-			$query4 = \App\Lancamento::where('boleto',$boleto->id)->where('status','cancelado')->count();
-			if($query1 || $query2 || $query3 || $query4){
-				$boleto->status = 'cancelado';
-				$boleto->save();
-			}
-			else{
-				//implementar ia pra ver se os boletos dos outros meses estão pagos ou cancelados
-				$ano = substr($boleto->vencimento,0,4);
-				$mes = substr($boleto->vencimento,5,2);
-				$boleto_posterior = Boleto::where('pessoa',$boleto->pessoa)->where('vencimento', 'like',$ano.'-'.($mes+1).'%')->first();
-				$boleto_anterior = Boleto::where('pessoa',$boleto->pessoa)->where('vencimento', 'like',$ano.'-'.($mes-1).'%')->first();
-				if($boleto_anterior and $boleto_posterior){
-					if($boleto_anterior->status == 'pago' and $boleto_posterior->status == 'pago')
-						$boleto->status = 'pago';
-					elseif($boleto_anterior->status == 'cancelado' and $boleto_posterior->status == 'cancelado')
-						$boleto->status = 'cancelado';
-					elseif($boleto_anterior->status == 'emitido' and $boleto_posterior->status == 'emitido')
-						$boleto->status = 'emitido';
-					elseif($boleto_anterior->status == 'divida' and $boleto_posterior->status == 'divida')
-						$boleto->status = 'divida';
-					/**
-					if($boleto_anterior->status == '' and $boleto_posterior->status == '')
-						$boleto->status = '';
-					**/
-					$boleto->save();
-
-
-				}
-			}
-		}
-
-		
-	
-
-
-		return count($boletos);
-		
-	}
 
 	public function cancelarCovid(){
 		$boletos = Boleto::where('status','emitido')->where('vencimento','like','2020-06-10%')->get();
@@ -924,7 +847,7 @@ class BoletoController extends Controller
 			LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento.: Res. 03/2020, medidas administrativas sobre a COVID-19');
 		}
 		if($boletos->isNotEmpty())
-			return count($boletos).' boletos cancelados';
+			return $boletos->count().' boletos cancelados';
 		else
 			return 'Nenhum boleto cancelado';
 	}

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use \App\Transferencia;
 use \App\Turma;
 use Illuminate\Http\Request;
+use Auth;
 
 class TransferenciaController extends Controller
 {
@@ -17,7 +18,7 @@ class TransferenciaController extends Controller
     	$transf->nova = $turma_nova;
     	$transf->data = date('Y-m-d H:i');
         $transf->motivo = $motivo;
-    	$transf->responsavel = \Session::get('usuario');
+    	$transf->responsavel = Auth::user()->pessoa;
     	$transf->save();
 
         return $transf;

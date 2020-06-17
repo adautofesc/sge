@@ -93,7 +93,7 @@ class DisciplinaController extends Controller
     public function show($id)
     {
         $disciplina=Disciplina::find($id);
-        if(!count($disciplina))
+        if(!empyt($disciplina))
             return redirect(asset('/pedagogico/disciplinas'));
 
         return view('pedagogico.curso.disciplina.mostrar', compact('disciplina'));
@@ -109,7 +109,7 @@ class DisciplinaController extends Controller
     public function edit($id)
     {
         $disciplina=Disciplina::find($id);
-        if(!count($disciplina))
+        if(!empty($disciplina))
             return redirect(asset('/pedagogico/disciplinas'));
 
         $programas=Programa::all();
@@ -187,7 +187,7 @@ class DisciplinaController extends Controller
         foreach($disciplinas->all() as $disciplina)
         {
             $grade=Grade::where('curso', $curso)->where('disciplina',$disciplina->id)->first();
-            if(count($grade)){
+            if(empty($grade)){
                 $disciplina->checked = "checked";
                 if($grade->obrigatoria=='1')
                     $disciplina->obrigatoria="checked";
@@ -197,15 +197,11 @@ class DisciplinaController extends Controller
     }
     public static function disciplinasDoCurso($curso,$str=''){
         $grade=Grade::select('disciplina')->where('curso', $curso)->get();
-        if(count($grade)){
+        if($grade->count()){
 
             $disciplinas=Disciplina::whereIn('id', $grade)->where('nome','like','%'.$str.'%')->orWhere('id',$str)->get(['id','nome']);
-            /*
-            foreach($grade->all() as $item_grade)            {
-                array_push($disciplinas,Disciplina::where('id',$item_grade->disciplina)
-                
-            }*/
-            if(count($disciplinas))
+     
+            if($disciplinas->count())
                 return $disciplinas;
             else
                 return "";

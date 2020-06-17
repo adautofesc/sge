@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\PessoaDadosContato;
 use Illuminate\Http\Request;
+use Auth;
 
 class PessoaDadosContatoController extends Controller
 {
@@ -18,7 +19,7 @@ class PessoaDadosContatoController extends Controller
             //procura pra ver se telefone já existe
             $dado = PessoaDadosContato::where('dado','2')->where('pessoa',$pessoa)->where('valor', $numero)->get();
             //cadastra se nao tiver
-            if(count($dado) == 0){
+            if($dado->count() == 0){
                 $telefone = new PessoaDadosContato;
                 $telefone->pessoa = $pessoa;
                 $telefone->dado = '2';

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Atestado;
-use Session;
+use Auth;
 
 class AtestadoController extends Controller
 {
@@ -25,7 +25,7 @@ class AtestadoController extends Controller
 		$atestado = new Atestado;
 				$atestado->pessoa = $r->pessoa;
 				$atestado->emissao = $r->emissao;
-				$atestado->atendente = session('usuario');
+				$atestado->atendente = Auth::user()->pessoa;
 				$atestado->save();
         if (!empty($arquivo)) {	
                 $arquivo->move('documentos/atestados/', $atestado->id.'.pdf');

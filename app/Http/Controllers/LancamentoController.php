@@ -144,7 +144,7 @@ class LancamentoController extends Controller
 			->where('parcela',$parcela)
 			->where('status', null)
 			->get();
-		if (count($lancamentos)>0)
+		if ($lancamentos->count()>0)
 			return true;
 		else
 			return false;
@@ -254,7 +254,7 @@ class LancamentoController extends Controller
 			->where('parcela',$parcela)
 			->where('status', null)
 			->get();
-		if (count($lancamentos)>0)
+		if ($lancamentos->count()>0)
 			return true;
 		else
 			return false;
@@ -434,7 +434,7 @@ class LancamentoController extends Controller
         $lancamentos=Lancamento::where('pessoa',Session::get('pessoa_atendimento'))->where('status', null)->orderBy('matricula','DESC')->orderBy('parcela','DESC')->paginate(30);
         //return $lancamentos;
         //return $lancamentos;
-        if(count($lancamentos)>0){
+        if($lancamentos->count()>0){
 	        foreach($lancamentos as $lancamento){
 	        	$curso=\App\Inscricao::where('matricula',$lancamento->matricula)->first();
 	        	if(isset($curso->turma->curso->nome))
@@ -589,7 +589,7 @@ class LancamentoController extends Controller
 
 		if(isset($r->matriculas)){
 
-			if(count($r->matriculas) && $r->parcela*1>=0){
+			if(!empty($r->matriculas) && $r->parcela*1>=0){
 
 				foreach($r->matriculas as $matricula){
 
@@ -694,7 +694,7 @@ class LancamentoController extends Controller
 
 		
 		
-		return count($turmas1).' turmas receberam descontos.';
+		return $turmas1->count().' turmas receberam descontos.';
 	}
 	
 	public function descontao2(){
@@ -708,7 +708,7 @@ class LancamentoController extends Controller
 			$this->descontoTurma($turma->id,$valor,'Desconto de aulas não dadas por uso do espaço pelos Jogos Regionais');
 		}
 
-		return count($turmas).' turmas receberam descontos na FESC 3.';
+		return $turmas->count().' turmas receberam descontos na FESC 3.';
 
 
 

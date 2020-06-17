@@ -66,7 +66,7 @@ class NotificacaoController extends Controller
 			break;
 		}
 		
-		if(count($dados) == 0){
+		if($dados->count() == 0){
 			$erro = new \App\PessoaDadosGerais;
             $erro->pessoa = $pessoa;
             $erro->dado = 20;

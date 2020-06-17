@@ -1,7 +1,7 @@
 <?php
 namespace App\classes;
 
-use Session;
+use Auth;
 use App\Pessoa;
 
 
@@ -14,7 +14,7 @@ Class Hdr{
 public function __construct(){
 	$hoje=new Data();
 	$data=$hoje->getData();
-	$user=Session::get('usuario');
+	$user=Auth::user()->pessoa;
 	$usuario= Pessoa::where('id',$user)->first();
 	$array_nome=explode(' ',$usuario->nome);
 	$nome=$array_nome[0].' '.end($array_nome);           
@@ -24,7 +24,7 @@ public function __construct(){
 public function __toString(){
 	$hoje=new Data();
 	$data=$hoje->getData();
-	$user=Session::get('usuario');
+	$user=Auth::user()->pessoa;
 	$usuario= Pessoa::where('id',$user)->first();
 	$array_nome=explode(' ',$usuario->nome);
 	$nome=$array_nome[0].' '.end($array_nome);           

@@ -17,6 +17,7 @@ use LancamentoContoller;
 use stdClass;
 
 
+
 class painelController extends Controller
 {
 
@@ -338,7 +339,8 @@ class painelController extends Controller
         $msg = "FESC INFORMA: Prezados alunos, os boletos do mês de maio, com vencimento em 10/06 serão cancelados.Fique seguro, fique em casa.";
         $matriculas=Matricula::where('status','ativa')->groupBy('pessoa')->get();
         foreach($matriculas as $matricula){
-           $CC->enviarSMS($msg,[$matricula->pessoa]);
+            $this->dispatch(new \App\Jobs\EnviarSMS($msg,$matricula->pessoa));
+           //$CC->enviarSMS($msg,[$matricula->pessoa]);
         }
         return "Notificações enviadas";
 

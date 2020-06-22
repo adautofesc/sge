@@ -3,9 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Notificacao;
+use Auth;
 
 class NotificacaoController extends Controller
 {
+	public function index(){
+		$lista = $this->myList();
+		return view();
+
+	}
+
+	public function myList($filters){
+		$list = Notificacao::where('para',Auth()->user()->pessoa)->get();
+		return $list;
+
+
+	}
     
     public function cadastrar(Request $r){
         $notificacao = $this->gerar($r->origem,$r->destino,$r->assunto,$r->tipo,$r->mensagem);

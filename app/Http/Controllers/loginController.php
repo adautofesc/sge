@@ -190,11 +190,13 @@ class loginController extends Controller
 
 
 		$acesso=PessoaDadosAcesso::where('pessoa', $request->pessoa)->first();
+		
 		if(empty($acesso))
 		{
 			$erros_bd= ['Este nome de usuário ainda não possui Login'];
 			return view('pessoa.trocar-senha-usuario', compact('erros_bd'));
 		}
+		$pessoa = Pessoa::find($acesso->pessoa);
 
 		if(!in_array('9', Auth::user()->recursos))
 		{

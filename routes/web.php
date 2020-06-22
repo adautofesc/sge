@@ -71,6 +71,9 @@ Route::middleware(['auth','login']) ->group(function(){
 	Route::post('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_exec');
 
 
+	Route::get('notificacoes','NotificacaoController@index');
+
+
 	Route::get('download/{arquivo}',function ($arquivo){
 		// Atenção a divisoria de pasta deve ser a string -.-
 		//use a função str_replace('/','-.-', $arquivo) para codificar a pasta.

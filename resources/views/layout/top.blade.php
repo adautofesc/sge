@@ -61,7 +61,7 @@
                     </ul>
                     <footer>
                         <ul>
-                            <li> <a href="">
+                        <li> <a href="/notificacoes">
            <small> Ver tudo </small>
           </a> </li>
                         </ul>

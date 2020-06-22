@@ -10,11 +10,12 @@ class NotificacaoController extends Controller
 {
 	public function index(){
 		$lista = $this->myList();
-		return view();
+		//dd($lista);		
+		return view('notificacoes.home')->with('notificacoes',$lista);
 
 	}
 
-	public function myList($filters){
+	public function myList($filters = null){
 		$list = Notificacao::where('para',Auth()->user()->pessoa)->get();
 		return $list;
 

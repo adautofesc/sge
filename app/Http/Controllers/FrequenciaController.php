@@ -7,6 +7,7 @@ use App\Aula;
 use App\AulaDado;
 use App\Turma;
 use App\Frequencia;
+use Auth;
 
 class FrequenciaController extends Controller
 {

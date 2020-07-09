@@ -215,6 +215,9 @@ class FrequenciaController extends Controller
     }
 
 
+    
+
+
 
    
 }

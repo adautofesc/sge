@@ -194,6 +194,11 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::get('listar', 'AtestadoController@listar');
 
 		});
+		Route::prefix('justificativa-ausencia')->group(function(){
+			Route::get('/{pessoa}','JustificativaAusenciaController@index');
+			
+
+		});
 	//Bolsa
 		Route::middleware('liberar.recurso:18')->prefix('bolsa')->group(function(){ //criar novo código
 			Route::get('cadastrar/{pessoa}','BolsaController@nova');

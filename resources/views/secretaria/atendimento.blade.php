@@ -15,10 +15,12 @@
             @if(isset($pessoa->nome_resgistro))
                 ({{$pessoa->nome_resgistro}})
             @endif
+            
            
         </h3>
         <p class="title-description" style="padding-top: 7px;">Cod. {{$pessoa->id}} - Tel. {{$pessoa->telefone}}</p>
         <div class="items-search">
+            
             <form class="form-inline" method="POST">
             {{csrf_field()}}
                 <div class="input-group"> 
@@ -96,8 +98,8 @@
                 <div class="card-block">
                     @if($devedor == false)
                     <div><a href="{{asset('/secretaria/matricula/nova').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-plus-circle "></i>  <small>Nova Matrícula</small></a></div>
-                    
                     <div><a href="/secretaria/matricula/renovar/{{$pessoa->id}}" class="btn btn-warning-outline col-xs-12 text-xs-left"><i class="fa fa-check-square-o"></i> <small> Renovar (Rematricula) </small> </a></div>
+                    <div><a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left"><i class="fa fa-check-square-o"></i> <small> Certificados </small> </a></div>
                     @else 
                     <div><span class="text-danger text-center"> <i class="fa fa-warning"></i></span></div>
                     <div><span class="text-danger"> <strong>Atenção:</strong> boletos em aberto. Regularize para liberar a matrícula. </span></div>
@@ -123,7 +125,8 @@
                     @else  
                     <div><span class="btn btn-secondary col-xs-12 text-xs-left"><i class=" fa fa-exclamation-circle "></i>  <small>Nenhum atestado válido.</small></span></div>
                     @endif
-                    <div><a href="{{asset('/pessoa/atestado/cadastrar').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-plus-circle"></i> <small>Novo atestado.</small></a></div>
+                    <div><a href="{{asset('/pessoa/justificativa-ausencia').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-user-md"></i> <small>&nbsp;Justificativa de ausência</small></a></div>
+                    <div><a href="{{asset('/pessoa/atestado/cadastrar').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-plus-circle"></i> <small> Novo atestado médico</small></a></div>
 
                   
                    
@@ -141,7 +144,8 @@
                 <div class="card-block">
                     <div><a href="{{asset('/pessoa/mostrar/'.$pessoa->id)}}"  class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-archive "></i> <small>Dados completos</small></a></div>
                     <div><a href="{{asset('/pessoa/bolsa/cadastrar/'.$pessoa->id)}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-plus-square-o"></i> <small>Solicitações de Bolsa</small></a></div>
-                    
+                    <div><a href="#" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-ticket"></i> <small>Protocolos</small></a></div>
+
                 </div>
                 
             </div>

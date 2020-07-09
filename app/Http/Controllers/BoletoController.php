@@ -840,11 +840,11 @@ class BoletoController extends Controller
 
 
 	public function cancelarCovid(){
-		$boletos = Boleto::where('status','emitido')->where('vencimento','like','2020-06-10%')->get();
+		$boletos = Boleto::where('status','emitido')->where('vencimento','like','2020-07-10%')->get();
 		foreach($boletos as $boleto){
 			$boleto->status = 'cancelar';
 			$boleto->save();
-			LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento.: Res. 03/2020, medidas administrativas sobre a COVID-19');
+			LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento.: Res. 04/2020, medidas administrativas sobre a COVID-19');
 		}
 		if($boletos->isNotEmpty())
 			return $boletos->count().' boletos cancelados';

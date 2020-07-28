@@ -194,8 +194,11 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::get('listar', 'AtestadoController@listar');
 
 		});
+	//Justificativa Ausência
 		Route::prefix('justificativa-ausencia')->group(function(){
-			Route::get('/{pessoa}','JustificativaAusenciaController@index');
+			Route::get('/{pessoa?}','JustificativaAusenciaController@index');
+			Route::post('/{pessoa}','JustificativaAusenciaController@store');
+			Route::get('apagar/{id}','JustificativaAusenciaController@delete');
 			
 
 		});
@@ -593,6 +596,8 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::post('nova-aula/{turma}/{aula?}','FrequenciaController@novaChamada_exec');
 			Route::get('editar-aula/{aula}','FrequenciaController@editarChamada_view');
 			Route::post('editar-aula/{aula}','FrequenciaController@editarChamada_exec');
+			Route::get('preencher/{aula}','FrequenciaController@preencherChamada_view');
+			Route::post('preencher/{aula}','FrequenciaController@preencherChamada_exec');
 			Route::get('apagar-aula/{aula}','AulaController@apagarAula');
 		});
 		

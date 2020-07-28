@@ -102,6 +102,9 @@
                                         <a href="/docentes/frequencia/listar/{{$turma->id}}" target="_blank" title="Lista de chamada preenchida">
                                             <i class=" fa fa-indent "></i></a>
                                         &nbsp;
+                                        <a href="/docentes/frequencia/preencher/{{$turma->id}}" target="_blank" title="Lista de chamada preenchida">
+                                            <i class=" fa fa-list "></i></a>
+                                        &nbsp;
                                         <a href="/lista/{{$turma->id}}" title="Impressão de lista em branco" target="_blank">
                                             <i class=" fa fa-print "></i></a>&nbsp;
                                     @endif

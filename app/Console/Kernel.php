@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        //disparador de fila de trabalho
         $schedule->command('queue:work --stop-when-empty')->everyMinute()->withoutOverlapping();
 
         $schedule->call( function(){

@@ -45,7 +45,28 @@ class JustificativaAusenciaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'inicio' => 'required|date',
+            'termino' => 'required|date',
+            'motivo' => 'required',
+            'pessoa' => 'required'
+
+
+        ]);
+
+        if($request->inicio > $request->termino)
+            return redirect()->back()->withErrors(['Data de termino não pode ser anterior a data de início.']);
+
+        $justificativa = new JustificativaAusencia;
+        $justificativa->inicio = $request->inicio;
+        $justificativa->termino = $request->termino;
+        $justificativa->motivo = $request->motivo;
+        $justificativa->pessoa = $request->pessoa;
+        $justificativa->atendente = \Auth::user()->pessoa;
+        $justificativa->save();
+
+        
+        return redirect()->back()->with('success', 'inserido com sucesso');
     }
 
     /**
@@ -91,5 +112,14 @@ class JustificativaAusenciaController extends Controller
     public function destroy(JustificativaAusencia $justificativaAusencia)
     {
         //
+    }
+    public function delete($itens){
+        $itens = explode(';',$itens);
+            foreach($itens as $item){
+                JustificativaAusencia::destroy($item);
+
+            }
+        
+        return response(200);
     }
 }

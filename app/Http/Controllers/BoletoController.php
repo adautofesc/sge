@@ -622,9 +622,10 @@ class BoletoController extends Controller
 				return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Boleto '.$id.' não encontrado.']);
 		}
 		public function update(Request $r){
+			
 			if($r->boleto > 0){
 				$boleto = Boleto::find($r->id);
-				LogController::alteracaoBoleto($boleto->id,'Boleto editado por '.Session::get('nome_usuario'));
+				LogController::alteracaoBoleto($boleto->id,'Boleto editado por '.Auth::user()->getPessoa()->nome_simples);
 				LogController::alteracaoBoleto($boleto->id,'Boleto editado: '.\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y').'->'.$r->vencimento.' status: '.$boleto->status.' ->'.$r->status) .'por '.Auth::user()->pessoa;
 				
 				$boleto->vencimento = \Carbon\Carbon::createFromFormat('d/m/Y', $r->vencimento, 'Europe/London')->format('Y-m-d 23:59:59');

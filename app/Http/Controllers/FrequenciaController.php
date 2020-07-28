@@ -26,6 +26,46 @@ class FrequenciaController extends Controller
         //dd($aulas);
         return view('frequencias.lista-unitaria',compact('inscritos'))->with('i',1)->with('aulas',$aulas)->with('turma',$turma);
     }
+    public function preencherChamada_view(int $turma){
+        $turma = Turma::find($turma);
+        $aulas = Aula::where('turma',$turma->id)->orderBy('data')->get();
+        foreach($aulas as $aula){
+            $aula->presentes = $aula->getAlunosPresentes();    
+        }
+        if(isset($_GET['filtrar']))
+        $inscritos=\App\Inscricao::where('turma',$turma->id)->get();
+        else
+        $inscritos=\App\Inscricao::where('turma',$turma->id)->whereIn('status',['regular','espera','ativa','pendente'])->get();
+        $inscritos= $inscritos->sortBy('pessoa.nome');
+
+        //dd($aulas);
+        return view('frequencias.lista-unitaria-editavel',compact('inscritos'))->with('i',1)->with('aulas',$aulas)->with('turma',$turma);
+    }
+
+
+    public function preencherChamada_exec(Request $r){
+        $frequencias = Frequencia::select('*','frequencias.id as id')->join('aulas','frequencias.aula','aulas.id')->where('turma',$r->turma)->get();
+        //verifica se aluno tem frequencia registrada mas ela nao esta na lista de presenca enviada
+        foreach($frequencias as $frequencia){
+            //dd($frequencia);
+         
+            if(!isset($r->presente[$frequencia->aluno.','.$frequencia->aula])){
+                //se tiver na lista atual de alunos, porque a pessoa pode estar na lista de cancelados
+                if(in_array($frequencia->aluno,$r->alunos)){
+                    dd("Apagar frequencia do aluno".$frequencia->aluno.' na aula '.$frequencia->aula);
+                    //Frequencia::destroy($frequencia->id);
+                }
+                    
+               
+
+                
+                    
+
+            }
+        }
+        return $r->turma;
+
+    }
 
     public function novaFrequencia(int $aula, int $aluno){
         $frequencia =  new Frequencia;
@@ -100,10 +140,11 @@ class FrequenciaController extends Controller
             $auladado->createDadoAula($req->aula,'ocorrencia', $req->ocorrencia);
             
         }
-        foreach($req->aluno as $aluno){  
-            $this->novaFrequencia($req->aula,$aluno);
+        if(isset($req->aluno)){
+            foreach($req->aluno as $aluno){  
+                $this->novaFrequencia($req->aula,$aluno);
+            }
         }
-
         $aula->status = 'executada';
         $aula->save();
         

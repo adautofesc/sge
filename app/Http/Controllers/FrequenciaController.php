@@ -100,10 +100,11 @@ class FrequenciaController extends Controller
             $auladado->createDadoAula($req->aula,'ocorrencia', $req->ocorrencia);
             
         }
-        foreach($req->aluno as $aluno){  
-            $this->novaFrequencia($req->aula,$aluno);
+        if(isset($req->aluno)){
+            foreach($req->aluno as $aluno){  
+                $this->novaFrequencia($req->aula,$aluno);
+            }
         }
-
         $aula->status = 'executada';
         $aula->save();
         

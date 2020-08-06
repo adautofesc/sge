@@ -12,12 +12,9 @@ class ContatoController extends Controller
 
         switch($r->meio){
             case 'sms': 
-                $sms = $this->enviarSMS($r->mensagem,[$r->pessoa]);
-                if(isset($sms->id))
-                    return response($sms,200);
-                else
-                    return response($sms->msg,500);
-
+                //$sms = $this->enviarSMS($r->mensagem,[$r->pessoa]);
+                $this->dispatch(new \App\Jobs\EnviarSMS($r->mensagem,$r->pessoa,Auth::user()->pessoa));
+                return response('ok',200);
                 break;
 
             default:
@@ -43,13 +40,16 @@ class ContatoController extends Controller
 
     }
 
-    public function enviarSMS(string $mensagem,Array $pessoas){
-        foreach($pessoas as $pessoa){
+    public function enviarSMS(string $mensagem, int $pessoa, int $destinatario){
+        
             $pessoa = \App\Pessoa::find($pessoa);
+            if(!isset($pessoa->id))
+             throw new \Exception('Pessoa não encontrada');
             $pessoa->celular = $pessoa->getCelular();
+
             if(strlen($pessoa->celular)>5){
                 $mensagem=substr(urlencode('FESC Informa: '.$mensagem),0,140);
-                $url = 'http://209.133.205.2/painel/api.ashx?action=sendsms&lgn=16997530315&pwd=194996&msg='.$mensagem.'&numbers='.$pessoa->celular;
+                $url = 'http://209.133.205.2/painel/api.ashx?action=sendsms&lgn=16997530315&pwd=194996&msg='.$mensagem.'&numbers='.$pessoa->celular;        
                 $ch = curl_init();
                 //não exibir cabeçalho
                 curl_setopt($ch, CURLOPT_HEADER, false);
@@ -68,14 +68,15 @@ class ContatoController extends Controller
 
                 $ws = json_decode($result);
                 if(isset($ws->msg) && $ws->msg == 'SUCESSO'){
-                    $contato = $this->novoContato($pessoa->id,'sms',urldecode($mensagem).' numero:'.$pessoa->celular,Auth::user()->pessoa);
+                    $contato = $this->novoContato($pessoa->id,'sms',urldecode($mensagem).' numero:'.$pessoa->celular,$destinatario);
                     return $contato;
                 }
                 else
                     return $ws;
                 
             }
-        }            
+           
+                   
     }
 
     public function enviarWhats(){

@@ -13,18 +13,20 @@ class EnviarSMS implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $menagem;
-    Private $destinatarios;
+    private $mensagem;
+    Private $destinatario;
+    private $remetente;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($mensagem,$destinatarios)
+    public function __construct($mensagem,$destinatario,$remetente)
     {
         $this->mensagem = $mensagem;
-        $this->destinatarios = $destinatarios;
+        $this->destinatario = $destinatario;
+        $this->remetente = $remetente;
     }
 
     /**
@@ -34,6 +36,6 @@ class EnviarSMS implements ShouldQueue
      */
     public function handle(ContatoController $CC)
     {
-        $CC->enviarSMS($this->mensagem,[$this->destinatarios]);
+        $CC->enviarSMS($this->mensagem,$this->destinatario,$this->remetente);
     }
 }

@@ -87,6 +87,7 @@ body{
 <div class="hide-onprint">
 	<button onclick="todos()">Visualizar ocultos</button>
 </div>
+@foreach($turmas as $turma)
 <table width="100%">
 	<tr>
 		<td style="width:40rem;">&nbsp;</td>
@@ -119,12 +120,12 @@ body{
 			<strong>Termino:</strong>&nbsp;{{$turma->data_termino}}</td>
 	</tr>
 </table>
-<table cellpadding="0" cellspacing="0" dir="ltr" style="table-layout:fixed;font-size:11pt;font-family:Calibri;width:0px;" xmlns="http://www.w3.org/1999/xhtml">
+<table cellpadding="0" cellspacing="0" dir="ltr" style="table-layout:fixed;font-size:11pt;font-family:Calibri;width:0px;page-break-after: always;" xmlns="http://www.w3.org/1999/xhtml">
 	<colgroup>
 		<col width="31" />
 		<col width="236" />
 
-		@for($col=1;$col<=count($aulas);$col++)
+		@for($col=1;$col<=count($turma->aulas);$col++)
 		<col width="18" />
 		@endfor
 
@@ -151,7 +152,7 @@ body{
 
 
 
-		@for($i=1;$i<count($aulas)+1;$i++)
+		@for($i=1;$i<count($turma->aulas)+1;$i++)
 		<td  rowspan="1" colspan="1" class="datas">
 		{{$i}}</td>
 		
@@ -173,7 +174,7 @@ body{
 		</span></td>
 	</tr>
 	<tr style="height:20px;">
-		@foreach($aulas as $aula)
+		@foreach($turma->aulas as $aula)
 		
 		<td colspan="1" rowspan="1" class="datas">
 			{{$aula->data->format('d m')}}</td>
@@ -184,7 +185,7 @@ body{
 	@php
 		$ordem = 1;
 	@endphp
-	@foreach($inscritos as $inscrito)
+	@foreach($turma->inscritos as $inscrito)
 	@if(($ordem%2)>0)
 	<tr style="height:16px;">
 	@else 
@@ -205,7 +206,7 @@ body{
 			@endif
 		</td>
 		@php($falta=0)
-		@foreach($aulas as $aula)
+		@foreach($turma->aulas as $aula)
 		<td class="presenca">
 		@if(isset($aula->presentes) && in_array($inscrito->pessoa->id,$aula->presentes))
 		    • 
@@ -1110,7 +1111,7 @@ body{
 		</td>
 	</tr>
 </table>
-
+@endforeach
 </body>
 
 </html>

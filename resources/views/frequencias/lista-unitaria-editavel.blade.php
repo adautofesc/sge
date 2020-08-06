@@ -187,12 +187,13 @@ body{
 
 
 
-
+		<!-- numero da aula -->
 		@for($i=1;$i<count($aulas)+1;$i++)
 		<td  rowspan="1" colspan="1" class="datas">
 		{{$i}}</td>
 		
 		@endfor
+		<!--// fim numero da aula-->
 
 
 
@@ -210,17 +211,19 @@ body{
 		</span></td>
 	</tr>
 	<tr style="height:20px;">
-		@foreach($aulas as $aula)
-		
+		<!-- data das aulas -->
+		@foreach($aulas as $aula)		
 		<td colspan="1" rowspan="1" class="datas" style="border-top:none;">
-			{{$aula->data->format('d m')}}</td>
-
+			{{$aula->data->format('d m')}}
+		</td>
 		@endforeach
+		<!-- // fim data aulas -->
 		
 	</tr>
 	@php
 		$ordem = 1;
 	@endphp
+	<!-- início da linha do aluno -->
 	@foreach($inscritos as $inscrito)
 	@if(($ordem%2)>0)
 	<tr style="height:16px;">
@@ -241,13 +244,16 @@ body{
 			&nbsp;<small>({{$inscrito->status}})</small>
 			
 			@endif
-			<input type="hidden" name="alunos[]" value="{{$inscrito->pessoa->id}}"
+			<input type="hidden" name="alunos[]" value="{{$inscrito->pessoa->id}}">
 		</td>
 		<!-- Selecionador -->
 		<td style="border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;" >
 		<input type="checkbox" name="" id="" style="margin: 0;padding:0;" onclick="marcardesmarcar(this,'{{$inscrito->id}}')" class="hide-onprint">
 		</td>
+		<!-- // fim selecionador -->
+
 		@php($falta=0)
+		<!-- presença do aluno -->
 		@foreach($aulas as $aula)
 		<td class="presenca aula-{{$aula->id}} aluno-{{$inscrito->id}}" >
 		@if(isset($aula->presentes) && in_array($inscrito->pessoa->id,$aula->presentes))
@@ -262,27 +268,31 @@ body{
 		@endif
 		</td>
 		@endforeach
+		<!-- // fim das presenças do aluno-->
 		
 		<td style="border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;text-align:center;" id="faltas-{{$inscrito->id}}">{{$falta}}
 		</td>
 		<td style="border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
-			<select name="nota[{{$inscrito->id}}]" id="">
+			<select name="conceito[{{$inscrito->id}}]" id="">
 				<option value="">&nbsp;</option>
-				<option value="CA">CA</option>
-				<option value="SA">SA</option>
-				<option value="EV">EV</option>
-				<option value="NF">NF</option>
+				<option value="CA" {{$inscrito->conceito=="CA"?"selected":''}}>CA</option>
+				<option value="SA" {{$inscrito->conceito=="SA"?"selected":''}}>SA</option>
+				<option value="EV" {{$inscrito->conceito=="EV"?"selected":''}}>EV</option>
+				<option value="NF" {{$inscrito->conceito=="NF"?"selected":''}}>NF</option>
 			</select>
 		</td>
 	</tr>
 	@endforeach
+	<!-- fim da linha do aluno -->
 
 
 
 	<tr style="height:60px;">
-		<td class="stilo3" colspan="33">
+		<td class="stilo3 hide-onprint" colspan="33">
 			<button type="submit">Salvar dados</button>
 			<button type="button" onclick="location.reload();return false;">Resetar dados</button>
+			<button type="button" onclick="location.reload();return false;">Editar conteúdo</button>
+			<button type="button" onclick="location.reload();return false;">Editar ocorrências</button>
 		</td>
 		
 		<td data-sheets-numberformat="[null,2,&quot;dd/mm/yy&quot;,1]" class="stilo3">

@@ -284,8 +284,11 @@
                                              <a class="dropdown-item" href="#" onclick="getDados();" style="line-height: 30px;text-decoration: none;">
                                                 <i class="fa fa-group icon"></i> Dados da(s) turma(s)
                                             </a>
-                                             <a class="dropdown-item" href="#" onclick="getListas();" style="line-height: 30px;text-decoration: none;">
-                                                <i class="fa fa-print icon"></i> Imprimir listas
+                                             <a class="dropdown-item" href="#" onclick="getListas('branco');" style="line-height: 30px;text-decoration: none;">
+                                                <i class="fa fa-print icon"></i> Imprimir listas em branco
+                                            </a>
+                                            <a class="dropdown-item" href="#" onclick="getListas('preenchidas');" style="line-height: 30px;text-decoration: none;">
+                                                <i class="fa fa-print icon"></i> Imprimir listas preenchidas
                                             </a>
                                             <a class="dropdown-item" href="#" onclick="exportar();" style="line-height: 30px;text-decoration: none;">
                                                 <img src="/img/excel.png" width="17px;"> Exportar alunos ativos
@@ -456,7 +459,7 @@ function getDados(){
             $(location).attr('href','/relatorios/dados-turmas/'+selecionados);
 
 }
-function getListas(){
+function getListas(tipo){
     var selecionados='';
         $("input:checkbox[name=turma]:checked").each(function () {
             selecionados+=this.value+',';
@@ -464,6 +467,8 @@ function getListas(){
         });
         if(selecionados=='')
             alert('Nenhum item selecionado');
+        if(tipo=='preenchidas')
+            $(location).attr('href','/docentes/frequencia/listar/'+selecionados);
         else
             $(location).attr('href','/listas/'+selecionados);
 

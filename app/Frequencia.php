@@ -78,4 +78,19 @@ class Frequencia extends Model
             
         }
     }
+
+    public static function novaFrequencia(int $aula, int $aluno){
+        $frequencia =  new Frequencia;
+        $frequencia->aula = $aula;
+        $frequencia->aluno = $aluno;
+        $frequencia->save();
+        return $frequencia;
+    }
+
+    public static function removeFrequencia(int $aula, int $aluno){
+        $frequencia = Frequencia::where('aula',$aula)->where('aluno',$aluno)->first();
+        if(isset($frequencia->id)){
+            $frequencia->delete();
+        }     
+    }
 }

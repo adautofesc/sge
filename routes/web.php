@@ -634,16 +634,17 @@ Route::middleware(['auth','login']) ->group(function(){
 	});
 
 	Route::get('cobranca-automatica','CobrancaController@cobrancaAutomatica');
-	Route::prefix('services')->group(function(){
-		Route::get('professores','WebServicesController@listaProfessores');
-		Route::get('chamada/{id}','WebServicesController@apiChamada');
-		Route::get('turmas','WebServicesController@apiTurmas');
-		Route::get('salas-api/{id}','SalaController@listarPorLocalApi');
-		Route::get('salas-locaveis-api/{id}','SalaController@listarLocaveisPorLocalApi');
-		Route::post('excluir-aulas','AulaController@excluir');
+	Route::get('services/excluir-aulas','AulaController@excluir');
 	
-	});
 });//end middleware login
+Route::prefix('services')->group(function(){
+	Route::get('professores','WebServicesController@listaProfessores');
+	Route::get('chamada/{id}','WebServicesController@apiChamada');
+	Route::get('turmas','WebServicesController@apiTurmas');
+	Route::get('salas-api/{id}','SalaController@listarPorLocalApi');
+	Route::get('salas-locaveis-api/{id}','SalaController@listarLocaveisPorLocalApi');
+
+});
 
 Route::get('alerta-covid','painelController@alertaCovid');
 Route::get('cancelamento-covid','BoletoController@cancelarCovid');

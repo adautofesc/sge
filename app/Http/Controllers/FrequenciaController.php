@@ -11,21 +11,44 @@ use Auth;
 
 class FrequenciaController extends Controller
 {
-    public function listaChamada(int $turma){
+    public function listaChamadaUnitaria(int $turma){
         $turma = Turma::find($turma);
         $aulas = Aula::where('turma',$turma->id)->orderBy('data')->get();
         foreach($aulas as $aula){
             $aula->presentes = $aula->getAlunosPresentes();    
         }
         if(isset($_GET['filtrar']))
-        $inscritos=\App\Inscricao::where('turma',$turma->id)->get();
+            $inscritos=\App\Inscricao::where('turma',$turma->id)->get();
         else
-        $inscritos=\App\Inscricao::where('turma',$turma->id)->whereIn('status',['regular','espera','ativa','pendente'])->get();
+            $inscritos=\App\Inscricao::where('turma',$turma->id)->whereIn('status',['regular','espera','ativa','pendente'])->get();
+
         $inscritos= $inscritos->sortBy('pessoa.nome');
 
         //dd($aulas);
         return view('frequencias.lista-unitaria',compact('inscritos'))->with('i',1)->with('aulas',$aulas)->with('turma',$turma);
     }
+
+    public function listaChamada($ids){
+        $turmas_arr = explode(',',$ids);
+        $turmas = \App\Turma::whereIn('id',$turmas_arr)->get();
+        foreach($turmas as &$turma){      
+            $turma->aulas = Aula::where('turma',$turma->id)->orderBy('data')->get();
+            foreach($turma->aulas as &$aula){
+                $aula->presentes = $aula->getAlunosPresentes();    
+            }
+            if(isset($_GET['filtrar']))
+                $turma->inscritos=\App\Inscricao::where('turma',$turma->id)->get();
+            else
+                $turma->inscritos=\App\Inscricao::where('turma',$turma->id)->whereIn('status',['regular','espera','ativa','pendente'])->get();
+
+            $turma->inscritos= $turma->inscritos->sortBy('pessoa.nome');
+        }
+        //dd($aulas);
+        return view('frequencias.lista-multipla',compact('turmas'))->with('i',1);
+    }
+
+
+
     public function preencherChamada_view(int $turma){
         $turma = Turma::find($turma);
         $aulas = Aula::where('turma',$turma->id)->orderBy('data')->get();
@@ -44,26 +67,41 @@ class FrequenciaController extends Controller
 
 
     public function preencherChamada_exec(Request $r){
+        //carregar todas presenças dessa turma
         $frequencias = Frequencia::select('*','frequencias.id as id')->join('aulas','frequencias.aula','aulas.id')->where('turma',$r->turma)->get();
-        //verifica se aluno tem frequencia registrada mas ela nao esta na lista de presenca enviada
+
+
+        //verifica se aluno tem frequencia registrada mas ela nao esta na lista de presenca enviada (retirar presença)
         foreach($frequencias as $frequencia){
-            //dd($frequencia);
-         
+            //dd($frequencia);   
             if(!isset($r->presente[$frequencia->aluno.','.$frequencia->aula])){
                 //se tiver na lista atual de alunos, porque a pessoa pode estar na lista de cancelados
                 if(in_array($frequencia->aluno,$r->alunos)){
                     dd("Apagar frequencia do aluno".$frequencia->aluno.' na aula '.$frequencia->aula);
                     //Frequencia::destroy($frequencia->id);
-                }
-                    
-               
-
-                
-                    
-
+                }                 
             }
         }
-        return $r->turma;
+        //verifica se ele recebeu alguma presença que não tinha (adicionar presença)
+        if(isset($r->presente)){
+            foreach($r->presente as $key=>$value){
+                $presenca = explode(",",$key);
+                $freq = $frequencias->where('aluno',$presenca[0])->where('aula',$presenca[1])->first();
+                if(!isset($freq->id))
+                    Frequencia::novaFrequencia($presenca[1],$presenca[0]);
+
+
+                
+            }
+        }
+        //atribui conceitos se houver
+        if(isset($r->conceito)){
+            foreach($r->conceito as $key => $value){
+                \App\Inscricao::addConceito($key,$value);
+            }
+        }
+        return redirect(asset("/docentes"))->with('success','Dados da turma '.$r->turma.' gravados com sucesso.');
+        
 
     }
 
@@ -92,12 +130,7 @@ class FrequenciaController extends Controller
                 dd('ERRO: aulas não geradas, por favor verifique as datas de início e termino da turma.');
             }
             
-        }    
-
-        
-
-        
-        
+        }           
         $turma = \App\Turma::find($turma);
 
         if($turma->professor->id != Auth::user()->pessoa && !in_array('25', Auth::user()->recursos))
@@ -142,7 +175,7 @@ class FrequenciaController extends Controller
         }
         if(isset($req->aluno)){
             foreach($req->aluno as $aluno){  
-                $this->novaFrequencia($req->aula,$aluno);
+               Frequencia::novaFrequencia($req->aula,$aluno);
             }
         }
         $aula->status = 'executada';
@@ -220,12 +253,12 @@ class FrequenciaController extends Controller
         foreach($turma->inscricoes as $inscricao){
             if(isset($req->aluno) && in_array($inscricao->pessoa->id, $req->aluno)){
                 if(!in_array($inscricao->pessoa->id,$arr_frequencias))
-                    $this->novaFrequencia($req->aula,$inscricao->pessoa->id);
+                    Frequencia::novaFrequencia($req->aula,$inscricao->pessoa->id);
                 
             }
             else{
                 if(in_array($inscricao->pessoa->id,$arr_frequencias))
-                    $this->removeFrequencia($req->aula,$inscricao->pessoa->id);
+                    Frequencia::removeFrequencia($req->aula,$inscricao->pessoa->id);
             }
 
         }

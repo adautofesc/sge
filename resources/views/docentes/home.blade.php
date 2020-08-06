@@ -62,7 +62,7 @@
                                     
                                     
                                     <small>
-                                    <a href="/chamada/{{$turma->id}}/0/url/ativos" target="_blank" title="Chamada de alunos ativos (modelo planilha)">
+                                    <a href="/chamada/{{$turma->id}}/0/url/ativos"  title="Chamada de alunos ativos (modelo planilha)">
                                         
                                         {{$turma->getNomeCurso()}}
 
@@ -84,28 +84,28 @@
                             
                                 <td class="col-sm-2 col-xs-2">
                                     @if(substr($turma->data_inicio,6,4)<2020)
-                                        <a href="/chamada/{{$turma->id}}/0/url/todos" target="_blank" title="Chamada modelo planilha, com alunos desistentes/transferidos">       
+                                        <a href="/chamada/{{$turma->id}}/0/url/todos"  title="Chamada modelo planilha, com alunos desistentes/transferidos">       
                                             <i class=" fa fa-indent "></i></a>
                                         &nbsp;
                                         @if(isset($turma->disciplina->id))
-                                            <a href="/plano/{{$turma->professor->id}}/1/{{$turma->disciplina->id}}" title="Plano de ensino" target="_blank">
+                                            <a href="/plano/{{$turma->professor->id}}/1/{{$turma->disciplina->id}}" title="Plano de ensino" >
                                                 <i class=" fa fa-clipboard "></i>
                                             </a>
                                         @else
-                                            <a href="/plano/{{$turma->professor->id}}/0/{{$turma->curso->id}}" title="Plano de ensino" target="_blank">
+                                            <a href="/plano/{{$turma->professor->id}}/0/{{$turma->curso->id}}" title="Plano de ensino" >
                                                 <i class=" fa fa-clipboard "></i>
                                             </a>
                                         @endif
 
 
                                     @else
-                                        <a href="/docentes/frequencia/listar/{{$turma->id}}" target="_blank" title="Lista de chamada preenchida">
+                                        <a href="/docentes/frequencia/listar/{{$turma->id}}"  title="Relatório de frequência.">
                                             <i class=" fa fa-indent "></i></a>
                                         &nbsp;
-                                        <a href="/docentes/frequencia/preencher/{{$turma->id}}" target="_blank" title="Lista de chamada preenchida">
+                                        <a href="/docentes/frequencia/preencher/{{$turma->id}}"  title="Chamada completa">
                                             <i class=" fa fa-list "></i></a>
                                         &nbsp;
-                                        <a href="/lista/{{$turma->id}}" title="Impressão de lista em branco" target="_blank">
+                                        <a href="/lista/{{$turma->id}}" title="Impressão de lista em branco" >
                                             <i class=" fa fa-print "></i></a>&nbsp;
                                     @endif
 
@@ -146,7 +146,7 @@
                 -->
                     <div>
                         <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/download/{{str_replace('/','-.-', 'documentos/oficios/calendario_2020.pdf')}}" target="_blank">Calendário</a>
+                        &nbsp;&nbsp;<a href="/download/{{str_replace('/','-.-', 'documentos/oficios/calendario_2020.pdf')}}" >Calendário</a>
                     </div>
                     <!--
                     <div>
@@ -181,15 +181,15 @@
 
                     <div>
                         <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/download/{{str_replace('/','-.-', 'documentos/formularios/formulario_turmas.doc')}}" target="_blank" title="Formulário de definição de Turmas e horários">Formulário de Horário</a>
+                        &nbsp;&nbsp;<a href="/download/{{str_replace('/','-.-', 'documentos/formularios/formulario_turmas.doc')}}"  title="Formulário de definição de Turmas e horários">Formulário de Horário</a>
                     </div>
                     <div>
                         <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/download/{{str_replace('/','-.-', 'documentos/formularios/inscricao.doc')}}" target="_blank" title="Inscrição para os cursos de parceria.">Formulário de Inscrição em Turmas</a>
+                        &nbsp;&nbsp;<a href="/download/{{str_replace('/','-.-', 'documentos/formularios/inscricao.doc')}}"  title="Inscrição para os cursos de parceria.">Formulário de Inscrição em Turmas</a>
                     </div>
                     <div>
                         <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/download/{{str_replace('/','-.-', 'documentos/usolivre.pdf')}}" target="_blank">Formulário de cadastro no Uso Livre</a>
+                        &nbsp;&nbsp;<a href="/download/{{str_replace('/','-.-', 'documentos/usolivre.pdf')}}" >Formulário de cadastro no Uso Livre</a>
                     </div>
     
                 

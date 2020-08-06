@@ -230,6 +230,10 @@ class TurmaController extends Controller
             }
                
         }
+        if(!isset($filtros['periodo']) && !isset($filtros['status'])){
+            $turmas = $turmas->whereIn('turmas.status', ['iniciada','andamento']); 
+
+        }
     
 
         $turmas = $turmas->orderBy('cursos.nome')->orderBy('disciplinas.nome');

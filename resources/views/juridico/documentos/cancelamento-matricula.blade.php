@@ -75,7 +75,7 @@
 	        	<p style="margin-top: 5%">
 	        		Eu, {{$pessoa->nome}}, alun{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} regularmente matriculad{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} nesta instituição no ano de {{date("Y")}}, venho pela presente, DECLARAR MINHA DESISTÊNCIA À VAGA, NAS TURMAS DO CURSO ABAIXO:
 			   </p>
-				<p style="font-size:16px; font-weight: bold;" align="center">{{$matricula->getNomeCurso()}}</p>
+				
 		       <ul>
 		       	@foreach($inscricoes as $inscricao)
 		       		@if(isset($inscricao->turma->disciplina->nome))
@@ -139,7 +139,7 @@
 	        		<strong>PROTOCOLO DE CANCELAMENTO DE MATRÍCULA {{$matricula->id}}</strong><br>
 	        		Eu, {{$pessoa->nome}}, alun{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} regularmente matriculad{{\App\Pessoa::getArtigoGenero($pessoa->genero)}} nesta instituição no ano de {{date("Y")}}, venho pela presente, DECLARAR MINHA DESISTÊNCIA À VAGA, NAS TURMAS DO CURSO ABAIXO:
 			   </p>
-			   <p style="font-size:16px; font-weight: bold;" align="center">{{$matricula->getNomeCurso()}}</p>
+			   
 		       <ul>
 		       	@foreach($inscricoes as $inscricao)
 		       		@if(isset($inscricao->turma->disciplina->nome))

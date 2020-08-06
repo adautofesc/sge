@@ -72,6 +72,20 @@ class NotificacaoController extends Controller
 					->get();
 				$dado = 'Nenhum telefone válido.';
 			break;
+			case 5:
+				$dados = \App\PessoaDadosGerais::where('pessoa',$pessoa)
+					->where('dado',20)
+					->where('valor','Erro ao gerar boleto.')
+					->get();
+				$dado = 'Erro ao gerar boleto.';
+			break;
+			case 6:
+				$dados = \App\PessoaDadosGerais::where('pessoa',$pessoa)
+					->where('dado',20)
+					->where('valor','Erro ao gerar remessa.')
+					->get();
+				$dado = 'Erro ao gerar remessa.';
+			break;
 			default:
 				$dados = \App\PessoaDadosGerais::where('pessoa',$pessoa)
 					->where('dado',20)

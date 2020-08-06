@@ -1,6 +1,9 @@
 @if($errors->any())
     @foreach($errors->all() as $erro)
-        <p class="alert alert-warning .alert-dismissible">{{ $erro }}</p>
+        <div class="alert alert-danger" onload="console.log('pau')">
+                <button type="button" class="close" data-dismiss="alert" >×</button>       
+                <p class="modal-title"><i class="fa fa-warning"></i> {{$erro}}</p>
+        </div>
     @endforeach
 @endif
 
@@ -29,10 +32,9 @@
         <p class="alert alert-info text-center .alert-dismissible">{{ $erro }}</p>
   	@endforeach
 @endif
-@if(isset($dados['alert_sucess']) && $dados['alert_sucess']!='')
-	@foreach($dados['alert_sucess'] as $erro)
-        <p class="alert alert-success text-center alert-dismissible">{{ $erro }}</p>
-  	@endforeach
+@if ($message = Session::get('success'))	
+        <p class="alert alert-success text-center alert-dismissible">{{ $message }}</p>
+  	
 @endif
 
 

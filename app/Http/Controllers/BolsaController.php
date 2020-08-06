@@ -457,7 +457,9 @@ class BolsaController extends Controller
 
     }
 
-
+    /**
+     * Retorna array com ids de alunos que possivelmente perderiam a bolsa;
+     */
     public function fiscalizarBolsa(){
         $alunos = array();
         $matriculas = collect();

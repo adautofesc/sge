@@ -194,6 +194,14 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::get('listar', 'AtestadoController@listar');
 
 		});
+	//Justificativa Ausência
+		Route::prefix('justificativa-ausencia')->group(function(){
+			Route::get('/{pessoa?}','JustificativaAusenciaController@index');
+			Route::post('/{pessoa}','JustificativaAusenciaController@store');
+			Route::get('apagar/{id}','JustificativaAusenciaController@delete');
+			
+
+		});
 	//Bolsa
 		Route::middleware('liberar.recurso:18')->prefix('bolsa')->group(function(){ //criar novo código
 			Route::get('cadastrar/{pessoa}','BolsaController@nova');
@@ -588,6 +596,8 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::post('nova-aula/{turma}/{aula?}','FrequenciaController@novaChamada_exec');
 			Route::get('editar-aula/{aula}','FrequenciaController@editarChamada_view');
 			Route::post('editar-aula/{aula}','FrequenciaController@editarChamada_exec');
+			Route::get('preencher/{aula}','FrequenciaController@preencherChamada_view');
+			Route::post('preencher/{aula}','FrequenciaController@preencherChamada_exec');
 			Route::get('apagar-aula/{aula}','AulaController@apagarAula');
 		});
 		
@@ -624,16 +634,17 @@ Route::middleware(['auth','login']) ->group(function(){
 	});
 
 	Route::get('cobranca-automatica','CobrancaController@cobrancaAutomatica');
-	Route::prefix('services')->group(function(){
-		Route::get('professores','WebServicesController@listaProfessores');
-		Route::get('chamada/{id}','WebServicesController@apiChamada');
-		Route::get('turmas','WebServicesController@apiTurmas');
-		Route::get('salas-api/{id}','SalaController@listarPorLocalApi');
-		Route::get('salas-locaveis-api/{id}','SalaController@listarLocaveisPorLocalApi');
-		Route::post('excluir-aulas','AulaController@excluir');
+	Route::get('services/excluir-aulas','AulaController@excluir');
 	
-	});
 });//end middleware login
+Route::prefix('services')->group(function(){
+	Route::get('professores','WebServicesController@listaProfessores');
+	Route::get('chamada/{id}','WebServicesController@apiChamada');
+	Route::get('turmas','WebServicesController@apiTurmas');
+	Route::get('salas-api/{id}','SalaController@listarPorLocalApi');
+	Route::get('salas-locaveis-api/{id}','SalaController@listarLocaveisPorLocalApi');
+
+});
 
 Route::get('alerta-covid','painelController@alertaCovid');
 Route::get('cancelamento-covid','BoletoController@cancelarCovid');

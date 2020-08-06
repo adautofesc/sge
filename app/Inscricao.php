@@ -44,5 +44,11 @@ class Inscricao extends Model
 
 		return $atestado;
 	}
+	public static function addConceito(int $inscricao,$nota){
+		$inscricao = Inscricao::find($inscricao);
+		$inscricao->conceito = $nota;
+		$inscricao->save();
+		return true;
+	}
 
 }

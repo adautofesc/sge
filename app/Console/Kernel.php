@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Jobs\ControleFaltas;
 
 class Kernel extends ConsoleKernel
 {
@@ -24,8 +25,22 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        //disparador de fila de trabalho
+        $schedule->command('queue:work --stop-when-empty')->everyMinute()->withoutOverlapping();
+
+        $schedule->call( function(){
+                dispatch(new ControleFaltas);
+            })->daily()->at('21:05');
+
+
+        $schedule->call( function(){
+                dispatch(new ControleBoletos);
+            })->daily()->at('18:07');
+
+         //verificar boletos em aberto 
+         //
+
+         
     }
 
     /**

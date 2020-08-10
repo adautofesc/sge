@@ -975,9 +975,14 @@ class TurmaController extends Controller
         return redirect()->back()->withErrors(['Turmas recadastradas com sucesso.']);
     }
     public static function listarTurmasDocente($docente,$semestre){
-        $intervalo = \App\classes\Data::periodoSemestre($semestre);
-        $turmas = Turma::where('professor', $docente)->whereIn('status',['lancada','espera','inscricao','andamento','iniciada','encerrada'])->whereBetween('data_inicio', $intervalo)->orderBy('hora_inicio')->get();
-        //dd($intervalo);
+        if($semestre > 0){
+            $intervalo = \App\classes\Data::periodoSemestre($semestre);
+            $turmas = Turma::where('professor', $docente)->whereIn('status',['lancada','espera','inscricao','andamento','iniciada','encerrada'])->whereBetween('data_inicio', $intervalo)->orderBy('hora_inicio')->get();
+        }
+        else{
+            $turmas = Turma::where('professor', $docente)->whereIn('status',['andamento','iniciada'])->orderBy('hora_inicio')->get();
+        }
+
         foreach($turmas as $turma){
               
             $turma->weekday = \App\classes\Strings::convertWeekDay($turma->dias_semana[0]);

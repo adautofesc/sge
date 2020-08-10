@@ -20,7 +20,7 @@
 
                         <div class="action dropdown pull-right" >
 
-                            <button class="btn  rounded-s btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Semestre
+                            <button class="btn  rounded-s btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Semestre de início
                             </button>
                             <div class="dropdown-menu "  aria-labelledby="dropdownMenu5"> 
                                 @foreach($semestres as $semestre)
@@ -55,7 +55,7 @@
                             @foreach($turmas as $turma)
                             <tr class="row">
                                 <td class="col-sm-1 col-xs-1" title="Status: {{$turma->status}}" ><small>{{$turma->id}}</small></td>
-                                <td class="col-sm-2 col-xs-2"title="Inicio: {{$turma->data_inicio}}"><small>{{implode(', ',$turma->dias_semana)}}</small></td>
+                            <td class="col-sm-2 col-xs-2"title="Inicio: {{$turma->data_inicio}}"><small>{{implode(', ',$turma->dias_semana)}}<br>{{$turma->data_inicio}}</small></td>
                                 <td class="col-sm-2 col-xs-2"><small>{{$turma->hora_inicio}}h<br>{{$turma->hora_termino}}h</small></td>
                                 <td class="col-sm-5 col-xs-5">
                                     @if(substr($turma->data_inicio,6,4)<2020)
@@ -72,7 +72,7 @@
                                    
                                     @else
                                     <small>
-                                    <a href="/docentes/frequencia/nova-aula/{{$turma->id}}" title="Chamada OnLine. Início em {{$turma->data_inicio}}">
+                                    <a href="/docentes/frequencia/nova-aula/{{$turma->id}}" title="Chamada OnLine.">
                                         
                                         {{$turma->getNomeCurso()}}
 

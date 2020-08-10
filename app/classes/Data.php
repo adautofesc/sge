@@ -137,9 +137,9 @@ Class Data
             
 
             if($semestre == 1)
-                $datas = [($ano-1).'-11-20%', $ano.'-06-30'];
+                $datas = [($ano-1).'-11-20%', $ano.'-06-30%'];
             else
-                $datas = [$ano.'-07-01%',$ano.'-11-19'];
+                $datas = [$ano.'-07-01%',$ano.'-11-19%'];
 
             return $datas;
 

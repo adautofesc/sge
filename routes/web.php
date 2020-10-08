@@ -576,6 +576,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('tce-turmas-alunos/{ano}','RelatorioController@tceTurmasAlunos');
 		Route::get('alunos-conselho/{ano}','RelatorioController@alunosConselho');
 		Route::get('bolsistas-com-3-faltas','RelatorioController@bolsistasComTresFaltas');
+		Route::get('celulares','PessoaController@relatorioCelulares');
 
 
 
@@ -599,6 +600,8 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::get('preencher/{aula}','FrequenciaController@preencherChamada_view');
 			Route::post('preencher/{aula}','FrequenciaController@preencherChamada_exec');
 			Route::get('apagar-aula/{aula}','AulaController@apagarAula');
+			Route::get('conteudos/{turma}','AulaDadoController@editarConteudo_view');
+			Route::post('conteudos/{turma}','AulaDadoController@editarConteudo_exec');
 		});
 		
 	});

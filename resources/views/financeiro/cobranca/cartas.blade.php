@@ -7,7 +7,7 @@
 <title>Carta de cobrança</title>
 <style>
 	.correio{
-		margin-top:30rem;
+		margin-top:29rem;
 	}
 	.verso{
 		margin-top:15rem;
@@ -96,7 +96,7 @@
 					</div>
 					
 				</div>
-				<div class="row espacamento">
+				<div class="row">
 						<div class="col-xs-12"><!--
 								<table style="height: 150px;" width="767" class="borda">
 										<tbody>

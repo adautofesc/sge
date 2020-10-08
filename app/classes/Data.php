@@ -91,6 +91,8 @@ Class Data
         }
         public static function calculaIdade($data_nasc)
          {
+           if($data_nasc ==null || $data_nasc=='000-00-00' )
+           return 0;
 
             $data_nasc=explode('-',$data_nasc);
 

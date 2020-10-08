@@ -67,7 +67,7 @@ class CobrancaController extends Controller
 
 					if(isset($cpf->valor)==false || \App\classes\Strings::validaCPF($cpf->valor) == false){
 						//die('cpf invalido');
-						PessoaController::notificarErro($pessoa->id,1);
+						NotificacaoController::notificarErro($pessoa->id,1);
 						continue;
 					}
 					else
@@ -80,7 +80,7 @@ class CobrancaController extends Controller
 
 					else{
 						//die('endereço invalidao'.$pessoa->id);
-						PessoaController::notificarErro($pessoa->id,2);
+						NotificacaoController::notificarErro($pessoa->id,2);
 						continue;
 					}
 					$lancamentos = $boleto->getLancamentos();

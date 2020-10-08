@@ -510,7 +510,7 @@ class BoletoController extends Controller
 		//dd($cliente->cep);
 		$pagador = new \Eduardokum\LaravelBoleto\Pessoa([
 			'documento' => $cliente->cpf,
-		    //'documento' => $cliente->cpf > 0 ? $cliente->cpf : PessoaController::notificarCPFInvalido($cliente->id), //verificar cpf
+		    //'documento' => $cliente->cpf > 0 ? $cliente->cpf : NotificacaoController::notificarCPFInvalido($cliente->id), //verificar cpf
 		    'nome'      =>  str_replace(['º','ª','°','´','~','^','`','\''],'',substr($cliente->nome,0,37)), //nome até x cara
 		    'cep'       => $cliente->cep ? $cliente->cep : '13560-970' ,
 		    'endereco'  => str_replace(['º','ª','°','´','~','^','`','\''], '',$cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->end_complemento),

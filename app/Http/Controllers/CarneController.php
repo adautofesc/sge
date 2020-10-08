@@ -281,7 +281,7 @@ class CarneController extends Controller
 				$boleto_completo = BoletoController::gerarBoleto($boleto);
 			}
 			catch(\Exception $e){
-				PessoaController::notificarErro($boleto->pessoa,5);
+				NotificacaoController::notificarErro($boleto->pessoa,5);
 				continue;
 			}
 			
@@ -290,7 +290,7 @@ class CarneController extends Controller
 				$remessa->addBoleto($boleto_completo);
 			}
 			catch(\Exception $e){
-				PessoaController::notificarErro($boleto->pessoa,6);
+				NotificacaoController::notificarErro($boleto->pessoa,6);
 				continue;
 			}
 			if($boleto->status == 'cancelar'){

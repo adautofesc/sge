@@ -1084,7 +1084,7 @@ class TurmaController extends Controller
      * @return [type]        [description]
      */
     public function finalizarTurma(Turma $turma){
-        if($turma->termino < date('Y-m-d'))
+        if($turma->termino > date('Y-m-d'))
             die('Turma '.$turma->id. ' não pode ser encerrada pois a data de término não foi atingida. Se a turma não ocorreu utilize a opção CANCELAR.');
         $inscricoes = Inscricao::where('turma', $turma->id)->get();   
         
@@ -1147,9 +1147,11 @@ class TurmaController extends Controller
         return $aulas.$frequencias;
     }
 
+
+   
     
 
-
+  
         
         
 

@@ -310,11 +310,35 @@ class painelController extends Controller
         
     }
     public function testarClasse(){
-        $boleto = \App\Boleto::find(104116);
-        if(!empty($boleto))
-            return $boleto;
-        else
-            return 'Boleto não encontrado';
+        header('Contet-Type: text/csv');
+        header('Content-Disposition: attachment; filename="alunos-cj.csv"');
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        $arquivo = fopen('php://output','wb');
+
+        $pessoas = Array();
+        $turmas  = Turma::whereYear('data_inicio',2019)->whereIn('local',[51,52,53])->get();
+        foreach($turmas as $turma){
+            $turma->getInscricoes(null);
+            foreach($turma->inscricoes as $inscricao){
+                $pessoa = Pessoa::find($inscricao->pessoa->id);
+                $pessoa->idade = $pessoa->getIdade();
+                unset($pessoa->id);
+                unset($pessoa->genero);
+                unset($pessoa->nascimento);
+                unset($pessoa->por);
+                unset($pessoa->created_at);
+                unset($pessoa->updated_at);
+                unset($pessoa->deleted_at);
+                $pessoa->curso = $turma->curso->nome;
+                if($pessoa->idade < 21)                    
+                    fputcsv($arquivo,json_decode(json_encode($pessoa),true));
+            }
+        }
+        fclose($arquivo);
+        
+
+        
 
              
     }

@@ -291,7 +291,7 @@ body{
 		<td class="stilo3 hide-onprint" colspan="33">
 			<button type="submit">Salvar dados</button>
 			<button type="button" onclick="location.reload();return false;">Resetar dados</button>
-			<button type="button" onclick="location.reload();return false;">Editar conteúdo</button>
+		<button type="button" onclick="location.replace('/docentes/frequencia/conteudos/{{$turma->id}}');return false;">Editar conteúdo</button>
 			<button type="button" onclick="location.reload();return false;">Editar ocorrências</button>
 		</td>
 		

@@ -57,12 +57,12 @@ class LancamentoController extends Controller
 			
 			$pessoa = PessoaController::formataParaMostrar($pessoa);
 			if(!isset($pessoa->cpf)){
-				PessoaController::notificarErro($pessoa->id,1);
+				NotificacaoController::notificarErro($pessoa->id,1);
 				continue;
 
 			} 
 			if(!isset($pessoa->end_id)){
-				PessoaController::notificarErro($pessoa->id,2);
+				NotificacaoController::notificarErro($pessoa->id,2);
 				continue;
 
 			}
@@ -178,12 +178,12 @@ class LancamentoController extends Controller
 			
 			$pessoa = PessoaController::formataParaMostrar($pessoa);
 			if(!isset($pessoa->cpf)){
-				PessoaController::notificarErro($pessoa->id,1);
+				NotificacaoController::notificarErro($pessoa->id,1);
 				continue;
 
 			} 
 			if(!isset($pessoa->end_id)){
-				PessoaController::notificarErro($pessoa->id,2);
+				NotificacaoController::notificarErro($pessoa->id,2);
 				continue;
 
 			}

@@ -40,4 +40,40 @@ class AulaDadoController extends Controller
             $info->delete();
         }
     }
+
+    public function editarConteudo_view(int $turma){
+        $turma = \App\Turma::find($turma);
+        if(!isset($turma->id))
+            return redirect()->back()->withErrors('Turma não encontrada');
+        $aulas = \App\Aula::select('*','aulas.id as id')
+            ->where('turma',$turma->id)
+            ->where('status','executada')
+            //->leftjoin('aula_dados', 'aulas.id','=','aula_dados.aula')
+            ->leftjoin('aula_dados', function($query){
+                $query->on( 'aulas.id','=','aula_dados.aula');
+                $query->where('aula_dados.dado','conteudo');
+            })
+            ->orderBy('data')
+            ->get();
+        //return $aulas;
+        return view('frequencias.conteudos')->with('aulas',$aulas)->with('turma',$turma);
+
+    }
+
+    public function editarConteudo_exec(Request $r){
+        foreach($r->conteudo as $aula=>$conteudo){
+            $conteudo_db = AulaDado::where('aula',$aula)->where('dado','conteudo')->first();
+            if(!is_null($conteudo_db)){
+                $conteudo_db->valor = $conteudo;
+                $conteudo_db->save();
+
+            }
+            else{
+                if(!is_null($conteudo))
+                    $this->createDadoAula($aula,'conteudo',$conteudo);
+            }
+        }
+        return redirect()->back()->withErrors(['success'=>'Dados atualizados com sucesso']);
+    }
+
 }

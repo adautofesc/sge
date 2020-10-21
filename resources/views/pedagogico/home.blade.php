@@ -60,6 +60,25 @@
                 </div>
             </div>  
         </div>
+
+
+        <div class="col-md-4 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Utilitários</p>
+                    </div>
+                </div>
+                <div class="card-block">
+                    <div>
+                        <a href="/relatorios/turmas" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-file-text-o"></i>
+                        &nbsp;&nbsp;Relatório de turmas</a>
+                    </div>
+
+                </div>
+            </div>  
+        </div>
     </div>
 
 </section>

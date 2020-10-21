@@ -91,6 +91,8 @@ Class Data
         }
         public static function calculaIdade($data_nasc)
          {
+           if($data_nasc ==null || $data_nasc=='000-00-00' )
+           return 0;
 
             $data_nasc=explode('-',$data_nasc);
 
@@ -137,9 +139,9 @@ Class Data
             
 
             if($semestre == 1)
-                $datas = [($ano-1).'-11-20%', $ano.'-06-30'];
+                $datas = [($ano-1).'-11-20%', $ano.'-06-30%'];
             else
-                $datas = [$ano.'-07-01%',$ano.'-11-19'];
+                $datas = [$ano.'-07-01%',$ano.'-11-19%'];
 
             return $datas;
 

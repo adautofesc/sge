@@ -124,6 +124,11 @@
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Bolsistas com +3 faltas</a>
                     </div> 
+                    <div>
+                        <a href="/relatorios/celulares/"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Celulares alunos ativos</a>
+                    </div> 
                          
                          
                 </div>

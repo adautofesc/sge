@@ -407,7 +407,7 @@ class PessoaController extends Controller
 
 		if(isset($pessoa->cpf)){;
 			if(Strings::validaCPF($pessoa->cpf) == false){
-				//PessoaController::notificarErro($pessoa->id,1);
+				NotificacaoController::notificarErro($pessoa->id,1);
 				$pessoa->cpf = null;
 			}
 		}	
@@ -1091,6 +1091,39 @@ class PessoaController extends Controller
 			$pessoa->save();
 		return $pessoa;
 
+	}
+
+	/**
+	 * Relatorio com os alunos ativos com seus respectivos numeros de celular
+	 */
+	public function relatorioCelulares(){
+		header('Content-Type: text/csv; charset=utf-8');
+		header('Content-Disposition: attachment; filename=celulares.csv');
+		$output = fopen('php://output', 'w');
+		fputcsv($output, array('Id', 'Nome', 'Celular'));
+
+		$subscriptions = \App\Inscricao::where('status','regular')->get();
+		$alumns = collect();
+		foreach($subscriptions as $subscripted){
+			
+			$contains = $alumns->where('id',$subscripted->pessoa->id);
+			
+			if($contains->count()==0){
+				$alumn = new \stdClass;
+				$alumn->id = $subscripted->pessoa->id;
+				$alumn->name = $subscripted->pessoa->nome_simples;
+				$alumn->cellphone = $subscripted->pessoa->getCelular();
+				if($alumn->cellphone != '-'){
+					//$alumns->add($alumn);
+					fputcsv($output,[$alumn->id,$alumn->name,$alumn->cellphone]);
+				}
+
+			}
+				
+			
+
+		}
+		return 'gerado.';
 	}
 
 

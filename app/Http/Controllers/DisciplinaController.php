@@ -15,7 +15,7 @@ class DisciplinaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $r = Request)
+    public function index(Request $r)
     {
         //return $disciplinas=$this->disciplinas();
 

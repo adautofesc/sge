@@ -1,9 +1,16 @@
 @extends('layout.app')
 @section('pagina')
+<ol class="breadcrumb">
+	<li class="breadcrumb-item"><a href="/">Início</a></li>
+	<li class="breadcrumb-item"><a href="/cursos">Cursos</a></li>
+	<li class="breadcrumb-item"><a href="/cursos/disciplinas">Disciplinas</a></li>
+<li class="breadcrumb-item">Disciplina {{$disciplina->id}}</li>
+   
+</ol>
 @include('inc.errors')
-@if(count($disciplina))
+@if(isset($disciplina->id))
   <div class="title-block">
-                        <h3 class="title"> Edição de disciplina <span class="sparkline bar" data-type="bar"></span> </h3>
+                        <h3 class="title"> Dados da disciplina <span class="sparkline bar" data-type="bar"></span> </h3>
                     </div>
                     <form name="item" method="POST">
                      {{csrf_field()}}
@@ -12,9 +19,12 @@
 								<label class="col-sm-2 form-control-label text-xs-right">
 									Nome
 								</label>
-								<div class="col-sm-10"> 
+								<div class="col-sm-8"> 
 									{{$disciplina->nome}}
 								</div>
+								<div class="col-xs-2 text-xs-right">                                        
+									<a href="{{asset('/cursos/disciplinas/editar').'/'.$disciplina->id}}" class="btn btn-primary btn-sm rounded-s"> Editar </a>
+									   </div>
 							</div>
 							<div class="form-group row"> 
 								<label class="col-sm-2 form-control-label text-xs-right">

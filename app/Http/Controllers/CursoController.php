@@ -21,9 +21,9 @@ class CursoController extends Controller
         $cursos=Curso::all();
         //return $cursos;
         if(isset($r->buscar))
-            return view('pedagogico.curso.lista')->with(array('cursos'=>$this->cursos($r->buscar)));
+            return view('curso.lista')->with(array('cursos'=>$this->cursos($r->buscar)));
         else
-            return view('pedagogico.curso.lista')->with('cursos',$this->cursos());
+            return view('curso.lista')->with('cursos',$this->cursos());
     }
 
     /**
@@ -49,7 +49,7 @@ class CursoController extends Controller
     public function create()    {
         $requisitos=RequisitosController::listar();
         $programas=Programa::all();
-        return view('pedagogico.curso.cadastrar',compact('requisitos'))->with('programas',$programas);
+        return view('curso.cadastrar',compact('requisitos'))->with('programas',$programas);
     }
 
     /**
@@ -88,11 +88,11 @@ class CursoController extends Controller
         }
 
         if($r->btn==1)
-            return redirect(asset('/pedagogico/cursos'));
+            return redirect(asset('/cursos'));
         if($r->btn==2)
             return $this->create();
         if($r->btn==3)
-            return redirect(asset('/pedagogico/disciplinasdocurso'.'/'.$curso->id));
+            return redirect(asset('/cursos/grade/'.$curso->id));
        
 
     }
@@ -104,8 +104,8 @@ class CursoController extends Controller
      */
     public function show($id)    {
         $curso=Curso::find($id);
-        if(!empty($curso))
-             return redirect(asset('/pedagogico/cursos')); 
+        if(!isset($curso->id))
+             return redirect(asset('/cursos'))->withErrors(['Código de curso não encontrado. '.$id]); 
 
         if(DisciplinaController::disciplinasDoCurso($id))
             $curso->disciplinas=DisciplinaController::disciplinasDoCurso($id);
@@ -114,7 +114,7 @@ class CursoController extends Controller
 
         //return $curso;
         
-        return view('pedagogico.curso.mostrar', compact('curso'));
+        return view('curso.mostrar', compact('curso'));
     }
 
     /**
@@ -125,27 +125,11 @@ class CursoController extends Controller
      */
     public function edit($id)    {
         $curso=Curso::find($id);
-        if(!empty($curso))
-             return redirect(asset('/pedagogico/cursos'));
+        if(!isset($curso->id))
+             return redirect(asset('/cursos'))->withErrors(['Código de curso não encontrado. '.$id]); 
         $programas=Programa::all();
         $requisitos=RequisitosController::listar();
-
-        switch($curso->programa){
-            case "EMG" :
-                $curso->emg="selected";
-            break;
-            case "PID" :
-                $curso->pid="selected";
-            break;
-            case "UATI" :
-                $curso->uati="selected";
-            break;
-            case "UNIT" :
-                $curso->unit="selected";
-            break;
-
-        }
-        return view('pedagogico.curso.editar', compact('curso'))->with('programas',$programas)->with('requisitos',$requisitos);
+        return view('curso.editar', compact('curso'))->with('programas',$programas)->with('requisitos',$requisitos);
     }
 
     /**
@@ -173,7 +157,7 @@ class CursoController extends Controller
         $curso->carga=$request->carga;
         $curso->save();
 
-        return $this->index();
+        return redirect('/cursos');
 
     }
 
@@ -190,7 +174,7 @@ class CursoController extends Controller
         $curso=curso::find($r->curso);
         if($curso)
             $curso->delete();
-        return redirect(asset('/pedagogico/cursos'));
+        return redirect(asset('/cursos'));
     }
 
 

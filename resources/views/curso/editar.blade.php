@@ -1,7 +1,7 @@
 @extends('layout.app')
 @section('pagina')
 @include('inc.errors')
-@if(count($curso))
+@if(isset($curso->id))
  <div class="title-block">
     <h3 class="title"> Edição de curso</span> </h3>
  </div>
@@ -23,9 +23,13 @@
 			</label>
 			<div class="col-sm-10"> 
 				<select name="programa" class="c-select form-control boxed">
-					<option  selected>Selecione um programa</option>
+					<option >Selecione um programa</option>
 					@foreach($programas as $programa)
-					<option value="{{$programa->id}}">{{$programa->nome}}</option>
+					@if($programa->sigla == $curso->programa->sigla)
+					<option value="{{$programa->id}}" selected >{{$programa->nome}}</option>
+					@else
+					<option value="{{$programa->id}}" >{{$programa->nome}}</option>
+					@endif
 					@endforeach
 				</select> 
 			</div>

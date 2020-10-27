@@ -1,7 +1,14 @@
 @extends('layout.app')
 @section('pagina')
+<ol class="breadcrumb">
+	<li class="breadcrumb-item"><a href="/">Início</a></li>
+	<li class="breadcrumb-item"><a href="/cursos">Cursos</a></li>
+	<li class="breadcrumb-item">Curso {{$curso->id}}</li>
+   
+</ol>
 @include('inc.errors')
-@if(count($curso))
+
+@if(isset($curso->id))
   <div class="title-block">
                         <h3 class="title"> Dados do Curso / Atividade<span class="sparkline bar" data-type="bar"></span> </h3>
                         
@@ -17,7 +24,7 @@
 									{{$curso->nome}}
 								</div>
 								<div class="col-xs-2 text-xs-right">                                        
-                           	 <a href="{{asset('pedagogico/editarcurso/').'/'.$curso->id}}" class="btn btn-primary btn-sm rounded-s"> Editar </a>
+                           	 <a href="{{asset('/cursos/editar').'/'.$curso->id}}" class="btn btn-primary btn-sm rounded-s"> Editar </a>
                        			</div>
 							</div>
 							<div class="form-group row"> 
@@ -58,14 +65,14 @@
 								</label>
 								<div class="col-sm-4"> 
 									@if(isset($curso->disciplinas))
-									<a href="{{ asset("pedagogico/disciplinasdocurso/").'/'.$curso->id}}" class="btn btn-secondary rounded-s btn-sm" > Modificar Disciplinas</a>
+									<a href="{{ asset("/cursos/disciplinas/vincular").'/'.$curso->id}}" class="btn btn-secondary rounded-s btn-sm" > Modificar Disciplinas</a>
 									<ul>
 									@foreach($curso->disciplinas as $disciplina)
 										<li>{{ $disciplina->nome}}</li>
 									@endforeach
 									</ul>
 									@else
-									<a href="{{ asset("pedagogico/disciplinasdocurso/").'/'.$curso->id}}" class="btn btn-secondary rounded-s btn-sm" > Adicionar Disciplina(s)</a>
+									<a href="{{ asset("/cursos/disciplinas/vincular").'/'.$curso->id}}" class="btn btn-secondary rounded-s btn-sm" > Adicionar Disciplina(s)</a>
 									@endif
 									
 								</div>
@@ -79,15 +86,15 @@
 									
 									
 									@if(isset($curso->requisitos))
-										<a href="{{ asset("pedagogico/requisitosdocurso/").'/'.$curso->id}}" class="btn btn-secondary rounded-s btn-sm" >Modificar Requisitos</a>
+										<a href="{{ asset("cursos/requisitos/requisitosdocurso/").'/'.$curso->id}}" class="btn btn-secondary rounded-s btn-sm" >Modificar Requisitos</a>
 										<ul>
 									@foreach($curso->requisitos as $requisito)
 
-										<li> {{ $requisito->requisito}}</li>
+										<li> {{ $requisito->requisito->nome}}</li>
 									@endforeach
 										</ul>
 									@else
-										<a href="{{ asset("pedagogico/requisitosdocurso/").'/'.$curso->id}}" class="btn btn-secondary rounded-s btn-sm" >Adicionar Requisito(s)</a>
+										<a href="{{ asset("cursos/requisitos/requisitosdocurso/").'/'.$curso->id}}" class="btn btn-secondary rounded-s btn-sm" >Adicionar Requisito(s)</a>
 									@endif
 									
 								</div>

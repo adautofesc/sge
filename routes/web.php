@@ -139,6 +139,51 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('/','EventoController@index');
 
 	});
+	Route::prefix('cursos')->group(function(){
+		//Cursos
+		Route::get('/','CursoController@index');
+		Route::get('listarporprogramajs/{var}','CursoController@listarPorPrograma');
+		Route::get('cadastrar','CursoController@create');
+		Route::post('cadastrar','CursoController@store');
+		Route::get('editar/{var}','CursoController@edit');
+		Route::post('editar/{var}','CursoController@update');
+		Route::get('apagar','CursoController@destroy');
+		Route::get('curso/{var}','CursoController@show');
+		Route::get('curso/modulos/{var}','CursoController@qndeModulos');
+
+		//Disciplinas
+		Route::prefix('disciplinas')->group(function(){
+
+			Route::get('vincular/{var}','DisciplinaController@editDisciplinasAoCurso');
+			Route::post('vincular/{var}','DisciplinaController@storeDisciplinasAoCurso');
+			Route::get('grade/{var}','DisciplinaController@disciplinasDoCurso');
+			Route::get('grade/{curso}/{str}','DisciplinaController@disciplinasDoCurso');
+			Route::get('/','DisciplinaController@index');
+			Route::get('cadastrar','DisciplinaController@create');
+			Route::post('cadastrar','DisciplinaController@store');
+			Route::get('pedagogico/editardisciplina/{var}','DisciplinaController@edit');
+			Route::get('disciplina/{var}','DisciplinaController@show');
+			Route::get('editar/{var}','DisciplinaController@edit');
+			Route::post('editar/{var}','DisciplinaController@update');
+			Route::get('apagar','DisciplinaController@destroy');
+		});
+
+		//Requisitos
+		Route::prefix('requisitos')->group(function(){
+			
+			Route::get('/','RequisitosController@index');
+			Route::get('cadastrar','RequisitosController@create');
+			Route::post('cadastrar','RequisitosController@store');
+			Route::get('apagar/{itens}','RequisitosController@destroy');
+			Route::get('requisitosdocurso/{var}','RequisitosController@editRequisitosAoCurso');
+			Route::post('requisitosdocurso/{var}','RequisitosController@storeRequisitosAoCurso');
+		});
+		
+			
+		
+		
+
+	});
 
 //**************************************************************************SETORES******************************** */
 
@@ -449,36 +494,7 @@ Route::middleware(['auth','login']) ->group(function(){
 
 		});
 		
-		//Cursos
-		Route::get('cursos','CursoController@index');
-		Route::get('cursos/listarporprogramajs/{var}','CursoController@listarPorPrograma');
-		Route::get('cadastrarcurso','CursoController@create');
-		Route::post('cadastrarcurso','CursoController@store');
-		Route::get('editarcurso/{var}','CursoController@edit');
-		Route::post('editarcurso/{var}','CursoController@update');
-		Route::get('apagarcurso','CursoController@destroy');
-		Route::get('curso/{var}','CursoController@show');
-		Route::get('disciplinasdocurso/{var}','DisciplinaController@editDisciplinasAoCurso');
-		Route::post('disciplinasdocurso/{var}','DisciplinaController@storeDisciplinasAoCurso');
-		Route::get('curso/disciplinas/{var}','DisciplinaController@disciplinasDoCurso');
-		Route::get('curso/disciplinas/{curso}/{str}','DisciplinaController@disciplinasDoCurso');
-		Route::get('curso/modulos/{var}','CursoController@qndeModulos');
-			//Disciplinas
-		Route::get('disciplinas','DisciplinaController@index');
-		Route::get('cadastrardisciplina','DisciplinaController@create');
-		Route::post('cadastrardisciplina','DisciplinaController@store');
-		Route::get('pedagogico/editardisciplina/{var}','DisciplinaController@edit');
-		Route::get('disciplina/mostrar/{var}','DisciplinaController@show');
-		Route::get('editardisciplina/{var}','DisciplinaController@edit');
-		Route::post('editardisciplina/{var}','DisciplinaController@update');
-		Route::get('apagardisciplina','DisciplinaController@destroy');
-			//Requisitos
-		Route::get('cursos/requisitos','RequisitosController@index');
-		Route::get('cursos/requisitos/add','RequisitosController@create');
-		Route::post('cursos/requisitos/add','RequisitosController@store');
-		Route::get('cursos/requisitos/apagar/{itens}','RequisitosController@destroy');
-		Route::get('requisitosdocurso/{var}','RequisitosController@editRequisitosAoCurso');
-		Route::post('requisitosdocurso/{var}','RequisitosController@storeRequisitosAoCurso');
+		
 	});
 
 	// Secretaria

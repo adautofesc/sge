@@ -19,7 +19,7 @@ class RequisitosController extends Controller
     public function index()
     {
         $requisitos=$this->listar();
-        return view('pedagogico.curso.requisito.lista', compact('requisitos'))->with('filtros',['nome'=>0,'descricao'=>1,'importancia'=>2]);
+        return view('curso.requisito.lista', compact('requisitos'))->with('filtros',['nome'=>0,'descricao'=>1,'importancia'=>2]);
     }
 
     /**
@@ -29,7 +29,7 @@ class RequisitosController extends Controller
      */
     public function create()
     {
-        return view('pedagogico.curso.requisito.cadastrar');    }
+        return view('curso.requisito.cadastrar');    }
 
     /**
      * Store a newly created resource in storage.
@@ -49,9 +49,9 @@ class RequisitosController extends Controller
         $requisito->save();
 
         if($request->btn==1)
-            return redirect(asset('/pedagogico/cursos/requisitos'));
+            return redirect(asset('cursos/requisitos'));
         else
-            return view('pedagogico.curso.requisito.cadastrar')->with(array('dados'=>['alert_sucess'=>['Requisito cadastrado com sucesso.']]));
+            return view('curso.requisito.cadastrar')->with(array('dados'=>['alert_sucess'=>['Requisito cadastrado com sucesso.']]));
     }
 
     /**
@@ -118,8 +118,8 @@ class RequisitosController extends Controller
                 }
             }      
         }
-        $requisitos=$this->listar();
-        return view('pedagogico.curso.requisito.lista', compact('requisitos'))->with(array('dados'=>$dados));
+       
+        return redirect('/cursos/requisitos');
     }
 
     public static function listar()
@@ -135,7 +135,7 @@ class RequisitosController extends Controller
         $requisitos=Requisito::get();
         foreach($requisitos->all() as $requisito){
             $rc=CursoRequisito::where('curso', $curso)->where('requisito',$requisito->id)->first();
-            if(count($rc)){
+            if(isset($rc->id)){
                 $requisito->checked="checked";
                 if($rc->obrigatorio==1)
                     $requisito->obrigatorio="checked";
@@ -143,7 +143,7 @@ class RequisitosController extends Controller
         }
 
         //return $requisitos;
-        return view('pedagogico.curso.curso-requisitos', compact('requisitos'))->with(array('curso'=>['nome'=>$cursoexiste->nome, 'id_curso'=>$cursoexiste->id]));
+        return view('curso.curso-requisitos', compact('requisitos'))->with(array('curso'=>['nome'=>$cursoexiste->nome, 'id_curso'=>$cursoexiste->id]));
     }
 
     public function editRequisitosTurma($turmas){
@@ -156,7 +156,7 @@ class RequisitosController extends Controller
         $turma=Turma::find($turmas);
         foreach($requisitos->all() as $requisito){
             $rc=CursoRequisito::where('curso', $turma->id)->where('para_tipo','turma')->where('requisito',$requisito->id)->first();
-            if(count($rc)){
+            if(isset($rc->id)){
                 $requisito->checked="checked";
                 if($rc->obrigatorio==1)
                     $requisito->obrigatorio="checked";
@@ -200,15 +200,17 @@ class RequisitosController extends Controller
     }
 
     public function storeRequisitosAoCurso(Request $r){
+
         $this->clear('curso',$r->curso);
+        if(!is_null($r->requisito))
         foreach($r->requisito as $requisito){
             if(isset($r->obrigatorio))
                 if(in_array($requisito, $r->obrigatorio))
-                    return $this->gerar('curso',$r->curso,$r->requisito[$requisito],1);
+                    $this->gerar('curso',$r->curso,$r->requisito[$requisito],1);
                 else
-                    return $this->gerar('curso',$r->curso,$r->requisito[$requisito],0);
+                    $this->gerar('curso',$r->curso,$r->requisito[$requisito],0);
             else
-                return $this->gerar('curso',$r->curso,$r->requisito[$requisito],0);
+                $this->gerar('curso',$r->curso,$r->requisito[$requisito],0);
 
             /*
             if($r->obrigatorio[$requisito]==1)
@@ -216,7 +218,7 @@ class RequisitosController extends Controller
                 */
         
         }
-        return redirect(asset('/pedagogico/curso').'/'.$r->curso);
+        return redirect(asset('/cursos/curso').'/'.$r->curso);
     }
 
     public function clear($tipo,$valor){

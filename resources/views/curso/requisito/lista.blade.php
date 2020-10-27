@@ -13,8 +13,8 @@
       
         <div class="form-group row">
             <div class="col-md-9">
-                <a href="#" class="btn btn-secondary btn-sm rounded-s" title="Opções"><i class="text-info fa fa-cogs"></i></a>
-                <a href="{{asset('pedagogico/cursos/requisitos/add')}}" class="btn btn-secondary btn-sm rounded-s" title="Adicionar"><i class="text-success fa fa-plus"></i></a>
+                <!--<a href="#" class="btn btn-secondary btn-sm rounded-s" title="Opções"><i class="text-info fa fa-cogs"></i></a>-->
+                <a href="{{asset('cursos/requisitos/cadastrar')}}" class="btn btn-secondary btn-sm rounded-s" title="Adicionar"><i class="text-success fa fa-plus"></i></a>
                 
                 <a href="#" onclick="apagar()" class="btn btn-secondary btn-sm rounded-s" title="Apagar selecionados"><i class="text-danger fa fa-trash-o"></i></a>      
             </div>
@@ -150,7 +150,7 @@ function apagar()
             alert('Nenhum item selecionado');
         else
         if(confirm('Deseja realmente apagar os requisitos selecionados'))
-            $(location).attr('href','{{asset("/pedagogico/cursos/requisitos/apagar")}}/'+selecionados);
+            $(location).attr('href','{{asset("/cursos/requisitos/apagar")}}/'+selecionados);
 }
 </script>
 

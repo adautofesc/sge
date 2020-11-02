@@ -304,7 +304,7 @@ $(document).ready(function()
        else {
  
            //AJAX is called.
- 			$.get("{{asset('pedagogico/cursos/listarporprogramajs/')}}"+"/"+name)
+ 			$.get("{{asset('cursos/listarporprogramajs/')}}"+"/"+name)
  				.done(function(data) 
  				{
  					$.each(data, function(key, val){
@@ -355,7 +355,7 @@ $(document).ready(function()
        else {
  
            //AJAX is called.
- 			$.get("{{asset('pedagogico/curso/disciplinas/')}}"+"/"+curso+"/"+name)
+ 			$.get("{{asset('cursos/disciplinas/grade/')}}"+"/"+curso+"/"+name)
  				.done(function(data) 
  				{
  					$.each(data, function(key, val){
@@ -401,7 +401,7 @@ function cursoEscolhido(id,nome){
 				$('#fmodulo').attr('max',data);
 			}
 		});*/
-	$.get("{{asset('pedagogico/curso/disciplinas')}}"+"/"+id)
+	$.get("{{asset('cursos/disciplinas/grade/')}}"+"/"+id)
 		.done(function(data) {
 			
 			if(data.length>0){

@@ -8,7 +8,118 @@ use App\Matricula;
 ini_set('max_execution_time', 180);
 class ValorController extends Controller
 {
-    //
+    public function cadastrarValores(){
+        
+        $itens = array();
+        $itens[1] = ['programa' => 3,
+                     'curso' => 307,
+                     'carga' => 1,
+                     'referencia' => "UATI 1 disciplina",
+                     'valor'=> 294,
+                     'parcelas' => 10,
+                     'ano' => 2021];
+
+        $itens[2] = ['programa' => 3,
+                     'curso' => 307,
+                     'carga' => 2,
+                     'referencia' => "UATI 2 ou 3 disciplinas",
+                     'valor'=> 622,
+                     'parcelas' => 10,
+                     'ano' => 2021];
+
+        $itens[3] = ['programa' => 3,
+                     'curso' => 307,
+                     'carga' => 3,
+                     'referencia' => "UATI 4 ou mais disciplina",
+                     'valor'=> 961,
+                     'parcelas' => 10,
+                     'ano' => 2021];
+
+        $itens[4] = ['programa' => 12,
+                     'curso' => 0,
+                     'carga' => 60,
+                     'referencia' => "Hidroginástica e natação",
+                     'valor'=> 769,
+                     'parcelas' => 10,
+                     'ano' => 2021];
+
+        $itens[5] = ['programa' => 2,
+                     'curso' => 0,
+                     'carga' => 40,
+                     'referencia' => "Cursos PID 40 horas",
+                     'valor'=> 266,
+                     'parcelas' => 5,
+                     'ano' => 2021];
+
+        $itens[6] = ['programa' => 2,
+                     'curso' => 0,
+                     'carga' => 80,
+                     'referencia' => "Cursos PID 80 horas",
+                     'valor'=> 385,
+                     'parcelas' => 5,
+                     'ano' => 2021];
+
+        $itens[7] = ['programa' => 1,
+                     'curso' => 0,
+                     'carga' => 50,
+                     'referencia' => "Cursos UNIT 50 horas",
+                     'valor'=> 267,
+                     'parcelas' => 5,
+                     'ano' => 2021];
+
+        $itens[8] = ['programa' => 1,
+                     'curso' => 0,
+                     'carga' => 66,
+                     'referencia' => "Cursos UNIT 66 horas",
+                     'valor'=> 274,
+                     'parcelas' => 5,
+                     'ano' => 2021];
+
+        $itens[9] = ['programa' => 1,
+                     'curso' => 0,
+                     'carga' => 80,
+                     'referencia' => "Cursos UNIT 80 horas",
+                     'valor'=> 374,
+                     'parcelas' => 5,
+                     'ano' => 2021];
+
+        $itens[10] = ['programa' => 1,
+                     'curso' => 0,
+                     'carga' => 120,
+                     'referencia' => "Cursos UNIT 120 horas",
+                     'valor'=> 436,
+                     'parcelas' => 5,
+                     'ano' => 2021];
+
+        $itens[11] = ['programa' => 1,
+                     'curso' => 1567,
+                     'carga' => 80,
+                     'referencia' => "Curso de Contabilidade UNIT 80 horas",
+                     'valor'=> 436,
+                     'parcelas' => 5,
+                     'ano' => 2021];
+        
+
+        foreach($itens as $item){
+            $registro = Valor::where('programa',$item['programa'])->where('curso',$item['curso'])->where('carga',$item['carga'])->where('ano',$item['ano'])->first();
+            if(!isset($registro->id)){
+                $valor = new Valor;
+                $valor->programa = $item['programa'];
+                $valor->curso = $item['curso'];
+                $valor->carga = $item['carga'];
+                $valor->referencia = $item['referencia'];
+                $valor->valor=$item['valor'];
+                $valor->parcelas = $item['parcelas'];
+                $valor->ano = $item['ano'];
+                $valor->save();
+            }
+        }
+
+
+        return $itens;
+
+    }
+
     public static function valorMatricula($id_matricula)
     {
 
@@ -103,11 +214,13 @@ class ValorController extends Controller
                                 $valor->parcelas = 5;
                                 break;
                             case 'anual' :
-                                if($inscricao->turma->programa->id == 12 || $inscricao->turma->programa->id == 2)
+                               /* if($inscricao->turma->programa->id == 12 || $inscricao->turma->programa->id == 2)
                                     $valor->parcelas = 10;
                                 else 
                                     $valor->parcelas = 11;
                                 break;
+                                */
+                                $valor->parcelas = 10;
                             case 'eventual' :
                                 $valor->parcelas = 1;
                                 break;

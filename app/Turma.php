@@ -95,11 +95,15 @@ class Turma extends Model
 				$parcelas = 5;
 				break;
 			case 'anual' :
+				/*
 				if($inicio->format('Y') > '2019' && ($this->programa->id == 12 || $this->programa->id == 2))
 					$parcelas = 10;
 				else 
 					$parcelas = 11;
+				*/
+				$parcelas = 10;
 				break;
+				
 			case 'eventual' :
 				$parcelas = 1;
 				break;

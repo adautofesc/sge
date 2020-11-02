@@ -309,7 +309,8 @@ class painelController extends Controller
         return $arr_matriculas;
         
     }
-    public function testarClasse(){
+    public function relatorioJson(){
+
         header('Contet-Type: text/csv');
         header('Content-Disposition: attachment; filename="alunos-cj.csv"');
         header("Pragma: no-cache");
@@ -341,6 +342,11 @@ class painelController extends Controller
         
 
              
+    }
+    
+    public function testarClasse(){
+        $VC = new ValorController;
+        return $VC->cadastrarValores();
     }
 
 

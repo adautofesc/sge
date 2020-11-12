@@ -35,6 +35,7 @@ Route::get('atribuir-emails','loginController@attribEmail');
 
 
 
+
 //Login ***********************************************************
 /*
 	Route::get('login', 'loginController@login')->name('login');
@@ -58,6 +59,16 @@ Auth::routes(['register' => false]);
 //************************************************* Areas restritas para cadastrados ***************************************************
 
 Route::middleware(['auth','login']) ->group(function(){
+
+	Route::prefix('rematricula')->group(function(){
+		Route::get('/',function(){
+			return view('rematricula.index');
+		});
+		Route::get('autentica/{cpf}','PessoaController@verificarCPF');
+		Route::post('autentica/{cpf}','PessoaController@autenticarRematricula');
+		Route::post('gravar','MatriculaController@gravarRematricula');
+	
+	});
 
 
 

@@ -361,6 +361,10 @@ class painelController extends Controller
 
     }
 
+    public function rematricula(){
+        
+    }
+
     public function alertaCovid(){
         $CC = new ContatoController;
         //$msg = "FESC INFORMA: Aulas suspensas por tempo indeterminado. Saiba mais no site fesc.com.br";

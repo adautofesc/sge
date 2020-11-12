@@ -609,6 +609,9 @@ class MatriculaController extends Controller
 
     }
 
+
+    
+
     /**
      * Usando em valorController para setar o curso da matrícula
      */
@@ -653,6 +656,28 @@ class MatriculaController extends Controller
             }
         }
         return redirect("/secretaria/atender/".$r->pessoa."?mostrar=todos")->with('dados["alert_sucess"]',['Turmas rematriculadas com sucesso']);
+    }
+
+
+    public function gravarRematricula(Request $r){
+        if(!isset($r->turmas))
+            return redirect()->back()->withErrors(['Nenhuma turma selecionada']);
+        foreach($r->turmas as $turma){
+            //verifica se existe turma de continuação
+            
+                $inscricao = InscricaoController::inscreverAlunoSemMatricula($r->pessoa,$turma);
+                $matricula = Matricula::where('pessoa',$r->pessoa)->where('status','pendente')->where('curso', $inscricao->turma->curso->id)->first();
+                if($matricula == null)
+                    $matricula = MatriculaController::gerarMatricula($r->pessoa,$turma,'pendente'); 
+                $inscricao->matricula = $matricula->id;
+                $inscricao->status = 'pendente';
+                $inscricao->save();
+                $matricula->obs = 'Rematricula online. Assinar o termo.';
+               $matricula->save();
+            
+        }
+        return view('rematricula.confirma');
+        
     }
 
 

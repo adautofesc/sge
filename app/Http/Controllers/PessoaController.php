@@ -1126,6 +1126,65 @@ class PessoaController extends Controller
 		return 'gerado.';
 	}
 
+	public function verificarCPF($numero){
+		if(is_numeric($numero))
+			$dado = PessoaDadosGerais::where('dado',3)->where('valor',$numero)->first();
+		else
+			return redirect()->back()->withErrors(['O CPF '.$numero.' não é um número válido.']);
+
+		if(isset($dado->id))
+			return view('rematricula.autentica')->with('pessoa',$dado->pessoa);
+		else
+			return redirect()->back()->withErrors(['O CPF '.$numero.' não consta em nosso sistema. Verifique o número ou entre em contato pelo telefone 3372-1308.']);
+
+	}
+
+	public function autenticarRematricula(Request $r){
+		if(!isset($r->pessoa))
+			return redirect('/rematricula')->withErrors(['Cadastro não encontrado']);
+		else{
+			$pessoa = Pessoa::find($r->pessoa);
+			if(isset($pessoa->id)){
+				$rg = PessoaDadosGerais::where('pessoa',$pessoa->id)->where('dado',4)->first();
+				$nome = explode(' ',$pessoa->nome_simples);
+				$nome = strtolower($nome[0]);
+				
+				if($rg->valor == $r->rg && $nome == strtolower($r->nome)){
+					//$pessoa = \App\Pessoa::cabecalho($pessoa);
+					$matriculas = \App\Matricula::where('pessoa', $pessoa->id)
+								->where('status','expirada')
+								->whereDate('data','>','2019-11-20')
+								->orderBy('id','desc')->get();
+								
+							//listar inscrições de cada matricula;
+					foreach($matriculas as $matricula){
+						$matricula->inscricoes = \App\Inscricao::where('matricula',$matricula->id)->where('status','finalizada')->get();
+						foreach($matricula->inscricoes as $inscricao){  
+							$inscricao->proxima_turma = \App\Turma::where('professor',$inscricao->turma->professor->id)
+																	->where('dias_semana',implode(',', $inscricao->turma->dias_semana))
+																	->where('hora_inicio',$inscricao->turma->hora_inicio)
+																	->where('data_inicio','>',\Carbon\Carbon::createFromFormat('d/m/Y', $inscricao->turma->data_termino)->format('Y-m-d'))
+																	
+																	->whereIn('status',['espera','incricao'])
+																	->get();
+							//dd($inscricao->turma->vagas);
+						}
+					}
+
+					return view('rematricula.renovacao',compact('pessoa'))->with('matriculas',$matriculas);
+					
+				}
+				else
+					return redirect()->back()->withErrors(['Os dados informados não conferem, verifique novamente.']);
+
+
+			}
+			
+		}
+		
+
+	}
+
 
 
 

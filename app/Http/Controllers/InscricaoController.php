@@ -60,7 +60,7 @@ class InscricaoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public static function verificaSeInscrito($pessoa,$turma){
-        $existe=Inscricao::where('turma',$turma)->where('pessoa',$pessoa)->whereIn('status', ['regular',])->get();
+        $existe=Inscricao::where('turma',$turma)->where('pessoa',$pessoa)->whereIn('status', ['regular','pendente'])->get();
         if($existe->count())
             return $existe->first()->id;
         else

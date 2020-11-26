@@ -27,11 +27,24 @@ Route::get('boleto/{id}','BoletoController@imprimir');
 Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
 Route::get('ipca','ValorController@getIPCA');
 //Route::get('correcao-valor','ValorController@correcaoValor');
-Route::get('boletos-com-erros','BoletoController@analisarBoletosComErro');
+//Route::get('boletos-com-erros','BoletoController@analisarBoletosComErro');
 route::get('profile',function(){
 	return view('pessoa.profile');
 });
-Route::get('atribuir-emails','loginController@attribEmail');
+//Route::get('atribuir-emails','loginController@attribEmail');
+
+Route::prefix('rematricula')->group(function(){
+	Route::get('/',function(){
+		if(!isset(Auth::user()->pessoa))
+			return view('rematricula.espera');
+		else
+			return "Usuários do sistema deve utilizar o atendimento da secretaria.";
+	});
+	Route::get('autentica/{cpf}','PessoaController@verificarCPF');
+	Route::post('autentica/{cpf}','PessoaController@autenticarRematricula');
+	Route::post('gravar','MatriculaController@gravarRematricula');
+
+});
 
 
 
@@ -60,15 +73,7 @@ Auth::routes(['register' => false]);
 
 Route::middleware(['auth','login']) ->group(function(){
 
-	Route::prefix('rematricula')->group(function(){
-		Route::get('/',function(){
-			return view('rematricula.index');
-		});
-		Route::get('autentica/{cpf}','PessoaController@verificarCPF');
-		Route::post('autentica/{cpf}','PessoaController@autenticarRematricula');
-		Route::post('gravar','MatriculaController@gravarRematricula');
 	
-	});
 
 
 

@@ -36,7 +36,7 @@ route::get('profile',function(){
 Route::prefix('rematricula')->group(function(){
 	Route::get('/',function(){
 		if(!isset(Auth::user()->pessoa))
-			return view('rematricula.index');
+			return view('rematricula.espera');
 		else
 			return "Usuários do sistema deve utilizar o atendimento da secretaria.";
 	});

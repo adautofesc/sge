@@ -30,6 +30,12 @@
             font-weight: bold;
         }
     </style>
+    <script>
+    function termo(){
+    console.log('fui cahamdo');
+       document.forms[0].submit();
+    }
+    </script>
  
 </head>
 <body>
@@ -40,13 +46,15 @@
               </svg>
           Rematrícula realizada com sucesso.</h1>
         <div class="description">
-            Para validar sua matrícula <span class="importante">agende um horário para assinar seu Termo de Matrícula</span>.<br>
-Alterações de horários ou adição de novas disciplinas poderão ser feitas apenas no período de novas matrículas.
+            Foi gerada a matrícula número {{$matricula}}. Seu termo pode ser acessado <a href="#" onclick="termo();">aqui</a>
             
        </div>
-       <h5>
-        O agendamento pode ser feito pelo telefone 3372-1308 ou pelo e-mail agendamento@fesc.saocarlos.sp.gov.br
-       </h5>
+       <form action="/rematricula/termo/{{$matricula}}" method="post" target="_blank">
+       {{ csrf_field() }}
+       <input type="hidden" name = "matricula" value = "{{$matricula}}">
+       <form>
+       <p>O início das aulas será definido em breve</p>
+      
         
    </div>
        

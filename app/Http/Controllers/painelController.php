@@ -345,8 +345,8 @@ class painelController extends Controller
     }
     
     public function testarClasse(){
-        $VC = new ValorController;
-        return $VC->cadastrarValores();
+        $matricula = \App\Matricula::find(13924);
+        return $matricula->getParcelas();
     }
 
 

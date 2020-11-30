@@ -1143,6 +1143,11 @@ class PessoaController extends Controller
 		if(!isset($r->pessoa))
 			return redirect('/rematricula')->withErrors(['Cadastro não encontrado']);
 		else{
+			$vencimento = \Carbon\Carbon::today()->addDays(-5);
+			$boleto_vencido = \App\Boleto::where('pessoa',$r->pessoa)->whereIn('status',['emitido','divida','aberto executado'])->where('vencimento','<',$vencimento->toDateString())->get();
+			if($boleto_vencido->count()>0)		
+				return redirect('/rematricula')->withErrors(['Existem pendências abertas em seu cadastro. Entre em contato pelo 3372-1308 para maiores informações.']);
+			
 			$pessoa = Pessoa::find($r->pessoa);
 			if(isset($pessoa->id)){
 				$rg = PessoaDadosGerais::where('pessoa',$pessoa->id)->where('dado',4)->first();

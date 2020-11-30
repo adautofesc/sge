@@ -177,9 +177,6 @@
                         <br>
                     <strong>8.	FORO</strong><br>
                         8.1 Fica eleito o Foro da Comarca de São Carlos para dirimir quaisquer controvérsias oriundas do presente ajuste.
-                        <br>
-                        <strong>9.	PROTEÇÃO DOS DADOS</strong><br>
-                        9.1 O aluno declara ter ciência que os dados pessoais coletados pela pela Fundação Educacional São Carlos serão armazenados e processados em servidores terceiros, porém com acesso exclusivo à Fundação para o controle de suas atividades pedagógicas e contábeis em conformidade com a Lei nº 13.709/2018.
                 </p>
 
                 

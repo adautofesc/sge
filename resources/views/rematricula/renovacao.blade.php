@@ -68,6 +68,12 @@
             
         <p>Selecione os cursos que deseja fazer a rematrícula. Apenas serão exibidas turmas de continuação.<br>
                     Alterações de horários ou adição de novas disciplinas serão feitas posteriormente na secretaria, em atendimento previamente agendado e em período de novas matrículas.</p>
+                    <p>Os valores para 2021 da UATI são: <br>
+                    R$294,00 em 10x R$29,40 para 1 disciplina. <br>
+                    R$622,00  em 10x R$62,20 para 2 ou 3 disciplinas  <br>
+                    R$961,00 em 10x R$96,10 para 4 ou mais disciplinas.<br>
+                    R$769,00 em 10x R$76,90 Natação e hidroginástica <br>
+                    Demais cursos consulte a tabela de preços na FESC</p>
             
             
     
@@ -112,8 +118,14 @@
             @endforeach
         </table>
             <div class="form-group row">
+                <div class="col-md-12 form-group form">
+                <input type="checkbox" name="agree" id="agree">
+                <label for="agree">Aceito o <a href="/rematricula/termo" target="_blank">TERMO DE MATRÍCULA</a> previsto e confirmo minha matrícula.</label>
+                </div>
+            </div>
+            <div class="form-group row">
                 
-                <div> 
+                <div class="col-md-12 form-group form"> 
                     <input type="hidden" name="pessoa" value="{{$pessoa->id}}">
                     <button type="submit" name="btn"  class="btn btn-primary">Confirmar</button>
                     <button type="reset" name="btn"  class="btn btn-primary">Limpar</button>

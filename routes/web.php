@@ -36,13 +36,17 @@ route::get('profile',function(){
 Route::prefix('rematricula')->group(function(){
 	Route::get('/',function(){
 		if(!isset(Auth::user()->pessoa))
-			return view('rematricula.espera');
+			return view('rematricula.index');
 		else
 			return "Usuários do sistema deve utilizar o atendimento da secretaria.";
 	});
 	Route::get('autentica/{cpf}','PessoaController@verificarCPF');
 	Route::post('autentica/{cpf}','PessoaController@autenticarRematricula');
 	Route::post('gravar','MatriculaController@gravarRematricula');
+	Route::post('termo/{id}','MatriculaController@termo');
+	Route::get('termo',function(){
+		return view('juridico.documentos.termo_aberto');
+	});
 
 });
 
@@ -85,6 +89,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec');
 	Route::get('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_view');
 	Route::post('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_exec');
+
 
 
 	Route::get('notificacoes','NotificacaoController@index');
@@ -214,6 +219,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		
 		Route::get('importar-status-boletos','painelController@importarStatusBoletos');
 		Route::get('add-recesso','DiaNaoLetivoController@ViewAddRecesso');
+		Route::get('cadastrarValores','ValorController@cadastrarValores');
 
 		/*
 		Route::get('/descontao','LancamentoController@descontao1');

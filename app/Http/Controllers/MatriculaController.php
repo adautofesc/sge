@@ -136,10 +136,11 @@ class MatriculaController extends Controller
         $matricula=Matricula::find($matricula);
         if(!$matricula)
             return view("error-404");
-        
+        /*
         if($matricula->status == 'pendente'){
             return redirect()->back()->withErrors(['Matrículas pendentes não podem ser impressas. Altere o status em opções/editar']);
         }
+        */
         $pessoa=Pessoa::find($matricula->pessoa);
         $pessoa=PessoaController::formataParaMostrar($pessoa);
         
@@ -276,7 +277,30 @@ class MatriculaController extends Controller
         $matricula->curso = $turma->curso->id;
         $matricula->save();
 
-        $matricula->getParcelas();
+        $matricula->parcelas = $matricula->getParcelas();
+        $matricula->save();
+
+
+        return $matricula;
+
+
+
+
+    }
+
+
+    public static function gerarMatriculaRematricula($pessoa,$turma_id,$status_inicial){
+        $turma=Turma::find($turma_id);
+        if($turma==null)
+            redirect($_SERVER['HTTP_REFERER']);
+        $matricula=new Matricula();
+        $matricula->pessoa=$pessoa;
+        $matricula->atendimento=1111;
+        $matricula->data=date('Y-m-d');
+        $matricula->dia_venc=10;
+        $matricula->status=$status_inicial;
+        $matricula->valor=str_replace(',','.',$turma->valor);
+        $matricula->curso = $turma->curso->id;
         $matricula->save();
 
 
@@ -588,21 +612,22 @@ class MatriculaController extends Controller
     public function renovar_vw($pessoa){
        $pessoa = \App\Pessoa::cabecalho($pessoa);
        $matriculas = Matricula::where('pessoa', $pessoa->id)
-                ->whereIn('status',['ativa','pendente'])
+                ->where('status','expirada')
+                ->whereDate('data','>','2019-11-20')
                 ->orderBy('id','desc')->get();
                 
              //listar inscrições de cada matricula;
              foreach($matriculas as $matricula){
-                $matricula->inscricoes = \App\Inscricao::where('matricula',$matricula->id)->where('status','regular')->get();
+                $matricula->inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','finalizada'])->get();
                 foreach($matricula->inscricoes as $inscricao){  
                     $inscricao->proxima_turma = \App\Turma::where('professor',$inscricao->turma->professor->id)
                                                             ->where('dias_semana',implode(',', $inscricao->turma->dias_semana))
                                                             ->where('hora_inicio',$inscricao->turma->hora_inicio)
                                                             ->where('data_inicio','>',\Carbon\Carbon::createFromFormat('d/m/Y', $inscricao->turma->data_termino)->format('Y-m-d'))
-                                                            ->where('vagas', $inscricao->turma->vagas)
-                                                            ->where('status','inscricao')
+                                                            
+                                                            ->whereIn('status',['inscricao','espera'])
                                                             ->get();
-                    //dd($inscricao->turma->vagas);
+                    //dd($inscricao->turma->vagas);->where('vagas', $inscricao->turma->vagas)
                 }
              }
         return view('secretaria.matricula.renovacao',compact('pessoa'))->with('matriculas',$matriculas);
@@ -660,23 +685,36 @@ class MatriculaController extends Controller
 
 
     public function gravarRematricula(Request $r){
+        if(!isset($r->agree) || $r->agree==false)
+            return redirect()->back()->withErrors(['Só é possivel fazer a rematrícula concordando com o Termo de Matrícula, clicando na caixa correspondente.']);
+
         if(!isset($r->turmas))
             return redirect()->back()->withErrors(['Nenhuma turma selecionada']);
+        
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+
+        }
         foreach($r->turmas as $turma){
             //verifica se existe turma de continuação
             
-                $inscricao = InscricaoController::inscreverAlunoSemMatricula($r->pessoa,$turma);
-                $matricula = Matricula::where('pessoa',$r->pessoa)->where('status','pendente')->where('curso', $inscricao->turma->curso->id)->first();
+                $inscricao = InscricaoController::inscreverAlunoRematricula($r->pessoa,$turma);
+                $matricula = Matricula::where('pessoa',$r->pessoa)->where('status','espera')->where('curso', $inscricao->turma->curso->id)->first();
                 if($matricula == null)
-                    $matricula = MatriculaController::gerarMatricula($r->pessoa,$turma,'pendente'); 
+                    $matricula = MatriculaController::gerarMatriculaRematricula($r->pessoa,$turma,'espera'); 
                 $inscricao->matricula = $matricula->id;
-                $inscricao->status = 'pendente';
+                $inscricao->status = 'regular';
                 $inscricao->save();
-                $matricula->obs = 'Rematricula online. Assinar o termo.';
+                $matricula->obs = 'Rematricula online. IP: '.$ip;
+                $matricula->parcelas = $matricula->getParcelas();
                $matricula->save();
             
         }
-        return view('rematricula.confirma');
+        return view('rematricula.confirma')->with('matricula',$matricula->id);
         
     }
 

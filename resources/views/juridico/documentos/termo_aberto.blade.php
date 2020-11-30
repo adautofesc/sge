@@ -51,86 +51,28 @@
                         <td>
                             <img id="FormView1_Image1" src="{{asset('img/logo.jpg')}}" style="border-width:0px;" />
                         </td>
-                        <td width="100%" align="center" style="text-align: center" class="texto">
-                            <strong>TERMO DE MATRICULA Nº &nbsp;<span id="FormView1_CurDesTit">{{$matricula->id}}</span></strong></div>
-                        </td>
-                        <td><img src="/img/code39.php?code=MT{{$matricula->id}}">
-                            
-                        </td>
+                       
                     </tr>
                 </table>
                 <p><strong>FUNDAÇÃO EDUCACIONAL SÃO CARLOS</strong>, pessoa jurídica de direito público inscrita no CNPJ sob nº 45.361.904/0001-80, com sede na Rua São Sebastião, nº 2828, Vila Nery, São Carlos/SP, neste ato representada por seu Diretor-Presidente, doravante denominhada FESC<br>
                 
                 
                     ALUNO:
-                    <span id="FormView1_AluNom" style="font-weight:bold;">{{$pessoa->nome}}</span>&nbsp;
-                    &nbsp;endereço:&nbsp;<span id="FormView1_Label9" >{{$pessoa->logradouro}}, {{$pessoa->end_numero}}</span>
-                    &nbsp;, bairro:&nbsp;<span id="FormView1_Label10" >{{$pessoa->bairro}}</span>
-                    &nbsp;, cidade:&nbsp;<span id="FormView1_Label11" >{{$pessoa->cidade}}</span>
-                    &nbsp;<span id="FormView1_Label12" >{{$pessoa->estado}}</span>
-                    &nbsp;, cep:&nbsp;<span id="FormView1_Label13" >{{$pessoa->cep}}</span>
-                    &nbsp;, fone:&nbsp;<span id="FormView1_Label14" >{{$pessoa->telefone}}</span>
-                    
-                    &nbsp;,CPF
-							nº
-							<span id="FormView1_AluCpf">{{$pessoa->cpf}}</span>,
-                            RG
-                            <span id="FormView1_Label1">{{$pessoa->rg}}</span>
-                    , doravante denominado ALUNO<br>
+                    <span id="FormView1_AluNom" style="font-weight:bold;">[dados do aluno]</span>&nbsp;
+                  , doravante denominado ALUNO<br>
                     Têm justo  e acordado o seguinte:</br>
                 </p>
 
 
                 <p>
                     <strong>1. OBJETO</strong><br />
-                    <strong>1.1</strong> O presente formaliza a inscrição do ALUNO nas seguinte atividades:</p>
+                    <strong>1.1</strong> O presente formaliza a inscrição do ALUNO nas atividades escolhidas na rematricula</p>
                     
-                   <table cellspacing="0" rules="all" border="1" id="FormView1_g1" style="border-color:Black;border-width:1px;border-style:Solid;width:100%;border-collapse:collapse;">
-                <tr class="header-tabela">
-                    <th align="left" scope="col">&nbsp;CURSO </th>
-                    <th align="center" scope="col" width="80px">&nbsp;DIAS </th>
-                    <th align="center" scope="col" width="50px" >&nbsp;HORÁRIO </th>
-                    <th align="center" scope="col" width="100px">&nbsp;DE/ATE </th>
-        
-                    <th align="center" scope="col">&nbsp; LOCAL/SALA</th>
-                </tr>
-
-                @foreach($inscricoes as $insc)
-
-                        <tr class="corpo-tabela">
-     
-                            <td>
-
-                                @if($insc->turma->disciplina==null)
-                                    {{ $insc->turma->curso->nome }} 
-                                @else
-                                    {{ $insc->turma->curso->nome }}, {{ $insc->turma->disciplina->nome }}
-                                @endif 
-                            </td>
-                            <td>{{ucwords(implode(', ', $insc->turmac->dias_semana )) }}</td>   
-                                 
-                            <td>{{$insc->turmac->hora_inicio}} às {{$insc->turmac->hora_termino}}</td>
-                            <td align>{{$insc->turmac->data_inicio}} à {{$insc->turmac->data_termino}}</td>
-                             
-                            <td>{{$insc->turmac->local->nome}} <br>
-                                @if(isset($insc->turmac->sala->nome))
-                                sala {{$insc->turmac->sala->nome}}
-                                @endif
-                            </td>
-
-                        </tr>
-                    @endforeach
-
-
-            </table>
+                  
                 <p>
                     <strong> 2. VALOR E CONDIÇÕES DE PAGAMENTO</strong>
                         <br />
-                        2.1 O ALUNO pagará à FESC, pela prestação dos serviços ora ajustados, o valor total de
-                        <span id="FormView1_MatVlrPag">R$ {{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas*$matricula->parcelas, 2, ',', '.')}}</span>, dividido em
-                        <span id="FormView1_CPACod">{{$matricula->parcelas}}</span>
-                        parcelas de R$ {{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas,2,',','.')}}
-                        <span id="FormView1_parcela"></span>
+                        2.1 O ALUNO pagará à FESC, pela prestação dos serviços ora ajustados, o valor referente ao curso/ano frequentado, dividido em parcelas
                         cada uma, vencíveis no dia
                         <strong><span id="FormView1_MatDiaPag">10
                         de cada mês</span></strong>, após o início das aulas e através de boleto bancário;
@@ -185,34 +127,11 @@
                 
                 <div align="right">
                     <p>
-                        São Carlos,
-                                <span id="FormView1_data_atual">{{date("d/m/Y")}}</span>
+                    <strong>O contrato com os dados do aluno será disponibilizado após a rematrícula.</strong>
                     </p>
                 </div>
                 
-                                <table border="0" cellpadding="2" cellspacing="2" width="100%" style="height:100px;" class="texto">
-                                    <tr>
-                                    <td align="center" style="text-align:center;">
-                                        <img src="{{asset('img/dir_sign.jpg')}}" width="150px"  /></br>
-                                        __________________________________</spam><br/>
-                                            Fernando Henrique Carvalho
-                                            </br>
-                                            <strong>Diretor Presidente da FESC</strong>
-                                       
-                                        <td align="center" style="text-align:center;">
-                                            <br><br><br><br><br>
-                                            <span>
-                                            __________________________________</spam><br/>
-
-
-                                            <span id="FormView1_AluNomAss">{{$pessoa->nome}}</span>
-                                            </br>
-                                            <strong>Aluno(a) ou Responsável por procuração.</strong>
-                                            </br><span id="FormView1_MatResNomLabel"></span>
-                                            </br>
-                                        </td>
-                                    </tr>
-                                </table>
+                               
 
                 <br />
                 </br>

@@ -214,6 +214,23 @@ class InscricaoController extends Controller
         return $inscricao;
     }
 
+    public static function inscreverAlunoRematricula($aluno,$turma){
+        $turma=Turma::find($turma);
+        if($turma == null)
+            return false;
+        if(InscricaoController::verificaSeInscrito($aluno,$turma->id))
+                return Inscricao::find(InscricaoController::verificaSeInscrito($aluno,$turma->id));
+        $inscricao=new Inscricao();
+        $inscricao->pessoa=$aluno;
+        $inscricao->turma=$turma->id;
+        $inscricao->status='regular';
+        
+        $inscricao->atendimento = 1111;
+        $inscricao->save();
+        TurmaController::modInscritos($turma->id,1,1);
+        return $inscricao;
+    }
+
     /**
      * [inscreverAlunoLote description]
      * @param  [type]  $turma [description]

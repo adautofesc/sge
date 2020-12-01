@@ -53,7 +53,7 @@
        {{ csrf_field() }}
        <input type="hidden" name = "matricula" value = "{{$matricula}}">
        <form>
-       <p>O início das aulas será definido em breve</p>
+       <p>O início das aulas está previsto para a segunda semana de fevereiro,  porém poderá ser alterado, seguindo as diretrizes do Plano São Paulo de combate ao COVID-19</p>
       
         
    </div>

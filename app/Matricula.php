@@ -139,6 +139,8 @@ class Matricula extends Model
 
 		$valor_matricula = \App\Http\Controllers\ValorController::valorMatricula($this->id);
 
+		//return $valor_matricula;
+
 		//transforma data de inicio da turma em objeto de data para descobrir qual semestre é
 		$pp_dt = \DateTime::createFromFormat('d/m/Y', $inscricoes->first()->turma->data_inicio);
 		

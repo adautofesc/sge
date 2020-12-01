@@ -345,7 +345,7 @@ class painelController extends Controller
     }
     
     public function testarClasse(){
-        $matricula = \App\Matricula::find(13924);
+        $matricula = \App\Matricula::find(13928); 
         return $matricula->getParcelas();
     }
 

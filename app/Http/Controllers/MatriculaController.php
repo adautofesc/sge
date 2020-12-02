@@ -613,10 +613,12 @@ class MatriculaController extends Controller
        $pessoa = \App\Pessoa::cabecalho($pessoa);
        $matriculas = Matricula::where('pessoa', $pessoa->id)
                 ->where('status','expirada')
-                ->whereDate('data','>','2019-11-20')
+                ->whereDate('data','>','2019-11-01')
                 ->orderBy('id','desc')->get();
+
+                dd($matriculas);
                 
-             //listar inscrições de cada matricula;
+             //listar inscrições de cada matricula; 
              foreach($matriculas as $matricula){
                 $matricula->inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','finalizada'])->get();
                 foreach($matricula->inscricoes as $inscricao){  

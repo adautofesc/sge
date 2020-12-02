@@ -1158,7 +1158,7 @@ class PessoaController extends Controller
 					//$pessoa = \App\Pessoa::cabecalho($pessoa);
 					$matriculas = \App\Matricula::where('pessoa', $pessoa->id)
 								->where('status','expirada')
-								->whereDate('data','>','2019-11-20')
+								->whereDate('data','>','2019-11-01')
 								->orderBy('id','desc')->get();
 								
 							//listar inscrições de cada matricula;

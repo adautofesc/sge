@@ -53,7 +53,7 @@
        {{ csrf_field() }}
        <input type="hidden" name = "matricula" value = "{{$matricula}}">
        <form>
-       <p>O início das aulas está previsto para a segunda semana de fevereiro,  porém poderá ser alterado, seguindo as diretrizes do Plano São Paulo de combate ao COVID-19</p>
+       <p>O início das aulas está previsto para a segunda semana de fevereiro,  mas poderá ser alterado, seguindo as determinações do Plano SP e da Prefeitura Municipal de São Carlos, através do Comitê do COVID-19</p>
       
         
    </div>

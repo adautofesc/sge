@@ -616,7 +616,7 @@ class MatriculaController extends Controller
                 ->whereDate('data','>','2019-11-01')
                 ->orderBy('id','desc')->get();
 
-                dd($matriculas);
+                //dd($matriculas);
                 
              //listar inscrições de cada matricula; 
              foreach($matriculas as $matricula){

@@ -23,7 +23,9 @@
     </style>
     <script>
         function ValidaCPF(){
-            numero = $( "input[name=cpf]" ).val();
+            
+            numero = document.getElementById("cpf").value;
+            
             if(numero.length<9 || numero.length>11 || numero=='11111111111'){
                 alert("CPF Inválido");
                 return false;
@@ -33,7 +35,7 @@
                 //document.forms[0].submit();
 
             }
-            console.log(numero)
+
 
             
             //
@@ -72,9 +74,9 @@
             
             <div class="col-md-3 form-group form">
                 <label for="RegraValida">CPF (somente números)</label>
-                <input type="number" class="form-control form-control-sm" name="cpf" maxlength="11" max-size="11">
+                <input type="number" class="form-control form-control-sm" name="cpf" id="cpf" maxlength="11" max-size="11">
             </div>
-            &nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="Continuar" onclick="ValidaCPF();" class="btn btn-info">
+            &nbsp;&nbsp;&nbsp;&nbsp;<button onclick="ValidaCPF();" class="btn btn-info"> Continuar</button>
            
 
     </div>

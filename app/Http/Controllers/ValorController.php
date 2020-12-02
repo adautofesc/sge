@@ -199,7 +199,7 @@ class ValorController extends Controller
                     $turma= \App\Turma::find($inscricao->turma->id);
                     if($turma->valor>0){
                         $valor = new Valor;
-                        $valor->valor = $turma->valor;
+                        $valor->valor = $turma->valor;//***************************** aqui vai o preço */
                         switch($turma->periodicidade){
                             case 'mensal' :
                                 $valor->parcelas = 1;

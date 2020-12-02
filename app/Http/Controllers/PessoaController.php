@@ -1128,7 +1128,7 @@ class PessoaController extends Controller
 
 	public function verificarCPF($numero){
 		if(is_numeric($numero))
-			$dado = PessoaDadosGerais::where('dado',3)->where('valor',$numero)->first();
+			$dado = PessoaDadosGerais::where('dado',3)->where('valor',$numero)->orderBy('id','desc')->first();
 		else
 			return redirect()->back()->withErrors(['O CPF '.$numero.' não é um número válido.']);
 
@@ -1150,7 +1150,7 @@ class PessoaController extends Controller
 			
 			$pessoa = Pessoa::find($r->pessoa);
 			if(isset($pessoa->id)){
-				$rg = PessoaDadosGerais::where('pessoa',$pessoa->id)->where('dado',4)->first();
+				$rg = PessoaDadosGerais::where('pessoa',$pessoa->id)->where('dado',4)->orderBy('id','desc')->first();
 				$nome = explode(' ',$pessoa->nome_simples);
 				$nome = strtolower($nome[0]);
 				

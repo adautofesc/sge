@@ -57,7 +57,7 @@
         <div class="description">
             Agora você pode se rematricular nas disciplinas que fazia, sem sair de casa.<br>
             Basta preencher os campos abaixo e escolher as disciplinas que deseja continuar.<br>
-            O contrato só será validado depois de entregue assinado na secretaria.
+            O contrato tem validade a partir da aceitação dos termos e confirmação da matrícula e sua assinatura fica sendo seu número de IP que ficará atrelado à matrícula.
             
             
         </div>

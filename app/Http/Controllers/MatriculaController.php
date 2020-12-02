@@ -132,10 +132,21 @@ class MatriculaController extends Controller
      * @param  [type] $matricula [description]
      * @return [type]            [description]
      */
-    public function termo($matricula){
+    public function termo($matricula,Request $r){
+        //dd($r->keycode);
         $matricula=Matricula::find($matricula);
         if(!$matricula)
             return view("error-404");
+
+        if(!isset(Auth::user()->pessoa))
+            if(isset($r->keycode)){
+                if($r->keycode != $matricula->pessoa)
+                    return redirect("https://www.youtube.com/watch?v=fXLicO0CRvk");
+            }
+            else
+                return redirect("https://makeameme.org/meme/no-tem-nada-2e82409728");
+
+        
         /*
         if($matricula->status == 'pendente'){
             return redirect()->back()->withErrors(['Matrículas pendentes não podem ser impressas. Altere o status em opções/editar']);
@@ -143,6 +154,8 @@ class MatriculaController extends Controller
         */
         $pessoa=Pessoa::find($matricula->pessoa);
         $pessoa=PessoaController::formataParaMostrar($pessoa);
+
+        
         
         $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->whereIn('status',['regular','pendente','finalizada'])->get();
         foreach($inscricoes as $inscricao){
@@ -702,13 +715,16 @@ class MatriculaController extends Controller
             $ip .='|'. $_SERVER['REMOTE_ADDR'];
 
         }
+        $matriculas = array();
         foreach($r->turmas as $turma){
             //verifica se existe turma de continuação
             
                 $inscricao = InscricaoController::inscreverAlunoRematricula($r->pessoa,$turma);
                 $matricula = Matricula::where('pessoa',$r->pessoa)->where('status','espera')->where('curso', $inscricao->turma->curso->id)->first();
-                if($matricula == null)
+                if($matricula == null){
                     $matricula = MatriculaController::gerarMatriculaRematricula($r->pessoa,$turma,'espera'); 
+                    $matriculas[] = $matricula->id;
+                }
                 $inscricao->matricula = $matricula->id;
                 $inscricao->status = 'regular';
                 $inscricao->save();
@@ -717,7 +733,7 @@ class MatriculaController extends Controller
                $matricula->save();
             
         }
-        return view('rematricula.confirma')->with('matricula',$matricula->id);
+        return view('rematricula.confirma')->with('matriculas',$matriculas)->with('pessoa',$r->pessoa);
         
     }
 

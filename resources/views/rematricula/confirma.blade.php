@@ -31,9 +31,9 @@
         }
     </style>
     <script>
-    function termo(){
-    console.log('fui cahamdo');
-       document.forms[0].submit();
+    function termo(id){
+        document.forms[0].action = "/rematricula/termo/"+id;
+        document.forms[0].submit();
     }
     </script>
  
@@ -44,14 +44,20 @@
             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check-circle-fill" fill="green" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
               </svg>
-          Rematrícula realizada com sucesso.</h1>
+          Rematrícula(s) realizada(s) com sucesso.</h1>
         <div class="description">
-            Foi gerada a matrícula número {{$matricula}}. Seu termo pode ser acessado <a href="#" onclick="termo();">aqui</a>
+        <p>
+        A seguinte matrículas foram geradas:<br>
+            @foreach($matriculas as $id)
+             Matrícula número: <a href="#" onclick="termo({{$id}});"><strong>{{$id}}</strong></a><br>
+            @endforeach
+        </p>
+             
             
        </div>
-       <form action="/rematricula/termo/{{$matricula}}" method="post" target="_blank">
+       <form  method="post" target="_blank">
        {{ csrf_field() }}
-       <input type="hidden" name = "matricula" value = "{{$matricula}}">
+       <input type="hidden" name = "keycode" value = "{{$pessoa}}">
        <form>
        <p>O início das aulas está previsto para a segunda semana de fevereiro,  mas poderá ser alterado, seguindo as determinações do Plano SP e da Prefeitura Municipal de São Carlos, através do Comitê do COVID-19</p>
       

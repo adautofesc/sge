@@ -123,21 +123,23 @@ class ValorController extends Controller
     public static function valorMatricula($id_matricula)
     {
 
-    	$matricula = Matricula::find($id_matricula);
+        $matricula = Matricula::find($id_matricula);
+        
 
 
     	if($matricula)
     	{
+            $inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','pendente'])->get();
             if($matricula->curso == null){
                 \App\Http\Controllers\MatriculaController::matriculaSemCurso($matricula);
 
             }
-            $inscricao_t = \App\Inscricao::where('matricula',$matricula->id)->first();
+            //$inscricao_t = \App\Inscricao::where('matricula',$matricula->id)->first();
 
-            if($inscricao_t == null){
+            if($inscricoes->count() == 0){
                 return ValorController::retornarZero('Não há inscrições ativas');
             }
-            $turma = \App\Turma::find($inscricao_t->turma->id);
+            $turma = \App\Turma::find($inscricoes->first()->turma->id);
 
             //dd($turma->parceria->id);
             $fesc=[84,85,86];
@@ -187,59 +189,65 @@ class ValorController extends Controller
     			
 
     		}
-    		else
+    		else //não é 307
     		{
-
+               /*
     			$inscricao = \App\Inscricao::where('matricula',$matricula->id)->first();
-                if(!$inscricao){
+                if($inscricoes->count()==0){
                     return ValorController::retornarZero('Não há inscrições ativas');
-                }
-                else
+                
 
-                    $turma= \App\Turma::find($inscricao->turma->id);
-                    if($turma->valor>0){
-                        $valor = new Valor;
-                        $valor->valor = $turma->valor;//***************************** aqui vai o preço */
-                        switch($turma->periodicidade){
-                            case 'mensal' :
-                                $valor->parcelas = 1;
-                                break;
-                            case 'bimestral' :
-                                $valor->parcelas = 2;
-                                break;
-                            case 'trimestral' :
-                                $valor->parcelas = 3;
-                                break;
-                            case 'semestral' :
-                                $valor->parcelas = 5;
-                                break;
-                            case 'anual' :
+                else*/
+                $valor = new Valor;
+                $valor->valor =0;
+                foreach($inscricoes as $inscricao){
+                    $valor->valor += $inscricao->turma->valor;
+                }
+
+                $turma= \App\Turma::find(($inscricoes->first())->turma->id);
+                if($turma->valor>0){
+                    //$valor = new Valor;
+                    //$valor->valor = $turma->valor;//***************************** aqui vai o preço */
+                    switch($turma->periodicidade){
+                        case 'mensal' :
+                            $valor->parcelas = 1;
+                            break;
+                        case 'bimestral' :
+                            $valor->parcelas = 2;
+                            break;
+                        case 'trimestral' :
+                            $valor->parcelas = 3;
+                            break;
+                        case 'semestral' :
+                            $valor->parcelas = 5;
+                            break;
+                        case 'anual' :
+                            $valor->parcelas = 10;
+                            break;
+                            /* if($inscricao->turma->programa->id == 12 || $inscricao->turma->programa->id == 2)
                                 $valor->parcelas = 10;
-                                break;
-                               /* if($inscricao->turma->programa->id == 12 || $inscricao->turma->programa->id == 2)
-                                    $valor->parcelas = 10;
-                                else 
-                                    $valor->parcelas = 11;
-                                break;
-                                */
-                                
-                            case 'eventual' :
-                                $valor->parcelas = 1;
-                                break;
-                            default :
-                                $valor->parcelas = 5;
-                                break;
-                        }
-                        
-                        $valor->referencia = 'parcelas temporaria';
-                        return $valor;
+                            else 
+                                $valor->parcelas = 11;
+                            break;
+                            */
+                            
+                        case 'eventual' :
+                            $valor->parcelas = 1;
+                            break;
+                        default :
+                            $valor->parcelas = 5;
+                            break;
                     }
+                    
+                    $valor->referencia = 'parcelas temporaria';
+                    return $valor;
+                }
 
                 if(isset($valor))
                     return $valor;//number_format($valor->valor,2,',','.');
                 else
 
-                    throw new \Exception("Erro ao acessar valor da turma:".$inscricao->turma->id.' Matrricula:'.$matricula->id .'. Verifique se a turma está com seu valor devidamente atribuído ou se são foi escolhido a parceria.', 1);
+                    throw new \Exception("Erro ao acessar valor da turma:".$inscricoes->first()->turma->id.' Matrricula:'.$matricula->id .'. Verifique se a turma está com seu valor devidamente atribuído ou se são foi escolhido a parceria.', 1);
              
     		}
     	}

@@ -462,7 +462,7 @@ class PessoaController extends Controller
 		if(isset($termo))
 			$pessoas=Pessoa::leftjoin('pessoas_dados_gerais', 'pessoas.id', '=', 'pessoas_dados_gerais.pessoa')
 							->where('pessoas.id',$termo)
-							->orwhere('nome', 'like', $termo."%")
+							->orwhere('nome', 'like', "%".$termo."%")
 							->orwhere('nascimento', 'like', '%'.$termo."%")
 							->orwhere('pessoas_dados_gerais.valor', 'like', '%'.$termo."%")					
 							->orderby('nome')								

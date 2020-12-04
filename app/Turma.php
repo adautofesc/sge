@@ -27,6 +27,7 @@ class Turma extends Model
 	Valor que vai aparecer na lista de turmas
 	**/
 	public function getValorAttribute($value){
+		
 
 		//verifica se o curso é fora da fesc, se for, retorna valor 0
 		$fesc=[84,85,86];
@@ -51,16 +52,19 @@ class Turma extends Model
 		}
 		else
 		{	
-			//procura curso carga.
+			//procura curso/carga/ano.
 			$valorc= Valor::where('curso',$this->curso->id)->where('carga',$this->carga)->where('ano',substr($this->data_inicio,-4))->get();
+
 			if($valorc->count()!=1)
 
-			//ṕrocura curso
-			$valorc= Valor::where('curso',$this->curso->id)->where('ano',substr($this->data_inicio,-4))->get();
+					//procura curso/ano
+					$valorc= Valor::where('curso',$this->curso->id)->where('ano',substr($this->data_inicio,-4))->get();
+
 			if($valorc->count()!=1)
 
-			//programa carga
-			$valorc= Valor::where('programa',$this->programa->id)->where('carga',$this->carga)->where('ano',substr($this->data_inicio,-4))->get();
+				//programa/carga/ano
+				$valorc= Valor::where('programa',$this->programa->id)->where('carga',$this->carga)->where('ano',substr($this->data_inicio,-4))->get();
+
 			if($valorc->count()!=1)
 
 				//se não tiver na tabela, pega do valor da tabela turma mesmo;

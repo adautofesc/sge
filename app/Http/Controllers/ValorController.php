@@ -201,10 +201,13 @@ class ValorController extends Controller
                 $valor = new Valor;
                 $valor->valor =0;
                 foreach($inscricoes as $inscricao){
-                    $valor->valor += $inscricao->turma->valor;
+                    $turma= \App\Turma::find($inscricao->turma->id); 
+                    $valor->valor += $turma->valor;
+                    
                 }
+                //dd($valor);
 
-                $turma= \App\Turma::find(($inscricoes->first())->turma->id);
+                //$turma= \App\Turma::find(($inscricoes->first())->turma->id);
                 if($turma->valor>0){
                     //$valor = new Valor;
                     //$valor->valor = $turma->valor;//***************************** aqui vai o preço */
@@ -240,10 +243,10 @@ class ValorController extends Controller
                     }
                     
                     $valor->referencia = 'parcelas temporaria';
-                    return $valor;
+                    //return $valor;
                 }
 
-                if(isset($valor))
+                if($valor->valor>0)
                     return $valor;//number_format($valor->valor,2,',','.');
                 else
 

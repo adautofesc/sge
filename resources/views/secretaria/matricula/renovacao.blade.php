@@ -39,7 +39,7 @@
     <div class="card card-block">
     	<div class="title-block">
             <h3 class="title"><i class=" fa fa-check-square-o "></i> Renovação de matrículas. </h3>
-            <p><small>Relação de turmas com o mesmo professor, dias da semana, horário, data de inicio maior que a data de termino da turma atual e com inscrições abertas.</small></p>
+            <p><small>Relação de turmas de continuação com rematricula/inscrição abertas.</small></p>
         </div>
 
 
@@ -79,14 +79,7 @@
 
                     <li class="item">
                         <div class="item-row ">
-                            <div class="item-col fixed item-col-check "> 
-
-                                <label class="item-check" id="select-all-items">
-                                <input type="checkbox" class="checkbox" name="turmas[]" value="{{$inscricao->turma->id}}" >
-
-                                <span></span>
-                                </label>
-                            </div>
+                            
                             
                             <div class="item-col turma ">
                                 <div class="item-heading">Curso Atual</div>
@@ -121,34 +114,49 @@
                                 <div> <i class="fa fa-chevron-right"></i></div>
                             </div>
                             <div class="item-col">
-                                @if(isset($inscricao->proxima_turma->first()->id))
+                                @if($inscricao->proxima_turma->count())
+                                @foreach($inscricao->proxima_turma as $next)
+                                
                                 <div class="item-heading">Nova Turma</div>
+                                <div class="item-col fixed item-col-check "> 
+
+                                    <label class="item-check" id="select-all-items">
+                                    @if($next->vagas > $next->matriculados)
+                                    <input type="radio" class="radio" name="turmas[{{$inscricao->turma->id}}]" value="{{$next->id}}" >
+                                    @else
+                                    <input type="radio" class="radio" disabled="disabled" title="Todas as vagas ja foram preenchidas" >
+                                    @endif
+
+                                    <span></span>
+                                    </label>
+                                </div>
                                 <div class="">
                                     
-                                         <div style="margin-bottom:5px;" class="color-primary">Turma {{$inscricao->proxima_turma->first()->id}} - <i class="fa fa-{{$inscricao->proxima_turma->first()->icone_status}}" ></i><small> {{$inscricao->proxima_turma->first()->texto_status. ' - Começa em  ' .$inscricao->proxima_turma->first()->data_inicio}}</small></div> 
+                                         <div style="margin-bottom:5px;" class="color-primary">Turma {{$next->id}} - <i class="fa fa-{{$next->icone_status}}" ></i><small> {{$next->texto_status. ' - Começa em  ' .$next->data_inicio}}</small></div> 
                                         <strong>
 
                                    
-                                    @if(isset($inscricao->proxima_turma->first()->disciplina))
+                                    @if(isset($next->disciplina))
                                     
-                                        <h4 class="item-title"> {{$inscricao->proxima_turma->first()->disciplina->nome}}</h4>       
-                                        <small>{{$inscricao->proxima_turma->first()->curso->nome}}</small>
+                                        <h4 class="item-title"> {{$next->disciplina->nome}}</h4>       
+                                        <small>{{$next->curso->nome}}</small>
                                     
                                    @else
                                     
-                                        <h4 class="item-title"> {{$inscricao->proxima_turma->first()->curso->nome}}</h4>           
+                                        <h4 class="item-title"> {{$next->curso->nome}}</h4>           
                                     
                                     @endif
                                     </strong>
 
 
                                      
-                                     <p>Prof. <strong>{{$inscricao->proxima_turma->first()->professor->nome_simples}}</strong><br>
+                                     <p>Prof. <strong>{{$next->professor->nome_simples}}</strong><br>
                                        
                                      
-                                    Local: <span class="label">{{$inscricao->proxima_turma->first()->local->sigla}}</span> Horário: <strong>{{implode(', ',$inscricao->proxima_turma->first()->dias_semana)}}</strong> das {{$inscricao->proxima_turma->first()->hora_inicio}} ás {{$inscricao->proxima_turma->first()->hora_termino}}</p>
+                                    Local: <span class="label">{{$next->local->sigla}}</span> Horário: <strong>{{implode(', ',$next->dias_semana)}}</strong> das {{$next->hora_inicio}} ás {{$next->hora_termino}}</p>
                                 </div>
-                                <input type="hidden" name="novaturma[{{$inscricao->turma->id}}]" value="{{$inscricao->proxima_turma->first()->id}}">
+                               
+                                @endforeach
                                 @else
                                 <p align="center"><i class="fa fa-warning"></i><br/>Nenhuma turma com professor,<br> dia e horário compatível.<br/><a href="/secretaria/matricula/nova/{{$pessoa->id}}">Proceder com nova matrícula.</a>
                                     <!-- 

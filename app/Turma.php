@@ -22,6 +22,14 @@ class Turma extends Model
 		$this->attributes['valor'] = str_replace(',', '.', $value);
 	}
 
+	public function getDados(){
+		$extras = TurmaDados::where('turma',$this->id)->orderBy('id','asc')->get();
+		foreach($extras as $extra){
+			$this->{$extra->dado} = $extra->valor;
+		}
+		return $extras;
+	}
+
 
 	/**
 	Valor que vai aparecer na lista de turmas

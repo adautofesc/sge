@@ -642,6 +642,13 @@ class MatriculaController extends Controller
                                                             
                                                             ->whereIn('status',['inscricao','espera'])
                                                             ->get();
+
+                    $alternativas = \App\TurmaDados::where('turma',$inscricao->turma->id)->where('dado','proxima_turma')->get();
+                    foreach($alternativas as $alternativa){
+                        $turma =\App\ Turma::find($alternativa->valor);
+                        $inscricao->proxima_turma->push($turma);
+
+                    }
                     //dd($inscricao->turma->vagas);->where('vagas', $inscricao->turma->vagas)
                 }
              }
@@ -680,20 +687,21 @@ class MatriculaController extends Controller
      */
     public function renovar(Request $r)
     {
-        if(!isset($r->turmas))
+        
+        if(!isset($r->turmas) || count($r->turmas)==0)
             return redirect()->back()->withErrors(['Nenhuma turma selecionada']);
         foreach($r->turmas as $turma){
             //verifica se existe turma de continuação
-            if(isset($r->novaturma[$turma])){
-                $inscricao = InscricaoController::inscreverAlunoSemMatricula($r->pessoa,$r->novaturma[$turma]);
-                $matricula = Matricula::where('pessoa',$r->pessoa)->where('status','espera')->where('curso', $inscricao->turma->curso->id)->first();
-                if($matricula == null)
-                    $matricula = MatriculaController::gerarMatricula($r->pessoa,$r->novaturma[$turma],'espera'); 
-                $inscricao->matricula = $matricula->id;
-                $inscricao->save();
-                $matricula->parcelas = $matricula->getParcelas();
-                $matricula->save();
-            }
+            
+            $inscricao = InscricaoController::inscreverAlunoSemMatricula($r->pessoa,$turma);
+            $matricula = Matricula::where('pessoa',$r->pessoa)->where('status','espera')->where('curso', $inscricao->turma->curso->id)->first();
+            if($matricula == null)
+                $matricula = MatriculaController::gerarMatricula($r->pessoa,$turma,'espera'); 
+            $inscricao->matricula = $matricula->id;
+            $inscricao->save();
+            $matricula->parcelas = $matricula->getParcelas();
+            $matricula->save();
+            
         }
         return redirect("/secretaria/atender/".$r->pessoa."?mostrar=todos")->with('dados["alert_sucess"]',['Turmas rematriculadas com sucesso']);
     }
@@ -722,9 +730,10 @@ class MatriculaController extends Controller
                 $inscricao = InscricaoController::inscreverAlunoRematricula($r->pessoa,$turma);
                 $matricula = Matricula::where('pessoa',$r->pessoa)->where('status','espera')->where('curso', $inscricao->turma->curso->id)->first();
                 if($matricula == null){
-                    $matricula = MatriculaController::gerarMatriculaRematricula($r->pessoa,$turma,'espera'); 
-                    $matriculas[] = $matricula->id;
+                    $matricula = MatriculaController::gerarMatriculaRematricula($r->pessoa,$turma,'espera');     
                 }
+                if(!in_array($matricula->id,$matriculas))
+                    $matriculas[] = $matricula->id;
                 $inscricao->matricula = $matricula->id;
                 $inscricao->status = 'regular';
                 $inscricao->save();

@@ -1173,6 +1173,12 @@ class PessoaController extends Controller
 																	->whereIn('status',['espera','incricao'])
 																	->get();
 							//dd($inscricao->turma->vagas);
+							$alternativas = \App\TurmaDados::where('turma',$inscricao->turma->id)->where('dado','proxima_turma')->get();
+							foreach($alternativas as $alternativa){
+								$turma =\App\ Turma::find($alternativa->valor);
+								$inscricao->proxima_turma->push($turma);
+
+							}
 						}
 					}
 

@@ -55,7 +55,7 @@
                         <path fill-rule="evenodd" d="M14.5 3h-13a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
                         <path fill-rule="evenodd" d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0zM7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0z"/>
                       </svg>
-                Turmas disponíveis
+                Turmas disponíveis 
                 
                 </h1>
                 <p class="title-description"> Alun{{$pessoa->getArtigoGenero($pessoa->genero)}}: <b>{{$pessoa->nome}} </b></p>
@@ -72,8 +72,69 @@
                     R$294,00 em 10x R$29,40 para 1 disciplina. <br>
                     R$622,00  em 10x R$62,20 para 2 ou 3 disciplinas  <br>
                     R$961,00 em 10x R$96,10 para 4 ou mais disciplinas.<br>
-                    R$769,00 em 10x R$76,90 Natação e hidroginástica <br>
+                    R$769,00 em 10x R$76,90 Natação e hidroginástica <br><br>
                     Demais cursos consulte a tabela de preços na FESC</p>
+
+                <!--
+        <table class="table">
+        <tr>
+                <th>Turma Anterior</th>
+                <th>></th>
+                <th>&nbsp;</th>
+                <th>Nova Turma</th>
+        </tr>
+       
+        @foreach($matriculas as $matricula)
+            @foreach($matricula->inscricoes as $inscricao)
+            <tr>
+                <td>
+                   Turma {{$inscricao->turma->id}} - 
+                   <small> FINALIZADA </small><br>
+                    <strong>
+                            @if(isset($inscricao->turma->disciplina))
+                             {{$inscricao->turma->disciplina->nome}} <br>    
+                            <small>{{$inscricao->turma->curso->nome}}</small><br>
+                            @else
+                             {{$inscricao->turma->curso->nome}}<br>         
+                            @endif
+                    </strong>
+                    Prof. <strong>{{$inscricao->turma->professor->nome_simples}}</strong><br>
+                    Local: <span class="label">{{$inscricao->turma->local->sigla}}</span> Horário: {{implode(', ',$inscricao->turma->dias_semana)}} das {{$inscricao->turma->hora_inicio}} ás {{$inscricao->turma->hora_termino}}
+                                
+                </td>
+                <td>
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                    </svg>
+                </td>
+                @foreach($inscricao->proxima_turma as $next)
+                <td>
+                <input type="radio">
+                </td>
+                <td>
+                    Turma {{$next->id}} - 
+                   <small> FINALIZADA </small><br>
+                    <strong>
+                            @if(isset($next->disciplina))
+                             {{$next->disciplina->nome}} <br>    
+                            <small>{{$next->curso->nome}}</small><br>
+                            @else
+                             {{$next->curso->nome}}<br>         
+                            @endif
+                    </strong>
+                    Prof. <strong>{{$next->professor->nome_simples}}</strong><br>
+                    Local: <span class="label">{{$next->local->sigla}}</span> Horário: {{implode(', ',$next->dias_semana)}} das {{$next->hora_inicio}} ás {{$next->hora_termino}}
+                     
+
+                </td>
+                @endforeach
+            </tr>
+            @endforeach
+        @endforeach
+        </table>
+-->
+
+                    
             
             
     
@@ -87,7 +148,7 @@
             </tr>
             @foreach($matriculas as $matricula)
                 @foreach($matricula->inscricoes as $inscricao)
-                    @if(isset($inscricao->proxima_turma->first()->id))
+                    @if($inscricao->proxima_turma->count()==1)
                         <tr>
                             <td><input type="checkbox" name="turmas[]" value="{{$inscricao->proxima_turma->first()->id}}"></td>
                             <td>
@@ -113,6 +174,35 @@
                                 {{$inscricao->proxima_turma->first()->local->sigla}}
                             </td>
                         </tr>
+                    @else
+                    @foreach($inscricao->proxima_turma as $next)
+
+                    <tr style="background-color:#f5f5f5;" title="Escolha uma opção">
+                            <td><input type="radio" name="turmas[{{$inscricao->id}}]" value="{{$next->id}}"></td>
+                            <td>
+                            <strong title="Começa em {{$next->data_inicio}}">{{$next->id}} </strong> - 
+                                @if(isset($next->disciplina))
+                                        
+                                    {{$next->disciplina->nome}}     
+                                    <small>{{$next->curso->nome}}</small>
+                            
+                                @else
+                            
+                                    {{$next->curso->nome}}        
+                            
+                                @endif
+                            </td>
+                            <td> 
+                                {{implode(', ',$next->dias_semana)}} {{$next->hora_inicio}} ás {{$next->hora_termino}}
+                            </td>
+                            <td>
+                                {{$next->professor->nome_simples}}
+                            </td>
+                            <td>
+                                {{$next->local->sigla}}
+                            </td>
+                        </tr>
+                    @endforeach
                     @endif
                 @endforeach
             @endforeach
@@ -131,7 +221,7 @@
                     <button type="reset" name="btn"  class="btn btn-primary">Limpar</button>
                     <button type="cancel" name="btn" class="btn btn-primary" onclick="history.back(-2);return false;">Cancelar</button>
                 </div>
-        </div>
+            </div>
         
     </form>
 </div>

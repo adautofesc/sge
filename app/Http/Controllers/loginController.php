@@ -243,7 +243,7 @@ class loginController extends Controller
 	}
 
 
-	public function listarUsuarios_data($r)
+	public function listarUsuarios_data($r = '')
 	{
 		//dd($r);
 		
@@ -287,7 +287,7 @@ class loginController extends Controller
 
 	public function alterar($acao,$itens)
 	{
-		if(!$this->check())
+		if(!isset(Auth::user()->id))
 			return redirect(asset("/"));
 
 		if(!in_array('9', Auth::user()->recursos))

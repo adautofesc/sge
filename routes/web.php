@@ -28,9 +28,22 @@ Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
 Route::get('ipca','ValorController@getIPCA');
 //Route::get('correcao-valor','ValorController@correcaoValor');
 //Route::get('boletos-com-erros','BoletoController@analisarBoletosComErro');
-route::get('profile',function(){
-	return view('pessoa.profile');
+Route::prefix('perfil')->group(function(){
+	Route::get('cpf', function(){
+		return view('perfil.cpf');
+	});
+	Route::get('autentica/{cpf}','Auth\PerfilAuthController@verificarCPF');
+	Route::get('/',function(){
+
+		if(session('pessoa') == null){
+			return redirect('/perfil/cpf');
+		}
+
+		return view('pessoa.profile');
+	});
+
 });
+
 //Route::get('atribuir-emails','loginController@attribEmail');
 
 Route::prefix('rematricula')->group(function(){

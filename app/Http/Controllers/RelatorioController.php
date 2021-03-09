@@ -382,6 +382,7 @@ Event::where('status' , 0)
 
     
     }
+    
 
     public function tceAlunos($ano = 2018){
         if(!is_numeric($ano))

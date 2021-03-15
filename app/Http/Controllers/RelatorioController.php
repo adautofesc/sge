@@ -383,7 +383,7 @@ Event::where('status' , 0)
     
     }
 
-    public function tceAlunos($ano = 2018){
+    public function tceAlunos($ano = 2020){
         if(!is_numeric($ano))
              die('O ano informado é inválido.');
         $alunos = array();
@@ -420,7 +420,7 @@ Event::where('status' , 0)
 
 
 
-    public function tceTurmasAlunos($ano = 2018){
+    public function tceTurmasAlunos($ano = 2020){
         if(!is_numeric($ano))
             die('O ano informado é inválido.');
         $turmas = \App\Turma::whereBetween('data_inicio', [($ano-1).'-11-20%',$ano.'-11-20%'])
@@ -450,7 +450,7 @@ Event::where('status' , 0)
 
     }
     
-    public function tceTurmas($ano = 2018){
+    public function tceTurmas($ano = 2020){
         if(!is_numeric($ano))
             die('O ano informado é inválido.');
         $turmas = \App\Turma::whereBetween('data_inicio', [($ano-1).'-11-20%',$ano.'-11-20%'])
@@ -471,7 +471,7 @@ Event::where('status' , 0)
     }
 
 
-    public function tceEducadores($ano = 2018){
+    public function tceEducadores($ano = 2020){
         if(!is_numeric($ano))
             die('O ano informado é inválido.');
 
@@ -492,6 +492,22 @@ Event::where('status' , 0)
         return view('relatorios.tce-educadores')
             ->with('ano',$ano)
             ->with('educadores',$educadores);
+    }
+
+    public function tceVagas($ano = 2020){
+        $vagas = array();
+        $ocupacao = array();
+        if(!is_numeric($ano))
+             die('O ano informado é inválido.');
+        $programas = array('1','2','3','4','12');
+            foreach($programas as $programa){
+                $vagas[$programa] = \App\Turma::whereYear('data_inicio',$ano)->where('programa',$programa)->sum('vagas');
+                $ocupacao[$programa] = \App\Turma::whereYear('data_inicio',$ano)->where('programa',$programa)->sum('matriculados');
+        
+            }
+    
+        return view('relatorios.vagas')->with('ano',$ano)->with('ocupacao',$ocupacao)->with('vagas',$vagas);
+        
     }
 
 

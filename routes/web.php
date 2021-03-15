@@ -608,13 +608,15 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('alunos-posto', 'RelatorioController@alunosPorUnidade');
 		Route::get('bolsas-fpm','RelatorioController@bolsasFuncionariosMunicipais');
 		Route::get('bolsas','RelatorioController@bolsas');
-		Route::get('tce-alunos/{ano}','RelatorioController@tceAlunos');
-		Route::get('tce-educadores/{ano}','RelatorioController@tceEducadores');
-		Route::get('tce-turmas/{ano}','RelatorioController@tceTurmas');
-		Route::get('tce-turmas-alunos/{ano}','RelatorioController@tceTurmasAlunos');
-		Route::get('alunos-conselho/{ano}','RelatorioController@alunosConselho');
+		Route::get('tce-alunos/{ano?}','RelatorioController@tceAlunos');
+		Route::get('tce-educadores/{ano?}','RelatorioController@tceEducadores');
+		Route::get('tce-turmas/{ano?}','RelatorioController@tceTurmas');
+		Route::get('tce-turmas-alunos/{ano?}','RelatorioController@tceTurmasAlunos');
+		Route::get('tce-vagas/{ano?}','RelatorioController@tceVagas');
+		Route::get('alunos-conselho/{ano?}','RelatorioController@alunosConselho');
 		Route::get('bolsistas-com-3-faltas','RelatorioController@bolsistasComTresFaltas');
 		Route::get('celulares','PessoaController@relatorioCelulares');
+		
 
 
 

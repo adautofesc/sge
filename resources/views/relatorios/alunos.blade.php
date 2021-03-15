@@ -3,7 +3,7 @@
 
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-<link rel="stylesheet" href="{{asset('/')}}/css/vendor.css"/>
+<link rel="stylesheet" href="{{asset('/css/vendor.css')}}"/>
 <title>SGE - Relatório de alunos - Fesc</title>
 <style type="text/css">
 	@media print {
@@ -103,7 +103,7 @@
 		</div>
 		<div class="row">
 			<div class="col-xs-2 col-sm-2">
-			<img src="{{asset('/')}}/img/logofesc.png" width="80"/>
+			<img src="{{asset('/img/logofesc.png')}}" width="80"/>
 			</div>
 			<div class="col-xs-10 col-sm-10">
              <small>   

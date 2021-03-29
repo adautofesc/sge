@@ -16,6 +16,14 @@ class ContatoController extends Controller
                 $this->dispatch(new \App\Jobs\EnviarSMS($r->mensagem,$r->pessoa,Auth::user()->pessoa));
                 return response('ok',200);
                 break;
+            case 'email':
+                Mail::send('emails.default', ['username' => $user->username , 'password' => $password], function ($message) use($user){
+					$message->from('no-reply@fesc.saocarlos.sp.gov.br', 'Sistema Fesc');
+					$message->to($user->email);
+					$message->subject('Atualização de senha');
+					});
+              
+                break;
 
             default:
                 $contato = $this->novoContato($r->pessoa,$r->meio,$r->mensagem,Auth::user()->pessoa);

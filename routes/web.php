@@ -28,9 +28,32 @@ Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
 Route::get('ipca','ValorController@getIPCA');
 //Route::get('correcao-valor','ValorController@correcaoValor');
 //Route::get('boletos-com-erros','BoletoController@analisarBoletosComErro');
-route::get('profile',function(){
-	return view('pessoa.profile');
+Route::prefix('perfil')->group(function(){
+	Route::get('cpf', function(){
+		return view('perfil.cpf');
+	});
+	Route::get('cadastrar-pessoa/{cpf}','PerfilController@cadastrarView');
+	Route::post('cadastrar-pessoa/{cpf}','PerfilController@cadastrarExec');
+	Route::get('autentica/{cpf}','Auth\PerfilAuthController@verificarCPF');
+	Route::post('autentica/{cpf}','Auth\PerfilAuthController@autenticaCPF');
+	Route::get('recuperar-senha/{cpf}','Auth\PerfilAuthController@recuperarSenhaView');
+	Route::get('resetar-senha/{token}','Auth\PerfilAuthController@recuperarSenhaExec');
+	Route::post('cadastrar-senha','Auth\PerfilAuthController@cadastrarSenha');
+	Route::middleware('login.perfil')->group(function(){
+		Route::get('/','PerfilController@painel');
+		Route::get('parceria','PerfilController@parceriaIndex');
+		Route::post('parceria','PerfilController@parceriaExec');
+		Route::get('parceria/curriculo','PerfilController@parceriaCurriculo');
+		Route::get('parceria/cancelar','PerfilController@parceriaCancelar');
+		Route::get('alterar-senha','Auth\PerfilAuthController@trocarSenhaView');
+		Route::post('alterar-senha','Auth\PerfilAuthController@trocarSenhaExec');
+
+	});
+	
+	Route::get('logout','Auth\PerfilAuthController@logout');
+
 });
+
 //Route::get('atribuir-emails','loginController@attribEmail');
 
 Route::prefix('rematricula')->group(function(){
@@ -238,6 +261,7 @@ Route::middleware(['auth','login']) ->group(function(){
 
 		Route::post('registrar-contato','ContatoController@registrar');
 		Route::get('contato-whatsapp','ContatoController@enviarWhats');
+		Route::get('resetar-senha-perfil/{id}','Auth\PerfilAuthController@resetarSenha');
 
 
 		Route::get ('listar','PessoaController@listarTodos');//->middleware('autorizar:56')

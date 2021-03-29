@@ -109,19 +109,19 @@ Class Strings
 		switch ($tipo) {
 			case '8':
 				//fixo sem DDD
-				return substr($telefone, 0,4).' - '.substr($telefone, 4,4);
+				return substr($telefone, 0,4).'-'.substr($telefone, 4,4);
 				break;
 			case '9':
 				//movel sem DDD
-				return "9 ".substr($telefone, 1,4).' - '.substr($telefone, 5,4);
+				return "9 ".substr($telefone, 1,4).'-'.substr($telefone, 5,4);
 				break;
 			case '10':
 				//fixo com DDD
-				return "(".substr($telefone, 0,2).") ".substr($telefone, 2,4).' - '.substr($telefone, 6,4);
+				return "(".substr($telefone, 0,2).") ".substr($telefone, 2,4).'-'.substr($telefone, 6,4);
 				break;
 			case '11':
 				//movel com DDD
-				return "(".substr($telefone, 0,2).") 9 ".substr($telefone, 3,4).' - '.substr($telefone, 7,4);
+				return "(".substr($telefone, 0,2).") 9 ".substr($telefone, 3,4).'-'.substr($telefone, 7,4);
 				break;
 			
 			default:

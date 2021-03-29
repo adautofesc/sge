@@ -333,7 +333,8 @@ class PessoaController extends Controller
 		$atestados = \App\Atestado::where('pessoa',$pessoa->id)->get();
 		$atendimentos = \App\Atendimento::where('usuario', $pessoa->id)->orderBy('created_at','desc')->get();
 		$contatos = \App\Contato::where('para',$pessoa->id)->get();
-		return view('pessoa.mostrar',compact('pessoa'))->with('atestados',$atestados)->with('atendimentos',$atendimentos)->with('contatos',$contatos);
+		$perfil = PessoaDadosGerais::where('dado',26)->where('pessoa',$pessoa->id)->first();
+		return view('pessoa.mostrar',compact('pessoa'))->with('atestados',$atestados)->with('atendimentos',$atendimentos)->with('contatos',$contatos)->with('perfil',$perfil);
 
 	}
 	public function edita($id){

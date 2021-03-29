@@ -58,6 +58,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'login'=>  \App\Http\Middleware\ChecarLogin::class,
         'liberar.recurso'=>  \App\Http\Middleware\LiberarRecurso::class,
+        'login.perfil'=> \App\Http\Middleware\LoginPerfil::class
 
 
     ];

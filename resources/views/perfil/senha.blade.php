@@ -41,28 +41,7 @@
         
         
     </style>
-    <script>
-        function ValidaCPF(){
-            
-            numero = document.getElementById("cpf").value;
-            
-            if(numero.length<9 || numero.length>11 || numero=='11111111111'){
-                alert("CPF Inválido");
-                return false;
-            }
-            else{
-                window.location.href = '/perfil/autentica/'+numero;
-                //document.forms[0].submit();
-
-            }
-
-
-            
-            //
-        }
-            
-       
-    </script>
+   
 </head>
 <body>
     <div class="container-fluid">
@@ -79,9 +58,8 @@
                     <div class="alert alert-danger"> Ative o javascript ou acesse o site de outro navegador.</div>
                 </noscript>
                 <p class="description">
-                    Bem-vindo! <br>
-                    Esta área é dedicada à alunos, parceiros e colaboradores.<br>
-                    Nela você poderá alterar seus dados, fazer consultas de faltas, emitir certificados, realizar rematrículas e cadastrar seu currículo para parcerias.<br>
+                    Cadastro encontrado. <br>
+
                 </p>
                 @if($errors->any())
                     @foreach($errors->all() as $erro)
@@ -92,13 +70,14 @@
                     @endforeach
                 @endif
 
-                <form method="GET" action="/rematricula/autentica" onsubmit="return false;">
+                <form method="POST" action="?" >
                     
-                    <div class="col-md-12 form-group form">
-                        <label for="RegraValida">Para começar, digite seu CPF. <br><small>(somente números)</small></label>
-                        <input type="number" class="form-control form-control-sm" name="cpf" id="cpf" maxlength="11" max-size="11" style="width: 15rem">
+                    <div class="col-md-7 form-group form">
+                        <label for="RegraValida">Agora digite sua senha. <small><a href="/perfil/recuperar-senha/{{$cpf}}">Esqueceu? clique aqui.</a></small></label>
+                        <input type="password" class="form-control form-control-sm" name="senha" id="senha" maxlength="20" max-size="20" minlength='6' required>
                     </div>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<button onclick="ValidaCPF();" class="btn btn-info"> Continuar</button>
+                    @csrf
+                    &nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-info"> Continuar</button>
                 </form>
                 <p>
                 &nbsp;

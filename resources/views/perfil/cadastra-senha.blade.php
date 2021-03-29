@@ -41,37 +41,14 @@
         
         
     </style>
-    <script>
-        function ValidaCPF(){
-            
-            numero = document.getElementById("cpf").value;
-            
-            if(numero.length<9 || numero.length>11 || numero=='11111111111'){
-                alert("CPF Inválido");
-                return false;
-            }
-            else{
-                window.location.href = '/perfil/autentica/'+numero;
-                //document.forms[0].submit();
-
-            }
-
-
-            
-            //
-        }
-            
-       
-    </script>
+   
 </head>
 <body>
     <div class="container-fluid">
         <div class="row justify-content-md-center" >
             <div class="col-md-5">
                 <h1>
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bootstrap-reboot" fill="orange" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M1.161 8a6.84 6.84 0 1 0 6.842-6.84.58.58 0 0 1 0-1.16 8 8 0 1 1-6.556 3.412l-.663-.577a.58.58 0 0 1 .227-.997l2.52-.69a.58.58 0 0 1 .728.633l-.332 2.592a.58.58 0 0 1-.956.364l-.643-.56A6.812 6.812 0 0 0 1.16 8zm5.48-.079V5.277h1.57c.881 0 1.416.499 1.416 1.32 0 .84-.504 1.324-1.386 1.324h-1.6zm0 3.75V8.843h1.57l1.498 2.828h1.314L9.377 8.665c.897-.3 1.427-1.106 1.427-2.1 0-1.37-.943-2.246-2.456-2.246H5.5v7.352h1.141z"/>
-                    </svg>
+                <img src="{{asset('img/chave.svg')}}" width="24px" alt="icone de chave">
                     Perfil FESC
                 </h1>
                 <noscript>
@@ -79,26 +56,43 @@
                     <div class="alert alert-danger"> Ative o javascript ou acesse o site de outro navegador.</div>
                 </noscript>
                 <p class="description">
-                    Bem-vindo! <br>
-                    Esta área é dedicada à alunos, parceiros e colaboradores.<br>
-                    Nela você poderá alterar seus dados, fazer consultas de faltas, emitir certificados, realizar rematrículas e cadastrar seu currículo para parcerias.<br>
+                  
+                    Agora complete os dados abaixo para cadastrar uma senha de acesso.
+
                 </p>
                 @if($errors->any())
                     @foreach($errors->all() as $erro)
-                        <div class="alert alert-danger" onload="console.log('pau')">
+                        <div class="alert alert-danger" onload="console.log('erro:{{$erro}}')">
                                 <button type="button" class="close" data-dismiss="alert" >×</button>       
                                 <p class="modal-title"><i class="fa fa-warning"></i> {{$erro}}</p>
                         </div>
                     @endforeach
                 @endif
 
-                <form method="GET" action="/rematricula/autentica" onsubmit="return false;">
+                <form method="POST" action="/perfil/cadastrar-senha">
                     
-                    <div class="col-md-12 form-group form">
-                        <label for="RegraValida">Para começar, digite seu CPF. <br><small>(somente números)</small></label>
-                        <input type="number" class="form-control form-control-sm" name="cpf" id="cpf" maxlength="11" max-size="11" style="width: 15rem">
+                    <div class="col-md-7 form-group form">
+                        <label for="nome">Qual seu primeiro nome?</label>
+                        <input type="text" class="form-control form-control-sm" name="nome"  maxlength="11" max-size="11" required>
                     </div>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<button onclick="ValidaCPF();" class="btn btn-info"> Continuar</button>
+                    <div class="col-md-7 form-group form">
+                        <label for="rg">Qual seu RG? <small>Somente números</small></label>
+                        <input type="number" class="form-control form-control-sm" name="rg"  maxlength="11" max-size="11" required>
+                    </div>
+                    <div class="col-md-7 form-group form">
+                        <label for="senha">Agora digite uma senha. <small>De 6 a 20 caracteres</small> </label>
+                        <input type="password" class="form-control form-control-sm" name="senha"  minlength="6" maxlength="20" max-size="20" required>
+                    </div>
+                    <div class="col-md-7 form-group form">
+                        <label for="contrasenha">Confirme sua senha. </label>
+                        <input type="password" class="form-control form-control-sm" name="contrasenha" minlength="6" maxlength="20" max-size="20" required>
+                    </div>
+                    <input type="hidden" name="pessoa" value="{{$pessoa}}"/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-info" type="submit" name="btn" value="1">Continuar</button> 
+					<button type="reset" name="btn"  class="btn btn-secondary">Limpar</button>
+                	<button type="cancel" name="btn" class="btn btn-secondary" onclick="history.back(-2);return false;">Cancelar</button>
+                    @csrf
                 </form>
                 <p>
                 &nbsp;

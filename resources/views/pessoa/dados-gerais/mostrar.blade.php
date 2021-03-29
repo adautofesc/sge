@@ -66,11 +66,19 @@
 
             </div>
             @else
-            <label class="col-sm-3 form-control-label text-xs-right">Acesso ao sistema</label>
+            <label class="col-sm-2 form-control-label text-xs-right">Acesso ao sistema</label>
             <div class="col-sm-3"> 
                 <a href="{{asset('/pessoa/cadastraracesso/').'/'.$pessoa['id']}}" class="btn btn-primary btn-sm rounded-s"> Cadastrar usuário </a>
             </div>
-            @endif                                  
+            @endif  
+            @if(in_array('9', Auth::user()->recursos))
+                @if(isset($perfil)) 
+                <label class="col-sm-2 form-control-label text-xs-right">Acesso ao Perfil</label>
+                <div class="col-sm-3"> 
+                    <a href="{{asset('/pessoa/resetar-senha-perfil/').'/'.$pessoa['id']}}" class="btn btn-primary btn-sm rounded-s"> Resetar senha</a>
+                </div>
+                @endif
+            @endif                           
         </div> 
         @if(count($pessoa['dependentes']))
         <div class="form-group row"> 

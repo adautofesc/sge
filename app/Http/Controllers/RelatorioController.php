@@ -496,6 +496,7 @@ Event::where('status' , 0)
     }
 
     public function tceVagas($ano = 2020){
+        
         $vagas = array();
         $ocupacao = array();
         if(!is_numeric($ano))
@@ -503,7 +504,25 @@ Event::where('status' , 0)
         $programas = array('1','2','3','4','12');
             foreach($programas as $programa){
                 $vagas[$programa] = \App\Turma::whereYear('data_inicio',$ano)->where('programa',$programa)->sum('vagas');
-                $ocupacao[$programa] = \App\Turma::whereYear('data_inicio',$ano)->where('programa',$programa)->sum('matriculados');
+                if($ano == 2020){
+                    $ocupacao[$programa] = \App\Inscricao::select('inscricoes.id','programa')
+                                                        ->join('turmas','turmas.id','=','inscricoes.turma')
+                                                        ->wherebetween('turmas.data_inicio',['2020-01-01','2020-12-31'])
+                                                        ->where('programa',$programa)
+                                                        ->where('inscricoes.status','finalizada')
+                                                        ->count();
+                    $ocupacao[$programa] += \App\Inscricao::select('inscricoes.id','programa')
+                                                        ->join('turmas','turmas.id','=','inscricoes.turma')
+                                                        ->wherebetween('turmas.data_inicio',['2020-01-01','2020-12-31'])
+                                                        ->where('programa',$programa)
+                                                        ->where('inscricoes.status','cancelada')
+                                                        ->where('inscricoes.updated_at','>=','2020-03-20')
+                                                        ->count();
+                }
+                else                  
+                    $ocupacao[$programa] = \App\Turma::whereYear('data_inicio',$ano)
+                                                        ->where('programa',$programa)
+                                                        ->sum('matriculados');
         
             }
     

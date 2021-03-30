@@ -81,7 +81,7 @@
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Unidade
 			</label>
-			<div class="col-sm-6"> 
+			<div class="col-sm-2"> 
 				<select class="c-select form-control boxed" name="unidade" onchange="carregarSalas(this.value)" required >
 					<option>Selecione ums unidade de atendimento</option>
 					@if(isset($dados['unidades']))
@@ -91,18 +91,17 @@
 					@endif
 				</select> 
 			</div>
-		</div>
-		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Sala
 			</label>
-			<div class="col-sm-6"> 
+			<div class="col-sm-2"> 
 				<select class="c-select form-control boxed" name="sala" id="select_sala" required >
 					<option>Selecione um local antes.</option>
 				
 				</select> 
 			</div>
 		</div>
+		
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Parceria 
@@ -136,19 +135,7 @@
 				</select> 
 			</div>
 		</div>
-<!--
-		<div class="form-group row"> 
-			<label class="col-sm-2 form-control-label text-xs-right">
-				Sala/Local
-			</label>
-			<div class="col-sm-6"> 
-				<select class="c-select form-control boxed" name="local" required>
-					<option>Selecione a sala/local</option>
-		
-				</select> 
-			</div>
-		</div>
--->
+
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Dia(s) semana.
@@ -167,24 +154,23 @@
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Data de início
 			</label>
-			<div class="col-sm-3"> 
+			<div class="col-sm-2"> 
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
 					<input type="date" class="form-control boxed" name="dt_inicio" placeholder="dd/mm/aaaa" required> 
 				</div>
 			</div>
-		</div>
-		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Data do termino
 			</label>
-			<div class="col-sm-3"> 
+			<div class="col-sm-2"> 
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
 					<input type="date" class="form-control boxed" name="dt_termino" placeholder="dd/mm/aaaa" required> 
 				</div>
 			</div>
 		</div>
+
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Horário de início
@@ -192,8 +178,6 @@
 			<div class="col-sm-2"> 
 				<input type="time" class="form-control boxed" name="hr_inicio" placeholder="00:00" required > 
 			</div>
-		</div>
-		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Horário Termino
 			</label>
@@ -201,6 +185,7 @@
 				<input type="time" class="form-control boxed" name="hr_termino" placeholder="00:00" required> 
 			</div>
 		</div>
+		
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Nº de vagas
@@ -208,10 +193,8 @@
 			<div class="col-sm-2"> 
 				<input type="number" class="form-control boxed" name="vagas" placeholder="Recomendado: 30 vagas"> 
 			</div>
-		</div>
-		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Carga
+				Carga Horária
 			</label>
 			<div class="col-sm-2"> 
 				<div class="input-group">
@@ -219,8 +202,8 @@
 					<input type="number" class="form-control boxed" name="carga" placeholder="" required> 
 				</div>
 			</div>
-			
 		</div>
+	
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Valor
@@ -234,8 +217,24 @@
 			
 		</div>
 		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">Opções</label>
+            <div class="col-sm-2"> 
+				<div>
+					<label>
+					<input class="checkbox" name="online" value="P" type="checkbox">
+					<span>Permitir matrícula online </span>
+					</label>
+				</div>
+				<div>
+					<label>
+					<input class="checkbox" name="ead" value="D" type="checkbox">
+					<span>Turma EAD</span>
+					</label>
+				</div>
+				
+        	</div>
 			<label class="col-sm-2 form-control-label text-xs-right">Requisitos obrigatórios</label>
-            <div class="col-sm-10"> 
+            <div class="col-sm-2"> 
             	@foreach($requisitos as $requisito)
 				<div>
 					<label>
@@ -245,41 +244,11 @@
 				</div>
 				@endforeach
         	</div>
+			
                 
         </div>
 		
-<!--		
-		<div class="form-group row"> 
-			<label class="col-sm-2 form-control-label text-xs-right">Opções</label>
-            <div class="col-sm-10"> 
-				<div>
-					<label>
-					<input class="checkbox" name="atributo[]" value="P" type="checkbox">
-					<span>Turma paga pela parceria</span>
-					</label>
-				</div>
-				<div>
-					<label>
-					<input class="checkbox" name="atributo[]" value="D" type="checkbox">
-					<span>Turma com desconto pela Parceria</span>
-					</label>
-				</div>
-				<div>
-					<label>
-					<input class="checkbox" name="atributo[]" value="M" type="checkbox">
-					<span>Turma EMG</span>
-					</label>
-				</div>
-				<div>
-					<label>
-					<input class="checkbox" name="atributo[]" value="E" type="checkbox">
-					<span>Turma Eventual</span>
-					</label>
-				</div>
-        	</div>
-                
-        </div>
-    -->
+
             
 		<div class="form-group row">
 			<div class="col-sm-10 col-sm-offset-2">

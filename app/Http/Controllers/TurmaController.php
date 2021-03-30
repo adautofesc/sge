@@ -390,6 +390,24 @@ class TurmaController extends Controller
                 $curso_requisito->save();
             }
         }
+
+        if(isset($request->online)){
+            $online = new \App\TurmaDados;
+            $online->turma = $turma->id;
+            $online->dado = 'automatricula';
+            $online->valor = '1';
+            $online->save();
+
+        }
+        if(isset($request->ead)){
+            $ead = new \App\TurmaDados;
+            $ead->turma = $turma->id;
+            $ead->dado = 'ead';
+            $ead->valor = '1';
+            $ead->save();
+
+        }
+
         if($request->btn==1)
             return redirect(asset('/turmas'));
         else
@@ -422,6 +440,7 @@ class TurmaController extends Controller
             $dados->put('salas',$salas);
             $turma->data_iniciov=Data::converteParaBd($turma->data_inicio);
             $turma->data_terminov=Data::converteParaBd($turma->data_termino);
+
 
             //return $turma;
 

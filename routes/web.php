@@ -47,6 +47,20 @@ Route::prefix('perfil')->group(function(){
 		Route::get('parceria/cancelar','PerfilController@parceriaCancelar');
 		Route::get('alterar-senha','Auth\PerfilAuthController@trocarSenhaView');
 		Route::post('alterar-senha','Auth\PerfilAuthController@trocarSenhaExec');
+		Route::get('alterar-dados','PerfilController@alterarDadosView');
+		Route::post('alterar-dados','PerfilController@alterarDadosExec');
+		Route::prefix('matricula')->group(function(){
+			Route::get('/','PerfilMatriculaController@matriculasAtivas');
+			Route::get('inscricao','PerfilMatriculaController@turmasDisponiveis');
+			Route::post('confirmacao','PerfilMatriculaController@confirmacao');
+			Route::post('inscricao','PerfilMatriculaController@inscricao');
+			Route::get('cancelar/{inscricao}','PerfilMatriculaController@cancelar');
+			Route::get('termo/{id}','MatriculaController@termo');
+			Route::get('termo',function(){
+				return view('juridico.documentos.termo_aberto_ead');
+			});
+
+		});
 
 	});
 	

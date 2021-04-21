@@ -235,7 +235,7 @@ class ValorController extends Controller
                             */
                             
                         case 'eventual' :
-                            $valor->parcelas = 1;
+                            $valor->parcelas = $turma->getTempoCurso();;
                             break;
                         default :
                             $valor->parcelas = 5;

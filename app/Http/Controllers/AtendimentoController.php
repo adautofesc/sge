@@ -11,12 +11,12 @@ use Auth;
 class AtendimentoController extends Controller
 {
     //
-    public static function novoAtendimento($acao,$pessoa){
-    	if($pessoa=='' || $pessoa==0){
-			$pessoa=Auth::user()->pessoa;
+    public static function novoAtendimento($acao,$pessoa,$atendente=0){
+    	if($atendente=='' || $atendente==0){
+			$atendente=Auth::user()->pessoa;
 		}
     	$atendimento=new Atendimento;
-		$atendimento->atendente=Auth::user()->pessoa;
+		$atendimento->atendente=$atendente;
 		$atendimento->usuario=$pessoa;
 		$atendimento->descricao=$acao;
 		$atendimento->save();

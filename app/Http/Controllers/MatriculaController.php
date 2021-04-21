@@ -57,7 +57,7 @@ class MatriculaController extends Controller
             //verifica se já possui matricula no curso
             $matriculado=MatriculaController::verificaSeMatriculado($r->pessoa,$curso->id,$turmas->first()->data_inicio);
             if($matriculado==false){
-                $atendimento = AtendimentoController::novoAtendimento("Nova matrícula, código ", $r->pessoa, Auth::user()->pessoa);
+                $atendimento = AtendimentoController::novoAtendimento("Nova matrícula, código ", $r->pessoa);
                 //dd($atendimento->id);
                 $matricula=new Matricula();
                 $matricula->pessoa=$r->pessoa;
@@ -122,7 +122,7 @@ class MatriculaController extends Controller
         $matricula->save();
         MatriculaController::alterarStatus($matricula->id,$r->status);
 
-        AtendimentoController::novoAtendimento("Matrícula atualizada.", $matricula->pessoa, Auth::user()->pessoa);
+        AtendimentoController::novoAtendimento("Matrícula atualizada.", $matricula->pessoa);
         //LancamentoController::atualizaMatricula($matricula->id);
         return redirect(asset('secretaria/atender'));
     }
@@ -139,8 +139,8 @@ class MatriculaController extends Controller
             return view("error-404");
 
         if(!isset(Auth::user()->pessoa))
-            if(isset($r->keycode)){
-                if($r->keycode != $matricula->pessoa)
+            if(isset($r->pessoa->id)){
+                if($r->pessoa->id != $matricula->pessoa)
                     return redirect("https://www.youtube.com/watch?v=fXLicO0CRvk");
             }
             else
@@ -166,8 +166,10 @@ class MatriculaController extends Controller
 
 
         //return $pessoa;
-
-        return view("juridico.documentos.termo",compact('matricula'))->with('pessoa',$pessoa)->with('inscricoes',$inscricoes);
+        if(isset($r->type))
+            return view("juridico.documentos.termo-ead",compact('matricula'))->with('pessoa',$pessoa)->with('inscricoes',$inscricoes);
+        else
+            return view("juridico.documentos.termo",compact('matricula'))->with('pessoa',$pessoa)->with('inscricoes',$inscricoes);
 
     }
     public function declaracao($matricula){
@@ -275,11 +277,12 @@ class MatriculaController extends Controller
 
     }
 
-    public static function gerarMatricula($pessoa,$turma_id,$status_inicial){
+    public static function gerarMatricula($pessoa,$turma_id,$status_inicial,$atendente=0){
+
         $turma=Turma::find($turma_id);
         if($turma==null)
             redirect($_SERVER['HTTP_REFERER']);
-        $atendimento = AtendimentoController::novoAtendimento("Matrícula gerada por adição direta na turma, lote ou rematrícula.", $pessoa, Auth::user()->pessoa);
+        $atendimento = AtendimentoController::novoAtendimento("Matrícula gerada por adição direta na turma, lote, rematrícula ou matrícula online", $pessoa,$atendente);
         $matricula=new Matricula();
         $matricula->pessoa=$pessoa;
         $matricula->atendimento=$atendimento->id;
@@ -333,15 +336,27 @@ class MatriculaController extends Controller
   
     }
     public function cancelarMatricula(Request $r){
+        self::cancelar($r->matricula); 
         
-        $matricula=Matricula::find($r->matricula);
+
+        //LancamentoController::cancelamentoMatricula($id);
+        if(!empty($r->cancelamento))
+            AtendimentoController::novoAtendimento("Cancelamento da matricula ".$r->matricula. " motivo: ".implode(', ',$r->cancelamento), $r->pessoa,Auth::user()->pessoa);
+        else
+            AtendimentoController::novoAtendimento("Cancelamento da matricula ".$r->matricula, $r->pessoa,Auth::user()->pessoa);
+        //return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula)->with('inscricoes',$insc)->with('boletos',count($boletos));
+        return redirect('/secretaria/matricula/imprimir-cancelamento/'.$r->matricula);
+    }
+
+    public static function cancelar($matricula,$responsavel=0){
+
+        $matricula=Matricula::find($matricula);
         $matricula->status='cancelada';
         $pessoa = Pessoa::find($matricula->pessoa);
         $matricula->save();
         $insc=InscricaoController::cancelarPorMatricula($matricula->id);
-        
-        //cacelar os boletos automaticamente
-        if($r->cancelar_boletos == true){
+         //cacelar os boletos automaticamente
+         //if($r->cancelar_boletos == true){
             //cancela os boletos
             $boleto_controller = new BoletoController;
             $boletos = \App\Boleto::where('pessoa',$matricula->pessoa)->where('vencimento', '>', date('Y-m-d H:i:s'))->get();
@@ -353,12 +368,8 @@ class MatriculaController extends Controller
             //apagar lançamentos
             $LC = new LancamentoController;
             $LC->excluirSemBoletosPorMatricula($matricula->id);
-        }
-        //LancamentoController::cancelamentoMatricula($id);
-        if(!empty($r->cancelamento))
-        AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id. " motivo: ".implode(', ',$r->cancelamento), $matricula->pessoa, Auth::user()->pessoa);
-        else
-            AtendimentoController::novoAtendimento("Cancelamento da matricula ".$matricula->id, $matricula->pessoa, Auth::user()->pessoa);
+        //}
+        
 
         //cancelar a bolsa se houver
         $bolsa = $matricula->getBolsas();
@@ -366,10 +377,8 @@ class MatriculaController extends Controller
         $bmc = new BolsaController;
         $bmc->unLinkMe($matricula->id,$bolsa->id);
         }
+        return true;
 
-        
-        //return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula)->with('inscricoes',$insc)->with('boletos',count($boletos));
-        return redirect('/secretaria/matricula/imprimir-cancelamento/'.$matricula->id);
     }
 
 
@@ -476,7 +485,7 @@ class MatriculaController extends Controller
         $insc = Inscricao::where('matricula',$id)->where('status','regular')->get();
         if($insc->count()>0){
             $matricula->save();
-            AtendimentoController::novoAtendimento("Reativação de matrícula ".$matricula->id, $matricula->pessoa, Auth::user()->pessoa);
+            AtendimentoController::novoAtendimento("Reativação de matrícula ".$matricula->id, $matricula->pessoa);
             return redirect($_SERVER['HTTP_REFERER']);
         }
         else
@@ -768,7 +777,7 @@ class MatriculaController extends Controller
         $nova->resp_financeiro = $original->resp_financeiro;
         $nova->obs = '';
         $nova->save();
-        $nova->atendimento = AtendimentoController::novoAtendimento("Matrícula ".$nova->id." copiada da matricula ".$original->id, $nova->pessoa, Auth::user()->pessoa);
+        $nova->atendimento = AtendimentoController::novoAtendimento("Matrícula ".$nova->id." copiada da matricula ".$original->id, $nova->pessoa);
 
         return redirect('/secretaria/atender/'.$nova->pessoa)->withErrors(['Matricula duplicada.']);
     }

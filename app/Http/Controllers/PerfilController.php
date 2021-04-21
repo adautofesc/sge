@@ -179,4 +179,63 @@ class PerfilController extends Controller
         return redirect('/perfil/parceria');
 
     }
+
+    public function alterarDadosView(Request $r){
+        return view('perfil.alterar-dados')->with('pessoa',$r->pessoa);;
+    }
+
+    public function alterarDadosExec(Request $r){
+        $pessoa = $r->pessoa->id;
+        $mensagem = '';
+
+        if(isset($r->celular)){
+            $celular = new PessoaDadosContato;
+            $celular->pessoa = $pessoa;
+            $celular->dado = 9;
+            $celular->valor = $r->celular;
+            $celular->save();
+            $mensagem.=', celular';
+        }
+
+        if(isset($r->telefone)){
+            $telefone = new PessoaDadosContato;
+            $telefone->pessoa = $pessoa;
+            $telefone->dado = 2;
+            $telefone->valor = $r->telefone;
+            $telefone->save();
+            $mensagem.=', telefone';
+        }
+
+        if(isset($r->email)){
+            $email = new PessoaDadosContato;
+            $email->pessoa = $pessoa;
+            $email->dado = 1;
+            $email->valor = $r->email;
+            $email->save();
+            $mensagem.=', e-mail';
+        }
+
+        if(isset($r->cep) && isset($r->rua) && isset($r->numero_endereco) && isset($r->bairro_str) && isset($r->cidade) && isset($r->estado)){
+            $endereco = new Endereco;
+            $endereco->logradouro = $r->rua;
+            $endereco->numero = $r->numero_endereco;
+            $endereco->complemento = $r->complemento_endereco;
+            $endereco->bairro = 0;
+            $endereco->bairro_str = $r->bairro_str;
+            $endereco->cidade = $r->cidade;
+            $endereco->estado = $r->estado;
+            $endereco->atualizado_por = $pessoa->id;
+            $endereco->save();
+
+            $contato = new PessoaDadosContato;
+            $contato->pessoa = $pessoa;
+            $contato->dado = 6;
+            $contato->valor = $endereco->id;
+            $contato->save();
+            $mensagem.=', endereço';
+        }
+        
+        return redirect('/perfil')->withErrors(['Foram atualizados os seguintes dados: data'.$mensagem]);
+
+    }
 }

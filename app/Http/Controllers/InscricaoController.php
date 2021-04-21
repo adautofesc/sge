@@ -153,13 +153,21 @@ class InscricaoController extends Controller
      * @param  integer $matricula [description]
      * @return [type]             [description]
      */
-    public static function inscreverAluno($aluno,$turma,$matricula=0){
-        $atendimento = AtendimentoController::novoAtendimento(' ', $aluno, Auth::user()->pessoa);
+    public static function inscreverAluno($aluno,$turma,$matricula=0,$atendente=0){
+     
+       
+
         $turma=Turma::find($turma);
         //dd($turma);
         if(substr($turma->data_inicio,-4,4) < date('Y')){
             die('Não é possível inscrever alunos em turmas de anos anteriores: Turma:'.substr($turma->data_inicio,-4,4).', data: '.date('Y'));
             
+        }
+
+        //segurança para evitar espertinhos que alteram o html
+        if($atendente>0 && $turma->vagas<=$turma->matriculados){
+            echo 'Não há vagaspara a turma'.$turma->id;    
+            return false;      
         }
         if(InscricaoController::verificaSeInscrito($aluno,$turma->id))
                 return Inscricao::find(InscricaoController::verificaSeInscrito($aluno,$turma->id));
@@ -169,7 +177,7 @@ class InscricaoController extends Controller
                     $status="ativa";    
                 else
                     $status="espera";
-                $matricula_obj=MatriculaController::gerarMatricula($aluno,$turma->id,$status);
+                $matricula_obj=MatriculaController::gerarMatricula($aluno,$turma->id,$status,$atendente);
                 $matricula=$matricula_obj->id;
             }
             else{
@@ -178,6 +186,9 @@ class InscricaoController extends Controller
 
             }
         }
+        $atendimento = AtendimentoController::novoAtendimento(' ', $aluno, $atendente);
+        
+
         $inscricao=new Inscricao();
         $inscricao->atendimento = $atendimento->id;
         $inscricao->pessoa=$aluno;

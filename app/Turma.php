@@ -117,7 +117,7 @@ class Turma extends Model
 				break;
 				
 			case 'eventual' :
-				$parcelas = 1;
+				$parcelas = $this->getTempoCurso();
 				break;
 			default :
 				$parcelas = 5;
@@ -195,7 +195,7 @@ class Turma extends Model
 				break;
 		}//end switch
 	}
-	public function getTempoCursoAttribute($value){
+	public function getTempoCurso(){
 		$dt_i=Carbon::createFromFormat('d/m/Y', $this->data_inicio);
 		$dt_t=Carbon::createFromFormat('d/m/Y', $this->data_termino);
 		$diference=$dt_i->diffInMonths($dt_t);
@@ -244,6 +244,14 @@ class Turma extends Model
 		else
 			$this->aulas = Aula::where('turma',$this->id)->whereMonth('data',$mes)->where('status','executada')->orderBy('data')->get();
 		return $this->aulas;
+	}
+
+	public function loadDadosTurma(){
+		$dados = TurmaDados::where('id', $this->id)->get();
+		foreach($dados as $dado){
+			$this->$dado->dado = $dado->valor;
+		}
+		return $dados;
 	}
 
 

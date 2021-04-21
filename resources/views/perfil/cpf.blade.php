@@ -81,7 +81,10 @@
                 <p class="description">
                     Bem-vindo! <br>
                     Esta área é dedicada à alunos, parceiros e colaboradores.<br>
-                    Nela você poderá alterar seus dados, fazer consultas de faltas, emitir certificados, realizar rematrículas e cadastrar seu currículo para parcerias.<br>
+                    Nela você poderá alterar seus dados, fazer consultas de faltas, emitir certificados, realizar matrículas, rematrículas e cadastrar seu currículo para parcerias.<br>
+                </p>
+                <p>
+                    Caso desejar visualizar a lista de vagas disponíveis, <a href="https://vagas.fesc.com.br" target="_blank">clique aqui.</a>
                 </p>
                 @if($errors->any())
                     @foreach($errors->all() as $erro)

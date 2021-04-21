@@ -1,16 +1,14 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Perfil Pessoal</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+@extends('perfil.layout')
+@section('titulo')
+    Perfil FESC - Programa de Parceria
+@endsection
+
+@section('style')
     <style>
-        body, .smoke {
-            background-color:WhiteSmoke;
-        }
-        h1 {margin-top:2rem;
+
+
+        
+        h1 {
             font-size:14pt;
             font-weight: bold;}
         .description{
@@ -41,25 +39,24 @@
         
         
     </style>
-   
-</head>
-<body>
-    <div class="container-fluid">
-        <div class="row justify-content-md-center smoke" >
-            <div class="col-md-5">
-                <h1>
-                <img src="{{asset('img/chave.svg')}}" width="24px" alt="icone de chave">
-                    Cadastro Perfil FESC
-                </h1>
+@endsection
+@section('body')
+<div class="card mb-3">
+                      
+    <div class="card-body">
+      <div class="row">
+            <div class="col-md-12">
+                <h5>
+                
+                    Alteração dos dados cadastrais
+                </h5>
+                <p class="text-secondary"><small>Atualize seus dados.</small></p>
+                <hr>
                 <noscript>
                     <!-- referência a arquivo externo -->
                     <div class="alert alert-danger"> Ative o javascript ou acesse o site de outro navegador.</div>
                 </noscript>
-                <p class="description">
-                  
-                    Cadastre-se para matrículas, rematrículas, parcerias e consultas diversas.
-
-                </p>
+                <p class="alert alert-info">Preencha apenas os campos que tiveram alterações</p>
                 @if($errors->any())
                     @foreach($errors->all() as $erro)
                         <div class="alert alert-danger" onload="console.log('erro:{{$erro}}')">
@@ -69,89 +66,55 @@
                     @endforeach
                 @endif
 
-                <form method="POST" id="cadastro" action="/perfil/cadastrar-pessoa/{{$cpf}}" onsubmit="event.preventDefault(); return valida()">
+                <form method="POST" id="cadastro"  onsubmit="event.preventDefault(); return valida()">
                     
-                    <div class="form-group row"> 
-                        <label class="col-sm-2 form-control-label text-xs-right">Nome/social</label>
-                        <div class="col-sm-10"> 
-                            <input type="text" class="form-control boxed" placeholder="Preencha o nome completo, sem abreviações." name="nome" required> 
-                        </div>
-                    </div>
+                    
                     
                     <div class="form-group row">
-                        
-                        <label class="col-sm-2 form-control-label text-xs-right">Nascimento</label>
-                        <div class="col-sm-3">
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
-                                <input type="date" class="form-control boxed" placeholder="dd/mm/aaaa" name="nascimento" required> 
-                            </div>
-                        </div>
-                        <label class="col-sm-2 form-control-label text-xs-right">Celular</label>
-                        <div class="col-sm-3"> 
+                        <label class="col-sm-2 form-control-label text-xs-right">Telefone</label>
+                        <div class="col-sm-4"> 
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-phone"></i></span> 
                                 <input type="tel" class="form-control boxed" placeholder="Somente numeros" name="telefone" minlength="11" maxlength="11"> 
                             </div>
                         </div>
+                        
+                        
+                        <label class="col-sm-2 form-control-label text-xs-right">Celular</label>
+                        <div class="col-sm-4"> 
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-phone"></i></span> 
+                                <input type="tel" class="form-control boxed" placeholder="Somente numeros" name="celular" minlength="11" maxlength="11" > 
+                            </div>
+                        </div>
                     </div>
                         
                     
-                    <div class="form-group row"> 
-                        <label class="col-sm-2 form-control-label text-xs-right">Gênero</label>
-                        <div class="col-sm-10"> 
-                            <label>
-                                <input class="radio" name="genero" type="radio" value="M" required>
-                                <span>Masculino</span>
-                            </label>
-                            <label>
-                                <input class="radio" name="genero" type="radio" value="F" >
-                                <span>Feminino</span>
-                            </label>
-                        
-                            <label>
-                                <input class="radio" name="genero" type="radio" value="Z" >
-                                <span>Não informarei</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group row"> 
-                        <label class="col-sm-2 form-control-label text-xs-right">RG </label>
-                        <div class="col-sm-3"> 
-                            <input type="number" class="form-control boxed" placeholder="Somente numeros" name="rg" required> 
-                        </div>
-                        <label class="col-sm-2 form-control-label text-xs-right">CPF* <small title="Caso não tiver CPF o responsável legal deverá ser cadastrado"><i class="fa fa-info-circle"></i></small></label>
-                        <div class="col-sm-3"> 
-                            <input type="number" class="form-control boxed" placeholder="Somente numeros" name="cpf" value="{{$cpf}}" readonly="true" required>
-                        </div>
-                        
-                        
-                    </div> 
+                  
                     <div class="form-group row">
                         <label class="col-sm-2 form-control-label text-xs-right">E-mail </label>
                         <div class="col-sm-4"> 
-                            <input type="email" class="form-control boxed" name="email" required> 
+                            <input type="email" class="form-control boxed" name="email" > 
                         </div>
 
                         <label class="col-sm-2 form-control-label text-xs-right" >CEP</label>
                         <div class="col-sm-4"> 
-                            <input type="text" class="form-control boxed" placeholder="00000-000" name="cep"  onkeyup="mycep();" required minlength="8" maxlength="9"> 
+                            <input type="text" class="form-control boxed" placeholder="00000-000" name="cep"  onkeyup="mycep();"  minlength="8" maxlength="9"> 
                         </div> 
     
                     </div>
                         <div class="form-group row">
                             <label class="col-sm-2 form-control-label text-xs-right">Logradouro</label>
                             <div class="col-sm-10"> 
-                                <input type="text" class="form-control boxed" placeholder="Rua, avenida, etc" name="rua" required> 
+                                <input type="text" class="form-control boxed" placeholder="Rua, avenida, etc" name="rua" > 
                             </div>  
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-2 form-control-label text-xs-right">Número</label>
                             <div class="col-sm-2"> 
-                                <input type="text" class="form-control boxed" placeholder="" name="numero_endereco" required> 
+                                <input type="text" class="form-control boxed" placeholder="" name="numero_endereco" > 
                             </div>  
-                            <label class="col-sm-2 form-control-label text-xs-right">Complemento</label>
+                            <label class="col-sm-2 form-control-label text-xs-right"><small>Complemento</small></label>
                             <div class="col-sm-2"> 
                                 <input type="text" class="form-control boxed" placeholder="" name="complemento_endereco"> 
                             </div> 
@@ -159,7 +122,7 @@
         
                             <label class="col-sm-1 form-control-label text-xs-right">Bairro</label>
                             <div class="col-sm-3"> 
-                                <input id="bairro" type="text" class="form-control boxed"  name="bairro_str" required> 
+                                <input id="bairro" type="text" class="form-control boxed"  name="bairro_str" > 
                                 
                             </div> 
                              
@@ -172,7 +135,7 @@
                             </div>  
                             <label class="col-sm-2 form-control-label text-xs-right">Estado</label>
                             <div class="col-sm-4"> 
-                                <select  class="form-control boxed"  name="estado" required> 
+                                <select  class="form-control boxed"  name="estado" > 
                                     <option value="AC">Acre</option>
                                     <option value="AL">Alagoas</option>
                                     <option value="AP">Amapá</option>
@@ -204,23 +167,12 @@
                             </div>  
                         </div>
 
-                        <div class="form-group row">
-                            <label class="col-sm-2 form-control-label text-xs-right">Senha </label>
-                            <div class="col-sm-4"> 
-                                <input type="password" class="form-control boxed" placeholder="Pelo menos 6 caracteres" name="senha" minlength="6" required> 
-                            </div>
-    
-                            <label class="col-sm-2 form-control-label text-xs-right" >Redigite a senha</label>
-                            <div class="col-sm-4"> 
-                                <input type="password" class="form-control boxed"  name="contrasenha" minlength="6" required > 
-                            </div> 
-        
-                        </div>
+                    
                     
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <button class="btn btn-info" type="submit" name="btn" value="1">Continuar</button> 
 					<button type="reset" name="btn"  class="btn btn-secondary">Limpar</button>
-                	<button type="cancel" name="btn" class="btn btn-secondary" onclick="history.back(-2);return false;">Cancelar</button>
+                	<button type="cancel" name="btn" class="btn btn-secondary" onclick="history.back(-1);return false;">Cancelar</button>
                     @csrf
                 </form>
                 <p>
@@ -229,8 +181,11 @@
             
 
             </div>
-        </div>     
+      </div>
     </div>
+</div>
+@endsection
+@section('scripts')
         
    
     <script src="{{asset('/js/vendor.js')}}"></script>
@@ -297,7 +252,4 @@ function valida(){
         
 }
 </script>
-
-</body>
-
-</html>
+@endsection

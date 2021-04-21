@@ -14,7 +14,7 @@
     <div class="card-body">
       <div class="row">
         <div class="col-sm-12">
-          <h5 class="mb-0">Programa de parceria</h6>
+          <h5 class="mb-0">Programa de parceria</h5>
           
           <p class="text-secondary"><small>Cadastre ou atualize seu currículo para eventuais parcerias.</small></p>
           <hr>

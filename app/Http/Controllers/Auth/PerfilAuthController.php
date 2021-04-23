@@ -174,9 +174,9 @@ class PerfilAuthController extends Controller
         Mail::send('emails.reset_perfil_password', ['token' => $hash ], function ($message) use($email){
             $message->from('no-reply@fesc.saocarlos.sp.gov.br', 'Sistema Fesc');
             $message->to($email->valor);
-            $message->subject('Redefinição de senha');
+            $message->subject('Redefinição de senha do perfil');
             });
-        return view('perfil.recovery');
+        return view('perfil.recovery')->with('email',$email->valor);
         
 
 

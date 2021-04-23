@@ -67,9 +67,9 @@
                     @endforeach
                 @else
                 <p class="description">
-                    Sua senha pode ser modificada através de um link que acabamos de enviar para seu e-mail. <br>
-
+                    Sua senha pode ser modificada através de um link que acabamos de enviar para o e-mail "{{$email}}". <br>
                 </p>
+                <p>Caso tiver algum problema para acessá-lo contate-nos pelo telefone: (16) 3372-1308</p>
 
                 @endif
 

@@ -124,8 +124,18 @@
                         <img src="{{asset('img/default-user.png')}}" alt="Admin" class="rounded-circle" width="150">
                         <div class="mt-3">
                           <h4>{{$pessoa->nome_simples}}</h4>
-                          <p class="text-secondary mb-1">{{$pessoa->email}}</p>
+                          @if(isset($pessoa->email))
+                            <p class="text-secondary mb-1">{{$pessoa->email}}</p>
+                          @else
+                            <p class="text-danger mb-1">EMAIL NÃO CADASTRADO</p>
+                            <small>clique em alterar dados para cadastrar</small>
+                          @endif
+                          @if(isset($pessoa->celular))
                           <p class="text-muted font-size-sm">{{\App\classes\Strings::formataTelefone($pessoa->celular)}}</p>
+                          @else 
+                          <p class="text-danger font-size-sm">CELULAR NÃO CADASTRADO</p>
+                          <small>clique em alterar dados para cadastrar</small>
+                          @endif
                           <a href="/perfil/alterar-dados">Alterar dados do perfil</a>
                           <!--
                           <button class="btn btn-primary">Follow</button>

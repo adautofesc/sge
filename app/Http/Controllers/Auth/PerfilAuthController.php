@@ -10,6 +10,7 @@ use App\PessoaDadosContato;
 use App\Pessoa;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class PerfilAuthController extends Controller
 {
@@ -119,6 +120,7 @@ class PerfilAuthController extends Controller
             return redirect()->back()->withErrors(['Problemas na identificação da pessoa']);
 
         $rg = PessoaDadosGerais::where('pessoa',$pessoa->id)->where('dado',4)->orderBy('id','desc')->first();
+        $email = PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',1)->first();
         $nome = explode(' ',$pessoa->nome_simples);
         $nome = strtolower($nome[0]);
 
@@ -132,6 +134,17 @@ class PerfilAuthController extends Controller
             $dado->valor = Hash::make($r->senha);
             $dado->save();
         }
+
+        if($email == null || $email->valor != $r->email){
+            $dado = new PessoaDadosContato;
+            $dado->pessoa = $r->pessoa;
+            $dado->dado = 1;
+            $dado->valor = $r->email;
+            $dado->save();
+
+        }
+
+
         session(['pessoa_perfil'=>$r->pessoa]);
         return redirect('/perfil');
 
@@ -149,7 +162,8 @@ class PerfilAuthController extends Controller
         $old_hash = PessoaDadosGerais::where('dado',27)->where('pessoa',$cpf->pessoa)->first();
         if($old_hash)
             $old_hash->delete();
-        $hash = Hash::make($cpf->valor.date('y-m-d-h'));
+
+        $hash = Str::random(60);
         $token = new PessoaDadosGerais;
         $token->pessoa = $cpf->pessoa;
         $token->dado = 27;

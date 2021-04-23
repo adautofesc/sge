@@ -36,7 +36,7 @@
           </div>
           <div class="alert alert-danger">
             <button type="button" class="close" data-dismiss="alert" >×</button>       
-            <p class="modal-title"><i class="fa fa-danger"></i>Antes de se matricular verifique se sua conxão e seu equipamento de acesso suportam o aplicativo Microsoft Teams</p>
+            <p class="modal-title"><i class="fa fa-danger"></i>Antes de se matricular verifique se sua conexão e seu equipamento de acesso suportam o aplicativo Microsoft Teams</p>
           </div>
           <hr>
           @if($errors->any())

@@ -80,6 +80,10 @@
                         <input type="number" class="form-control form-control-sm" name="rg"  maxlength="11" max-size="11" required>
                     </div>
                     <div class="col-md-7 form-group form">
+                        <label for="rg">Qual seu e-mail? </label>
+                        <input type="email" class="form-control form-control-sm" name="email"  maxlength="150" max-size="150" required>
+                    </div>
+                    <div class="col-md-7 form-group form">
                         <label for="senha">Agora digite uma senha. <small>De 6 a 20 caracteres</small> </label>
                         <input type="password" class="form-control form-control-sm" name="senha"  minlength="6" maxlength="20" max-size="20" required>
                     </div>

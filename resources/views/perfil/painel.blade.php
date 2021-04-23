@@ -16,7 +16,9 @@
         <div class="col-sm-12">
           <h5 class="mb-0">Seja bem-vindo!</h6>
           <br>
-          <p class="text-secondary">Estamos construindo um painel para que você possa ter mais informações sobre seu relacionamento conosco. sinta-se a vontade para fazer sugestões.</p>
+          <p class="text-secondary">Estamos construindo um painel para que você possa ter mais informações sobre seu relacionamento conosco. Sinta-se à vontade para fazer sugestões.</p>
+          <hr>
+          <p class="alert alert-info">Matrículas abertas! Clique <a href="/perfil/matricula/inscricao">aqui</a>  para se inscrever!</p>
         </div>
 
         

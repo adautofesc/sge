@@ -32,7 +32,11 @@ class MatriculaController extends Controller
         // recebe lista de turmas csv
         $turmas=TurmaController::csvTurmas($r->turmas); 
         foreach($turmas as $turma){
+            $insc=InscricaoController::inscreverAluno($r->pessoa,$turma->id);
+        }
             // verifica se é curso ou disciplina
+
+            /*
             if($turma->disciplina==null) 
                 $cursos->push($turma->curso);//adiciona na lista de cursos escolhidos
             else{
@@ -93,6 +97,9 @@ class MatriculaController extends Controller
             $matricula->save();
             
         }
+
+
+        */
         
         return redirect(asset("secretaria/atender").'/'.$r->pessoa);
  

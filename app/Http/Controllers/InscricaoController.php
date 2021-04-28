@@ -160,15 +160,27 @@ class InscricaoController extends Controller
         $turma=Turma::find($turma);
         //dd($turma);
         if(substr($turma->data_inicio,-4,4) < date('Y')){
-            die('Não é possível inscrever alunos em turmas de anos anteriores: Turma:'.substr($turma->data_inicio,-4,4).', data: '.date('Y'));
-            
+            redirect()->back()->withErrors(['Não é possível inscrever alunos em turmas de anos anteriores: Turma:'.substr($turma->data_inicio,-4,4).', data: '.date('Y')]);
+            return false;
         }
 
         //segurança para evitar espertinhos que alteram o html
         if($atendente>0 && $turma->vagas<=$turma->matriculados){
-            echo 'Não há vagaspara a turma'.$turma->id;    
-            return false;      
+            redirect()->back()->withErrors(['Não há vagas para a turma'.$turma->id]); 
+            return false; 
+
+                 
         }
+
+
+        if(!$turma->verificaRequisitos($aluno)){
+            redirect()->back()->withErrors(['Problemas com os pré-requisitos da turma '.$turma->id]); 
+            return false;  
+                 
+        }
+
+
+
         if(InscricaoController::verificaSeInscrito($aluno,$turma->id))
                 return Inscricao::find(InscricaoController::verificaSeInscrito($aluno,$turma->id));
         if($matricula==0){

@@ -295,45 +295,17 @@ class SecretariaController extends Controller
 		   }
 		}
 		return view('secretaria.arquivos-processados')->with('logs',$msgs);
+	}
 
 
+	/**
+	 * Controle de alunos
+	 */
+	public function alunos(Request $r){
+		$filtros =Array();
 
-
-
-/*
-
-
-
-		chdir( 'documentos/pprocessar/' );
-		$arquivos = glob("{*.pdf}", GLOB_BRACE);
-		dd($arquivos);
-		foreach($arquivos as $arquivo){
-                //dd($arquivo);
-                if (!empty($arquivo)) {
-                    //$arquivo->move('documentos/pprocessar', $arquivo->getClientOriginalName());
-                    switch (substr($arquivo, 5,2)) {
-                    	case 'MT':
-                    		 $arquivo->move('documentos/matriculas/termos/', preg_replace( '/[^0-9]/is', '', $arquivo));
-                    		break;
-                    	case 'CM':
-                    		$arquivo->move('documentos/matriculas/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo));
-                    		break;
-                    	case 'CI':
-                    		$arquivo->move('documentos/inscricoes/cancelamentos/', preg_replace( '/[^0-9]/is', '', $arquivo));
-                    		break;
-                    	case 'AM':
-                    		$arquivo->move('documentos/atestados/', preg_replace( '/[^0-9]/is', '', $arquivo));
-                    		break;
-                    	case 'RD':
-                    		$arquivo->move('documentos/bolsas/requerimentos', preg_replace( '/[^0-9]/is', '', $arquivo));
-                    		break;
-                    	default :
-                    		return 'O arquivo "'.$arquivo->getClientOriginalName().'" não segue o padrão de nomenclatura FESC_XX----.pdf, verifique o nome e envie novamente.';
-                    		break;
-
-
-                    }
-                }
-            }*/
+		return view('secretaria.controle-alunos')
+			->with('r',$r)
+			->with('periodos',\App\classes\Data::semestres());;
 	}
 }

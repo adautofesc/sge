@@ -577,6 +577,8 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::post('upload','SecretariaController@uploadGlobal');
 		Route::get('frequencia/{turma}','FrequenciaController@listaChamada');
 
+		Route::get('alunos','SecretariaController@alunos');
+
 
 
 

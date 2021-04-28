@@ -39,8 +39,6 @@ class PerfilMatriculaController extends Controller
     }
 
     public function inscricao(Request $r){
-        $fails = 0;
-
         if($r->turma == null)
             return redirect()->back()->withErrors(['Escolha pelo menos uma turma']);
 
@@ -57,9 +55,8 @@ class PerfilMatriculaController extends Controller
         foreach($r->turma as $turma){
             echo 'inscrito em '.$turma.'<br>'."\n";
             $inscricao=InscricaoController::inscreverAluno($r->pessoa->id,$turma,0,$r->pessoa->id);
-            if($inscricao == false)
-                $fails = 1;
-            else{
+            if($inscricao){
+                        
                 $matricula = \App\Matricula::find($inscricao->matricula);
                 $matricula->obs = 'Matricula online. IP: '.$ip;
                 $matricula->save();
@@ -67,10 +64,7 @@ class PerfilMatriculaController extends Controller
 
         }
 
-        if($fails)
-            return redirect('/perfil/matricula')->withErrors(['Problemas ao realizar a inscrição. Verifique o número de vagas novamente.']);
-        else
-            return redirect('/perfil/matricula');
+        return redirect('/perfil/matricula');
         
         //confirmar que são essas turmas e aceitar o termo
         //inscrever pessoa (verificar se já não inscrita antes)

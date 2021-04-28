@@ -48,39 +48,41 @@
             @endforeach
           @endif
           @foreach($turmas as $turma)
-          @if($turma->matriculados<=$turma->vagas)
-          <label class="form-group row rodape">
-            <div class="col-sm-1">
-              <input type="checkbox" class="checkbox" name="turma[]" value="{{$turma->id}}" >  <small>{{$turma->id}}</small> 
-            </div>
-            <div class="col-sm-8">
-              <strong>{{$turma->nomeCurso}}</strong> - <small>De {{$turma->data_inicio}} a {{$turma->data_termino}}</small>
-              <br> <small> {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}} | {{$turma->professor->nome_simples}}</small>
-              
+          @if($turma->verificaRequisitos($pessoa->id))
+            @if($turma->matriculados<=$turma->vagas)
+            <label class="form-group row rodape">
+              <div class="col-sm-1">
+                <input type="checkbox" class="checkbox" name="turma[]" value="{{$turma->id}}" >  <small>{{$turma->id}}</small> 
+              </div>
+              <div class="col-sm-8">
+                <strong>{{$turma->nomeCurso}}</strong> - <small>De {{$turma->data_inicio}} a {{$turma->data_termino}}</small>
+                <br> <small> {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}} | {{$turma->professor->nome_simples}}</small>
+                
 
-            </div>
-            <div class="col-sm-2">
-              R$ {{number_format($turma->valor,2,',','.')}} <br>
-             <small> {{$turma->getParcelas()}}X R$ {{number_format($turma->valor/$turma->getParcelas(),2,',','.')}}</small>
-              
-            </div>
-          </label>
-          @else
-          <div class="form-group row rodape alert-danger">
-            <div class="col-sm-1">
-              <input type="checkbox" class="checkbox"  readonly name="turma[]" value="{{$turma->id}}" title="Não há mais vagas neste curso" >  <small>{{$turma->id}}</small> 
-            </div>
-            <div class="col-sm-8">
-              <strong>* SEM VAGAS</strong> | {{$turma->nomeCurso}} - <small>De {{$turma->data_inicio}} a {{$turma->data_termino}}</small>
-              <br> <small> {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}} | {{$turma->professor->nome_simples}}</small>
-              
+              </div>
+              <div class="col-sm-2">
+                R$ {{number_format($turma->valor,2,',','.')}} <br>
+              <small> {{$turma->getParcelas()}}X R$ {{number_format($turma->valor/$turma->getParcelas(),2,',','.')}}</small>
+                
+              </div>
+            </label>
+            @else
+            <div class="form-group row rodape alert-danger">
+              <div class="col-sm-1">
+                <input type="checkbox" class="checkbox"  readonly name="turma[]" value="{{$turma->id}}" title="Não há mais vagas neste curso" >  <small>{{$turma->id}}</small> 
+              </div>
+              <div class="col-sm-8">
+                <strong>* SEM VAGAS</strong> | {{$turma->nomeCurso}} - <small>De {{$turma->data_inicio}} a {{$turma->data_termino}}</small>
+                <br> <small> {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}} | {{$turma->professor->nome_simples}}</small>
+                
 
+              </div>
+              <div class="col-sm-2">
+                R$ {{number_format($turma->valor,2,',','.')}}
+                
+              </div>
             </div>
-            <div class="col-sm-2">
-              R$ {{number_format($turma->valor,2,',','.')}}
-              
-            </div>
-          </div>
+            @endif
           @endif
 
           @endforeach

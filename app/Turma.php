@@ -254,9 +254,137 @@ class Turma extends Model
 		return $dados;
 	}
 
+	public function verificaRequisitos($aluno){
+		$aluno = Pessoa::find($aluno);
+		if($aluno == null)
+			return false;
+		$idade_minima = 0;
+		$idade_maxima = 0;
+		$atestado = 0;
+		$reqs = CursoRequisito::where('para_tipo','curso')->where('curso',$this->id)->get();
+		foreach($reqs as $req){
+			switch($req->requisito->id){
+				case 22:
+					$idade_minima = 40;
+					break;
+				case 23:
+					$idade_minima = 16;
+					break;
+				case 24:
+					$idade_minima = 40;
+					$idade_maxima = 60;
+					break;
+				case 25:
+					$idade_minima = 60;
+					break;
+				case 21:
+					$idade_minima = 14;
+					break;
+				case 20:
+					$idade_minima = 10;
+					$idade_maxima = 14;
+					break;
+				case 18:
+					if($req->obrigatorio)
+					$atestado = 1;
+					break;
+				case 1:
+					$idade_minima = 18;
+					break;
+			}
+		}
+		$reqs = CursoRequisito::where('para_tipo','disciplina')->where('curso',$this->disciplina)->get();
+		foreach($reqs as $req){
+			switch($req->requisito->id){
+				case 22:
+					$idade_minima = 40;
+					break;
+				case 23:
+					$idade_minima = 16;
+					break;
+				case 24:
+					$idade_minima = 40;
+					$idade_maxima = 60;
+					break;
+				case 25:
+					$idade_minima = 60;
+					break;
+				case 21:
+					$idade_minima = 14;
+					break;
+				case 20:
+					$idade_minima = 10;
+					$idade_maxima = 14;
+					break;
+				case 18:
+					if($req->obrigatorio)
+					$atestado = 1;
+					break;
+				case 1:
+					$idade_minima = 18;
+					break;
+			}
+		}
+		$reqs = CursoRequisito::where('para_tipo','turma')->where('curso',$this->id)->get();
+		foreach($reqs as $req){
+			switch($req->requisito->id){
+				case 22:
+					$idade_minima = 40;
+					break;
+				case 23:
+					$idade_minima = 16;
+					break;
+				case 24:
+					$idade_minima = 40;
+					$idade_maxima = 60;
+					break;
+				case 25:
+					$idade_minima = 60;
+					break;
+				case 21:
+					$idade_minima = 14;
+					break;
+				case 20:
+					$idade_minima = 10;
+					$idade_maxima = 14;
+					break;
+				case 18:
+					if($req->obrigatorio)
+					$atestado = 1;
+					break;
+				case 1:
+					$idade_minima = 18;
+					break;
+			}
+		}
 
-    
+		if($idade_minima>0 && $idade_minima>$aluno->getIdade()){
+			//redirect()->back()->withErrors(['Idade mínima não atingida: '.$idade_minima]);
+			return false;
+		}
+		
+	if($idade_minima>0 && $idade_minima>$aluno->getIdade() && $idade_maxima<0 && $idade_maxima>$aluno->getIdade() ){
+		//redirect()->back()->withErrors(['Idade não compatível com a faixa etária obrigatória']);
+		return false;
+	}
+			
+		/* condicional para atestado
+		if($atestado ==1){
+			$atestado = Atestado::where('pessoa',$aluno->id)->first();
+			if($atestado ==null)
+				//redirect()->back()->withErrors(['Atestado médico obrigatório']);
+			else{
+				$vencimento = $atestado->calculaVencimento($this->programa->id);
+				if($vencimento < date('Y-m-d 23:23:59'))
+					//redirect()->back()->withErrors(['Atestado fora da data de validade']);
+			}
+		}*/
 
+		
+		return true;
+		
+		
 
+	}
 
 }

@@ -173,7 +173,7 @@ class MatriculaController extends Controller
 
 
         //return $pessoa;
-        if(isset($r->type))
+        if($inscricoes->first()->turma->local->id == 118)
             return view("juridico.documentos.termo-ead",compact('matricula'))->with('pessoa',$pessoa)->with('inscricoes',$inscricoes);
         else
             return view("juridico.documentos.termo",compact('matricula'))->with('pessoa',$pessoa)->with('inscricoes',$inscricoes);

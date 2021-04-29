@@ -306,8 +306,8 @@ class SecretariaController extends Controller
 
 		$inscricoes = Inscricao::join('turmas','inscricoes.turma','=','turmas.id')->where('turmas.sala',74)->whereIn('inscricoes.status',['regular','pendente'])->get();
 		foreach($inscricoes as $inscricao){
-			$inscricao->email = \App\PessoaDadosContato::where('pessoa',$inscricao->pessoa->id)->where('dado',1)->first();
-			$inscricao->email_fesc = \App\PessoaDadosAcademicos::where('pessoa',$inscricao->pessoa->id)->where('dado','email_fesc')->first();
+			$inscricao->email = \App\PessoaDadosContato::where('pessoa',$inscricao->pessoa->id)->where('dado',1)->orderbyDesc('id')->first();
+			$inscricao->email_fesc = \App\PessoaDadosAcademicos::where('pessoa',$inscricao->pessoa->id)->where('dado','email_fesc')->orderbyDesc('id')->first();
 			$inscricao->insc_teams = \App\PessoaDadosAcademicos::where('pessoa',$inscricao->pessoa->id)->where('dado','equipe_teams')->where('valor',$inscricao->turma->id)->first();
 		}
 		//dd($inscricoes);

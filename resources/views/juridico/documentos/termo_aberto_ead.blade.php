@@ -115,7 +115,7 @@
                         <br>
                         7.5 O(A) Aluno(a) e/ou seu Representante Legal e o(s) Responsável(is) Financeiro(s) se obrigam a manter sempre atualizados os dados fornecidos no Contrato, especialmente o endereço, e-mail celular, assumindo integral responsabilidade pelos danos decorrentes de eventual desatualização.
                         <br>
-                        7.6 O aluno declara neste termo, estar em plenas condições de saúde, apto a realizar atividades físicas e não portar nenhuma moléstia contagiosa que possa prejudicar os demais alunos da FESC. Não obstante a declaração de saúde, é dever do aluno apresentar atestado médico específico para a prática da(s) atividade(s) contratada(s), comprometendo-se a apresentar o original do atestado médico no primeiro dia de aula e renová-lo anualmente, sob pena de ser proibido o seu acesso enquanto não regularizada a pendência.
+                        7.6 O aluno declara neste termo, estar em plenas condições de saúde, apto a realizar atividades físicas e não portar nenhuma moléstia contagiosa que possa prejudicar os demais alunos da FESC.
                         <br>
                         7.7 O acesso aos cursos EAD será realizado através endereço eletrônico, senha e procedimentos no computador ou celular do aluno (a) e este deverá assegurar-se de que seus equipamentos, softwares e demais condições sejam compatíveis com a modalidade de ensino oferecida.
                         <br>

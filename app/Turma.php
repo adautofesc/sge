@@ -38,7 +38,7 @@ class Turma extends Model
 		
 
 		//verifica se o curso é fora da fesc, se for, retorna valor 0
-		$fesc=[84,85,86];
+		$fesc=[84,85,86,118];
 		if(!in_array($this->local->id,$fesc)){
 			return 0;
 		}

@@ -142,7 +142,7 @@ class ValorController extends Controller
             $turma = \App\Turma::find($inscricoes->first()->turma->id);
 
             //dd($turma->parceria->id);
-            $fesc=[84,85,86];
+            $fesc=[84,85,86,118];
             if(!in_array($turma->local->id,$fesc)){
                  return ValorController::retornarZero('Turma fora da fesc');
 
@@ -203,6 +203,7 @@ class ValorController extends Controller
                 foreach($inscricoes as $inscricao){
                     $turma= \App\Turma::find($inscricao->turma->id); 
                     $valor->valor += $turma->valor;
+                    
                     
                 }
                 //dd($valor);

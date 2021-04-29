@@ -168,6 +168,32 @@
                 </div>                
             </div>
         </div> 
+        <div class="col-md-4 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Ferramentas de Gerenciamento EAD</p>
+                    </div>
+                </div>
+                <div class="card-block">
+                    <div>
+                        <a href="/secretaria/alunos" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Mostra alunos inscritos nas turmas EAD">
+                        <i class=" fa fa-play-circle "></i>
+                        &nbsp;&nbsp;Controle de E-mails e Teams</a>
+                    </div>
+                    <div>
+                        <a href="https://admin.microsoft.com" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class="fa fa-files-o"></i>
+                        &nbsp;&nbsp; Administração Office365 (usuários)</a>
+                    </div>
+                    <div>
+                        <a href="https://admin.teams.microsoft.com/" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class="fa fa-file-text"></i>
+                        &nbsp;&nbsp; Administração Teams</a>
+                    </div>
+                </div>                
+            </div>
+        </div>
     </div> 
 
 </section>

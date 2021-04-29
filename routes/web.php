@@ -340,6 +340,12 @@ Route::middleware(['auth','login']) ->group(function(){
 		});
 
 		Route::get('matriculas', 'MatriculaController@listarPorPessoa');
+
+		Route::get('registrar-email-fesc/{pessoa}/{endereco}','PessoaDadosAcademicosController@registrarEmailFesc');
+		Route::get('apagar-email-fesc/{id}','PessoaDadosAcademicosController@apagarEmailFesc');
+		Route::get('inscrever-equipe-teams/{pessoa}/{turma}','PessoaDadosAcademicosController@inscreverTeams');
+		Route::get('remover-equipe-teams/{id}','PessoaDadosAcademicosController@removerTeams');
+
 	});//prefix pessoa
 
 

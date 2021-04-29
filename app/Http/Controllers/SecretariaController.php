@@ -304,8 +304,17 @@ class SecretariaController extends Controller
 	public function alunos(Request $r){
 		$filtros =Array();
 
+		$inscricoes = Inscricao::join('turmas','inscricoes.turma','=','turmas.id')->where('turmas.sala',74)->whereIn('inscricoes.status',['regular','pendente'])->get();
+		foreach($inscricoes as $inscricao){
+			$inscricao->email = \App\PessoaDadosContato::where('pessoa',$inscricao->pessoa->id)->where('dado',1)->first();
+			$inscricao->email_fesc = \App\PessoaDadosAcademicos::where('pessoa',$inscricao->pessoa->id)->where('dado','email_fesc')->first();
+			$inscricao->insc_teams = \App\PessoaDadosAcademicos::where('pessoa',$inscricao->pessoa->id)->where('dado','equipe_teams')->where('valor',$inscricao->turma->id)->first();
+		}
+		//dd($inscricoes);
+
 		return view('secretaria.controle-alunos')
 			->with('r',$r)
-			->with('periodos',\App\classes\Data::semestres());;
+			->with('periodos',\App\classes\Data::semestres())
+			->with('inscricoes',$inscricoes);
 	}
 }

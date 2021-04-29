@@ -47,7 +47,7 @@ class PerfilController extends Controller
             'contrasenha' => 'same:senha'
         ]);
         $pessoa = new Pessoa;
-        $pessoa->nome = strtoupper($r->nome);
+        $pessoa->nome = mb_convert_case($r->nome, MB_CASE_UPPER, 'UTF-8');
         $pessoa->genero = $r->genero;
         $pessoa->nascimento = $r->nascimento;
         $pessoa->por = 0;
@@ -59,13 +59,13 @@ class PerfilController extends Controller
         $rg = new PessoaDadosGerais;
         $rg->pessoa = $pessoa->id;
         $rg->dado = 4;
-        $rg->valor = $r->rg;
+        $rg->valor = preg_replace( '/[^0-9]/is', '', $r->rg);
         $rg->save();
 
         $cpf = new PessoaDadosGerais;
         $cpf->pessoa = $pessoa->id;
         $cpf->dado = 3;
-        $cpf->valor = $r->cpf;
+        $cpf->valor = preg_replace( '/[^0-9]/is', '', $request->cpf);;
         $cpf->save();
 
         $senha = new PessoaDadosGerais;
@@ -83,16 +83,17 @@ class PerfilController extends Controller
         $email = new PessoaDadosContato;
         $email->pessoa = $pessoa->id;
         $email->dado = 1;
-        $email->valor = $r->email;
+        $email->valor = mb_convert_case($r->email, MB_CASE_LOWER, 'UTF-8');
         $email->save();
 
         $endereco = new Endereco;
-        $endereco->logradouro = $r->rua;
+        $endereco->logradouro = mb_convert_case($r->rua, MB_CASE_UPPER, 'UTF-8'); 
         $endereco->numero = $r->numero_endereco;
-        $endereco->complemento = $r->complemento_endereco;
+        $endereco->complemento = mb_convert_case($r->complemento_endereco, MB_CASE_UPPER, 'UTF-8'); 
+        $endereco->cep = preg_replace( '/[^0-9]/is', '',$r->cep);
         $endereco->bairro = 0;
-        $endereco->bairro_str = $r->bairro_str;
-        $endereco->cidade = $r->cidade;
+        $endereco->bairro_str = mb_convert_case($r->bairro_str, MB_CASE_UPPER, 'UTF-8'); 
+        $endereco->cidade = mb_convert_case($r->cidade, MB_CASE_UPPER, 'UTF-8'); 
         $endereco->estado = $r->estado;
         $endereco->atualizado_por = $pessoa->id;
         $endereco->save();
@@ -192,7 +193,7 @@ class PerfilController extends Controller
             $celular = new PessoaDadosContato;
             $celular->pessoa = $pessoa;
             $celular->dado = 9;
-            $celular->valor = $r->celular;
+            $celular->valor = preg_replace( '/[^0-9]/is','',$r->celular);
             $celular->save();
             $mensagem.=', celular';
         }
@@ -201,7 +202,7 @@ class PerfilController extends Controller
             $telefone = new PessoaDadosContato;
             $telefone->pessoa = $pessoa;
             $telefone->dado = 2;
-            $telefone->valor = $r->telefone;
+            $telefone->valor = preg_replace( '/[^0-9]/is','',$r->telefone);
             $telefone->save();
             $mensagem.=', telefone';
         }
@@ -210,19 +211,20 @@ class PerfilController extends Controller
             $email = new PessoaDadosContato;
             $email->pessoa = $pessoa;
             $email->dado = 1;
-            $email->valor = $r->email;
+            $email->valor = mb_convert_case($r->email, MB_CASE_LOWER, 'UTF-8');
             $email->save();
             $mensagem.=', e-mail';
         }
 
         if(isset($r->cep) && isset($r->rua) && isset($r->numero_endereco) && isset($r->bairro_str) && isset($r->cidade) && isset($r->estado)){
             $endereco = new Endereco;
-            $endereco->logradouro = $r->rua;
+            $endereco->logradouro = mb_convert_case($r->rua, MB_CASE_UPPER, 'UTF-8'); 
             $endereco->numero = $r->numero_endereco;
-            $endereco->complemento = $r->complemento_endereco;
+            $endereco->complemento = mb_convert_case($r->complemento_endereco, MB_CASE_UPPER, 'UTF-8'); 
+            $endereco->cep = preg_replace( '/[^0-9]/is', '',$r->cep);
             $endereco->bairro = 0;
-            $endereco->bairro_str = $r->bairro_str;
-            $endereco->cidade = $r->cidade;
+            $endereco->bairro_str = mb_convert_case($r->bairro_str, MB_CASE_UPPER, 'UTF-8'); 
+            $endereco->cidade = mb_convert_case($r->cidade, MB_CASE_UPPER, 'UTF-8'); 
             $endereco->estado = $r->estado;
             $endereco->atualizado_por = $pessoa->id;
             $endereco->save();

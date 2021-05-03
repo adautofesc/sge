@@ -65,7 +65,7 @@ class PerfilController extends Controller
         $cpf = new PessoaDadosGerais;
         $cpf->pessoa = $pessoa->id;
         $cpf->dado = 3;
-        $cpf->valor = preg_replace( '/[^0-9]/is', '', $request->cpf);;
+        $cpf->valor = preg_replace( '/[^0-9]/is', '', $r->cpf);;
         $cpf->save();
 
         $senha = new PessoaDadosGerais;

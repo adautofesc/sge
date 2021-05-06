@@ -8,6 +8,12 @@ use App\Matricula;
 ini_set('max_execution_time', 180);
 class ValorController extends Controller
 {
+    private const vencimento = 10;
+	private const data_corte = 20;
+	private const dias_adicionais = 5;
+
+
+
     public function cadastrarValores(){
         
         $itens = array();
@@ -247,12 +253,15 @@ class ValorController extends Controller
                     //return $valor;
                 }
 
+
+                
+                return $valor;/*
                 if($valor->valor>0)
                     return $valor;//number_format($valor->valor,2,',','.');
                 else
 
                     throw new \Exception("Erro ao acessar valor da turma:".$inscricoes->first()->turma->id.' Matrricula:'.$matricula->id .'. Verifique se a turma está com seu valor devidamente atribuído ou se são foi escolhido a parceria.', 1);
-             
+             */
     		}
     	}
 

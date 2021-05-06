@@ -117,16 +117,17 @@ class LancamentoController extends Controller
 	public function gerarTodosLancamentos($matricula){
 		//dd($matricula->valor);
 		if($matricula->valor->valor>0){
-
-			for($i=1;$i<=$matricula->parcelas;$i++){
-				$this->gerarIndividual19($matricula->pessoa, $i,$matricula->id,($matricula->valor->valor-$matricula->valor_desconto)/$matricula->valor->parcelas);
+			//dd($matricula->valor->parcelas);
+			for($i=1;$i<=$matricula->getParcelas();$i++){
+				$this->gerarIndividual19($matricula->pessoa, $i,$matricula->id,($matricula->valor->valor-$matricula->valor_desconto)/$matricula->getParcelas());
 
 			}
 		}
+		
 	}
 
 	public function gerarIndividual19($pessoa,$parcela,$matricula,$valor){
-		if(!$this->verificaSeLancada($matricula,$parcela)){
+		if(!$this->verificaSeLancada($matricula,$parcela,$valor)){
 			$matricula = Matricula::find($matricula);
 			$lancamento = new Lancamento; //gera novo lançamento
 			$lancamento->matricula=$matricula->id;
@@ -144,8 +145,19 @@ class LancamentoController extends Controller
 			->where('parcela',$parcela)
 			->where('status', null)
 			->get();
-		if ($lancamentos->count()>0)
+
+		if ($lancamentos->count()>0){
+			foreach($lancamentos as $lancamento){
+				if($lancamento->valor == $valor)
+					return true;
+				else{
+					$lancamento->delete();
+					return false;
+				}
+			}
+
 			return true;
+		}
 		else
 			return false;
 

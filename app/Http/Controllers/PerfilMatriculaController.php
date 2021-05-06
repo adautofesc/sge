@@ -64,6 +64,12 @@ class PerfilMatriculaController extends Controller
 
         }
 
+        //gerar carnê
+
+        // devo cancelar todos boletos anteriores?
+        $CC = new CarneController;
+        $CC->gerarCarneIndividual($r->pessoa->id);
+
         return redirect('/perfil/matricula');
         
         //confirmar que são essas turmas e aceitar o termo

@@ -31,7 +31,7 @@ Gerador de carnês
         }
         else{
           
-                setTimeout(mudar('./fase2'), 20000);
+                setTimeout(mudar('./fase4'), 20000);
         }
 
       }
@@ -65,7 +65,7 @@ Gerador de carnês
       <div class="row">
         <div class="col-md-1" style="width: 40px"><img src="{{asset('/img/loading.gif')}}" with="25px" height="25px"></div>
         <div class="col-md-11">
-            <h3 class="title">Fase 1 - geração dos lançamentos</h3>
+            <h3 class="title">Fase 1 a 3 - geração dos lançamentos</h3>
             <p class="title-description">O débitos de cada matrícula estão sendo gerados</p>
             <br>
         </div>

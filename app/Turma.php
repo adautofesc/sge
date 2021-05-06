@@ -92,6 +92,7 @@ class Turma extends Model
 	}
 
 	public function getParcelas(){
+		
 		$inicio = \DateTime::createFromFormat('d/m/Y', $this->data_inicio);
 		switch($this->periodicidade){
 			case 'mensal' :
@@ -107,12 +108,6 @@ class Turma extends Model
 				$parcelas = 5;
 				break;
 			case 'anual' :
-				/*
-				if($inicio->format('Y') > '2019' && ($this->programa->id == 12 || $this->programa->id == 2))
-					$parcelas = 10;
-				else 
-					$parcelas = 11;
-				*/
 				$parcelas = 10;
 				break;
 				
@@ -123,6 +118,7 @@ class Turma extends Model
 				$parcelas = 5;
 				break;
 		}
+		//dd($this->getTempoCurso());
 		return $parcelas;
 	}
 
@@ -195,6 +191,8 @@ class Turma extends Model
 				break;
 		}//end switch
 	}
+
+
 	public function getTempoCurso(){
 		$dt_i=Carbon::createFromFormat('d/m/Y', $this->data_inicio);
 		$dt_t=Carbon::createFromFormat('d/m/Y', $this->data_termino);

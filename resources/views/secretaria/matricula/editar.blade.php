@@ -58,9 +58,9 @@
             </label>
             <div class="col-sm-6"> 
                 <input type="number" class="form control boxed" name="parcelas" value="{{$matricula->parcelas}}" style="width:5rem;"><br>  
-                <b id="parcelas">{{$matricula->parcelas}}</b> parcela(s) de <small>R$</small> 
-                    @if($matricula->parcelas>0)
-                <b><span id="saldo_final_parcelado">{{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->parcelas,2,',','.')}}</span></b>
+                <b id="parcelas">{{$matricula->getParcelas()}}</b> parcela(s) de <small>R$</small> 
+                @if($matricula->getParcelas()>0)
+                <b><span id="saldo_final_parcelado">{{number_format(($matricula->valor->valor-$matricula->valor_desconto)/$matricula->getParcelas(),2,',','.')}}</span></b>
                 @else 
                 <b><span id="saldo_final_parcelado">{{number_format(($matricula->valor->valor-$matricula->valor_desconto)/1,2,',','.')}}</span></b>
                 @endif

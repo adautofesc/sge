@@ -764,7 +764,7 @@ class BoletoController extends Controller
 				$boleto_completo = $this->gerarBoleto($boleto);
 			}
 			catch(\Exception $e){
-				NotificacaoController::notificarErro($boleto->pessoa,5);
+				NotificacaoController::notificarErro($boleto->pessoa,'Erro ao gerar Boleto');
 				continue;
 			}
 			
@@ -773,7 +773,7 @@ class BoletoController extends Controller
 				$remessa->addBoleto($boleto_completo);
 			}
 			catch(\Exception $e){
-				NotificacaoController::notificarErro($boleto->pessoa,6);
+				NotificacaoController::notificarErro($boleto->pessoa,'Erro ao gerar Remessa');
 				continue;
 			}
 			if($boleto->status == 'emitido'){

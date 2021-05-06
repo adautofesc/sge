@@ -374,10 +374,11 @@ class PessoaController extends Controller
 			$tipoDado=TipoDado::find($dado['dado'])->tipo;
 			$pessoa->$tipoDado=$dado['valor'];
 		}
+		/*
 		foreach( $pessoa->dadosAcademicos->all() as $dado){
 			$tipoDado=$dado['dado'];
 			$pessoa->$tipoDado=$dado['valor'];
-		}
+		}*/
 		
 		
 		

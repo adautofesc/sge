@@ -214,10 +214,8 @@ class ValorController extends Controller
                 }
                 //dd($valor);
 
-                //$turma= \App\Turma::find(($inscricoes->first())->turma->id);
+                
                 if($turma->valor>0){
-                    //$valor = new Valor;
-                    //$valor->valor = $turma->valor;//***************************** aqui vai o preço */
                     switch($turma->periodicidade){
                         case 'mensal' :
                             $valor->parcelas = 1;
@@ -233,13 +231,7 @@ class ValorController extends Controller
                             break;
                         case 'anual' :
                             $valor->parcelas = 10;
-                            break;
-                            /* if($inscricao->turma->programa->id == 12 || $inscricao->turma->programa->id == 2)
-                                $valor->parcelas = 10;
-                            else 
-                                $valor->parcelas = 11;
-                            break;
-                            */
+                            break;      
                             
                         case 'eventual' :
                             $valor->parcelas = $turma->getTempoCurso();;
@@ -249,12 +241,13 @@ class ValorController extends Controller
                             break;
                     }
                     
+                    
                     $valor->referencia = 'parcelas temporaria';
                     //return $valor;
                 }
 
 
-                
+                $valor->valor = ($valor->valor/$valor->parcelas)*$matricula->getParcelas();
                 return $valor;/*
                 if($valor->valor>0)
                     return $valor;//number_format($valor->valor,2,',','.');

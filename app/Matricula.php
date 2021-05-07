@@ -128,21 +128,32 @@ class Matricula extends Model
 		$pp_dt = \DateTime::createFromFormat('d/m/Y', $turma->data_inicio);
 		$dt_mt = \DateTime::createFromFormat('Y-m-d',$this->data);
 		$interval = $pp_dt->diff($dt_mt);
-	
 
+		if($dt_mt->format('m') < $pp_dt->format('m'))
+			return $parcelas;
+		else{
+			$parcelas = $parcelas - ($dt_mt->format('m')-$pp_dt->format('m'));
+			if($dt_mt->format('d')>=$this::CORTE)
+				$parcelas--;
+		}
+	
+		/*
 		//reduz a quantidade de parcelas de acordo com a diferença entre as datas de início e a data de matrícula
 		if($interval->invert ==1){	
-			return $parcelas;
+			
 		}
 		else{
-			if($dt_mt->format('d')<$this::CORTE && $interval->months>0 ){
-				$parcelas = $parcelas - $interval->months;
+			//dd($interval->m);
+			if($dt_mt->format('d')<$this::CORTE && $interval->m>0 ){
+				$parcelas = $parcelas - $interval->m;
 				$parcelas++;
 			}
 			else
-				$parcelas = $parcelas - $interval->months;
+				
+				$parcelas = $parcelas - $interval->m;
 
 		}
+		*/
 		return $parcelas;
 
 	}

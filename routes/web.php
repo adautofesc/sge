@@ -49,6 +49,8 @@ Route::prefix('perfil')->group(function(){
 		Route::post('alterar-senha','Auth\PerfilAuthController@trocarSenhaExec');
 		Route::get('alterar-dados','PerfilController@alterarDadosView');
 		Route::post('alterar-dados','PerfilController@alterarDadosExec');
+		Route::get('boletos','PerfilController@boletosPerfil');
+		Route::get('boleto/{numero}','BoletoController@imprimir');
 		Route::prefix('matricula')->group(function(){
 			Route::get('/','PerfilMatriculaController@matriculasAtivas');
 			Route::get('inscricao','PerfilMatriculaController@turmasDisponiveis');

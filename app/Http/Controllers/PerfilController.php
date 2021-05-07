@@ -240,4 +240,16 @@ class PerfilController extends Controller
         return redirect('/perfil')->withErrors(['Foram atualizados os seguintes dados: data'.$mensagem]);
 
     }
+    public function boletosPerfil(Request $r){
+        $boletos = \App\Boleto::where('pessoa',$r->pessoa->id)->limit(20)->get();
+        return view('perfil.boletos')->with('pessoa',$r->pessoa)->with('boletos',$boletos);
+
+    }
+
+    public function imprimirBoleto(int $boleto){
+        
+    }
+        
+
 }
+

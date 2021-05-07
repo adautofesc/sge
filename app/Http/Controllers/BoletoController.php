@@ -247,8 +247,15 @@ class BoletoController extends Controller
 		return $html->gerarBoleto(false,false);
 
 	}
-	public function imprimir($boleto){
+	public function imprimir($boleto,Request $r){
 		$boleto = Boleto::find($boleto);
+		if(!isset(Auth::user()->pessoa))
+			if(!isset($r->pessoa->id) || $r->pessoa->id != $boleto->pessoa)
+				//dd($boleto->pessoa.$r->pessoa->id);
+				return redirect()->back()->withErrors(['Usuário não corresponde ao boleto requerido']);
+
+		
+
 		$vencido = false;
 
 		if(!$boleto)

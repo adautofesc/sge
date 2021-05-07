@@ -247,54 +247,58 @@ class CarneController extends Controller
 	 * @return [type]
 	 */
 	public function gerarCarneIndividual(int $pessoa){
-
+		$num_boletos = 0;
+		$data_matricula = \DateTime::createFromFormat('d/m/Y', date('d/m/Y'));
+		$data_ini_curso = \DateTime::createFromFormat('d/m/Y', date('d/m/Y'));
+		
 		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente', 'espera'])->where('pessoa',$pessoa)->get();
 		if($matriculas->count()==0)
 			return redirect()->back();
 		$LC = new LancamentoController;
-		$num_boletos = 0;
+		
 		foreach($matriculas as $matricula){
 			
 			$LC->gerarTodosLancamentos($matricula);
 			if($matricula->getParcelas()>$num_boletos)
 				$num_boletos = $matricula->getParcelas();
+			
+			$data_matricula = \DateTime::createFromFormat('Y-m-d', $matricula->data);
+			
+			if(isset($matricula->inscricoes->first()->turma->data_inicio)){
+				$data_ini_curso = $matricula->inscricoes->first()->turma->data_inicio;	
+				$data_ini_curso = \DateTime::createFromFormat('d/m/Y', $data_ini_curso);
+				
+			}
+		
 
 		}
+
+		
 		$lancamentos = \App\Lancamento::where('pessoa',$pessoa)->where('status', null )->where('boleto',null)->get();
 		if($lancamentos->count()>0){
-			//Qual o mes do primeiro boleto?
-			if($matriculas->first()->inscricoes ==null){
-				return null;
-
-			}
-			
-			else{
-				$data_primeiro_boleto = $matriculas->first()->inscricoes->first()->turma->data_inicio;
-			}
 			
 		
-			$data_primeiro_boleto = \DateTime::createFromFormat('d/m/Y', $data_primeiro_boleto);
-
-			if(date('m')>=$data_primeiro_boleto->format('m')){
+			
+			//se o mes que esse boleto esta sendo gerado dor maior duqe a data de inicio
+			if($data_ini_curso->format('m')<=$data_matricula->format('m')){
 
 			//Aqui se verifica se o boleto é para o mes corrente ou não
-				if(date('d')>$this::data_corte )	
-					$mes=date('m')+1;
-				else
-					$mes=date('m');
-				if(date('d')>=5 && date('d') <= $this::data_corte )
-					$primeiro_vencimento = date('d')+$this::dias_adicionais;
+				if($data_matricula->format('d') >= $this::data_corte )	
+					$mes=$data_ini_curso->format('m')+1;
+				else{
+					$mes=$data_ini_curso->format('m');
+					if($data_matricula->format('d') >= ($this::vencimento-$this::dias_adicionais))
+						$primeiro_vencimento = $data_matricula->format('d')+$this::dias_adicionais;
+				}
 
 			}
 			else{
-				$mes = $data_primeiro_boleto->format('m');
-				$primeiro_vencimento = $this::vencimento;
+				$mes = $data_ini_curso->format('m');
+		
 
 			}
 
-			for($i=1;$i<=$num_boletos;$i++){//i = mes. trocar o 8 por $mes
-				// ->where('vencimento', 'like', date('Y-'.str_pad($i,2, "0", STR_PAD_LEFT).'-'.$this::vencimento.'%'))
-				//verificar se tem boletoabero
+			for($i=1;$i<=$num_boletos;$i++){
 
 				$boleto_existente = Boleto::where('pessoa',$pessoa)								
 											->whereYear('vencimento',date('Y'))
@@ -304,9 +308,11 @@ class CarneController extends Controller
 
 
 				if($boleto_existente->count()==0){
+
+
 				
 					$boleto =new Boleto;
-					if(isset($primeiro_vencimento))
+					if($i==1 && isset($primeiro_vencimento))
 						$boleto->vencimento = date('Y-'.$mes.'-'.$primeiro_vencimento);
 					else
 						$boleto->vencimento = date('Y-'.$mes.'-'.$this::vencimento);

@@ -19,6 +19,10 @@
           <p class="text-secondary">Estamos construindo um painel para que você possa ter mais informações sobre seu relacionamento conosco. Sinta-se à vontade para fazer sugestões.</p>
           <hr>
           <p class="alert alert-info">Matrículas abertas! Clique <a href="/perfil/matricula/inscricao">aqui</a>  para se inscrever!</p>
+          <p class="alert alert-warning">Os boletos dos seus cursos podem ser encontrados no menu "Boletos"</p>
+          @if(isset($login))
+          <p class="alert alert-success">Seu login de acesso ao Teams é <b>{{$login}}</b> A senha foi enviada para seu e-mail pessoal. Caso não encontrar, verifique também em sua caixa de SPAM.</p>
+          @endif
         </div>
 
         

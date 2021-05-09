@@ -26,6 +26,7 @@ Route::post('meuboleto', 'BoletoController@segundaVia');
 Route::get('boleto/{id}','BoletoController@imprimir');
 Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
 Route::get('ipca','ValorController@getIPCA');
+
 //Route::get('correcao-valor','ValorController@correcaoValor');
 //Route::get('boletos-com-erros','BoletoController@analisarBoletosComErro');
 Route::prefix('perfil')->group(function(){
@@ -70,51 +71,15 @@ Route::prefix('perfil')->group(function(){
 
 });
 
-//Route::get('atribuir-emails','loginController@attribEmail');
-
-Route::prefix('rematricula')->group(function(){
-	Route::get('/',function(){
-		if(!isset(Auth::user()->pessoa))
-			return view('rematricula.index');
-		else
-			return "Usuários do sistema deve utilizar o atendimento da secretaria.";
-	});
-	Route::get('autentica/{cpf}','PessoaController@verificarCPF');
-	Route::post('autentica/{cpf}','PessoaController@autenticarRematricula');
-	Route::post('gravar','MatriculaController@gravarRematricula');
-	Route::post('termo/{id}','MatriculaController@termo');
-	Route::get('termo',function(){
-		return view('juridico.documentos.termo_aberto');
-	});
-
-});
-
-
-
-
-//Login ***********************************************************
-/*
-	Route::get('login', 'loginController@login')->name('login');
-	Route::get('loginSaved', 'loginController@loginSaved')->name('loginSaved');
-	Route::get('recuperarconta/{var}','loginController@recuperarConta');
-	Route::post('loginCheck', 'loginController@loginCheck');
-	Route::get('loginCheck', 'loginController@logout');
-	Route::get('esqueciasenha', 'loginController@viewPwdRescue');
-	Route::get('logout','loginController@logout');
-	Route::post('recuperaSenha','loginController@pwdRescue');
-	Route::get('recuperaSenha','loginController@viewPwdRescue');
-	Route::get('/trocarminhasenha','loginController@trocarMinhaSenha_view');
-	Route::post('/trocarminhasenha','loginController@trocarMinhaSenha_exec');
-	
-	Route::get('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_view');
-	Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec');
-*/
 
 Auth::routes(['register' => false]);
 
 //************************************************* Areas restritas para cadastrados ***************************************************
 
 Route::middleware(['auth','login']) ->group(function(){
+
+
+	Route::get('disparar-email-boletos','SecretariaController@emailBoletos');
 
 	
 

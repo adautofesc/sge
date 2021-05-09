@@ -280,7 +280,7 @@ class CarneController extends Controller
 		
 			
 			//se o mes que esse boleto esta sendo gerado dor maior duqe a data de inicio
-			if($data_ini_curso->format('m')<=$data_matricula->format('m')){
+			if($data_ini_curso->format('m')<=$data_matricula->format('m') && $data_ini_curso->format('Y') == $data_matricula->format('Y')){
 
 			//Aqui se verifica se o boleto é para o mes corrente ou não
 				if($data_matricula->format('d') >= $this::data_corte )	

@@ -129,7 +129,7 @@ class Matricula extends Model
 		$dt_mt = \DateTime::createFromFormat('Y-m-d',$this->data);
 		$interval = $pp_dt->diff($dt_mt);
 
-		if($dt_mt->format('m') < $pp_dt->format('m'))
+		if($dt_mt->format('m') < $pp_dt->format('m') || $dt_mt->format('Y') < $pp_dt->format('Y'))
 			return $parcelas;
 		else{
 			$parcelas = $parcelas - ($dt_mt->format('m')-$pp_dt->format('m'));

@@ -26,19 +26,18 @@
 <body>
     <div id="container">
         <div id="content">
-            <h1>SGE INFORMA:</h1>
+            <h1>FESC INFORMA:</h1>
             <br>
-            <p>Olá pessoal,</p>
+            <p>Olá {{$pessoa->nome}},</p>
             <br>
-            <p>Gostaria de avisar que o sistema de autenticação foi atualizado para garantir mais segurança ao nosso sistema e proporcinar novas funcionalidades.<br>
-                Porém, todos usuários tiveram suas senhas alteradas e alguns usuários também tiveram o nome de usuário alterado.</p>
-            <p>Abaixo seguem os seus novos dados para efetuar login no sistema SGE:</p>
-            <h5>Usuário: <strong>{{$username}}</strong></h5>
-            <h5>Senha: <strong>{{$password}}</strong></h5>
-            <p>Lembramos todos que é importante manter uma senha segura, pois os dados de nossos alunos e colegas podem ser expostos através de senhas inseguras. </p>
-            <p>Sua senha poderá ser alterada como anteriormente.</p>
-            <p><small><a href="https://sistema.fesc.com.br">Acesse o sistema por aqui.</a></small></p>
-            <p><small>Cordialmente, SGE.</small></p>
+            <p>Gostaria de avisar que os boletos dos seus cursos já estão disponíveis no <a href="https//sge.fesc.com.br/perfil" target="_blank"> perfil do aluno</a></p>
+            <p>Também informamos que os dados de acesso foram enviados para todos alunos através da plataforma da Microsoft. Verifique sua caixa de SPAM caso não tenha encontrado.</p>
+            <p>Por motivo de segurança não armazenamos as senhas dos alunos, mas seu login de acesso é:</p>
+            <h5>E-mail: <strong>{{$username}}</strong></h5>        
+            <p>Recomendamos que acesse pelo menos uma vez o site <a href="https://outlook.com">Outlook.com</a> com antecedência, para verificar que você tem acesso à plataforma</p>
+            <br>
+            <p>Nós lhe desejamos boas vindas e que tenha um ótimo curso.</p>
+            <p><small>Cordialmente, equipe FESC</small></p>
 
 
         </div>

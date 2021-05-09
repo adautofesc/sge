@@ -299,7 +299,7 @@ class SecretariaController extends Controller
 
 
 	/**
-	 * Controle de alunos
+	 * Controle de alunos EAD
 	 */
 	public function alunos(Request $r){
 		$filtros =Array();
@@ -316,5 +316,35 @@ class SecretariaController extends Controller
 			->with('r',$r)
 			->with('periodos',\App\classes\Data::semestres())
 			->with('inscricoes',$inscricoes);
+	}
+
+	public function emailBoletos(){
+		$pessoas = array();
+
+		$inscricoes = Inscricao::join('turmas','inscricoes.turma','=','turmas.id')->where('turmas.sala',74)->whereIn('inscricoes.status',['regular','pendente'])->get();
+		foreach($inscricoes as $inscricao){
+			if(!in_array($inscricao->pessoa->id,$pessoas))
+				array_push($pessoas,$inscricao->pessoa->id);
+		}
+		//dd($pessoas);
+
+		foreach($pessoas as $id_pessoa){
+			$pessoa = Pessoa::find($id_pessoa);
+			$email = \App\PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',1)->orderbyDesc('id')->first();
+			$email_fesc = \App\PessoaDadosAcademicos::where('pessoa',$id_pessoa)->where('dado','email_fesc')->orderbyDesc('id')->first();
+			
+			if($email != null && $email_fesc != null){
+				$email = $email->valor;
+				$email_fesc = $email_fesc->valor;
+
+				//dd($pessoa);
+				\App\Jobs\EnviaEmails::dispatch($pessoa,$email,$email_fesc);
+			}
+			
+
+		}
+
+		return 'email postado';
+
 	}
 }

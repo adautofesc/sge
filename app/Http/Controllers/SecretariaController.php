@@ -326,7 +326,7 @@ class SecretariaController extends Controller
 			if(!in_array($inscricao->pessoa->id,$pessoas))
 				array_push($pessoas,$inscricao->pessoa->id);
 		}
-		//dd($pessoas);
+		dd($pessoas);
 
 		foreach($pessoas as $id_pessoa){
 			$pessoa = Pessoa::find($id_pessoa);
@@ -338,7 +338,7 @@ class SecretariaController extends Controller
 				$email_fesc = $email_fesc->valor;
 
 				//dd($pessoa);
-				\App\Jobs\EnviaEmails::dispatch($pessoa,$email,$email_fesc);
+				//\App\Jobs\EnviaEmails::dispatch($pessoa,$email,$email_fesc);
 			}
 			
 

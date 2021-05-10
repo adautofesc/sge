@@ -244,7 +244,7 @@ class PerfilController extends Controller
 
     }
     public function boletosPerfil(Request $r){
-        $boletos = \App\Boleto::where('pessoa',$r->pessoa->id)->limit(20)->get();
+        $boletos = \App\Boleto::where('pessoa',$r->pessoa->id)->whereYear('vencimento','2021')->orderby('vencimento')->get();
         return view('perfil.boletos')->with('pessoa',$r->pessoa)->with('boletos',$boletos);
 
     }

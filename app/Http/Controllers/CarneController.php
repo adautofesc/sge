@@ -252,11 +252,16 @@ class CarneController extends Controller
 		$data_ini_curso = \DateTime::createFromFormat('d/m/Y', date('d/m/Y'));
 		
 		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente', 'espera'])->where('pessoa',$pessoa)->get();
+		
 		if($matriculas->count()==0)
 			return redirect()->back();
 		$LC = new LancamentoController;
 		
 		foreach($matriculas as $matricula){
+			$inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','pendente'])->get();
+			if($inscricoes->count()==0)
+				continue;
+
 			
 			$LC->gerarTodosLancamentos($matricula);
 			if($matricula->getParcelas()>$num_boletos)
@@ -264,11 +269,10 @@ class CarneController extends Controller
 			
 			$data_matricula = \DateTime::createFromFormat('Y-m-d', $matricula->data);
 			
-			if(isset($matricula->inscricoes->first()->turma->data_inicio)){
-				$data_ini_curso = $matricula->inscricoes->first()->turma->data_inicio;	
-				$data_ini_curso = \DateTime::createFromFormat('d/m/Y', $data_ini_curso);
+			$data_ini_curso = $inscricoes->first()->turma->data_inicio;	
+			$data_ini_curso = \DateTime::createFromFormat('d/m/Y', $data_ini_curso);
 				
-			}
+			
 		
 
 		}

@@ -246,15 +246,13 @@ class ValorController extends Controller
                     //return $valor;
                 }
 
-
-                $valor->valor = ($valor->valor/$valor->parcelas)*$matricula->getParcelas();
-                return $valor;/*
-                if($valor->valor>0)
-                    return $valor;//number_format($valor->valor,2,',','.');
+                if($valor->valor>0 && $valor->parcelas>0 && $matricula->getParcelas()>0){
+                    $valor->valor = ($valor->valor/$valor->parcelas)*$matricula->getParcelas();
+                    return $valor;
+                }
                 else
+                    throw new \Exception("Erro ao acessar valor da turma:".$inscricoes->first()->turma->id.' Matrricula:'.$matricula->id .'. Verifique se a turma está com seu valor devidamente atribuído ou se são foi escolhido a parceria no caso de disciplinas gratuítas.', 1);
 
-                    throw new \Exception("Erro ao acessar valor da turma:".$inscricoes->first()->turma->id.' Matrricula:'.$matricula->id .'. Verifique se a turma está com seu valor devidamente atribuído ou se são foi escolhido a parceria.', 1);
-             */
     		}
     	}
 

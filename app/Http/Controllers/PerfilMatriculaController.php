@@ -69,6 +69,11 @@ class PerfilMatriculaController extends Controller
         // devo cancelar todos boletos anteriores?
         $CC = new CarneController;
         $CC->gerarCarneIndividual($r->pessoa->id);
+        $boletos = \App\Boleto::where('pessoa',$pessoa->id)->where('status','gravado')->get();
+        foreach($boletos as $boleto){
+            $boleto->status = 'impresso';
+            $boleto->save();
+        }
 
         return redirect('/perfil/matricula');
         

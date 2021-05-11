@@ -778,7 +778,7 @@ div.barcode {
 	    
 	   	</table>
 	   <div class="barcode">
-			<img src="{{asset('./img/barcode.php').'?code='. $boleto->dados["codigo_barras"]}}"  with="600" height="50">		
+			<img src="{{asset('img/barcode.php').'?code='. $boleto->dados["codigo_barras"]}}"  with="600" height="50">		
 		</div>
 	   	<div class="cut">
 			<p>dobre na linha pontilhada</p>

@@ -48,7 +48,7 @@
             @endforeach
           @endif
           @foreach($turmas as $turma)
-          @if($turma->verificaRequisitos($pessoa->id)||1==1)
+          @if($turma->verificaRequisitos($pessoa->id))
             @if($turma->matriculados<=$turma->vagas)
             <label class="form-group row rodape">
               <div class="col-sm-1">

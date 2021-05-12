@@ -19,7 +19,7 @@ class PerfilMatriculaController extends Controller
     }
     public function turmasDisponiveis(Request $r){
 
-        $turmas = Turma::where('status','inscricao')->get();
+        $turmas = Turma::whereIn('status',['inscricao','iniciada'])->get();
         foreach($turmas as $turma){
             $turma->nomeCurso = $turma->getNomeCurso();
         }

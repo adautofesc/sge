@@ -176,7 +176,7 @@
                     <tbody>
                     	@foreach($bolsas as $bolsa)
                     	<tr>
-                    		<td><a href="/juridico/bolsas/analisar/{{$bolsa->id}}">{{$bolsa->id}}</a></td>
+                    		<td><a href="/bolsas/analisar/{{$bolsa->id}}">{{$bolsa->id}}</a></td>
                     		<td><a href="/secretaria/atender/{{$bolsa->pessoa}}">{{$bolsa->pessoa}}</a></td>
                     		<td>{{$bolsa->getNomePessoa()}}</td>
                     		<td>{{$bolsa->created_at->format('d/m/y H:i')}}</td>

@@ -98,7 +98,7 @@
                                 <li>
                                     <a href=""> <i class="fa fa-angle-right"></i> Bolsas de estudos</a>
                                     <ul>
-                                        <li><a href="/juridico/bolsas/liberacao"> <i class="fa fa-angle-right"></i> </i> Listagem </a></li>
+                                        <li><a href="/bolsas/liberacao"> <i class="fa fa-angle-right"></i> </i> Listagem </a></li>
                                         <li><a href="/relatorios/bolsas/"> <i class="fa fa-angle-right"></i> </i> Relatórios</a></li>
                                         
                                     </ul>
@@ -161,7 +161,7 @@
                                     <a href=""> <i class="fa fa-angle-right"></i> Documentos </a>
                                     <ul>
                                         <li><a href="/pessoa/atestado/listar"> <i class="fa fa-angle-right"></i> </i> Atestados</a></li>
-                                        <li><a href="/juridico/bolsas/liberacao"> <i class="fa fa-angle-right"></i> </i> Bolsas</a></li>
+                                        <li><a href="/bolsas/liberacao"> <i class="fa fa-angle-right"></i> </i> Bolsas</a></li>
                                         <li><a href="#"> <i class="fa fa-angle-right"></i> </i> Cancelamentos</a></li>
                                         <li><a href="#"> <i class="fa fa-angle-right"></i> </i> Inscrições</a></li>
                                         <li><a href="#"> <i class="fa fa-angle-right"></i> </i> Matrículas</a></li>

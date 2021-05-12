@@ -103,7 +103,7 @@
                             <tbody>
                                 @foreach($bolsas as $bolsa)
                                 <tr>
-                                    <td class="col-md-1"><a href="/juridico/bolsas/analisar/{{$bolsa->id}}" title="Clique para acessar a análise">{{$bolsa->id}}</a></td>
+                                    <td class="col-md-1"><a href="/bolsas/analisar/{{$bolsa->id}}" title="Clique para acessar a análise">{{$bolsa->id}}</a></td>
                                     <td class="col-md-3">{{$bolsa->desconto_str->nome}}</td>
                                     <td class="col-md-2">{{$bolsa->matriculas->implode('matricula',', ')}}</td>
                                      <td class="col-md-1">
@@ -169,12 +169,12 @@
 <script type="text/javascript">
     function cancelar(id){
         if(confirm('Deseja mesmo cancelar a solicitação de bolsa '+id+' ?')){
-             $(location).attr('href','/juridico/bolsas/status/cancelar/'+id);
+             $(location).attr('href','/bolsas/status/cancelar/'+id);
         }
     }
     function reativar(id){
         if(confirm('Deseja mesmo reativar a solicitação de bolsa '+id+' ?')){
-             $(location).attr('href','/juridico/bolsas/status/reativar/'+id);
+             $(location).attr('href','/bolsas/status/reativar/'+id);
         }
     }
 </script>

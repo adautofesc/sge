@@ -105,7 +105,7 @@
                 </div>
                 <div class="card-block">
                     <div>                        
-                        <a href="/juridico/bolsas/liberacao" class="col-xs-12 text-xs-left">
+                        <a href="/bolsas/liberacao" class="col-xs-12 text-xs-left">
                         <i class=" fa fa-folder-open"></i>
                         &nbsp;&nbsp;Liberação de Bolsas</a>
                     </div>

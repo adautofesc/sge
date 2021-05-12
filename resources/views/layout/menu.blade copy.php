@@ -82,7 +82,7 @@
                                 @endif
                                  @if(unserialize(Session('recursos_usuario'))->contains('recurso','21'))
                                 <li  >
-                                    <a href="{{asset('/juridico/bolsas/liberacao')}}"> <i class="fa fa-heart"></i> Bolsas </a>
+                                    <a href="{{asset('/bolsas/liberacao')}}"> <i class="fa fa-heart"></i> Bolsas </a>
                                 </li>
                                 @endif
                                 @if(unserialize(Session('recursos_usuario'))->contains('recurso','22'))

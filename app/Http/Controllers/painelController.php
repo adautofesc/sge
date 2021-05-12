@@ -345,9 +345,21 @@ class painelController extends Controller
     }
     
     public function testarClasse(){
-        $turma= \App\Turma::find(904); 
-        $turma->getDados();
-        return $turma;
+        $BC = new BolsaController;
+       $bolsas = \App\Bolsa::whereIn('status',['ativa','analisando'])->get();
+       foreach($bolsas as $bolsa){
+           
+
+            $b_matriculas = \App\BolsaMatricula::where('bolsa',$bolsa->id)->get();
+            foreach($b_matriculas as $b_matricula){
+            $matricula = \App\Matricula::find($b_matricula->matricula);
+                if($matricula->status != 'espera' && $matricula->status != 'ativa' && $matricula->status != 'pendente')
+                $BC->unLinkMe($matricula->id,$bolsa->id);
+                 
+               
+           }
+       }
+        return 'executado';
     }
 
 

@@ -465,6 +465,9 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::post('relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_exec');
 	});
 
+
+	//Bolsas
+
 	Route::middleware('liberar.recurso:21')->prefix('bolsas')->group(function(){
 
 		Route::get('liberacao','BolsaController@listar');

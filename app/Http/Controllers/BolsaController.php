@@ -12,6 +12,7 @@ class BolsaController extends Controller
 {   
     const max_matriculas = 2;
     public function listar(Request $r){
+
         if($r->codigo){
             $bolsas = Bolsa::where('id',$r->codigo)->paginate(10);
             foreach($bolsas as $bolsa){
@@ -327,7 +328,7 @@ class BolsaController extends Controller
         }
 
 
-        return redirect('/juridico/bolsas/liberacao')->withErrors(['Bolsa(s) alteradas com sucesso.']);
+        return redirect('/bolsas/liberacao')->withErrors(['Bolsa(s) alteradas com sucesso.']);
     }
 
 
@@ -438,8 +439,8 @@ class BolsaController extends Controller
         $bolsa = Bolsa::find($bolsa);
         $bolsa->obs = $bolsa->obs."\n".date('d/m/Y').' matricula desvinculada: '.$matricula.' por '.session('nome_usuario');
         if(count($bolsa->getMatriculas())==0){
-            $bolsa->status = 'cancelada';
-            $bolsa->obs = $bolsa->obs."\n".date('d/m/Y').' Bolsa cancelada por extinção de matrículas';
+            $bolsa->status = 'expirada';
+            $bolsa->obs = $bolsa->obs."\n".date('d/m/Y').' Bolsa expirada por extinção de matrículas';
 
         }
         $bolsa->save();

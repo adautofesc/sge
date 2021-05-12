@@ -53,11 +53,11 @@
     </div>-->
     <div class="items-search col-md-3">
         <div class="header-block header-block-search hidden-sm-down">
-           <form role="search">
+           <form action="/bolsas/liberacao" method="GET">
             {{csrf_field()}}
                <div class="input-group input-group-sm" style="float:right;">
                    <input type="text" class="form-control" name="codigo" placeholder="Buscar por codigo">
-                   <i class="input-group-addon fa fa-search" onclick="document.forms[0].submit();" style="cursor:pointer;"></i>
+                   <i class="input-group-addon fa fa-search" onclick="document.forms[1].submit();" style="cursor:pointer;"></i>
                </div>
            </form>
        </div>
@@ -80,7 +80,7 @@
 
                             
                             <div class="action dropdown pull-right "> 
-                                <a href="#" class="btn btn-sm rounded-s btn-secondary" title="Exportar para excel"><img src="/img/excel.svg" alt="excel" width="20px"></a>
+                                <!-- <a href="#" class="btn btn-sm rounded-s btn-secondary" title="Exportar para excel"><img src="/img/excel.svg" alt="excel" width="20px"></a> -->
                                 <button class="btn btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Com os selecionados...
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
@@ -140,7 +140,7 @@
                                                             <div id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;">
                                                                 <i class="fa fa-filter"></i> <span >Tipo</span> 
                                                             </div>
-                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2" id="filtro2" style="padding-left:10px;"> 
+                                                            <!--<div class="dropdown-menu" aria-labelledby="dropdownMenu2" id="filtro2" style="padding-left:10px;"> 
                                                                 
                                                                     <label>
                                                                         <input class="checkbox" type="checkbox" onclick="parado();">
@@ -154,7 +154,7 @@
                                                                     <br>
                                                                     <button class="btn btn-sm btn-primary rounded-s">Aplicar</button>
                                                                 
-                                                            </div>
+                                                            </div>-->
                                                         </div>
                                                     </div>
                                                     <div class="item-col item-col-header ">

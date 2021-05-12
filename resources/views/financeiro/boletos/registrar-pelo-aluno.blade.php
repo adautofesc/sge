@@ -1,10 +1,10 @@
-@extends('layout.app')
-@section('pagina')
-<div class="title-block">
+@extends('perfil.layout')
+@section('titulo')
+
 	@if($vencido)
-	<h3 class="title"> Solicitando 2ª via do boleto {{$boleto->id}} <span class="sparkline bar" data-type="bar"></span> </h3>
+	 Solicitando 2ª via do boleto {{$boleto->id}} - SGE FESC
 	@else
-    <h3 class="title"> Registrando boleto {{$boleto->id}} no banco para impressão.<span class="sparkline bar" data-type="bar"></span> </h3>
+   	 Registrando boleto {{$boleto->id}} no banco para impressão - SGE FESC
     @endif
 </div>
 @include('inc.errors')

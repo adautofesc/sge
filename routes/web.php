@@ -79,7 +79,7 @@ Auth::routes(['register' => false]);
 Route::middleware(['auth','login']) ->group(function(){
 
 
-	Route::get('disparar-email-boletos','SecretariaController@emailBoletos');
+	//Route::get('disparar-email-boletos','SecretariaController@emailBoletos');
 
 	
 

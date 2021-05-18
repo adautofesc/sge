@@ -318,6 +318,27 @@ class SecretariaController extends Controller
 			->with('inscricoes',$inscricoes);
 	}
 
+
+	/**
+	 * Controle de CANCELAMENTO de alunos EAD
+	 */
+	public function alunosCancelados(Request $r){
+		$filtros =Array();
+
+		$inscricoes = Inscricao::join('turmas','inscricoes.turma','=','turmas.id')->where('turmas.sala',74)->where('inscricoes.status','cancelada')->get();
+		foreach($inscricoes as $inscricao){
+			$inscricao->email = \App\PessoaDadosContato::where('pessoa',$inscricao->pessoa->id)->where('dado',1)->orderbyDesc('id')->first();
+			$inscricao->email_fesc = \App\PessoaDadosAcademicos::where('pessoa',$inscricao->pessoa->id)->where('dado','email_fesc')->orderbyDesc('id')->first();
+			$inscricao->insc_teams = \App\PessoaDadosAcademicos::where('pessoa',$inscricao->pessoa->id)->where('dado','equipe_teams')->where('valor',$inscricao->turma->id)->first();
+		}
+		//dd($inscricoes);
+
+		return view('secretaria.controle-cancelamento-alunos')
+			->with('r',$r)
+			->with('periodos',\App\classes\Data::semestres())
+			->with('inscricoes',$inscricoes);
+	}
+
 	public function emailBoletos(){
 		$pessoas = array();
 

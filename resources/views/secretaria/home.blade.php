@@ -182,6 +182,11 @@
                         &nbsp;&nbsp;Controle de E-mails e Teams</a>
                     </div>
                     <div>
+                        <a href="/secretaria/alunos-cancelados" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Mostra alunos a serem cancelados nas turmas EAD">
+                        <i class=" fa fa-play-circle text-danger"></i>
+                        &nbsp;&nbsp;Cancelamentos de E-mails e Teams</a>
+                    </div>
+                    <div>
                         <a href="https://admin.microsoft.com" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class="fa fa-files-o"></i>
                         &nbsp;&nbsp; Administração Office365 (usuários)</a>

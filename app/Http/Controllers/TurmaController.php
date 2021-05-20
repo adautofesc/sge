@@ -539,7 +539,7 @@ class TurmaController extends Controller
 
     public function status($status,$itens_url)
     {
-        $turmas = ['1272', '1259',
+       /* $turmas = ['1272', '1259',
         '1258',
        '1299',
         '1298',
@@ -567,8 +567,8 @@ class TurmaController extends Controller
         '1274',
         '1290',
         '1294',
-        '1338'];
-        //$turmas=explode(',',$itens_url);
+        '1338'];*/
+        $turmas=explode(',',$itens_url);
         foreach($turmas as $turma){
             if(is_numeric($turma)){
                 $turma=Turma::find($turma);

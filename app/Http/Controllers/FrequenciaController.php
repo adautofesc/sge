@@ -77,8 +77,8 @@ class FrequenciaController extends Controller
             if(!isset($r->presente[$frequencia->aluno.','.$frequencia->aula])){
                 //se tiver na lista atual de alunos, porque a pessoa pode estar na lista de cancelados
                 if(in_array($frequencia->aluno,$r->alunos)){
-                    dd("Apagar frequencia do aluno".$frequencia->aluno.' na aula '.$frequencia->aula);
-                    //Frequencia::destroy($frequencia->id);
+                    //dd("Apagar frequencia do aluno".$frequencia->aluno.' na aula '.$frequencia->aula);
+                    Frequencia::destroy($frequencia->id);
                 }                 
             }
         }

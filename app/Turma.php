@@ -203,12 +203,17 @@ class Turma extends Model
 	}
 
 	public function getInscricoes($tipo){
-		if($tipo == null || $tipo == 'todas')
+		if(is_array($tipo))
+			$this->inscricoes = $inscricoes = Inscricao::where('turma',$this->id)->whereIn('status',$tipo)->get();
+		
+		elseif($tipo == null || $tipo == 'todas')
 			$this->inscricoes = $inscricoes = Inscricao::where('turma',$this->id)->get();
 		else 
 			$this->inscricoes = $inscricoes = Inscricao::where('turma',$this->id)->where('status','regular')->get();
 
 		$this->inscricoes = $this->inscricoes->sortBy('pessoa.nome');
+
+		return $this->inscricoes;
 		
 		
 	}

@@ -539,18 +539,65 @@ class TurmaController extends Controller
 
     public function status($status,$itens_url)
     {
-        $turmas=explode(',',$itens_url);
+        $turmas = ['1272', '1259',
+        '1258',
+       '1299',
+        '1298',
+        '1273',
+        '1301',
+        '1300',
+        '1271',
+        '1266',
+        '1284',
+        '1275',
+        '1292',
+        '1293',
+        '1257',
+        '1255',
+        '1256',
+        '1277',
+        '1278',
+        '1288',
+        '1282',
+        '1287',
+        '1281',
+        '1286',
+        '1280',
+        '1285',
+        '1274',
+        '1290',
+        '1294',
+        '1338'];
+        //$turmas=explode(',',$itens_url);
         foreach($turmas as $turma){
             if(is_numeric($turma)){
                 $turma=Turma::find($turma);
-                if($turma){
-                    $msgs['alert_sucess'][]="Turma ".$turma->id." modificada com sucesso.";
-                    if($status=='encerrada')
-                        $this->finalizarTurma($turma);
-                    else{
-                        $turma->status=$status;
-                        $turma->save();
+                if(isset($turma->id)){
+                    switch($status){
+                        case 'encerrada':
+                            $this->finalizarTurma($turma);
+                            break;
+                        case 'andamento': //turmas abertas que não aceitam novas matriculas 
+                        case 'iniciada' : //turmas abertas que aceitam matriculas
+                            //pegar todas inscriçoes finalizadas e espera da turma e colocar como regular
+                            $lista_inscricoes = '';
+                            $inscricoes = $turma->getInscricoes(['finalizada','espera']);                            
+                            foreach($inscricoes as $inscricao){
+                                $lista_inscricoes .= $inscricao->id.',';
+                            }
+                            InscricaoController::alterarStatus($lista_inscricoes,'regular');
+                            unset($turma->inscricoes);
+                            break;
+                        default:
+                            $turma->status=$status;
+                            break;
+                            
+
                     }
+                    $msgs['alert_sucess'][]="Turma ".$turma->id." modificada com sucesso.";      
+                    $turma->status=$status;
+                    $turma->save();
+                    
                 }
             }
         }
@@ -666,7 +713,7 @@ class TurmaController extends Controller
 
         
         $turmas=Turma::whereIn('turmas.status', ['inscricao','iniciada'])
-                ->whereIn('turmas.local',[84,85,86])
+                ->whereIn('turmas.local',[84,85,86,118])
                 ->whereColumn('turmas.vagas','>','turmas.matriculados')
                 ->get();
         foreach($turmas as $turma){
@@ -830,22 +877,12 @@ class TurmaController extends Controller
      * @param  $qnde - numero para adicionar ou reduzir
      * @return \Illuminate\Http\Response
      */
-    public static function modInscritos($turma,$operacao,$qnde){
+    public static function modInscritos($turma){
         $turma=Turma::find($turma);
-        if($turma){
-            switch ($operacao) {
-                case '1':
-                    $turma->matriculados=$turma->matriculados+$qnde;
-                    break;
-                case '0':
-                    $turma->matriculados=$turma->matriculados-$qnde;
-                    break;
-                default:
-                    $turma->matriculados=$turma->matriculados+$qnde;
-                    break;
-            }
-            $turma->save();
-        }
+        $inscricoes = Inscricao::where('turma',$turma->id)->whereIn('status',['regular','pendente'])->count();
+        $turma->matriculados = $inscricoes;
+        $turma->save();
+        
     }
 
 

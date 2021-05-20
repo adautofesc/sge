@@ -210,7 +210,7 @@ class InscricaoController extends Controller
         $inscricao->save();
         $atendimento->descricao = "Inscrição na turma ".$turma->id.' ID'.$inscricao->id;
         $atendimento->save();
-        TurmaController::modInscritos($turma->id,1,1);
+        TurmaController::modInscritos($turma->id);
         return $inscricao;
     }
 
@@ -233,7 +233,7 @@ class InscricaoController extends Controller
         $atendimento = AtendimentoController::novoAtendimento("Inscrição na turma ".$turma->id , $aluno, Auth::user()->pessoa);
         $inscricao->atendimento = $atendimento->id;
         $inscricao->save();
-        TurmaController::modInscritos($turma->id,1,1);
+        TurmaController::modInscritos($turma->id);
         return $inscricao;
     }
 
@@ -250,7 +250,7 @@ class InscricaoController extends Controller
         
         $inscricao->atendimento = 1111;
         $inscricao->save();
-        TurmaController::modInscritos($turma->id,1,1);
+        TurmaController::modInscritos($turma->id);
         return $inscricao;
     }
 
@@ -316,21 +316,23 @@ class InscricaoController extends Controller
                     $inscricao->save();
                     switch($status){
                         case "pendente" :
-                        echo 'ok';
-                        break;
+                            MatriculaController::atualizar($inscricao->matricula);
+                            break;
                         case "regular": 
-                        TurmaController::modInscritos($inscricao->turma->id,1,1);
-                        break;
+                            TurmaController::modInscritos($inscricao->turma->id);
+                            MatriculaController::atualizar($inscricao->matricula);
+                            break;
                         case "finalizada": 
-                        break;
+                            MatriculaController::atualizar($inscricao->matricula);
+                            break;
                         case "cancelada":
-                        TurmaController::modInscritos($inscricao->turma->id,0,1);
-                        MatriculaController::atualizar($inscricao->matricula);
-                        break;
+                            TurmaController::modInscritos($inscricao->turma->id);
+                            MatriculaController::atualizar($inscricao->matricula);
+                            break;
                         case "transferida": 
-                        TurmaController::modInscritos($inscricao->turma->id,0,1);
-                        MatriculaController::atualizar($inscricao->matricula);
-                        break;
+                            TurmaController::modInscritos($inscricao->turma->id);
+                            MatriculaController::atualizar($inscricao->matricula);
+                            break;
                     }
                     
                 }
@@ -349,7 +351,7 @@ class InscricaoController extends Controller
             $inscricao->status = 'cancelada';
             $inscricao->save();
             LogController::registrar('inscricao',$inscricao->id,'Cancelamento');
-            TurmaController::modInscritos($inscricao->turma->id,0,1);
+            TurmaController::modInscritos($inscricao->turma->id);
         }
         return $inscricoes;
     }
@@ -361,7 +363,7 @@ class InscricaoController extends Controller
         $inscricoes = Inscricao::where('matricula',$matricula)->get();
         switch($status){
             case 'ativa': 
-                $inscricoes_ = $inscricoes->where('status','pendente');
+                $inscricoes_ = $inscricoes->whereIn('status',['pendente','finalizada']);
                 foreach($inscricoes_ as $inscricao){
                     $inscricao->status = 'regular';
                     $inscricao->save();
@@ -379,7 +381,7 @@ class InscricaoController extends Controller
                 foreach($inscricoes_ as $inscricao){
                     $inscricao->status = 'cancelada';
                     $inscricao->save();
-                    TurmaController::modInscritos($inscricao->turma->id,0,1);
+                    TurmaController::modInscritos($inscricao->turma->id);
                 }
             break;
             case 'finalizada': 
@@ -512,7 +514,7 @@ class InscricaoController extends Controller
                 $inscricao->save();
                 LogController::registrar('inscricao',$inscricao->id,'Reativação');
                 AtendimentoController::novoAtendimento("Inscrição ".$inscricao->id." reativada.", $inscricao->pessoa->id, Auth::user()->pessoa);
-                TurmaController::modInscritos($inscricao->turma->id,1,1);
+                TurmaController::modInscritos($inscricao->turma->id);
                 return redirect($_SERVER['HTTP_REFERER']);
             }
             else

@@ -422,7 +422,7 @@ class InscricaoController extends Controller
     public function verInscricoes($turma){
         $turma=Turma::find($turma);
         if (empty($turma))
-            return redirect(asset('/secretaria/turmas'));
+            return redirect(asset('/turmas'));
         $inscricoes=Inscricao::where('turma','=', $turma->id)->whereIn('status',['regular','pendente','finalizada'])->get();
         if($inscricoes->count() != $turma->matriculados)
             $turma->atualizarInscritos($inscricoes->count());

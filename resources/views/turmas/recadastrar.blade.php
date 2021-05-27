@@ -6,7 +6,7 @@
     <p class="title-description alert alert-danger"> Preencha <strong>SOMENTE</strong> os dados que serão <strong>ALTERADOS</strong> nas turmas escolhidas previamente. </p>
 </div>
 @include('inc.errors')
-<form name="item" method="POST" action="./turmas/recadastrar">
+<form name="item" method="post" action="/turmas/recadastrar">
 	<input type="hidden" name="turmas" value="{{implode($turmas,',')}}">
     <div class="card card-block">
 		<div class="form-group row"> 
@@ -86,7 +86,7 @@
 			</label>
 			<div class="col-sm-6"> 
 				<select class="c-select form-control boxed" name="unidade" onchange="carregarSalas(this.value)" required>
-					<option>Selecione ums unidade de atendimento</option>
+					<option>Selecione uma unidade de atendimento</option>
 					@if(isset($dados['unidades']))
 					@foreach($dados['unidades'] as $unidade)
 					<option value="{{$unidade->id}}">{{$unidade->nome}}</option>
@@ -101,7 +101,7 @@
 			</label>
 			<div class="col-sm-6"> 
 				<select class="c-select form-control boxed" name="sala" id="select_sala" required>
-					<option>Selecione ums unidade de atendimento</option>
+					<option>Selecione uma unidade de atendimento</option>
 					@if(isset($dados['salas']))
 					@foreach($dados['salas'] as $sala)
 					<option value="{{$sala->id}}">{{$sala->nome}}</option>

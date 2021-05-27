@@ -63,12 +63,12 @@
 
                            
                            @if(isset($turma->disciplina))
-                                <a href="{{asset('pedagogico/disciplina/mostrar').'/'.$turma->disciplina->id}}" target="_blank" class="" title="Ver descrição em outra janela">
+                                <a href="{{asset('/cursos/disciplinas/disciplina').'/'.$turma->disciplina->id}}" target="_blank" class="" title="Ver descrição em outra janela">
                                     <h4 class="item-title"> {{$turma->disciplina->nome}}</h4>       
                                     <small>{{$turma->curso->nome}}</small>
                                 </a>
                             @else
-                                <a href="{{asset('pedagogico/curso').'/'.$turma->curso->id}}" target="_blank" class="" title="Ver descrição em outra janela">
+                                <a href="{{asset('/cursos/curso').'/'.$turma->curso->id}}" target="_blank" class="" title="Ver descrição em outra janela">
                                     <h4 class="item-title"> {{$turma->curso->nome}}</h4>           
                                 </a>
                             @endif

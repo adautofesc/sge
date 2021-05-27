@@ -158,9 +158,9 @@
                         &nbsp;&nbsp; Termo de desistência</a>
                     </div>
                      <div class="input-group input-group-sm">
-                          <input type="text" class="form-control" placeholder="Código da matrícula" maxlength="10">
+                          <input type="text" class="form-control" id="matricula" placeholder="Códigos separados por vírgula" maxlength="10">
                           <span class="input-group-btn">
-                            <button class="btn btn-secondary-outline" type="button">Consultar</button>
+                            <button class="btn btn-primary" type="button" onclick="abreMatricula();">Consultar</button>
                           </span>
                     </div><!-- /input-group -->
             

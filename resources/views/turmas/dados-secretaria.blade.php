@@ -96,7 +96,7 @@
                     <div class="col-md-3">
                         <div class="text-md-right">
                             <a href="/relatorios/dados-turmas/{{$turma->id}}" class="badge badge-pill " style="text-decoration: none; font-size: 1rem; background-color: white;" title="Modo de impressão"><i class=" fa fa-print "></i></a>
-                            <a href="#" class="badge badge-pill " style="text-decoration: none; font-size: 1rem; background-color: white;" title="Exportar em Xls"><i class=" fa fa-table "></i></a>
+                            <!--<a href="#" class="badge badge-pill " style="text-decoration: none; font-size: 1rem; background-color: white;" title="Exportar em Xls"><i class=" fa fa-table "></i></a>-->
                         </div>
                     </div>
                    
@@ -223,7 +223,7 @@
                     <div>
                         <i class=" fa fa-arrow-right "></i> 
                         &nbsp;&nbsp;<a href="/lista/{{$turma->id}}" >Lista em branco</a>
-                                            <a href="#" class="btn btn-secondary btn-sm rounded-s" title="Registrar contato" data-toggle="modal" data-target="#modal-contato"><i class="fa fa-phone"></i></a>&nbsp;
+                                            
 
                     </div>
                     
@@ -246,27 +246,21 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuAction"> 
                                 <a class="dropdown-item" style="line-height: 30px; text-decoration: none;" href="#" onclick="alterarStatus('inscricao')">
-                                    <i class="fa fa-circle-o icon"></i> Abrir Matrículas
+                                    <i class="fa fa-circle-o icon text-info"></i> Abrir Matrículas
                                 </a> 
                                 <a class="dropdown-item" href="#" onclick="alterarStatus('espera')" style="line-height: 30px; text-decoration: none">
-                                    <i class="fa fa-clock-o icon"></i> Suspender Matrículas
+                                    <i class="fa fa-clock-o icon text-warning"></i> Suspender Matrículas
                                 </a>
                                 <a class="dropdown-item" href="#" onclick="alterarStatus('andamento')"  style="line-height: 30px;text-decoration: none;">
-                                    <i class="fa fa-check-circle icon"></i> Iniciada / parar matrículas
+                                    <i class="fa fa-check-circle icon text-success"></i> Iniciada / parar matrículas
                                 </a>
                                 <a class="dropdown-item" href="#" onclick="alterarStatus('iniciada')" style="line-height: 30px;text-decoration: none;">
-                                    <i class="fa fa-check-circle-o icon"></i> Iniciada / c/matrículas abertas 
+                                    <i class="fa fa-check-circle-o icon text-success"></i> Iniciada / c/matrículas abertas 
                                 </a>
                                 <a class="dropdown-item" href="#" onclick="alterarStatus('encerrada')" style="line-height: 30px;text-decoration: none;" >
-                                    <i class="fa fa-minus-circle icon"></i> Encerrar Turmas
+                                    <i class="fa fa-minus-circle icon text-danger" ></i> Encerrar Turmas
                                 </a>
                                
-                                <a class="dropdown-item" href="#" onclick="alterarOpcoes('relancar')" style="line-height: 30px;text-decoration: none;">
-                                        <i class="fa fa-retweet icon"></i> Relançar Turmas
-                                    </a>
-                                <a class="dropdown-item" href="#" onclick="alterarOpcoes('requisitos')" style="line-height: 30px;text-decoration: none;">
-                                        <i class="fa fa-sign-in icon"></i> Alterar requisitos
-                                    </a>
                                  
                             </div>
                          </div>
@@ -274,6 +268,10 @@
                     <div>
                         <i class=" fa fa-pencil "></i> 
                         &nbsp;&nbsp;<a href="/turmas/editar/{{$turma->id}}" title="Formulário de definição de Turmas e horários">Editar dados da turma</a>
+                    </div>
+                    <div>
+                        <i class=" fa fa-sign-in icon"></i> 
+                        &nbsp;&nbsp;<a href="#" target="_blank" onclick="alterarOpcoes('requisitos')" title="Alterar requisitos">Alterar requisitos</a>
                     </div>
                     <div>
                         <i class=" fa fa-ban text-warning"></i> 
@@ -294,7 +292,7 @@
 </section>
 <br>
 <div class="subtitle-block">
-    <h3 class="title-description"> Adicionar Aluno </h3>.
+    <h3 class="title-description"> Adicionar Aluno </h3>
 
 </div>
 <form name="item" method="POST">

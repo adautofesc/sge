@@ -73,8 +73,8 @@
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Unidade
 			</label>
-			<div class="col-sm-6"> 
-				<select class="c-select form-control boxed" name="unidade" onchange="carregarSalas(this.value)" required>
+			<div class="col-sm-2"> 
+				<select class="c-select form-control boxed" name="unidade" onchange="carregarSalas(this.value)" required >
 					<option>Selecione ums unidade de atendimento</option>
 					@if(isset($dados['unidades']))
 					@foreach($dados['unidades'] as $unidade)
@@ -83,12 +83,10 @@
 					@endif
 				</select> 
 			</div>
-		</div>
-		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Sala
 			</label>
-			<div class="col-sm-6"> 
+			<div class="col-sm-2"> 
 				<select class="c-select form-control boxed" name="sala" id="select_sala" required>
 					<option>Selecione ums unidade de atendimento</option>
 					@if(isset($dados['salas']))
@@ -99,6 +97,7 @@
 				</select> 
 			</div>
 		</div>
+		
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Parceria 
@@ -150,51 +149,47 @@
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Data de início
 			</label>
-			<div class="col-sm-3"> 
+			<div class="col-sm-2"> 
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
 					<input type="date" class="form-control boxed" name="dt_inicio" value="{{$turma->data_iniciov}}" placeholder="dd/mm/aaaa" required> 
 				</div>
 			</div>
-		</div>
-		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Data do termino
 			</label>
-			<div class="col-sm-3"> 
+			<div class="col-sm-2"> 
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
 					<input type="date" class="form-control boxed" name="dt_termino" value="{{$turma->data_terminov}}" placeholder="dd/mm/aaaa" required> 
 				</div>
 			</div>
 		</div>
+
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Horário Inicio
+				Horário de início
 			</label>
 			<div class="col-sm-2"> 
-				<input type="time" class="form-control boxed" name="hr_inicio" value="{{$turma->hora_inicio}}"  placeholder="00:00" required> 
+				<input type="time" class="form-control boxed" name="hr_inicio" value="{{$turma->hora_inicio}}" placeholder="00:00" required > 
 			</div>
-		</div>
-		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Horário Termino
 			</label>
 			<div class="col-sm-2"> 
-				<input type="time" class="form-control boxed" name="hr_termino" value="{{$turma->hora_termino}}"  placeholder="00:00" required> 
+				<input type="time" class="form-control boxed" name="hr_termino" value="{{$turma->hora_termino}}" placeholder="00:00" required> 
 			</div>
 		</div>
+		
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Nº de vagas
 			</label>
-			<div class="col-sm-4"> 
-				<input type="number" class="form-control boxed" name="vagas" value="{{$turma->vagas}}"  placeholder="Recomendado: 30 vagas"> 
+			<div class="col-sm-2"> 
+				<input type="number" class="form-control boxed" name="vagas" value="{{$turma->vagas}}" placeholder="Recomendado: 30 vagas"> 
 			</div>
-		</div>
-		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Carga
+				Carga Horária
 			</label>
 			<div class="col-sm-2"> 
 				<div class="input-group">
@@ -202,53 +197,42 @@
 					<input type="number" class="form-control boxed" name="carga" value="{{$turma->carga}}" placeholder="" required> 
 				</div>
 			</div>
-			
 		</div>
+	
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Valor
 			</label>
-			<div class="col-sm-4"> 
+			<div class="col-sm-2"> 
 				<div class="input-group">
 					<span class="input-group-addon">R$ </span> 
-					<input type="text" class="form-control boxed" name="valor" value="{{number_format($turma->valor,2,',','.')}}" title="Valor TOTAL do curso, somando todas parcelas."> 
+					<input type="text" class="form-control boxed" name="valor" value="{{number_format($turma->valor,2,',','.')}}" placeholder="Valor TOTAL"> 
 				</div>
 			</div>
 			
 		</div>
-		
-	<!--	
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">Opções</label>
-            <div class="col-sm-10"> 
+            <div class="col-sm-2"> 
 				<div>
 					<label>
-					<input class="checkbox" name="atributo[]" value="P" type="checkbox" {{in_array('P',$turma->atributos)?'checked':''}}>
-					<span>Turma paga pela parceria</span>
+					<input class="checkbox" name="online" value="P" {{isset($turma->automatricula)?'checked ':''}} type="checkbox">
+					<span>Permitir matrícula online </span>
 					</label>
 				</div>
-				<div>
-					<label>
-					<input class="checkbox" name="atributo[]" value="D" type="checkbox" {{in_array('D',$turma->atributos)?'checked':''}} >
-					<span>Turma com desconto pela Parceria</span>
-					</label>
-				</div>
-				<div>
-					<label>
-					<input class="checkbox" name="atributo[]" value="M" type="checkbox" {{in_array('M',$turma->atributos)?'checked':''}} >
-					<span>Turma EMG</span>
-					</label>
-				</div>
-				<div>
-					<label>
-					<input class="checkbox" name="atributo[]" value="E" type="checkbox" {{in_array('E',$turma->atributos)?'checked':''}} >
-					<span>Turma Eventual</span>
-					</label>
-				</div>
+				
+				
         	</div>
+			<label class="col-sm-2 form-control-label text-xs-right"></label>
+            <div class="col-sm-2"> 
+            	
+				<a href="/turmas/modificar-requisitos/{{$turma->id}}" target="_blank">Modificar Requisitos obrigatórios</a>
+				
+        	</div>
+			
                 
         </div>
-            -->
+		
 		<div class="form-group row">
 			<div class="col-sm-10 col-sm-offset-2">
 				<button type="submit" name="btn" value="1" class="btn btn-primary">Salvar</button> 

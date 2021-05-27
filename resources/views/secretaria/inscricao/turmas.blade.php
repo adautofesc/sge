@@ -112,7 +112,7 @@
 </section>
 <input type="hidden" name="atividades" value="" id="idatividades">
 <input type="hidden" name="turmas_anteriores" value="{{$str_turmas}}">
-<input type="hidden" name="pessoa" value="{{$pessoa->id}}"
+<input type="hidden" name="pessoa" value="{{$pessoa->id}}">
 <div class="card-block">
 	<button type="submit" class="btn btn-primary" href="matricula_confirma_cursos.php">Avançar</button>
 	

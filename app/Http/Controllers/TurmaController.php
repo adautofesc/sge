@@ -427,11 +427,10 @@ class TurmaController extends Controller
         if($turma){
             $programas=Programa::orderBy('nome')->get();
             $parcerias=Parceria::orderBy('nome')->get();
-            //$cursos=Curso::getCursosPrograma(); ok
+            $requisitos=RequisitosController::listar();
             $professores=PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
             $unidades=Local::orderBy('nome')->get();
             $salas= \App\Sala::where('local',$turma->local->id)->get();
-            //Locais=Local::getLocaisPorUnidade($unidade);
             $dados=collect();
             $dados->put('programas',$programas);
             $dados->put('professores',$professores);
@@ -440,11 +439,14 @@ class TurmaController extends Controller
             $dados->put('salas',$salas);
             $turma->data_iniciov=Data::converteParaBd($turma->data_inicio);
             $turma->data_terminov=Data::converteParaBd($turma->data_termino);
+            $turma_dados = \App\TurmaDados::where('turma',$turma->id)->get();
+            $turma->automatricula = $turma_dados->where('dado','automatricula');
+         
 
 
             //return $turma;
 
-            return view('turmas.editar',compact('dados'))->with('turma',$turma);
+            return view('turmas.editar',compact('dados'))->with('turma',$turma)->with('requisitos',$requisitos);
         }
         else
             return $this->index();
@@ -937,11 +939,18 @@ class TurmaController extends Controller
     
     public function storeRecadastro(Request $r){
         
+        
         $turmas = explode(',', $r->turmas);
+
+        //dd($turmas);
         foreach($turmas as $turma_id){
 
-
-            $turma=Turma::findOrFail($turma_id);
+            if($turma_id>0)
+            $turma=Turma::find($turma_id);
+            else
+                continue;
+            if(!isset($turma->id))
+                continue;
 
             $novaturma = new Turma;
             if($r->programa > 0 )
@@ -1028,7 +1037,7 @@ class TurmaController extends Controller
 
         }
         
-        return redirect()->back()->withErrors(['Turmas recadastradas com sucesso.']);
+        return redirect('/turmas')->withErrors(['Turmas recadastradas com sucesso.']);
     }
     public static function listarTurmasDocente($docente,$semestre){
         if($semestre > 0){

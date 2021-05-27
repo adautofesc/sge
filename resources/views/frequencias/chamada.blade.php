@@ -6,7 +6,7 @@
 <ol class="breadcrumb">
   <li class="breadcrumb-item"><a href="/">Início</a></li>
   <li class="breadcrumb-item"><a href="/docentes">Docente</a></li>
-<li class="breadcrumb-item"><a href="/docentes/frequencia/{{$turma->id}}">Frequência</a></li>
+<li class="breadcrumb-item"><a href="/docentes/frequencia/listar/{{$turma->id}}">Frequência</a></li>
 
  
 </ol>

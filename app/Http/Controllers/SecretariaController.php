@@ -368,4 +368,25 @@ class SecretariaController extends Controller
 		return 'email postado';
 
 	}
+
+	public function viewMatricula($ids){
+		$array_matriculas = explode(',',$ids);
+		$matriculas = Matricula::whereIn('id',$array_matriculas)->get();
+		foreach($matriculas as $matricula){
+			$matricula->getInscricoes();
+			foreach($matricula->inscricoes as $inscricao){
+				if($inscricao->status == 'transferida')
+					$inscricao->transferencia = $inscricao->getTransferencia();
+			}
+		}
+		/*$matriculas = collect();
+		foreach($array_matriculas as $id){
+			$matricula = Matricula::find($id);
+			if(isset($matricula->id)){
+				$matriculas->push($matricula);
+			}
+		}*/
+
+		return view('secretaria.matricula.listagem')->with('matriculas',$matriculas);
+	}
 }

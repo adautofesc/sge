@@ -132,20 +132,26 @@ Route::middleware(['auth','login']) ->group(function(){
 	});
 	Route::prefix('turmas')->group(function(){
 		Route::get('cadastrar','TurmaController@create')->name('turmas.cadastrar');
-		Route::middleware('liberar.recurso:18')->post('cadastrar','TurmaController@store');
-		Route::middleware('liberar.recurso:18')->post('recadastrar','TurmaController@storeRecadastro');
-		Route::middleware('liberar.recurso:18')->get('/','TurmaController@listarSecretaria')->name('turmas');
-		Route::middleware('liberar.recurso:18')->get('/alterar/{acao}/{turmas}','TurmaController@acaolote');
+		
+
+		Route::middleware('liberar.recurso:18')->group(function(){
+			Route::post('cadastrar','TurmaController@store');
+			Route::post('recadastrar','TurmaController@storeRecadastro');
+			Route::get('/','TurmaController@listarSecretaria')->name('turmas');
+			Route::get('/alterar/{acao}/{turmas}','TurmaController@acaolote');
+			Route::post('editar/{var}','TurmaController@update');
+			Route::get('status/{status}/{turma}','TurmaController@status');
+			Route::post('importar', 'TurmaController@uploadImportaTurma' );
+
+		});
+		
 		Route::get('listar','TurmaController@index');
 		Route::get('apagar/{var}','TurmaController@destroy');
-		Route::get('editar/{var}','TurmaController@edit');
-		Route::middleware('liberar.recurso:18')->post('editar/{var}','TurmaController@update');
-		Route::middleware('liberar.recurso:18')->get('status/{status}/{turma}','TurmaController@status');
+		Route::get('editar/{var}','TurmaController@edit');		
 		Route::get('turmasjson','TurmaController@turmasJSON');
 		Route::get('inscritos/{turma}','InscricaoController@verInscritos');
 		Route::get('lista/{id}','painelController@chamada');
-		Route::get('importar', function(){ return view('turmas.upload');});
-		Route::middleware('liberar.recurso:18')->post('importar', 'TurmaController@uploadImportaTurma' );
+		Route::get('importar', function(){ return view('turmas.upload');});		
 		Route::post('processar-importacao', 'TurmaController@processarImportacao');
 		Route::get('expiradas','TurmaController@processarTurmasExpiradas')->name('turmas.expiradas');
 		Route::get('modificar-requisitos/{id}','RequisitosController@editRequisitosTurma');
@@ -560,6 +566,7 @@ Route::middleware(['auth','login']) ->group(function(){
 
 
 		Route::prefix('matricula')->group(function(){
+			Route::get('/{ids}','SecretariaController@viewMatricula');
 			Route::get('/nova/{pessoa}','InscricaoController@novaInscricao');
 			Route::get('/upload-termo-lote', function(){ return view('secretaria.matricula.upload-termos-lote'); });
 			Route::post('/upload-termo-lote', 'MatriculaController@uploadTermosLote');

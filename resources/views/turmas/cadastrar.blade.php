@@ -224,14 +224,7 @@
 					<input class="checkbox" name="online" value="P" type="checkbox">
 					<span>Permitir matrícula online </span>
 					</label>
-				</div>
-				<div>
-					<label>
-					<input class="checkbox" name="ead" value="D" type="checkbox">
-					<span>Turma EAD</span>
-					</label>
-				</div>
-				
+				</div>						
         	</div>
 			<label class="col-sm-2 form-control-label text-xs-right">Requisitos obrigatórios</label>
             <div class="col-sm-2"> 

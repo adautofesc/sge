@@ -216,6 +216,8 @@ class ValorController extends Controller
 
                 
                 if($turma->valor>0){
+                    $valor->parcelas = $turma->getParcelas();
+                    /*
                     switch($turma->periodicidade){
                         case 'mensal' :
                             $valor->parcelas = 1;
@@ -240,6 +242,8 @@ class ValorController extends Controller
                             $valor->parcelas = 5;
                             break;
                     }
+                    */
+
                     
                     
                     $valor->referencia = 'parcelas temporaria';

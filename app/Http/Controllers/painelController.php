@@ -345,21 +345,31 @@ class painelController extends Controller
     }
     
     public function testarClasse(){
-        $BC = new BolsaController;
-       $bolsas = \App\Bolsa::whereIn('status',['ativa','analisando'])->get();
-       foreach($bolsas as $bolsa){
-           
+        //transição de periodicidade para parcelas
+        $turmas = \App\Turma::all();
+        foreach($turmas as $turma){
+            $turma->parcelas = $turma->getParcelas();
+            if($turma->periodicidade == 'eventual')
+            $turma->parcelas = 0;
+            $turma->save();
+            
+        }
+        return "turmas alteradas";
 
-            $b_matriculas = \App\BolsaMatricula::where('bolsa',$bolsa->id)->get();
-            foreach($b_matriculas as $b_matricula){
-            $matricula = \App\Matricula::find($b_matricula->matricula);
-                if($matricula->status != 'espera' && $matricula->status != 'ativa' && $matricula->status != 'pendente')
-                $BC->unLinkMe($matricula->id,$bolsa->id);
-                 
-               
-           }
-       }
-        return 'executado';
+        /* Verificador de matriculas abertas
+
+        $matriculas_sem_boletos = collect();
+        $matriculas = \App\Matricula::where('status','ativa')->whereYear('data','<','2021')->get();
+        
+        foreach($matriculas as $matricula){
+            $lancamentos = \App\Lancamento::where('matricula',$matricula->id)->count();
+            if($lancamentos==0)
+                $matriculas_sem_boletos->push($matricula);
+
+
+        }
+        return $matriculas_sem_boletos;*/
+
     }
 
 

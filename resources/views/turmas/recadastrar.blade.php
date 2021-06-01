@@ -238,6 +238,14 @@
 					<input type="text" class="form-control boxed" name="valor" placeholder=""> 
 				</div>
 			</div>
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Parcelas
+			</label>
+			<div class="col-sm-1"> 
+				<div class="input-group">
+					<input type="number" class="form-control boxed" name="parcelas" value="" required> 
+				</div>
+			</div>
 			
 		</div>
 		

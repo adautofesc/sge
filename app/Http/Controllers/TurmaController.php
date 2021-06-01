@@ -241,7 +241,7 @@ class TurmaController extends Controller
         $turmas = $turmas->paginate($ipp);
 
         foreach($turmas as $turma){
-            $turma->parcelas = Turma::find($turma->id);
+            //$turma->parcelas = Turma::find($turma->id);
             $turma->parcelas = $turma->getParcelas();
             $turma->getSala();
         }
@@ -345,7 +345,8 @@ class TurmaController extends Controller
             "hr_termino"=>"required",
             "vagas"=>"numeric|required",
             "sala"=>"numeric",
-            "valor"=>"required"
+            "valor"=>"required",
+            "parcelas"=>"required|numeric"
 
 
         ]);
@@ -372,6 +373,7 @@ class TurmaController extends Controller
         $turma->parceria=$request->parceria;
         $turma->periodicidade=$request->periodicidade;
         $turma->valor=str_replace(',','.',$request->valor);
+        $turma->parcelas = $request->parcelas;
         $turma->vagas=$request->vagas;
         $turma->carga=$request->carga;
         $turma->sala=$request->sala;
@@ -474,7 +476,7 @@ class TurmaController extends Controller
             "vagas"=>"required",
             "valor"=>"required",
             "sala"=>"numeric",
-            "periodicidade"=>"required"
+            "parcelas"=>"required:numeric"
 
 
         ]);
@@ -486,6 +488,8 @@ class TurmaController extends Controller
         }
         
         //verificar disponibilidade da sala.
+        //verificar se a turma tem aulas executadas e matriculas ativas
+
         $turma=Turma::find($request->turmaid);
         $turma->programa=$request->programa;
         $turma->curso=$request->curso;
@@ -498,6 +502,7 @@ class TurmaController extends Controller
         $turma->hora_inicio=$request->hr_inicio;
         $turma->hora_termino=$request->hr_termino;
         $turma->valor=str_replace(',','.',$request->valor);
+        $turma->parcelas = $request->parcelas;
         $turma->vagas=$request->vagas;
         $turma->carga=$request->carga;
         $turma->atributos=$request->atributo;
@@ -523,8 +528,8 @@ class TurmaController extends Controller
             if(is_numeric($turma)){
                 $turma=Turma::find($turma);
                 if($turma){
-                    $inscricoes=Inscricao::where('turma',$turma->id)->get();
-                    if(count($inscricoes)==0){
+                    $inscricoes=Inscricao::where('turma',$turma->id)->count();
+                    if($inscricoes==0){
                         $msgs[]= "Turma ".$turma->id." excluída com sucesso.";
                         $turma->delete();
                     }
@@ -541,35 +546,6 @@ class TurmaController extends Controller
 
     public function status($status,$itens_url)
     {
-       /* $turmas = ['1272', '1259',
-        '1258',
-       '1299',
-        '1298',
-        '1273',
-        '1301',
-        '1300',
-        '1271',
-        '1266',
-        '1284',
-        '1275',
-        '1292',
-        '1293',
-        '1257',
-        '1255',
-        '1256',
-        '1277',
-        '1278',
-        '1288',
-        '1282',
-        '1287',
-        '1281',
-        '1286',
-        '1280',
-        '1285',
-        '1274',
-        '1290',
-        '1294',
-        '1338'];*/
         $turmas=explode(',',$itens_url);
         foreach($turmas as $turma){
             if(is_numeric($turma)){
@@ -667,7 +643,6 @@ class TurmaController extends Controller
         $turmas=collect();
         $valor=0;
         $uati=0;
-        $parcelas=5;
         $lista=explode(',',$lista);
         foreach($lista as $turma){
             if(is_numeric($turma)){
@@ -679,7 +654,7 @@ class TurmaController extends Controller
         }
 
 
-        return view('secretaria.inscricao.turmas-escolhidas', compact('turmas'))->with('valor',$valor)->with('parcelas',$parcelas);
+        return view('secretaria.inscricao.turmas-escolhidas', compact('turmas'))->with('valor',$valor);
 
     }
     public static function csvTurmas($lista='0'){
@@ -1025,6 +1000,11 @@ class TurmaController extends Controller
                 $novaturma->valor = $r->valor;
             else
                 $novaturma->valor = $turma->valor;
+
+            if($r->parcelas != '' )
+                $novaturma->parcelas = $r->parcelas;
+            else
+                $novaturma->parcelas = $turma->parcelas;
 
             if($r->carga != '' )
                 $novaturma->carga = $r->carga;

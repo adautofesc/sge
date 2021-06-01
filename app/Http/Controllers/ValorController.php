@@ -25,86 +25,6 @@ class ValorController extends Controller
                      'parcelas' => 10,
                      'ano' => 2021];
 
-        $itens[2] = ['programa' => 3,
-                     'curso' => 307,
-                     'carga' => 2,
-                     'referencia' => "UATI 2 ou 3 disciplinas",
-                     'valor'=> 622,
-                     'parcelas' => 10,
-                     'ano' => 2021];
-
-        $itens[3] = ['programa' => 3,
-                     'curso' => 307,
-                     'carga' => 3,
-                     'referencia' => "UATI 4 ou mais disciplina",
-                     'valor'=> 961,
-                     'parcelas' => 10,
-                     'ano' => 2021];
-
-        $itens[4] = ['programa' => 12,
-                     'curso' => 0,
-                     'carga' => 60,
-                     'referencia' => "Hidroginástica e natação",
-                     'valor'=> 769,
-                     'parcelas' => 10,
-                     'ano' => 2021];
-
-        $itens[5] = ['programa' => 2,
-                     'curso' => 0,
-                     'carga' => 40,
-                     'referencia' => "Cursos PID 40 horas",
-                     'valor'=> 266,
-                     'parcelas' => 5,
-                     'ano' => 2021];
-
-        $itens[6] = ['programa' => 2,
-                     'curso' => 0,
-                     'carga' => 80,
-                     'referencia' => "Cursos PID 80 horas",
-                     'valor'=> 385,
-                     'parcelas' => 5,
-                     'ano' => 2021];
-
-        $itens[7] = ['programa' => 1,
-                     'curso' => 0,
-                     'carga' => 50,
-                     'referencia' => "Cursos UNIT 50 horas",
-                     'valor'=> 267,
-                     'parcelas' => 5,
-                     'ano' => 2021];
-
-        $itens[8] = ['programa' => 1,
-                     'curso' => 0,
-                     'carga' => 66,
-                     'referencia' => "Cursos UNIT 66 horas",
-                     'valor'=> 274,
-                     'parcelas' => 5,
-                     'ano' => 2021];
-
-        $itens[9] = ['programa' => 1,
-                     'curso' => 0,
-                     'carga' => 80,
-                     'referencia' => "Cursos UNIT 80 horas",
-                     'valor'=> 374,
-                     'parcelas' => 5,
-                     'ano' => 2021];
-
-        $itens[10] = ['programa' => 1,
-                     'curso' => 0,
-                     'carga' => 120,
-                     'referencia' => "Cursos UNIT 120 horas",
-                     'valor'=> 436,
-                     'parcelas' => 5,
-                     'ano' => 2021];
-
-        $itens[11] = ['programa' => 1,
-                     'curso' => 1567,
-                     'carga' => 80,
-                     'referencia' => "Curso de Contabilidade UNIT 80 horas",
-                     'valor'=> 436,
-                     'parcelas' => 5,
-                     'ano' => 2021];
-        
 
         foreach($itens as $item){
             $registro = Valor::where('programa',$item['programa'])->where('curso',$item['curso'])->where('carga',$item['carga'])->where('ano',$item['ano'])->first();
@@ -173,7 +93,6 @@ class ValorController extends Controller
                     case 1:
                     	$valor = Valor::where('curso','307')->where('carga','1')->where('ano',substr($inscricoes->first()->turma->data_inicio,-4))->first();
                         return $valor; 
-                        //return $this->gerar($valor->valor/$valor->parcelas, qnde de parcelas,
                         break;
                     case 2:
                     case 3:
@@ -217,35 +136,6 @@ class ValorController extends Controller
                 
                 if($turma->valor>0){
                     $valor->parcelas = $turma->getParcelas();
-                    /*
-                    switch($turma->periodicidade){
-                        case 'mensal' :
-                            $valor->parcelas = 1;
-                            break;
-                        case 'bimestral' :
-                            $valor->parcelas = 2;
-                            break;
-                        case 'trimestral' :
-                            $valor->parcelas = 3;
-                            break;
-                        case 'semestral' :
-                            $valor->parcelas = 5;
-                            break;
-                        case 'anual' :
-                            $valor->parcelas = 10;
-                            break;      
-                            
-                        case 'eventual' :
-                            $valor->parcelas = $turma->getTempoCurso();;
-                            break;
-                        default :
-                            $valor->parcelas = 5;
-                            break;
-                    }
-                    */
-
-                    
-                    
                     $valor->referencia = 'parcelas temporaria';
                     //return $valor;
                 }

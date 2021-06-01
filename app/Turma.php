@@ -92,7 +92,12 @@ class Turma extends Model
 	}
 
 	public function getParcelas(){
-		
+		//dd($this->parcelas);
+		if($this->parcelas == 0)
+			return $this->getTempoCurso();	
+		else
+			return $this->parcelas;
+		/*
 		$inicio = \DateTime::createFromFormat('d/m/Y', $this->data_inicio);
 		switch($this->periodicidade){
 			case 'mensal' :
@@ -119,7 +124,7 @@ class Turma extends Model
 				break;
 		}
 		//dd($this->getTempoCurso());
-		return $parcelas;
+		return $parcelas;*/
 	}
 
 

@@ -211,7 +211,15 @@
 			<div class="col-sm-2"> 
 				<div class="input-group">
 					<span class="input-group-addon">R$ </span> 
-					<input type="text" class="form-control boxed" name="valor" placeholder="Valor TOTAL"> 
+					<input type="text" class="form-control boxed" name="valor" placeholder="Valor TOTAL" required> 
+				</div>
+			</div>
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Parcelas
+			</label>
+			<div class="col-sm-1"> 
+				<div class="input-group">
+					<input type="number" class="form-control boxed" name="parcelas" value="1" required> 
 				</div>
 			</div>
 			

@@ -65,7 +65,11 @@ table td{
                     <td><a href="/turmas/{{$inscricao->turma->id}}">{{$inscricao->turma->id}}</a></td>
                     <td>{{$inscricao->pessoa->nome}}</td>
                     <td>{{$inscricao->pessoa->getCelular()}}</td>
+                    @if(isset($inscricao->email->valor))
                     <td>{{$inscricao->email->valor}}</td>
+                    @else
+                    <td>NENHUM EMAIL CADASTRADO</td>
+                    @endif
                     <td>
                         @if(isset($inscricao->email_fesc))
                         <a href="#" onclick="removerEmail({{$inscricao->email_fesc->id}})"><img src="{{asset('/img/mail-green.png')}}" alt="{{$inscricao->email_fesc->valor}}" title="{{$inscricao->email_fesc->valor}}"></a>

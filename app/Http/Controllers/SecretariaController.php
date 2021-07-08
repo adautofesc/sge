@@ -74,7 +74,7 @@ class SecretariaController extends Controller
 			 			$inscricao->transferencia = $inscricao->getTransferencia();
 			 	}
 			 }
-			 $boletos = Boleto::where('pessoa',$id)->orderBy('id','desc')->limit(20)->get();
+			 $boletos = Boleto::where('pessoa',$id)->orderBy('id','desc')->limit(50)->get();
 			 foreach($boletos as $boleto){
 			 	$boleto->getLancamentos();
 			 }

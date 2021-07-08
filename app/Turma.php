@@ -97,34 +97,6 @@ class Turma extends Model
 			return $this->getTempoCurso();	
 		else
 			return $this->parcelas;
-		/*
-		$inicio = \DateTime::createFromFormat('d/m/Y', $this->data_inicio);
-		switch($this->periodicidade){
-			case 'mensal' :
-				$parcelas = 1;
-				break;
-			case 'bimestral' :
-				$parcelas = 2;
-				break;
-			case 'trimestral' :
-				$parcelas = 3;
-				break;
-			case 'semestral' :
-				$parcelas = 5;
-				break;
-			case 'anual' :
-				$parcelas = 10;
-				break;
-				
-			case 'eventual' :
-				$parcelas = $this->getTempoCurso();
-				break;
-			default :
-				$parcelas = 5;
-				break;
-		}
-		//dd($this->getTempoCurso());
-		return $parcelas;*/
 	}
 
 

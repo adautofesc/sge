@@ -43,8 +43,15 @@ class AulaController extends Controller
 
 
 
-    public function apagarAulasTurma(int $turma){
-        $aulas = Aula::where('turma',$turma)->get();
+    public function apagarAulasTurma(int $turma, string $tipoAula = 'prevista'){
+        if($tipoAula == 'todas')
+            $aulas = Aula::where('turma',$turma)->get();
+        else{
+            $aulas_arr = explode(',',$tipoAula);
+            $aulas = Aula::where('turma',$turma)->whereIn('status',$aulas_arr)->get();
+            unset($aulas_arr);
+
+        }
         $msg = array();
         foreach($aulas as $aula){
             $msg[] = $this->apagarAula($aula->id);
@@ -85,8 +92,17 @@ class AulaController extends Controller
         return response('done',200);
     }
 
+    public function recriarAulas(string $turmas){
+        $turmas = explode(',',$turmas);
+        foreach($turmas as $turma){
+            $this->apagarAulasTurma($turma);
+            $this->gerarAulas($turma);
+        }
+        return response('Turmas recriadas');
+    }
 
-    public function eNova(\DateTime $data,  int $turma){
+
+    public static function eNova(\DateTime $data,  int $turma){
         $aula = Aula::where('data',$data->format('Y-m-d'))->where('turma',$turma)->first();
         if (is_null($aula))
             return true;
@@ -96,7 +112,7 @@ class AulaController extends Controller
 
 
 
-    public function criar(\DateTime $data, int $turma){
+    public static function criar(\DateTime $data, int $turma){
        $aula = new Aula;
        $aula->data = $data->format('Y-m-d');
        $aula->turma = $turma;
@@ -120,81 +136,67 @@ class AulaController extends Controller
     }
 
 
-    public function alterar($aulas, $acao){
-        
-        
+    
+    public function alterar(string $aulas, string $acao){      
         $aulas = explode(',',$aulas);
+        $aulas_collection = Aula::whereIn('id',$aulas)->get();
 
-        //dd($aulas);
-        foreach($aulas as $aula){
-            if(is_numeric($aula)){
-                switch($acao){
-                    case 'adiar':
-                        $this->alterarStatus($aula,'adiada');
-                        break;
-                    case 'cancelar':
-                        $this->alterarStatus($aula,'cancelada');
-                        break;
-                    case 'atribuir':
-                        $this->alterarStatus($aula,'cancelada');
-                        break;
-                    case 'executar':
-                        $this->alterarStatus($aula,'executada');
-                        break;
-                    
+        foreach($aulas_collection as $aula){
+            
+            switch($acao){
+                case 'adiar':
+                    $aula->status = 'adiada';
+                    $aula->save();
+                    break;
+                case 'cancelar':
+                    $aula->status = 'cancelada';
+                    $aula->save();
+                    break;
 
-                }
+                case 'executar':
+                    $aula->status = 'executada';
+                    $aula->save();
+                    break;
+
+                case 'previsionar': 
+                    $aula->status = 'prevista';
+                    $aula->save();
+                    break;
+
+                
+
             }
+            
                 
         }
-
-        return redirect()->back()->withErrors(['Alterações concluídas']);
-
-        
+        return redirect()->back()->withErrors(['Alterações concluídas']);     
     }
 
     public function alterarStatus(Request $r){
         $DC = new AulaDadoController;
 
-        $aulas = Aula::whereIn('id',$r->aulas)->get();
+        //$aulas = Aula::whereIn('id',$r->aulas)->get();
 
         if(isset($r->action)){
-            switch($r->action){
-                case 'cancelar': 
-                    foreach($aulas as $aula){
-                        $aula->status = 'cancelada';
-                        $aula->save();
+            foreach($r->aulas as $aula){
+                $this->alterar($aula,$r->action);
+                switch($r->action){
+                    case 'cancelar':                         
                         if(isset($r->motivo))
-                            $DC->createDadoAula($aula->id,'cancelamento',$r->motivo);       
-                    }
-                    return response('',200);
-                break;
-                case 'previsionar' : 
-                    foreach($aulas as $aula){
-                        //$motivos = $DC->
-                        $aula->status = 'prevista';
-                        $aula->save();
-                    }
-                break;
-                case 'adiar' : 
-                    foreach($aulas as $aula){
-                        $DC->createDadoAula($aula->id,'atribuicao',$r->pessoa);   
-                        $aula->status = 'adiada';
-                        $aula->save();
-                        criar(\DateTime::createFromFormat('d/m/Y',$r->dia),$aula->turma); 
-                    }
-                break;
-                case 'atribuir' : 
-                    foreach($aulas as $aula){
-                        $DC->createDadoAula($aula->id,'atribuicao',$r->pessoa);   
-                    }
-                break;
-                case 'executar' : 
-                    foreach($aulas as $aula){
-                        $aula->status = 'executada';
-                        $aula->save();
-                    }
-                break;
+                            $DC->createDadoAula($aula,'cancelamento',$r->motivo);                              
+                        return response('',200);
+                        break;
+            
+                    case 'adiar' :   
+                        $DC->createDadoAula($aula,'adiamento',$r->dia);                              
+                        $this->criar(\DateTime::createFromFormat('d/m/Y',$r->dia),$r->turma); 
+                        
+                    break;
+                    case 'atribuir' : 
+                        $DC->createDadoAula($aula,'atribuicao',$r->pessoa);   
+                        break;
+                 
+                }
             }
             return response($r->ids,200);
 

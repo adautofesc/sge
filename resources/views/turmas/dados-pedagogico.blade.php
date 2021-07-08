@@ -313,7 +313,7 @@
                                     <option value="">Escolha após selecionar as aulas</option>
                                     <!--<option value="atribuir">Atribuir</option>-->
                                     <option value="cancelar">Cancelar</option>
-                                    <!--<option value="executar">Marcar como executada</option>-->
+                                    <option value="executar">Marcar como executada</option>
                                     <option value="prevista">Marcar como prevista</option>
                                 </select>
                             </div>

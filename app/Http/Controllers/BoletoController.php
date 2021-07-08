@@ -438,20 +438,23 @@ class BoletoController extends Controller
 				case 'divida':
 					$boleto->status = 'cancelado';
 					$boleto->save();
+					LancamentoController::cancelarPorBoleto($boleto->id);
 					break;
 				case 'emitido':
 				case 'erro':
 					$boleto->status = 'cancelar';
 					$boleto->save();
+					LancamentoController::cancelarPorBoleto($boleto->id);
 					break;
 				case 'pago':
 					break;
 				default :
 					$boleto->status = 'cancelar';
 					$boleto->save();
+					LancamentoController::cancelarPorBoleto($boleto->id);
 					break;
 			}
-			LancamentoController::cancelarPorBoleto($boleto->id);
+			
 			LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento.: '.$motivo);
 			LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento por: '.Session::get('nome_usuario'));
 			

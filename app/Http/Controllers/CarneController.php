@@ -239,9 +239,7 @@ class CarneController extends Controller
 		return view('financeiro.carne.fase7')->with('remessas',$remessas)->with('carnes',$carnes);
 
     }
-
-
-    /**
+	   /**
 	 * Gerador de Carnês individual 
 	 * @param  [integer] Pessoa
 	 * @return [type]
@@ -249,72 +247,47 @@ class CarneController extends Controller
 	public function gerarCarneIndividual(int $pessoa){
 		$num_boletos = 0;
 		$data_matricula = \DateTime::createFromFormat('d/m/Y', date('d/m/Y'));
-		$data_ini_curso = \DateTime::createFromFormat('d/m/Y', date('d/m/Y'));
-		
-		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente', 'espera'])->where('pessoa',$pessoa)->get();
-		
+		$data_ini_curso = \DateTime::createFromFormat('d/m/Y', date('d/m/Y'));		
+		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente', 'espera'])->where('pessoa',$pessoa)->get();		
+		dd($matriculas);
 		if($matriculas->count()==0)
 			return redirect()->back();
-		$LC = new LancamentoController;
-		
+		$LC = new LancamentoController;		
 		foreach($matriculas as $matricula){
 			$inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','pendente'])->get();
 			if($inscricoes->count()==0)
-				continue;
-
-			
+				continue;			
 			$LC->gerarTodosLancamentos($matricula);
 			if($matricula->getParcelas()>$num_boletos)
-				$num_boletos = $matricula->getParcelas();
-			
-			$data_matricula = \DateTime::createFromFormat('Y-m-d', $matricula->data);
-			
+				$num_boletos = $matricula->getParcelas();			
+			$data_matricula = \DateTime::createFromFormat('Y-m-d', $matricula->data);			
 			$data_ini_curso = $inscricoes->first()->turma->data_inicio;	
 			$data_ini_curso = \DateTime::createFromFormat('d/m/Y', $data_ini_curso);
-				
-			
-		
 
 		}
-
-		
+		//comparação com as datas de inicio de curso.!!!! pegar a menor... 
 		$lancamentos = \App\Lancamento::where('pessoa',$pessoa)->where('status', null )->where('boleto',null)->get();
 		if($lancamentos->count()>0){
-			
-		
-			
 			//se o mes que esse boleto esta sendo gerado dor maior duqe a data de inicio
 			if($data_ini_curso->format('m')<=$data_matricula->format('m') && $data_ini_curso->format('Y') == $data_matricula->format('Y')){
-
 			//Aqui se verifica se o boleto é para o mes corrente ou não
-				if($data_matricula->format('d') >= $this::data_corte )	
-					$mes=$data_ini_curso->format('m')+1;
+				if(date('d') >= $this::data_corte )	
+					$mes=date('m')+1;
 				else{
-					$mes=$data_ini_curso->format('m');
-					if($data_matricula->format('d') >= ($this::vencimento-$this::dias_adicionais))
-						$primeiro_vencimento = $data_matricula->format('d')+$this::dias_adicionais;
+					$mes=date('m');
+					if(date('d') >= ($this::vencimento-$this::dias_adicionais))
+						$primeiro_vencimento = date('d')+$this::dias_adicionais;
 				}
-
 			}
-			else{
-				$mes = $data_ini_curso->format('m');
-		
-
-			}
-
+			else
+				$mes = $data_ini_curso->format('m');			
 			for($i=1;$i<=$num_boletos;$i++){
-
 				$boleto_existente = Boleto::where('pessoa',$pessoa)								
 											->whereYear('vencimento',date('Y'))
 											->whereMonth('vencimento',$mes)
 											->whereIn('status',['gravado','impresso','emitido','pago'])
 											->get();
-
-
-				if($boleto_existente->count()==0){
-
-
-				
+				if($boleto_existente->count()==0){				
 					$boleto =new Boleto;
 					if($i==1 && isset($primeiro_vencimento))
 						$boleto->vencimento = date('Y-'.$mes.'-'.$primeiro_vencimento);
@@ -325,19 +298,15 @@ class CarneController extends Controller
 					$boleto->valor = 0;
 					if($boleto->pessoa > 0)
 						$boleto->save();
-				}//endif
+				}//endif						 
 				$mes++;
 			}//endfor
-
-			//************************************************************************************************ fase 3
+			//**************************************************************** Atribuindo parcelas aos boletos
 			$boletos = Boleto::where('status','gravado')
-
 								->where('pessoa',$pessoa)
 								->orderBy('vencimento')
 								->get();
-
 			foreach($boletos as $boleto){
-
 				//pegar primeira parcela livre de cada matricula
 				$lancamentos = \App\Lancamento::where('pessoa',$boleto->pessoa)
 										->where('boleto',null)
@@ -345,17 +314,14 @@ class CarneController extends Controller
 										->where('status',null)
 										->orderBy('parcela')
 										->groupBy('matricula')->get();
-
 				$data_util = new \App\classes\Data(\App\classes\Data::converteParaUsuario($boleto->vencimento));
-
 				foreach($lancamentos as $lancamento){
 					$lancamento->boleto = $boleto->id;
 					$lancamento->referencia = 'Parcela de '.$data_util->Mes().' - '.$lancamento->referencia;
 					$boleto->valor = $boleto->valor+$lancamento->valor;
 					$lancamento->save();	
 					$boleto->save();		
-				}
-				
+				}				
 				//pegar primeiro desconto da cada matrícula
 				$descontos = \App\Lancamento::where('pessoa',$boleto->pessoa)
 										->where('boleto',null)
@@ -364,13 +330,11 @@ class CarneController extends Controller
 										->orderBy('parcela')
 										->groupBy('matricula')
 										->get();
-
 				foreach($descontos as $desconto){
 					$desconto->boleto = $boleto->id;
 					$boleto->valor = $boleto->valor+$desconto->valor;
 					$desconto->save();
 				}
-
 				//enquanto o boleto nao tiver valor, acrescentar parcela, senão, apagar boleto.
 				while($boleto->valor <=0){
 					$lancamento = \App\Lancamento::where('pessoa',$boleto->pessoa)
@@ -384,7 +348,125 @@ class CarneController extends Controller
 						$lancamento->save();	
 						$boleto->valor = $boleto->valor+$lancamento->valor;	
 						$boleto->save();
+					}
+					else{
+						//$boleto->forceDelete();
+						break;
+					}
+				}
+			}
+		}//endif lancamentos (fase 2)
+		return redirect()->back();
+	}
 
+
+    /**
+	 * Gerador de Carnês individual 
+	 * @param  [integer] Pessoa
+	 * @return [type]
+	 */
+	public function gerarCarneIndividualBackup(int $pessoa){
+		$num_boletos = 0;
+		$data_matricula = \DateTime::createFromFormat('d/m/Y', date('d/m/Y'));
+		$data_ini_curso = \DateTime::createFromFormat('d/m/Y', date('d/m/Y'));		
+		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente', 'espera'])->where('pessoa',$pessoa)->get();		
+		if($matriculas->count()==0)
+			return redirect()->back();
+		$LC = new LancamentoController;		
+		foreach($matriculas as $matricula){
+			$inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','pendente'])->get();
+			if($inscricoes->count()==0)
+				continue;			
+			$LC->gerarTodosLancamentos($matricula);
+			if($matricula->getParcelas()>$num_boletos)
+				$num_boletos = $matricula->getParcelas();			
+			$data_matricula = \DateTime::createFromFormat('Y-m-d', $matricula->data);			
+			$data_ini_curso = $inscricoes->first()->turma->data_inicio;	
+			$data_ini_curso = \DateTime::createFromFormat('d/m/Y', $data_ini_curso);
+		}
+		//comparação com as datas de inicio de curso.!!!! pegar a menor... 
+		$lancamentos = \App\Lancamento::where('pessoa',$pessoa)->where('status', null )->where('boleto',null)->get();
+		if($lancamentos->count()>0){
+			//se o mes que esse boleto esta sendo gerado dor maior duqe a data de inicio
+			if($data_ini_curso->format('m')<=$data_matricula->format('m') && $data_ini_curso->format('Y') == $data_matricula->format('Y')){
+			//Aqui se verifica se o boleto é para o mes corrente ou não
+				if($data_matricula->format('d') >= $this::data_corte )	
+					$mes=$data_ini_curso->format('m')+1;
+				else{
+					$mes=$data_ini_curso->format('m');
+					if($data_matricula->format('d') >= ($this::vencimento-$this::dias_adicionais))
+						$primeiro_vencimento = $data_matricula->format('d')+$this::dias_adicionais;
+				}
+			}
+			else
+				$mes = $data_ini_curso->format('m');			
+			for($i=1;$i<=$num_boletos;$i++){
+				$boleto_existente = Boleto::where('pessoa',$pessoa)								
+											->whereYear('vencimento',date('Y'))
+											->whereMonth('vencimento',$mes)
+											->whereIn('status',['gravado','impresso','emitido','pago'])
+											->get();
+				if($boleto_existente->count()==0){				
+					$boleto =new Boleto;
+					if($i==1 && isset($primeiro_vencimento))
+						$boleto->vencimento = date('Y-'.$mes.'-'.$primeiro_vencimento);
+					else
+						$boleto->vencimento = date('Y-'.$mes.'-'.$this::vencimento);
+					$boleto->pessoa = $pessoa;
+					$boleto->status = 'gravado';
+					$boleto->valor = 0;
+					if($boleto->pessoa > 0)
+						$boleto->save();
+				}//endif						 
+				$mes++;
+			}//endfor
+			//**************************************************************** Atribuindo parcelas aos boletos
+			$boletos = Boleto::where('status','gravado')
+								->where('pessoa',$pessoa)
+								->orderBy('vencimento')
+								->get();
+			foreach($boletos as $boleto){
+				//pegar primeira parcela livre de cada matricula
+				$lancamentos = \App\Lancamento::where('pessoa',$boleto->pessoa)
+										->where('boleto',null)
+										->where('valor','>',0)
+										->where('status',null)
+										->orderBy('parcela')
+										->groupBy('matricula')->get();
+				$data_util = new \App\classes\Data(\App\classes\Data::converteParaUsuario($boleto->vencimento));
+				foreach($lancamentos as $lancamento){
+					$lancamento->boleto = $boleto->id;
+					$lancamento->referencia = 'Parcela de '.$data_util->Mes().' - '.$lancamento->referencia;
+					$boleto->valor = $boleto->valor+$lancamento->valor;
+					$lancamento->save();	
+					$boleto->save();		
+				}				
+				//pegar primeiro desconto da cada matrícula
+				$descontos = \App\Lancamento::where('pessoa',$boleto->pessoa)
+										->where('boleto',null)
+										->where('valor','<',0)
+										->where('status',null)
+										->orderBy('parcela')
+										->groupBy('matricula')
+										->get();
+				foreach($descontos as $desconto){
+					$desconto->boleto = $boleto->id;
+					$boleto->valor = $boleto->valor+$desconto->valor;
+					$desconto->save();
+				}
+				//enquanto o boleto nao tiver valor, acrescentar parcela, senão, apagar boleto.
+				while($boleto->valor <=0){
+					$lancamento = \App\Lancamento::where('pessoa',$boleto->pessoa)
+											->where('boleto',null)
+											->where('valor','>',0)
+											->where('status',null)
+											->orderBy('parcela')
+											->first();
+					if($lancamento){
+						$lancamento->boleto = $boleto->id;
+						$lancamento->save();	
+						$boleto->valor = $boleto->valor+$lancamento->valor;	
+						$boleto->save();
 					}
 					else{
 						$boleto->forceDelete();
@@ -392,12 +474,8 @@ class CarneController extends Controller
 					}
 				}
 			}
-
 		}//endif lancamentos (fase 2)
-
 		return redirect()->back();
-
-
 	}
     
     public function imprimirCarne($pessoa){

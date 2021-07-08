@@ -487,10 +487,25 @@ class TurmaController extends Controller
             
         }
         
+        
         //verificar disponibilidade da sala.
         //verificar se a turma tem aulas executadas e matriculas ativas
 
         $turma=Turma::find($request->turmaid);
+        if($turma->status == 'iniciada' || $turma->status == 'andamento'){
+            
+            if($turma->matriculados >0 && \Carbon\Carbon::createFromFormat('d/m/Y', $turma->data_inicio)->format('Y-m-d')!=$request->dt_inicio)               
+                return redirect()->back()->withErrors(['Não é possível alterar datas de início de turmas com alunos matriculados.']);
+        }
+
+        if($turma->data_inicio!=$request->dt_inicio || $turma->dias_semana!=$request->dias ||  $turma->data_termino!=$request->dt_termino ){
+            $aula_controller = new AulaController;
+            $aula_controller->recriarAulas($turma->id);
+            
+
+        }
+
+
         $turma->programa=$request->programa;
         $turma->curso=$request->curso;
         $turma->disciplina=$request->disciplina;

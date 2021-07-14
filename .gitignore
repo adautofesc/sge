@@ -14,3 +14,4 @@ npm-debug.log
 .env
 index.php
 dados.sql
+composer.lock

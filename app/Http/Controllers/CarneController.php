@@ -249,7 +249,7 @@ class CarneController extends Controller
 		$data_matricula = \DateTime::createFromFormat('d/m/Y', date('d/m/Y'));
 		$data_ini_curso = \DateTime::createFromFormat('d/m/Y', date('d/m/Y'));		
 		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente', 'espera'])->where('pessoa',$pessoa)->get();		
-		dd($matriculas);
+		//dd($matriculas);
 		if($matriculas->count()==0)
 			return redirect()->back();
 		$LC = new LancamentoController;		

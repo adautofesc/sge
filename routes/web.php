@@ -215,6 +215,11 @@ Route::middleware(['auth','login']) ->group(function(){
 		
 
 	});
+	Route::prefix('planos-ensino')->group(function () {
+		Route::get('/','PlanoEnsinoController@index');
+		
+		
+	});
 
 //**************************************************************************SETORES******************************** */
 

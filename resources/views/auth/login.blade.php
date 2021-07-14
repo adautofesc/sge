@@ -24,6 +24,18 @@
             {
                 document.write('<link rel="stylesheet" id="theme-style" href="css/app.css">');
             }
+            function validaUsername(){
+                re = /\S+@+/;
+                username = document.getElementById("username").value;
+
+                if(re.test(username))
+                    alert("O campo USUÁRIO deve ser preenchido com seu nome de usuário, não o e-mail.");
+                else
+                    document.forms[0].submit();
+
+                
+
+            }
         </script>
     </head>
 
@@ -41,11 +53,11 @@
 
                     
                         <br>
-                        <form method="POST" action="{{ route('login') }}">
+                        <form method="POST" action="{{ route('login') }}" onsubmit="return false;">
                         {{csrf_field()}}
-                            <div class="form-group"> <label for="username">Login</label> 
+                            <div class="form-group"> <label for="username">Usuário</label> 
                                 <!--<input type="text" class="form-control underlined" name="login" id="username" placeholder="Digite aqui seu nome de usuário" required> -->
-                                <input id="username" type="text" class="form-control underlined " name="username" value="{{ old('username') }}" required autocomplete="username" autofocus>
+                                <input id="username" type="text" class="form-control underlined " name="username" value="{{ old('username') }}" required placeholder="nome.sobrenome" autofocus>
                             </div>
                             <div class="form-group "> <label for="password">Senha</label> 
                                 <!--<input type="password" class="form-control underlined" name="senha" id="password" placeholder="Sua senha" required> -->
@@ -64,7 +76,7 @@
                                 @endif
                             </div>
                             <div class="form-group"> 
-                                <button type="submit" class="btn btn-block btn-primary">Entrar</button>
+                                <button type="submit" class="btn btn-block btn-primary" onclick="validaUsername()">Entrar</button>
                             </div>
                             <div class="form-group">
                                 <p class="text-muted text-xs-center">Não tem cadastro? Solicite na FESC 1</p>

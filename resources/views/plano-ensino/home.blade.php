@@ -16,26 +16,9 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Listas de Frequência &nbsp;&nbsp;</p>
+                        <p class="title" style="color:white">Planos de ensino &nbsp;&nbsp;</p>
 
-                        <div class="action dropdown pull-right" >
-
-                            <button class="btn  rounded-s btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Semestre de início
-                            </button>
-                            <div class="dropdown-menu "  aria-labelledby="dropdownMenu5"> 
-                                @foreach($semestres as $semestre)
-                                @if(isset($semestre_selecionado) && array_search($semestre->semestre.$semestre->ano,[$semestre_selecionado]) !== false)
-                                <a class="dropdown-item" href="/docentes/{{$semestre->semestre.$semestre->ano}}" style="text-decoration: none;">
-                                    <i class="fa fa-check-circle-o icon"></i> {{$semestre->semestre.'º Sem. '.$semestre->ano}}
-                                </a> 
-                                @else
-                                <a class="dropdown-item" href="/docentes/{{$semestre->semestre.$semestre->ano}}" style="text-decoration: none;">
-                                    <i class="fa fa-circle-o icon"></i> {{$semestre->semestre.'º Sem. '.$semestre->ano}}
-                                </a> 
-                                @endif
-                                @endforeach
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
 
@@ -74,9 +57,9 @@
                         &nbsp;&nbsp;<a href="#"> Listas de Frequência Anteriores</a>
                     </div>
                 -->
-                    <div>
-                        <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/download/{{str_replace('/','-.-', 'documentos/oficios/calendario_2020.pdf')}}" >Calendário</a>
+                    <div class="btn btn-sm rounded-s btn-success col-xs-5 text-xs-left">
+                        <i class=" fa fa-plus "></i> 
+                        &nbsp;&nbsp;<a href="/planos-ensino/cadastrar" >Novo plano</a>
                     </div>
                     <!--
                     <div>

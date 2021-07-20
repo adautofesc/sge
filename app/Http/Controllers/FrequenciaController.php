@@ -51,6 +51,12 @@ class FrequenciaController extends Controller
 
     public function preencherChamada_view(int $turma){
         $turma = Turma::find($turma);
+
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)){
+            LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
+            return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
+        }
+
         $aulas = Aula::where('turma',$turma->id)->orderBy('data')->get();
         foreach($aulas as $aula){
             $aula->presentes = $aula->getAlunosPresentes();    
@@ -68,6 +74,13 @@ class FrequenciaController extends Controller
 
     public function preencherChamada_exec(Request $r){
         //carregar todas presenças dessa turma
+        $turma = Turma::find($r->turma);
+
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)){
+            LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
+            return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
+        }
+
         $frequencias = Frequencia::select('*','frequencias.id as id')->join('aulas','frequencias.aula','aulas.id')->where('turma',$r->turma)->get();
 
 
@@ -133,8 +146,10 @@ class FrequenciaController extends Controller
         }           
         $turma = \App\Turma::find($turma);
 
-        if($turma->professor->id != Auth::user()->pessoa && !in_array('25', Auth::user()->recursos))
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)){
+            LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
+        }
 
         if(isset($_GET['filtrar']))
             $turma->getInscricoes('todas');
@@ -160,8 +175,11 @@ class FrequenciaController extends Controller
 
         $turma = \App\Turma::find($aula->turma);
         
-        if($turma->professor->id != Auth::user()->pessoa && !in_array('25', Auth::user()->recursos))
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('25', Auth::user()->recursos)){
+            LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
+        }
+            
     
         if(!is_null($req->conteudo)){
             $auladado = new AulaDadoController;
@@ -201,8 +219,11 @@ class FrequenciaController extends Controller
         $ocorrencia = AulaDado::where('aula',$aula->id)->where('dado','ocorrencia')->first();
 
 
-        if($turma->professor->id != Auth::user()->pessoa && !in_array('25', Auth::user()->recursos))
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('25', Auth::user()->recursos)){
+            LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
+        }
+            
 
         if(isset($_GET['filtrar']))
             $turma->getInscricoes('todas');
@@ -241,8 +262,11 @@ class FrequenciaController extends Controller
         $arr_frequencias = $frequencias->pluck('aluno')->toArray();
         $turma = \App\Turma::find($req->turma);
 
-        if($turma->professor->id != Auth::user()->pessoa && !in_array('25', Auth::user()->recursos))
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)){
+            LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
+        }
+           
 
         
         if(isset($_GET['filtrar']))

@@ -67,8 +67,20 @@ class AulaController extends Controller
             return "aula não encontrada";
         }
         else {
-            $msg = "Aula do dia " . $aula->data->format('d/m/y') . "foi apagada.";
-            $aula->delete();
+           
+            $aula_dados = AulaDado::where('aula',$aula->id)->get();
+            if($aula_dados->count()>0){
+                $msg = "ERRO AO EXCLUIR AULA ".$aula->id." Conteúdo, ocorrencia ou outro dado da aula inserido." ;
+
+
+            }
+            else{
+                $msg = "Aula do dia " . $aula->data->format('d/m/y') . "foi apagada.";
+                $aula->delete();
+
+            }
+                
+            
             //apagra presenças
                 
             
@@ -99,6 +111,12 @@ class AulaController extends Controller
             $this->gerarAulas($turma);
         }
         return response('Turmas recriadas');
+    }
+
+    public function recriarAulasView(int $turma){
+        $this->recriarAulas($turma);
+        return redirect()->back()->withErrors(['Aulas recriadas com sucesso.'])
+
     }
 
 

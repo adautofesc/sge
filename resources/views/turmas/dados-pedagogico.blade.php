@@ -239,18 +239,28 @@
                     </div>
                     @else 
                     <div>
-                        <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/docentes/frequencia/listar/{{$turma->id}}" title="Planilha com a frequencia dos alunos" >Frequência</a>
-                    </div>
-                    <div>
-                        <i class=" fa fa-arrow-right "></i> 
-                        &nbsp;&nbsp;<a href="/docentes/frequencia/nova-aula/{{$turma->id}}" title="Página para realizar chamada">Chamada</a>
-                    </div>
-                    @endif
-                    <div>
-                        <i class=" fa fa-arrow-right "></i> 
+                        <i class=" fa fa-print "></i> 
                         &nbsp;&nbsp;<a href="/lista/{{$turma->id}}" >Lista em branco</a>
                     </div>
+                    <div>
+                        <i class=" fa fa-print "></i> 
+                        &nbsp;&nbsp;<a href="/docentes/frequencia/listar/{{$turma->id}}" title="Planilha com a frequencia dos alunos" >Imprimir Frequência</a>
+                    </div>
+                    <div>
+                        <i class=" fa fa-asterisk"></i> 
+                        &nbsp;&nbsp;<a href="/docentes/frequencia/nova-aula/{{$turma->id}}" title="Página para realizar chamada">Nova Chamada</a>
+                    </div>
+                    <div>
+                        <i class=" fa fa-edit "></i> 
+                        &nbsp;&nbsp;<a href="/docentes/frequencia/preencher/{{$turma->id}}" title="Planilha com a frequencia dos alunos" >Frequência de todas aulas</a>
+                    </div>
+                    <div>
+                        <i class=" fa fa-cog "></i> 
+                        &nbsp;&nbsp;<a href="/aulas/recriar/{{$turma->id}}" title="Recriar aulas previstas - gera novamente as aulas em caso de erro ou alteração de datas">Recriar aulas previstas</a>
+                    </div>
+                    @endif
+                    
+                    
                     <!--
                     <div>
                         <i class=" fa fa-arrow-right "></i>
@@ -359,7 +369,8 @@
                                             <a href="#" onclick="removerMotivosCancelamento('{{$aula->id}}')" title="Remover Motivos"><i class="fa fa-times"></i></a>&nbsp;
                                             <a href="#" onclick="alterar_aula('previsionar',{{$aula->id}})"title="Retornar como prevista"><i class="fa fa-undo"></i></a>&nbsp;
                                         @elseif($aula->status == 'executada')
-                                            &nbsp;
+
+                                            <a href="/docentes/frequencia/editar-aula/{{$aula->id}}" title="Editar aula"><i class="fa fa-edit"></i></a>
                                         @elseif($aula->status == 'adiada')
                                             &nbsp;
                                         @endif

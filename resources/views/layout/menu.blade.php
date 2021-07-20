@@ -29,12 +29,12 @@
                                     <a href="{{asset('/docentes')}}"> <i class="fa fa-th-large"></i> Frequências (Docentes) </a>
                                 </li>
                                 @endif
-                                <!--
+                                
                                 @if(in_array('13', Auth::user()->recursos))
                                 <li  >
-                                    <a href="{{asset('/planos-ensino')}}"> <i class="fa fa-th-large"></i> Planos de ensino </a>
+                                    <a href="{{asset('/planos-ensino')}}"> <i class="fa fa-location-arrow"></i> Planos de ensino </a>
                                 </li>
-                                @endif-->
+                                @endif
                                 
                                 @if(in_array('24', Auth::user()->recursos))
                                 <li  >

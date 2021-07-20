@@ -126,7 +126,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('gerar/{turma}','AulaController@gerarAulas');
 		Route::POST('alterar-status','AulaController@alterarStatus');
 		Route::POST('limpar-dado', 'AulaDadoController@limparDado');
-		Route::GET('recriar/{turma}','AulaController@recriarAulasView')
+		Route::GET('recriar/{turma}','AulaController@recriarAulasView');
 		
 		
 

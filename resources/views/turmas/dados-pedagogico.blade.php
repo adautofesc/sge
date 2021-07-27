@@ -38,74 +38,27 @@
     </p>
 </div>
 @include('inc.errors')
-<div class="modal fade in" id="modal-contato" style="display: none;">
+@include('turmas.modals.contato')
+<div class="modal fade in" id="modal-motivo-cancelamento" style="display: none;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header"> 
                 <button type="button" class="close" data-dismiss="modal" aria-label="Fechar" title="Fechar caixa">
                     <span aria-hidden="true">×</span>
                 </button>
-                <h4 class="modal-title"><i class="fa fa-bullhorn"></i> Registrar contato</h4>
-            </div>
-            <div class="modal-body">
-               
-               <div class="row">
-                <div class="col-xs-3">
-                    <select class="form-control form-control-sm" name="meio">
-                        <option>Meio</option>
-                            <option value="telefone">Telefone</option>
-                            <option value="sms">SMS</option>
-                            <option value="carta">Carta</option>
-                            <option value="pessoa">Pessoal</option>
-                            <option value="email">E-mail</option>
-                            <option value="whatsapp">WhatsApp</option>
-                    </select>
-                </div>
-                <div class="col-xs-9">
-                    <input type="text" class="form-control form-control-sm" name="mensagem" placeholder="Escreva aqui o motivo" maxlength="300"><br>
-                    <input type="hidden" name="pessoa" value="">
-                
-                </div>
-
-                    
-                </div>
-                
-                <div>
-                    <button type="button" class="btn btn-primary" onclick="registrar_contato(null,null);" data-dismiss="modal">Confirmar</button>                
-                    <button type="button" class="btn btn-warning" onclick="registrar_contato(null,'Tentiva de contato telefônico fracassada: caixa postal');" data-dismiss="modal">Caixa postal</button> 
-                    <button type="button" class="btn btn-warning" onclick="registrar_contato(null,'Tentiva de contato telefônico fracassada: número consta como inexistente');" data-dismiss="modal">Inexistente</button> 
-
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
-                </div>
-            
-            
-            </div>
-            
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-<div class="modal fade in" id="confirm-modal" style="display: none;">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header"> 
-                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar" title="Fechar caixa">
-                    <span aria-hidden="true">×</span>
-                </button>
-                <h4 class="modal-title"><i class="fa fa-info-circle"></i> Título Modal</h4>
+                <h4 class="modal-title"><i class="fa fa-exclamation-triangle text-warning"></i> Motivo do cancelamento</h4>
             </div>
             <div class="modal-body">
                <!-- conteúdo do modal -->
-               <!--
+               
                <div>
-                   <input type="text" class="form-control form-control-sm" name="motivo-cancelamento" placeholder="Escreva aqui o motivo"><br>
+                   <input type="text" class="form-control form-control-sm" id="motivo-cancelamento" placeholder="Escreva aqui o motivo"><br>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-primary" onclick="alterar_aula('cancelar',320);" data-dismiss="modal">Confirmar</button> 
+                    <button type="button" class="btn btn-primary" onclick="alterar_aula('cancelar',aula);" data-dismiss="modal">Confirmar</button> 
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> 
                 </div>
-            -->
+            
             
             </div>
             
@@ -113,6 +66,8 @@
         <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
+
+
 </div>
 <section class="section">
     <div class="row">
@@ -363,9 +318,9 @@
                                             
                                             <!-- <a href="#" onclick="modal_atribuir({{$aula->id}});" title="Atribuir a professor substituto" data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-briefcase"></i></a>&nbsp;-->
                                             <a href="#" title="Adiar aula" data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-calendar-o"></i></a>&nbsp;
-                                            <a href="#{{$aula->id}}" onclick="modal_cancelar('{{$aula->id}}')" title="Cancelar" data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-ban"></i></a>&nbsp;
+                                            <a href="#{{$aula->id}}" onclick="modal_cancelar('{{$aula->id}}')" title="Cancelar" data-toggle="modal" data-target="#modal-motivo-cancelamento"><i class="fa fa-ban"></i></a>&nbsp;
                                         @elseif($aula->status == 'cancelada') 
-                                            <a href="#{{$aula->id}}" onclick="modal_cancelar('{{$aula->id}}')" title="Adicionar motivo" data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-plus"></i></a>&nbsp;
+                                            <a href="#{{$aula->id}}" onclick="modal_cancelar('{{$aula->id}}')" title="Adicionar motivos" data-toggle="modal" data-target="#modal-motivo-cancelamento"><i class="fa fa-plus"></i></a>&nbsp;
                                             <a href="#" onclick="removerMotivosCancelamento('{{$aula->id}}')" title="Remover Motivos"><i class="fa fa-times"></i></a>&nbsp;
                                             <a href="#" onclick="alterar_aula('previsionar',{{$aula->id}})"title="Retornar como prevista"><i class="fa fa-undo"></i></a>&nbsp;
                                         @elseif($aula->status == 'executada')
@@ -418,17 +373,10 @@
 @endsection
 @section('scripts');
 <script>
-function modal_cancelar(id){
-    $('.modal-title').html('<i class="fa fa-exclamation-triangle text-warning"></i> Motivo do cancelamento');
-    conteudo_modal = '<div>'+
-                '<input type="text" class="form-control form-control-sm" name="motivo-cancelamento" placeholder="Escreva aqui o motivo"><br>'+
-            '</div>'+
-            '<div >'+
-                '<button type="button" class="btn btn-primary" onclick="alterar_aula(\'cancelar\','+id+');" data-dismiss="modal">Confirmar</button> '+
-                '<button type="button" class="btn btn-secondary"  data-dismiss="modal">Cancelar</button> '+
-            '</div>';
+aula='';
 
-    $('.modal-body').html(conteudo_modal);
+function modal_cancelar(id){
+    aula = id;
    
         //window.location.href = "/pedagogico/aulas/mudar-status/"+id+"/cancelar";
 }
@@ -486,9 +434,10 @@ function alterar_aula(acao,id){
         });
 
     }
+    
     switch(acao){
         case 'cancelar': 
-            dado = $("input[type=text][name=motivo-cancelamento]").val();
+            dado = document.getElementById("motivo-cancelamento").value;
         break;
         case 'atribuir': 
             dado = $("input[type=text][name=professor]").val();
@@ -513,8 +462,8 @@ function alterar_aula(acao,id){
         location.reload(true);
     })
     .fail(function(jqXHR, textStatus, msg){
-         alert("Desculpe, mas não foi possível concluir o cancelamento");
-         console.log('erro ao acessar a url'+'/aulas/mudar-status/'+id+'/cancelar'+msg);
+         alert("Desculpe, mas não foi possível alterar a(s) aula(s)");
+         console.log('erro ao acessar a url'+'/aulas/alterar-status/'+id+'/cancelar'+msg);
     });
 
     //location.reload(true);
@@ -523,7 +472,7 @@ function mudarGeral(field){
     switch(field.value){
         case 'cancelar':
             modal_cancelar(null);
-            $('#confirm-modal').modal('show');
+            $('#modal-motivo-cancelamento').modal('show');
         break;
         case 'prevista':
             alterar_aula('previsionar',null);

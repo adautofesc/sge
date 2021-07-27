@@ -115,7 +115,7 @@ class AulaController extends Controller
 
     public function recriarAulasView(int $turma){
         $this->recriarAulas($turma);
-        return redirect()->back()->withErrors(['Aulas recriadas com sucesso.'])
+        return redirect()->back()->withErrors(['Aulas recriadas com sucesso.']);
 
     }
 
@@ -191,6 +191,7 @@ class AulaController extends Controller
     }
 
     public function alterarStatus(Request $r){
+        
         $DC = new AulaDadoController;
 
         //$aulas = Aula::whereIn('id',$r->aulas)->get();
@@ -201,8 +202,9 @@ class AulaController extends Controller
                 switch($r->action){
                     case 'cancelar':                         
                         if(isset($r->motivo))
-                            $DC->createDadoAula($aula,'cancelamento',$r->motivo);                              
-                        return response('',200);
+                            $DC->createDadoAula($aula,'cancelamento',$r->motivo);    
+                                                     
+                        
                         break;
             
                     case 'adiar' :   
@@ -216,13 +218,14 @@ class AulaController extends Controller
                  
                 }
             }
-            return response($r->ids,200);
+            return response($r->aulas,200);
 
         }
        
 
     }
     public function cancelamento(Request $r){
+        dd('teste');
         return response($r->ids,200);
     }
 

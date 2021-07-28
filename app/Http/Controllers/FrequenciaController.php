@@ -20,7 +20,7 @@ class FrequenciaController extends Controller
         if(isset($_GET['filtrar']))
             $inscritos=\App\Inscricao::where('turma',$turma->id)->get();
         else
-            $inscritos=\App\Inscricao::where('turma',$turma->id)->whereIn('status',['regular','espera','ativa','pendente'])->get();
+            $inscritos=\App\Inscricao::where('turma',$turma->id)->whereIn('status',['regular','espera','ativa','pendente','finalizada'])->get();
 
         $inscritos= $inscritos->sortBy('pessoa.nome');
 
@@ -39,7 +39,7 @@ class FrequenciaController extends Controller
             if(isset($_GET['filtrar']))
                 $turma->inscritos=\App\Inscricao::where('turma',$turma->id)->get();
             else
-                $turma->inscritos=\App\Inscricao::where('turma',$turma->id)->whereIn('status',['regular','espera','ativa','pendente'])->get();
+                $turma->inscritos=\App\Inscricao::where('turma',$turma->id)->whereIn('status',['regular','espera','ativa','pendente','finalizada'])->get();
 
             $turma->inscritos= $turma->inscritos->sortBy('pessoa.nome');
         }
@@ -134,7 +134,7 @@ class FrequenciaController extends Controller
     }
 
     public function novaChamada_view(int $turma){
-        $aulas = Aula::where('turma',$turma)->whereIn('status',['prevista','planejada'])->orderBy('data')->get();
+        $aulas = Aula::where('turma',$turma)->whereIn('status',['prevista','planejada','executada'])->orderBy('data')->get();
         
         if($aulas->count()==0){
             $AULA_CONTROLER = new AulaController;

@@ -477,6 +477,9 @@ function mudarGeral(field){
         case 'prevista':
             alterar_aula('previsionar',null);
         break;
+        case 'executar':
+            alterar_aula('executar',null);
+        break;
     }    
 }
 function removerMotivosCancelamento(id){

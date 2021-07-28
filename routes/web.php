@@ -218,6 +218,12 @@ Route::middleware(['auth','login']) ->group(function(){
 	});
 	Route::prefix('planos-ensino')->group(function () {
 		Route::get('/','PlanoEnsinoController@index');
+		Route::get('cadastrar','PlanoEnsinoController@create');
+		Route::post('cadastrar','PlanoEnsinoController@store');
+		Route::get('editar/{plano}','PlanoEnsinoController@edit');
+		Route::post('editar/{plano}','PlanoEnsinoController@update');
+		Route::get('apagar/{planos}','PlanoEnsinoController@destroy');
+		Route::post('apagar/{planos}','PlanoEnsinoController@detete');
 		
 		
 	});
@@ -707,7 +713,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	});
 
 	Route::get('cobranca-automatica','CobrancaController@cobrancaAutomatica');
-	Route::get('services/excluir-aulas','AulaController@excluir');
+	Route::post('services/excluir-aulas','AulaController@excluir');
 	
 });//end middleware login
 Route::prefix('services')->group(function(){

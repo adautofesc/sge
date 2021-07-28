@@ -129,9 +129,10 @@
 					@if($aula_anterior->status == 'executada')	
 					<a href="/docentes/frequencia/editar-aula/{{$aula_anterior->id}}" title="Editar dados"><i class=" fa fa-edit"></i></a>
 						&nbsp;
+						<!--
 					<a href="#" title="Apagar aula" onclick="apagarAula('{{$aula_anterior->id}}','{{$aula_anterior->data->format('d/m/Y')}}')">
 						<i class=" fa fa-trash"></i>
-					</a>
+					</a>-->
 						
 					@endif
 					</td>

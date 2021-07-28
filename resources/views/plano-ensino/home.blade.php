@@ -57,7 +57,7 @@
                         &nbsp;&nbsp;<a href="#"> Listas de Frequência Anteriores</a>
                     </div>
                 -->
-                    <div class="btn btn-sm rounded-s btn-success col-xs-5 text-xs-left">
+                    <div>
                         <i class=" fa fa-plus "></i> 
                         &nbsp;&nbsp;<a href="/planos-ensino/cadastrar" >Novo plano</a>
                     </div>

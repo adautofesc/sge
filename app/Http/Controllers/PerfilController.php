@@ -252,6 +252,63 @@ class PerfilController extends Controller
     public function imprimirBoleto(int $boleto){
         
     }
+
+    public function autenticarRematricula(Request $r){
+		if(!isset($r->pessoa))
+			return redirect('/rematricula')->withErrors(['Cadastro não encontrado']);
+		else{
+			$vencimento = \Carbon\Carbon::today()->addDays(-5);
+			$boleto_vencido = \App\Boleto::where('pessoa',$r->pessoa)->whereIn('status',['emitido','divida','aberto executado'])->where('vencimento','<',$vencimento->toDateString())->get();
+			if($boleto_vencido->count()>0)		
+				return redirect('/rematricula')->withErrors(['Existem pendências abertas em seu cadastro. Entre em contato pelo 3372-1308 para maiores informações.']);
+			
+			$pessoa = Pessoa::find($r->pessoa);
+			if(isset($pessoa->id)){
+				$rg = PessoaDadosGerais::where('pessoa',$pessoa->id)->where('dado',4)->orderBy('id','desc')->first();
+				$nome = explode(' ',$pessoa->nome_simples);
+				$nome = strtolower($nome[0]);
+				
+				if($rg->valor == $r->rg && $nome == strtolower($r->nome)){
+					//$pessoa = \App\Pessoa::cabecalho($pessoa);
+					$matriculas = \App\Matricula::where('pessoa', $pessoa->id)
+								->where('status','expirada')
+								->whereDate('data','>','2019-11-01')
+								->orderBy('id','desc')->get();
+								
+							//listar inscrições de cada matricula;
+					foreach($matriculas as $matricula){
+						$matricula->inscricoes = \App\Inscricao::where('matricula',$matricula->id)->where('status','finalizada')->get();
+						foreach($matricula->inscricoes as $inscricao){  
+							$inscricao->proxima_turma = \App\Turma::where('professor',$inscricao->turma->professor->id)
+																	->where('dias_semana',implode(',', $inscricao->turma->dias_semana))
+																	->where('hora_inicio',$inscricao->turma->hora_inicio)
+																	->where('data_inicio','>',\Carbon\Carbon::createFromFormat('d/m/Y', $inscricao->turma->data_termino)->format('Y-m-d'))
+							
+																	->whereIn('status',['espera','incricao'])
+																	->get();
+							//dd($inscricao->turma->vagas);
+							$alternativas = \App\TurmaDados::where('turma',$inscricao->turma->id)->where('dado','proxima_turma')->get();
+							foreach($alternativas as $alternativa){
+								$turma =\App\ Turma::find($alternativa->valor);
+								$inscricao->proxima_turma->push($turma);
+
+							}
+						}
+					}
+
+					return view('rematricula.renovacao',compact('pessoa'))->with('matriculas',$matriculas);
+					
+				}
+				else
+					return redirect()->back()->withErrors(['Os dados informados não conferem, verifique novamente.']);
+
+
+			}
+			
+		}
+		
+
+	}
         
 
 }

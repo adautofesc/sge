@@ -575,7 +575,7 @@ class MatriculaController extends Controller
     public function renovar_vw($pessoa){
        $pessoa = \App\Pessoa::cabecalho($pessoa);
        $matriculas = Matricula::where('pessoa', $pessoa->id)
-                ->where('status','expirada')
+                ->whereIn('status',['expirada','ativa'])
                 ->whereDate('data','>','2019-11-01')
                 ->orderBy('id','desc')->get();
 

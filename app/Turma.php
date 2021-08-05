@@ -35,6 +35,8 @@ class Turma extends Model
 	Valor que vai aparecer na lista de turmas
 	**/
 	public function getValorAttribute($value){
+		return $this->getRawOriginal('valor');
+		
 		
 
 		//verifica se o curso é fora da fesc, se for, retorna valor 0
@@ -58,7 +60,7 @@ class Turma extends Model
 			//mostra valor de 1 disciplina
 			$valor= Valor::find(17);
 		}
-		else
+		elseif($this->getRawOriginal('valor') == 0)
 		{	
 			//procura curso/carga/ano.
 			$valorc= Valor::where('curso',$this->curso->id)->where('carga',$this->carga)->where('ano',substr($this->data_inicio,-4))->get();
@@ -81,6 +83,9 @@ class Turma extends Model
 			$valor=$valorc->first();
 				
 			
+		}
+		else{
+			return $this->getRawOriginal('valor');
 		}
 		
 

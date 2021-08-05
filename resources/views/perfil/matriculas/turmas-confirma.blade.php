@@ -24,7 +24,7 @@
 @php
     $valor = 0;
 @endphp
-<form action="./inscricao" method="post">
+<form action="/perfil/matricula/inscricao" method="post">
 <div class="card mb-3">
                       
     <div class="card-body">
@@ -82,10 +82,10 @@
           
           
         <div class="form-group row">
-          <div class="col-sm-9 offset-sm-3">
-            <button class="btn btn-info" type="submit" name="btn" >Cadastrar</button> 
-            <button type="reset" name="btn"  class="btn btn-secondary">Limpar</button>
-            <button type="cancel" name="btn" class="btn btn-secondary" onclick="history.back(-1);return false;">Cancelar</button>
+          <div class="col-sm-9">
+            <button class="btn btn-success" type="submit" name="btn" >Confirmar</button> 
+            <button type="reset" name="btn"  class="btn btn-outline-secondary">Limpar</button>
+            <button type="cancel" name="btn" class="btn btn-outline-secondary" onclick="history.back(-1);return false;">Cancelar</button>
             @if(isset($parceria))
             <a href="#" class="btn btn-outline-danger" onclick="cancelar();"> Cancelar parceria</a>
             @endif

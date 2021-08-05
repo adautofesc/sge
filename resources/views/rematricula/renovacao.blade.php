@@ -209,12 +209,11 @@
         </table>
             <div class="form-group row">
                 <div class="col-md-12 form-group form">
-                <input type="checkbox" name="agree" id="agree">
-                <label for="agree">Aceito o <a href="/rematricula/termo" target="_blank">TERMO DE MATRÍCULA</a> previsto e confirmo minha matrícula.</label>
+                    <input type="checkbox" name="agree" id="agree">
+                    <label for="agree">Aceito o <a href="/rematricula/termo" target="_blank">TERMO DE MATRÍCULA</a> previsto e confirmo minha matrícula.</label>
                 </div>
             </div>
-            <div class="form-group row">
-                
+            <div class="form-group row">                
                 <div class="col-md-12 form-group form"> 
                     <input type="hidden" name="pessoa" value="{{$pessoa->id}}">
                     <button type="submit" name="btn"  class="btn btn-primary">Confirmar</button>

@@ -7,7 +7,7 @@
 |
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
+| contains the 'web' middleware group. Now create something great!
 |
 */
 
@@ -62,6 +62,10 @@ Route::prefix('perfil')->group(function(){
 			Route::get('termo',function(){
 				return view('juridico.documentos.termo_aberto_ead');
 			});
+		});
+		Route::prefix('rematricula')->group(function(){
+			Route::get('/','PerfilMatriculaController@rematricula_view');
+			Route::post('/','PerfilMatriculaController@confirmacao');
 
 		});
 
@@ -745,5 +749,5 @@ Route::get('500',function(){
 	return view('error-500');
  });
 Route::get('about',function(){
-   return "Sistema de Gestão Educacional. Todos direitos reservados";
+   return 'Sistema de Gestão Educacional. Todos direitos reservados';
 });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Turma;
 use App\Inscricao;
+use App\Matricula;
 
 class PerfilMatriculaController extends Controller
 {
@@ -102,6 +103,42 @@ class PerfilMatriculaController extends Controller
         }
 
     }
+
+
+    public function rematricula_view(Request $r){
+        $matriculas = Matricula::where('pessoa', $r->pessoa->id)
+                ->whereIn('status',['expirada','ativa'])
+                ->whereDate('data','>','2019-11-01')
+                ->orderBy('id','desc')->get();
+        foreach($matriculas as $matricula){
+            $matricula->inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','finalizada'])->get();
+            foreach($matricula->inscricoes as $inscricao){  
+                $inscricao->proxima_turma = \App\Turma::where('professor',$inscricao->turma->professor->id)
+                                                        ->where('dias_semana',implode(',', $inscricao->turma->dias_semana))
+                                                        ->where('hora_inicio',$inscricao->turma->hora_inicio)
+                                                        ->where('data_inicio','>',\Carbon\Carbon::createFromFormat('d/m/Y', $inscricao->turma->data_termino)->format('Y-m-d'))                                                 
+                                                        ->whereIn('status',['espera','incricao'])
+                                                        ->get();
+                //dd($inscricao->turma->vagas);
+                $alternativas = \App\TurmaDados::where('turma',$inscricao->turma->id)->where('dado','proxima_turma')->get();
+                foreach($alternativas as $alternativa){
+                    $turma =\App\ Turma::find($alternativa->valor);
+                    $inscricao->proxima_turma->push($turma);
+
+                }
+            }
+        }
+        //dd($matriculas->first()->inscricoes);
+        return view('perfil.rematricula')->with('pessoa',$r->pessoa)->with('matriculas',$matriculas);
+    }
+
+
+
+    public function rematricula(Request $r){
+        dd($r);
+
+    }
+
 
     //
 }

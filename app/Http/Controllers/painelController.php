@@ -345,16 +345,13 @@ class painelController extends Controller
     }
     
     public function testarClasse(){
+        
         //transição de periodicidade para parcelas
-        $turmas = \App\Turma::all();
-        foreach($turmas as $turma){
-            $turma->parcelas = $turma->getParcelas();
-            if($turma->periodicidade == 'eventual')
-            $turma->parcelas = 0;
-            $turma->save();
-            
-        }
-        return "turmas alteradas";
+        $turma = \App\Turma::find(1404);
+        return $turma->valor;
+       
+        
+        
 
         /* Verificador de matriculas abertas
 

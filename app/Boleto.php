@@ -17,4 +17,11 @@ class Boleto extends Model
     	$this->lancamentos = Lancamento::where('boleto',$this->id)->get();
     	return $this->lancamentos;
     }
+
+
+    public static function verificarDebitos(int $pessoa){
+        $vencimento = \Carbon\Carbon::today()->addDays(-3);
+		$boletos_vencidos = Boleto::where('pessoa',$pessoa)->whereIn('status',['emitido','divida','aberto executado'])->where('vencimento','<',$vencimento->toDateString());
+		return $boletos_vencidos;
+    }
 }

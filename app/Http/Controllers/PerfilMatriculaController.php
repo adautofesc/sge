@@ -19,7 +19,9 @@ class PerfilMatriculaController extends Controller
         return view('perfil.matriculas.matriculas')->with('pessoa',$r->pessoa)->with('matriculas',$matriculas);
     }
     public function turmasDisponiveis(Request $r){
-
+        $devedor = \App\Boleto::verificarDebitos($r->pessoa->id);
+        if($devedor->count()>0)
+            return redirect()->back()->withErrors(['Pendências encontradas em seu cadastro. Verifique seus boletos ou entre em contato com nossa secretaria.']);
         $turmas = Turma::whereIn('status',['inscricao','iniciada'])->get();
         foreach($turmas as $turma){
             $turma->nomeCurso = $turma->getNomeCurso();
@@ -106,6 +108,9 @@ class PerfilMatriculaController extends Controller
 
 
     public function rematricula_view(Request $r){
+        $devedor = \App\Boleto::verificarDebitos($r->pessoa->id);
+        if($devedor->count()>0)
+            return redirect()->back()->withErrors(['Pendências encontradas em seu cadastro. Verifique seus boletos ou entre em contato com nossa secretaria.']);
         $matriculas = Matricula::where('pessoa', $r->pessoa->id)
                 ->whereIn('status',['expirada','ativa'])
                 ->whereDate('data','>','2021-04-01')

@@ -147,7 +147,7 @@
                   </div>
                   <div class="card mt-3">
                     <ul class="list-group list-group-flush">
-                    @if($pessoa->id == 5858 || $pessoa->id = 19511 )
+                   
                     <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                         <a href="/perfil/rematricula">
                             <h6 class="mb-0">
@@ -156,7 +156,7 @@
                             </h6>
                             </a>
                       </li>
-                    @endif
+                   
                       <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                         <a href='/perfil/matricula/'>
                             <h6 class="mb-0">

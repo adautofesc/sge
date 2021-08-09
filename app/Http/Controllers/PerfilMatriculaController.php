@@ -108,7 +108,7 @@ class PerfilMatriculaController extends Controller
     public function rematricula_view(Request $r){
         $matriculas = Matricula::where('pessoa', $r->pessoa->id)
                 ->whereIn('status',['expirada','ativa'])
-                ->whereDate('data','>','2019-11-01')
+                ->whereDate('data','>','2021-04-01')
                 ->orderBy('id','desc')->get();
         foreach($matriculas as $matricula){
             $matricula->inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','finalizada'])->get();

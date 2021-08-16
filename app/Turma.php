@@ -267,6 +267,10 @@ class Turma extends Model
 				case 25:
 					$idade_minima = 60;
 					break;
+				case 26:
+					$idade_minima = 18;
+					$idade_maxima = 39;
+					break;
 				case 21:
 					$idade_minima = 14;
 					break;
@@ -296,9 +300,13 @@ class Turma extends Model
 					$idade_minima = 40;
 					$idade_maxima = 60;
 					break;
-				case 25:
+				case 25:		
 					$idade_minima = 60;
 					break;
+				case 26:
+						$idade_minima = 18;
+						$idade_maxima = 39;
+						break;
 				case 21:
 					$idade_minima = 14;
 					break;
@@ -331,6 +339,10 @@ class Turma extends Model
 				case 25:
 					$idade_minima = 60;
 					break;
+				case 26:
+					$idade_minima = 18;
+					$idade_maxima = 39;
+						break;
 				case 21:
 					$idade_minima = 14;
 					break;

@@ -365,10 +365,14 @@ class Turma extends Model
 			return false;
 		}
 		
-	if($idade_minima>0 && $idade_minima>$aluno->getIdade() && $idade_maxima<0 && $idade_maxima>$aluno->getIdade() ){
-		//redirect()->back()->withErrors(['Idade não compatível com a faixa etária obrigatória']);
-		return false;
-	}
+		if($idade_maxima>0 && $idade_maxima<$aluno->getIdade() ){
+			//redirect()->back()->withErrors(['Idade não compatível com a faixa etária obrigatória']);
+			return false;
+		}
+		/*
+		if($this->id ==1382)
+		dd($reqs);*/
+		
 			
 		/* condicional para atestado
 		if($atestado ==1){

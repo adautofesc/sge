@@ -233,7 +233,6 @@ class MatriculaController extends Controller
         $matricula->valor=str_replace(',','.',$turma->valor);
         $matricula->curso = $turma->curso->id;
         $matricula->save();
-
         $matricula->parcelas = $matricula->getParcelas();
         $matricula->save();
 
@@ -645,12 +644,13 @@ class MatriculaController extends Controller
             
             $inscricao = InscricaoController::inscreverAlunoSemMatricula($r->pessoa,$turma);
             $matricula = Matricula::where('pessoa',$r->pessoa)->where('status','espera')->where('curso', $inscricao->turma->curso->id)->first();
-            if($matricula == null)
+            if($matricula == null)             
                 $matricula = MatriculaController::gerarMatricula($r->pessoa,$turma,'espera'); 
+          
+               
             $inscricao->matricula = $matricula->id;
             $inscricao->save();
-            $matricula->parcelas = $matricula->getParcelas();
-            $matricula->save();
+           
             
         }
         return redirect("/secretaria/atender/".$r->pessoa."?mostrar=todos")->with('dados["alert_sucess"]',['Turmas rematriculadas com sucesso']);

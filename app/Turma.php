@@ -98,8 +98,13 @@ class Turma extends Model
 
 	public function getParcelas(){
 		//dd($this->parcelas);
-		if($this->parcelas == 0)
-			return $this->getTempoCurso();	
+		if($this->parcelas == 0){
+			$dt_i=Carbon::createFromFormat('d/m/Y', $this->data_inicio);
+			$dt_t=Carbon::createFromFormat('d/m/Y', $this->data_termino);
+			$diference=$dt_i->diffInMonths($dt_t);
+			$diference++;
+			return $diference;
+		}
 		else
 			return $this->parcelas;
 	}

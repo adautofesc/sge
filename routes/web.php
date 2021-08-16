@@ -29,6 +29,10 @@ Route::get('ipca','ValorController@getIPCA');
 
 //Route::get('correcao-valor','ValorController@correcaoValor');
 //Route::get('boletos-com-erros','BoletoController@analisarBoletosComErro');
+Route::get('rematricula', function(){
+	return view('perfil.cpf');
+});
+
 Route::prefix('perfil')->group(function(){
 	Route::get('cpf', function(){
 		return view('perfil.cpf');

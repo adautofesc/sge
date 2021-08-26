@@ -265,11 +265,13 @@ class CarneController extends Controller
 
 			
 
-			$lancamentos_matricula = \App\Lancamento::where('matricula',$matricula->id)->get();
+			$lancamentos_matricula = \App\Lancamento::where('matricula',$matricula->id)->where('status',null)->get();
 
 			
 			if($lancamentos_matricula->count() ==0)
 				continue;
+
+			//dd($lancamentos_matricula);
 
 
 

@@ -55,6 +55,11 @@
                 </div>
                 <div class="card-block">
                         <div>
+                            <a href="/relatorios/receita-anual-programa/{{date('Y')-1}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                            <i class=" fa fa-envelope "></i>
+                            &nbsp;&nbsp;Receita Anual Por Programa</a>
+                        </div>
+                        <div>
                             <a href="{{asset('/')}}financeiro/cobranca/cartas" class="btn btn-primary-outline col-xs-12 text-xs-left">
                             <i class=" fa fa-envelope "></i>
                             &nbsp;&nbsp;Cartas de cobrança</a>

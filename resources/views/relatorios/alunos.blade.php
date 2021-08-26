@@ -259,7 +259,7 @@
         
 
         	
-	<script src="{{asset('/')}}/js/vendor.js">
+	<script src="{{asset('js/vendor.js')}}">
 	</script>
 </body>
 <script type="text/javascript">

@@ -345,27 +345,8 @@ class painelController extends Controller
     }
     
     public function testarClasse(){
-        
-        //transição de periodicidade para parcelas
-        $turma = \App\Turma::find(1404);
-        return $turma->valor;
-       
-        
-        
 
-        /* Verificador de matriculas abertas
-
-        $matriculas_sem_boletos = collect();
-        $matriculas = \App\Matricula::where('status','ativa')->whereYear('data','<','2021')->get();
-        
-        foreach($matriculas as $matricula){
-            $lancamentos = \App\Lancamento::where('matricula',$matricula->id)->count();
-            if($lancamentos==0)
-                $matriculas_sem_boletos->push($matricula);
-
-
-        }
-        return $matriculas_sem_boletos;*/
+      return "ok";
 
     }
 

@@ -156,7 +156,8 @@ class PerfilAuthController extends Controller
         if(!$this->validaCPF($cpf))
             return redirect()->back()->withErrors(['CPF inválido']);
         $cpf = PessoaDadosGerais::where('dado',3)->where('valor',$cpf)->first();
-        $email = PessoaDadosContato::where('dado', 1)->where('pessoa',$cpf->pessoa)->first();
+        $email = PessoaDadosContato::where('dado', 1)->where('pessoa',$cpf->pessoa)->orderByDesc('id')->first();
+
         if($email ==null)
             return view('perfil.recovery')->withErrors(['Não foi possivel encontrar e-mail para enviar o link de redefinição de senha. Entre em contato pelo telefone 3372-1308 e solicite a redefinição. (será necessária a confirmação de diversos dados)']);
         $old_hash = PessoaDadosGerais::where('dado',27)->where('pessoa',$cpf->pessoa)->first();

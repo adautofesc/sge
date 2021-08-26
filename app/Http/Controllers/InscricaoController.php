@@ -285,7 +285,7 @@ class InscricaoController extends Controller
 
         $inscricoes = Inscricao::where('matricula',$r->matricula)->whereIn('status',['regular','pendente'])->count();
         $pessoa = Pessoa::find($r->pessoa);
-        if($inscricoes>0){
+        if($inscricoes->count()>0){
             if(!empty($r->cancelamento))
                 AtendimentoController::novoAtendimento("Cancelamento da inscrição ".$r->inscricao. " motivo: ".implode(', ',$r->cancelamento), $r->pessoa, Auth::user()->pessoa);
             else

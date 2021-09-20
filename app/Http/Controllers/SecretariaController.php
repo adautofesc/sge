@@ -96,9 +96,9 @@ class SecretariaController extends Controller
 
 			 }
 			 $boletos = Boleto::where('pessoa',$id)
-			 	->whereIn('status',['gravado','impresso','emitido','divida','aberto executado'])
-	
+			 	->whereIn('status',['gravado','impresso','emitido','divida','aberto executado','pago'])
 			 	->orderBy('id','desc')
+				->limit(20)
 			 	->get();
 			 foreach($boletos as $boleto){
 			 	$boleto->getLancamentos();
@@ -374,6 +374,7 @@ class SecretariaController extends Controller
 		$matriculas = Matricula::whereIn('id',$array_matriculas)->get();
 		foreach($matriculas as $matricula){
 			$matricula->getInscricoes();
+			$matricula->pessoa_obj = \App\Pessoa::find($matricula->pessoa);
 			foreach($matricula->inscricoes as $inscricao){
 				if($inscricao->status == 'transferida')
 					$inscricao->transferencia = $inscricao->getTransferencia();

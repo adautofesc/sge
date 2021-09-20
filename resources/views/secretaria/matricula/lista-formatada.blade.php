@@ -39,7 +39,7 @@
                     </div>
                 </li>
                 @foreach($turmas->all() as $turma)
-                @if($turma->programa->id==$programa->id)                                            
+                @if($turma->programa->id==$programa->id )                                            
                 <li class="item ">
                     <div class="item-row">
                         <div class="item-col fixed item-col-check"> 
@@ -56,7 +56,7 @@
                         <div class="">
                             
                                  <div href="#" style="margin-bottom:5px;" class="color-primary">Turma {{$turma->id}} - <i class="fa fa-{{$turma->icone_status}}" title=""></i><small> {{$turma->texto_status}}</small></div> 
-
+  
                            
                            @if(isset($turma->disciplina))
                                 <a href="{{asset('pedagogico/disciplina/mostrar').'/'.$turma->disciplina->id}}" target="_blank" class="" title="Ver descrição em outra janela">
@@ -86,7 +86,7 @@
                        
                         <div class="item-col item-col-sales">
                             <div class="item-heading">Valor</div>
-                            <div>R$ {{$turma->valor}} </div>
+                            <div>R$ {{$turma->valor}}</div>
                         </div>
 
                         <div class="item-col fixed item-col-actions-dropdown">

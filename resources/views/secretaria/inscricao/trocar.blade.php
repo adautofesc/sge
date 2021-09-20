@@ -42,37 +42,38 @@
 			</div>
 		</div>
 	-->
-		@if(count($turmas)>1)
-		 <div class="form-group row"> 
+	<div class="form-group row"> 
             <label class="col-sm-2 form-control-label text-xs-right">Turma</label>
             <div class="col-sm-10"> 
                 
                 <div>
                 	<small>
-                	@foreach($turmas as $turma)
-							
-	                    <label>
-	                    <input class="radio" type="radio" name="turma" value="{{$turma->id}}" {{($turma->vagas-$turma->matriculados)<=0?'disabled="True"':''}}>
-	                    @if(isset($turma->disciplina->id))
-	                    	<span>{{$turma->id.' - '.implode(', ',$turma->dias_semana)
-	                    	.' das '.$turma->hora_inicio
-	                    	.' as '.$turma->hora_termino. ' - '
-	                    	.$turma->local->nome
-	                    	.' - '.$turma->disciplina->nome
-	                    	.'. Vagas: '.($turma->vagas-$turma->matriculados)
-	                		}}</span>
-	                    @else
-	                    	<span>{{$turma->id.' - '.implode(', ',$turma->dias_semana)
-	                    	.' das '.$turma->hora_inicio
-	                    	.' as '.$turma->hora_termino
-	                    	.' - '.$turma->local->nome
-	                    	.' - '.$turma->curso->nome
-	                    	.' - '.$turma->professor->nome_simples
-	                    	.'. Vagas: '.($turma->vagas-$turma->matriculados)
-	                    	}}</span>
-	                    @endif
-	                    </label><br>
-                    @endforeach
+					@if(count($turmas)>1)
+						@foreach($turmas as $turma)
+								
+							<label>
+							<input class="radio" type="radio" name="turma" value="{{$turma->id}}" {{($turma->vagas-$turma->matriculados)<=0?'disabled="True"':''}}>
+							@if(isset($turma->disciplina->id))
+								<span>{{$turma->id.' - '.implode(', ',$turma->dias_semana)
+								.' das '.$turma->hora_inicio
+								.' as '.$turma->hora_termino. ' - '
+								.$turma->local->nome
+								.' - '.$turma->disciplina->nome
+								.'. Vagas: '.($turma->vagas-$turma->matriculados)
+								}}</span>
+							@else
+								<span>{{$turma->id.' - '.implode(', ',$turma->dias_semana)
+								.' das '.$turma->hora_inicio
+								.' as '.$turma->hora_termino
+								.' - '.$turma->local->nome
+								.' - '.$turma->curso->nome
+								.' - '.$turma->professor->nome_simples
+								.'. Vagas: '.($turma->vagas-$turma->matriculados)
+								}}</span>
+							@endif
+							</label><br>
+						@endforeach
+					@endif 
                     <label>
                     	<input class="radio" type="radio" name="turma" value="0">
                     	<span> Outra: </span><input type="number" name="turma_alternativa" placeholder="Código da turma">
@@ -81,7 +82,8 @@
                 </div>
             </div>        
         </div>
-		@endif 
+		
+
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Motivo 

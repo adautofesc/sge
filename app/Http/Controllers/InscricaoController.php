@@ -285,7 +285,7 @@ class InscricaoController extends Controller
 
         $inscricoes = Inscricao::where('matricula',$r->matricula)->whereIn('status',['regular','pendente'])->count();
         $pessoa = Pessoa::find($r->pessoa);
-        if($inscricoes->count()>0){
+        if($inscricoes>0){
             if(!empty($r->cancelamento))
                 AtendimentoController::novoAtendimento("Cancelamento da inscrição ".$r->inscricao. " motivo: ".implode(', ',$r->cancelamento), $r->pessoa, Auth::user()->pessoa);
             else
@@ -566,6 +566,8 @@ class InscricaoController extends Controller
             return redirect()->back()->withErrors(['Turma inválida.']);
         $inscricao = Inscricao::find($r->inscricao);
         $inscricao_nova = $this->inscreverAluno($inscricao->pessoa->id,$turma,$inscricao->matricula);
+        if($inscricao_nova == false)
+         return redirect()->back();
         $turma_obj->matriculados++;
         $turma_obj->save();
         $inscricao->status = 'transferida';
@@ -573,6 +575,8 @@ class InscricaoController extends Controller
         $turma_anterior = Turma::find($inscricao->turma->id);
         $turma_anterior->matriculados--;
         $turma_anterior->save();
+        //dd($inscricao_nova);
+
         $transferencia = TransferenciaController::gravarRegistro($inscricao->matricula,$inscricao->id,$inscricao_nova->id,$r->motivo); 
         LogController::registrar('inscricao',$inscricao->id,'Transferência de turma');
         AtendimentoController::novoAtendimento('Transferencia da turma '.$inscricao->turma->id.' para turma '.$turma, $inscricao->pessoa->id, Auth::user()->pessoa);

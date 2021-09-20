@@ -34,6 +34,11 @@ class MatriculaController extends Controller
         foreach($turmas as $turma){
             $insc=InscricaoController::inscreverAluno($r->pessoa,$turma->id);
         }
+
+        $CC = new CarneController;
+        $CC->gerarCarneIndividual($r->pessoa);
+        $boletos = \App\Boleto::where('pessoa',$r->pessoa)->where('status','gravado')->get();
+        
         
         return redirect(asset("secretaria/atender").'/'.$r->pessoa);
  
@@ -98,7 +103,12 @@ class MatriculaController extends Controller
 
         
         
-        $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->whereIn('status',['regular','pendente','finalizada'])->get();
+        if($matricula->status == 'cancelada')
+            $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->where('status','cancelada')->get();
+        else
+            $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->whereIn('status',['regular','pendente','finalizada'])->get();
+
+            
         foreach($inscricoes as $inscricao){
             $inscricao->turmac=Turma::find($inscricao->turma->id);
             $inscricao->turmac->getSala();
@@ -199,24 +209,6 @@ class MatriculaController extends Controller
 
 
 
-    /**
-     * Função que verifica se já existe rematricula para esta pessoa
-     * @param  [type] $pessoa [description]
-     * @param  [type] $curso  [description]
-     * @return [type]         [description]
-     */
-    public static function verificaSeRematriculado($pessoa,$curso){
-        $matriculas_ativas=Matricula::where('pessoa',Session::get('pessoa_atendimento'))
-            ->where('curso',$curso)
-            ->where('status','espera')
-            ->get();
-        if($matriculas_ativas->count() > 0)
-            return $matriculas_ativas->first()->id;  
-        else
-            return false;
-            
-
-    }
 
     public static function gerarMatricula($pessoa,$turma_id,$status_inicial,$atendente=0){
 

@@ -19,6 +19,7 @@
                 <div class="card-header">
                     <div class="header-block">
                         <p class="title" style="color:white">Matrículas & Inscrições</p>
+                        
                     </div>
                 </div>
                 <div class="card-block">
@@ -26,7 +27,9 @@
                         <li class="item item-list-header ">
                             <div class="row ">
                                 <div class="col-xl-4 " style="line-height:40px !important; padding-left: 30px;">
-                                    <div><i class=" fa fa-sitemap "></i> &nbsp;<small><b>M/I Cod. - Curso/Disciplina</b></small></div>
+                                    
+                                    
+                                    &nbsp;<small><b>M/I Cod. - Curso/Disciplina</b></small>
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div><small><b>Professor(a)</b></small></div>
@@ -65,21 +68,12 @@
                             </div>
                             @else
                             <div class="row">                          
-                                    @if($matricula->inscricoes->first()->turma->programa->id == 12)
-                                            <div class="col-xl-4 text-success" title="CE - {{$matricula->inscricoes->first()->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
-                                    @elseif($matricula->inscricoes->first()->turma->programa->id == 2)
-                                            <div class="col-xl-4 text-primary " title="PID - {{$matricula->inscricoes->first()->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
-                                    @elseif($matricula->inscricoes->first()->turma->programa->id == 3)
-                                            <div class="col-xl-4 text-warning " title="UATI - {{$matricula->inscricoes->first()->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
-                                    @elseif($matricula->inscricoes->first()->turma->programa->id == 1)
-                                            <div class="col-xl-4 text-danger " title="UNIT - {{$matricula->inscricoes->first()->turma->curso->nome}}" style="line-height:40px !important; padding-left: 30px;" >
-                                    @else
-                                            <div class="col-xl-4 text-secondary " style="line-height:40px !important; padding-left: 30px;" >
-                                    @endif
-                                    <div class="dropdown-toggle"> <i class=" fa fa-circle "></i> &nbsp;<small><b>M{{$matricula->id}}  - {{substr($matricula->inscricoes->first()->turma->curso->nome,0,25)}}</b></small></div> 
+                                   <div class="col-xl-4" style="line-height:40px !important; padding-left: 30px;" >
+                                     <div class="dropdown-toggle"> <i class=" fa fa-circle "></i> &nbsp;<small><b>{{$matricula->id}}</b> - Aluno(a): <b> <a href="/secretaria/atender/{{$matricula->pessoa_obj->id}}">{{$matricula->pessoa_obj->nome}}</a></b></small></div> 
+                                    <!--<div class="dropdown-toggle"> <i class=" fa fa-circle "></i> &nbsp;<small><b>M{{$matricula->id}}  - {{substr($matricula->inscricoes->first()->turma->curso->nome,0,25)}}</b></small></div>--> 
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
-                                    <div><small>{{count($matricula->inscricoes)}} Disciplina(s) </small></div>
+                                    <div><small>M{{$matricula->id}}</small></div>
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
 
@@ -264,20 +258,7 @@
                                              <i class=" fa fa-times" style="color:white;"></i>
                                          </a>
                                          &nbsp;
-                                         @if($devedor == false)
-                                        <a href="{{asset('/secretaria/matricula/inscricao/trocar/').'/'.$inscricao->id}}"                                
-                                            title="Transferir Inscrição" 
-                                            class="badge badge-pill badge-warning">
-                                            <i class=" fa fa-retweet " style="color:white;"></i>
-                                        </a>
-                                          &nbsp;
-                                        @else 
-                                        <a href="#"                                
-                                            title="Transferência não pode ser realizada com débitos em aberto." 
-                                            class="badge badge-pill badge-secondary disabled">
-                                            <i class=" fa fa-retweet " style="color:white;"></i>
-                                        </a>
-                                        @endif
+                                       
                                         <a href="{{asset('/secretaria/matricula/inscricao/editar/').'/'.$inscricao->id}}"                                
                                             title="Editar Inscrição" 
                                             class="badge badge-pill badge-primary">

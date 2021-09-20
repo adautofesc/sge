@@ -131,20 +131,22 @@ class ValorController extends Controller
                     
                     
                 }
-                //dd($valor);
+                
 
                 
-                if($turma->valor>0){
+                if($valor->valor>0){
                     $valor->parcelas = $turma->getParcelas();
                     $valor->referencia = 'parcelas temporaria';
                     //return $valor;
                 }
+                //dd($matricula->getParcelas());
 
                 if($valor->valor>0 && $valor->parcelas>0 && $matricula->getParcelas()>0){
                     $valor->valor = ($valor->valor/$valor->parcelas)*$matricula->getParcelas();
                     return $valor;
                 }
                 else
+                    // o ideal é parar as matriculas dessa turma e emitir um aviso para secretaria de que a turma está dando problema. 
                     throw new \Exception("Erro ao acessar valor da turma:".$inscricoes->first()->turma->id.' Matrricula:'.$matricula->id .'. Verifique se a turma está com seu valor devidamente atribuído ou se são foi escolhido a parceria no caso de disciplinas gratuítas.', 1);
 
     		}

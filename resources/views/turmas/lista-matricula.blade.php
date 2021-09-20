@@ -39,7 +39,7 @@
                     </div>
                 </li>
                 @foreach($turmas as $turma)
-                 @if($turma->programa==$programa)                                       
+                 @if($turma->programa==$programa  && $turma->verificaRequisitos($pessoa->id))                                       
                 <li class="item">
                     @if($turma->matriculados>=$turma->vagas)
                     <div class="item-row" style="color:red">

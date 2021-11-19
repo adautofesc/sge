@@ -196,7 +196,7 @@ class RequisitosController extends Controller
         }
 
 
-       return redirect('pedagogico/turmas')->withErrors('Requisitos atualizados das turmas '.$r->turmas);
+       return redirect('turmas')->withErrors('Requisitos atualizados das turmas '.$r->turmas);
     }
 
     public function storeRequisitosAoCurso(Request $r){

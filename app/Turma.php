@@ -389,12 +389,12 @@ class Turma extends Model
 
 
 		if($idade_minima>0 && $idade_minima>$aluno->getIdade()){
-			//redirect()->back()->withErrors(['Idade mínima não atingida: '.$idade_minima]);
+			redirect()->back()->withErrors(['Idade mínima não atingida: '.$idade_minima]);
 			return false;
 		}
 		
 		if($idade_maxima>0 && $idade_maxima<$aluno->getIdade() ){
-			//redirect()->back()->withErrors(['Idade não compatível com a faixa etária obrigatória']);
+			redirect()->back()->withErrors(['Idade não compatível com a faixa etária obrigatória']);
 			return false;
 		}
 		/*

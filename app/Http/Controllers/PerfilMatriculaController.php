@@ -23,8 +23,11 @@ class PerfilMatriculaController extends Controller
         if($devedor->count()>0)
             return redirect()->back()->withErrors(['Pendências encontradas em seu cadastro. Verifique seus boletos ou entre em contato com nossa secretaria.']);
         $turmas = Turma::whereIn('status_matriculas',['aberta','online'])->get();
-        foreach($turmas as $turma){
+        foreach($turmas as &$turma){
             $turma->nomeCurso = $turma->getNomeCurso();
+            $pacote = \App\TurmaDados::where('turma',$turma->id)->where('dado','pacote')->first();
+            if($pacote)
+                $turma->pacote = $pacote->valor;
         }
         $turmas = $turmas->sortBy('nomeCurso');
         
@@ -37,6 +40,11 @@ class PerfilMatriculaController extends Controller
             return redirect()->back()->withErrors(['Escolha pelo menos uma turma']);
 
         $turmas = Turma::whereIn('id',$r->turma)->get();
+        foreach($turmas as &$turma){
+            $pacote = \App\TurmaDados::where('turma',$turma->id)->where('dado','pacote')->first();
+            if($pacote)
+                $turma->pacote = $pacote->valor;
+        }
         return view('perfil.matriculas.turmas-confirma')->with('turmas',$turmas)->with('pessoa',$r->pessoa);
         
     }
@@ -122,12 +130,15 @@ class PerfilMatriculaController extends Controller
                                                         ->where('dias_semana',implode(',', $inscricao->turma->dias_semana))
                                                         ->where('hora_inicio',$inscricao->turma->hora_inicio)
                                                         ->where('data_inicio','>',\Carbon\Carbon::createFromFormat('d/m/Y', $inscricao->turma->data_termino)->format('Y-m-d'))                                                 
-                                                        ->where('status_matricula','rematricula')
+                                                        ->where('status_matriculas','rematricula')
                                                         ->get();
-                //dd($inscricao->turma->vagas);
+                //dd(\Carbon\Carbon::createFromFormat('d/m/Y', $inscricao->turma->data_termino)->format('Y-m-d'));
                 $alternativas = \App\TurmaDados::where('turma',$inscricao->turma->id)->where('dado','proxima_turma')->get();
                 foreach($alternativas as $alternativa){
                     $turma =\App\ Turma::find($alternativa->valor);
+                    $pacote = \App\TurmaDados::where('turma',$turma->id)->where('dado','pacote')->first();
+                    if($pacote)
+                        $turma->pacote = $pacote->valor;
                     $inscricao->proxima_turma->push($turma);
 
                 }
@@ -138,11 +149,6 @@ class PerfilMatriculaController extends Controller
     }
 
 
-
-    public function rematricula(Request $r){
-        return 'Recurso temporariamente indisponível';
-
-    }
 
 
     //

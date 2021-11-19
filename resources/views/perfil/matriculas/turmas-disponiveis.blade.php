@@ -61,8 +61,12 @@
 
               </div>
               <div class="col-sm-2">
+                @if($turma->pacote)
+                Confira o valor do pacote
+                @else
                 R$ {{number_format($turma->valor,2,',','.')}} <br>
               <small> {{$turma->getParcelas()}}X R$ {{number_format($turma->valor/$turma->getParcelas(),2,',','.')}}</small>
+              @endif
                 
               </div>
             </label>

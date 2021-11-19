@@ -68,7 +68,7 @@
           @endif
         </div> 
       </div>
-      <form method="POST" enctype="multipart/form-data">
+      <form method="POST" action="/perfil/matricula/confirmacao">
       {{csrf_field()}}
         <table class="table">
             <tr>

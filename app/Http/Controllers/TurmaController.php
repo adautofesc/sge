@@ -401,7 +401,7 @@ class TurmaController extends Controller
             }
         }
 
-        if(isset($request->pacote)|| is_array($request->pacote) || count($request->pacote)>0){
+        if(isset($request->pacote) && is_array($request->pacote) && count($request->pacote)>0){
             foreach($request->pacote as $pcte) {
                 $pacote = new \App\TurmaDados;
                 $pacote->turma = $turma->id;

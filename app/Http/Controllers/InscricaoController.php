@@ -177,7 +177,7 @@ class InscricaoController extends Controller
 
 
         if(!$turma->verificaRequisitos($aluno)){
-            redirect()->back()->withErrors(['Problemas com os pré-requisitos da turma '.$turma->id]); 
+            redirect()->back();
             return false;  
                  
         }
@@ -275,7 +275,10 @@ class InscricaoController extends Controller
      */
     public function inscreverAlunoLote($turma,Request $r){
         $inscricao=InscricaoController::inscreverAluno($r->id_pessoa,$turma);
-        return redirect()->back()->withErrors(['Inscrição efetuada.']);
+        if(!$inscricao)
+            return redirect('/turma'."/".$turma);
+        else
+            return redirect()->back()->withErrors(['Inscrição efetuada.']);
 
     }
 

@@ -51,13 +51,13 @@ class ValorController extends Controller
 
         $matricula = Matricula::find($id_matricula);
         
-
+        //dd('teste');
 
     	if($matricula)
     	{
             
 
-            $inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','pendente'])->get();
+            $inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','pendente','espera'])->get();
             if($matricula->curso == null){
                 \App\Http\Controllers\MatriculaController::matriculaSemCurso($matricula);
 
@@ -72,8 +72,10 @@ class ValorController extends Controller
             if(isset($matricula->pacote)){
         
                 $valor = Valor::where('pacote',$matricula->pacote)->where('ano',substr($turma->data_inicio,-4))->first();
-                //dd($matricula->pacote);
-                return $valor;
+                if($valor)
+                    return $valor;
+                else
+                    dd('Valor do pacote '.$matricula->pacote.' não encontrado para o ano de '.substr($turma->data_inicio,-4) );
 
             }
 

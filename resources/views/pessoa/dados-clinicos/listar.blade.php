@@ -4,7 +4,7 @@
     <div class="title-block">
         <div class="row">
             <div class="col-md-6">
-                <h3 class="title"> Atestados     <!--                
+                <h3 class="title"> Análise de Atestados     <!--                
 	                <div class="action dropdown"> 
 	                	<button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mais ações...
 	                	</button>
@@ -14,7 +14,7 @@
 	                    </div>
 	                </div> -->
                 </h3>
-                <p class="title-description"> Lista de atestados regulares. </p>
+                <p class="title-description"> Lista de atestados a serem aprovados </p>
             </div>
         </div>
     </div>
@@ -36,14 +36,19 @@
                     <div> <span>Nome</span> </div>
                 </div>
                 <div class="item-col item-col-header item-col-sales">
+                    <div> <span>Tipo</span> </div>
+                </div>
+                <div class="item-col item-col-header item-col-sales">
                     <div> <span>Data de Emissão</span> </div>
                 </div>
                 <div class="item-col item-col-header item-col-sales">
-                    <div> <span>Recebido em</span> </div>
+                    <div> <span>Data de Validade</span> </div>
                 </div>
                 <div class="item-col item-col-header item-col-sales">
-                    <div> <span>por</span> </div>
+                    <div> <span>Data de envio</span> </div>
                 </div>
+                <div class="item-col item-col-header item-col-sales "> </div>
+
                 <div class="item-col item-col-header fixed item-col-actions-dropdown"> </div>
             </div>
         </li>
@@ -64,19 +69,30 @@
                     </div>
                 </div>
                 <div class="item-col item-col-sales">
-                    <div class="item-heading">Validade</div>
+                    <div class="item-heading">Tipo</div>
+                    <div> {{$atestado->tipo}}</div>
+                </div>
+                <div class="item-col item-col-sales">
+                    <div class="item-heading">Emissão</div>
                     <div> {{$atestado->emissao}}</div>
+                </div>
+                <div class="item-col item-col-sales">
+                    <div class="item-heading">Validade</div>
+                    <div> {{$atestado->validade}}</div>
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Recebido em</div>
                     <div>
-                       {{$atestado->cadastrado}}
+                       {{$atestado->cadastro}}
                     </div>
                 </div> 
                 <div class="item-col item-col-sales">
-                    <div class="item-heading">Por</div>
-                    <div>{{$atestado->por}}</div>
+                    <div class="item-heading">Analisar</div>
+                    <div>
+                       <a href="/pessoa/atestado/analisar/{{$atestado->id}}" class="btn btn-primary btn-sm">Analisar</a>
+                    </div>
                 </div> 
+            
 
                 <div class="item-col fixed item-col-actions-dropdown">
                     <div class="item-actions-dropdown">

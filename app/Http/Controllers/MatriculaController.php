@@ -17,6 +17,84 @@ ini_set('upload_max_filesize', '4194304');
 class MatriculaController extends Controller
 {
     /**
+     * Listar disponíveis
+     * 
+     */
+    public function novaMatricula(int $pessoa, Request $r){
+        
+        $str_turmas = '';
+        $pessoa = Pessoa::findOrFail($pessoa);
+        $turmas_atuais=collect();
+        $lista=array();
+        $lst=array();
+
+        $incricoes_atuais=Inscricao::where('pessoa',$pessoa->id)->whereIn('status', ['regular','pendente'])->get();
+        foreach($incricoes_atuais as $inscricao){
+            $str_turmas=$str_turmas.','.$inscricao->turma->id;
+            $turma=Turma::find($inscricao->turma->id);
+            $turmas_atuais->push($turma);
+        }
+
+        /*
+        //transforma a string de turmas atuais em collection de turmas
+        $turmas_atuais=explode(',',$turmas_atuais);
+        foreach($turmas_atuais as $turma){
+            if(is_numeric($turma)){
+                if(Turma::find($turma))
+                    $turmas_atuais->push(Turma::find($turma));
+            }
+        }*/
+
+
+        //se não tiver nenhuma turma atual
+        if(count($turmas_atuais)==0){ 
+            $turmas = Turma::whereIn('turmas.status', ['inscricao','iniciada'])
+                            ->get();
+                            
+            foreach($turmas as $turma){
+                $turma->parcelas = $turma->getParcelas();
+            }
+            $turmas = $turmas->SortBy('cursos.nome')->SortBy('disciplinas.nome');
+            
+           
+           
+        }
+        //cria limitação nos horários das turmas
+        else{
+            foreach($turmas_atuais as $turma){
+                    $hora_fim=date("H:i",strtotime($turma->hora_termino." - 1 minutes"));
+                    foreach($turma->dias_semana as $turm){
+                        $data = \Carbon\Carbon::createFromFormat('d/m/Y', $turma->data_termino)->format('Y-m-d');
+                        $lista[]=Turma::where('dias_semana', 'like', '%'.$turm.'%')->whereBetween('hora_inicio', [$turma->hora_inicio,$hora_fim])->where('data_inicio','<=',$data)->get(['id']);
+                    }
+                    
+                }
+            foreach($lista as $col_turma){
+                foreach($col_turma as $obj_turma)
+                    $lst[]=$obj_turma->id;
+
+            }
+
+            $turmas = Turma::whereIn('turmas.status', ['inscricao','iniciada'])
+                            ->whereNotIn('turmas.id', $lst)
+                            ->get();
+            foreach($turmas as $turma){
+                $turma->parcelas = $turma->getParcelas();
+                $turma->nome_curso = $turma->getNomeCurso();
+            }
+            $turmas = $turmas->SortBy('nome_curso');
+            
+
+
+        }
+
+        
+        return view('secretaria.matricula.nova_matricula')->with('pessoa',$pessoa)->with('turmas',$turmas)->with('str_turmas',$str_turmas)->with('turmas_atuais',$turmas_atuais);
+    }
+
+
+
+    /**
      * Grava a Matricula e gera as inscrições
      * @param  Request $r Proveniente de formulário
      * @return View     secretaria.inscricao.gravar
@@ -168,11 +246,23 @@ class MatriculaController extends Controller
      * @param  [type] $data   [description]
      * @return [type]         [description]
      */
-    public static function verificaSeMatriculado($pessoa,$curso,$data)
+    public static function verificaSeMatriculado($pessoa,$curso,$data,$pacote=null)
     {
         $data = \Carbon\Carbon::createFromFormat('d/m/Y', $data)->format('Y-m-d');
         if($data > date("Y-m-d")){
-            if($curso == 307)
+            if($pacote > 0){
+                $matriculas_ativas=Matricula::where('pessoa',$pessoa)
+                ->where('pacote',$pacote)
+                ->Where('status','espera')
+                ->get();
+
+                if($matriculas_ativas->count()>0)
+                    return $matriculas_ativas->first()->id;
+                else
+                    return false;
+
+            }
+            elseif($curso == 307)
             {
                 $matriculas_ativas=Matricula::where('pessoa',$pessoa)
                 ->where('curso',$curso)
@@ -188,7 +278,18 @@ class MatriculaController extends Controller
                 return false;
         }
         else{
-            if($curso == 307)
+            if($pacote > 0){
+                $matriculas_ativas=Matricula::where('pessoa',$pessoa)
+                ->where('pacote',$pacote)
+                ->WhereIn('status',['ativa','pendente'])
+                ->get();
+
+                if($matriculas_ativas->count()>0)
+                    return $matriculas_ativas->first()->id;
+                else
+                    return false;
+            }
+            elseif($curso == 307)
             {
                 $matriculas_ativas=Matricula::where('pessoa',$pessoa)
                 ->where('curso',$curso)
@@ -210,7 +311,7 @@ class MatriculaController extends Controller
 
 
 
-    public static function gerarMatricula($pessoa,$turma_id,$status_inicial,$atendente=0){
+    public static function gerarMatricula($pessoa,$turma_id,$status_inicial,$atendente=0,$pacote){
 
         $turma=Turma::find($turma_id);
         if($turma==null)
@@ -224,6 +325,7 @@ class MatriculaController extends Controller
         $matricula->status=$status_inicial;
         $matricula->valor=str_replace(',','.',$turma->valor);
         $matricula->curso = $turma->curso->id;
+        $matricula->pacote = $pacote;
         $matricula->save();
         $matricula->parcelas = $matricula->getParcelas();
         $matricula->save();
@@ -681,7 +783,7 @@ class MatriculaController extends Controller
                 $inscricao->save();
                 $matricula->obs = 'Rematricula online. IP: '.$ip;
                 $matricula->parcelas = $matricula->getParcelas();
-               $matricula->save();
+                $matricula->save();
             
         }
         return view('rematricula.confirma')->with('matriculas',$matriculas)->with('pessoa',$r->pessoa);

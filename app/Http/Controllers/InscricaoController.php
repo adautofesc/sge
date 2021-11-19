@@ -108,10 +108,13 @@ class InscricaoController extends Controller
     public function confirmacaoAtividades(Request $request){
         if(!Session::get('atendimento'))
             return redirect(asset('/secretaria/inicio-atendimento'));
+        if($request->atividades=='0')
+            return redirect()->back()->withErrors(['Nenhuma turma selecionada']);
         $pessoa=Pessoa::find($request->pessoa);
         $valor=0; 
         $todas_turmas=TurmaController::csvTurmas($request->atividades.$request->turmas_anteriores);
         $turmas=TurmaController::csvTurmas($request->atividades);
+        //$turmas = Turma::whereIn('id',$request->turmas)->get();
         //dd($turmas);
         $newturmas=$request->atividades;
         $cursos=collect();
@@ -179,22 +182,32 @@ class InscricaoController extends Controller
                  
         }
 
+        $pacote = \App\TurmaDados::where('turma',$turma->id)->where('dado','pacote')->first();
+        if (isset($pacote->id))
+            $idPacote = $pacote->valor;
+        else
+            $idPacote = null;
+
+
 
 
         if(InscricaoController::verificaSeInscrito($aluno,$turma->id))
                 return Inscricao::find(InscricaoController::verificaSeInscrito($aluno,$turma->id));
+        
         if($matricula==0){
-            if(MatriculaController::verificaSeMatriculado($aluno,$turma->curso->id,$turma->data_inicio)==false){
-                if($turma->status == 'andamento' || $turma->status == 'iniciada')
+
+
+            if(MatriculaController::verificaSeMatriculado($aluno,$turma->curso->id,$turma->data_inicio,$idPacote)==false){
+                if($turma->status == 'iniciada')
                     $status="ativa";    
                 else
                     $status="espera";
-                $matricula_obj=MatriculaController::gerarMatricula($aluno,$turma->id,$status,$atendente);
+                $matricula_obj=MatriculaController::gerarMatricula($aluno,$turma->id,$status,$atendente,$idPacote);
                 $matricula=$matricula_obj->id;
             }
             else{
-                $matricula_obj=MatriculaController::verificaSeMatriculado($aluno,$turma->curso->id,$turma->data_inicio);
-                $matricula=$matricula_obj;
+                $matricula_obj=MatriculaController::verificaSeMatriculado($aluno,$turma->curso->id,$turma->data_inicio,$idPacote);
+                $matricula=$matricula_obj->id;
 
             }
         }

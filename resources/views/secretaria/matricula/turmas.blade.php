@@ -1,4 +1,4 @@
- @extends('layout.app')
+@extends('layout.app')
 @section('pagina')
 <div class="title-block">
     <h3 class="title"> Nova Matrícula</h3>
@@ -146,7 +146,7 @@ function rmItem(turma){
 }
 function listar(itens_atuais){
 
-    $('#turmas').load('{{asset('/secretaria/turmas-disponiveis')}}/'+itens_atuais+'{{$str_turmas}}/0');
+    $('#turmas').load('{{asset("/secretaria/turmas-disponiveis/")}}/11111/'+itens_atuais+'{{$str_turmas}}/0');
      $('#itens_escolhidos').load('{{asset('/secretaria/turmas-escolhidas')}}/'+itens_atuais+'');
      $('#idatividades').val(itens_atuais);
 

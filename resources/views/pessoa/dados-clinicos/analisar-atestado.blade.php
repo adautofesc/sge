@@ -1,5 +1,5 @@
 @extends('layout.app')
-@section('titulo')Alteração de atestado @endsection
+@section('titulo')Análise de atestado @endsection
 @section('pagina')
 
 <div class="title-search-block">
@@ -18,19 +18,14 @@
 {{csrf_field()}}
     <div class="card card-block">
     	<div class="subtitle-block">
-            <h3 class="subtitle"><i class=" fa fa-medkit "></i> Alteração de Atestado Médico número {{$atestado->id}}. </h3>
+            <h3 class="subtitle"><i class=" fa fa-medkit "></i> Análise de Atestado número {{$atestado->id}}. </h3>
         </div>
         <div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Tipo de atestado
+				Tipo de atestado:
 			</label>
 			<div class="col-sm-3"> 
-                
-				<select  class="form-control boxed" name="tipo" > 
-                    <option value="saude" {{$atestado->tipo=='saude'?'selected':''}}>Saúde para atividades físicas</option>
-                    <option value="medico" {{$atestado->tipo=='medico'?'selected':''}}>Médico para justificativa de ausências</option>
-                    <option value="vacinacao" {{$atestado->tipo=='vacinacao'?'selected':''}}>Vacinação contra COVID-19</option>
-                </select>
+                <strong>{{$atestado->tipo}}</strong>
 			</div>
 		</div>
 		<div class="form-group row"> 
@@ -38,15 +33,20 @@
 				Emissão
 			</label>
 			<div class="col-sm-3"> 
-				<input type="date" class="form-control boxed" name="emissao" value="{{$atestado->emissao}}" placeholder="" > 
+                <strong>{{$atestado->emissao}}</strong>
+				
 			</div>
         </div>
         <div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Validade* <br> <small>Somente para atestados médicos</small>
+				Validade
 			</label>
-			<div class="col-sm-3"> 
-				<input type="date" class="form-control boxed" name="emissao" value="{{$atestado->emissao}}" placeholder="" > 
+			<div class="col-sm-3">
+                @if($atestado->tipo=='medico') 
+				    <strong>{{$atestado->validade}}</strong>                                 
+                @else
+                    <strong>Automática / Não se aplica</strong>  
+                @endif
 			</div>
         </div>
 		<div class="form-group row"> 
@@ -55,10 +55,39 @@
             </label>
             <div class="col-sm-6">
             @if(file_exists('documentos/atestados/'.$atestado->id.'.pdf'))
-                <a href="{{'/documentos/atestados/'.$atestado->id.'.pdf'}}" target="_blank"><i class="fa fa-file"></i> Arquivo disponível </a><br><br>
+                <embed src="{{'/documentos/atestados/'.$atestado->id.'.pdf#navpanes=0'}}" width="760" height="500" type='application/pdf' >
             @endif
-                <input type="file" accept=".pdf" name="arquivo" class="form-control boxed"> 
+                
             </div>
+            
+        </div>
+        <div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Parecer
+			</label>
+			<div class="col-sm-3">
+                <div>
+                    <label>
+                        <input class="radio" name="status" type="radio" value="aprovado">
+                        <span class="text-success">Aprovado</span>
+                    </label>
+                    <label>
+                        <input class="radio" name="status" type="radio" value="recusado">
+                        <span class="text-danger">Recusado</span>
+                    </label>
+                    
+                </div>
+               
+			</div>
+        </div>
+        <div class="form-group row"> 
+            <label class="col-sm-2 form-control-label text-xs-right">
+                Observações <br> <small>*Caso recusado</small>
+            </label>
+            <div class="col-sm-6">
+                <textarea rows="3" name="obs" class="form-control"></textarea>
+            </div>
+            
         </div>
 
 		<div class="form-group row">

@@ -1,82 +1,48 @@
  @extends('layout.app')
 @section('pagina')
-<div class="title-block">
-    <h3 class="title"> Nova Matrícula</h3>
+<div class="title-search-block">
+    <div class="title-block">
+        <div class="row">
+            <div class="col-md-6">
+
+                <h3 class="title"> Nova matrícula </h3>
+
+                <p class="title-description"> {{$pessoa->nome}}</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 @include('inc.errors')
-<div class="subtitle-block">
-    <h3 class="subtitle"><small>De: </small> {{$pessoa->nome}}</h3>
-</div>
 <div class="card card-block">
-    <!-- Nav tabs -->
-    <div class="card-title-block">
-        <h3 class="title"> Esta é sua programação atual: </h3>
-    </div>
-   <!-- Tab panes -->
-    <div class="row">
-     
-        <div class="col" >
-            <div class="title">Seg.</div>
-            @foreach($turmas as $turma)
-            @if(in_array('seg',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}" >Turma {{$turma->id}} das {{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{ $turma->disciplina===null? $turma->curso->nome : $turma->curso->nome.' - '.$turma->disciplina->nome}} em {{$turma->local->sigla}} com <small>{{$turma->professor->nome_simples}}</small></div>
-            @endif
-            @endforeach
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="title">Ter.</div>
-            @foreach($turmas as $turma)
-            @if(in_array('ter',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}" >Turma {{$turma->id}} das {{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{ $turma->disciplina===null? $turma->curso->nome : $turma->curso->nome.' - '.$turma->disciplina->nome}} em {{$turma->local->sigla}} com <small>{{$turma->professor->nome_simples}}</small></div>
-            @endif
-            @endforeach
-            
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="title">Qua.</div>
-            @foreach($turmas as $turma)
-            @if(in_array('qua',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}">Turma {{$turma->id}} das {{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{ $turma->disciplina===null? $turma->curso->nome : $turma->curso->nome.' - '.$turma->disciplina->nome}} em {{$turma->local->sigla}} com <small>{{$turma->professor->nome_simples}}</small></div>
-            @endif
-            @endforeach
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="title">Qui.</div>
-            @foreach($turmas as $turma)
-            @if(in_array('qui',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}">Turma {{$turma->id}} das {{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{ $turma->disciplina===null? $turma->curso->nome : $turma->curso->nome.' - '.$turma->disciplina->nome}} em {{$turma->local->sigla}} com <small>{{$turma->professor->nome_simples}}</small></div>
-            @endif
-            @endforeach
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="title">Sex.</div>
-            @foreach($turmas as $turma)
-            @if(in_array('sex',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}">Turma {{$turma->id}} das {{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{ $turma->disciplina===null? $turma->curso->nome : $turma->curso->nome.' - '.$turma->disciplina->nome}} em {{$turma->local->sigla}} com <small>{{$turma->professor->nome_simples}}</small></div>
-            @endif
-            @endforeach
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="title">Sab.</div>
-            @foreach($turmas as $turma)
-            @if(in_array('sab',$turma->dias_semana))
-            <div class="box-placeholder turma{{$turma->id}}">Turma {{$turma->id}} das {{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{ $turma->disciplina===null? $turma->curso->nome : $turma->curso->nome.' - '.$turma->disciplina->nome}} em {{$turma->local->sigla}} com <small>{{$turma->professor->nome_simples}}</small></div>
-            @endif
-            @endforeach
+    <div class="col-md-5">
+        <div class="input-group input-group-lg" style="float:left;">
+            <input type="text" class="form-control" name="busca" id ="busca" placeholder="Buscar por turma" onkeypress="enter(event)" title="Você pode procurar pelo código da turma, nome do curso/disciplina, nome do professor, sigla do programa ou dia da semana (os 3 primeiros caracteres).">
+            <i class="input-group-addon fa fa-search" onclick="listar(itens)" style="cursor:pointer;"></i>
         </div>
     </div>
 </div>
+
+<div class="card card-block">
+    <div class="card-title-block">
+        <h5 class="title">Esta é sua programação atual: </h5>
+        
+    </div>
+   @foreach(['seg','ter','qua','qui','sex','sab'] as $dia)
+    <div class="row"> 
+        <div class="col" >
+            <div><strong> {{ucwords($dia)}}.</strong></div>
+            @foreach($turmas as $turma)
+            @if(in_array($dia,$turma->dias_semana))
+            <div class="box-placeholder turma{{$turma->id}}" >
+                Turma {{$turma->id}} das {{$turma->hora_inicio}} ~ {{$turma->hora_termino}} - {{ $turma->disciplina===null? $turma->curso->nome : $turma->curso->nome.' - '.$turma->disciplina->nome}} em {{$turma->local->sigla}} com <small>{{$turma->professor->nome_simples}}</small></div>
+            @endif
+            @endforeach
+        </div>  
+    </div>
+    @endforeach
+</div>
+   
 <div class="card card-block">
     <!-- Nav tabs -->
     <div class="card-title-block">
@@ -84,11 +50,7 @@
     </div>
     <!-- Tab panes -->
     <div class="row">
-        <div class="col-xl-12" id="itens_escolhidos" > 
-           
-        </div>
-            
-        
+        <div class="col-xl-12" id="itens_escolhidos" > </div>
     </div>
 </div>
                     
@@ -123,13 +85,13 @@
 @endsection
 @section('scripts')
 <script>
-var itens;
+var itens = '';
 $(document).ready(function(){
-    listar(itens=0);
+    listar('0');
 
 });
 function addItem(turma){
-    var itensAtuais=itens.toString().split(',');
+    var itensAtuais=itens.split(',');
     for(var i=0; i<itensAtuais.length;i++){
         if(itensAtuais[i]==turma){
             return true;
@@ -154,9 +116,12 @@ function rmItem(turma){
 }
 function listar(itens_atuais){
 
-    $('#turmas').load('{{asset('/secretaria/turmas-disponiveis')}}/'+itens_atuais+'{{$str_turmas}}/0');
-     $('#itens_escolhidos').load('{{asset('/secretaria/turmas-escolhidas')}}/'+itens_atuais+'');
-     $('#idatividades').val(itens_atuais);
+    busca = $('#busca').val();
+    console.log(busca);
+    $('#turmas').html('carregando...')
+    $('#turmas').load('{{asset('/secretaria/turmas-disponiveis')."/".$pessoa->id}}/'+itens_atuais+'{{$str_turmas}}/'+busca);
+    $('#itens_escolhidos').load('{{asset('/secretaria/turmas-escolhidas')}}/'+itens_atuais+'');
+    $('#idatividades').val(itens_atuais);
 
     /*
     $.ajax({
@@ -174,6 +139,12 @@ function recomecar() {
     // body...
     itens=0;
     listar(0);
+}
+function enter(e){
+    if (e.which == 13 || e.keyCode == 13 || e.key == 13) {
+        listar(itens);
+    }
+
 }
 </script>
 

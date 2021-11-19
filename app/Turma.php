@@ -31,11 +31,11 @@ class Turma extends Model
 	}
 
 
-	/**
+	/*
 	Valor que vai aparecer na lista de turmas
-	**/
+	*/
 	public function getValorAttribute($value){
-		return $this->getRawOriginal('valor');
+		//return $this->getRawOriginal('valor');
 		
 		
 
@@ -53,12 +53,28 @@ class Turma extends Model
 		//verifica se é parceria social
 		if($this->parceria)
 			return 0;
+
+		//se está no pacote
+		/*
+		$pacote = TurmaDados::where('dado','pacote')->where('turma',$this->id)->first();
+		if($pacote != null){
+			//dd($pacote);
+			$valor= Valor::where('pacote',$pacote->valor)->where('ano',substr($this->data_inicio,-4))->first();
+			if($valor != null){
+				return $valor->valor;
+			}
+			else{
+				$this->status_matriculas = 'fechada';
+				$this->save();
+				dd("Ops. Turma ".$this->id." está com pacote definido (".$pacote->id.") mas este pacote não consta na tabela de valores. As inscrições para essa turma foram suspensas.");
+			}
+		}*/
 		
 		// se for do curso atividades uati
 		if($this->curso->id == 307 && $this->carga<10)
 		{
 			//mostra valor de 1 disciplina
-			$valor= Valor::find(17);
+			$valor= Valor::where('curso',307)->where('carga',1)->where('ano',substr($this->data_inicio,-4));
 		}
 		elseif($this->getRawOriginal('valor') == 0)
 		{	
@@ -91,19 +107,34 @@ class Turma extends Model
 
 		if(isset($valor))
 			return $valor->valor;
-		else
-			return 0;
+		else{
+			$this->status_matriculas = 'fechada';
+			$this->save();
+			dd("Ops. Turma ".$this->id." não está com valor definido. As inscrições para ela estão suspensas.");
+		}
 
 	}
 
 	public function getParcelas(){
-		//dd($this->parcelas);
-		if($this->parcelas == 0){
+		/*
+		//METRODO ACIMA getValorAttribute MODIFICA $THIS->PARCELAS CASO ESTEJA EM PACOTE
+		$pacote = TurmaDados::where('dado','pacote')->where('turma',$this->id)->first();
+		if($pacote != null){
+			//dd($pacote);
+			$valor= Valor::where('pacote',$pacote->valor)->where('ano',substr($this->data_inicio,-4))->first();
+			if($valor != null)					
+				return $valor->parcelas;
+			
+		}
+		*/
+
+		if($this->parcelas == 0){	
 			$dt_i=Carbon::createFromFormat('d/m/Y', $this->data_inicio);
 			$dt_t=Carbon::createFromFormat('d/m/Y', $this->data_termino);
 			$diference=$dt_i->diffInMonths($dt_t);
 			$diference++;
 			return $diference;
+			
 		}
 		else
 			return $this->parcelas;
@@ -158,14 +189,8 @@ class Turma extends Model
 			case 'cancelada':
 				return "ban";
 				break;
-			case 'espera':
+			case 'lancada':
 				return "clock-o";
-				break;
-			case 'andamento': 
-				return "check-circle";
-				break;
-			case 'inscricao':
-				return "circle-o";
 				break;
 			case 'iniciada':
 				return "check-circle-o";
@@ -287,6 +312,7 @@ class Turma extends Model
 					break;
 			}
 		}
+		
 		$reqs = CursoRequisito::where('para_tipo','disciplina')->where('curso',$this->disciplina)->get();
 		foreach($reqs as $req){
 			switch($req->requisito->id){
@@ -359,6 +385,8 @@ class Turma extends Model
 					break;
 			}
 		}
+		
+
 
 		if($idade_minima>0 && $idade_minima>$aluno->getIdade()){
 			//redirect()->back()->withErrors(['Idade mínima não atingida: '.$idade_minima]);

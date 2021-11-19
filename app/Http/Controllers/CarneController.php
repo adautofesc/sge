@@ -351,7 +351,7 @@ class CarneController extends Controller
 						$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$primeiro_vencimento->format('m'),$this::vencimento);
 				}
 			}	
-			elseif($data_ini_curso->format('m')>date('m') ){ 
+			elseif($data_ini_curso->format('m')>date('m') ){ //*********************problema
 				//boleto gerado na data correta, antes do inicio do curso um mes ou mais antes
 				$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$data_ini_curso->format('m'),$this::vencimento);
 			}

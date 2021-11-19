@@ -9,6 +9,14 @@
                                 <li  class="active">
                                     <a href="{{asset('/')}}"> <i class="fa fa-home"></i> Home </a>
                                 </li>
+                                @if(in_array('18', Auth::user()->recursos))
+                                <li  >
+                                    <a href="{{asset('/agendamento')}}"> <i class="fa fa-clock-o"></i> Agendamentos </a>
+                                </li>
+                                <li>
+                                    <a href="{{asset('/pessoa/atestado/listar')}}"> <i class="fa fa-medkit"></i> Atestados </a>
+                                </li>
+                                @endif
                                 @if(in_array('12', Auth::user()->recursos))
                                 <li  >
                                     <a href="{{asset('/administrativo')}}"> <i class="fa fa-bar-chart-o"></i> Administração </a>
@@ -58,22 +66,23 @@
                                 @endif
                                 @if(in_array('18', Auth::user()->recursos))
                                 <li  >
-                                    <a href=""> <i class="fa fa-stack-overflow"></i> Secretaria </a>
-                                    <ul>
-                                        <li>
-                                        <a href="{{asset('/secretaria')}}"> <i class="fa fa-home"></i> Home </a>
-                                        </li>
-                                        <li>
-                                        <a href="{{asset('secretaria/pre-atendimento')}}"> <i class="fa fa-asterisk"></i> Novo atendimento</a>
-                                        </li>
-                                        @if(session('pessoa_atendimento'))
-                                        <li>
-                                        <a href="{{asset('secretaria/atender').'/'.session('pessoa_atendimento')}}"> <i class="fa fa-arrow-right"></i> Retomar atendimento</a>
-                                        </li>
-                                        @endif
-                                    
-                                    </ul>
+                                    <a href="{{asset('/secretaria')}}"> <i class="fa fa-stack-overflow"></i> Secretaria </a>
+                                 </li>
+                                <li>
+                                    <a href="{{asset('secretaria/pre-atendimento')}}"> <i class="fa fa-asterisk"></i> Novo atendimento</a>
                                 </li>
+                                @if(session('pessoa_atendimento'))
+                                <li>
+                                    <a href="{{asset('secretaria/atender').'/'.session('pessoa_atendimento')}}"> <i class="fa fa-arrow-right"></i> Retomar atendimento</a>
+                                </li>
+                                @endif
+                                        
+                                <li>
+                                    <a href="{{route('turmas')}}"> <i class="fa fa-arrow-right"></i> Turmas </a>
+                                </li>
+                                    
+                                    
+                                
                                 @endif
                                 
                             </ul>

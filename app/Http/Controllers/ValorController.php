@@ -55,6 +55,8 @@ class ValorController extends Controller
 
     	if($matricula)
     	{
+            
+
             $inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','pendente'])->get();
             if($matricula->curso == null){
                 \App\Http\Controllers\MatriculaController::matriculaSemCurso($matricula);
@@ -66,6 +68,15 @@ class ValorController extends Controller
                 return ValorController::retornarZero('Não há inscrições ativas');
             }
             $turma = \App\Turma::find($inscricoes->first()->turma->id);
+
+            if(isset($matricula->pacote)){
+        
+                $valor = Valor::where('pacote',$matricula->pacote)->where('ano',substr($turma->data_inicio,-4))->first();
+                //dd($matricula->pacote);
+                return $valor;
+
+            }
+
 
             //dd($turma->parceria->id);
             $fesc=[84,85,86,118];

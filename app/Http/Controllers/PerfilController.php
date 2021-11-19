@@ -252,6 +252,68 @@ class PerfilController extends Controller
     public function imprimirBoleto(int $boleto){
         
     }
+     public function atestadoIndex(Request $r){
+         $atestados = \App\Atestado::where('pessoa',$r->pessoa->id)->get();
+         return view('perfil.atestados.atestados')->with('atestados',$atestados)->with('pessoa',$r->pessoa);
+     }
+
+     public function cadastrarAtestadoView(Request $r){
+        return view('perfil.atestados.cadastrar')->with('pessoa',$r->pessoa);
+
+     }
+     public function cadastrarAtestadoExec(Request $r){
+        $r->validate([
+            
+            'tipo' => 'required',
+            'emissao'=> 'required|date',
+            'atestado' => 'required|file|mimes:pdf|max:2000',
+        ]);
+
+        if(substr($r->emissao,0,4)<(date('Y')-1))
+            return redirect()->back()->withErrors(['Digite o ano com 4 algarismos']);    
+
+
+        $arquivo = $r->file('atestado');
+
+        if (empty($arquivo))
+            return redirect()->back()->withErrors(['Nenhum arquivo selecionado.']);         
+        
+        elseif(!substr($arquivo->getClientOriginalName(),-3,3)=='pdf' || !substr($arquivo->getClientOriginalName(),-3,3)=='PDF' )
+            return redirect()->back()->withErrors(['Apenas arquivos PDF são aceitos.']);
+
+        elseif($arquivo->getSize()>2097152) 
+            return redirect()->back()->withErrors(['O arquivo deve ser menor que 2MB.']);
+        
+        else{ 
+
+
+            $atestado = new \App\Atestado;
+            $atestado->pessoa = $r->pessoa->id;
+            $atestado->atendente = $r->pessoa->id;
+            $atestado->tipo = $r->tipo;
+            $atestado->emissao = $r->emissao;
+            $atestado->status = 'analisando';
+            $atestado->save();
+
+            
+
+            try{
+                $arquivo->move('documentos/atestados/',$atestado->id.'.pdf');
+
+            }
+            catch(\Exception $e){
+                return redirect('/perfil/atestado')->withErrors([$e->getMessage()]);
+            }
+
+        
+            
+            
+            return $atestado;
+        }
+
+
+
+    }
 
   
         

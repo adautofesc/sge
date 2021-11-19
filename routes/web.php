@@ -26,6 +26,7 @@ Route::post('meuboleto', 'BoletoController@segundaVia');
 Route::get('boleto/{id}','BoletoController@imprimir');
 Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
 Route::get('ipca','ValorController@getIPCA');
+Route::get('agenda-atendimento/{data}','AgendaAtendimentoController@horariosData');
 
 //Route::get('correcao-valor','ValorController@correcaoValor');
 //Route::get('boletos-com-erros','BoletoController@analisarBoletosComErro');
@@ -67,9 +68,21 @@ Route::prefix('perfil')->group(function(){
 				return view('juridico.documentos.termo_aberto_ead');
 			});
 		});
+		Route::prefix('atestado')->group(function(){
+			Route::get('/','PerfilController@atestadoIndex');
+			Route::get('cadastrar','PerfilController@cadastrarAtestadoView');
+			Route::post('cadastrar','PerfilController@cadastrarAtestadoexec');
+
+		});
 		Route::prefix('rematricula')->group(function(){
 			Route::get('/','PerfilMatriculaController@rematricula_view');
 			Route::post('/','PerfilMatriculaController@confirmacao');
+
+		});
+		Route::prefix('atendimento')->group(function(){
+			Route::get('/','AgendaAtendimentoController@indexPerfil');
+			Route::post('/','AgendaAtendimentoController@agendarPerfil');
+			Route::get('cancelar/{id}','AgendaAtendimentoController@cancelarPerfil');
 
 		});
 
@@ -139,6 +152,13 @@ Route::middleware(['auth','login']) ->group(function(){
 		
 
 	});
+
+	Route::prefix('agendamento')->group(function(){
+		Route::get('/{data?}','AgendaAtendimentoController@index');
+		Route::post('/{data?}','AgendaAtendimentoController@gravar');
+		Route::get('alterar/{id}/{status}','AgendaAtendimentoController@alterarStatus');
+
+	});
 	Route::prefix('turmas')->group(function(){
 		Route::get('cadastrar','TurmaController@create')->name('turmas.cadastrar');
 		
@@ -150,6 +170,7 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::get('/alterar/{acao}/{turmas}','TurmaController@acaolote');
 			Route::post('editar/{var}','TurmaController@update');
 			Route::get('status/{status}/{turma}','TurmaController@status');
+			Route::get('status-matriculas/{status}/{turma}','TurmaController@statusMatriculas');
 			Route::post('importar', 'TurmaController@uploadImportaTurma' );
 
 		});
@@ -290,6 +311,8 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::get('editar/{atestado}', 'AtestadoController@editar');
 			Route::post('editar/{atestado}', 'AtestadoController@update');
 			Route::get('listar', 'AtestadoController@listar');
+			Route::get('analisar/{atestado}','AtestadoController@analisar_view');
+			Route::post('analisar/{atestado}','AtestadoController@analisar');
 
 		});
 	//Justificativa Ausência
@@ -571,7 +594,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('processar-documentos','SecretariaController@processarDocumentos');
 
 		Route::get('turmas', 'TurmaController@listarSecretaria');
-		Route::get('turmas-disponiveis/{turmas}/{filtros}', 'TurmaController@turmasDisponiveis');
+		Route::get('turmas-disponiveis/{pessoa}/{turmas}/{busca?}', 'TurmaController@turmasDisponiveis');
 		Route::get('turmas-escolhidas/{turmas}/', 'TurmaController@turmasEscolhidas');
 		
 
@@ -588,6 +611,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::prefix('matricula')->group(function(){
 			Route::get('/{ids}','SecretariaController@viewMatricula');
 			Route::get('/nova/{pessoa}','InscricaoController@novaInscricao');
+			//Route::get('/nova/{pessoa}','MatriculaController@novaMatricula');
 			Route::get('/upload-termo-lote', function(){ return view('secretaria.matricula.upload-termos-lote'); });
 			Route::post('/upload-termo-lote', 'MatriculaController@uploadTermosLote');
 			Route::get('/upload-termo/{matricula}','MatriculaController@uploadTermo_vw');

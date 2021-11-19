@@ -497,7 +497,7 @@ class PessoaController extends Controller
 	{
 		$pessoas=Pessoa::leftjoin('pessoas_dados_gerais', 'pessoas_dados_gerais.pessoa', '=', 'pessoas.id')
 						->where('pessoas.id',$query)
-						->orwhere('nome', 'like', $query."%")
+						->orwhere('nome', 'like', "%".$query."%")
 						->orwhere('nascimento', 'like', '%'.$query."%")
 						->orwhere('pessoas_dados_gerais.valor', 'like', '%'.$query."%")
 						->orderby('nome')

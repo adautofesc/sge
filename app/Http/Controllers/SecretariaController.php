@@ -116,7 +116,7 @@ class SecretariaController extends Controller
 			$devedor=false;
 		
 
-		$atestado = \App\Atestado::where('pessoa',$id)->orderByDesc('id')->first();
+		$atestado = \App\Atestado::where('pessoa',$id)->where('tipo','saude')->orderByDesc('id')->first();
 		
 		if($atestado){
 			$atividades_aquaticas = $matriculas->whereIn('status',['ativa','pendente','espera'])->WhereIn('curso',['898','1151','1152','1493']);

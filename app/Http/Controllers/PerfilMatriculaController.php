@@ -22,7 +22,7 @@ class PerfilMatriculaController extends Controller
         $devedor = \App\Boleto::verificarDebitos($r->pessoa->id);
         if($devedor->count()>0)
             return redirect()->back()->withErrors(['Pendências encontradas em seu cadastro. Verifique seus boletos ou entre em contato com nossa secretaria.']);
-        $turmas = Turma::whereIn('status',['inscricao','iniciada'])->get();
+        $turmas = Turma::whereIn('status_matriculas',['aberta','online'])->get();
         foreach($turmas as $turma){
             $turma->nomeCurso = $turma->getNomeCurso();
         }
@@ -122,7 +122,7 @@ class PerfilMatriculaController extends Controller
                                                         ->where('dias_semana',implode(',', $inscricao->turma->dias_semana))
                                                         ->where('hora_inicio',$inscricao->turma->hora_inicio)
                                                         ->where('data_inicio','>',\Carbon\Carbon::createFromFormat('d/m/Y', $inscricao->turma->data_termino)->format('Y-m-d'))                                                 
-                                                        ->whereIn('status',['espera','incricao'])
+                                                        ->where('status_matricula','rematricula')
                                                         ->get();
                 //dd($inscricao->turma->vagas);
                 $alternativas = \App\TurmaDados::where('turma',$inscricao->turma->id)->where('dado','proxima_turma')->get();
@@ -140,7 +140,7 @@ class PerfilMatriculaController extends Controller
 
 
     public function rematricula(Request $r){
-        dd($r);
+        return 'Recurso temporariamente indisponível';
 
     }
 

@@ -18,14 +18,36 @@
 {{csrf_field()}}
     <div class="card card-block">
     	<div class="subtitle-block">
-            <h3 class="subtitle"><i class=" fa fa-medkit "></i> Cadastro de Atestado Médico. </h3>
+            <h3 class="subtitle"><i class=" fa fa-medkit "></i> Cadastro de Atestado. </h3>
         </div>
+        <div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Tipo de atestado
+			</label>
+			<div class="col-sm-3"> 
+                
+				<select  class="form-control boxed" name="tipo" > 
+                    <option value="saude">Saúde para atividades físicas</option>
+                    <option value="medico">Médico para justificativa de ausências</option>
+                    <option value="vacinacao">Vacinação contra COVID-19</option>
+                </select>
+			</div>
+		</div>
+
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Emissão
 			</label>
 			<div class="col-sm-3"> 
 				<input type="date" class="form-control boxed" name="emissao" placeholder="" > 
+			</div>
+		</div>
+        <div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Validade* <br> <small>Somente para atestados médicos</small>
+			</label>
+			<div class="col-sm-3"> 
+				<input type="date" class="form-control boxed" name="validade" placeholder="" > 
 			</div>
 		</div>
 		<div class="form-group row"> 

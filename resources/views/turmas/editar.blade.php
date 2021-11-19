@@ -219,18 +219,19 @@
 			</div>
 			
 		</div>
-		<div class="form-group row"> 
-			<label class="col-sm-2 form-control-label text-xs-right">Opções</label>
-            <div class="col-sm-2"> 
+		<div class="form-group row">
+			<label class="col-sm-2 form-control-label text-xs-right">Pacotes Cursos</label>
+            <div class="col-sm-2"> 		
+				@foreach($pacote_cursos as $pacote)
 				<div>
 					<label>
-					<input class="checkbox" name="online" value="P" {{isset($turma->automatricula)?'checked ':''}} type="checkbox">
-					<span>Permitir matrícula online </span>
-					</label>
+						<input class="checkbox" name="pacote[]" type="checkbox" value="{{$pacote->id}}"  {{isset($turma->pacote) && in_array($pacote->id,$turma->pacote)?'checked ':''}}>
+						<span title="{{$pacote->descricao}}">{{$pacote->nome}}</span>
+						</label>
 				</div>
-				
-				
+				@endforeach			
         	</div>
+			
 			<label class="col-sm-2 form-control-label text-xs-right"></label>
             <div class="col-sm-2"> 
             	

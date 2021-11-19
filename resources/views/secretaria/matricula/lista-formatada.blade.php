@@ -39,6 +39,7 @@
                     </div>
                 </li>
                 @foreach($turmas->all() as $turma)
+                <!--@//if($turma->programa->id==$programa->id && $turma->verificaRequisitos($pessoa->id))   -->
                 @if($turma->programa->id==$programa->id )                                            
                 <li class="item ">
                     <div class="item-row">

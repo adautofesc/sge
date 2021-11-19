@@ -439,7 +439,7 @@ class loginController extends Controller
 	public function sendNewPassword(){
 		$users = \App\PessoaDadosAcesso::where('status',1)->get();
 		foreach($users as $user){
-			$password = '2020Fsc'.rand(0,9).rand(0,9).rand(0,9).rand(0,9);
+			$password = date('Y').'Fsc'.rand(0,9).rand(0,9).rand(0,9).rand(0,9);
 			$user->password = bcrypt($password);
 			$user->save();
 			if(!empty($user->email)){

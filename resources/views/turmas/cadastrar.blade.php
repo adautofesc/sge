@@ -225,14 +225,16 @@
 			
 		</div>
 		<div class="form-group row"> 
-			<label class="col-sm-2 form-control-label text-xs-right">Opções</label>
-            <div class="col-sm-2"> 
+			<label class="col-sm-2 form-control-label text-xs-right">Pacotes Cursos</label>
+            <div class="col-sm-2"> 		
+				@foreach($pacote_cursos as $pacote)
 				<div>
 					<label>
-					<input class="checkbox" name="online" value="P" type="checkbox">
-					<span>Permitir matrícula online </span>
-					</label>
-				</div>						
+						<input class="checkbox" name="pacote[]" type="checkbox" value="{{$pacote->id}}">
+						<span title="{{$pacote->descricao}}">{{$pacote->nome}}</span>
+						</label>
+				</div>
+				@endforeach			
         	</div>
 			<label class="col-sm-2 form-control-label text-xs-right">Requisitos obrigatórios</label>
             <div class="col-sm-2"> 

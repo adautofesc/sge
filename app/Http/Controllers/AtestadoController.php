@@ -21,11 +21,21 @@ class AtestadoController extends Controller
 		return view('pessoa.dados-clinicos.cadastrar-atestado',compact('pessoa'));
 	}
 	public function create(Request $r){
+		if(substr($r->emissao,0,4)<(date('Y')-1))
+			return redirect()->back()->withErrors(['Digite o ano com 4 algarismos']);
+		
+		if(isset($r->validade) && substr($r->validade,0,4)<(date('Y')-1))
+			return redirect()->back()->withErrors(['Digite o ano com 4 algarismos']);    
+
+
 		$arquivo = $r->file('arquivo');
 		$atestado = new Atestado;
 				$atestado->pessoa = $r->pessoa;
+				$atestado->tipo = $r->tipo;
 				$atestado->emissao = $r->emissao;
+				$atestado->validade = $r->validade;
 				$atestado->atendente = Auth::user()->pessoa;
+				$atestado->status = 'aprovado';
 				$atestado->save();
         if (!empty($arquivo)) {	
                 $arquivo->move('documentos/atestados/', $atestado->id.'.pdf');
@@ -38,12 +48,12 @@ class AtestadoController extends Controller
 
 	}
 	public function listar(){
-		$atestados = Atestado::orderByDesc('id')->paginate(50);
+		$atestados = Atestado::where('status','analisando')->orderByDesc('id')->paginate(50);
 		foreach($atestados as $atestado){
 			$atestado->pessoa = \App\Pessoa::getNome($atestado->pessoa);
+			$atestado->emissao = \Carbon\Carbon::parse($atestado->emissao)->format('d/m/Y');
 			$atestado->validade = \Carbon\Carbon::parse($atestado->validade)->format('d/m/Y');
-			$atestado->cadastrado = \Carbon\Carbon::parse($atestado->created_at)->format('d/m/Y');
-			$atestado->por = \App\Pessoa::getNome($atestado->atendente);
+			$atestado->cadastro = \Carbon\Carbon::parse($atestado->created_at)->format('d/m/Y H:i');
 		}
 		return view('pessoa.dados-clinicos.listar',compact('atestados'));
 	}
@@ -68,9 +78,17 @@ class AtestadoController extends Controller
 		 return redirect()->back()->withErrors(['Atestado não encontrado.']);
 	}
 	public function update(Request $r){
+
 		$atestado = Atestado::find($r->atestado);
 		if($atestado){
+			if(substr($r->emissao,0,4)<(date('Y')-1))
+				return redirect()->back()->withErrors(['Digite o ano com 4 algarismos']);
+		
+			if(isset($r->validade) && substr($r->validade,0,4)<(date('Y')-1))
+				return redirect()->back()->withErrors(['Digite o ano com 4 algarismos']); 
+				 
 			$atestado->emissao = $r->emissao;
+			$atestado->tipo = $r->tipo;
 			$atestado->save();
 			$arquivo = $r->file('arquivo');
        		if (!empty($arquivo)) {
@@ -109,6 +127,63 @@ class AtestadoController extends Controller
 			
 		else
 			return 'arquivo não encontrado';
+
+	}
+
+	public function Analisar_view(int $id){
+		$atestado = Atestado::find($id);
+		if($atestado){
+			//$atestado->validade = \Carbon\Carbon::parse($atestado->validade)->format('d/m/Y');
+			$pessoa=\App\Pessoa::find($atestado->pessoa);
+			$pessoa=PessoaController::formataParaMostrar($pessoa);
+			if(isset($pessoa->telefone))
+				$pessoa->telefone=\App\classes\Strings::formataTelefone($pessoa->telefone);
+			if(isset($pessoa->telefone_alternativo))
+				$pessoa->telefone_alternativo=\App\classes\Strings::formataTelefone($pessoa->telefone_alternativo);
+			if(isset($pessoa->telefone_contato))
+				$pessoa->telefone_contato=\App\classes\Strings::formataTelefone($pessoa->telefone_contato);
+			$atestado->emissao = \Carbon\Carbon::parse($atestado->emissao)->format('d/m/Y');
+
+			return view('pessoa.dados-clinicos.analisar-atestado')->with('atestado',$atestado)->with('pessoa',$pessoa);
+		}else
+		 return redirect()->back()->withErrors(['Atestado não encontrado.']);
+
+	}
+	public function analisar(Request $r, int $id){
+		$r->validate([
+			'status'=>'required'
+		]);
+		$atestado = Atestado::find($id);
+		if($atestado){
+			if($r->status == 'aprovado'){
+				$atestado->status = $r->status;
+				LogController::registrar('atestado',$id,'Atestado aprovado.', Auth::user()->pessoa);
+				//verifica se há pendencias para esse tipo de atestado e apaga ela
+				
+			}
+			if($r->status == 'recusado'){
+				$atestado->status = $r->status;
+				LogController::registrar('atestado',$id,'Atestado RECUSADO: '."\n".$r->obs, Auth::user()->pessoa);
+				$dado_email = \App\PessoaDadosContato::where('pessoa',$atestado->pessoa)->where('dado',1)->orderbyDesc('id')->first();
+
+				if($dado_email){
+				
+						\Illuminate\Support\Facades\Mail::send('emails.atestado_recusado', ['atestado' => $atestado,'motivo' => $r->obs], function ($message) use($dado_email){
+						$message->from('no-reply@fesc.saocarlos.sp.gov.br', 'Sistema Fesc');
+						$message->to($dado_email->valor);
+						$message->subject('Atestado recusado');
+						});
+					
+						
+				}
+				//enviar email
+			}
+
+		$atestado->save();	
+		return redirect("/pessoa/atestado/listar")->withErrors(['Atestado '.$atestado->id.' avaliado.']);
+		}
+		else
+		 return redirect()->back()->withErrors(['Atestado não encontrado.']);
 
 	}
 }

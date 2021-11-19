@@ -109,6 +109,7 @@ class Matricula extends Model
 	public function getParcelas(){
 		if($this->parcelas>0)
 			return  $this->parcelas;
+		
 		$parcelas = 0;
 		$inscricoes = $this->getInscricoes();
 		if($inscricoes->count()==0){
@@ -123,6 +124,11 @@ class Matricula extends Model
 			
 		}
 		//dd($parcelas);
+		if($this->pacote>0){
+			$valor = Valor::where('pacote',$this->pacote)->where('ano',substr($turma->data_inicio,-4))->first();
+			if(isset($valor->parcelas))
+				return $valor->parcelas;
+		}
 
 		//transforma data de inicio da turma e matrícula em objeto de data 
 		$pp_dt = \DateTime::createFromFormat('d/m/Y', $turma->data_inicio);

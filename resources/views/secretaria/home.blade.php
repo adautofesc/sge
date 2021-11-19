@@ -105,9 +105,9 @@
                 </div>
                 <div class="card-block">
                     <div>
-                        <a href="{{asset('/pessoa/atestado/listar')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="{{asset('/pessoa/atestado/listar')}}" class="btn btn-warning-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Lista de atestados</a>
+                        &nbsp;&nbsp;Análise de atestados</a>
                     </div>
                     <div>
                         <a href="secretaria/upload" class="btn btn-primary-outline col-xs-12 text-xs-left">

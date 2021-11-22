@@ -669,7 +669,7 @@ class MatriculaController extends Controller
        $pessoa = \App\Pessoa::cabecalho($pessoa);
        $matriculas = Matricula::where('pessoa', $pessoa->id)
                 ->whereIn('status',['expirada','ativa'])
-                ->whereDate('data','>','2021-04-01')
+                ->whereDate('data','>','2021-07-01')
                 ->orderBy('id','desc')->get();
 
                 //dd($matriculas);
@@ -677,14 +677,16 @@ class MatriculaController extends Controller
              //listar inscrições de cada matricula; 
              foreach($matriculas as $matricula){
                 $matricula->inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','finalizada'])->get();
-                foreach($matricula->inscricoes as $inscricao){  
+                foreach($matricula->inscricoes as $inscricao){ 
+                    
                     $inscricao->proxima_turma = \App\Turma::where('professor',$inscricao->turma->professor->id)
                                                             ->where('dias_semana',implode(',', $inscricao->turma->dias_semana))
                                                             ->where('hora_inicio',$inscricao->turma->hora_inicio)
-                                                            ->where('data_inicio','>',\Carbon\Carbon::createFromFormat('d/m/Y', $inscricao->turma->data_termino)->format('Y-m-d'))
-                                                            
-                                                            ->whereIn('status',['inscricao','espera'])
+                                                            ->where('data_inicio','>',\Carbon\Carbon::createFromFormat('d/m/Y', $inscricao->turma->data_termino)->format('Y-m-d'))                                                          
+                                                            ->where('status_matriculas','rematricula')
                                                             ->get();
+              
+
 
                     $alternativas = \App\TurmaDados::where('turma',$inscricao->turma->id)->where('dado','proxima_turma')->get();
                     foreach($alternativas as $alternativa){
@@ -733,21 +735,19 @@ class MatriculaController extends Controller
         
         if(!isset($r->turmas) || count($r->turmas)==0)
             return redirect()->back()->withErrors(['Nenhuma turma selecionada']);
+
+       
         foreach($r->turmas as $turma){
-            //verifica se existe turma de continuação
-            
-            $inscricao = InscricaoController::inscreverAlunoSemMatricula($r->pessoa,$turma);
-            $matricula = Matricula::where('pessoa',$r->pessoa)->where('status','espera')->where('curso', $inscricao->turma->curso->id)->first();
-            if($matricula == null)             
-                $matricula = MatriculaController::gerarMatricula($r->pessoa,$turma,'espera'); 
-          
-               
-            $inscricao->matricula = $matricula->id;
-            $inscricao->save();
+                 return InscricaoController::inscreverAluno($r->pessoa,$turma);
+            }
+    
+        $CC = new CarneController;
+        $CC->gerarCarneIndividual($r->pessoa);
+        $boletos = \App\Boleto::where('pessoa',$r->pessoa)->where('status','gravado')->get();
            
             
-        }
-        return redirect("/secretaria/atender/".$r->pessoa."?mostrar=todos")->with('dados["alert_sucess"]',['Turmas rematriculadas com sucesso']);
+        return redirect()->back();
+       // return redirect("/secretaria/atender/".$r->pessoa."?mostrar=todos")->with('dados["alert_sucess"]',['Turmas rematriculadas com sucesso']);
     }
 
 

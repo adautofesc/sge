@@ -34,7 +34,7 @@
     </div>
 </div>
 @include('inc.errors')
-<form name="item" method="post" enctype="multipart/form-data">
+<form name="item" method="post">
 {{csrf_field()}}
     <div class="card card-block">
     	<div class="title-block">

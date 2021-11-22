@@ -327,7 +327,7 @@ class CarneController extends Controller
 				continue;
 
 		
-
+			/*********************************************************** atribuição de datas nos boletos */
 			$primeiro_vencimento = new \DateTime;
 			//$vencimento = date('Y-m-d 23:23:59', strtotime("+5 days",strtotime(date('Y-m-d')))); 
 
@@ -351,9 +351,9 @@ class CarneController extends Controller
 						$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$primeiro_vencimento->format('m'),$this::vencimento);
 				}
 			}	
-			elseif($data_ini_curso->format('m')>date('m') ){ //*********************problema
+			elseif($data_ini_curso->format('m')>date('m') || $data_ini_curso->format('Y')>date('Y')  ){ //*********************problema
 				//boleto gerado na data correta, antes do inicio do curso um mes ou mais antes
-				$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$data_ini_curso->format('m'),$this::vencimento);
+				$primeiro_vencimento->setDate($data_ini_curso->format('Y'),$data_ini_curso->format('m'),$this::vencimento);
 			}
 			else{
 				//boleto gerado posterior a data de inicio do curso, com matriculas feitas antes

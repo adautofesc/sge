@@ -738,16 +738,18 @@ class MatriculaController extends Controller
 
        
         foreach($r->turmas as $turma){
-                 return InscricaoController::inscreverAluno($r->pessoa,$turma);
+                $inscricao = InscricaoController::inscreverAluno($r->pessoa,$turma,0,Auth::user()->pessoa);
             }
+        
     
         $CC = new CarneController;
         $CC->gerarCarneIndividual($r->pessoa);
         $boletos = \App\Boleto::where('pessoa',$r->pessoa)->where('status','gravado')->get();
            
-            
-        return redirect()->back();
-       // return redirect("/secretaria/atender/".$r->pessoa."?mostrar=todos")->with('dados["alert_sucess"]',['Turmas rematriculadas com sucesso']);
+        if(isset($inscricao->id))    
+            return redirect("/secretaria/atender/".$r->pessoa."?mostrar=todos")->with('dados["alert_sucess"]',['Turmas rematriculadas com sucesso']);
+        else
+            return redirect("/secretaria/atender/");
     }
 
 

@@ -187,6 +187,8 @@ class InscricaoController extends Controller
             $idPacote = $pacote->valor;
         else
             $idPacote = null;
+        
+        
 
 
 
@@ -198,10 +200,24 @@ class InscricaoController extends Controller
 
 
             if(MatriculaController::verificaSeMatriculado($aluno,$turma->curso->id,$turma->data_inicio,$idPacote)==false){
-                if($turma->status == 'iniciada')
-                    $status="ativa";    
-                else
-                    $status="espera";
+                if($turma->local->id == 188){             
+                    if($turma->status == 'iniciada')
+                        $status="ativa";    
+                    else
+                        $status="espera";
+                }
+                else{
+                    if(AtestadoController::VerificaParaInscricao($aluno,$turma)){
+                        if($turma->status == 'iniciada')
+                            $status="ativa";    
+                        else
+                            $status="espera";
+                    }
+                    else{
+                        $status="pendente";
+                        
+                    }
+                }
                 $matricula_obj=MatriculaController::gerarMatricula($aluno,$turma->id,$status,$atendente,$idPacote);
                 $matricula=$matricula_obj->id;
             }
@@ -218,12 +234,19 @@ class InscricaoController extends Controller
         $inscricao->atendimento = $atendimento->id;
         $inscricao->pessoa=$aluno;
         $inscricao->turma=$turma->id;
-        $inscricao->status='regular';
+        if($status == 'pendente')
+            $inscricao->status='pendente';    
+        else
+            $inscricao->status='regular';
         $inscricao->matricula=$matricula;
         $inscricao->save();
+
         $atendimento->descricao = "Inscrição na turma ".$turma->id.' ID'.$inscricao->id;
         $atendimento->save();
+
         TurmaController::modInscritos($turma->id);
+
+        
         return $inscricao;
     }
 

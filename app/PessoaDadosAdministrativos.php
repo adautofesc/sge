@@ -39,4 +39,20 @@ class PessoaDadosAdministrativos extends Model
 		return $funcionarios;
 	}
 
+	public static function cadastrarUnico($pessoa,$dado,$valor){
+
+		$busca = PessoaDadosAdministrativos::where('pessoa',$pessoa)->where('dado',$dado)->where('valor',$valor)->first();
+		if($busca == null){
+			$informacao = new PessoaDadosAdministrativos;
+			$informacao->pessoa = $pessoa;
+			$informacao->dado = $dado;
+			$informacao->valor = $valor;
+			$informacao->save();
+			return $informacao;
+		}
+		else
+			return $busca;
+
+	}
+
 }

@@ -248,13 +248,56 @@ class MatriculaController extends Controller
      */
     public static function verificaSeMatriculado($pessoa,$curso,$data,$pacote=null)
     {
-        $data = \Carbon\Carbon::createFromFormat('d/m/Y', $data)->format('Y-m-d');
-        if($data > date("Y-m-d")){
+        $data = \Carbon\Carbon::createFromFormat('d/m/Y', $data);
+
+        
+        if($pacote > 0){
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! arrumar isso
+            $matriculas_ativas = Matricula::where('pessoa',$pessoa)
+            ->where('pacote',$pacote)
+            ->WhereYear('data', $data->format('Y'))
+            ->Where('status',['ativa','espera','pendente'])
+            ->get();//
+
+            if($matriculas_ativas->count()>0)
+                return $matriculas_ativas->first()->id;
+            else
+                return false;
+
+        }
+        else{
+            return false;
+        }
+/*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        dd($data->format('Y'));
+        //if($data->format('Y-m-d') > date("Y-m-d")){
             if($pacote > 0){
+                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! arrumar isso
                 $matriculas_ativas=Matricula::where('pessoa',$pessoa)
                 ->where('pacote',$pacote)
-                ->Where('status','espera')
-                ->get();
+                ->WhereYear('data', $data->format('Y'))
+                ->get();//
 
                 if($matriculas_ativas->count()>0)
                     return $matriculas_ativas->first()->id;
@@ -266,7 +309,8 @@ class MatriculaController extends Controller
             {
                 $matriculas_ativas=Matricula::where('pessoa',$pessoa)
                 ->where('curso',$curso)
-                ->Where('status','espera')
+                ->WhereIn('status',['espera'])
+                ->WhereYear('data', $data->format('Y'))
                 ->get();
 
                 if($matriculas_ativas->count()>0)
@@ -304,7 +348,7 @@ class MatriculaController extends Controller
             else
                 return false;
 
-        }
+        }*/
            
     }
 

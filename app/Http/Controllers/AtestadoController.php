@@ -156,9 +156,11 @@ class AtestadoController extends Controller
 		$atestado = Atestado::find($id);
 		if($atestado){
 			if($r->status == 'aprovado'){
-				$atestado->status = $r->status;
 				LogController::registrar('atestado',$id,'Atestado aprovado.', Auth::user()->pessoa);
-				//verifica se há pendencias para esse tipo de atestado e apaga ela
+				if($atestado->tipo == 'vacinacao')					
+					PessoaDadosAdminController::liberarPendencia($atestado->pessoa,'Falta atestado de vacinação aprovado.');
+				if($atestado->tipo == 'saude')					
+					PessoaDadosAdminController::liberarPendencia($atestado->pessoa,'Falta atestado de saúde aprovado.');
 				
 			}
 			if($r->status == 'recusado'){
@@ -184,6 +186,32 @@ class AtestadoController extends Controller
 		}
 		else
 		 return redirect()->back()->withErrors(['Atestado não encontrado.']);
+
+	}
+
+	public static function verificaParaInscricao(int $pessoa, \App\Turma $turma){
+		$vacinacao = Atestado::where('pessoa',$pessoa)->where('tipo','vacinacao')->where('status','aprovado')->first();
+		if(!$vacinacao){
+			
+			PessoaDadosAdministrativos::cadastrarUnico($pessoa,'pendencia','Falta atestado de vacinação aprovado.');
+			
+			
+			return false;
+		}
+		
+
+		$requisito_curso = \App\CursoRequisito::where('tipo','curso')->where('curso',$turma->curso)->where('requisito',18)->first();
+		$requisito_turma = \App\CursoRequisito::where('tipo','turma')->where('curso',$turma->id)->where('requisito',18)->first();
+		if($requisito_curso || $requisito_turma){
+			$saude =  Atestado::where('pessoa',$pessoa)->where('tipo','saude')->where('status','aprovado')->first();
+			if(!$saude){
+				PessoaDadosAdministrativos::cadastrarUnico($pessoa,'pendencia','Falta atestado de saúde aprovado.');	
+				return false;
+			}
+
+		}
+
+		return true;		
 
 	}
 }

@@ -63,7 +63,8 @@ class SecretariaController extends Controller
 			Session::put('atendimento', $atendimento->id);
 	
 		}
-		$errosMsg=\App\PessoaDadosGerais::where('pessoa',$id)->where('dado',20)->get();
+		$errosMsg=\App\PessoaDados::where('pessoa',$id)->where('dado',20)->get();
+		$pendenciasMsg=\App\PessoaDadosAdministrativos::where('pessoa',$id)->where('dado','pendencia')->get();
 		
 		if(isset($_GET["mostrar"])){
 			 $matriculas=Matricula::where('pessoa', Session::get('pessoa_atendimento'))->orderBy('id','desc')->limit(20)->get();
@@ -138,6 +139,7 @@ class SecretariaController extends Controller
 			->with('boletos',$boletos)
 			->with('lancamentos',$lancamentos)
 			->with('errosPessoa',$errosMsg)
+			->with('pendencias',$pendenciasMsg)
 			->with('atestado',$atestado)
 			->with('devedor',$devedor);
 	}

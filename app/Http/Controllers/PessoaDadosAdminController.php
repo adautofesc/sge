@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+
 class PessoaDadosAdminController extends Controller
 {
     
@@ -18,5 +19,27 @@ class PessoaDadosAdminController extends Controller
         $professores=PessoaDadosAdministrativos::getFuncionarios('Educador');
         return view('docentes.lista-professores',compact('professores'));
 
+    }
+
+    public static function liberarPendencia($pessoa,$valor){
+        $pendencia = PessoaDadosAdministarivos::where('pessoa',$pessoa)->where('dado','pendencia')->where('valor',$valor)->first();
+        if($pendencia)
+            $pendencia->delete();
+        
+        $outras_pendencias = PessoaDadosAdministarivos::where('pessoa',$pessoa)->where('dado','pendencia')->first();
+        if($outras_pendencias == null){
+            $matriculas = \App\Matricula::where('pessoa',$pessoa)->where('status','pendente')->get();
+            $inscricoes = \App\Inscricao::where('pessoa',$pessoa)->where('status','pendente')->get();
+            foreach($matriculas as $matricula){
+                $matricula->status = 'ativa';
+                $matricula->save();
+            }
+            foreach($inscricoes as $inscricao){
+                $inscricao->status = 'regular';
+                $inscricao->save();
+            }
+
+        }
+        
     }
 }

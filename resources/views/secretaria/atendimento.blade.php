@@ -159,6 +159,12 @@
   <strong><i class="fa fa-warning"></i> ATENÇÃO:</strong> {{$erros->valor}}.
 </div>
 @endforeach
+@foreach($pendencias as $pendencia)
+<div class="alert alert-danger alert-dismissible">
+  <a href="#" class="close" >&times;</a>
+  <strong><i class="fa fa-warning"></i> ATENÇÃO:</strong> {{$pendencia->valor}}.
+</div>
+@endforeach
 <section class="section">
     <div class="row">
         <div class="col-xl-12 center-block">

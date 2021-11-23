@@ -151,7 +151,7 @@ class RequisitosController extends Controller
         $requisitos=Requisito::get();
         $turmas_arr = explode(',',$turmas);
         if(count($turmas_arr)!=1)
-            return view('pedagogico.turma.turma-requisitos', compact('requisitos'))->with('turmas',$turmas);
+            return view('turmas.turma-requisitos', compact('requisitos'))->with('turmas',$turmas);
 
         $turma=Turma::find($turmas);
         foreach($requisitos->all() as $requisito){

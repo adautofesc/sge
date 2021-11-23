@@ -112,7 +112,7 @@ class PerfilController extends Controller
 
 
     public function parceriaIndex(Request $r){
-        $parceria = \App\PessoaDadosAdministrativos::where('pessoa',$r->pessoa->id)->where('dado',28)->first();
+        $parceria = \App\PessoaDadosAdministrativos::where('pessoa',$r->pessoa->id)->where('dado','28')->first();
         if($parceria != null)
             return view('perfil.parceria')->with('pessoa',$r->pessoa)->with('parceria',$parceria->valor);
         else
@@ -142,7 +142,7 @@ class PerfilController extends Controller
         
             $parceria = new \App\PessoaDadosAdministrativos;
             $parceria->pessoa = $r->pessoa->id;
-            $parceria->dado = 28;
+            $parceria->dado = '28';
             $parceria->valor = $r->area;
             
 
@@ -167,7 +167,7 @@ class PerfilController extends Controller
     }
 
     public function parceriaCancelar(Request $r){
-        $parceria = \App\PessoaDadosAdministrativos::where('pessoa',$r->pessoa->id)->where('dado',28)->first();
+        $parceria = \App\PessoaDadosAdministrativos::where('pessoa',$r->pessoa->id)->where('dado','28')->first();
         if($parceria != null)
         $parceria->delete();
         

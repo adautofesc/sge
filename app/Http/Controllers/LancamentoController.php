@@ -126,6 +126,23 @@ class LancamentoController extends Controller
 		
 	}
 
+	public function gerarLancamentosMatricula(\App\Matricula $matricula){
+		/*
+		// quantas parcelas tenho que gerar SEM RETROATIVAS
+		//relacionar parcela com os meses.
+		// pegar todas parcelas já geradas
+		$data = $matricula->turma->getParcelas();
+		for($i=1;$i<=$data;$i++){
+			if($i==1)
+				$parcela[$i] = 10/$matricula->turma->data_inicio('m')/year;
+			else
+				$parcela[$i] = $parcela[$i-1] + 1mes;
+		}
+		//$parcela[1] = 02/2022;
+		//$parcela[2] = 03/2022;
+*/
+	}
+
 	public function gerarIndividual19($pessoa,$parcela,$matricula,$valor){
 		if(!$this->verificaSeLancada($matricula,$parcela,$valor)){
 			$matricula = Matricula::find($matricula);

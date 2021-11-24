@@ -371,8 +371,9 @@ class PessoaController extends Controller
 		
 		
 		foreach( $pessoa->dadosAdministrativos->all() as $dado){
-			$tipoDado=TipoDado::find($dado['dado'])->tipo;
-			$pessoa->$tipoDado=$dado['valor'];
+
+			//$tipoDado=TipoDado::find($dado['dado'])->tipo;
+			$pessoa->$tipoDado=$dado['dado'];
 		}
 		/*
 		foreach( $pessoa->dadosAcademicos->all() as $dado){
@@ -418,16 +419,18 @@ class PessoaController extends Controller
 
 		if(isset($pessoa->endereco)){
 			$endereco=Endereco::find($pessoa->endereco);
-			$pessoa->end_id=$endereco->id;
-			$pessoa->logradouro=$endereco->logradouro;
-			$pessoa->end_numero=$endereco->numero;
-			$pessoa->bairro=$endereco->getBairro();
-			$pessoa->id_bairro=$endereco->bairro;
-			$pessoa->end_complemento=$endereco->complemento;
-			$pessoa->cidade=$endereco->cidade;
-			$pessoa->estado=$endereco->estado;
-			$pessoa->cep=Strings::mask(preg_replace( '/[^0-9]/is', '',$endereco->cep),'#####-###');
-			$pessoa->bairro_alt=$endereco->bairro_str;
+			if($endereco){
+				$pessoa->end_id=$endereco->id;
+				$pessoa->logradouro=$endereco->logradouro;
+				$pessoa->end_numero=$endereco->numero;
+				$pessoa->bairro=$endereco->getBairro();
+				$pessoa->id_bairro=$endereco->bairro;
+				$pessoa->end_complemento=$endereco->complemento;
+				$pessoa->cidade=$endereco->cidade;
+				$pessoa->estado=$endereco->estado;
+				$pessoa->cep=Strings::mask(preg_replace( '/[^0-9]/is', '',$endereco->cep),'#####-###');
+				$pessoa->bairro_alt=$endereco->bairro_str;
+			}
 		}
 		
 		//dd($pessoa);

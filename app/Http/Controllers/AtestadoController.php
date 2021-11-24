@@ -193,7 +193,7 @@ class AtestadoController extends Controller
 		$vacinacao = Atestado::where('pessoa',$pessoa)->where('tipo','vacinacao')->where('status','aprovado')->first();
 		if(!$vacinacao){
 			
-			PessoaDadosAdministrativos::cadastrarUnico($pessoa,'pendencia','Falta atestado de vacinação aprovado.');
+			\App\PessoaDadosAdministrativos::cadastrarUnico($pessoa,'pendencia','Falta atestado de vacinação aprovado.');
 			
 			
 			return false;
@@ -205,7 +205,7 @@ class AtestadoController extends Controller
 		if($requisito_curso || $requisito_turma){
 			$saude =  Atestado::where('pessoa',$pessoa)->where('tipo','saude')->where('status','aprovado')->first();
 			if(!$saude){
-				PessoaDadosAdministrativos::cadastrarUnico($pessoa,'pendencia','Falta atestado de saúde aprovado.');	
+				\App\PessoaDadosAdministrativos::cadastrarUnico($pessoa,'pendencia','Falta atestado de saúde aprovado.');	
 				return false;
 			}
 

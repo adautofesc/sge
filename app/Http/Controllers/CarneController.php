@@ -340,8 +340,6 @@ class CarneController extends Controller
 					$primeiro_vencimento->modify('+1 month');
 					$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$primeiro_vencimento->format('m'),$this::vencimento);
 
-
-					
 				}
 				else{
 					

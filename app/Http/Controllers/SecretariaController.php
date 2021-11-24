@@ -63,7 +63,7 @@ class SecretariaController extends Controller
 			Session::put('atendimento', $atendimento->id);
 	
 		}
-		$errosMsg=\App\PessoaDados::where('pessoa',$id)->where('dado',20)->get();
+		$errosMsg=\App\PessoaDadosGerais::where('pessoa',$id)->where('dado',20)->get();
 		$pendenciasMsg=\App\PessoaDadosAdministrativos::where('pessoa',$id)->where('dado','pendencia')->get();
 		
 		if(isset($_GET["mostrar"])){

@@ -29,7 +29,7 @@
         
             
         }
-        .col-md-5{
+        .col-md-8{
             background-color:white;
             -webkit-box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.38);
             -moz-box-shadow:    1px 1px 5px 0px rgba(50, 50, 50, 0.38);
@@ -67,13 +67,10 @@
 <body>
     <div class="container-fluid">
         <div class="row justify-content-md-center" >
-            <div class="col-md-5">
-                <h1>
-                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bootstrap-reboot" fill="orange" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M1.161 8a6.84 6.84 0 1 0 6.842-6.84.58.58 0 0 1 0-1.16 8 8 0 1 1-6.556 3.412l-.663-.577a.58.58 0 0 1 .227-.997l2.52-.69a.58.58 0 0 1 .728.633l-.332 2.592a.58.58 0 0 1-.956.364l-.643-.56A6.812 6.812 0 0 0 1.16 8zm5.48-.079V5.277h1.57c.881 0 1.416.499 1.416 1.32 0 .84-.504 1.324-1.386 1.324h-1.6zm0 3.75V8.843h1.57l1.498 2.828h1.314L9.377 8.665c.897-.3 1.427-1.106 1.427-2.1 0-1.37-.943-2.246-2.456-2.246H5.5v7.352h1.141z"/>
-                    </svg>
-                    Perfil FESC
-                </h1>
+            <div class="col-md-8">
+                <p class="text-center" >
+                    <img src="{{asset('/img/matriculas_2021_01.jpg')}}" width="450rem">
+                </p>
                 <noscript>
                     <!-- referência a arquivo externo -->
                     <div class="alert alert-danger"> Ative o javascript ou acesse o site de outro navegador.</div>
@@ -94,18 +91,23 @@
                         </div>
                     @endforeach
                 @endif
-
                 <form method="GET" action="/rematricula/autentica" onsubmit="return false;">
-                    
-                    <div class="col-md-12 form-group form">
+                <div class="row">
+                    <div class="col-sm-5">
                         <label for="RegraValida">Para começar, digite seu CPF. <br><small>(somente números)</small></label>
-                        <input type="number" class="form-control form-control-sm" name="cpf" id="cpf" maxlength="11" max-size="11" style="width: 15rem">
+                        <input type="number" class="form-control form-control-sm" name="cpf" id="cpf" maxlength="11" max-size="11">
                     </div>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<button onclick="ValidaCPF();" class="btn btn-info"> Continuar</button>
-                </form>
-                <p>
-                &nbsp;
-                </p>
+                    
+                    <div class="col-sm-7 align-self-end"><button onclick="ValidaCPF();" class="btn btn-info"> Continuar</button></div>
+                </div>
+                    
+                    
+                
+
+                    
+                    </form>
+                <p>&nbsp;</p>
+               
             
 
             </div>

@@ -30,8 +30,6 @@
             
           </div>
         </div>
-
-        
       </div>
       <hr>
       @if($errors->any())
@@ -42,7 +40,16 @@
                 </div>
             @endforeach
           @endif
-      
+      <div class="row">
+        <div class="col-sm-12">
+          <img src="{{asset('/img/matriculas_2021_01.jpg')}}" alt="">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <img src="{{asset('/img/matriculas_2021_02.jpg')}}" alt="">
+        </div>
+      </div>
     </div>
 
   </div>

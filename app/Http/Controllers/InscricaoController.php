@@ -187,6 +187,25 @@ class InscricaoController extends Controller
             $idPacote = $pacote->valor;
         else
             $idPacote = null;
+
+        if($turma->local->id == 188){             
+            if($turma->status == 'iniciada')
+                $status="ativa";    
+            else
+                $status="espera";
+        }
+        else{
+            if(AtestadoController::VerificaParaInscricao($aluno,$turma)){
+                if($turma->status == 'iniciada')
+                    $status="ativa";    
+                else
+                    $status="espera";
+            }
+            else{
+                $status="pendente";
+                
+            }
+        }
         
         
 
@@ -200,31 +219,15 @@ class InscricaoController extends Controller
 
 
             if(MatriculaController::verificaSeMatriculado($aluno,$turma->curso->id,$turma->data_inicio,$idPacote)==false){
-                if($turma->local->id == 188){             
-                    if($turma->status == 'iniciada')
-                        $status="ativa";    
-                    else
-                        $status="espera";
-                }
-                else{
-                    if(AtestadoController::VerificaParaInscricao($aluno,$turma)){
-                        if($turma->status == 'iniciada')
-                            $status="ativa";    
-                        else
-                            $status="espera";
-                    }
-                    else{
-                        $status="pendente";
-                        
-                    }
-                }
-                $matricula_obj=MatriculaController::gerarMatricula($aluno,$turma->id,$status,$atendente,$idPacote);
-                $matricula=$matricula_obj->id;
+                
+                $matricula_obj = MatriculaController::gerarMatricula($aluno,$turma->id,$status,$atendente,$idPacote);
+                $matricula = $matricula_obj->id;
             }
             else{
-                $matricula_obj=MatriculaController::verificaSeMatriculado($aluno,$turma->curso->id,$turma->data_inicio,$idPacote);
-                $matricula=$matricula_obj->id;
-
+                $matricula_obj = MatriculaController::verificaSeMatriculado($aluno,$turma->curso->id,$turma->data_inicio,$idPacote);
+                $matricula = $matricula_obj->id;
+                
+                
             }
         }
         $atendimento = AtendimentoController::novoAtendimento(' ', $aluno, $atendente);
@@ -318,8 +321,11 @@ class InscricaoController extends Controller
      * @return [type]     [description]
      */
     public static function cancelar(Request $r){
-        
-        LogController::registrar('inscricao',$r->inscricao,'Cancelamento da inscrição, motivo: '.implode(', ',$r->cancelamento));    
+        if(!empty($r->cancelamento))
+            LogController::registrar('inscricao',$r->inscricao,'Cancelamento da inscrição, motivo: '.implode(', ',$r->cancelamento));
+        else
+            LogController::registrar('inscricao',$r->inscricao,'Cancelamento da inscrição.');
+
         InscricaoController::alterarStatus($r->inscricao,'cancelada');
 
         $inscricoes = Inscricao::where('matricula',$r->matricula)->whereIn('status',['regular','pendente'])->count();
@@ -335,7 +341,7 @@ class InscricaoController extends Controller
             if(!empty($r->cancelamento))
                 AtendimentoController::novoAtendimento("Cancelamento da matricula ".$r->matricula. " motivo: ".implode(', ',$r->cancelamento), $r->pessoa, Auth::user()->pessoa);
             else
-                AtendimentoController::novoAtendimento("Cancelamento da matricula ".$r->matricula, $matricula->pessoa, Auth::user()->pessoa);
+                AtendimentoController::novoAtendimento("Cancelamento da matricula ".$r->matricula, $r->pessoa, Auth::user()->pessoa);
             return redirect('/secretaria/matricula/imprimir-cancelamento/'.$r->matricula);
         }
 

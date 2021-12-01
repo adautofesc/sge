@@ -253,15 +253,15 @@ class MatriculaController extends Controller
 
         
         if($pacote > 0){
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! arrumar isso
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! arrumar isso precisa fazer um join pra pegar uma inscricao da matricula e verificar se é do mesmo ano
             $matriculas_ativas = Matricula::where('pessoa',$pessoa)
             ->where('pacote',$pacote)
-            ->WhereYear('data', $data->format('Y'))
-            ->Where('status',['ativa','espera','pendente'])
+            ->WhereIn('status',['ativa','espera','pendente'])
             ->get();//
+            
 
             if($matriculas_ativas->count()>0)
-                return $matriculas_ativas->first()->id;
+                return $matriculas_ativas->first();
             else
                 return false;
 

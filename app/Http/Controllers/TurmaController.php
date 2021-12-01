@@ -681,12 +681,14 @@ class TurmaController extends Controller
                         ->whereIn('turmas.status_matriculas', ['aberta','presencial'])
                         ->where(function($busca) use ($query){
                             $busca->where('cursos.nome', 'like','%'.$query.'%')
+                                    ->orwhere('turmas.id', $query)
                                     ->orwhere('disciplinas.nome', 'like','%'.$query.'%')
                                     ->orwhere('pessoas.nome', 'like','%'.$query.'%')
                                     ->orwhere('programas.sigla', 'like','%'.$query.'%')
                                     ->orwhere('dias_semana', 'like','%'.$query.'%');
                         })
                         ->orderBy('cursos.nome')->orderBy('disciplinas.nome')
+                        ->limit(30)
                         ->get();
 
             /*

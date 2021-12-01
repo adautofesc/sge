@@ -200,8 +200,8 @@ class AtestadoController extends Controller
 		}
 		
 
-		$requisito_curso = \App\CursoRequisito::where('tipo','curso')->where('curso',$turma->curso)->where('requisito',18)->first();
-		$requisito_turma = \App\CursoRequisito::where('tipo','turma')->where('curso',$turma->id)->where('requisito',18)->first();
+		$requisito_curso = \App\CursoRequisito::where('para_tipo','curso')->where('curso',$turma->curso)->where('requisito',18)->first();
+		$requisito_turma = \App\CursoRequisito::where('para_tipo','turma')->where('curso',$turma->id)->where('requisito',18)->first();
 		if($requisito_curso || $requisito_turma){
 			$saude =  Atestado::where('pessoa',$pessoa)->where('tipo','saude')->where('status','aprovado')->first();
 			if(!$saude){

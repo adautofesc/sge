@@ -118,6 +118,9 @@ function listar(itens_atuais){
 
     busca = $('#busca').val();
     console.log(busca);
+    if(itens_atuais == '')
+        itens_atuais = '0';
+
     $('#turmas').html('carregando...')
     $('#turmas').load('{{asset('/secretaria/turmas-disponiveis')."/".$pessoa->id}}/'+itens_atuais+'{{$str_turmas}}/'+busca);
     $('#itens_escolhidos').load('{{asset('/secretaria/turmas-escolhidas')}}/'+itens_atuais+'');

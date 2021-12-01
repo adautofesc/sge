@@ -100,6 +100,20 @@
             </div>        
         </div>
         <div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">Pacotes Cursos</label>
+            <div class="col-sm-2"> 		
+				
+				<div>
+					<label>
+						<input class="checkbox" name="pacote" type="checkbox" value="1" {{$matricula->pacote == 1?"checked":""}}>
+                    <span title="Pacote de cursos padrão"></span>
+						</label>
+				</div>
+					
+        	</div>
+        </div>
+        
+        <div class="form-group row"> 
             <label class="col-sm-2 form-control-label text-xs-right">
                 Observações
             </label>

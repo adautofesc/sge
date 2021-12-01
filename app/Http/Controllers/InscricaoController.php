@@ -183,6 +183,8 @@ class InscricaoController extends Controller
         }
 
         $pacote = \App\TurmaDados::where('turma',$turma->id)->where('dado','pacote')->first();
+
+        
         if (isset($pacote->id))
             $idPacote = $pacote->valor;
         else

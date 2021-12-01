@@ -49,12 +49,16 @@ class ValorController extends Controller
     public static function valorMatricula($id_matricula)
     {
 
+
         $matricula = Matricula::find($id_matricula);
         
-        //dd('teste');
+       
 
     	if($matricula)
     	{
+            
+
+            
             
 
             $inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','pendente','espera'])->get();
@@ -68,7 +72,6 @@ class ValorController extends Controller
                 return ValorController::retornarZero('Não há inscrições ativas');
             }
             $turma = \App\Turma::find($inscricoes->first()->turma->id);
-
             if(isset($matricula->pacote)){
         
                 $valor = Valor::where('pacote',$matricula->pacote)->where('ano',substr($turma->data_inicio,-4))->first();
@@ -79,7 +82,9 @@ class ValorController extends Controller
 
             }
 
+            
 
+            
             //dd($turma->parceria->id);
             $fesc=[84,85,86,118];
             if(!in_array($turma->local->id,$fesc)){
@@ -105,13 +110,23 @@ class ValorController extends Controller
                         break;
                     case 1:
                     	$valor = Valor::where('curso','307')->where('carga','1')->where('ano',substr($inscricoes->first()->turma->data_inicio,-4))->first();
-                        return $valor; 
+                        if($valor)
+                            return $valor;
+                        else{
+                            //redirect()->back()->withErrors(['teste']);
+                            return ValorController::retornarZero("Pacote não definido para turma ".$turma->id);
+
+                        }
+                            
                         break;
                     case 2:
                     case 3:
                     
                         $valor = Valor::where('curso','307')->where('carga','2')->where('ano',substr($inscricoes->first()->turma->data_inicio,-4))->first();
-                        return $valor;
+                        if($valor)
+                            return $valor;
+                        else
+                            return ValorController::retornarZero("Pacote não definido para turma ".$turma->id);
                         break;
                     case 4:
                     case 5:
@@ -121,7 +136,10 @@ class ValorController extends Controller
                     case 9:
                     case 10:
                         $valor = Valor::where('curso','307')->where('carga','3')->where('ano',substr($inscricoes->first()->turma->data_inicio,-4))->first();
-                        return $valor;
+                        if($valor)
+                            return $valor;
+                        else
+                            return ValorController::retornarZero("Pacote não definido para turma ".$turma->id);
                         break;
     			}
     			
@@ -175,7 +193,7 @@ class ValorController extends Controller
 
     }
 
-    public function gerar($valor,$parcelas,$referencia='gerado por alguma função'){
+    public static function gerar($valor,$parcelas,$referencia='gerado por alguma função'){
         $valor = new Valor;
         $valor->valor = $valor;
         $valor->parcelas = $parcelas;

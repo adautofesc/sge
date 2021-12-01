@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\PessoaDadosAdministrativos;
 
 
 class PessoaDadosAdminController extends Controller
@@ -22,11 +23,11 @@ class PessoaDadosAdminController extends Controller
     }
 
     public static function liberarPendencia($pessoa,$valor){
-        $pendencia = PessoaDadosAdministarivos::where('pessoa',$pessoa)->where('dado','pendencia')->where('valor',$valor)->first();
+        $pendencia = PessoaDadosAdministrativos::where('pessoa',$pessoa)->where('dado','pendencia')->where('valor',$valor)->first();
         if($pendencia)
             $pendencia->delete();
         
-        $outras_pendencias = PessoaDadosAdministarivos::where('pessoa',$pessoa)->where('dado','pendencia')->first();
+        $outras_pendencias = PessoaDadosAdministrativos::where('pessoa',$pessoa)->where('dado','pendencia')->first();
         if($outras_pendencias == null){
             $matriculas = \App\Matricula::where('pessoa',$pessoa)->where('status','pendente')->get();
             $inscricoes = \App\Inscricao::where('pessoa',$pessoa)->where('status','pendente')->get();

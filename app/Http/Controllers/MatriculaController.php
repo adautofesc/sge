@@ -137,6 +137,7 @@ class MatriculaController extends Controller
         $matricula->desconto=$r->fdesconto;
         $matricula->valor_desconto=$r->valordesconto;
         $matricula->obs=$r->obs;
+        $matricula->pacote = $r->pacote;
         $matricula->parcelas = $r->parcelas;
         $bolsa = \App\Bolsa::select(['bolsas.id', 'bolsas.status'])
                         ->join('bolsa_matriculas','bolsa_matriculas.bolsa','bolsas.id')

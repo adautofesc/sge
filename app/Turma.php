@@ -270,12 +270,14 @@ class Turma extends Model
 	}
 
 	public function verificaRequisitos($aluno){
+	
 		$aluno = Pessoa::find($aluno);
 		if($aluno == null)
 			return false;
 		$idade_minima = 0;
 		$idade_maxima = 0;
 		$atestado = 0;
+		/*
 		$reqs = CursoRequisito::where('para_tipo','curso')->where('curso',$this->id)->get();
 		foreach($reqs as $req){
 			switch($req->requisito->id){
@@ -349,6 +351,7 @@ class Turma extends Model
 					break;
 			}
 		}
+		*/
 		$reqs = CursoRequisito::where('para_tipo','turma')->where('curso',$this->id)->get();
 		foreach($reqs as $req){
 			switch($req->requisito->id){

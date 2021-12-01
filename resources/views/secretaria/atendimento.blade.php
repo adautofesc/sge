@@ -288,13 +288,14 @@
                                              <span class="name"><small> Opções</small>
                                     </span> </a>
                                         <div class="dropdown-menu profile-dropdown-menu" aria-labelledby="dropdownMenu1">
-                                            <!-- <a class="dropdown-item disabled" style="text-decoration: none;" href="#"> <i class="fa fa-archive icon"></i> Histórico</a>-->
+                                            <!-- <a class="dropdown-item disabled" style="text-decoration: none;" href="#"> <i class="fa fa-archive icon"></i> Histórico</a>
 
 
                                             @if($matricula->status =='ativa')
                                             <a class="dropdown-item" style="text-decoration: none;"  href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}"> <i class="fa fa-print icon"></i> Imprimir termo</a>
-                                            @endif
+                                            @endif-->
                                             @if($matricula->status =='ativa'||$matricula->status =='pendente')
+                                            <a class="dropdown-item" style="text-decoration: none;"  href="{{asset('/secretaria/matricula/termo/').'/'.$matricula->id}}"> <i class="fa fa-print icon"></i> Imprimir termo</a>
                                             <a class="dropdown-item" style="text-decoration: none;"  href="{{asset('/secretaria/matricula/editar/').'/'.$matricula->id}}"> <i class="fa fa-pencil-square-o icon"></i> Editar matrícula</a>
                                             
                                             <a class="dropdown-item" style="text-decoration: none;"  href="/secretaria/matricula/uploadglobal/1/1/1/{{$matricula->id}}"> <i class="fa fa-cloud-upload icon"></i> (Re)Enviar termo</a>
@@ -326,6 +327,8 @@
                                              @if(file_exists('documentos/matriculas/termos/'.$matricula->id.'.pdf'))
                                             <a class="dropdown-item" style="text-decoration: none;"  href="/download/{{str_replace('/','-.-', 'documentos/matriculas/termos/'.$matricula->id.'.pdf')}}"> <i class="fa fa-file-text-o icon"></i> Termo disponivel</a>
                                             @endif
+
+                                            
 
 
 

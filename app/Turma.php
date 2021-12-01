@@ -64,11 +64,12 @@ class Turma extends Model
 				return $valor->valor;
 			}
 			else{
-				$this->status_matriculas = 'fechada';
-				$this->save();
+				//$this->status_matriculas = 'fechada';
+				//$this->save();
 				dd("Ops. Turma ".$this->id." está com pacote definido (".$pacote->id.") mas este pacote não consta na tabela de valores. As inscrições para essa turma foram suspensas.");
 			}
-		}*/
+		}
+		*/
 		
 		// se for do curso atividades uati
 		if($this->curso->id == 307 && $this->carga<10)
@@ -105,12 +106,11 @@ class Turma extends Model
 		}
 		
 
-		if(isset($valor))
+		if(isset($valor->valor))
 			return $valor->valor;
 		else{
-			$this->status_matriculas = 'fechada';
-			$this->save();
-			dd("Ops. Turma ".$this->id." não está com valor definido. As inscrições para ela estão suspensas.");
+			return 0;
+			//dd("Ops. Turma ".$this->id." não está com valor definido. As inscrições para ela estão suspensas.");
 		}
 
 	}

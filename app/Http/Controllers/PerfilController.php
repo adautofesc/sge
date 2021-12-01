@@ -284,18 +284,26 @@ class PerfilController extends Controller
         elseif($arquivo->getSize()>2097152) 
             return redirect()->back()->withErrors(['O arquivo deve ser menor que 2MB.']);
         
-        else{ 
+        else{
 
+            $existente = \App\Atestado::where('pessoa',$r->pessoa->id)->where('tipo',$r->tipo)->whereIn('status',['analisando','aprovado'])->get();
+            if($existente->count()>0){
+                $atestado = $existente->first();
+                $mensagem = "Atestado já cadastrado. Sobrescrevendo arquivo.";
 
-            $atestado = new \App\Atestado;
-            $atestado->pessoa = $r->pessoa->id;
-            $atestado->atendente = $r->pessoa->id;
-            $atestado->tipo = $r->tipo;
-            $atestado->emissao = $r->emissao;
-            $atestado->status = 'analisando';
-            $atestado->save();
+            }
+               
+            else{
+                $atestado = new \App\Atestado;
+                $atestado->pessoa = $r->pessoa->id;
+                $atestado->atendente = $r->pessoa->id;
+                $atestado->tipo = $r->tipo;
+                $atestado->emissao = $r->emissao;
+                $atestado->status = 'analisando';
+                $atestado->save();  
+                $mensagem = 'Atestado cadastrado com sucesso!' ;
+            }
 
-            
 
             try{
                 $arquivo->move('documentos/atestados/',$atestado->id.'.pdf');
@@ -308,7 +316,7 @@ class PerfilController extends Controller
         
             
             
-            return redirect('/perfil/atestado')->withErrors(['Atestado cadastrado com sucesso!']);
+            return redirect('/perfil/atestado')->withErrors([$mensagem]);
         }
 
 

@@ -55,6 +55,7 @@ class AtestadoController extends Controller
 			$atestado->validade = \Carbon\Carbon::parse($atestado->validade)->format('d/m/Y');
 			$atestado->cadastro = \Carbon\Carbon::parse($atestado->created_at)->format('d/m/Y H:i');
 		}
+		//dd($atestados);
 		return view('pessoa.dados-clinicos.listar',compact('atestados'));
 	}
 	public function buscar(Request $r){
@@ -154,7 +155,9 @@ class AtestadoController extends Controller
 			'status'=>'required'
 		]);
 		$atestado = Atestado::find($id);
+		
 		if($atestado){
+			$atestado->status = $r->status;
 			if($r->status == 'aprovado'){
 				LogController::registrar('atestado',$id,'Atestado aprovado.', Auth::user()->pessoa);
 				if($atestado->tipo == 'vacinacao')					
@@ -164,7 +167,6 @@ class AtestadoController extends Controller
 				
 			}
 			if($r->status == 'recusado'){
-				$atestado->status = $r->status;
 				LogController::registrar('atestado',$id,'Atestado RECUSADO: '."\n".$r->obs, Auth::user()->pessoa);
 				$dado_email = \App\PessoaDadosContato::where('pessoa',$atestado->pessoa)->where('dado',1)->orderbyDesc('id')->first();
 
@@ -180,7 +182,7 @@ class AtestadoController extends Controller
 				}
 				//enviar email
 			}
-
+		
 		$atestado->save();	
 		return redirect("/pessoa/atestado/listar")->withErrors(['Atestado '.$atestado->id.' avaliado.']);
 		}

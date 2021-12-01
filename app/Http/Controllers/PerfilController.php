@@ -308,7 +308,7 @@ class PerfilController extends Controller
         
             
             
-            return $atestado;
+            return redirect('/perfil/atestado')->withErrors(['Atestado cadastrado com sucesso!']);
         }
 
 

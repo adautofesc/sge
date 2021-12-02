@@ -126,6 +126,12 @@ Route::middleware(['auth','login']) ->group(function(){
 		return App\classes\Arquivo::download($arquivo);
 
 	});
+	Route::get('view-atestado/{id}',function ($arquivo){
+		// Atenção a divisoria de pasta deve ser a string -.-
+		//use a função str_replace('/','-.-', $arquivo) para codificar a pasta.
+		return App\classes\Arquivo::show('documentos-.-atestados-.-'.$arquivo.'.pdf');
+
+	});
 	/*
 	Route::prefix('arquivo')->group(function(){
 		route::get('/atestado/{id}','AtestadoController@arquivo');

@@ -144,8 +144,13 @@ class AtestadoController extends Controller
 			if(isset($pessoa->telefone_contato))
 				$pessoa->telefone_contato=\App\classes\Strings::formataTelefone($pessoa->telefone_contato);
 			$atestado->emissao = \Carbon\Carbon::parse($atestado->emissao)->format('d/m/Y');
+			if(file_exists('documentos/atestados/'.$atestado->id.'.pdf')){
+				$arquivo = file_get_contents('documentos/atestados/'.$atestado->id.'.pdf');
+			}
+			else
+				$arquivo = 'Arquivo não encontrado';
 
-			return view('pessoa.dados-clinicos.analisar-atestado')->with('atestado',$atestado)->with('pessoa',$pessoa);
+			return view('pessoa.dados-clinicos.analisar-atestado')->with('atestado',$atestado)->with('pessoa',$pessoa)->with('arquivo',$arquivo);
 		}else
 		 return redirect()->back()->withErrors(['Atestado não encontrado.']);
 

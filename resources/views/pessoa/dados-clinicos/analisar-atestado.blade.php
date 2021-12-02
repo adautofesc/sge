@@ -55,7 +55,7 @@
             </label>
             <div class="col-sm-6">
             @if(file_exists('documentos/atestados/'.$atestado->id.'.pdf'))
-                <embed src="{{asset('documentos/atestados/'.$atestado->id.'.pdf')}}#navpanes=0" width="760" height="500" type='application/pdf' >
+                <embed src="/view-atestado/{{$atestado->id}}#navpanes=0" width="760" height="500" type='application/pdf' >
             @endif
                 
             </div>

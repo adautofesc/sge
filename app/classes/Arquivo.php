@@ -26,6 +26,23 @@ Class Arquivo {
                   return "Arquivo ".$arquivo. ' não encontrado.';
       
 	}
+      public static function show($arquivo){
+
+            //require $arquivo;
+                $arquivo = str_replace('-.-','/',$arquivo);
+                //dd(substr($arquivo,1));
+                if(substr($arquivo,0,1) =='/')
+                      $arquivo = substr($arquivo,1);
+                if(file_exists($arquivo)){
+                      //dd($arquivo);
+                      header("Content-type:application/pdf");
+                      readfile($arquivo);
+                      flush();
+                }
+                else
+                      return "Arquivo ".$arquivo. ' não encontrado.';
+          
+          }
 
 
 

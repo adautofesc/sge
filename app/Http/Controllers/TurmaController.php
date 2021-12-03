@@ -536,14 +536,36 @@ class TurmaController extends Controller
         $turma->periodicidade=$request->periodicidade;
         $turma->parceria = $request->parceria;
         $turma->sala=$request->sala;
+        
+
+        
+
+        $alteracoes = 'Edição dos dados: ';
+        $colunas = \Schema::getColumnListing('turmas'); // users table
+
+        
+        foreach($colunas as $dado){
+            if($turma->isDirty($dado))
+                if(isset($turma->$dado->id))
+                    $alteracoes.= $dado.' alterado '. $turma->$dado->id . ' => '.($turma->getOriginal($dado))->id.', ';
+                else
+                    $alteracoes.= $dado.' alterado '. $turma->$dado . ' => '.$turma->getOriginal($dado).', ';
+
+        }
+        
+        LogController::registrar('turma',$turma->id,$alteracoes, \Auth::user()->pessoa);
         $turma->update();
 
         $turma_dados = \App\TurmaDados::where('turma',$turma->id)->get();
         $turma->pacote = $turma_dados->where('dado','pacote')->pluck('valor')->toArray();
 
-        foreach($turma->pacote as $pcte){
-            if(!isset($request->pacote) || !in_array($pcte,$request->pacote))
+
+        foreach($turma->pacote as $pcte){ 
+            if(!isset($request->pacote) || !in_array($pcte,$request->pacote)){
                 \App\TurmaDados::where('turma',$turma->id)->where('dado','pacote')->where('valor',$pcte)->delete();
+                LogController::registrar('turma',$turma->id,'Remoção do pacote '.$pcte, \Auth::user()->pessoa);
+
+            }
         }
         if(isset($request->pacote))
             foreach($request->pacote as $pcte){
@@ -553,6 +575,7 @@ class TurmaController extends Controller
                     $pacote->dado = 'pacote';
                     $pacote->valor = $pcte;
                     $pacote->save();
+                    LogController::registrar('turma',$turma->id,'Adição do pacote '.$pcte, \Auth::user()->pessoa);
                 }
                     
             }
@@ -812,7 +835,7 @@ class TurmaController extends Controller
     public function turmasSite(){
 
         
-        $turmas=Turma::where('turmas.status_matricula', 'aberta')
+        $turmas=Turma::where('turmas.status_matriculas', 'aberta')
                 ->whereIn('turmas.local',[84,85,86,118])
                 ->whereColumn('turmas.vagas','>','turmas.matriculados')
                 ->get();

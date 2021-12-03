@@ -42,12 +42,12 @@
           @endif
       <div class="row">
         <div class="col-sm-12">
-          <img src="{{asset('/img/matriculas_2021_01.jpg')}}" alt="">
+          <img src="{{asset('/img/matriculas_2021_01.jpg')}}" width="450rem">
         </div>
       </div>
       <div class="row">
         <div class="col-sm-12">
-          <img src="{{asset('/img/matriculas_2021_02.jpg')}}" alt="">
+          <img src="{{asset('/img/matriculas_2021_02.jpg')}}" width="450rem">
         </div>
       </div>
     </div>

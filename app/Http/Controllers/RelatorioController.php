@@ -599,14 +599,14 @@ Event::where('status' , 0)
          
         for($i=ANO_INICIAL;$i<=date("Y");$i++){
             if(isset($r->local)){
-                $totais[$i][0] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','andamento','iniciada'])->whereYear('data_termino',$i)->whereIn('local',$r->local)->get();
-                $totais[$i][1] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','andamento','iniciada'])->whereYear('data_termino',$i)->whereIn('local',$r->local)->whereMonth('data_termino','<=',7)->get();
-                $totais[$i][2] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','andamento','iniciada'])->whereYear('data_termino',$i)->whereIn('local',$r->local)->whereMonth('data_termino','>',7)->get();
+                $totais[$i][0] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','iniciada'])->whereYear('data_termino',$i)->whereIn('local',$r->local)->get();
+                $totais[$i][1] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','iniciada'])->whereYear('data_termino',$i)->whereIn('local',$r->local)->whereMonth('data_termino','<=',7)->get();
+                $totais[$i][2] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','iniciada'])->whereYear('data_termino',$i)->whereIn('local',$r->local)->whereMonth('data_termino','>',7)->get();
             }
             else{
-                $totais[$i][0] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','andamento','iniciada'])->whereYear('data_termino',$i)->get();
-                $totais[$i][1] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','andamento','iniciada'])->whereYear('data_termino',$i)->whereMonth('data_termino','<=',7)->get();
-                $totais[$i][2] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','andamento','iniciada'])->whereYear('data_termino',$i)->whereMonth('data_termino','>',7)->get();
+                $totais[$i][0] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','iniciada'])->whereYear('data_termino',$i)->get();
+                $totais[$i][1] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','iniciada'])->whereYear('data_termino',$i)->whereMonth('data_termino','<=',7)->get();
+                $totais[$i][2] = \DB::table('turmas')->select(['id','programa','local'])->whereIn('status',['encerrada','iniciada'])->whereYear('data_termino',$i)->whereMonth('data_termino','>',7)->get();
 
             }
 

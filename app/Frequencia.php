@@ -62,7 +62,7 @@ class Frequencia extends Model
      * Controle de Frequencia retorna os alunos possivelmente evadidos com mais de 4 faltas seguidas
      */
     public static function controleFrequencia(){
-        $turmas = Turma::select('id')->whereIn('status',['iniciada','andamento'])->get();
+        $turmas = Turma::select('id')->where('status','iniciada')->get();
         foreach($turmas as $turmas){
             $inscricoes = $turma->getInscricoes();
             foreach($inscricoes as $inscricao){

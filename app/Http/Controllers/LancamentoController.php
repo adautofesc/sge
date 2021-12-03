@@ -702,7 +702,7 @@ class LancamentoController extends Controller
 
 	
 	public function descontao1(){
-		$turmas1 = \App\Turma::whereIn('status', ['andamento','iniciada'])->where(function($query){
+		$turmas1 = \App\Turma::where('status', 'iniciada')->where(function($query){
 							$query->where('dias_semana','like','%qui%')
 							->orwhere('dias_semana','like','%sex%');
 							})
@@ -727,7 +727,7 @@ class LancamentoController extends Controller
 	}
 	
 	public function descontao2(){
-		$turmas = \App\Turma::where('local',86)->whereIn('status', ['andamento','iniciada'])->get();
+		$turmas = \App\Turma::where('local',86)->where('status','iniciada')->get();
 		foreach($turmas as $turma){
 			if($turma->tempo_curso<9)
 				$tempo = 5;

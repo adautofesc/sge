@@ -63,7 +63,7 @@
               </div>
               <div class="col-sm-8">
                 <strong>{{$turma->nomeCurso}}</strong> - <small>De {{$turma->data_inicio}} a {{$turma->data_termino}}</small>
-                <br> <small> {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}} | {{$turma->professor->nome_simples}}</small>
+                <br> <small> <strong>{{$turma->local->nome}}</strong> - {{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}} | {{$turma->professor->nome_simples}}</small>
                 
 
               </div>

@@ -415,7 +415,9 @@ class Turma extends Model
 				if($vencimento < date('Y-m-d 23:23:59'))
 					//redirect()->back()->withErrors(['Atestado fora da data de validade']);
 			}
-		}*/
+		}
+		if($this->id == 1576)
+		dd($idade_minima);*/
 
 		
 		return true;

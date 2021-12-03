@@ -30,7 +30,7 @@
                     <div class="item-row">
                         <div class="item-col fixed item-col-check"> 
                             <label class="item-check" >
-                            <input type="checkbox" class="checkbox" name="turma" value="{{$turma->id}}" onclick="addItem({{$turma->id}});">
+                            <input type="checkbox" class="checkbox" name="turma" id="turma{{$turma->id}}" value="{{$turma->id}}" onclick="addItem({{$turma->id}});">
                             <span></span>
                             </label>
                         </div>
@@ -44,12 +44,12 @@
 
                            
                            @if(isset($turma->disciplina))
-                                <a href="{{asset('/cursos/disciplinas/disciplina').'/'.$turma->disciplina->id}}" target="_blank" class="" title="Ver descrição em outra janela">
+                                <a href="#" onclick="addItem({{$turma->id}});" >
                                     <h4 class="item-title"> {{$turma->disciplina->nome}}</h4>       
                                     <small>{{$turma->curso->nome}}</small>
                                 </a>
                             @else
-                                <a href="{{asset('/cursos/curso').'/'.$turma->curso->id}}" target="_blank" class="" title="Ver descrição em outra janela">
+                                <a href="#" onclick="addItem({{$turma->id}});">
                                     <h4 class="item-title"> {{$turma->curso->nome}}</h4>           
                                 </a>
                             @endif
@@ -107,12 +107,12 @@
 
                            
                            @if(isset($turma->disciplina))
-                                <a href="{{asset('/cursos/disciplinas/disciplina').'/'.$turma->disciplina->id}}" target="_blank" >
+                                <a href="#" >
                                     <h4 class="item-title"> {{$turma->disciplina->nome}}</h4>       
                                     <small>{{$turma->curso->nome}}</small>
                                 </a>
                             @else
-                                <a href="{{asset('/cursos/curso').'/'.$turma->curso->id}}" target="_blank" >
+                                <a href="#">
                                     <h4 class="item-title"> {{$turma->curso->nome}}</h4>           
                                 </a>
                             @endif

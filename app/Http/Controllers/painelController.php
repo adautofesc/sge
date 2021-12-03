@@ -271,7 +271,7 @@ class painelController extends Controller
         $erros="\n"."\n".'Cadastros SEM Celular'."\n";
 
 
-        $turmas = \App\Turma::where('professor',20477)->whereIn('status',['iniciada','andamento'])->get();
+        $turmas = \App\Turma::where('professor',20477)->where('status','iniciada')->get();
         foreach($turmas as $turma){
             $inscricoes = \App\Inscricao::where('turma',$turma->id)->get();
             foreach ($inscricoes as $inscricao){

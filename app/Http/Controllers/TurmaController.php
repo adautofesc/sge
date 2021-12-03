@@ -505,7 +505,7 @@ class TurmaController extends Controller
         //verificar se a turma tem aulas executadas e matriculas ativas
 
         $turma=Turma::find($request->turmaid);
-        if($turma->status == 'iniciada' || $turma->status == 'andamento'){
+        if($turma->status == 'iniciada'){
             
             if($turma->matriculados >0 && \Carbon\Carbon::createFromFormat('d/m/Y', $turma->data_inicio)->format('Y-m-d')!=$request->dt_inicio)               
                 return redirect()->back()->withErrors(['Não é possível alterar datas de início de turmas com alunos matriculados.']);
@@ -812,7 +812,7 @@ class TurmaController extends Controller
     public function turmasSite(){
 
         
-        $turmas=Turma::whereIn('turmas.status', ['inscricao','iniciada'])
+        $turmas=Turma::where('turmas.status_matricula', 'aberta')
                 ->whereIn('turmas.local',[84,85,86,118])
                 ->whereColumn('turmas.vagas','>','turmas.matriculados')
                 ->get();
@@ -827,7 +827,7 @@ class TurmaController extends Controller
 
  
     public function turmasProfessor(Request $r){
-        $turmas=Turma::whereIn('turmas.status', ['inscricao','iniciada'])
+        $turmas=Turma::whereIn('turmas.status', ['lancada','iniciada'])
                 ->whereIn('turmas.local',[84,85,86])
                 ->whereColumn('turmas.vagas','>','turmas.matriculados')
                 ->where('professor',$r->professor)
@@ -1309,7 +1309,7 @@ class TurmaController extends Controller
 
 
     public function atualizarInscritos(){
-        $turmas = Turma::select(['id','matriculados'])->whereIn('status',['inscricao','andamento','iniciada','espera'])->get();
+        $turmas = Turma::select(['id','matriculados'])->whereIn('status',['iniciada','lancada'])->get();
         foreach($turmas as $turma){
             $inscritos = Inscricao::where('turma',$turma->id)->whereIn('status',['regular','pendente','finalizada','finalizado'])->count();
             if($turma->matriculados != $inscritos){

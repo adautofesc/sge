@@ -26,8 +26,7 @@ class PessoaDadosAdminController extends Controller
         $pendencia = PessoaDadosAdministrativos::where('pessoa',$pessoa)->where('dado','pendencia')->where('valor',$valor)->first();
         if($pendencia)
             $pendencia->delete();
-        else
-        dd($pendencia);
+        
         
         $outras_pendencias = PessoaDadosAdministrativos::where('pessoa',$pessoa)->where('dado','pendencia')->first();
         if($outras_pendencias == null){

@@ -346,18 +346,26 @@ class painelController extends Controller
     
     public function testarClasse(){
 
-      return "ok";
+        $boletos = \App\Boleto::where('created_at','>=','2021-11-20')->whereIn('status',['gravado','impresso','cancelado','cancelar'])->get();
+        foreach($boletos as $boleto){
+            $lancamentos = \App\Lancamento::where('boleto',$boleto->id)->delete();
+            $boleto->delete();
+        }
+
+        $pendencias = \App\PessoaDadosAdministrativos::select('pessoa')->where('dado','pendencia')->groupBy('pessoa')->get();
+        //dd($pendencias);
+        foreach($pendencias as $pendencia){
+            PessoaDadosAdminController::verificaPendencias($pendencia->pessoa);
+        }
+
+        return $boletos;
 
     }
 
 
     public function testarClassePost(Request $r){
         
-        foreach($r->matricula as $id){
-            $inst= new MatriculaController;
-            $inst->cancelarMatricula($id);
-        }
-        return $r->matricula;
+      
 
 
     }

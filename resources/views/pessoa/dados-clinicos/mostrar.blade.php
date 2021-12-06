@@ -15,52 +15,57 @@
             <div class="form-group row"> 
                     <label class="col-sm-4 form-control-label text-xs-right">Atestados médicos</label>
                     <div class="col-sm-8">
+                        
                         @if(isset($atestados))
                         @foreach($atestados as $atestado)
-                        <a href="#" onclick="desativarAtestado('{{$atestado->id}}')" title="Apagar Atestado" class="btn btn-danger btn-sm">
-                            <i class="fa fa-times"></i>
-                        </a>
-                        <a href="/pessoa/atestado/editar/{{$atestado->id}}" title="Editar Atestado" class="btn btn-primary btn-sm">
-                            <i class="fa fa-pencil"></i>
-                        </a> 
-                        @if(file_exists('documentos/atestados/'.$atestado->id.'.pdf'))
+                        <div class="row">
                             
-                                <a href="/download/{{str_replace('/','-.-', 'documentos/atestados/'.$atestado->id.'.pdf')}}" target="_blank"><i class="fa fa-file"></i></a>
-                             
-                        @endif
-                            Atestado nº {{$atestado->id}}
-                         - emitido em
-                            {{\Carbon\Carbon::parse($atestado->emissao)->format('d/m/Y')}}
+                            <div class="col-sm-1" style="width: 3rem"><strong>{{$atestado->id}}</strong></div>
+                            <div class="col-sm-2">
+                                <span  
+                                @switch($atestado->status)
+                                @case('aprovado')
+                                    class="badge badge-pill badge-success"
+                                @break;
+                                @case('analisando')
+                                    class="badge badge-pill badge-warning"
+                                @break;
+                                @case('negado')
+                                    class="badge badge-pill badge-danger"
+                                @break;
+                                @default
+                                    class="badge badge-pill badge-secondary"
+                                @break;
+                                @endswitch
+
+                            
+                                 style="font-size: 0.8rem">{{$atestado->status}}</span></div>
+                            <div class="col-sm-3">Atestado de {{$atestado->tipo}}</div>
+                            <div class="col-sm-2">Emissão: {{\Carbon\Carbon::parse($atestado->emissao)->format('d/m/Y')}}</div>
+                            <div class="col-sm-3">
+                                <a href="/pessoa/atestado/analisar/{{$atestado->id}}" title="Análise do atestado"><i class="fa fa-pencil-square-o text-success"></i></a>
+                                <a href="/pessoa/atestado/editar/{{$atestado->id}}" title="Editar atestado"><i class="fa fa-pencil text-secondary"></i></a>
+                                <a href="#" onclick="desativarAtestado('{{$atestado->id}}')" title="Apagar atestado"><i class="fa fa-times text-danger"></i></a>
+                            </div>
+                              
+                                
+                                
+                                
+                        
+                        </div>
+                        
+                        
+                            
                             <br>
                         @endforeach
                         @endif
+                        
 
                     </div>
 
 
              
 
-
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-4 form-control-label text-xs-right">Justificativas de ausência</label>
-                <div class="col-sm-6">                 
-                    <input type="text" class="form-control boxed" placeholder="Se não tiver, não preencha." maxlength="150" name="doenca" value="">
-                    <br>
-                    <ul>
-                        @foreach($pessoa->dadosClinicos->where('dado','justificativa') as $dado)
-                        <li>{{$dado->valor}} 
-                            <a href="#" onclick="desativarDado('{{$dado->id}}')" title="Apagar dado" >
-                                <i class="fa fa-times text-danger"></i>
-                            </a>
-                        </li>
-                        @endforeach
-                    </ul>
-                        
-                </div>
-                <div class="col-sm-2">
-                    <button name="btn_sub" value='1' class="btn btn-primary" onclick="cadastrar('doenca',{{$pessoa}})">Adicionar</button>
-                </div>
 
             </div>
             <div class="form-group row"> 

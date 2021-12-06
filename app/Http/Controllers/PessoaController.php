@@ -682,7 +682,7 @@ class PessoaController extends Controller
 		$dados=$this->dadosPessoa($id);
 		$dados->bairros=$bairros;
 
-
+		
 		//return $dados;
 				
 		return view('pessoa.dados-contato.editar-dados-contato', compact('dados'));

@@ -40,6 +40,11 @@ class AtestadoController extends Controller
         if (!empty($arquivo)) {	
                 $arquivo->move('documentos/atestados/', $atestado->id.'.pdf');
         }
+		LogController::registrar('atestado',$atestado->id,'Atestado cadastrado pela secretaria.', Auth::user()->pessoa);
+		if($atestado->tipo == 'vacinacao')					
+			PessoaDadosAdminController::liberarPendencia($atestado->pessoa,'Falta atestado de vacinação aprovado.');
+		if($atestado->tipo == 'saude')					
+			PessoaDadosAdminController::liberarPendencia($atestado->pessoa,'Falta atestado de saúde aprovado.');
       
         
 
@@ -166,9 +171,9 @@ class AtestadoController extends Controller
 			if($r->status == 'aprovado'){
 				LogController::registrar('atestado',$id,'Atestado aprovado.', Auth::user()->pessoa);
 				if($atestado->tipo == 'vacinacao')					
-					PessoaDadosAdminController::liberarPendencia($atestado->pessoa,'Atestado de vacinação aprovado.');
+					PessoaDadosAdminController::liberarPendencia($atestado->pessoa,'Falta atestado de vacinação aprovado.');
 				if($atestado->tipo == 'saude')					
-					PessoaDadosAdminController::liberarPendencia($atestado->pessoa,'Atestado de saúde aprovado.');
+					PessoaDadosAdminController::liberarPendencia($atestado->pessoa,'Falta atestado de saúde aprovado.');
 				
 			}
 			if($r->status == 'recusado'){

@@ -56,7 +56,7 @@
           @endif
           @foreach($turmas as $turma)
           @if($turma->verificaRequisitos($pessoa->id))
-            @if($turma->matriculados<=$turma->vagas)
+            @if($turma->matriculados<$turma->vagas)
             <label class="form-group row rodape">
               <div class="col-sm-1">
                 <input type="checkbox" class="checkbox" name="turma[]" value="{{$turma->id}}" >  <small>{{$turma->id}}</small> 
@@ -80,7 +80,7 @@
             @else
             <div class="form-group row rodape alert-danger">
               <div class="col-sm-1">
-                <input type="checkbox" class="checkbox"  readonly name="turma[]" value="{{$turma->id}}" title="Não há mais vagas neste curso" >  <small>{{$turma->id}}</small> 
+                <small>{{$turma->id}}</small> 
               </div>
               <div class="col-sm-8">
                 <strong>* SEM VAGAS</strong> | {{$turma->nomeCurso}} - <small>De {{$turma->data_inicio}} a {{$turma->data_termino}}</small>

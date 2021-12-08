@@ -244,21 +244,16 @@
                         <div class="action dropdown"> 
                             <button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenuAction" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Alterar Status
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuAction"> 
-                                <a class="dropdown-item" style="line-height: 30px; text-decoration: none;" href="#" onclick="alterarStatus('inscricao')">
-                                    <i class="fa fa-circle-o icon text-info"></i> Abrir Matrículas
-                                </a> 
-                                <a class="dropdown-item" href="#" onclick="alterarStatus('espera')" style="line-height: 30px; text-decoration: none">
-                                    <i class="fa fa-clock-o icon text-warning"></i> Suspender Matrículas
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuAction">  
+                                <a class="dropdown-item" href="#" onclick="alterarStatus('lancada')" style="line-height: 30px; text-decoration: none">
+                                    <i class="fa fa-clock-o icon text-warning"></i> Lançada
                                 </a>
-                                <a class="dropdown-item" href="#" onclick="alterarStatus('andamento')"  style="line-height: 30px;text-decoration: none;">
-                                    <i class="fa fa-check-circle icon text-success"></i> Iniciada / parar matrículas
-                                </a>
+                           
                                 <a class="dropdown-item" href="#" onclick="alterarStatus('iniciada')" style="line-height: 30px;text-decoration: none;">
-                                    <i class="fa fa-check-circle-o icon text-success"></i> Iniciada / c/matrículas abertas 
+                                    <i class="fa fa-check-circle-o icon text-success"></i> Iniciada  
                                 </a>
                                 <a class="dropdown-item" href="#" onclick="alterarStatus('encerrada')" style="line-height: 30px;text-decoration: none;" >
-                                    <i class="fa fa-minus-circle icon text-danger" ></i> Encerrar Turmas
+                                    <i class="fa fa-minus-circle icon text-danger" ></i> Encerrada
                                 </a>
                                
                                  

@@ -226,4 +226,6 @@ class AtestadoController extends Controller
 		return true;		
 
 	}
+
+	
 }

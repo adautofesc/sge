@@ -346,7 +346,7 @@ class painelController extends Controller
     
     public function testarClasse(){
 
-        $boletos = \App\Boleto::where('created_at','>=','2021-11-20')->whereIn('status',['gravado','impresso','cancelado','cancelar'])->get();
+       /* $boletos = \App\Boleto::where('created_at','>=','2021-11-20')->whereIn('status',['gravado','impresso','cancelado','cancelar'])->get();
         foreach($boletos as $boleto){
             $lancamentos = \App\Lancamento::where('boleto',$boleto->id)->delete();
             $boleto->delete();
@@ -358,7 +358,9 @@ class painelController extends Controller
             PessoaDadosAdminController::verificaPendencias($pendencia->pessoa);
         }
 
-        return $boletos;
+        return $boletos;*/
+        $pessoas = \App\Matricula::select('pessoa')->where('status','pendente')->where('curso','307')->groupBy('pessoa')->get();
+       
 
     }
 

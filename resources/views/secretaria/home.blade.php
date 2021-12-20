@@ -124,6 +124,11 @@
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Solicitações Bolsas</a>
                     </div>
+                    <div>
+                        <a href="secretaria/listar-pendencias" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Relatorio de pendencias</a>
+                    </div>
 
             
                 

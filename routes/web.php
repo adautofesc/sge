@@ -611,6 +611,8 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('alunos','SecretariaController@alunos');
 		Route::get('alunos-cancelados','SecretariaController@alunosCancelados');
 
+		Route::get('listar-pendencias','PessoaDadosAdminController@relatorioPendentes');
+
 
 
 

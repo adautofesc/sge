@@ -66,4 +66,29 @@ class PessoaDadosAdminController extends Controller
 
         return 'Pendencias verificadas';
     }
+
+    public function relatorioPendentes(){
+        $pendencias = PessoaDadosAdministrativos::where('dado','pendencia')->get();
+        $pessoas = Array();
+        $atestados_vacina = Array();
+        $atestados_saude = Array();
+        
+        foreach($pendencias as $pendencia){
+            if(!in_array($pendencia->pessoa,$pessoas))
+                $pessoas[] = $pendencia->pessoa;
+            if($pendencia->valor == 'Falta atestado de vacinação aprovado.' && !in_array($pendencia->pessoa,$atestados_vacina))
+                $atestados_vacina[] = $pendencia->pessoa;
+            if($pendencia->valor == 'Falta atestado de saúde aprovado.' && !in_array($pendencia->pessoa,$atestados_saude))
+                $atestados_saude[] = $pendencia->pessoa;
+            
+            
+        }
+
+        $pessoas_collection = \App\Pessoa::whereIn('id',$pessoas)->paginate(50);
+
+       
+
+        return view('pessoa.dados-administrativos.listar-pendencias')->with('pessoas',$pessoas_collection)->with('atestados_vacina',$atestados_vacina)->with('atestados_saude',$atestados_saude);
+		
+	}
 }

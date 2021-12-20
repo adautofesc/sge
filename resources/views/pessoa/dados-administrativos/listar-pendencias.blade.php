@@ -66,7 +66,7 @@
                         @if(in_array($pessoa->id,$atestados_saude))
                         <span class="text-danger">pendente</span>
                         @else
-                        <span class="text-success">ok</span>
+                        <span class="text-success">&nbsp;</span>
                         @endif
                     </div>
                 </div>

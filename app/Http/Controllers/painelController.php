@@ -369,15 +369,15 @@ class painelController extends Controller
                 ->pluck('id_turma')->toArray();*/
         
         $inscricoes = \App\Inscricao::whereIn('status',['regular','pendente'])->get();
-        $pessoas = array();
+        $pessoas_array = array();
         foreach($inscricoes as $inscricao){
             $estado = AtestadoController::verificaParaInscricao($inscricao->pessoa->id,$inscricao->turma);
             if($estado)
                 $inscricao->status = 'regular';
             else{
                 $inscricao->status = 'pendente';
-                if(!in_array($inscricao->pessoa->id,$pessoas))
-                    $pessoas[] = $inscricao->pessoa->id;
+                if(!in_array($inscricao->pessoa->id,$pessoas_array))
+                    $pessoas_array[] = $inscricao->pessoa->id;
             }
             
             $inscricao->save();
@@ -388,13 +388,15 @@ class painelController extends Controller
         }
 
         $pessoas = \App\Pessoa::select('id','nome')
-            ->whereIn('id',$pessoas) ->get();
-        foreach($pessoas as &$pessoa)
-            $email = \App\PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',1)->orderby('id')->first();
+            ->whereIn('id',$pessoas_array) ->get();
+
+        foreach($pessoas as &$pessoa){
+            $email = \App\PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',1)->orderbyDESC('id')->first();
             if($email)
                 $pessoa->email = $email->valor;
             else
                 $pessoa->email = 'indefinido';
+        }
 
 
         return $pessoas;

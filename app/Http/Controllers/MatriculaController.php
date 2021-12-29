@@ -505,7 +505,7 @@ class MatriculaController extends Controller
             }  
         }  
         else
-            dd('Erro em MatriculaController::atualizar -> Matrícula não encontrada');  
+            dd('Erro em MatriculaController::atualizar -> Matrícula'.$id.' não encontrada');  
 
         return false;   
     }

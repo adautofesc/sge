@@ -202,28 +202,32 @@ class AtestadoController extends Controller
 	}
 
 	public static function verificaParaInscricao(int $pessoa, \App\Turma $turma){
+		$vacina = true;
+		$atestado = true;
 		$vacinacao = Atestado::where('pessoa',$pessoa)->where('tipo','vacinacao')->where('status','aprovado')->first();
+		
 		if(!$vacinacao){
 			
 			\App\PessoaDadosAdministrativos::cadastrarUnico($pessoa,'pendencia','Falta atestado de vacinação aprovado.');
+			$vacina = false;
 			
-			
-			return false;
 		}
 		
 
-		$requisito_curso = \App\CursoRequisito::where('para_tipo','curso')->where('curso',$turma->curso)->where('requisito',18)->first();
 		$requisito_turma = \App\CursoRequisito::where('para_tipo','turma')->where('curso',$turma->id)->where('requisito',18)->first();
-		if($requisito_curso || $requisito_turma){
+		if(isset($requisito_turma->id)){
 			$saude =  Atestado::where('pessoa',$pessoa)->where('tipo','saude')->where('status','aprovado')->first();
 			if(!$saude){
 				\App\PessoaDadosAdministrativos::cadastrarUnico($pessoa,'pendencia','Falta atestado de saúde aprovado.');	
-				return false;
+				$atestado = false;
 			}
 
 		}
 
-		return true;		
+		if($atestado && $vacina)
+			return true;
+		else
+			return false;		
 
 	}
 

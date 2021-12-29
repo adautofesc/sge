@@ -359,7 +359,46 @@ class painelController extends Controller
         }
 
         return $boletos;*/
-        $pessoas = \App\Matricula::select('pessoa')->where('status','pendente')->where('curso','307')->groupBy('pessoa')->get();
+       
+       
+       /* $turmas_atestado = \App\CursoRequisito::select('cursos_requisitos.*','turmas.id as id_turma')
+                ->leftjoin('turmas', 'turmas.id','=','cursos_requisitos.curso')
+                ->where('turmas.status','lancada')
+                ->where('para_tipo','turma')
+                ->where('requisito','18')
+                ->pluck('id_turma')->toArray();*/
+        
+        $inscricoes = \App\Inscricao::whereIn('status',['regular','pendente'])->get();
+        $pessoas = array();
+        foreach($inscricoes as $inscricao){
+            $estado = AtestadoController::verificaParaInscricao($inscricao->pessoa->id,$inscricao->turma);
+            if($estado)
+                $inscricao->status = 'regular';
+            else{
+                $inscricao->status = 'pendente';
+                if(!in_array($inscricao->pessoa->id,$pessoas))
+                    $pessoas[] = $inscricao->pessoa->id;
+            }
+            
+            $inscricao->save();
+            if($inscricao->matricula>0)
+                MatriculaController::atualizar($inscricao->matricula);
+
+
+        }
+
+        $pessoas = \App\Pessoa::select('id','nome')
+            ->whereIn('id',$pessoas) ->get();
+        foreach($pessoas as &$pessoa)
+            $email = \App\PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',1)->orderby('id')->first();
+            if($email)
+                $pessoa->email = $email->valor;
+            else
+                $pessoa->email = 'indefinido';
+
+
+        return $pessoas;
+
        
 
     }

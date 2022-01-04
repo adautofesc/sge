@@ -343,6 +343,21 @@ class painelController extends Controller
 
              
     }
+
+    public static function cancelandoPendentes(){
+        $pendentes = \App\PessoaDadosAdministrativos::select('pessoa')->where('dado','pendencia')->where('valor','like','Falta atestado de vacinação aprovado.')->groupBy('pessoa')->pluck('pessoa')->toArray();
+
+        foreach($pendentes as $pendente){
+            $matriculas = \App\Matricula::where('pessoa',$pendente)->where('status','pendente')->pluck('id')->toArray();
+            MatriculaController::alterarStatus(implode(',',$matriculas),'cancelada');
+            $pendencia_vacina = \App\PessoaDadosAdministrativos::where('pessoa',$pendente)->where('dado','pendencia')->where('valor','like','Falta atestado de vacinação aprovado.')->delete();
+            $pendencia_atestado = \App\PessoaDadosAdministrativos::where('pessoa',$pendente)->where('dado','pendencia')->where('valor','like','Falta atestado de saúde aprovado.')->delete();
+
+
+        }
+        return $pendentes;
+
+    }
     
     public function testarClasse(){
 
@@ -351,24 +366,24 @@ class painelController extends Controller
             $lancamentos = \App\Lancamento::where('boleto',$boleto->id)->delete();
             $boleto->delete();
         }
+        */
 
-        $pendencias = \App\PessoaDadosAdministrativos::select('pessoa')->where('dado','pendencia')->groupBy('pessoa')->get();
-        //dd($pendencias);
-        foreach($pendencias as $pendencia){
-            PessoaDadosAdminController::verificaPendencias($pendencia->pessoa);
-        }
-
-        return $boletos;*/
+       
+        
        
        
-       /* $turmas_atestado = \App\CursoRequisito::select('cursos_requisitos.*','turmas.id as id_turma')
+       /* -------------------  selecionando turmas de atividade física
+        $turmas_atestado = \App\CursoRequisito::select('cursos_requisitos.*','turmas.id as id_turma')
                 ->leftjoin('turmas', 'turmas.id','=','cursos_requisitos.curso')
                 ->where('turmas.status','lancada')
                 ->where('para_tipo','turma')
                 ->where('requisito','18')
-                ->pluck('id_turma')->toArray();*/
-        
-        $inscricoes = \App\Inscricao::whereIn('status',['regular','pendente'])->get();
+                ->pluck('id_turma')->toArray();
+        // ---------------------------------*/
+
+
+        // -- varre as inscrições procurando por pendentes e gera uma lista de nomes/emails em json
+        /*$inscricoes = \App\Inscricao::whereIn('status',['regular','pendente'])->get();
         $pessoas_array = array();
         foreach($inscricoes as $inscricao){
             $estado = AtestadoController::verificaParaInscricao($inscricao->pessoa->id,$inscricao->turma);
@@ -391,15 +406,26 @@ class painelController extends Controller
             ->whereIn('id',$pessoas_array) ->get();
 
         foreach($pessoas as &$pessoa){
-            $email = \App\PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',1)->orderbyDESC('id')->first();
+           /* $email = \App\PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',1)->orderbyDESC('id')->first();
             if($email)
                 $pessoa->email = $email->valor;
             else
                 $pessoa->email = 'indefinido';
+            //---- 
+            
+            $pessoa->celular = $pessoa->getCelular();
+        }
+        */
+
+        $pendentes = \App\PessoaDadosAdministrativos::select('pessoa')->where('dado','pendencia')->where('valor','like','Falta atestado de vacinação aprovado.')->groupBy('pessoa')->pluck('pessoa')->toArray();
+        $pessoas = \App\Pessoa::select('id','nome')->whereIn('id',$pendentes)->get();
+        foreach($pessoas as &$pessoa){
+            $pessoa->celular = $pessoa->getCelular();
         }
 
 
         return $pessoas;
+        // ---------------------------------------------------------------------------*/
 
        
 

@@ -363,6 +363,7 @@ class InscricaoController extends Controller
                     $inscricao->save();
                     switch($status){
                         case "pendente" :
+                            TurmaController::modInscritos($inscricao->turma->id);
                             MatriculaController::atualizar($inscricao->matricula);
                             break;
                         case "regular": 
@@ -412,30 +413,29 @@ class InscricaoController extends Controller
             case 'ativa': 
                 $inscricoes_ = $inscricoes->whereIn('status',['pendente','finalizada']);
                 foreach($inscricoes_ as $inscricao){
-                    $inscricao->status = 'regular';
-                    $inscricao->save();
+                    InscricaoController::alterarStatus($inscricao->id,'regular');
+     
                 }
             break;
             case 'pendente': 
                 $inscricoes_ = $inscricoes->where('status','regular');
                 foreach($inscricoes_ as $inscricao){
-                    $inscricao->status = 'pendente';
-                    $inscricao->save();
+                    InscricaoController::alterarStatus($inscricao->id,'pendente');
+                    
                 }
             break;
             case 'cancelada': 
                 $inscricoes_ = $inscricoes->whereIn('status',['regular','pendente']);
                 foreach($inscricoes_ as $inscricao){
-                    $inscricao->status = 'cancelada';
-                    $inscricao->save();
-                    TurmaController::modInscritos($inscricao->turma->id);
+                    InscricaoController::alterarStatus($inscricao->id,'cancelada');
+                    
                 }
             break;
-            case 'finalizada': 
+            case 'expirada': 
                 $inscricoes_ = $inscricoes->whereIn('status',['regular','pendente']);
                 foreach($inscricoes_ as $inscricao){
-                    $inscricao->status = 'expirada';
-                    $inscricao->save();
+                    InscricaoController::alterarStatus($inscricao->id,'finalizada');
+                   
                 }
             break;
 

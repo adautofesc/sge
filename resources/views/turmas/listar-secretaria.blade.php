@@ -289,8 +289,14 @@
                                     <a class="dropdown-item" href="#" style="line-height: 20px;text-decoration: none;">
                                     ------> MATRÍCULAS
                                      </a>
-                                    <a class="dropdown-item" style="line-height: 30px; text-decoration: none;" href="#" onclick="alterarStatusMatricula('aberta')">
-                                        <i class="fa fa-circle-o icon"></i> Abrir Matrículas
+                                    <a class="dropdown-item" style="line-height: 30px; text-decoration: none;" href="#" onclick="alterarStatusMatricula('aberta')"  title="Abrir matrículas presenciais e online">
+                                        <i class="fa fa-circle-o icon"></i> Abrir Matrículas Geral
+                                    </a> 
+                                    <a class="dropdown-item" style="line-height: 30px; text-decoration: none;" href="#" onclick="alterarStatusMatricula('presencial')" title="Abrir matrículas somente para modalidade presencial">
+                                        <i class="fa fa-circle-o icon"></i> Abrir Matrículas Presenciais
+                                    </a> 
+                                    <a class="dropdown-item" style="line-height: 30px; text-decoration: none;" href="#" onclick="alterarStatusMatricula('online')"  title="Abrir matrículas somente para modalidade online">
+                                        <i class="fa fa-circle-o icon"></i> Abrir Matrículas Online
                                     </a> 
                                     <a class="dropdown-item" href="#" onclick="alterarStatusMatricula('fechada')" style="line-height: 30px; text-decoration: none">
                                         <i class="fa fa-circle-o icon"></i> Fechar Matrículas

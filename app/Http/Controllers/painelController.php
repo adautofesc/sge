@@ -419,12 +419,26 @@ class painelController extends Controller
 
         $pendentes = \App\PessoaDadosAdministrativos::select('pessoa')->where('dado','pendencia')->where('valor','like','Falta atestado de vacinação aprovado.')->groupBy('pessoa')->pluck('pessoa')->toArray();
         $pessoas = \App\Pessoa::select('id','nome')->whereIn('id',$pendentes)->get();
+        $pessoas_com_matriculas = collect();
         foreach($pessoas as &$pessoa){
-            $pessoa->celular = $pessoa->getCelular();
+            $matriculas = \App\Matricula::where('pessoa',$pessoa->id)->whereIn('status',['pendente','ativa'])->count();
+            if($matriculas>0){
+                $pessoa->celular = $pessoa->getCelular();
+                $pessoas_com_matriculas->add($pessoa);
+
+            }
+            else{
+                \App\PessoaDadosAdministrativos::where('pessoa',$pessoa->id)->where('dado','pendencia')->where('valor','like','Falta atestado de vacinação aprovado.')->delete();
+            }
+               
+
+
+
+           
         }
 
 
-        return $pessoas;
+        return $pessoas_com_matriculas;
         // ---------------------------------------------------------------------------*/
 
        

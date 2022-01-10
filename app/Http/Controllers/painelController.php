@@ -416,6 +416,14 @@ class painelController extends Controller
             $pessoa->celular = $pessoa->getCelular();
         }
         */
+        $matriculas =  Matricula::whereIn('status',['ativa','pendente'])->where('data','<','2021-10-30')->pluck('id')->toArray();
+        MatriculaController::alterarStatus(implode(',',$matriculas),'expirada');
+        $pessoas = $this->listarPendentesComMatriculas();
+        return $matriculas;
+    }
+
+
+    public function listarPendentesComMatriculas(){
 
         $pendentes = \App\PessoaDadosAdministrativos::select('pessoa')->where('dado','pendencia')->where('valor','like','Falta atestado de vacinação aprovado.')->groupBy('pessoa')->pluck('pessoa')->toArray();
         $pessoas = \App\Pessoa::select('id','nome')->whereIn('id',$pendentes)->get();

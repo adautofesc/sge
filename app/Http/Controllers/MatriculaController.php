@@ -476,6 +476,11 @@ class MatriculaController extends Controller
         $matricula = Matricula::find($id);
         if(isset($matricula->id)){
             $inscricoes = InscricaoController::inscricoesPorMatricula($id,'todas');
+            if($inscricoes->count()==0){
+                $matricula->status = 'cancelada';
+                $matricula->save();
+                return $matricula;
+            }
             $regulares = $inscricoes->where('status','regular');
             if($regulares->count()>0){
                 $matricula->status = 'ativa';

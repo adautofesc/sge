@@ -416,10 +416,43 @@ class painelController extends Controller
             $pessoa->celular = $pessoa->getCelular();
         }
         */
-        $matriculas =  Matricula::whereIn('status',['ativa','pendente'])->where('data','<','2021-10-30')->pluck('id')->toArray();
-        MatriculaController::alterarStatus(implode(',',$matriculas),'expirada');
-        $pessoas = $this->listarPendentesComMatriculas();
-        return $matriculas;
+
+        $pessoas = [    33248,
+                        32527,
+                        32153,
+                        31700,
+                        31498,
+                        27074,
+                        26219,
+                        25370,
+                        24225,
+                        21093,
+                        19279,
+                        17489,
+                        9809,
+                        7597,
+                        7357,
+                        6285,
+                        5455,
+                        4185,
+                        3857,
+                        2947,
+                        1839];
+        foreach($pessoas as $pessoa){
+            $matriculas = Matricula::where('pessoa',$pessoa)->where('curso',307)->whereIn('status',['pendente','ativa'])->pluck('id')->toArray();
+            $inscricoes = \App\Inscricao::whereIn('matricula',$matriculas)->get();
+            foreach($inscricoes as $inscricao){
+                $inscricao->matricula = $matriculas[0];
+                $inscricao->save();
+            }
+            foreach($matriculas as $matricula){
+                MatriculaController::atualizar($matricula);
+            }
+            
+        }
+
+
+        return 'atualização das matriculas efetuada com sucesso.';
     }
 
 

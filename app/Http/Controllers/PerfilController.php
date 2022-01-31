@@ -18,12 +18,12 @@ class PerfilController extends Controller
 
     public function painel(Request $r){
         //$r já contem pessoa do middleware
-
+        $passport = \App\Atestado::where('pessoa',$r->pessoa->id)->where('tipo','vacinacao')->where('status','aprovado')->first();
         $login = \App\PessoaDadosAcademicos::where('pessoa',$r->pessoa->id)->where('dado','email_fesc')->orderbyDesc('id')->first();
         if($login)
             $login = $login->valor;
             
-        return view('perfil.painel')->with('pessoa',$r->pessoa)->with('login',$login);
+        return view('perfil.painel')->with('pessoa',$r->pessoa)->with('login',$login)->with('vacinado',$passport);
     }
 
     public function cadastrarView($cpf = null){

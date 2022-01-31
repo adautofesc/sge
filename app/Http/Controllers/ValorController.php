@@ -177,9 +177,11 @@ class ValorController extends Controller
                     return $valor;
                 }
                 else
+                    {
+                    return ValorController::retornarZero("Pacote não definido para turma ".$turma->id);
                     // o ideal é parar as matriculas dessa turma e emitir um aviso para secretaria de que a turma está dando problema. 
-                    throw new \Exception("Erro ao acessar valor da turma:".$inscricoes->first()->turma->id.' Matrricula:'.$matricula->id .'. Verifique se a turma está com seu valor devidamente atribuído ou se são foi escolhido a parceria no caso de disciplinas gratuítas.', 1);
-
+                    //throw new \Exception("Erro ao acessar valor da turma:".$inscricoes->first()->turma->id.' Matrricula:'.$matricula->id .'. Verifique se a turma está com seu valor devidamente atribuído ou se são foi escolhido a parceria no caso de disciplinas gratuítas.', 1);
+                }
     		}
     	}
 

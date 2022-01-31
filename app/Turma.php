@@ -380,7 +380,6 @@ class Turma extends Model
 					$idade_maxima = 14;
 					break;
 				case 18:
-					if($req->obrigatorio)
 					$atestado = 1;
 					break;
 				case 1:
@@ -392,12 +391,12 @@ class Turma extends Model
 
 
 		if($idade_minima>0 && $idade_minima>$aluno->getIdade()){
-			redirect()->back()->withErrors(['Idade mínima não atingida: '.$idade_minima]);
+			//redirect()->back()->withErrors(['Idade mínima não atingida: '.$idade_minima]);
 			return false;
 		}
 		
 		if($idade_maxima>0 && $idade_maxima<$aluno->getIdade() ){
-			redirect()->back()->withErrors(['Idade não compatível com a faixa etária obrigatória']);
+			//redirect()->back()->withErrors(['Idade não compatível com a faixa etária obrigatória']);
 			return false;
 		}
 		/*
@@ -405,19 +404,19 @@ class Turma extends Model
 		dd($reqs);*/
 		
 			
-		/* condicional para atestado
+		
 		if($atestado ==1){
-			$atestado = Atestado::where('pessoa',$aluno->id)->first();
-			if($atestado ==null)
-				//redirect()->back()->withErrors(['Atestado médico obrigatório']);
+			$atestado_m = Atestado::where('pessoa',$aluno->id)->where('tipo','saude')->where('status','aprovado')->first();
+			if($atestado_m == null)
+				return false;
+			/*
 			else{
 				$vencimento = $atestado->calculaVencimento($this->programa->id);
 				if($vencimento < date('Y-m-d 23:23:59'))
 					//redirect()->back()->withErrors(['Atestado fora da data de validade']);
-			}
+			}*/
 		}
-		if($this->id == 1576)
-		dd($idade_minima);*/
+		
 
 		
 		return true;

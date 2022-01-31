@@ -35,14 +35,10 @@
             <p class="modal-title"><i class="fa fa-warning"></i> Os cursos virtuais serão realizados de forma síncrona (nos dias e horários previstos) através da plataforma Microsoft Teams. Os alunos receberão os dados de acesso e instruções por e-mail antes do início das aulas. Em caso de dúvidas ligue: (16) 3372-1308
             <br> Antes de se matricular verifique se sua conexão e seu equipamento de acesso suportam o aplicativo Microsoft Teams</p>
           </div>
-          <div class="alert alert-danger">
-            <button type="button" class="close" data-dismiss="alert" >×</button>       
-            <p class="modal-title"><i class="fa fa-danger"></i>Para as atividades presenciais é necessário enviar o atestado ou comprovanete de vacinação completa contra Covid-19.</p>
-            
-          </div>
+         
           <div class="alert alert-success">
             <button type="button" class="close" data-dismiss="alert" >×</button>       
-            <p class="modal-title"><i class="fa fa-danger"></i>Para as atividades físicas é necessário enviar o atestados de saúde.</p>
+            <p class="modal-title"><i class="fa fa-danger"></i>Para visualizar as atividades físicas é necessário enviar o atestados de saúde e que ele seja aprovado. <a href="/perfil/atestado/cadastrar">Clique aqui</a> para enviar seu atestado.</p>
             
           </div>
           <hr>

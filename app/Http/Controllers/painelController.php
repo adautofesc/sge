@@ -415,7 +415,7 @@ class painelController extends Controller
             
             $pessoa->celular = $pessoa->getCelular();
         }
-        */
+        
 
         $pessoas = [    33248,
                         32527,
@@ -450,9 +450,12 @@ class painelController extends Controller
             }
             
         }
+        */
+        $DNLC = new DiaNaoLetivoController;
+        
 
 
-        return 'atualização das matriculas efetuada com sucesso.';
+        return $DNLC->cadastroAnual(2022);
     }
 
 

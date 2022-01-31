@@ -176,7 +176,7 @@ Class Data
         }
 
         //guiliredu/feriados-brasileiros-em-php.php
-        function dias_feriados($ano = null){
+        public static function diasFeriados($ano = null){
                 if(empty($ano))
                 {
                         $ano = intval(date('Y'));
@@ -189,25 +189,27 @@ Class Data
 
                 $feriados = array(
                         // Datas Fixas dos feriados Nacionail Basileiras
-                        mktime(0, 0, 0, 1, 1, $ano), // Confraternização Universal - Lei nº 662, de 06/04/49
-                        mktime(0, 0, 0, 4, 21, $ano), // Tiradentes - Lei nº 662, de 06/04/49
-                        mktime(0, 0, 0, 5, 1, $ano), // Dia do Trabalhador - Lei nº 662, de 06/04/49
-                        mktime(0, 0, 0, 9, 7, $ano), // Dia da Independência - Lei nº 662, de 06/04/49
-                        mktime(0, 0, 0, 10, 12, $ano), // N. S. Aparecida - Lei nº 6802, de 30/06/80
-                        mktime(0, 0, 0, 11, 2, $ano), // Todos os santos - Lei nº 662, de 06/04/49
-                        mktime(0, 0, 0, 11, 15, $ano), // Proclamação da republica - Lei nº 662, de 06/04/49
-                        mktime(0, 0, 0, 12, 25, $ano), // Natal - Lei nº 662, de 06/04/49
+                        'Confraternização Universal' => date("Y-m-d", mktime(0, 0, 0, 1, 1, $ano)), // Confraternização Universal - Lei nº 662, de 06/04/49
+                        'Tiradentes' => date("Y-m-d", mktime(0, 0, 0, 4, 21, $ano)), // Tiradentes - Lei nº 662, de 06/04/49
+                        'Dia do Trabalhador' => date("Y-m-d", mktime(0, 0, 0, 5, 1, $ano)), // Dia do Trabalhador - Lei nº 662, de 06/04/49
+                        'Dia da Independência' => date("Y-m-d", mktime(0, 0, 0, 9, 7, $ano)), // Dia da Independência - Lei nº 662, de 06/04/49
+                        'N.S. Aparecida' => date("Y-m-d", mktime(0, 0, 0, 10, 12, $ano)), // N. S. Aparecida - Lei nº 6802, de 30/06/80
+                        'Todos os santos' => date("Y-m-d", mktime(0, 0, 0, 11, 2, $ano)), // Todos os santos - Lei nº 662, de 06/04/49
+                        'Proclamação da republica' => date("Y-m-d", mktime(0, 0, 0, 11, 15, $ano)), // Proclamação da republica - Lei nº 662, de 06/04/49
+                        'Natal' => date("Y-m-d", mktime(0, 0, 0, 12, 25, $ano)), // Natal - Lei nº 662, de 06/04/49
 
                         // Essas Datas depem diretamente da data de Pascoa
                         // mktime(0, 0, 0, $mes_pascoa, $dia_pascoa - 48, $ano_pascoa), //2ºferia Carnaval
-                        mktime(0, 0, 0, $mes_pascoa, $dia_pascoa - 47, $ano_pascoa), //3ºferia Carnaval
-                        mktime(0, 0, 0, $mes_pascoa, $dia_pascoa - 2, $ano_pascoa), //6ºfeira Santa
-                        mktime(0, 0, 0, $mes_pascoa, $dia_pascoa, $ano_pascoa), //Pascoa
-                        mktime(0, 0, 0, $mes_pascoa, $dia_pascoa + 60, $ano_pascoa), //Corpus Cirist
+                        
+                       '3ª feria Carnaval' => date("Y-m-d", mktime(0, 0, 0, $mes_pascoa, $dia_pascoa - 47, $ano_pascoa)), //3ºferia Carnaval
+                        
+                        '6ª feira Santa' => date("Y-m-d", mktime(0, 0, 0, $mes_pascoa, $dia_pascoa - 2, $ano_pascoa)), //6ºfeira Santa
+                        'Páscoa' => date("Y-m-d", mktime(0, 0, 0, $mes_pascoa, $dia_pascoa, $ano_pascoa)), //Pascoa
+                        'Corpus Christi' =>date("Y-m-d", mktime(0, 0, 0, $mes_pascoa, $dia_pascoa + 60, $ano_pascoa)), //Corpus Cirist
 
                 );
 
-                sort($feriados);
+                
 
                 return $feriados;
         }

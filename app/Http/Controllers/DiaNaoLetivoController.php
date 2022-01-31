@@ -38,4 +38,31 @@ class DiaNaoLetivoController extends Controller
 
         return $this->addRecesso('06/07/2020','31/07/2020');
     }
+
+    public function cadastroAnual($ano = 2022){
+        $feriados_nacionais = \App\classes\Data::diasFeriados($ano);
+        $feriados_estaduais =  ['Revolução Constitucionalista' => $ano.'-'.'07-09'];
+        $feriados_municipais = ['N.S. da Babilônia' => $ano.'-'.'08-15', 
+                                'Aniversário da cidade' => $ano.'-'.'11-04'];
+                            
+        $pontos_facultativos = ['Dia dos professores' => $ano.'-'.'10-15', 
+                               'Dia do funcionalismo público' => $ano.'-'.'10-28']; 
+
+        $feriados = array_merge($feriados_nacionais,$feriados_estaduais,$feriados_municipais,$pontos_facultativos);
+
+        asort($feriados);
+        
+        foreach($feriados as $feriado=>$data){
+            $dia = DiaNaoLetivo::where('data',$data)->first();
+            if(is_null($dia)){
+                $novo_dia = new DiaNaoLetivo;
+                $novo_dia->data = $data;
+                $novo_dia->descricao = $feriado;
+                $novo_dia->save();
+            }
+        }
+
+        dd( $feriados);
+
+    }
 }

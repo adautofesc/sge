@@ -11,12 +11,13 @@ class PerfilMatriculaController extends Controller
 {
     //
     public function matriculasAtivas(Request $r){
+        $passport = \App\Atestado::where('pessoa',$r->pessoa->id)->where('tipo','vacinacao')->where('status','aprovado')->first();
         $matriculas = \App\Matricula::where('pessoa',$r->pessoa->id)->whereIn('status',['ativa','pendente','espera'])->get();
         foreach($matriculas as $matricula){
             $matricula->getInscricoes();
         }
         //dd($matriculas);
-        return view('perfil.matriculas.matriculas')->with('pessoa',$r->pessoa)->with('matriculas',$matriculas);
+        return view('perfil.matriculas.matriculas')->with('pessoa',$r->pessoa)->with('matriculas',$matriculas)->with('vacinado',$passport);
     }
     public function turmasDisponiveis(Request $r){
         $devedor = \App\Boleto::verificarDebitos($r->pessoa->id);

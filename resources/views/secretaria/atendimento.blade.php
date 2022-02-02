@@ -161,7 +161,7 @@
 @endforeach
 @foreach($pendencias as $pendencia)
 <div class="alert alert-danger alert-dismissible">
-  <a href="#" class="close" >&times;</a>
+  <a href="#" class="close" onclick="apagaPendencia({{$pendencia->id}})")>&times;</a>
   <strong><i class="fa fa-warning"></i> ATENÇÃO:</strong> {{$pendencia->valor}}.
 </div>
 @endforeach
@@ -825,6 +825,13 @@ function apagaErro(id){
     if(confirm("Deseja excluir o aviso?")){
         $(location).attr('href','{{asset("/pessoa/apagar-atributo")}}/'+id);
     }
+
+}
+function apagaPendencia(id){
+
+if(confirm("Deseja excluir a pendência?")){
+    $(location).attr('href','{{asset("/pessoa/apagar-pendencia")}}/'+id);
+}
 
 }
 function excluirParcela(id){

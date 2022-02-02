@@ -306,6 +306,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get ('mostrar/{var}','PessoaController@mostrar');
 		Route::get('buscarapida/{var}','PessoaController@liveSearchPessoa');
 		Route::get('apagar-atributo/{var}','PessoaController@apagarAtributo');
+		Route::get('apagar-pendencia/{var}','PessoaController@apagarPendencia');
 		Route::POST('inserir-dado-clinico','PessoaDadosClinicosController@store');
 		Route::delete('apagar-dado-clinico/{id}','PessoaDadosClinicosController@delete');
 

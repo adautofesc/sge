@@ -1080,6 +1080,11 @@ class PessoaController extends Controller
 		PessoaDadosGerais::destroy($id);
 		return redirect()->back();
 	}
+	public function apagarPendencia($id){
+		$pendencia = \App\PessoaDadosAdministrativos::find($id);
+		PessoaDadosAdminController::liberarPendencia($pendencia->pessoa,$pendencia->valor);
+		return redirect()->back();
+	}
 
 	/**
 	 * Cadastra as pessoas diretamente por função;

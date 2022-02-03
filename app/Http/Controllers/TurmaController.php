@@ -548,8 +548,12 @@ class TurmaController extends Controller
             if($turma->isDirty($dado))
                 if(isset($turma->$dado->id))
                     $alteracoes.= $dado.' alterado '. $turma->$dado->id . ' => '.($turma->getOriginal($dado))->id.', ';
-                else
-                    $alteracoes.= $dado.' alterado '. $turma->$dado . ' => '.$turma->getOriginal($dado).', ';
+                else{
+                    if(is_array($turma->$dado))
+                        $alteracoes.= $dado.' alterado '. implode(',',$turma->$dado) . ' => '.implode($turma->getOriginal($dado)).', ';
+                    else
+                        $alteracoes.= $dado.' alterado '. $turma->$dado . ' => '.$turma->getOriginal($dado).', ';
+                }
 
         }
         

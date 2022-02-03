@@ -360,15 +360,7 @@ class painelController extends Controller
     }
     
     public function testarClasse(){
-
-       /* $boletos = \App\Boleto::where('created_at','>=','2021-11-20')->whereIn('status',['gravado','impresso','cancelado','cancelar'])->get();
-        foreach($boletos as $boleto){
-            $lancamentos = \App\Lancamento::where('boleto',$boleto->id)->delete();
-            $boleto->delete();
-        }
-        */
-
-       
+   
         
        
        
@@ -383,7 +375,8 @@ class painelController extends Controller
 
 
         // -- varre as inscrições procurando por pendentes e gera uma lista de nomes/emails em json
-        /*$inscricoes = \App\Inscricao::whereIn('status',['regular','pendente'])->get();
+        /*
+        $inscricoes = \App\Inscricao::whereIn('status',['regular','pendente'])->get();
         $pessoas_array = array();
         foreach($inscricoes as $inscricao){
             $estado = AtestadoController::verificaParaInscricao($inscricao->pessoa->id,$inscricao->turma);
@@ -406,38 +399,18 @@ class painelController extends Controller
             ->whereIn('id',$pessoas_array) ->get();
 
         foreach($pessoas as &$pessoa){
-           /* $email = \App\PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',1)->orderbyDESC('id')->first();
+            $email = \App\PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',1)->orderbyDESC('id')->first();
             if($email)
                 $pessoa->email = $email->valor;
             else
                 $pessoa->email = 'indefinido';
-            //---- 
+
             
             $pessoa->celular = $pessoa->getCelular();
         }
         
 
-        $pessoas = [    33248,
-                        32527,
-                        32153,
-                        31700,
-                        31498,
-                        27074,
-                        26219,
-                        25370,
-                        24225,
-                        21093,
-                        19279,
-                        17489,
-                        9809,
-                        7597,
-                        7357,
-                        6285,
-                        5455,
-                        4185,
-                        3857,
-                        2947,
-                        1839];
+        
         foreach($pessoas as $pessoa){
             $matriculas = Matricula::where('pessoa',$pessoa)->where('curso',307)->whereIn('status',['pendente','ativa'])->pluck('id')->toArray();
             $inscricoes = \App\Inscricao::whereIn('matricula',$matriculas)->get();
@@ -456,7 +429,35 @@ class painelController extends Controller
        // $DNLC = new DiaNaoLetivoController;
         //return $DNLC->cadastroAnual(2022);
 
-        return $this->pendenciasSemMatriculas();
+        //**************************************************************** */
+
+        return $this->listarAlunosPendentesDocumentos();
+
+    }
+
+    public function listarAlunosPendentesDocumentos(){
+        //$inscricoes = \App\Inscricao::where('status','pendente')->get();
+        $pendentes = \App\PessoaDadosAdministrativos::select('pessoa')->where('dado','pendencia')->whereIn('valor',['Falta atestado de vacinação aprovado.','Falta atestado de saúde aprovado.'])->groupBy('pessoa')->pluck('pessoa')->toArray();
+
+       
+
+        $pessoas = \App\Pessoa::select('id','nome')
+            ->whereIn('id',$pendentes) ->get();
+
+        foreach($pessoas as &$pessoa){
+            $email = \App\PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',1)->orderbyDESC('id')->first();
+            if($email)
+                $pessoa->email = $email->valor;
+            else
+                $pessoa->email = 'indefinido';
+
+            $telefone = \App\PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',2)->first();
+            if($telefone)
+                $pessoa->telefone = $telefone->valor;
+            $pessoa->celular = $pessoa->getCelular();
+        }
+
+    return $pessoas;
 
     }
 

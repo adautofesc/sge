@@ -44,6 +44,25 @@ class PessoaDadosAdminController extends Controller
         }
         
     }
+    /**
+     * Removendo pendencias de saúde de alunos sem matrículas
+     *
+     * @param integer $id
+     * @return void
+     */
+    public static function removePendenciasSemMatriculas(int $id=0){
+        if($id>0)
+             $pendencias = \App\PessoaDadosAdministrativos::where('pessoa',$id)->where('dado','pendencia')->whereIn('valor',['Falta atestado de vacinação aprovado.','Falta atestado de saúde aprovado.'])->get();
+        else
+            $pendencias = \App\PessoaDadosAdministrativos::where('dado','pendencia')->whereIn('valor',['Falta atestado de vacinação aprovado.','Falta atestado de saúde aprovado.'])->get();
+        foreach($pendencias as $pendencia){
+            $matriculas = \App\Matricula::where('pessoa',$pendencia->pessoa)->whereIn('status',['ativa','pendente'])->count();
+            if($matriculas==0)
+               //dd($pendencia);Falta atestado de saúde aprovado..
+               $pendencia->delete();
+
+        }
+    }
 
     public static function verificaPendencias(int $pessoa){
         

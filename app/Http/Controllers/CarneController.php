@@ -251,6 +251,7 @@ class CarneController extends Controller
 			return redirect()->back();
 			
 		foreach($matriculas as $matricula){
+			// limpa todos lançamentos
 			$boletos_lancados = \App\Lancamento::leftjoin('boletos','lancamentos.boleto','=','boletos.id')
 													->where('lancamentos.matricula',$matricula->id)
 													->where('lancamentos.boleto','!=', null)
@@ -261,42 +262,37 @@ class CarneController extends Controller
 			
 			
 
-		
+			//gerar todas parcelas da matricula
 			$LC = new LancamentoController;
 			$LC->gerarTodosLancamentos($matricula);	
 
 			
-
+			//lista as parcelas e se nçao tiver pula pra proxima matrícula
 			$lancamentos_matricula = \App\Lancamento::where('matricula',$matricula->id)->where('status',null)->get();
-
-			
 			if($lancamentos_matricula->count() ==0)
 				continue;
 
-			//dd($lancamentos_matricula);
+		
 
 
 
 			
 			 
 
-			//geração dos boletos
-			
+			//****************geração dos boletos
+			//lista boletos já lançados dessa matrícula
 			$boletos_lancados = \App\Lancamento::leftjoin('boletos','lancamentos.boleto','=','boletos.id')
 													->where('lancamentos.matricula',$matricula->id)
 													->where('lancamentos.status', null)
 													->where('boleto','!=', null)
 													->get();
 			
-
-			/*if($matricula->id == 15436)
-				dd($boletos_lancados);*/
-
+			//calcula quantos boletos falta gerar
 			$boletos_restantes = $matricula->getParcelas()-$boletos_lancados->count();
 
 			
 
-			
+			//gera o numero de boletos restantes
 			if($boletos_restantes > 0){
 				$boletos_gravados = \App\Boleto::where('pessoa',$pessoa)->where('status','gravado')->get();
 				$boletos_restantes = $boletos_restantes-$boletos_gravados->count();
@@ -317,6 +313,7 @@ class CarneController extends Controller
 				}
 
 			}
+
 
 			$data_matricula = \DateTime::createFromFormat('Y-m-d', $matricula->data);			
 			$inscricoes = $matricula->getinscricoes('ativa,pendente,finalizada');
@@ -367,11 +364,6 @@ class CarneController extends Controller
 
 			}
 
-			
-
-
-
-			
 
 			$boletos_gravados = \App\Boleto::where('pessoa',$pessoa)->where('status','gravado')->get();
 
@@ -452,6 +444,9 @@ class CarneController extends Controller
 						break;
 					}
 				}
+
+				if($boleto->valor == 0 || $boleto->vencimento == '0000-00-00 00:00:00')
+					$boleto->delete();
 			}
 
 

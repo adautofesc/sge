@@ -454,10 +454,13 @@ class MatriculaController extends Controller
         //cancelar a bolsa se houver
         $bolsa = $matricula->getBolsas();
         if($bolsa){
-        $bmc = new BolsaController;
-        $bmc->unLinkMe($matricula->id,$bolsa->id);
+            $bmc = new BolsaController;
+            $bmc->unLinkMe($matricula->id,$bolsa->id);
         }
+
+        PessoaDadosAdminController::removePendenciasSemMatriculas($matricula->pessoa);
         return true;
+
 
     }
 

@@ -190,24 +190,18 @@ class InscricaoController extends Controller
         else
             $idPacote = null;
 
-        if($turma->local->id == 188){             
+        // verifica se é EAD pra não exigir vacinação
+        if(AtestadoController::VerificaParaInscricao($aluno,$turma)){
             if($turma->status == 'iniciada')
                 $status="ativa";    
             else
                 $status="espera";
         }
-        else{
-            if(AtestadoController::VerificaParaInscricao($aluno,$turma)){
-                if($turma->status == 'iniciada')
-                    $status="ativa";    
-                else
-                    $status="espera";
-            }
-            else{
-                $status="pendente";
+        else
+            $status="pendente";
                 
-            }
-        }
+            
+        
         
         
 
@@ -514,7 +508,7 @@ class InscricaoController extends Controller
                 $inscricoes=Inscricao::where('matricula', $matricula)->where('status','pendente')->get();
                 break;
             default:
-                $inscricoes=Inscricao::where('matricula', $matricula)->where('status','regular')->get();
+                $inscricoes=Inscricao::where('matricula', $matricula)->whereIn('status',explode(',',$tipo))->get();
                 break;
         }
         return $inscricoes;

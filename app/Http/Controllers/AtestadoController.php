@@ -201,7 +201,16 @@ class AtestadoController extends Controller
 
 	}
 
+	/**
+	 * Verifica requisitos de saúde
+	 *
+	 * @param integer $pessoa
+	 * @param \App\Turma $turma
+	 * @return void
+	 */
 	public static function verificaParaInscricao(int $pessoa, \App\Turma $turma){
+		if($turma->local->id == 118)
+			return true;
 		$vacina = true;
 		$atestado = true;
 		$vacinacao = Atestado::where('pessoa',$pessoa)->where('tipo','vacinacao')->where('status','aprovado')->first();

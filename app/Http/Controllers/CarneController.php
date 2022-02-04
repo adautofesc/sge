@@ -269,6 +269,8 @@ class CarneController extends Controller
 			
 			//lista as parcelas e se nçao tiver pula pra proxima matrícula
 			$lancamentos_matricula = \App\Lancamento::where('matricula',$matricula->id)->where('status',null)->get();
+
+			
 			if($lancamentos_matricula->count() ==0)
 				continue;
 
@@ -316,14 +318,22 @@ class CarneController extends Controller
 
 
 			$data_matricula = \DateTime::createFromFormat('Y-m-d', $matricula->data);			
-			$inscricoes = $matricula->getinscricoes('ativa,pendente,finalizada');
+			$inscricoes = $matricula->getinscricoes('regular,pendente,finalizada');
+
+			//dd($inscricoes->count());
 
 			if($inscricoes->count()>0){
 				$data_ini_curso = $inscricoes->first()->turma->data_inicio;	
 				$data_ini_curso = \DateTime::createFromFormat('d/m/Y', $data_ini_curso);
 			}
-			else
+			else{
+				\App\Boleto::where('pessoa',$pessoa)->where('status','gravado')->where('valor',0)->forceDelete();
+				\App\Lancamento::where('matricula',$matricula->id)->where('boleto',null)->delete();
 				continue;
+
+
+			}
+				
 
 		
 			/*********************************************************** atribuição de datas nos boletos */
@@ -333,6 +343,7 @@ class CarneController extends Controller
 
 			
 			if($data_matricula>$data_ini_curso){
+				
 				//gerar boletos para pessoas que entram em cursos já iniciados
 				if(date('d') >= $this::data_corte ){
 					
@@ -347,20 +358,23 @@ class CarneController extends Controller
 					else
 						$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$primeiro_vencimento->format('m'),$this::vencimento);
 				}
-			}	
-			elseif($data_ini_curso->format('m')>date('m') || $data_ini_curso->format('Y')>date('Y')  ){ //*********************problema
+			}
+			
+			//matricula feita antes  do início do curso e boleto sendo gerado no mes antes do primeiro vencimento
+			elseif($data_ini_curso->format('m')>date('m')  || $data_ini_curso->format('Y')>date('Y')  ){ 
+				
 				//boleto gerado na data correta, antes do inicio do curso um mes ou mais antes
 				$primeiro_vencimento->setDate($data_ini_curso->format('Y'),$data_ini_curso->format('m'),$this::vencimento);
 			}
 			else{
-				//boleto gerado posterior a data de inicio do curso, com matriculas feitas antes
+				
+				//boleto gerado no mes do vencimento do primeiro boleto
 				if(date('d') >= ($this::vencimento-$this::dias_adicionais))
 					$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$primeiro_vencimento->format('m'),date('d')+$this::dias_adicionais);
-					//$dia = date('d')+$this::dias_adicionais;
+					
 				else
-					$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$primeiro_vencimento->format('m'),date('d')+$this::dias_adicionais);
-					//$dia = $this::
-
+					$primeiro_vencimento->setDate($data_ini_curso->format('Y'),$data_ini_curso->format('m'),$this::vencimento);
+					
 
 			}
 
@@ -440,13 +454,16 @@ class CarneController extends Controller
 						$boleto->save();
 					}
 					else{
-						//$boleto->forceDelete();
+						$boleto->forceDelete();
 						break;
 					}
 				}
 
-				if($boleto->valor == 0 || $boleto->vencimento == '0000-00-00 00:00:00')
-					$boleto->delete();
+				if($boleto->valor == 0 || $boleto->vencimento == '0000-00-00 00:00:00'){
+					\App\Lancamento::where('matricula',$matricula->id)->where('boleto',null)->delete();
+					$boleto->forceDelete();
+				}
+					
 			}
 
 

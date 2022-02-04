@@ -201,10 +201,11 @@ Class Data
                         // Essas Datas depem diretamente da data de Pascoa
                         // mktime(0, 0, 0, $mes_pascoa, $dia_pascoa - 48, $ano_pascoa), //2ºferia Carnaval
                         
+                       '2ª feria Carnaval' => date("Y-m-d", mktime(0, 0, 0, $mes_pascoa, $dia_pascoa - 48, $ano_pascoa)), //2ºferia Carnaval
                        '3ª feria Carnaval' => date("Y-m-d", mktime(0, 0, 0, $mes_pascoa, $dia_pascoa - 47, $ano_pascoa)), //3ºferia Carnaval
                         
                         '6ª feira Santa' => date("Y-m-d", mktime(0, 0, 0, $mes_pascoa, $dia_pascoa - 2, $ano_pascoa)), //6ºfeira Santa
-                        'Páscoa' => date("Y-m-d", mktime(0, 0, 0, $mes_pascoa, $dia_pascoa, $ano_pascoa)), //Pascoa
+                        //'Páscoa' => date("Y-m-d", mktime(0, 0, 0, $mes_pascoa, $dia_pascoa, $ano_pascoa)), //Pascoa
                         'Corpus Christi' =>date("Y-m-d", mktime(0, 0, 0, $mes_pascoa, $dia_pascoa + 60, $ano_pascoa)), //Corpus Cirist
 
                 );

@@ -73,8 +73,11 @@
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Habilidades gerais
 			</label>
-			<div class="col-sm-6"> 
-				<textarea rows="3" class="form-control" name="habilidades_gerais" maxlenght="300"></textarea>
+			<div class="col-sm-6"  > 
+				<textarea rows="3" class="form-control" name="habilidades_gerais[]" maxlenght="300"></textarea><br>
+				<div id="habilidadesGerais"></div>
+				<a href="#" class="btn btn-sm btn-success-outline" onclick="addHabilidadesGerais()">Adicionar Habilidade Geral</a>
+
 			</div>
 		</div>
 		<div class="form-group row"> 
@@ -82,9 +85,67 @@
 				Habilidades específicas
 			</label>
 			<div class="col-sm-6"> 
-				<textarea rows="3" class="form-control" name="habilidades_especificas" maxlenght="300"></textarea>
+				<textarea rows="3" class="form-control" name="habilidades_especificas[]" maxlenght="300"></textarea><br>
+				<div id="habilidadesEspecificas"></div>
+				<a href="#" class="btn btn-sm btn-success-outline" onclick="addHabilidadesEspecificas()">Adicionar habilidade específica</a>
 			</div>
 		</div>
+
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Objetivos
+			</label>
+			<div class="col-sm-6"> 
+				<textarea rows="3" class="form-control" name="objetivos[]" maxlenght="300"></textarea><br>
+				<div id="objetivos"></div>
+				<a href="#" class="btn btn-sm btn-success-outline" onclick="addObjetivos()">Adicionar objetivo</a>
+			</div>
+		</div>
+
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Conteúdo Programático
+			</label>
+			<div class="col-sm-6"> 
+				<textarea rows="3" class="form-control" name="conteudos_programaticos[]" maxlenght="300"></textarea><br>
+				<div id="cont_programa"></div>
+				<a href="#" class="btn btn-sm btn-success-outline" onclick="addContProgram()">Adicionar conteúdo programático</a>
+			</div>
+		</div>
+
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Procedimentos de Ensino
+			</label>
+			<div class="col-sm-6"> 
+				<textarea rows="3" class="form-control" name="procedimentos_ensino[]" maxlenght="300"></textarea><br>
+				<div id="proc_ensino"></div>
+				<a href="#" class="btn btn-sm btn-success-outline" onclick="addProcEnsino()">Adicionar procedimentos de ensino</a>
+			</div>
+		</div>
+
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Instrumentos de avaliação
+			</label>
+			<div class="col-sm-6"> 
+				<textarea rows="3" class="form-control" name="instrumentos_avaliacao[]" maxlenght="300"></textarea><br>
+				<div id="inst_avalia"></div>
+				<a href="#" class="btn btn-sm btn-success-outline" onclick="addInstAvalia()">Adicionar instrumentos de avaliação</a>
+			</div>
+		</div>
+
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Bibliografia Básica
+			</label>
+			<div class="col-sm-6"> 
+				<textarea rows="3" class="form-control" name="bibliografia[]" maxlenght="300"></textarea><br>
+				<div id="bibliografia"></div>
+				<a href="#" class="btn btn-sm btn-success-outline" onclick="addBibliografia()">Adicionar bibliografia</a>
+			</div>
+		</div>
+		
 		
 		
 
@@ -105,6 +166,32 @@
 @endsection
 @section('scripts')
 <script type="text/javascript">
+function addHabilidadesGerais(){
+	var div = document.querySelector("#habilidadesGerais");
+	var input = document.createElement('textarea');
+	var bl = document.createElement('br');
+	input.setAttribute('rows','3');
+	input.setAttribute('name','habilidades_gerais[]');
+	input.setAttribute('maxlenght','300');
+	input.setAttribute('class','form-control');
+	div.appendChild(input);
+	div.appendChild(bl);
+
+};
+
+function addHabilidadesEspecificas(){
+	var div = document.querySelector("#habilidadesEspecificas");
+	var input = document.createElement('textarea');
+	var bl = document.createElement('br');
+	input.setAttribute('rows','3');
+	input.setAttribute('name','habilidades_especificas[]');
+	input.setAttribute('maxlenght','300');
+	input.setAttribute('class','form-control');
+	div.appendChild(input);
+	div.appendChild(bl);
+
+};
+
 
 
 

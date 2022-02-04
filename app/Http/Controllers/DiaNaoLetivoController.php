@@ -46,11 +46,13 @@ class DiaNaoLetivoController extends Controller
                                 'Aniversário da cidade' => $ano.'-'.'11-04'];
                             
         $pontos_facultativos = ['Dia dos professores' => $ano.'-'.'10-15', 
-                               'Dia do funcionalismo público' => $ano.'-'.'10-28']; 
+                               'Compensação do Dia do funcionalismo público 28/10' => $ano.'-'.'11-03']; 
 
         $feriados = array_merge($feriados_nacionais,$feriados_estaduais,$feriados_municipais,$pontos_facultativos);
 
         asort($feriados);
+
+        
         
         foreach($feriados as $feriado=>$data){
             $dia = DiaNaoLetivo::where('data',$data)->first();
@@ -62,7 +64,7 @@ class DiaNaoLetivoController extends Controller
             }
         }
 
-        dd( $feriados);
+        return $feriados;
 
     }
 }

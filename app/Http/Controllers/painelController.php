@@ -426,12 +426,15 @@ class painelController extends Controller
         */
 
         //************************************************** cadastro de dias não letivos 
-       // $DNLC = new DiaNaoLetivoController;
-        //return $DNLC->cadastroAnual(2022);
+        $DNLC = new DiaNaoLetivoController;
+        $DNLC->cadastroAnual(2022);
+        $DNLC->addRecesso("11/07/2022","30/07/2022");
+
+        return "datas não letivas cadastradas";
 
         //**************************************************************** */
 
-        return $this->listarAlunosPendentesDocumentos();
+        //return $this->listarAlunosPendentesDocumentos();
 
     }
 
@@ -461,16 +464,7 @@ class painelController extends Controller
 
     }
 
-    public function pendenciasSemMatriculas(){
-        $pendencias = \App\PessoaDadosAdministrativos::where('dado','pendencia')->whereIn('valor',['Falta atestado de vacinação aprovado.','Falta atestado de saúde aprovado.'])->get();
-        foreach($pendencias as $pendencia){
-            $matriculas = \App\Matricula::where('pessoa',$pendencia->pessoa)->whereIn('status',['ativa','pendente'])->count();
-            if($matriculas==0)
-               //dd($pendencia);Falta atestado de saúde aprovado..
-               $pendencia->delete();
-
-        }
-    }
+    
 
 
     public function listarPendentesComMatriculas(){

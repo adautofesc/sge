@@ -23,4 +23,8 @@ class PlanoEnsinoController extends Controller
             ->with('semestres',$semestres)
             ->with('programas',$programas);
     }
+
+    public function store(Request $r){
+        dd($r);
+    }
 }

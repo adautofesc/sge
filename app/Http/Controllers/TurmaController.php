@@ -1196,7 +1196,7 @@ class TurmaController extends Controller
             $turmas = Turma::where('professor', $docente)->whereIn('status',['lancada','iniciada','encerrada'])->whereBetween('data_inicio', $intervalo)->orderBy('hora_inicio')->get();
         }
         else{
-            $turmas = Turma::where('professor', $docente)->whereIn('status',['iniciada'])->orderBy('hora_inicio')->get();
+            $turmas = Turma::where('professor', $docente)->whereIn('status',['lançada','iniciada'])->orderBy('hora_inicio')->get();
         }
 
         foreach($turmas as $turma){

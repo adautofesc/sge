@@ -305,9 +305,9 @@
                                         <i class="fa fa-circle-o icon"></i> Abrir para Rematrícula
                                     </a>
                                     <a class="dropdown-item" href="#" style="line-height: 20px;text-decoration: none;">
-                                        ------> ESTADO
+                                    ------> ESTADO
                                      </a>
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('andamento')"  style="line-height: 30px;text-decoration: none;">
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('lancada')"  style="line-height: 30px;text-decoration: none;">
                                         <i class="fa fa-clock-o icon"></i> Lançada
                                     </a>
                                     <a class="dropdown-item" href="#" onclick="alterarStatus('iniciada')" style="line-height: 30px;text-decoration: none;">

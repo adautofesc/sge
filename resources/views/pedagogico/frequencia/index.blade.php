@@ -467,10 +467,16 @@
 	</tr>
 
 	@foreach($inscritos as $inscrito)
+
 	<tr style="height:16px;">
 		<td data-sheets-value="{&quot;1&quot;:3,&quot;3&quot;:1}" style="border-right:1px solid #000000;border-bottom:1px solid #000000;border-left:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;font-size:8pt;color:#000000;text-align:center;">
 		{{$i++}}</td>
-		<td style="border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">{{$inscrito->pessoa->nome}}
+		<td style="border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
+			@if($inscrito->status != 'regular')
+			<small>{{$inscrito->status}}</small> - {{$inscrito->pessoa->nome}}
+			@else
+			{{$inscrito->pessoa->nome}}
+			@endif
 		</td>
 		<td style="border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;background-color:#ffffff;">
 		</td>

@@ -428,7 +428,7 @@ class MatriculaController extends Controller
         return redirect('/secretaria/matricula/imprimir-cancelamento/'.$r->matricula);
     }
 
-    public static function cancelar($matricula,$responsavel=0){
+    public static function cancelar(int $matricula,$responsavel=0){
 
         $matricula=Matricula::find($matricula);
         $matricula->status='cancelada';
@@ -917,12 +917,17 @@ class MatriculaController extends Controller
         $matriculas_array=explode(',',$itens);
         foreach($matriculas_array as $matricula_id){
             if(is_numeric($matricula_id)){
-                $matricula = Matricula::find($matricula_id);
-                if(isset($matricula->id)){
-                    LogController::registrar('matricula',$matricula->id,'Alteração de status na matricula de '.strtoupper($matricula->status).' para '.strtoupper($status));
-                    $matricula->status = $status;
-                    $matricula->save();
-                    InscricaoController::atualizarPorMatricula($matricula->id,$matricula->status); 
+                if($status == 'cancelada'){
+                    MatriculaController::cancelar($matricula_id);
+                }
+                else{
+                    $matricula = Matricula::find($matricula_id);
+                    if(isset($matricula->id)){
+                        LogController::registrar('matricula',$matricula->id,'Alteração de status na matricula de '.strtoupper($matricula->status).' para '.strtoupper($status));
+                        $matricula->status = $status;
+                        $matricula->save();
+                        InscricaoController::atualizarPorMatricula($matricula->id,$matricula->status); 
+                    }
                 }
                     
             }

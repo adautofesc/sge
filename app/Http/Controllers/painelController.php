@@ -345,13 +345,28 @@ class painelController extends Controller
     }
 
     public static function cancelandoPendentes(){
+        $opa = [
+            897,
+            33523,
+            34150,
+            34349,
+            34380
+        ];
         $pendentes = \App\PessoaDadosAdministrativos::select('pessoa')->where('dado','pendencia')->where('valor','like','Falta atestado de vacinação aprovado.')->groupBy('pessoa')->pluck('pessoa')->toArray();
 
         foreach($pendentes as $pendente){
             $matriculas = \App\Matricula::where('pessoa',$pendente)->where('status','pendente')->pluck('id')->toArray();
-            MatriculaController::alterarStatus(implode(',',$matriculas),'cancelada');
-            $pendencia_vacina = \App\PessoaDadosAdministrativos::where('pessoa',$pendente)->where('dado','pendencia')->where('valor','like','Falta atestado de vacinação aprovado.')->delete();
-            $pendencia_atestado = \App\PessoaDadosAdministrativos::where('pessoa',$pendente)->where('dado','pendencia')->where('valor','like','Falta atestado de saúde aprovado.')->delete();
+           /* $inscricoes = \App\Inscricao::leftjoin('turmas', 'turmas.id','=','inscricoes.turma')->where('pessoa',$pendente)->where('inscricoes.status','pendente')->where('turmas.local',118)->get();
+            if($inscricoes->count()>0)
+                $opa[] = $pendente;*/
+            if(!in_array($pendente,$opa)){
+                MatriculaController::alterarStatus(implode(',',$matriculas),'cancelada');
+                AtendimentoController::novoAtendimento("Matrícula(s) ".implode(',',$matriculas)." cancelada(s) por falta de comprovante de vacinação.", $pendente);
+
+
+            }
+            //$pendencia_vacina = \App\PessoaDadosAdministrativos::where('pessoa',$pendente)->where('dado','pendencia')->where('valor','like','Falta atestado de vacinação aprovado.')->delete();
+            //$pendencia_atestado = \App\PessoaDadosAdministrativos::where('pessoa',$pendente)->where('dado','pendencia')->where('valor','like','Falta atestado de saúde aprovado.')->delete();
 
 
         }
@@ -360,6 +375,7 @@ class painelController extends Controller
     }
     
     public function testarClasse(){
+        return painelController::cancelandoPendentes();
    
         
        
@@ -425,14 +441,8 @@ class painelController extends Controller
         }
         */
 
-        //************************************************** cadastro de dias não letivos 
-        $DNLC = new DiaNaoLetivoController;
-        $DNLC->cadastroAnual(2022);
-        $DNLC->addRecesso("11/07/2022","30/07/2022");
+        
 
-        return "datas não letivas cadastradas";
-
-        //**************************************************************** */
 
         //return $this->listarAlunosPendentesDocumentos();
 

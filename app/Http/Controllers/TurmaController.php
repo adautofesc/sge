@@ -290,7 +290,7 @@ class TurmaController extends Controller
         $inscritos=\App\Inscricao::where('turma',$id)->whereIn('status',['regular','espera','ativa','pendente'])->get();
         $inscritos= $inscritos->sortBy('pessoa.nome');
         if(count($inscritos))
-            return view('pedagogico.frequencia.index',compact('inscritos'))->with('i',1);
+            return view('frequencias.impressao-unitaria',compact('inscritos'))->with('i',1);
         else
             return "Nenhum aluno cadastrado para esta turma.";
     }
@@ -303,7 +303,7 @@ class TurmaController extends Controller
             $turma->inscritos = $turma->inscritos->sortBy('pessoa.nome');
         }
        // dd($turmas);
-        return view('pedagogico.frequencia.multiplas',compact('turmas'));
+        return view('frequencias.impressao-multiplas',compact('turmas'));
     }
 
 
@@ -1356,7 +1356,7 @@ class TurmaController extends Controller
         $inscritos=\App\Inscricao::where('turma',$turma)->whereIn('status',['regular','espera','ativa','pendente'])->get();
         $inscritos= $inscritos->sortBy('pessoa.nome');
         if(count($inscritos))
-            return view('pedagogico.frequencia.index',compact('inscritos'))->with('i',1);
+            return view('frequencias.impressao-unitaria',compact('inscritos'))->with('i',1);
         else
             return "Nenhum aluno cadastrado para esta turma.";
 

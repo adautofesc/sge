@@ -88,8 +88,12 @@
                 @endforeach    
 
                 @foreach($turmas as $turma)
-                @if(!$turma->verificaRequisitos($pessoa) || $turma->matriculados>=$turma->vagas)                               
-                <li class="item" style="background-color: #ebebeb" title="Turma sem vagas ou aluno não atende aos pré-requisitos">       
+                @if(!$turma->verificaRequisitos($pessoa) || $turma->matriculados>=$turma->vagas)  
+                @if($turma->matriculados>=$turma->vagas)                             
+                <li class="item" style="background-color: #ebebeb" title="Turma sem vagas"> 
+                @else
+                <li class="item" style="background-color: #ebebeb" title="{{($turma->verificaRequisitos($pessoa,true))->msg}}"> 
+                @endif
                     <div class="item-row">
                         <div class="item-col fixed item-col-check"> 
                             <label class="item-check" >

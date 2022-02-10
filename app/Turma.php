@@ -269,11 +269,22 @@ class Turma extends Model
 		return $dados;
 	}
 
-	public function verificaRequisitos($aluno){
+	public function verificaRequisitos($aluno, $relatorio = false){
 	
 		$aluno = Pessoa::find($aluno);
-		if($aluno == null)
-			return false;
+		if($aluno == null){
+			if($relatorio){
+				$retorno = new \stdClass;
+				$retorno->status = false;
+				$retorno->msg = "Aluno não encontrado na função de validação.";
+				return $retorno;
+
+			}
+			else
+				return false;
+
+		}
+			
 		$idade_minima = 0;
 		$idade_maxima = 0;
 		$atestado = 0;
@@ -390,14 +401,28 @@ class Turma extends Model
 		
 
 
-		if($idade_minima>0 && $idade_minima>$aluno->getIdade()){
-			//redirect()->back()->withErrors(['Idade mínima não atingida: '.$idade_minima]);
-			return false;
+		if($idade_minima>0 && $idade_minima>=$aluno->getIdade()){
+			if($relatorio){
+				$retorno = new \stdClass;
+				$retorno->status = false;
+				$retorno->msg = "Aluno possui ".$aluno->getIdade()." anos. A turma exige o mínimo de ".$idade_minima;
+				return $retorno;
+
+			}
+			else
+				return false;
 		}
 		
 		if($idade_maxima>0 && $idade_maxima<$aluno->getIdade() ){
-			//redirect()->back()->withErrors(['Idade não compatível com a faixa etária obrigatória']);
-			return false;
+			if($relatorio){
+				$retorno = new \stdClass;
+				$retorno->status = false;
+				$retorno->msg = "Aluno possui ".$aluno->getIdade()." anos. A turma permite no máximo de ".$idade_maxima;
+				return $retorno;
+
+			}
+			else
+				return false;
 		}
 		/*
 		if($this->id ==1382)
@@ -407,8 +432,19 @@ class Turma extends Model
 		
 		if($atestado ==1){
 			$atestado_m = Atestado::where('pessoa',$aluno->id)->where('tipo','saude')->where('status','aprovado')->first();
-			if($atestado_m == null)
-				return false;
+			if($atestado_m == null){
+
+				if($relatorio){
+					$retorno = new \stdClass;
+					$retorno->status = false;
+					$retorno->msg = "Aluno não possui atestado de saúde aprovado.";
+					return $retorno;
+	
+				}
+				else
+					return false;
+			}
+				
 			/*
 			else{
 				$vencimento = $atestado->calculaVencimento($this->programa->id);

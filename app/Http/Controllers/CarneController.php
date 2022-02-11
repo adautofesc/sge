@@ -270,6 +270,8 @@ class CarneController extends Controller
 			//lista as parcelas e se nçao tiver pula pra proxima matrícula
 			$lancamentos_matricula = \App\Lancamento::where('matricula',$matricula->id)->where('status',null)->get();
 
+			//dd($lancamentos_matricula);
+
 			
 			if($lancamentos_matricula->count() ==0)
 				continue;
@@ -333,6 +335,8 @@ class CarneController extends Controller
 
 
 			}
+
+			//dd('aqui');
 				
 
 		
@@ -378,6 +382,8 @@ class CarneController extends Controller
 
 			}
 
+			//dd($primeiro_vencimento);
+
 
 			$boletos_gravados = \App\Boleto::where('pessoa',$pessoa)->where('status','gravado')->get();
 
@@ -392,18 +398,19 @@ class CarneController extends Controller
 				else{
 					$primeiro_vencimento->modify('+1 month');
 				}
-
-				
+			
 				$boleto_lancamento = \App\Boleto::join('lancamentos','boletos.id','=','lancamentos.boleto')
 													->where('lancamentos.matricula',$matricula->id)
 													->where('lancamentos.status', null)
-													->where('boletos.vencimento','==', $boleto->vencimento)
-													->get();
+													->whereMonth('boletos.vencimento','=', $primeiro_vencimento->format('m'))
+													->whereYear('boletos.vencimento','=', $primeiro_vencimento->format('Y'))
+													->get();	
+																				
 				if($boleto_lancamento->count()>0)
 					continue;									
 
 
-
+				
 
 
 				/******************************atribuindo */
@@ -415,8 +422,12 @@ class CarneController extends Controller
 										->where('matricula',$matricula->id)
 										->orderBy('parcela')
 										->first();
-				if(!$lancamento)
-					continue;						
+				if(!$lancamento){
+					$boleto->forceDelete();
+					continue;
+
+				}
+											
 				$data_util = new \App\classes\Data(\App\classes\Data::converteParaUsuario($boleto->vencimento));
 
 				$lancamento->boleto = $boleto->id;
@@ -438,6 +449,8 @@ class CarneController extends Controller
 					$boleto->valor = $boleto->valor+$desconto->valor;
 					$desconto->save();
 				}
+
+				
 				//enquanto o boleto nao tiver valor, acrescentar parcela, senão, apagar boleto.
 				while($boleto->valor <=0){
 					$lancamento = \App\Lancamento::where('pessoa',$boleto->pessoa)
@@ -455,9 +468,11 @@ class CarneController extends Controller
 					}
 					else{
 						$boleto->forceDelete();
+						
 						break;
 					}
 				}
+				
 
 				if($boleto->valor == 0 || $boleto->vencimento == '0000-00-00 00:00:00'){
 					\App\Lancamento::where('matricula',$matricula->id)->where('boleto',null)->delete();

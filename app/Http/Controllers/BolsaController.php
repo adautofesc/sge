@@ -106,12 +106,13 @@ class BolsaController extends Controller
      */
     public static function verificaBolsa($pessoa,$matricula){
         //********************************************* aqui colocar a validade dos descontos
-        $bmatricula = BolsaMatricula::where('matricula',$matricula)->first();
-        //dd($bmatricula);
+        $bmatricula = BolsaMatricula::where('matricula',$matricula)->orderByDESC('id')->first();
+        //dd($bmatricula);        
         if($bmatricula){
             //$bolsa = Bolsa::where('id',$bmatricula->bolsa)->where('status','ativa')->where('validade','>',date('Y-m-d'))->first();
             $bolsa = Bolsa::where('id',$bmatricula->bolsa)->where('status','ativa')->first();
-            if($bolsa)
+           
+            if($bolsa->id)              
                 return $bolsa;
             else
                 return null;

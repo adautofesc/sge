@@ -57,7 +57,7 @@ class Matricula extends Model
 	// mostra bolsa quando mostrar a matrícula;
 	// update bolsas set validade = '2019-12-31' where status = 'ativa'
 	public function getBolsas(){		
-		$bmatricula = BolsaMatricula::where('matricula',$this->id)->first();
+		$bmatricula = BolsaMatricula::where('matricula',$this->id)->orderByDesc('id')->first();
 		if($bmatricula){	
 			$bolsa = Bolsa::where('id',$bmatricula->bolsa)->where('status','ativa')->first();
 		}

@@ -303,7 +303,7 @@ class PessoaController extends Controller
 					return view('error-404-alt')->with(array('error'=>['id'=>'403.41','desc'=>'Seu cadastro não permite que você veja os dados de outra pessoa']));
 					//return $this->listar();	
 			// verifica se a pessoa tem relação institucional
-				$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 16));
+				$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', '16'));
 				if($relacao_institucional && !in_array('5', Auth::user()->recursos))
 				{
 					return view('error-404-alt')->with(array('error'=>['id'=>'403.5','desc'=>'Você não possui acesso a dados de pessoas ligadas à instituição.']));		
@@ -865,7 +865,7 @@ class PessoaController extends Controller
 		*/
 		$nova_relacao=new PessoaDadosAdministrativos;
 		//$nova_relacao->timestamps=false;
-		$nova_relacao->dado=16;
+		$nova_relacao->dado='16';
 		$nova_relacao->pessoa=$request->pessoa;
 		$nova_relacao->valor=$request->cargo;
 		$nova_relacao->save();
@@ -1064,10 +1064,10 @@ class PessoaController extends Controller
 			return view('juridico.documentos.termos-lote')->with('matriculas',$matriculas)->with('pessoa',$pessoa);
 	}
 	public function listarFuncionarios(){ // lista pessoas com relação institucional (RI)
-		$com_ri = PessoaDadosAdministrativos::select('pessoa')->where('dado',16)->groupBy('pessoa')->get();
+		$com_ri = PessoaDadosAdministrativos::select('pessoa')->where('dado','16')->groupBy('pessoa')->get();
 		$pessoas = Pessoa::whereIn('id',$com_ri)->orderBy('nome')->paginate(50);
 		foreach($pessoas as $pessoa){
-			$pessoa->cargo = PessoaDadosAdministrativos::where('pessoa',$pessoa->id)->where('dado',16)->first()->valor;
+			$pessoa->cargo = PessoaDadosAdministrativos::where('pessoa',$pessoa->id)->where('dado','16')->first()->valor;
 			$telefone = PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',2)->first();
 			if($telefone)
 			 $pessoa->telefone = Strings::formataTelefone($telefone->valor);

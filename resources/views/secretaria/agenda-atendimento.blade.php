@@ -102,7 +102,7 @@
                     </div>
                 </div>
                 <div class="card-block">
-                    <form method="POST">
+                    <form method="POST" onsubmit="return submete(this)">
                      
                         <div class="form-group row">
                             <label class="col-sm-2 form-control-label text-xs-right text-secondary">Nome da pessoa </label>
@@ -270,6 +270,16 @@ function alterar(id,acao){
               window.location.replace('/agendamento');
             });
   }
+}
+
+function submete(form){
+    horario = $('#horarios option').filter(':selected').val();
+    if(horario == 'Nenhum horário disponível' || horario == 'Fim de semana' || horario == 'Dia não letivo'){
+        alert('Horário inválido');
+        return false;
+    }
+    else
+        return true;
 }
  </script>   
 @endsection

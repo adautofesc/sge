@@ -56,14 +56,18 @@ class AgendaAtendimentoController extends Controller
 
 
         }
-            
-            
+    
+        if( $r->horario != 'Nenhum horário disponível' && $r->horario != 'Fim de semana' && $r->horario != 'Dia não letivo'){          
             $agendamento->data = $r->dia;
             $agendamento->horario = $r->horario.":00";
             $agendamento->status = 'aguardando';
             $agendamento->save();
-
             return redirect()->back()->withErrors(['Agendamento realizado.']);
+        }
+        else{
+            return redirect()->back()->withErrors(['Horário inválido.']);
+
+        }
 
     }
 

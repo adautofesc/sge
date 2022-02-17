@@ -213,6 +213,8 @@ class ValorController extends Controller
         
         $url = "http://api.sidra.ibge.gov.br/values/t/1419/p/".$data_inicial."-".$data_final."/n1/all/h/n/v/63/c315/7169/d/v63%205?formato=json";
 
+        dd($url);
+
         $ch = curl_init();
         //não exibir cabeçalho
         curl_setopt($ch, CURLOPT_HEADER, false);
@@ -268,7 +270,7 @@ class ValorController extends Controller
             return $valParcela;
     }
 
-    function correcaoValor($valor='66', $vencimento = '2018-09-20'){
+    function correcaoValor($valor, $vencimento){
         //calcula os dias
         $vencimento_formatado = strtotime($vencimento);
         $margem = strtotime("+1 month", $vencimento_formatado);

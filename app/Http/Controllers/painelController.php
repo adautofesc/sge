@@ -375,7 +375,9 @@ class painelController extends Controller
     }
     
     public function testarClasse(){
-        return painelController::cancelandoPendentes();
+
+        \App\DividaAtiva::gerarLivroCorrente();
+        //return painelController::cancelandoPendentes();
    
         
        

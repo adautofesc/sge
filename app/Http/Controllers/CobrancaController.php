@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Boleto;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xls;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use ZipArchive;
 
 class CobrancaController extends Controller
@@ -111,13 +111,14 @@ class CobrancaController extends Controller
 			//header para XLS
 
 			
+			
 			header('Content-Type: application/vnd.ms-excel');
-	        header('Content-Disposition: attachment;filename="'. 'cobranca' .'.xls"'); 
+	        header('Content-Disposition: attachment;filename="'. 'cobranca' .'.xlsx"'); 
 	        header('Cache-Control: max-age=0');
 			
 	        
 	        $planilha =  new Spreadsheet();
-        	$arquivo = new Xls($planilha);
+        	$arquivo = new Xlsx($planilha);
 			
 	        $planilha = $planilha->getActiveSheet();
 	        $planilha->setCellValue('A1', 'Nome');
@@ -173,7 +174,7 @@ class CobrancaController extends Controller
 			
 
 
-			return $arquivo->save('php://output', 'xls');
+			return $arquivo->save('php://output');
 
 			
 		}

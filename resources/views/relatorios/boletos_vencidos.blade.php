@@ -3,7 +3,7 @@
 
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-<link rel="stylesheet" href="{{asset('/')}}/css/vendor.css"/>
+<link rel="stylesheet" href="{{asset('/css/vendor.css/')}}">
 <title>Documento Oficial - Fesc</title>
 </head>
 
@@ -11,7 +11,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-2">
-			<img src="{{asset('/')}}/img/logofesc.png" width="100"/>
+			<img src="{{asset('/img/logofesc.png')}}" width="100"/>
 			</div>
 			<div class="col-xs-10">
 			<p>
@@ -70,7 +70,7 @@
   
 	</div>
         	
-	<script src="{{asset('/')}}/js/vendor.js">
+	<script src="{{asset('/js/vendor.js')}}">
 	</script>
 </body>
 

@@ -17,7 +17,8 @@ class CarneController extends Controller
 	 */
 	public function carneFase1(){
 		$pessoas = array();
-		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente','espera'])->where('data','>','2022-01-15')->paginate(50);
+		//$matriculas = \App\Matricula::whereIn('status',['ativa','pendente','espera'])->where('data','>','2022-01-15')->paginate(50);
+		$matriculas = \App\Matricula::where('status','ativa')->where('obs','like','%IP%')->paginate(50);
 		//dd($matriculas);
 		foreach($matriculas as $matricula){
 			if(!in_array($matricula->pessoa,$pessoas))

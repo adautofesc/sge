@@ -219,7 +219,7 @@ class RelatorioController extends Controller
 	}
 
 	public function matriculasPrograma($ano){
-        $programas = \App\Programa::all();
+        $programas = \App\Programa::whereIn('id',[1,2,3,4,12])->get();
         if($ano == date('Y'))
             $matriculas = \App\Matricula::whereIn('status',['ativa','pendente','espera'])->whereBetween('data',[($ano-1).'-11-20', $ano.'-11-19'])->get();
         else

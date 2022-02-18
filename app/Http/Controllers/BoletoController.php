@@ -27,6 +27,28 @@ ini_set('max_execution_time', 300);
 //clude 'vendor/autoload.php';
 class BoletoController extends Controller
 {	
+	public function painel(Request $r){
+		if(isset($r->codigo)){
+			$codigos = explode(',',$r->codigo);
+			$boletos = Boleto::whereIn('id',$codigos)->paginate(50);
+		}
+		elseif(isset($r->status)){
+			$boletos = Boleto::where('status',$r->status)->whereYear('vencimento',date('Y'))->paginate(50);
+		}
+		elseif(isset($r->pessoa))
+			$boletos = Boleto::where('pessoa',$r->pessoa)->whereYear('vencimento',date('Y'))->paginate(50);
+		else
+			$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->paginate(50);
+
+		foreach($boletos as &$boleto){
+			$boleto->lancamentos = $boleto->getLancamentos();
+			$boleto->vencimento = \DateTime::createFromFormat('Y-m-d H:i:s',$boleto->vencimento);
+		}
+
+		//dd($boletos);
+		return view('boletos.index')->with('boletos',$boletos);
+
+	}
 	public function logMe($msg){
 		$fp = fopen("log.txt", "a");
 		$msg = "\n".$msg;

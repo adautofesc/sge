@@ -18,6 +18,14 @@ class Boleto extends Model
     	return $this->lancamentos;
     }
 
+    public function getNomePessoa(){
+        $pessoa = \App\Pessoa::find($this->pessoa);
+        if(isset($pessoa->nome))
+            return $pessoa->nome;
+        else
+            return 'NÃO ENCONTRADO';
+    }
+
 
     public static function verificarDebitos(int $pessoa){
         $vencimento = \Carbon\Carbon::today()->addDays(-3);

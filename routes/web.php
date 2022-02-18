@@ -262,6 +262,10 @@ Route::middleware(['auth','login']) ->group(function(){
 		
 		
 	});
+	Route::prefix('boletos')->group(function(){
+		Route::get('/','BoletoController@painel');
+
+	});
 
 //**************************************************************************SETORES******************************** */
 

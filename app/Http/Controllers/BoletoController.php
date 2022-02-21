@@ -29,24 +29,29 @@ class BoletoController extends Controller
 {	
 	public function painel(Request $r){
 		if(isset($r->codigo)){
+			$tipo = 'por código';
 			$codigos = explode(',',$r->codigo);
 			$boletos = Boleto::whereIn('id',$codigos)->paginate(50);
 		}
 		elseif(isset($r->status)){
 			$boletos = Boleto::where('status',$r->status)->whereYear('vencimento',date('Y'))->paginate(50);
+			$tipo = 'por status';
 		}
-		elseif(isset($r->pessoa))
+		elseif(isset($r->pessoa)){
 			$boletos = Boleto::where('pessoa',$r->pessoa)->whereYear('vencimento',date('Y'))->paginate(50);
-		else
+			$tipo = 'por pessoa';
+		}
+		else{
 			$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->paginate(50);
-
+			$tipo = 'vencidos';
+		}
 		foreach($boletos as &$boleto){
 			$boleto->lancamentos = $boleto->getLancamentos();
 			$boleto->vencimento = \DateTime::createFromFormat('Y-m-d H:i:s',$boleto->vencimento);
 		}
 
 		//dd($boletos);
-		return view('boletos.index')->with('boletos',$boletos);
+		return view('boletos.index')->with('boletos',$boletos)->with('tipo',$tipo);
 
 	}
 	public function logMe($msg){

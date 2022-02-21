@@ -22,6 +22,11 @@
                                     <a href="{{asset('/administrativo')}}"> <i class="fa fa-bar-chart-o"></i> Administração </a>
                                 </li>
                                 @endif
+                                @if(in_array('23', Auth::user()->recursos))
+                                <li  >
+                                    <a href="{{asset('/boletos')}}"> <i class="fa fa-barcode"></i> Boletos Vencidos </a>
+                                </li>
+                                @endif
                                 @if(in_array('21', Auth::user()->recursos))
                                 <li  >
                                     <a href="{{asset('/bolsas/liberacao')}}"> <i class="fa fa-heart"></i> Bolsas </a>

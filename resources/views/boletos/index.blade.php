@@ -30,7 +30,7 @@
         <div class="row">
             <div class="col-md-6">
 
-                <h3 class="title"> Ferramenta de gerenciamento de boletos </h3>
+                <h3 class="title"> Ferramenta de gerenciamento de boletos <u>{{$tipo}}</u></h3>
 
                 <p class="title-description"> Gerenciamento em lote de {{$boletos->total()}} boletos.</p>
             </div>
@@ -78,7 +78,7 @@
                         </div>
                         <div class="col-xs-6 text-xs-right">
 
-                            
+                           
                             <div class="action dropdown pull-right "> 
                                 <!-- <a href="#" class="btn btn-sm rounded-s btn-secondary" title="Exportar para excel"><img src="/img/excel.svg" alt="excel" width="20px"></a> -->
                                 <button class="btn btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Com os selecionados...
@@ -86,20 +86,34 @@
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
                 
                                     <a class="dropdown-item" href="#" onclick="alterarStatus('aprovar')">
-                                        <label><i class="fa fa-check-circle-o icon text-success"></i> Aprovar</label>
+                                        <label><i class="fa fa-print icon text-secondary"></i> Imprimir</label>
                                     </a> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('negar')">
-                                        <label><i class="fa fa-ban icon text-danger"></i> Negar</label>
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('aprovar')">
+                                        <label><i class="fa fa-times icon text-warning"></i> Cancelar</label>
                                     </a> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('analisando')">
-                                        <label><i class="fa fa-clock-o icon text-warning"></i><span> Analisando</span></label>
+                                    <!--
+                                    <a class="dropdown-item text-danger" href="#" onclick="alterarStatus('aprovar')">
+                                        <label><i class="fa fa-times icon text-danger"></i> CANCELAR MATRÍCULAS</label>
+                                    </a> -->
+                                    
+                                    
+                                    <a class="dropdown-item"  >
+                                        <label> <small>Alterar boletos para...</small> </label>
                                     </a> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('cancelar')">
-                                        <label><i class="fa fa-minus-circle icon text-danger"></i> <span> Cancelar</span></label>
+                                    
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('gravado')">
+                                        <label><i class="fa fa-arrow-right icon text-secondary"></i> Gravado</label>
                                     </a> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('apagar')">
-                                        <label><i class="fa fa-times-circle icon text-danger"></i> <span> Excluir</span></label>
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('impresso')">
+                                        <label><i class="fa fa-arrow-right icon text-seconday"></i><span> Impresso</span></label>
                                     </a> 
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('emitido')">
+                                        <label><i class="fa fa-arrow-right icon text-secondary"></i><span> Emitido</span></label>
+                                    </a> 
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('cancelado')">
+                                        <label><i class="fa fa-minus-circle icon text-danger"></i> <span> Cancelado</span></label>
+                                    </a> 
+                                     
                                     
                                 </div>
                              </div>
@@ -138,7 +152,7 @@
                                                     <div class="item-col item-col-header ">
                                                         <div class="action dropdown pull-right "> 
                                                             <div id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;">
-                                                                <i class="fa fa-filter"></i> <span >Ref</span> 
+                                                                 <span >Ref</span> 
                                                             </div>
                                                             <!--<div class="dropdown-menu" aria-labelledby="dropdownMenu2" id="filtro2" style="padding-left:10px;"> 
                                                                 
@@ -174,7 +188,7 @@
 
                                                     <div class="item-col fixed item-col-check" > 
                                                         <label class="item-check" >
-                                                        <input type="checkbox" class="checkbox" name="turma" value="{{$boleto->id}}">
+                                                        <input type="checkbox" class="checkbox" name="boleto" value="{{$boleto->id}}">
                                                         <span></span>
                                                         </label>
                                                     </div>
@@ -245,6 +259,7 @@
                                                             </a>
                                                             <div class="item-actions-block">
                                                                 <ul class="item-actions-list">
+                                                                    <!--
                                                                     <li>
                                                                      <a class="edit" title="Aprovar" href="#" onclick="alterarStatusIndividual('aprovar','{{$boleto->id}}')"> <i class="fa fa-check-circle-o "></i> </a>
                                                                     </li>
@@ -257,7 +272,7 @@
                                                                     <li>
                                                                      <a class="remove" title="Cancelar" href="#" onclick="alterarStatusIndividual('cancelar','{{$boleto->id}}')"> <i class="fa fa-minus-circle "></i> </a>
                                                                     </li>
-                                                                    
+                                                                -->
                                                                 
                                                                 </li>
                                                                 </ul>
@@ -295,15 +310,13 @@ function alterarStatusIndividual(status,id){
         if(id=='')
             alert('Nenhum item selecionado');
         else
-        if(confirm('Deseja realmente alterar as bolsas selecionadas?'))
-            $(location).attr('href','./status/'+status+'/'+id);
-
+        alert('função ainda não disponível');
     
 }
 
 function alterarStatus(status){
      var selecionados='';
-        $("input:checkbox[name=turma]:checked").each(function () {
+        $("input:checkbox[name=boleto]:checked").each(function () {
             selecionados+=this.value+',';
 
         });
@@ -311,13 +324,16 @@ function alterarStatus(status){
             alert('Nenhum item selecionado');
             return false;
         }
+        alert('Função ainda não disponível');
+        /*
         if(status ==  'aprovar' || status ==  'negar' )
-            $(location).attr('href','./analisar/'+selecionados);
+            //$(location).attr('href','./analisar/'+selecionados);
         else
             if(confirm('Deseja realmente alterar as bolsas selecionadas?'))
-                $(location).attr('href','./status/'+status+'/'+selecionados);
+                //$(location).attr('href','./status/'+status+'/'+selecionados);
 
         return false;
+        */
 
     
 }

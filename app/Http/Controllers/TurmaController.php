@@ -179,7 +179,7 @@ class TurmaController extends Controller
 
         if(isset($filtros['pordata']) && count($filtros['pordata'])){
             $str1 = substr($filtros['pordata'][0],1,10);
-            if($str1 == 'undefinedt'){
+            if($str1 == 'undefined'){
                 $str2 = substr($filtros['pordata'][0],11,10);
                 try{
                     $data2 = \DateTime::createFromFormat('Y-m-d', $str2);
@@ -235,7 +235,7 @@ class TurmaController extends Controller
             }
                
         }
-        if(!isset($filtros['periodo']) || !isset($filtros['status']) || !isset($filtros['status_matriculas'])){
+        if(!isset($filtros['periodo']) && !isset($filtros['status']) && !isset($filtros['status_matriculas'])){
             $turmas = $turmas->whereIn('turmas.status', ['iniciada','lancada']); 
 
         }
@@ -244,6 +244,9 @@ class TurmaController extends Controller
         $turmas = $turmas->orderBy('cursos.nome')->orderBy('disciplinas.nome');
 
         $turmas = $turmas->paginate($ipp);
+
+        //$turmas = $turmas->toSql();
+        //dd($turmas);
 
         foreach($turmas as $turma){
             //$turma->parcelas = Turma::find($turma->id);

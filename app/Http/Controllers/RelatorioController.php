@@ -258,7 +258,7 @@ class RelatorioController extends Controller
         return view('relatorios.bolsistas')->with('bolsas',$bolsas);
     }
 
-    public function inscricoes(Request $request){
+    public function inscricoes(Request $request){ 
     	$total_vagas = 0;
 		$total_inscricoes = 0;
 		$tc =  new \App\Http\Controllers\TurmaController;

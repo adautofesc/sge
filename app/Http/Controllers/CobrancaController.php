@@ -18,12 +18,24 @@ class CobrancaController extends Controller
 
 
 			//seleciona boletos de status emitidos, vencido ordenado por pessoa
-			if($ativos)
-				$boletos = Boleto::whereIn('status',['emitido','gravado','impresso'])->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
-			else
+			switch($ativos){
+			case 1:
+				$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->orderBy('pessoa')->get();
+				break;
+			case 2:
 				$boletos = Boleto::where('status','divida')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
-			
+				break;
+			case 0:
+				$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y')-1)->orderBy('pessoa')->get();
+				foreach($boletos as $boleto){
+					BoletoController::alterarStatus($boleto, 'inscrever');
+				}
+				break;
+			default:
+				$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->orderBy('pessoa')->get();
+				break;
 
+			}
 			//dd($boletos);
 
 			//cria uma coleção para armazenar as pessoas
@@ -55,9 +67,12 @@ class CobrancaController extends Controller
 				else{
 
 					//criar uma nova pessoa e adiciona na coleção
+					$pessoa_obj = \App\Pessoa::find($boleto->pessoa);
 					$pessoa = new \stdClass;
 					$pessoa->id = $boleto->pessoa;
-					$pessoa->nome = \App\Pessoa::getNome($boleto->pessoa);
+					//$pessoa->nome = \App\Pessoa::getNome($boleto->pessoa);
+					$pessoa->nome = $pessoa_obj->nome;
+					$pessoa->celular = $pessoa_obj->getCelular();
 					$pessoa->pendencias = array();
 
 
@@ -127,8 +142,9 @@ class CobrancaController extends Controller
 	        $planilha->setCellValue('D1', 'Bairro');
 	        $planilha->setCellValue('E1', 'CEP');
 	        $planilha->setCellValue('F1', 'Cidade');
-	        $planilha->setCellValue('G1', 'Referência');
-	        $planilha->setCellValue('H1', 'Total');
+			$planilha->setCellValue('G1', 'Celular');
+	        $planilha->setCellValue('H1', 'Referência');
+	        $planilha->setCellValue('I1', 'Total');
 
 	        $linha = 2;
 
@@ -163,9 +179,9 @@ class CobrancaController extends Controller
 			    	}//end if($pendencia->valor>0)
 		    	}// end foreach($pessoa->pendencias as $pendencia)
 		    	*/
-
-		    	$planilha->setCellValue('G'.$linha, implode(";\n",$pessoa->pendencias));
-		        $planilha->setCellValue('H'.$linha, 'R$ '.number_format($pessoa->divida,2,',','.'));
+				$planilha->setCellValue('G'.$linha, $pessoa->celular);
+		    	$planilha->setCellValue('H'.$linha, implode(";\n",$pessoa->pendencias));
+		        $planilha->setCellValue('I'.$linha, 'R$ '.number_format($pessoa->divida,2,',','.'));
 		     
 
 		    	$linha++;
@@ -237,10 +253,10 @@ class CobrancaController extends Controller
 
 
 		public function relatorioDevedoresSms($ativos=1){
-			/*
+			
 			header('Content-Type: text/plain');
 	        header('Content-Disposition: attachment;filename="'. 'cobranca-sms' .'.txt"'); /*-- $filename is  xsl filename ---*/
-			//header('Cache-Control: max-age=0');
+			header('Cache-Control: max-age=0');
 			
 			$CC = new ContatoController;
 	        $devedores = $this->relatorioDevedores($ativos);
@@ -254,17 +270,18 @@ class CobrancaController extends Controller
 	        	if($pessoa->celular == '-')
 					continue;
 				else
-				$CC->enviarSMS($linha,[$pessoa->id]);
-	        	//$linha .= $pessoa->celular.';'.$pessoa->nome_simples."\n";
+				//$CC->enviarSMS($linha,[$pessoa->id]);
+				$CC->novoContato($pessoa->id,'SMS','Alerta de pendências - boleto vencido',0);
+	        	$linha .= $pessoa->celular.';'.$pessoa->nome_simples."\n";
 	        	$contador++;
 	        	
 
 	        }
-	        //$linha .= $contador;
+	        $linha .= $contador;
 			
 
-
-			return redirect()->back()->withErrors(['Foram enviadas '.$contador.' mensagens SMS.']);
+			return $linha;
+			//return redirect()->back()->withErrors(['Foram enviadas '.$contador.' mensagens SMS.']);
 		}
 	
 

@@ -549,7 +549,7 @@ class TurmaController extends Controller
         
         foreach($colunas as $dado){
             if($turma->isDirty($dado))
-                if(isset($turma->$dado->id))
+                if(isset($turma->$dado->id) && isset(($turma->getOriginal($dado))->id))
                     $alteracoes.= $dado.' alterado '. $turma->$dado->id . ' => '.($turma->getOriginal($dado))->id.', ';
                 else{
                     if(is_array($turma->$dado))

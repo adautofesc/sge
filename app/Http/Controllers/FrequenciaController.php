@@ -134,7 +134,7 @@ class FrequenciaController extends Controller
     }
 
     public function novaChamada_view(int $turma){
-        $aulas = Aula::where('turma',$turma)->whereIn('status',['prevista','planejada','executada'])->orderBy('data')->get();
+        $aulas = Aula::where('turma',$turma)->where('status','prevista')->orderBy('data')->get();
         
         if($aulas->count()==0){
             $AULA_CONTROLER = new AulaController;

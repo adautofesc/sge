@@ -67,13 +67,17 @@ class BoletoController extends Controller
 
 	}
 
-	public function alterarStatus(Boleto $boleto, string $status){
+	public static function alterarStatus(Boleto $boleto, string $status, string $motivo = ''){
 		switch($status){
-			/*
-			case 'cancelar': 
-				$boleto->status = 'gravado';
-				LogController::alteracaoBoleto($boleto->id,'Boleto gerado');
-			break;*/
+			
+			case 'cancelar':
+				$BC = new BoletoController;
+				if($motivo)
+					$BC->cancelamentoDireto($boleto->id, 'Solicitação de cancelamento motivo: '.$motivo);
+				else
+					$BC->cancelamentoDireto($boleto->id, 'Solicitação de cancelamento pelo sistema');
+
+			break;
 			case 'reativar':
 				$boleto->status = 'emitido';
 				LogController::alteracaoBoleto($boleto->id,'Boleto reativado');
@@ -725,10 +729,24 @@ class BoletoController extends Controller
 		 * @return [type] [description]
 		 */
 		public function relatorioBoletosAbertos($ativos=1){
-			if($ativos)
-			$boletos = Boleto::whereIn('status',['emitido','gravado','impresso'])->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
-			else
-				$boletos = Boleto::where('status','divida')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
+			switch($ativos){
+				case 1:
+					$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->orderBy('pessoa')->get();
+					break;
+				case 2:
+					$boletos = Boleto::where('status','divida')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
+					break;
+				case 0:
+					$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y')-1)->orderBy('pessoa')->get();
+					foreach($boletos as $boleto){
+						BoletoController::alterarStatus($boleto, 'inscrever');
+					}
+					break;
+				default:
+					$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->orderBy('pessoa')->get();
+					break;
+	
+				}
 
 			foreach($boletos as $boleto){
 				$boleto->aluno = \App\Pessoa::find($boleto->pessoa);

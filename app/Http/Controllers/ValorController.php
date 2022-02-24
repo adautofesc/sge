@@ -207,13 +207,14 @@ class ValorController extends Controller
     public function getIPCA($data_inicial='201901' ,$data_final = null){
         $acumulado = 0;
         if($data_final ==null)
-            $data_final=date('Ym');
+            $data_final=date('Y').'0'.(date('m')-1);
 
         //https://api.bcb.gov.br/dados/serie/bcdata.sgs.10844/dados?formato=json
+        $url = 'https://servicodados.ibge.gov.br/api/v3/agregados/6691/periodos/'.$data_inicial.'|'.$data_final.'/variaveis/63?localidades=N1[all]';
         
-        $url = "http://api.sidra.ibge.gov.br/values/t/1419/p/".$data_inicial."-".$data_final."/n1/all/h/n/v/63/c315/7169/d/v63%205?formato=json";
+        //$url = "http://api.sidra.ibge.gov.br/values/t/1419/p/".$data_inicial."-".$data_final."/n1/all/h/n/v/63/c315/7169/d/v63%205?formato=json";
 
-        dd($url);
+        //dd($url);
 
         $ch = curl_init();
         //não exibir cabeçalho
@@ -280,6 +281,17 @@ class ValorController extends Controller
         //calcula correcao
         $taxa_acumulada_anterior= $this->getIPCA( date('Ym', $margem));
         $taxa_acumulada= $this->getIPCA( date('Ym', $vencimento_formatado));
+        //dd(date('Ym', $margem));
+        //dd($taxa_acumulada_anterior);
+        dd((array)$taxa_acumulada_anterior[0]->resultados[0]->series[0]->serie);
+
+        /*
+        $valor_primeiro =  $taxa[0]/100+1;
+        $fator =  $serie[0]/100+1;
+        foreach($serie as $taxa){
+            $fator = $fator*$taxa
+        }
+        */
      
 
 

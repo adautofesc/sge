@@ -28,7 +28,7 @@ class DividaAtiva extends Model
             if(!in_array($boleto->pessoa,$lista_pessoas))
                 $lista_pessoas[] = $boleto->pessoa;
             $boleto->status = 'divida';
-            $boleto->save();   
+//$boleto->save();   
         }
 
         //dd($lista_pessoas);
@@ -39,11 +39,11 @@ class DividaAtiva extends Model
             $da->status = 'aberto';
             $da->valor_consolidado = 0;
             $da->consolidado_em = date('Y-m-d');
-            $da->save();
+            //$da->save();
 
             //dd($da);
 
-            $boletos_divida = Boleto::where('pessoa',$pessoa)->where('status','divida')->whereYear('vencimento',$ano-1)->get();
+            $boletos_divida = Boleto::where('pessoa',$pessoa)->where('status','emitido')->whereYear('vencimento',$ano-1)->get();
             //dd($boletos_divida);
             foreach($boletos_divida as $boleto){
                 $da->valor_consolidado = DividaAtiva::atualizarValor($boleto->valor,$boleto->vencimento);

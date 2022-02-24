@@ -219,38 +219,30 @@ class RelatorioController extends Controller
 	}
 
 	public function matriculasPrograma($ano){
-        $programas = \App\Programa::whereIn('id',[1,2,3,4,12])->get();
-        if($ano == date('Y'))
-            $matriculas = \App\Matricula::whereIn('status',['ativa','pendente','espera'])->whereBetween('data',[($ano-1).'-11-20', $ano.'-11-19'])->get();
-        else
-            $matriculas = \App\Matricula::where('status','expirada')->whereBetween('data',[($ano-1).'-11-20', $ano.'-11-19'])->get();
-        //dd($matriculas);
-        $matriculas_faixa['Matriculas totais'] = count($matriculas);
         $item = array();
-
-        foreach($programas as $programa){
-            
+        $total_matriculas = 0;
+        $programas = \App\Programa::whereIn('id',[1,2,3,4,12])->get();
         
-
-
-            
-            $item[$programa->id] = [];
-            
-           
-            foreach($matriculas as $matricula){
-                $inscricoes = $matricula->getInscricoes();
-                if(isset($inscricoes->first()->turma->programa->id )){
-                    if($inscricoes->first()->turma->programa->id == $programa->id){
-                        if(!in_array($matricula->id,$item[$programa->id]))
-                            $item[$programa->id][] = $matricula->id;
-                        
-                    }
-                }
-
-            }
-            
+        if($ano == date('Y')){
+            foreach($programas as $programa){
+                $turmas = \App\Turma::whereYear('data_inicio',$ano)->where('programa',$programa->id)->whereIn('status',['lancada','iniciada'])->pluck('id')->toArray();
+                //dd($turmas);
+                $item[$programa->id] = \App\Inscricao::whereIn('turma',$turmas)->whereIn('status',['pendente','regular'])->groupBy('matricula')->pluck('matricula')->toArray();
+                //dd($item[$programa->id]);
+                $total_matriculas += count($item[$programa->id]);
+            }      
         }
-        return view('relatorios.matriculas-por-programa')->with('programas',$programas)->with('matriculas',$item)->with('total',count($matriculas))->with('ano',$ano);
+        else{
+            foreach($programas as $programa){
+                $turmas = \App\Turma::whereYear('data_inicio',$ano)->where('programa',$programa->id)->where('status','encerrada')->pluck('id')->toArray();
+                $item[$programa->id] = \App\Inscricao::whereIn('turma',$turmas)->where('status','finalizada')->groupBy('matricula')->pluck('matricula')->toArray();
+                //dd($item[$programa->id]);
+                $total_matriculas += count($item[$programa->id]);
+            } 
+
+        }
+
+        return view('relatorios.matriculas-por-programa')->with('programas',$programas)->with('matriculas',$item)->with('total',$total_matriculas)->with('ano',$ano);
 	}
 
 	 public function bolsasFuncionariosMunicipais(){

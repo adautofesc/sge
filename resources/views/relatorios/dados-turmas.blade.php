@@ -16,7 +16,7 @@ page-break-before: always;
 }
 	</style>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-<link rel="stylesheet" href="{{asset('/')}}/css/vendor.css"/>
+<link rel="stylesheet" href="{{asset('/css/vendor.css')}}"/>
 <title>Documento Oficial - Fesc</title>
 </head>
 
@@ -25,7 +25,7 @@ page-break-before: always;
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-1" >
-			<img src="{{asset('/')}}/img/logofesc.png" width="65"/>
+			<img src="{{asset('/img/logofesc.png')}}" width="65"/>
 			</div>
 			<div class="col-xs-4" style="margin-left: 1rem;">
 			<p style="font-size: 0.6rem;">
@@ -138,7 +138,7 @@ page-break-before: always;
 	<div class="page-break"></div>
 	@endforeach
         	
-	<script src="{{asset('/')}}/js/vendor.js">
+	<script src="{{asset('/js/vendor.js')}}">
 	</script>
 </body>
 

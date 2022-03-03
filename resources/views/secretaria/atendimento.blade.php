@@ -366,8 +366,8 @@
                             @endif
                            
                                                              
-                                <div class="col-xl-4" title="Turma {{$inscricao->turma->id}} - {{ isset($inscricao->turma->disciplina->nome) ? $inscricao->turma->disciplina->nome: $inscricao->turma->curso->nome}} " style="line-height:40px !important; padding-left: 50px;">
-                                     <div><i class=" fa fa-caret-right"></i>&nbsp;<small>&nbsp;i{{$inscricao->id}} - 
+                                <div class="col-xl-4" title="Inscrição {{$inscricao->id}}. Clique para ver as presenças" style="line-height:40px !important; padding-left: 50px;">
+                                     <div><i class=" fa fa-caret-right"></i>&nbsp;<small>&nbsp;<a target="_blank" href="/secretaria/frequencia/{{$inscricao->turma->id}}">Turma {{$inscricao->turma->id}}</a> - 
                                         {{ isset($inscricao->turma->disciplina->nome) ? substr($inscricao->turma->disciplina->nome,0,30) : substr($inscricao->turma->curso->nome,0,30)}}</small></div>
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">

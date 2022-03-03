@@ -8,6 +8,8 @@
 <form name="item" method="POST">
 	
     <div class="card card-block">
+		Não há mais necessidade de gerar as parcelas antes de gerar o boleto. 
+		<!--
     	
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">Matricula</label>
@@ -72,9 +74,9 @@
                 <button type="cancel" name="btn" class="btn btn-primary" onclick="history.back(-2);return false;">Cancelar</button>
 				<!-- 
 				<button type="submit" class="btn btn-primary"> Cadastrar</button> 
-				-->
+				
 			</div>
-       </div>
+       </div>-->
     </div>
     {{csrf_field()}}
 </form>

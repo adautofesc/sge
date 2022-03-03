@@ -5,7 +5,7 @@
 </div>
 @include('inc.errors')
 <form name="item" method="POST">
-	<p>Os valores dos boletos serão obtidos exclusivamente através da soma das parcelas (lançamentos). </p>
+	<p>Os valores dos boletos serão obtidos exclusivamente através da soma das parcelas das matrículas. </p>
     <div class="card card-block">
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
@@ -19,13 +19,13 @@
 			</div>
 		</div>
 		<div class="form-group row"> 
-			<label class="col-sm-2 form-control-label text-xs-right">Lançamentos pendentes*</label>
+			<label class="col-sm-2 form-control-label text-xs-right">Matrículas ativas</label>
             <div class="col-sm-10"> 
-            	@foreach($lancamentos as $lancamento)
+            	@foreach($matriculas as $matricula)
 				<div>
 					<label>
-					<input class="checkbox" id="{{$lancamento->id}}" type="checkbox" name="lancamentos[]" onchange="atualizaValor({{$lancamento->id}},{{$lancamento->valor}})" value="{{$lancamento->id}}">
-					<span>{{$lancamento->id.' - '.$lancamento->referencia.' R$ '.$lancamento->valor}}</span>
+					<input class="checkbox" id="{{$matricula->id}}" type="checkbox" name="matriculas[]" onchange="atualizaValor({{$matricula->id}},{{$matricula->valor->valor/$matricula->valor->parcelas}})" value="{{$matricula->id}}">
+					<span>{{$matricula->id}} <small>({{$matricula->status}})</small>  - {{$matricula->getNomeCurso().' R$ '.number_format($matricula->valor->valor/$matricula->valor->parcelas,2,',','.')}} </span>
 					</label>
 				</div>
 				@endforeach

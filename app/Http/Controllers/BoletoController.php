@@ -604,32 +604,49 @@ class BoletoController extends Controller
 		}
 
 		public function novo($pessoa){
-			$lancamentos = Lancamento::where('pessoa',$pessoa)->where('boleto',null)->where('status',null)->get();
-			return view('financeiro.boletos.novo')->with('lancamentos',$lancamentos)->with('pessoa',$pessoa);
+
+
+
+			$matriculas = \App\Matricula::where('pessoa',$pessoa)->whereIn('status',['ativa','pendente','espera'])->get();
+			//$lancamentos = Lancamento::where('pessoa',$pessoa)->where('boleto',null)->where('status',null)->get();
+			return view('financeiro.boletos.novo')->with('matriculas',$matriculas)->with('pessoa',$pessoa);
 
 		}
 
 
 		public function create(Request $r){
 			if($r->valor >0){
-				if(isset($r->lancamentos)){
+				if(isset($r->matriculas)){
 					$boleto = new Boleto;
 					$boleto->vencimento = $r->vencimento;
 					$boleto->pessoa = $r->pessoa;
 					$boleto->valor = $r->valor;
 					$boleto->status = 'gravado';
 					$boleto->save();
-					foreach ($r->lancamentos as $lancamento){
+				
+					foreach ($r->matriculas as $id_matricula){
+						$matricula = \App\Matricula::find($id_matricula);
+						if($matricula){
+							$lancamento = new Lancamento;
+							$lancamento->pessoa = $r->pessoa;
+							$lancamento->matricula = $matricula->id;
+							$lancamento->referencia = 'Parcela de '.$matricula->getNomeCurso();
+							$lancamento->valor = $matricula->valor->valor/$matricula->valor->parcelas;
+							$lancamento->boleto = $boleto->id;
+							$lancamento->save();
+						}
+
+						/*
 						$lancamento_bd = Lancamento::find($lancamento);
 						if($lancamento_bd != null){
 							$lancamento_bd->boleto = $boleto->id;
 							$lancamento_bd->save();
-						}
+						}*/
 
 					}	
 				}
 				else{
-					return redirect()->back()->withErrors(['Para gerar um boleto é necessário pelo menos uma parcela (lançamento).']);
+					return redirect()->back()->withErrors(['Para gerar um boleto é necessário selecionar uma matrícula.']);
 				}
 				
 				

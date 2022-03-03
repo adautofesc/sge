@@ -478,14 +478,23 @@ class BolsaController extends Controller
                 $aulas = $inscricao->turma->getAulas();
                 $aulasexec = $aulas->where('status','executada');
                 $falta=0;
-                //dd($aulasexec);
+
+                
 
                 foreach($aulasexec as $aula){
-                    $frequencia = \App\Frequencia::where('aula',$aula->id)->where('aluno',$inscricao->pessoa->id);
-                    if(isset($frequencia->id))
+                    
+                    $frequencia = \App\Frequencia::where('aula',$aula->id)->where('aluno',$inscricao->pessoa->id)->get();
+                    $data_aula = \Carbon\Carbon::instance($aula->data);
+ 
+                    if(isset($frequencia->id) || $data_aula->diffInDays($inscricao->created_at)>=0){
                         $falta=0;
+                        
+
+                    }
+                        
                     else{
                         $falta++;
+                       
                         if($falta>=3){
                             $alunos[$inscricao->pessoa->id] = 'turma '.$inscricao->turma->id.' aluno';
                             break;
@@ -493,7 +502,14 @@ class BolsaController extends Controller
 
                     }
 
+                   
+
                 }
+                //if($inscricao->pessoa->id ==19354)
+                //dd($frequencia);
+                //echo $inscricao->id. ' faltas: '.$falta."<br>";
+
+                
 
             }
             //$matriculas->push($matricula);

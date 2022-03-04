@@ -883,6 +883,7 @@ class MatriculaController extends Controller
      * @return [type] [description]
      */
     public function ativarEmEspera(){
+       
         $contador=0;
         $matriculas = Matricula::where('status','espera')->get();
         foreach($matriculas as $matricula){
@@ -891,7 +892,7 @@ class MatriculaController extends Controller
             $contador++;
         }
 
-        return redirect($_SERVER['HTTP_REFERER'])->withErrors([$contador.'Matriculas ativadas com sucesso.']);
+        return redirect()->back()->withErrors([$contador.'Matriculas ativadas com sucesso.']);
     }
 
     public function imprimirCancelamento($matricula){

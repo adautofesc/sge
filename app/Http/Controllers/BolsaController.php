@@ -471,7 +471,7 @@ class BolsaController extends Controller
                     ->get();
         foreach($array_bolsas as $array_bolsa){
             $matricula = Matricula::find($array_bolsa->matricula);
-            $matricula->getInscricoes();
+            $matricula->getInscricoes('regular');
             foreach($matricula->inscricoes as $inscricao){
 
 
@@ -483,10 +483,20 @@ class BolsaController extends Controller
 
                 foreach($aulasexec as $aula){
                     
-                    $frequencia = \App\Frequencia::where('aula',$aula->id)->where('aluno',$inscricao->pessoa->id)->get();
+                    $frequencia = \App\Frequencia::where('aula',$aula->id)->where('aluno',$inscricao->pessoa->id)->first();
                     $data_aula = \Carbon\Carbon::instance($aula->data);
+
+                    /* Código para rastreamento
+                    if($inscricao->id == 23141){
+                        echo 'aula '.$aula->id. 'frequencia: '.$frequencia.'<br>';
+                        
+                            echo $data_aula->diffInDays($inscricao->created_at, false).'<br>';
+                        
+                    }*/
+
+                    
  
-                    if(isset($frequencia->id) || $data_aula->diffInDays($inscricao->created_at)>=0){
+                    if(isset($frequencia->id) || $data_aula->diffInDays($inscricao->created_at,false)>=0){
                         $falta=0;
                         
 

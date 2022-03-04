@@ -148,7 +148,7 @@
                 </div>
                 <div class="card-block">
                     <div>
-                        <a href="/secretaria/matricula/ativar_matriculas_em_espera" class="btn btn-danger-outline col-xs-12 text-xs-left" title="Ativar matriculas que estao em espera. Necessita de credencial.">
+                        <a href="/secretaria/ativar_matriculas_em_espera" class="btn btn-danger-outline col-xs-12 text-xs-left" title="Ativar matriculas que estao em espera. Necessita de credencial.">
                         <i class=" fa fa-play-circle "></i>
                         &nbsp;&nbsp;Ativar Matrículas</a>
                     </div>

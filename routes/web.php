@@ -624,7 +624,6 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::prefix('matricula')->group(function(){
 			Route::get('/{ids}','SecretariaController@viewMatricula');
 			Route::get('/nova/{pessoa}','InscricaoController@novaInscricao');
-			//Route::get('/nova/{pessoa}','MatriculaController@novaMatricula');
 			Route::get('/upload-termo-lote', function(){ return view('secretaria.matricula.upload-termos-lote'); });
 			Route::post('/upload-termo-lote', 'MatriculaController@uploadTermosLote');
 			Route::get('/upload-termo/{matricula}','MatriculaController@uploadTermo_vw');
@@ -637,15 +636,7 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::post('renovar/{pessoa}','MatriculaController@renovar');
 			Route::get('duplicar/{matricula}','MatriculaController@duplicar');
 			Route::post('nova/confirmacao', 'InscricaoController@confirmacaoAtividades');
-			
-
-
 			Route::post('nova/gravar', 'MatriculaController@gravar');
-			//Route::post('nova/gravar', 'InscricaoController@gravarInscricoes');
-
-
-
-
 			Route::get('termo/{id}','MatriculaController@termo');
 			Route::get('editar/{id}', 'MatriculaController@editar');
 			Route::post('editar/{id}','MatriculaController@update');
@@ -667,9 +658,8 @@ Route::middleware(['auth','login']) ->group(function(){
 				Route::get('imprimir/cancelamento/{inscricao}', 'InscricaoController@imprimirCancelamento');
 				Route::get('imprimir/transferencia/{inscricao}', 'TransferenciaController@imprimir');
 			});
-			Route::middleware('liberar.recurso:20')->get('ativar_matriculas_em_espera','MatriculaController@ativarEmEspera');
-			
 		});
+		Route::middleware('liberar.recurso:20')->get('ativar_matriculas_em_espera','MatriculaController@ativarEmEspera');
 
 
 	});

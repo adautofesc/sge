@@ -16,6 +16,7 @@ class BoletosTest extends TestCase
      *
      * @return void
      */
+	/*
     public function testVerificaBoletosSemParcelasAtivas()
     {
     	$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
@@ -36,7 +37,7 @@ class BoletosTest extends TestCase
         else
         	$this->assertEquals(0,$erros,$boletos_indevidos);
 
-    }
+    }*/
 
     
 

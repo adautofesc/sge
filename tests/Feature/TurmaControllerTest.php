@@ -29,7 +29,7 @@ class TurmaControllerTest extends TestCase
     	}
     	$this->assertEquals(0,$erros,$divergentes);	
     }
-
+	/*
     public function testVerificaSeTodasTurmasTemCargaHoraria(){
     	$resultado = '';
     	$turmas = Turma::whereIn('carga',[null,'0',''])->get();
@@ -38,5 +38,5 @@ class TurmaControllerTest extends TestCase
     		$resultado = $resultado.'Turma '.$turma->id.' não possui carga definida.'."\n";
     	}
     	$this->assertCount(0,$turmas,$resultado);	
-    }
+    }*/
 }

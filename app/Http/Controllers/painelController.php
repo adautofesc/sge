@@ -375,8 +375,14 @@ class painelController extends Controller
     }
     
     public function testarClasse(){
+        $routeCollection = \Illuminate\Support\Facades\Route::getRoutes();
 
-        \App\DividaAtiva::gerarLivroCorrente();
+        foreach ($routeCollection as $value) {
+            echo $value->uri."<br>";
+        } 
+
+
+        //\App\DividaAtiva::gerarLivroCorrente();
         //return painelController::cancelandoPendentes();
    
         

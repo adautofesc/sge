@@ -14,6 +14,7 @@ class MatriculasTest extends TestCase
      *
      * @return void
      */
+    /*
     public function testExample()
     {
 
@@ -21,5 +22,5 @@ class MatriculasTest extends TestCase
 
         //die('Semana:'.$data);
         $this->assertTrue(True);
-    }
+    }*/
 }

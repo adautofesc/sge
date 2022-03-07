@@ -99,15 +99,7 @@ Auth::routes(['register' => false]);
 
 Route::middleware(['auth','login']) ->group(function(){
 
-
-	//Route::get('disparar-email-boletos','SecretariaController@emailBoletos');
-
-	
-
-
-
 	Route::get('home', 'painelController@index');
-	Route::get('reimpressao', 'BoletoController@reimpressaoCarnes');
 	Route::get('/trocarminhasenha','loginController@trocarMinhaSenha_view');
 	Route::post('/trocarminhasenha','loginController@trocarMinhaSenha_exec');
 	Route::get('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_view');

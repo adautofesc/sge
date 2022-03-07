@@ -17,13 +17,13 @@ class ContatosTest extends TestCase
      *
      * @return void
      */
-    
+    /*
     public function testEnvioSMS(){
         $CC = new ContatoController();
         $teste = $CC->enviarSMS('teste',19511,19511);
         $this->assertInstanceOf(Contato::class,$teste);
 
-    }
+    }*/
 
     
 

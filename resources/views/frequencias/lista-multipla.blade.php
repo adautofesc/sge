@@ -210,7 +210,7 @@ body{
 		<td class="presenca">
 		@if(isset($aula->presentes) && in_array($inscrito->pessoa->id,$aula->presentes))
 		    • 
-		@elseif($aula->status == 'executada' && $inscrito->status == 'regular' && $inscrito->created_at < $aula->data->format('Y-m-d') ) 
+		@elseif($aula->status == 'executada' && ($inscrito->status == 'regular' || $inscrito->status == 'finalizada' ) && $inscrito->created_at < $aula->data->format('Y-m-d') ) 
 			@php ($falta++)
 			F
 		@elseif($aula->status == 'executada')

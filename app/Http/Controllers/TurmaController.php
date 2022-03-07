@@ -825,7 +825,7 @@ class TurmaController extends Controller
 
     }
 
-    public function turmasJSON(){
+    /*public function turmasJSON(){
         $programas=Programa::get();
         foreach($programas as $programa){
             $turmas=Turma::where('turmas.programa',$programa->id)
@@ -837,7 +837,7 @@ class TurmaController extends Controller
             }
         }
         return $dados;
-    }
+    }*/
 
     public function turmasSite(){
 

@@ -24,17 +24,31 @@ class ViewsTest extends TestCase
     /**
      * test all route
      *
+     * 
      * @group route
      */
-
     public function testAllRoute()
     {
         $user = User::find(2);
+        
+        $perfil = '19511';
 
         $routeCollection = Route::getRoutes();
         $this->withoutEvents();
+        //$this->withoutMiddleware();
+        $this->withSession(['pessoa_perfil' => $perfil]);
         $blacklist = [
-            'url/that/not/tested',
+            'api/user',
+            'perfil/parceria/cancelar',
+            'perfil/login',
+            'perfil/logout',
+            'login',
+            'password/reset',
+            'turmas',
+            'turmas/listar',
+            
+
+            
         ];
         $dynamicReg = "/{\\S*}/"; //used for omitting dynamic urls that have {} in uri (http://laravel-tricks.com/tricks/adding-a-sitemap-to-your-laravel-application#comment-1830836789)
         $this->be($user);

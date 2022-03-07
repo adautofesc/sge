@@ -258,7 +258,7 @@ body{
 		<td class="presenca aula-{{$aula->id}} aluno-{{$inscrito->id}}" >
 		@if(isset($aula->presentes) && in_array($inscrito->pessoa->id,$aula->presentes))
 			<input type="checkbox" name="presente[{{$inscrito->pessoa->id}},{{$aula->id}}]" checked="true" style="margin: 0;padding:0;" class="aula-{{$aula->id}} insc-{{$inscrito->id}}" onclick="contarFaltas('{{$inscrito->id}}')">
-		@elseif($aula->status == 'executada' && $inscrito->status == 'regular' && $inscrito->created_at < $aula->data->format('Y-m-d') ) 
+		@elseif($aula->status == 'executada' &&  ($inscrito->status == 'regular' || $inscrito->status == 'finalizada' ) && $inscrito->created_at < $aula->data->format('Y-m-d') ) 
 			@php ($falta++)
 			<input type="checkbox" name="presente[{{$inscrito->pessoa->id}},{{$aula->id}}]"  id="" style="margin: 0;padding:0;" class="aula-{{$aula->id}} insc-{{$inscrito->id}}" onclick="contarFaltas('{{$inscrito->id}}')">
 		@elseif($aula->status == 'executada')

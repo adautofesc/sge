@@ -13,6 +13,7 @@ class LancamentosTest extends TestCase
      * Teste para verificar se existe algum lançamento duplicado
      * @return [type] [description]
     */ 
+    /*
     public function testLancamentoDuplicados(){
     	$erros = 0;
     	$erro_str='';
@@ -29,12 +30,13 @@ class LancamentosTest extends TestCase
     	$this->assertEquals(0,$erros,$erro_str);
 
 
-    }
+    }*/
 
     /**
      * Pega alguns números de matriculas e verifica como foram lançamentos
      * @return [type] [description]
      */
+    /*
     public function testValorLancamentosPorAmostra(){
         
         $erros = 0;
@@ -150,7 +152,7 @@ class LancamentosTest extends TestCase
        
         $this->assertEquals(0,$erros,$erro_str);
 
-    }
+    }*/
 
     
 }

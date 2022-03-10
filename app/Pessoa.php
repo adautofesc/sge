@@ -136,4 +136,9 @@ class Pessoa extends Model
 		return \App\classes\Data::calculaIdade($this->nascimento);
 	}
 
+	public function getProgramas(){
+		$programas =   PessoaDadosAdministrativos::where('pessoa',$this->id)->where('dado','programa')->pluck('valor')->toArray();
+		return $programas;
+	}
+
 }

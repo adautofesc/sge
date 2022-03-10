@@ -176,8 +176,10 @@ class painelController extends Controller
             $pessoa_acesso=0;
         $pessoa->acesso=$pessoa_acesso;
         $pessoa->relacoes_institucionais = \App\PessoaDadosAdministrativos::where('dado','16')->where('pessoa',$pessoa->id)->get();
+        $programas = \App\Programa::whereIn('id',[1,2,3,4,12])->orderby('nome')->get();
+        $vinculo_programas = \App\PessoaDadosAdministrativos::where('dado','programa')->where('pessoa',$pessoa->id)->get();
 
-        return view('gestaopessoal.atendimento', compact('pessoa'));
+        return view('gestaopessoal.atendimento', compact('pessoa'))->with('programas',$programas)->with("vinculo_programas",$vinculo_programas);
     }
 
 
@@ -186,7 +188,36 @@ class painelController extends Controller
         return view('juridico.home');
     }
     public function pedagogico(){
-        return view('pedagogico.home');
+        $user = Auth::user();
+        $professores_dos_programas = collect();
+        $programas = \App\PessoaDadosAdministrativos::where('pessoa',$user->pessoa)->where('dado','programa')->pluck('valor')->toArray();
+
+        $professores = \App\PessoaDadosAdministrativos::getFuncionarios('Educador');
+    
+
+
+        foreach($professores as $professor){
+            $comparisson = array_intersect($programas,$professor->getProgramas());
+            if(count($comparisson))
+                $professores_dos_programas->push($professor);
+
+/*if($professor->id == '19511'){          
+                $comparisson = array_intersect($programas,$professor->getProgramas());
+                dd( count($comparisson));
+                if(in_array($programas,$professor->getProgramas()))
+                dd($programasx);
+                else
+                dd($programas);
+            }*/
+
+        }
+        //dd($professores_dos_programas);
+       
+        
+        return view('pedagogico.home')->with('professores',$professores_dos_programas)->with('programas',$programas);
+
+
+
     }
     public function secretaria(){
         if(session('pessoa_atendimento')){            

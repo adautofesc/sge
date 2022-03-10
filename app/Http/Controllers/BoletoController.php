@@ -445,7 +445,18 @@ class BoletoController extends Controller
 
 
 	public function cancelarView($id){
-		return view('financeiro.boletos.cancelamento')->with('boleto',$id);
+		$boleto = Boleto::find($id);
+		$boleto->getLancamentos();
+		if($boleto->status == 'gravado'){
+			foreach($boleto->lancamentos as $lancamento){
+				$lancamento->delete();
+			}
+			$boleto->delete();
+
+			return redirect()->back()->withErrors(["Boleto excluído."]);
+		}
+		else		
+			return view('financeiro.boletos.cancelamento')->with('boleto',$id);
 	}
 
 
@@ -686,7 +697,10 @@ class BoletoController extends Controller
 				LogController::alteracaoBoleto($boleto->id,'Boleto editado por '.Auth::user()->getPessoa()->nome_simples);
 				LogController::alteracaoBoleto($boleto->id,'Boleto editado: '.\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y').'->'.$r->vencimento.' status: '.$boleto->status.' ->'.$r->status) .'por '.Auth::user()->pessoa;
 				
-				$boleto->vencimento = \Carbon\Carbon::createFromFormat('d/m/Y', $r->vencimento, 'Europe/London')->format('Y-m-d 23:59:59');
+				if($boleto->vencimento != "0000-00-00 00:00:00")
+					$boleto->vencimento = \Carbon\Carbon::createFromFormat('d/m/Y', $r->vencimento, 'Europe/London')->format('Y-m-d 23:59:59');
+				else
+					$boleto->vencimento = \Carbon\Carbon::createFromFormat('d/m/Y', '10/01/2018', 'Europe/London')->format('Y-m-d 23:59:59');
 				$boleto->valor = str_replace(',','.',$r->valor);
 				$boleto->status = $r->status;
 				$boleto->save();

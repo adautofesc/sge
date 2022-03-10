@@ -1,6 +1,8 @@
 @extends('layout.app')
 @section('pagina')
+
 @include('inc.errors')
+@include('gestaopessoal.modal-vincular-programa')
 <div class="title-block">
                         <h3 class="title"> {{$pessoa->nome}} 
                         	@if(isset($pessoa->nome_resgistro))
@@ -107,6 +109,18 @@
 								
 							</div>
 							@endif
+							<div class="form-group row">
+								<label class="col-sm-2 form-control-label text-xs-right">
+									Programas
+								</label>
+								<div class="col-sm-10"> 
+									@foreach($vinculo_programas as $vinculo)
+									| {{$programas->find($vinculo->valor)->sigla}} <a href="#" onclick="desvincularPrograma('{{$pessoa->id}}','{{$vinculo->valor}}')" class="badge badge-pill badge-danger" style="text-decoration: none; color: white;" title="Excluir vínculo de programa">X</a>
+									@endforeach
+								</div>
+							</div>
+
+							
                         </div>
                         <div><br></div>
 
@@ -148,7 +162,7 @@
 											</div>
 										</div>
 										<div class="card-block">
-											<p>sem opções no momento.</p>
+											<div><a href="#" data-toggle="modal" data-target="#modal-contato" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-location-arrow"></i> Vincular a Programa </a></div>
 										</div>
 										
 									</div>
@@ -180,7 +194,27 @@ function cancelarAcesso(){
 	if(confirm('Deseja mesmo cancelar o acesso de {{$pessoa->nome}}?'))
 		@if(isset($pessoa->acesso->usuario))							
 		$(location).attr('href',"{{asset('/admin/alterar/3/').'/'.$pessoa->acesso->id}}");
+		@else
+		alert('Não há acesso para este usuário');
 		@endif
+}
+function vincularPrograma(pessoa){
+	programa = $('#vinc_programa').val();
+	$.get("/gestaopessoal/vincular-programa/"+pessoa+"/"+programa)
+		.done(function(data) {
+			location.reload();
+			
+		});
+}
+function desvincularPrograma(pessoa,programa){
+
+	if(confirm('Deseja realmente excluir o vínculo com o programa?')){
+		$.get("/gestaopessoal/desvincular-programa/"+pessoa+"/"+programa)
+			.done(function(data) {
+				location.reload();
+				
+			});
+	}
 }
 </script>
 @endsection

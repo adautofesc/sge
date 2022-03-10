@@ -479,8 +479,9 @@ class InscricaoController extends Controller
             }
            
         }
+        $logs = \App\Log::where('tipo','turma')->where('codigo',$turma->id)->orderByDesc('data')->get();
         //return $inscricoes;
-        return view('turmas.dados-secretaria',compact('turma'))->with('inscricoes',$inscricoes);
+        return view('turmas.dados-secretaria',compact('turma'))->with('inscricoes',$inscricoes)->with('logs',$logs);
 
 
     }

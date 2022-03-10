@@ -110,4 +110,21 @@ class PessoaDadosAdminController extends Controller
         return view('pessoa.dados-administrativos.listar-pendencias')->with('pessoas',$pessoas_collection)->with('atestados_vacina',$atestados_vacina)->with('atestados_saude',$atestados_saude);
 		
 	}
+
+
+    public function vincularPrograma(int $pessoa,int $programa){
+        $vinculo = new PessoaDadosAdministrativos;
+        $vinculo->pessoa = $pessoa;
+        $vinculo->dado = 'programa';
+        $vinculo->valor = $programa;
+        $vinculo->save();
+
+        return response(200);
+
+    }
+
+    public function desvincularPrograma(int $pessoa,int $programa){
+        $vinculo = PessoaDadosAdministrativos::where('pessoa',$pessoa)->where('dado','programa')->where('valor',$programa)->delete();
+        return response(200);
+    }
 }

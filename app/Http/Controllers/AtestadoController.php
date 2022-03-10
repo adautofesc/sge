@@ -18,7 +18,7 @@ class AtestadoController extends Controller
 		if(isset($pessoa->telefone_contato))
 			$pessoa->telefone_contato=\App\classes\Strings::formataTelefone($pessoa->telefone_contato);
 
-		return view('pessoa.dados-clinicos.cadastrar-atestado',compact('pessoa'));
+		return view('atestados.cadastrar-atestado',compact('pessoa'));
 	}
 	public function create(Request $r){
 		if(substr($r->emissao,0,4)<(date('Y')-1))
@@ -61,7 +61,7 @@ class AtestadoController extends Controller
 			$atestado->cadastro = \Carbon\Carbon::parse($atestado->created_at)->format('d/m/Y H:i');
 		}
 		//dd($atestados);
-		return view('pessoa.dados-clinicos.listar',compact('atestados'));
+		return view('atestados.listar',compact('atestados'));
 	}
 	public function buscar(Request $r){
 		
@@ -79,7 +79,7 @@ class AtestadoController extends Controller
 			if(isset($pessoa->telefone_contato))
 				$pessoa->telefone_contato=\App\classes\Strings::formataTelefone($pessoa->telefone_contato);
 
-			return view('pessoa.dados-clinicos.editar-atestado')->with('atestado',$atestado)->with('pessoa',$pessoa);
+			return view('atestados.editar-atestado')->with('atestado',$atestado)->with('pessoa',$pessoa);
 		}else
 		 return redirect()->back()->withErrors(['Atestado não encontrado.']);
 	}
@@ -155,7 +155,7 @@ class AtestadoController extends Controller
 			else
 				$arquivo = 'Arquivo não encontrado';
 
-			return view('pessoa.dados-clinicos.analisar-atestado')->with('atestado',$atestado)->with('pessoa',$pessoa)->with('arquivo',$arquivo);
+			return view('atestados.analisar-atestado')->with('atestado',$atestado)->with('pessoa',$pessoa)->with('arquivo',$arquivo);
 		}else
 		 return redirect()->back()->withErrors(['Atestado não encontrado.']);
 

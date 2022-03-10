@@ -3,10 +3,36 @@
 
 <div class="title-block">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-11">
             <h3 class="title">Departamento Pedagógico da FESC</h3>
             <p class="title-description">Cursos, Turmas e Projetos</p>
+        
+                @if(in_array('1',$programas))
+                <span  class="badge badge-pill badge-danger">UNIT</span>
+                @endif
+
+                @if(in_array('2',$programas))
+                <span  class="badge badge-pill badge-info">PID</span>
+                @endif
+
+                @if(in_array('3',$programas))
+                <span  class="badge badge-pill badge-warning">UATI</span>
+                @endif
+
+                @if(in_array('4',$programas))
+                <span  class="badge badge-pill badge-info">EMG</span>
+                @endif
+
+                @if(in_array('12',$programas))
+                <span  class="badge badge-pill badge-success">CE</span>
+                @endif
+            
+            
         </div>
+        <div class="col-md-1 text-right">
+            
+        </div>
+
     </div>
 </div>
 <section class="section">
@@ -53,7 +79,9 @@
                 <div class="card-block">
                      <div>
                          <ul>
-                             <li>Lista com nomes dos professores de seu programa.</li>
+                             @foreach($professores as $professor)
+                             <li><a href="#">{{$professor->nome_simples}}</a></li>
+                             @endforeach
                          </ul>
                     </div>
 

@@ -64,10 +64,21 @@
                <strong>Histórico</strong><br>
                <ul>
                @foreach($pessoais as $pessoal)
-                <li>{{\Carbon\Carbon::parse($pessoal->created_at)->format('d/m/Y H:i')}} - {{$pessoal->descricao}}</li>
+                  @if(in_array('26', Auth::user()->recursos))
+                      <li>{{\Carbon\Carbon::parse($pessoal->created_at)->format('d/m/Y H:i')}} - {{$pessoal->descricao}} Por: {{$pessoal->atendente->nome_simples}}</li>
+                  @else
+                
+                      <li>{{\Carbon\Carbon::parse($pessoal->created_at)->format('d/m/Y H:i')}} - {{$pessoal->descricao}}</li>
+                  @endif
                @endforeach
                @foreach($logs as $log)
-                <li>{{\Carbon\Carbon::parse($log->data)->format('d/m/Y H:i')}} - {{$log->evento}}</li>
+                   @if(in_array('26', Auth::user()->recursos))
+                      <li>{{\Carbon\Carbon::parse($log->data)->format('d/m/Y H:i')}} - {{$log->evento}} - por: {{$log->getPessoa()}}</li>
+                   @else
+
+                      <li>{{\Carbon\Carbon::parse($log->data)->format('d/m/Y H:i')}} - {{$log->evento}}</li>
+                    @endif
+
                @endforeach
                 </ul>
                <br>

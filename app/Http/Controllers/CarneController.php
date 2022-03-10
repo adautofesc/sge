@@ -250,7 +250,7 @@ class CarneController extends Controller
 		//$boletos = collect();
 		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente', 'espera'])->where('pessoa',$pessoa)->get();	
 		if($matriculas->count()==0)
-			return redirect()->back();
+			return redirect()->back()->withErrors('Nenhuma matrícula para gerar boletos.');
 			
 		foreach($matriculas as $matricula){
 			// limpa todos lançamentos
@@ -396,11 +396,13 @@ class CarneController extends Controller
 					$primeiro_vencimento->modify('+1 month');
 					//$mes++;
 					//$dia=10;
+					//dd($boleto);
 				}
 				else{
 					$primeiro_vencimento->modify('+1 month');
 				}
 			
+				//seleciona boleto com lancamento da matricula com vencimento no mesmo mes
 				$boleto_lancamento = \App\Boleto::join('lancamentos','boletos.id','=','lancamentos.boleto')
 													->where('lancamentos.matricula',$matricula->id)
 													->where('lancamentos.status', null)
@@ -408,13 +410,7 @@ class CarneController extends Controller
 													->whereYear('boletos.vencimento','=', $primeiro_vencimento->format('Y'))
 													->get();	
 																				
-				if($boleto_lancamento->count()>0)
-					continue;									
-
-
-				
-
-
+			
 				/******************************atribuindo */
 				//pegar primeira parcela livre de cada matricula
 				$lancamento = \App\Lancamento::where('pessoa',$boleto->pessoa)
@@ -424,7 +420,7 @@ class CarneController extends Controller
 										->where('matricula',$matricula->id)
 										->orderBy('parcela')
 										->first();
-				if(!$lancamento){
+				if(!$lancamento || $boleto_lancamento->count()>0 && $boleto->valor==0){
 					$boleto->forceDelete();
 					continue;
 

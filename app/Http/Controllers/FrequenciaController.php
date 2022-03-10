@@ -175,7 +175,7 @@ class FrequenciaController extends Controller
 
         $turma = \App\Turma::find($aula->turma);
         
-        if($turma->professor->id != Auth::user()->pessoa && !in_array('25', Auth::user()->recursos)){
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)){
             LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
         }

@@ -5,7 +5,11 @@
 	    <ul>
 			@foreach($atendimentos as $atendimento)
 			@if($atendimento->descricao != '')
-			<li>{{$atendimento->created_at->format('d/m/y H:i')}} - {{$atendimento->descricao}}</li>
+			@if(in_array('26', Auth::user()->recursos))
+			<li>{{$atendimento->created_at->format('d/m/y H:i')}} - {{$atendimento->descricao}} Por {{$atendimento->atendente->nome_simples}}</li>
+			@else
+			<li>{{$atendimento->created_at->format('d/m/y H:i')}} - {{$atendimento->descricao}} </li>
+			@endif
 			@endif
 		    @endforeach
 		</ul>

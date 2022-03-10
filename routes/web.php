@@ -515,6 +515,8 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('remover-relacao/{id}','PessoaDadosAdminController@excluir');
 		Route::get('relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_view');
 		Route::post('relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_exec');
+		Route::get('vincular-programa/{pessoa}/{programa}','PessoaDadosAdminController@vincularPrograma');
+		Route::get('desvincular-programa/{pessoa}/{programa}','PessoaDadosAdminController@desvincularPrograma');
 	});
 
 

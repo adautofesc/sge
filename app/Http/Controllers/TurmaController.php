@@ -422,6 +422,7 @@ class TurmaController extends Controller
             $ead->save();
 
         }
+        LogController::registrar('turma',$turma->id,'Turma cadastrada', \Auth::user()->pessoa);
 
         if($request->btn==1)
             return redirect(asset('/turmas'));
@@ -610,9 +611,11 @@ class TurmaController extends Controller
                     $inscricoes=Inscricao::where('turma',$turma->id)->count();
                     if($inscricoes==0){
                         $msgs[]= "Turma ".$turma->id." excluída com sucesso.";
+                        LogController::registrar('turma',$turma->id,'Turma excluída.', \Auth::user()->pessoa);
                         $turma->delete();
                     }
                     else{
+                        LogController::registrar('turma',$turma->id,'Solicitação de exclusão de turma falha por já conter inscrições', \Auth::user()->pessoa);
                         $msgs[]="Turma ".$turma->id." não pôde ser excluída pois possui alunos inscritos. Caso não apareça, a inscrição pode ter sido cancelada, mesmo assim precisamos preservar o histórico das inscrições.";
                     }
                 }
@@ -632,6 +635,7 @@ class TurmaController extends Controller
                 if(isset($turma->id)){
                     switch($status){
                         case 'encerrada':
+                            LogController::registrar('turma',$turma->id,'Status alterado para finalizada', \Auth::user()->pessoa);
                             $this->finalizarTurma($turma);
                             break;
                         case 'iniciada' : //turmas abertas que aceitam matriculas
@@ -643,8 +647,10 @@ class TurmaController extends Controller
                             }
                             InscricaoController::alterarStatus($lista_inscricoes,'regular');
                             unset($turma->inscricoes);
+                            LogController::registrar('turma',$turma->id,'Status alterado para iniciada', \Auth::user()->pessoa);
                             break;
                         case 'cancelada': 
+                            
                             break;
                         default:
                             $turma->status=$status;
@@ -668,6 +674,7 @@ class TurmaController extends Controller
         foreach($turmas as $turma){
             if(is_numeric($turma)){
                 $turma=Turma::find($turma);
+                LogController::registrar('turma',$turma->id,'Status de Matrículas da turma alterado de '.$turma->status_matriculas.' para '.$status, \Auth::user()->pessoa);
                 if(isset($turma->id)){
                     $turma->status_matriculas = $status;
                     $msgs['alert_sucess'][]="Turma ".$turma->id." modificada com sucesso.";      
@@ -1027,8 +1034,10 @@ class TurmaController extends Controller
             case 'encerrar':
                 foreach($turmas as $turma_id){
                     $turma = Turma::find($turma_id);
-                    if(isset($turma->id))
+                    if(isset($turma->id)){
                         $this->finalizarTurma($turma);
+                        LogController::registrar('turma',$turma->id,'Turma encerrada', \Auth::user()->pessoa);
+                    }
                 }
                 return redirect()->back()->withErrors(['Turmas encerradas com sucesso']);
                 break;
@@ -1169,6 +1178,8 @@ class TurmaController extends Controller
             $novaturma->status_matriculas = 'fechada';
 
             $novaturma->save();
+            LogController::registrar('turma',$novaturma->id,'Turma criada a partir da turma '.$turma->id, \Auth::user()->pessoa);
+            LogController::registrar('turma',$turma->id,'Turma relançada sobre o código '.$novaturma->id, \Auth::user()->pessoa);
 
             $requisitos = CursoRequisito::where('para_tipo','turma')->where('curso',$turma->id)->get();
             foreach($requisitos as $requisito){

@@ -15,7 +15,7 @@
 					<option >Selecione um programa</option>
 					@if(isset($dados['programas']))
 					@foreach($dados['programas'] as $programa)
-					<option value="{{$programa->id}}">{{$programa->nome}}</option>
+					<option value="{{$programa->id}}">{{$programa->sigla.' - '.$programa->nome}}</option>
 					@endforeach
 					@endif
 				</select> 

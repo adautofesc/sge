@@ -10,7 +10,7 @@ class Turma extends Model
 {
 	use SoftDeletes;
 
-	protected $appends=['icone_status','tempo_curso','valor'];
+	protected $appends=['icone_status','valor'];
 
 	public function setDiasSemanaAttribute($value){
 		$this->attributes['dias_semana']= implode(',',$value);

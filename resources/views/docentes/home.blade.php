@@ -1,16 +1,131 @@
 @extends('layout.app')
 @section('pagina')
-
+@include('docentes.modal.add_jornada')
 <div class="title-block">
     <div class="row">
         <div class="col-md-6">
             <h3 class="title">Departamento de Docência da FESC</h3>
-            <p class="title-description">Planos de trabalho, listas de frequência, calendário etc.</p>
+            <p class="title-description">Prof.: {{$docente->nome}}</p>
         </div>
     </div>
 </div>
 <section class="section">
  @include('inc.errors')
+    <div class="row">
+        <div class="col-md-7">
+            <div class="card">
+            <div class="card card-block">
+                <div class="card-title-block">
+                    <h3 class="title"> Horário semanal </h3>
+                </div>
+                <section>
+                <table class="table table-striped table-bordered table-sm">
+                    
+                    <thead>
+                        <tr>
+                        <th>Hora</th>
+                        <th>Segunda</th>
+                        <th>Terça</th>
+                        <th>Quarta</th>
+                        <th>Quinta</th>
+                        <th>Sexta</th>
+                        <th>Sábado</th>
+                       </tr>
+                    </thead>
+                    <tbody>
+                        @for($i=6;$i<24;$i++)
+                            @if(isset($horarios['seg'][str_pad($i, 2, 0, STR_PAD_LEFT)]) || isset($horarios['ter'][str_pad($i, 2, 0, STR_PAD_LEFT)]) || isset($horarios['qua'][str_pad($i, 2, 0, STR_PAD_LEFT)]) || isset($horarios['qui'][str_pad($i, 2, 0, STR_PAD_LEFT)]) || isset($horarios['sex'][str_pad($i, 2, 0, STR_PAD_LEFT)]) || isset($horarios['sab'][str_pad($i, 2, 0, STR_PAD_LEFT)]))
+                            <tr>
+                                <th>{{str_pad($i, 2, 0, STR_PAD_LEFT)}}:00</th>
+                                @foreach($dias as $dia)
+                                    
+                                    @if(isset($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)]) && !isset($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)]->tipo))
+                                    <td title="{{($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)])->hora_inicio}} -> {{($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)])->hora_termino}} | {{($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)])->getNomeCurso()}} | {{($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)])->local->sigla}}">
+                                    <small><a href="/docentes/frequencia/nova-aula/{{($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)])->id}}">{{($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)])->id}}</a></small>
+                                    @elseif( isset($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)]->tipo))
+                                    <td>
+                                       <small>{{$horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)]->tipo}}</small>
+
+                                    @else
+                                    <td>
+                                    
+                                    @endif
+                                    </td>
+                            
+                                
+                            
+                                @endforeach
+                            </tr>
+
+                            @endif
+                        
+                        @endfor
+                        
+                          
+                        
+                    </tbody>
+
+                </table>
+                </section>
+
+            </div>
+            </div>
+
+        </div>
+        <div class="col-md-5 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Jornadas de trabalho</p>
+                    </div>
+                </div>
+                <div class="card-block">
+                    <table class="table table-sm table-striped">
+                        <tr>
+                            <th>&nbsp;</th>
+                            <th>Dia(s)</th>
+                            <th>Início</th>
+                            <th>Termino</th>
+                            <th>Tipo</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                        
+                        @foreach($jornadas as $jornada)
+                        <tr>
+                            <td><small>
+                                @switch($jornada->status)
+                                    @case('analisando')
+                                        <i class="fa fa-clock-o"></i>
+                                        @break
+                                    @case('ativa')
+                                        <i class="fa fa-check text-success"></i>
+                                        @break
+                                    @default
+                                        
+                                @endswitch</small></td>
+                            <td><small>{{implode(',',$jornada->dias_semana)}}</small></td>
+                            <td><small>{{$jornada->hora_inicio}}</small></td>
+                            <td><small>{{$jornada->hora_termino}}</small></td>
+                            <td><small>{{$jornada->tipo}}</small></td>
+                            <td><small><a href=""><i class="fa fa-times text-danger"></i></a></small></td>
+
+                        </tr>
+                    
+                        @endforeach
+                    
+                    </table>
+                   
+                    <p>&nbsp;</p>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <a href="#" data-toggle="modal" data-target="#modal-add-jornada" class="btn btn-sm btn-primary">Add</a>
+                            <a href="#" class="btn btn-sm btn-primary">Remove selecteds</a>
+                        </div>
+                    </div>
+                </div>   
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-7 center-block">
             <div class="card card-primary">
@@ -25,11 +140,11 @@
                             <div class="dropdown-menu "  aria-labelledby="dropdownMenu5"> 
                                 @foreach($semestres as $semestre)
                                 @if(isset($semestre_selecionado) && array_search($semestre->semestre.$semestre->ano,[$semestre_selecionado]) !== false)
-                                <a class="dropdown-item" href="/docentes/{{$semestre->semestre.$semestre->ano}}" style="text-decoration: none;">
+                                <a class="dropdown-item" href="/docentes/{{$docente->id}}/{{$semestre->semestre.$semestre->ano}}" style="text-decoration: none;">
                                     <i class="fa fa-check-circle-o icon"></i> {{$semestre->semestre.'º Sem. '.$semestre->ano}}
                                 </a> 
                                 @else
-                                <a class="dropdown-item" href="/docentes/{{$semestre->semestre.$semestre->ano}}" style="text-decoration: none;">
+                                <a class="dropdown-item" href="/docentes/{{$docente->id}}/{{$semestre->semestre.$semestre->ano}}" style="text-decoration: none;">
                                     <i class="fa fa-circle-o icon"></i> {{$semestre->semestre.'º Sem. '.$semestre->ano}}
                                 </a> 
                                 @endif
@@ -44,11 +159,13 @@
                     <table class="table table-striped table-condensed">
                     
                         <thead class="row">
+                            <tr>
                             <th class="col-sm-1 col-xs-1"><small>Cód.</small></th>
                             <th class="col-sm-2 col-xs-2"><small>Dia(s)</small></th>
                             <th class="col-sm-2 col-xs-2"><small>Inicio</small></th>
                             <th class="col-sm-5 col-xs-5"><small>Curso/Disciplina</small></th>
                             <th class="col-sm-2 col-xs-2"><small>Opções</small></th>
+                        </tr>
                         </thead>
                     
                         <tbody>

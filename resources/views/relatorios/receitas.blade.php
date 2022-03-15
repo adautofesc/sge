@@ -86,7 +86,7 @@
 		<div class="title-block">
 			<center>
             <h3 class="title"> Relatório de receitas por programa </h3>
-			<h5 class="title"> Ano: <small> {{$ano}} </small>
+			<h5 class="title">Ref.: <small> {{isset($mes)?$mes.'/'.$ano : $ano}} </small>
 			
             </h5></center>
         </div>

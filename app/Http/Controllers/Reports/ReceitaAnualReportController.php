@@ -8,20 +8,35 @@ use Illuminate\Http\Request;
 class ReceitaAnualReportController extends Controller
 {
 
-    public function receitaPorPrograma(int $ano = 2019){
+    public function receitaPorPrograma(int $ano, int $mes=null){
 
         $array_matriculas = array();
         $array_valor = array();
         $valor_total = 0;
 
+        //dd(str_pad($mes,2,'0'));
+
+       if($mes){
        $lancamentos = \App\Boleto::select(['*','lancamentos.valor as valor_parcela'])
                                     ->join('lancamentos','boletos.id','=','lancamentos.boleto')
-                                    //->whereYear('vencimento',$ano)
-                                    ->where('boletos.vencimento','like', $ano.'-02%')                                   
+                                    ->where('boletos.vencimento','like', $ano.'-'.str_pad($mes,2,'0',STR_PAD_LEFT).'%')                                   
                                     ->where('boletos.status','pago')
                                     //->toSql();
                                     ->get();
         //dd($lancamentos);
+        $data = new \App\classes\Data('01/'.$mes.'/'.$ano);
+        $mes = $data->mes();
+       }else{
+            $lancamentos = \App\Boleto::select(['*','lancamentos.valor as valor_parcela'])
+            ->join('lancamentos','boletos.id','=','lancamentos.boleto')
+            ->whereYear('vencimento',$ano)                       
+            ->where('boletos.status','pago')
+            //->toSql();
+            ->get();
+    
+
+       }
+       
  
 
         foreach($lancamentos as $lancamento){
@@ -88,7 +103,7 @@ class ReceitaAnualReportController extends Controller
             $programa->matriculas = count($array_matriculas_join);
 
         }
-        return view('relatorios.receitas')->with('programas',$programas)->with('ano',$ano)->with('valor_total',$valor_total);
+        return view('relatorios.receitas')->with('programas',$programas)->with('ano',$ano)->with('valor_total',$valor_total)->with('mes',$mes);
 
     }
 }

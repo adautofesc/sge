@@ -681,7 +681,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('alunos-conselho/{ano?}','RelatorioController@alunosConselho');
 		Route::get('bolsistas-com-3-faltas','RelatorioController@bolsistasComTresFaltas');
 		Route::get('celulares','PessoaController@relatorioCelulares');
-		Route::get('receita-anual-programa/{ano}','Reports\ReceitaAnualReportController@receitaPorPrograma');
+		Route::get('receita-anual-programa/{ano}/{mes?}','Reports\ReceitaAnualReportController@receitaPorPrograma');
 		
 
 
@@ -693,7 +693,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	//Docentes
 	
 	Route::middleware('liberar.recurso:13')->prefix('docentes')->group(function(){
-		Route::get('/{semestre?}','painelController@docentes');
+		Route::get('/{id}/{semestre?}','painelController@docentes');
 		Route::get('turmas-professor', 'TurmaController@listarProfessores');
 		Route::post('turmas-professor', 'TurmaController@turmasProfessor');
 		
@@ -710,6 +710,10 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::post('conteudos/{turma}','AulaDadoController@editarConteudo_exec');
 		});
 		
+	});
+	Route::middleware('liberar.recurso:13')->prefix('jornada')->group(function(){
+		Route::post('cadastrar','JornadaController@cadastrar');
+
 	});
 	Route::get('chamada/{id}/{pg}/{url}/{hide?}','TurmaController@getChamada'); //optional parameter is used here!
 	Route::get('plano/{professor}/{tipo}/{curso}','TurmaController@getPlano');

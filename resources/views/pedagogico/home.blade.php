@@ -80,7 +80,7 @@
                      <div>
                          <ul>
                              @foreach($professores as $professor)
-                             <li><a href="#">{{$professor->nome_simples}}</a></li>
+                             <li><a href="/docentes/{{$professor->id}}">{{$professor->nome_simples}}</a></li>
                              @endforeach
                          </ul>
                     </div>

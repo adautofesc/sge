@@ -109,13 +109,49 @@ class painelController extends Controller
     public function administrativo(){
         return view('admin.home');
     }
-    public function docentes($semestre=0){
+    public function docentes($id,$semestre=0){
+        $horarios = array();
+        $dias = ['seg','ter','qua','qui','sex','sab'];
+
+        $turmas = \App\Http\Controllers\TurmaController::listarTurmasDocente($id,$semestre);
+        $jornadas = \App\Jornada::where('pessoa',$id)->get();
+        $jornadas_ativas = $jornadas->where('status','ativa');
+        $locais = \App\Local::select(['id','nome'])->orderBy('nome')->get();
+
+        //dd($jornadas);
+
+        foreach($turmas as $turma){
+            foreach($turma->dias_semana as $dia){
+                $horarios[$dia][substr($turma->hora_inicio,0,2)] = $turma;
+            }
+        }
+        foreach($jornadas_ativas as $jornada){
+            foreach($jornada->dias_semana as $dia){
+                $horarios[$dia][substr($jornada->hora_inicio,0,2)] = $jornada;
+
+            }
+        }
+
+        $docente = \App\Pessoa::find($id);
+      
+       
+
+    
 
         $semestres = \App\classes\Data::semestres();
-        $turmas = \App\Http\Controllers\TurmaController::listarTurmasDocente(Auth::user()->pessoa,$semestre);
+        
                     
         
-        return view('docentes.home')->with('turmas',$turmas)->with('semestres',$semestres)->with('semestre_selecionado',$semestre);
+        return view('docentes.home')
+            ->with('turmas',$turmas)
+            ->with('semestres',$semestres)
+            ->with('semestre_selecionado',$semestre)
+            ->with('docente',$docente)
+            ->with('horarios',$horarios)
+            ->with('dias',$dias)
+            ->with('locais',$locais)
+            ->with('jornadas',$jornadas);
+            
 
 
 

@@ -163,7 +163,7 @@ class InscricaoController extends Controller
         $turma=Turma::find($turma);
         //dd($turma);
         if(substr($turma->data_inicio,-4,4) < date('Y')){
-            redirect()->back()->withErrors(['Não é possível inscrever alunos em turmas de anos anteriores: Turma:'.substr($turma->data_inicio,-4,4).', data: '.date('Y')]);
+            redirect()->back()->with('danger','Não é possível inscrever alunos em turmas de anos anteriores: Turma:'.substr($turma->data_inicio,-4,4).', data: '.date('Y'));
             return false;
         }
 
@@ -177,7 +177,7 @@ class InscricaoController extends Controller
 
 
         if(!$turma->verificaRequisitos($aluno)){
-            redirect()->back();
+            redirect()->back()->withErrors(['Aluno não atende aos requisitos da turma']);
             return false;  
                  
         }
@@ -200,14 +200,6 @@ class InscricaoController extends Controller
         else
             $status="pendente";
                 
-            
-        
-        
-        
-
-
-
-
         if(InscricaoController::verificaSeInscrito($aluno,$turma->id))
                 return Inscricao::find(InscricaoController::verificaSeInscrito($aluno,$turma->id));
         
@@ -298,9 +290,9 @@ class InscricaoController extends Controller
     public function inscreverAlunoLote($turma,Request $r){
         $inscricao=InscricaoController::inscreverAluno($r->id_pessoa,$turma);
         if(!$inscricao)
-            return redirect('/turma'."/".$turma);
+            return redirect()->back()->withErrors([$this->analisaFalhaInsc($r->id_pessoa,$turma)]);
         else
-            return redirect()->back()->withErrors(['Inscrição efetuada.']);
+            return redirect()->back()->with('success','Inscrição efetuada.');
 
     }
 
@@ -587,7 +579,7 @@ class InscricaoController extends Controller
 
         }     
         else //senão mostrar turmas do curso correspondente.
-          $turmas_compativeis = Turma::where('curso',$inscricao->turma->curso->id)->whereIn('status',['inscricao','iniciada'])->whereColumn('matriculados','<',"vagas")->orderBy('dias_semana')->orderBy('hora_inicio')->get();
+          $turmas_compativeis = Turma::where('curso',$inscricao->turma->curso->id)->whereIn('status',['inscricao','iniciada'])->whereColumn('matriculados','<',"vagas")->orderBy('id')->orderBy('hora_inicio')->get();
 
         return view('secretaria.inscricao.trocar',compact('inscricao'))->with('turmas',$turmas_compativeis);
 
@@ -608,8 +600,9 @@ class InscricaoController extends Controller
             return redirect()->back()->withErrors(['Turma inválida.']);
         $inscricao = Inscricao::find($r->inscricao);
         $inscricao_nova = $this->inscreverAluno($inscricao->pessoa->id,$turma,$inscricao->matricula);
+
         if($inscricao_nova == false)
-         return redirect()->back();
+            return redirect()->back()->with('warning',$this->analisaFalhaInsc($inscricao->pessoa->id,$turma));
         $turma_obj->matriculados++;
         $turma_obj->save();
         $inscricao->status = 'transferida';
@@ -635,6 +628,31 @@ class InscricaoController extends Controller
             return redirect($_SERVER['HTTP_REFERER'])->withErrors(["Inscrição não encontrada"]);
         $pessoa = Pessoa::find($insc->pessoa->id);
         return view('juridico.documentos.cancelamento-inscricao')->with('pessoa',$pessoa)->with('inscricao',$insc);
+    }
+
+    /**
+     * Analisa a falha na inscrição
+     *
+     * @param integer $pessoa
+     * @param integer $turma
+     * @return string
+     */
+    public function analisaFalhaInsc(int $pessoa,int $turma){
+        $turma=Turma::find($turma);
+        
+        if(substr($turma->data_inicio,-4,4) < date('Y'))
+            return 'Não é possível inscrever alunos em turmas de anos anteriores. Turma:'.substr($turma->data_inicio,-4,4).', data: '.date('Y');     
+
+        //segurança para evitar espertinhos que alteram o html
+        if($turma->vagas<=$turma->matriculados)
+            return 'Não há vagas para a turma '.$turma->id; 
+
+        if(!$turma->verificaRequisitos($pessoa)){
+            return "Aluno não atende aos pre requisitos da turma";
+    
+                 
+        }
+
     }
 
 

@@ -1,57 +1,42 @@
 @if($errors->any())
     @foreach($errors->all() as $erro)
-        <div class="alert alert-danger" onload="console.log('pau')">
+        <div class="alert alert-warning" >
                 <button type="button" class="close" data-dismiss="alert" >×</button>       
-                <p class="modal-title"><i class="fa fa-warning"></i> {{$erro}}</p>
+                <p class="modal-title"><i class="fa fa-circle"></i> {{$erro}}</p>
         </div>
     @endforeach
 @endif
 
 
-@if(isset($erros_bd) !=0)
-    @foreach($erros_bd as $erro)
-        <p class="alert alert-danger text-center .alert-dismissible">{{ $erro }}</p>
-    @endforeach
-@endif
 
-
-@if(isset($dados['alert_danger']) && $dados['alert_danger']!='')
-	@foreach($dados['alert_danger'] as $erro)
-        <p class="alert alert-danger text-center .alert-dismissible">{{ $erro }}</p>
-  	@endforeach
+<!-- nesse caso basta colocar ->with('success','mensagem') no código -->
+@if ($message = Session::get('success'))
+        <div class="alert alert-success" >
+                <button type="button" class="close" data-dismiss="alert" >×</button> 
+                <p class="modal-title"><i class="fa fa-fa-thumbs-o-up"></i> {{$message}}</p>
+        </div>
+  	
 @endif
-
-@if(isset($dados['alert_warning']) && $dados['alert_warning']!='')
-	@foreach($dados['alert_warning'] as $erro)
-        <p class="alert alert-warning text-center .alert-dismissible">{{ $erro }}</p>
-  	@endforeach
+@if ($message = Session::get('info'))	
+<div class="alert alert-info" >
+        <button type="button" class="close" data-dismiss="alert" >×</button> 
+        <p class="modal-title"><i class="fa fa-info-circlep"></i> {{$message}}</p>
+</div>
+  	
 @endif
-
-@if(isset($dados['alert_info']) && $dados['alert_info']!='')
-	@foreach($dados['alert_info'] as $erro)
-        <p class="alert alert-info text-center .alert-dismissible">{{ $erro }}</p>
-  	@endforeach
+@if ($message = Session::get('warning'))	
+<div class="alert alert-warning" >
+        <button type="button" class="close" data-dismiss="alert" >×</button> 
+        <p class="modal-title"><i class="fa fa-warning"></i> {{$message}}</p>
+</div>
+  	
 @endif
-@if ($message = Session::get('success'))	
-        <p class="alert alert-success text-center alert-dismissible">{{ $message }}</p>
+@if ($message = Session::get('danger'))	
+<div class="alert alert-danger" >
+        <button type="button" class="close" data-dismiss="alert" >×</button> 
+        <p class="modal-title"><i class="fa fa-times-circle"></i> {{$message}}</p>
+</div>
   	
 @endif
 
 
-
-
-
-@if(isset($pessoa->alert_sucess) && $pessoa->alert_sucess!='')
-        <p class="alert alert-success text-center alert-dismissible">{{ $pessoa->alert_sucess }}</p>
-@endif
-@if(isset($pessoa->alert_danger) && $pessoa->alert_danger!='')
-        <p class="alert alert-danger text-center .alert-dismissible">{{ $pessoa->alert_danger }}</p>
-@endif
-
-@if(isset($pessoa->alert_warning) && $pessoa->alert_warning!='')
-        <p class="alert alert-warning text-center .alert-dismissible">{{ $pessoa->alert_warning }}</p>
-@endif
-
-@if(isset($pessoa->alert_info) && $pessoa->alert_info !='')
-        <p class="alert alert-info text-center .alert-dismissible">{{ $pessoa->alert_info }}</p>
-@endif

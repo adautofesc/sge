@@ -124,22 +124,3 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-@section('scripts')
-<script>
-function carregarSalas(local){
-	var salas;
-	$("#select_sala").html('<option>Sem salas cadastradas</option>');
-	$.get("{{asset('services/salas-api/')}}"+"/"+local)
- 				.done(function(data) 
- 				{
- 					$.each(data, function(key, val){
-						console.log(val.nome);
- 						salas+='<option value="'+val.id+'">'+val.nome+'</option>';
- 					});
- 					//console.log(namelist);
- 					$("#select_sala").html(salas);
-				 });
-				 
-}
-</script>
-@endsection

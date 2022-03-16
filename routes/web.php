@@ -693,7 +693,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	//Docentes
 	
 	Route::middleware('liberar.recurso:13')->prefix('docentes')->group(function(){
-		Route::get('/{id}/{semestre?}','painelController@docentes');
+		Route::get('/{id?}/{semestre?}','painelController@docentes');
 		Route::get('turmas-professor', 'TurmaController@listarProfessores');
 		Route::post('turmas-professor', 'TurmaController@turmasProfessor');
 		
@@ -713,6 +713,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	});
 	Route::middleware('liberar.recurso:13')->prefix('jornada')->group(function(){
 		Route::post('cadastrar','JornadaController@cadastrar');
+		Route::post('excluir','JornadaController@excluir');
 
 	});
 	Route::get('chamada/{id}/{pg}/{url}/{hide?}','TurmaController@getChamada'); //optional parameter is used here!

@@ -39,7 +39,7 @@
                                 @endif
                                 @if(in_array('13', Auth::user()->recursos))
                                 <li  >
-                                    <a href="/docentes/{{Auth::user()->pessoa}}"> <i class="fa fa-th-large"></i> Docente </a>
+                                    <a href="/docentes/"> <i class="fa fa-th-large"></i> Docente </a>
                                 </li>
                                 @endif
                                 

@@ -31,4 +31,13 @@ class JornadaController extends Controller
         return redirect()->back()->with('success','Jornada cadastrada com sucesso.');
 
     }
+
+    public function excluir(Request $r){
+
+       $jornada = Jornada::find($r->jornada);
+       $jornada->delete();
+
+
+        return response('Done!',200);
+    }
 }

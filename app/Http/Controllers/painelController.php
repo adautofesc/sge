@@ -109,7 +109,10 @@ class painelController extends Controller
     public function administrativo(){
         return view('admin.home');
     }
-    public function docentes($id,$semestre=0){
+    public function docentes($id=0,$semestre=0){
+        if($id == 0){
+            $id = Auth::user()->pessoa;
+        }
         $horarios = array();
         $dias = ['seg','ter','qua','qui','sex','sab'];
 
@@ -122,12 +125,14 @@ class painelController extends Controller
 
         foreach($turmas as $turma){
             foreach($turma->dias_semana as $dia){
-                $horarios[$dia][substr($turma->hora_inicio,0,2)] = $turma;
+                $sala = \App\Sala::find($turma->sala);
+                $turma->nome_sala = $sala->nome;
+                $horarios[$dia][substr($turma->hora_inicio,0,2)][substr($turma->hora_inicio,3,2)] = $turma;
             }
         }
         foreach($jornadas_ativas as $jornada){
             foreach($jornada->dias_semana as $dia){
-                $horarios[$dia][substr($jornada->hora_inicio,0,2)] = $jornada;
+                $horarios[$dia][substr($jornada->hora_inicio,0,2)][substr($jornada->hora_inicio,3,2)] = $jornada;
 
             }
         }

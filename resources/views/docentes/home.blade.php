@@ -1,6 +1,8 @@
 @extends('layout.app')
 @section('pagina')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 @include('docentes.modal.add_jornada')
+@include('docentes.modal.exclusao_jornada')
 <div class="title-block">
     <div class="row">
         <div class="col-md-6">
@@ -36,24 +38,28 @@
                         @for($i=6;$i<24;$i++)
                             @if(isset($horarios['seg'][str_pad($i, 2, 0, STR_PAD_LEFT)]) || isset($horarios['ter'][str_pad($i, 2, 0, STR_PAD_LEFT)]) || isset($horarios['qua'][str_pad($i, 2, 0, STR_PAD_LEFT)]) || isset($horarios['qui'][str_pad($i, 2, 0, STR_PAD_LEFT)]) || isset($horarios['sex'][str_pad($i, 2, 0, STR_PAD_LEFT)]) || isset($horarios['sab'][str_pad($i, 2, 0, STR_PAD_LEFT)]))
                             <tr>
-                                <th>{{str_pad($i, 2, 0, STR_PAD_LEFT)}}:00</th>
+                                <th title="Atividades com início entre {{str_pad($i, 2, 0, STR_PAD_LEFT)}}:00 às {{str_pad($i, 2, 0, STR_PAD_LEFT)}}:59"><small>{{str_pad($i, 2, 0, STR_PAD_LEFT)}}h</small> </th>
                                 @foreach($dias as $dia)
-                                    
-                                    @if(isset($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)]) && !isset($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)]->tipo))
-                                    <td title="{{($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)])->hora_inicio}} -> {{($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)])->hora_termino}} | {{($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)])->getNomeCurso()}} | {{($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)])->local->sigla}}">
-                                    <small><a href="/docentes/frequencia/nova-aula/{{($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)])->id}}">{{($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)])->id}}</a></small>
-                                    @elseif( isset($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)]->tipo))
                                     <td>
-                                       <small>{{$horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)]->tipo}}</small>
+                                       @if(isset($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)])) 
+                                            @foreach($horarios[$dia][str_pad($i, 2, 0, STR_PAD_LEFT)] as $horario) 
 
-                                    @else
-                                    <td>
-                                    
-                                    @endif
-                                    </td>
-                            
-                                
-                            
+                                                @if(!isset($horario->tipo))
+                                                
+                                                &nbsp;&nbsp;<small><a  title="{{$horario->hora_inicio}} -> {{$horario->hora_termino}} | {{$horario->getNomeCurso()}} | {{$horario->local->sigla}} | {{$horario->nome_sala}}" href="/docentes/frequencia/nova-aula/{{$horario->id}}">{{$horario->id}}</a></small>
+                                                @elseif(isset($horario->tipo))
+                                                
+                                                &nbsp;&nbsp;<small><a href="#"  title="{{$horario->hora_inicio}} -> {{$horario->hora_termino}} - {{$horario->getLocal()->sigla}}"> {{$horario->tipo}}  </a></small>
+
+                                                @else
+                                                
+                                                
+                                                @endif
+                                                
+                                            @endforeach
+                                        @endif  
+                                    </td>                        
+ 
                                 @endforeach
                             </tr>
 
@@ -107,7 +113,16 @@
                             <td><small>{{$jornada->hora_inicio}}</small></td>
                             <td><small>{{$jornada->hora_termino}}</small></td>
                             <td><small>{{$jornada->tipo}}</small></td>
-                            <td><small><a href=""><i class="fa fa-times text-danger"></i></a></small></td>
+                            <td>
+                                @if(in_array('17', Auth::user()->recursos))
+                                <small><a href="#" data-toggle="modal" data-target="#modal-exclusao-jornada" title="Excluir Jornada" onclick="atribJornada('{{$jornada->id}}')">
+                                            <i class="fa fa-times text-danger"></i>
+                                        </a>
+                                </small>
+                                @else
+                                &nbsp;
+                                @endif
+                            </td>
 
                         </tr>
                     
@@ -317,4 +332,46 @@
     </div>
 </section>
 
+@endsection
+@section('scripts')
+<script>
+function carregarSalas(local){
+	var salas;
+	$("#select_sala").html('<option>Sem salas cadastradas</option>');
+	$.get("{{asset('services/salas-api/')}}"+"/"+local)
+ 				.done(function(data) 
+ 				{
+ 					$.each(data, function(key, val){
+						console.log(val.nome);
+ 						salas+='<option value="'+val.id+'">'+val.nome+'</option>';
+ 					});
+ 					//console.log(namelist);
+ 					$("#select_sala").html(salas);
+				 });
+				 
+}
+
+let jornada = 0;
+function atribJornada(id){
+   jornada = id;
+}
+
+function excluirJornada(){
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: "POST",
+        url: "/jornada/excluir",
+        data: { jornada }
+        
+    })
+	.done(function(msg){
+		location.reload(true);
+	})
+    .fail(function(msg){
+        alert('Falha ao excluir jornada: '+msg.statusText);
+    });
+}
+</script>
 @endsection

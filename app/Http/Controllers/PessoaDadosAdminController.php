@@ -150,7 +150,7 @@ class PessoaDadosAdminController extends Controller
 		$pessoas = Pessoa::whereIn('id',$com_ri)->orderBy('nome')->paginate(50);
 		foreach($pessoas as $pessoa){
 			$pessoa->cargo = PessoaDadosAdministrativos::where('pessoa',$pessoa->id)->where('dado','16')->first()->valor;
-			$telefone = \App\PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',2)->first();
+			$telefone = \App\PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',2)->orderByDesc('id')->first();
             $pessoa->carga = PessoaDadosAdministrativos::where('dado','carga_horaria')->where('pessoa',$pessoa->id)->first();
 			if($telefone)
 			 $pessoa->telefone = \App\classes\Strings::formataTelefone($telefone->valor);

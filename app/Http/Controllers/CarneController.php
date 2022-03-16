@@ -295,6 +295,7 @@ class CarneController extends Controller
 			
 			//calcula quantos boletos falta gerar
 			$boletos_restantes = $matricula->getParcelas()-$boletos_lancados->count();
+			//dd($matricula->getParcelas());
 
 			
 

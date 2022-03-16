@@ -127,7 +127,7 @@ class Matricula extends Model
 		if($this->pacote>0){
 			$valor = Valor::where('pacote',$this->pacote)->where('ano',substr($turma->data_inicio,-4))->first();
 			if(isset($valor->parcelas))
-				return $valor->parcelas;
+				$parcelas =  $valor->parcelas;
 		}
 
 		//transforma data de inicio da turma e matrícula em objeto de data 

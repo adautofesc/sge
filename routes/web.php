@@ -511,12 +511,14 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('atendimento','painelController@gestaoPessoal');
 		Route::get('atender/','painelController@atendimentoPessoalPara');
 		Route::get('atender/{var}','painelController@atendimentoPessoalPara');
-		Route::get('funcionarios','PessoaController@listarFuncionarios');
+		Route::get('funcionarios','PessoaDadosAdminController@listarFuncionarios');
 		Route::get('remover-relacao/{id}','PessoaDadosAdminController@excluir');
 		Route::get('relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_view');
 		Route::post('relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_exec');
 		Route::get('vincular-programa/{pessoa}/{programa}','PessoaDadosAdminController@vincularPrograma');
 		Route::get('desvincular-programa/{pessoa}/{programa}','PessoaDadosAdminController@desvincularPrograma');
+		Route::get('definir-carga/{pessoa}/{valor}', 'PessoaDadosAdminController@definirCarga');
+		Route::get('remover-carga/{id}', 'PessoaDadosAdminController@removerCarga');
 	});
 
 

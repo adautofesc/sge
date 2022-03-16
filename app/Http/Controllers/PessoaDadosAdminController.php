@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Pessoa;
 use App\PessoaDadosAdministrativos;
 
 
@@ -127,4 +128,35 @@ class PessoaDadosAdminController extends Controller
         $vinculo = PessoaDadosAdministrativos::where('pessoa',$pessoa)->where('dado','programa')->where('valor',$programa)->delete();
         return response(200);
     }
+
+    public function definirCarga(int $pessoa,int $valor){
+        $vinculo = new PessoaDadosAdministrativos;
+        $vinculo->pessoa = $pessoa;
+        $vinculo->dado = 'carga_horaria';
+        $vinculo->valor = $valor;
+        $vinculo->save();
+
+        return response(200);
+
+    }
+
+    public function removerCarga(int $id){
+        $vinculo = PessoaDadosAdministrativos::where('id',$id)->delete();
+        return response(200);
+    }
+
+    public function listarFuncionarios(){ // lista pessoas com relação institucional (RI)
+		$com_ri = PessoaDadosAdministrativos::select('pessoa')->where('dado','16')->groupBy('pessoa')->get();
+		$pessoas = Pessoa::whereIn('id',$com_ri)->orderBy('nome')->paginate(50);
+		foreach($pessoas as $pessoa){
+			$pessoa->cargo = PessoaDadosAdministrativos::where('pessoa',$pessoa->id)->where('dado','16')->first()->valor;
+			$telefone = \App\PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',2)->first();
+            $pessoa->carga = PessoaDadosAdministrativos::where('dado','carga_horaria')->where('pessoa',$pessoa->id)->first();
+			if($telefone)
+			 $pessoa->telefone = \App\classes\Strings::formataTelefone($telefone->valor);
+			else
+			 $pessoa->telefone = "Necessita de atualização";	
+		}
+		return view('gestaopessoal.listarusuarios')->with('pessoas',$pessoas);
+	}
 }

@@ -43,6 +43,9 @@
                     <div> <span>Cargo</span> </div>
                 </div>
                 <div class="item-col item-col-header item-col-sales">
+                    <div> <span>Carga</span> </div>
+                </div>
+                <div class="item-col item-col-header item-col-sales">
                     <div> <span>Telefone</span> </div>
                 </div>
                 <div class="item-col item-col-header item-col-sales">
@@ -69,6 +72,10 @@
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Cargo</div>
                     <div>{{$pessoa->cargo}}</div>
+                </div>
+                <div class="item-col item-col-sales">
+                    <div class="item-heading">Carga</div>
+                    <div>{{isset($pessoa->carga)?$pessoa->carga->valor.'h':'ND'}}</div>
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Telefone</div>

@@ -15,6 +15,7 @@ use Auth;
 use Illuminate\Support\Facades\DB;
 use LancamentoContoller;
 use stdClass;
+use Carbon\Carbon;
 
 
 
@@ -115,29 +116,38 @@ class painelController extends Controller
         }
         $horarios = array();
         $dias = ['seg','ter','qua','qui','sex','sab'];
-        //$carga_ativa = Carbon::createFromTime(0, 0, 0, 'America/Sao_Paulo'); ;
-        $carga_ativa = 0;
+        $carga_ativa = Carbon::createFromTime(0, 0, 0, 'America/Sao_Paulo'); ;
+        //$carga_ativa = 0;
 
         $turmas = \App\Http\Controllers\TurmaController::listarTurmasDocente($id,$semestre);
         $jornadas = \App\Jornada::where('pessoa',$id)->get();
         $jornadas_ativas = $jornadas->where('status','ativa');
         $locais = \App\Local::select(['id','nome'])->orderBy('nome')->get();
+        $carga = \App\PessoaDadosAdministrativos::where('dado','carga_horaria')->where('pessoa',$id)->first();
 
         //dd($jornadas);
 
         foreach($turmas as $turma){
             foreach($turma->dias_semana as $dia){
                 $sala = \App\Sala::find($turma->sala);
-                $turma->nome_sala = $sala->nome;
+                if($sala)
+                    $turma->nome_sala = $sala->nome;
+                else
+                    $turma->nome_sala = '';
+
                 $horarios[$dia][substr($turma->hora_inicio,0,2)][substr($turma->hora_inicio,3,2)] = $turma;
-                //$inicio = 
-                //$carga_ativa->addMinutes() 
+                //dd($turma->hora_inicio);
+                $inicio = Carbon::createFromFormat('H:i', $turma->hora_inicio);
+                $termino = Carbon::createFromFormat('H:i', $turma->hora_termino);
+                $carga_ativa->addMinutes($inicio->diffInMinutes($termino));
             }
         }
         foreach($jornadas_ativas as $jornada){
             foreach($jornada->dias_semana as $dia){
                 $horarios[$dia][substr($jornada->hora_inicio,0,2)][substr($jornada->hora_inicio,3,2)] = $jornada;
-                //$carga_ativa +=  $jornada->hora_inicio - $jornada->hora_termino;
+                $inicio = Carbon::createFromFormat('H:i:s', $jornada->hora_inicio);
+                $termino = Carbon::createFromFormat('H:i:s', $jornada->hora_termino);
+                $carga_ativa->addMinutes($inicio->diffInMinutes($termino));
 
             }
         }
@@ -160,6 +170,7 @@ class painelController extends Controller
             ->with('horarios',$horarios)
             ->with('dias',$dias)
             ->with('locais',$locais)
+            ->with('carga',$carga)
             ->with('carga_ativa',$carga_ativa)
             ->with('jornadas',$jornadas);
             
@@ -225,8 +236,12 @@ class painelController extends Controller
         $pessoa->relacoes_institucionais = \App\PessoaDadosAdministrativos::where('dado','16')->where('pessoa',$pessoa->id)->get();
         $programas = \App\Programa::whereIn('id',[1,2,3,4,12])->orderby('nome')->get();
         $vinculo_programas = \App\PessoaDadosAdministrativos::where('dado','programa')->where('pessoa',$pessoa->id)->get();
+        $carga = \App\PessoaDadosAdministrativos::where('dado','carga_horaria')->where('pessoa',$pessoa->id)->first();
 
-        return view('gestaopessoal.atendimento', compact('pessoa'))->with('programas',$programas)->with("vinculo_programas",$vinculo_programas);
+        return view('gestaopessoal.atendimento', compact('pessoa'))
+            ->with('programas',$programas)
+            ->with('carga',$carga)
+            ->with("vinculo_programas",$vinculo_programas);
     }
 
 

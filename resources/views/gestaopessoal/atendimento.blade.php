@@ -2,7 +2,8 @@
 @section('pagina')
 
 @include('inc.errors')
-@include('gestaopessoal.modal-vincular-programa')
+@include('gestaopessoal.modals.vincular-programa')
+@include('gestaopessoal.modals.add-carga')
 <div class="title-block">
                         <h3 class="title"> {{$pessoa->nome}} 
                         	@if(isset($pessoa->nome_resgistro))
@@ -113,10 +114,18 @@
 								<label class="col-sm-2 form-control-label text-xs-right">
 									Programas
 								</label>
-								<div class="col-sm-10"> 
+								<div class="col-sm-2"> 
 									@foreach($vinculo_programas as $vinculo)
 									| {{$programas->find($vinculo->valor)->sigla}} <a href="#" onclick="desvincularPrograma('{{$pessoa->id}}','{{$vinculo->valor}}')" class="badge badge-pill badge-danger" style="text-decoration: none; color: white;" title="Excluir vínculo de programa">X</a>
 									@endforeach
+								</div>
+								<label class="col-sm-2 form-control-label text-xs-right">
+									Carga horária
+								</label>
+								<div class="col-sm-4"> 
+									@if(isset($carga->id))
+									{{$carga->valor}}h <a href="#" onclick="removerCarga('{{$carga->id}}')" class="badge badge-pill badge-danger" style="text-decoration: none; color: white;" title="Excluir carga">X</a>
+									@endif
 								</div>
 							</div>
 
@@ -162,8 +171,10 @@
 											</div>
 										</div>
 										<div class="card-block">
-											<div><a href="#" data-toggle="modal" data-target="#modal-contato" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-location-arrow"></i> Vincular a Programa </a></div>
+											<div><a href="#" data-toggle="modal" data-target="#modal-vinc-programa" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-location-arrow"></i> Vincular a Programa </a></div>
+											<div><a href="#" data-toggle="modal" data-target="#modal-carga" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-location-arrow"></i> Adicionar Carga  </a></div>
 										</div>
+							
 										
 									</div>
 								</div>
@@ -206,10 +217,28 @@ function vincularPrograma(pessoa){
 			
 		});
 }
-function desvincularPrograma(pessoa,programa){
 
+function desvincularPrograma(pessoa,programa){
 	if(confirm('Deseja realmente excluir o vínculo com o programa?')){
 		$.get("/gestaopessoal/desvincular-programa/"+pessoa+"/"+programa)
+			.done(function(data) {
+				location.reload();
+				
+			});
+	}
+}
+
+function definirCarga(pessoa){
+	programa = $('#carga').val();
+	$.get("/gestaopessoal/definir-carga/"+pessoa+"/"+programa)
+		.done(function(data) {
+			location.reload();
+			
+		});
+}
+function removerCarga(id){
+	if(confirm('Deseja realmente excluir a carga horária?')){
+		$.get("/gestaopessoal/remover-carga/"+id)
 			.done(function(data) {
 				location.reload();
 				

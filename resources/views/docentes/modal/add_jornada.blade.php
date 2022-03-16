@@ -24,8 +24,7 @@
                         <select class="c-select form-control boxed" name="tipo" required>
                             <option>Selecione uma opção</option>
                             <option value="Aula" title="Utilizado para turmas posteriores ou mudanças de horários">Aula - planejamento</option>
-                            <option value="HTPC" >HTPC</option>
-                            <option value="HTPI">HTPI</option>
+                            <option value="HTP" >HTP</option>
                             <option value="Translado">Translado</option>
                             <option value="Projeto">Projeto</option>
                            

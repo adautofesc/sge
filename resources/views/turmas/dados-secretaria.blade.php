@@ -243,6 +243,7 @@
 
     </div>
 </section>
+@if(in_array('27', Auth::user()->recursos))
 <br>
 <div class="subtitle-block">
     <h3 class="title-description"> Adicionar Aluno </h3>
@@ -280,6 +281,7 @@
         </div>
     </div>
 </form>
+@endif
    
 @endsection
 @section('scripts')

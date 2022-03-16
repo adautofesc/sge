@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-6">
             <h3 class="title">Departamento de Docência da FESC</h3>
-            <p class="title-description">Prof.: {{$docente->nome}}</p>
+            <p class="title-description"><strong>Prof.:</strong> {{$docente->nome}} | <strong>{{$carga_ativa}}h/40h</strong>  </p>
         </div>
     </div>
 </div>
@@ -133,8 +133,8 @@
                     <p>&nbsp;</p>
                     <div class="row">
                         <div class="col-sm-12">
-                            <a href="#" data-toggle="modal" data-target="#modal-add-jornada" class="btn btn-sm btn-primary">Add</a>
-                            <a href="#" class="btn btn-sm btn-primary">Remove selecteds</a>
+                            <a href="#" data-toggle="modal" data-target="#modal-add-jornada" class="btn btn-sm btn-primary">Adicionar</a>
+                            
                         </div>
                     </div>
                 </div>   

@@ -115,6 +115,8 @@ class painelController extends Controller
         }
         $horarios = array();
         $dias = ['seg','ter','qua','qui','sex','sab'];
+        //$carga_ativa = Carbon::createFromTime(0, 0, 0, 'America/Sao_Paulo'); ;
+        $carga_ativa = 0;
 
         $turmas = \App\Http\Controllers\TurmaController::listarTurmasDocente($id,$semestre);
         $jornadas = \App\Jornada::where('pessoa',$id)->get();
@@ -128,11 +130,14 @@ class painelController extends Controller
                 $sala = \App\Sala::find($turma->sala);
                 $turma->nome_sala = $sala->nome;
                 $horarios[$dia][substr($turma->hora_inicio,0,2)][substr($turma->hora_inicio,3,2)] = $turma;
+                //$inicio = 
+                //$carga_ativa->addMinutes() 
             }
         }
         foreach($jornadas_ativas as $jornada){
             foreach($jornada->dias_semana as $dia){
                 $horarios[$dia][substr($jornada->hora_inicio,0,2)][substr($jornada->hora_inicio,3,2)] = $jornada;
+                //$carga_ativa +=  $jornada->hora_inicio - $jornada->hora_termino;
 
             }
         }
@@ -155,6 +160,7 @@ class painelController extends Controller
             ->with('horarios',$horarios)
             ->with('dias',$dias)
             ->with('locais',$locais)
+            ->with('carga_ativa',$carga_ativa)
             ->with('jornadas',$jornadas);
             
 

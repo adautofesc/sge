@@ -139,7 +139,7 @@ class Matricula extends Model
 			return $parcelas;
 		else{
 			$parcelas = $parcelas - ($dt_mt->format('m')-$pp_dt->format('m'));
-			if($dt_mt->format('d')>=$this::CORTE)
+			if($dt_mt->format('d')>$this::CORTE)
 				$parcelas--;
 		}
 	

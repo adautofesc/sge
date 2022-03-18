@@ -35,10 +35,7 @@
           
         </div>
         <div class="col-sm-4">
-          @if($vacinado)
           <a class="btn btn-success" href="/perfil/matricula/inscricao" title="Abre página para escolher os cursos que deseja se matricular.">Adicionar Matricula</a>
-          @endif
-          
         </div>
         
       </div>

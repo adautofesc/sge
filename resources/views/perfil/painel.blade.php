@@ -18,9 +18,9 @@
           <br>
           <p class="text-secondary">Estamos construindo um painel para que você possa ter mais informações sobre seu relacionamento conosco. Sinta-se à vontade para fazer sugestões.</p>
           <hr>
-          @if($vacinado)
+          
           <p class="alert alert-info">Matrículas abertas! Clique <a href="/perfil/matricula/inscricao">aqui</a>  para se inscrever!</p>
-          @endif
+          
           <p class="alert alert-success">Envie seus atestados OnLine. Clique <a href="/perfil/atestado">aqui</a>  para se acessar.</p>
           <p class="alert alert-warning">Os boletos dos seus cursos podem ser encontrados no menu "Boletos"</p>
           @if(isset($login))

@@ -476,6 +476,7 @@ class InscricaoController extends Controller
         }
         $logs = \App\Log::where('tipo','turma')->where('codigo',$turma->id)->orderByDesc('data')->get();
         $hitorico_inscricoes = Inscricao::where('turma','=', $turma->id)->get();
+        /*
         foreach($hitorico_inscricoes as $insc){
             $registro = new stdClass;
             $registro->data = $insc->created_at;
@@ -484,14 +485,14 @@ class InscricaoController extends Controller
             $historico->push($registro);
             switch($insc->status){
                 case 'transferida':
-                    $registro = new stdClass;
+                    $registro = new \stdClass;
                     $registro->data = $insc->created_at;
                     $registro->desc = 'Aluno '.$insc->pessoa.'transferido parax';
                     $registro->responsavel = '19511'; //! preciso ver como obter o responsável
                     $historico->push($registro);
                     break;
                 case 'cancelada':
-                    $registro = new stdClass;
+                    $registro = new \stdClass;
                     $registro->data = $insc->created_at;
                     $registro->desc = 'Aluno '.$insc->pessoa.' cancelou';
                     $registro->responsavel = '19511'; //! preciso ver como obter o responsável
@@ -499,7 +500,7 @@ class InscricaoController extends Controller
                     break;
             }
 
-        }
+        }*/
         
         //return $inscricoes;
         return view('turmas.dados-secretaria',compact('turma'))->with('inscricoes',$inscricoes)->with('logs',$logs);

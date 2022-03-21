@@ -68,37 +68,6 @@
 		<div class="row hide-onprint">
 			<div class="col-xs-12" style="margin-top: 20px;margin-bottom: 50px;">
 				<form class="inline-form" method="GET">
-				
-               
-              
-                <div class="action dropdown" style="float: left; margin-right: 10px;"> 
-                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Local
-                            </button>
-
-                            <ul class="dropdown-menu" >
-								<li><a href="#"  data-value="84" tabIndex="-1"><input type="checkbox" @if(isset($r->local) && in_array('84',$r->local)) checked @endif name="local[]" value="84"/>&nbsp;<small>FESC 1</small></a></li>
-								<li><a href="#"  data-value="85" tabIndex="-1"><input type="checkbox" @if(isset($r->local) && in_array('85',$r->local)) checked @endif name="local[]" value="85"/>&nbsp;<small>FESC 2</small></a></li>
-								<li><a href="#"  data-value="86" tabIndex="-1"><input type="checkbox" @if(isset($r->local) && in_array('86',$r->local)) checked @endif name="local[]" value="86"/>&nbsp;<small>FESC 3</small></a></li>
-								@foreach($locais as $local)
-							<li>
-								<a href="#"  data-value="{{$local->id}}" tabIndex="-1" title="{{$local->nome}}">
-									<input type="checkbox" 
-									@if(isset($r->local) && in_array($local->id,$r->local)) checked @endif
-									name="local[]" value="{{$local->id}}" />
-									<small>&nbsp;{{$local->sigla}}</small>			
-								</a>
-							</li>
-
-							
-								@endforeach
-							 
-					        </ul>
-
-                </div>
-               <button class="btn btn-success" type="submit">Gerar</button>
-				<a href="/relatorios/alunos" class="btn btn-primary" >Limpar</a>
-				<a href="#" class="btn btn-primary" onclick="print();">Imprimir</a>
-			
 			</div>
 		</div>
 		<div class="row">
@@ -120,139 +89,178 @@
 		<br/>
 		<div class="title-block">
 			<center>
-            <h3 class="title"> Relatório de Alunos </h3>
-			<h5 class="title"> Locais: <small>
-				@if(isset($r->local))
-					@php 
-					
-					$nomes = $locais->whereIn('id',$r->local);
-					foreach($nomes as $nome){
-						echo $nome->sigla.', ';
-					}
-					if(in_array('84',$r->local))
-						echo 'FESC 1, ';
-					if(in_array('85',$r->local))
-						echo 'FESC 2, ';
-					if(in_array('86',$r->local))
-						echo 'FESC 3, ';
-					@endphp
-				@else
-				Todos
-				@endif
-            		 </small>
+            <h3 class="title"> Relatório de Jornada dos Educadores</h3>
+			<h5 class="title"> Relatório geral 2022
+				
             </h5></center>
         </div>
         <br>
         <br>
     
         <br/>
+		@foreach($educadores as $educador)
         <div class="row">
             <div class="col-sm-12">
-                <table class="table table-striped table-condensed">
+				
+				<p><strong>{{$educador->nome}}: <small>{{$educador->carga}}h contratuais</small></strong></p>
+                <table class="table table-striped table-condensed table-sm table-bordered">
+					
                     <thead >
-                        <th width="30rem">Semestre/Ano</th>
-						<th width="10rem">CE</th>
-                        <th width="10rem">EMG</th>
-                        <th width="10rem">PID</th>
-                        <th width="10rem">UATI</th>
-                        <th width="10rem">UNIT</th>
-                        <th width="10rem">TOTAL(unico)</th>
+                        <th>&nbsp;</th>
+						<th>Início</th>
+						<th>Término</th>
+						<th>Atividade</th>
+						<th>Local</th>
+						<th>Carga (h)</th>
                     </thead>
                     <tbody>
+						@foreach($dias as $dia)
+						<tr>
+							@if(isset($educador->jornadas{$dia}))
+							<td rowspan="{{count($educador->jornadas{$dia})+1}}">{{$dia}}</td>
+							@else
+							<td rowspan="2">{{$dia}}</td>
+							@endif							
+							<td>
+								@if(isset($educador->jornadas{$dia}[0]))
+									{{$educador->jornadas{$dia}[0]->inicio}}
+								@endif
+							</td>
+							<td>
+								@if(isset($educador->jornadas{$dia}))
+									{{$educador->jornadas{$dia}{0}->termino}}
+								@endif
+							</td>
+							<td>
+								@if(isset($educador->jornadas{$dia}))
+								{{$educador->jornadas{$dia}{0}->descricao}}</td>
+								@else
+								Sem atividades neste dia
+								@endif
+							</td>
+							<td>
+								@if(isset($educador->jornadas{$dia}))
+									{{$educador->jornadas{$dia}{0}->local}}
+								@endif
+							</td>
+							<td>
+								@if(isset($educador->jornadas{$dia}))
+								{{$educador->jornadas{$dia}{0}->carga}}</td>
+								@endif
+							@php
+								if(isset($educador->jornadas{$dia}))
+									$carga[$dia] = $educador->jornadas{$dia}{0}->carga;
+								else
+									$carga[$dia] = 0;
+							@endphp
+						</tr>
+						@if(isset($educador->jornadas{$dia}))
+						@for($i=1;$i<count($educador->jornadas{$dia});$i++)
+						<tr>						
+							<td>{{$educador->jornadas{$dia}{$i}->inicio}}</td>
+							<td>{{$educador->jornadas{$dia}{$i}->termino}}</td>
+							<td>{{$educador->jornadas{$dia}{$i}->descricao}}</td>
+							<td>{{$educador->jornadas{$dia}{$i}->local}}</td>
+							<td>{{$educador->jornadas{$dia}{$i}->carga}}</td>
+							@php
+								$carga{$dia} += $educador->jornadas{$dia}{$i}->carga;
+							@endphp
+						</tr>
+						@endfor
+						@endif
+
+						<tr>
+							<th colspan="4" align="right">Total/dia</th>
+							<th>{{$carga[$dia]}}</th>
+						</tr>
+						@endforeach
+
+						
+
+
+
+
+
+						<tr>
+							<th colspan="4">Horas efetivas totais</th>
+							<th>{{$educador->carga_ativa->floatDiffInHours(\Carbon\Carbon::Today())}}</th>
+						</tr>
+						
                     	
-                    	<tr>
-							<th>1 semestre 2018</th>
-							<td>{{count($alunos[2018][1]['ce'])}}</td>
-							<td>{{count($alunos[2018][1]['emg'])}}</td>
-							<td>{{count($alunos[2018][1]['pid'])}}</td>
-							<td>{{count($alunos[2018][1]['uati'])}}</td>
-							<td>{{count($alunos[2018][1]['unit'])}}</td>
-							<td><strong>{{count($alunos[2018][1]['totais'])}}</strong></td>
-                    		
-						</tr>
-						<tr>
-							<th>2 semestre 2018</th>
-							<td>{{count($alunos[2018][2]['ce'])}}</td>
-							<td>{{count($alunos[2018][2]['emg'])}}</td>
-							<td>{{count($alunos[2018][2]['pid'])}}</td>
-							<td>{{count($alunos[2018][2]['uati'])}}</td>
-							<td>{{count($alunos[2018][2]['unit'])}}</td>
-							<td><strong>{{count($alunos[2018][2]['totais'])}}</strong></td>
-                    		
-						</tr>
-						<tr>
-							<th>Total 2018</th>
-							<td>{{count($alunos[2018][0]['ce'])}}</td>
-							<td>{{count($alunos[2018][0]['emg'])}}</td>
-							<td>{{count($alunos[2018][0]['pid'])}}</td>
-							<td>{{count($alunos[2018][0]['uati'])}}</td>
-							<td>{{count($alunos[2018][0]['unit'])}}</td>
-							<td><strong>{{count($alunos[2018][0]['totais'])}}</strong></td>
-                    		
-						</tr>
-						<tr>
-							<th>1 semestre 2019</th>
-							<td>{{count($alunos[2019][1]['ce'])}}</td>
-							<td>{{count($alunos[2019][1]['emg'])}}</td>
-							<td>{{count($alunos[2019][1]['pid'])}}</td>
-							<td>{{count($alunos[2019][1]['uati'])}}</td>
-							<td>{{count($alunos[2019][1]['unit'])}}</td>
-							<td><strong>{{count($alunos[2019][1]['totais'])}}</strong></td>
-                    		
-						</tr>
-						<tr>
-							<th>2 semestre 2019</th>
-							<td>{{count($alunos[2019][2]['ce'])}}</td>
-							<td>{{count($alunos[2019][2]['emg'])}}</td>
-							<td>{{count($alunos[2019][2]['pid'])}}</td>
-							<td>{{count($alunos[2019][2]['uati'])}}</td>
-							<td>{{count($alunos[2019][2]['unit'])}}</td>
-							<td><strong>{{count($alunos[2019][2]['totais'])}}</strong></td>
-                    		
-						</tr>
-						<tr>
-							<th>Total 2019</th>
-							<td>{{count($alunos[2019][0]['ce'])}}</td>
-							<td>{{count($alunos[2019][0]['emg'])}}</td>
-							<td>{{count($alunos[2019][0]['pid'])}}</td>
-							<td>{{count($alunos[2019][0]['uati'])}}</td>
-							<td>{{count($alunos[2019][0]['unit'])}}</td>
-							<td><strong>{{count($alunos[2019][0]['totais'])}}</strong></td>
-                    		
-						</tr>
-						<tr>
-							<th>1 semestre 2020</th>
-							<td>{{count($alunos[2020][1]['ce'])}}</td>
-							<td>{{count($alunos[2020][1]['emg'])}}</td>
-							<td>{{count($alunos[2020][1]['pid'])}}</td>
-							<td>{{count($alunos[2020][1]['uati'])}}</td>
-							<td>{{count($alunos[2020][1]['unit'])}}</td>
-							<td><strong>{{count($alunos[2020][1]['totais'])}}</strong></td>
-                    		
-						</tr>
-						<tr>
-							<th>2 semestre 2020</th>
-							<td>{{count($alunos[2020][2]['ce'])}}</td>
-							<td>{{count($alunos[2020][2]['emg'])}}</td>
-							<td>{{count($alunos[2020][2]['pid'])}}</td>
-							<td>{{count($alunos[2020][2]['uati'])}}</td>
-							<td>{{count($alunos[2020][2]['unit'])}}</td>
-							<td><strong>{{count($alunos[2020][2]['totais'])}}</strong></td>
-                    		
-						</tr>
-						<tr>
-							<th>Total 2020</th>
-							<td>{{count($alunos[2020][0]['ce'])}}</td>
-							<td>{{count($alunos[2020][0]['emg'])}}</td>
-							<td>{{count($alunos[2020][0]['pid'])}}</td>
-							<td>{{count($alunos[2020][0]['uati'])}}</td>
-							<td>{{count($alunos[2020][0]['unit'])}}</td>
-							<td><strong>{{count($alunos[2020][0]['totais'])}}</strong></td>
-                    		
-                    	</tr>
+                    	
                     	
                 	</tbody>
                 </table>
+				
+             </div>
+        </div>
+		@endforeach
+
+
+
+
+
+		<div class="row">
+            <div class="col-sm-12">
+				<p><strong>Fulano : <small>40h contratuais</small></strong></p>
+                <table class="table table-striped table-condensed table-sm table-bordered">
+					
+                    <thead >
+                        <th>&nbsp;</th>
+						<th>Início</th>
+						<th>Término</th>
+						<th>Atividade</th>
+						<th>Carga (h)</th>
+                    </thead>
+                    <tbody>
+						<tr>
+							<td rowspan="3">Segunda</td>
+							<td>08:00</td>
+							<td>10:00</td>
+							<td>Aula na turma 123</td>
+							<td>2</td>
+						</tr>
+						<tr>
+							
+							<td>10:00</td>
+							<td>12:00</td>
+							<td>Aula na turma 123</td>
+							<td>2</td>
+						</tr>
+						<tr>
+							<th colspan="3" align="right">Total/dia</th>
+							<th>4</th>
+						</tr>
+
+						<tr>
+							<td rowspan="3">Terça</td>
+							<td>08:00</td>
+							<td>10:00</td>
+							<td>Aula na turma 123</td>
+							<td>2</td>
+						</tr>
+						<tr>
+							
+							<td>10:00</td>
+							<td>12:00</td>
+							<td>Aula na turma 123</td>
+							<td>2</td>
+						</tr>
+						<tr>
+							<th colspan="3" align="right">Total/dia</th>
+							<th>4</th>
+						</tr>
+						<tr>
+							<th colspan="4">Horas totais</th>
+							<th>8</th>
+						</tr>
+						
+                    	
+                    	
+                    	
+                	</tbody>
+                </table>
+				
              </div>
         </div>
 		
@@ -263,28 +271,7 @@
 	</script>
 </body>
 <script type="text/javascript">
-	var options = [];
 
-$( '.dropdown-menu a' ).on( 'click', function( event ) {
-
-   var $target = $( event.currentTarget ),
-       val = $target.attr( 'data-value' ),
-       $inp = $target.find( 'input' ),
-       idx;
-
-   if ( ( idx = options.indexOf( val ) ) > -1 ) {
-      options.splice( idx, 1 );
-      setTimeout( function() { $inp.prop( 'checked', false ) }, 0);
-   } else {
-      options.push( val );
-      setTimeout( function() { $inp.prop( 'checked', true ) }, 0);
-   }
-
-   $( event.target ).blur();
-      
-   console.log( options );
-   return false;
-});
 </script>
 
 </html>

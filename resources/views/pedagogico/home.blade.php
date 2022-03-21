@@ -94,7 +94,7 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Utilitários</p>
+                        <p class="title" style="color:white">Relatórios</p>
                     </div>
                 </div>
                 <div class="card-block">
@@ -102,6 +102,9 @@
                         <a href="/relatorios/turmas" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-file-text-o"></i>
                         &nbsp;&nbsp;Relatório de turmas</a>
+                        <a href="/relatorios/carga-docentes" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                            <i class=" fa fa-file-text-o"></i>
+                            &nbsp;&nbsp;Relatório de educadores</a>
                     </div>
 
                 </div>

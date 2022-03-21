@@ -75,8 +75,12 @@ class ValorController extends Controller
             if(isset($matricula->pacote)){
         
                 $valor = Valor::where('pacote',$matricula->pacote)->where('ano',substr($turma->data_inicio,-4))->first();
-                if($valor)
+                if($valor){
+                    $valor->valor = ($valor->valor/$valor->parcelas)*$matricula->getParcelas();
                     return $valor;
+
+                }
+                    
                 else
                     dd('Valor do pacote '.$matricula->pacote.' não encontrado para o ano de '.substr($turma->data_inicio,-4) );
 

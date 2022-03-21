@@ -684,6 +684,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('bolsistas-com-3-faltas','RelatorioController@bolsistasComTresFaltas');
 		Route::get('celulares','PessoaController@relatorioCelulares');
 		Route::get('receita-anual-programa/{ano}/{mes?}','Reports\ReceitaAnualReportController@receitaPorPrograma');
+		Route::get('carga-docentes', 'Reports\JornadaDocentes@relatorioGeral');
 		
 
 

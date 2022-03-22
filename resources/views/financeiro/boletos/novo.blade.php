@@ -24,8 +24,8 @@
             	@foreach($matriculas as $matricula)
 				<div>
 					<label>
-					<input class="checkbox" id="{{$matricula->id}}" type="checkbox" name="matriculas[]" onchange="atualizaValor({{$matricula->id}},{{$matricula->valor->valor/$matricula->valor->parcelas}})" value="{{$matricula->id}}">
-					<span>{{$matricula->id}} <small>({{$matricula->status}})</small>  - {{$matricula->getNomeCurso().' R$ '.number_format($matricula->valor->valor/$matricula->valor->parcelas,2,',','.')}} </span>
+					<input class="checkbox" id="{{$matricula->id}}" type="checkbox" name="matriculas[]" onchange="atualizaValor({{$matricula->id}},{{$matricula->valor->valor/$matricula->getParcelas()}})" value="{{$matricula->id}}">
+					<span>{{$matricula->id}} <small>({{$matricula->status}})</small>  - {{$matricula->getNomeCurso().' R$ '.number_format($matricula->valor->valor/$matricula->getParcelas(),2,',','.')}} </span>
 					</label>
 				</div>
 				@endforeach

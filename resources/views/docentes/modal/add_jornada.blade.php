@@ -23,9 +23,10 @@
                     <div class="col-sm-6"> 
                         <select class="c-select form-control boxed" name="tipo" required>
                             <option>Selecione uma opção</option>
-                            <option value="Aula" title="Utilizado para turmas posteriores ou mudanças de horários">Aula - turma futura</option>
+                            <option value="Aula" title="Utilizado para turmas posteriores ou mudanças de horários">Aula - turma a definir</option>
                             <option value="Coordenação" >Coordenação</option>
                             <option value="HTP" >HTP</option>
+                            <option value="Intervalo entre turmas" >Intervalo entre turmas</option>
                             <option value="Translado">Translado</option>
                             <option value="Projeto">Projeto</option>
                            

@@ -103,10 +103,10 @@
             <div class="col-sm-12">
 				
 				<p><strong>{{$educador->nome}}: <small>{{$educador->carga}}h contratuais</small></strong></p>
-                <table class="table table-striped table-condensed table-sm table-bordered">
+                <table class="table table-condensed table-striped table-sm table-bordered">
 					
                     <thead >
-                        <th>&nbsp;</th>
+                        <th>Dia</th>
 						<th>Início</th>
 						<th>Término</th>
 						<th>Atividade</th>
@@ -117,61 +117,81 @@
 						@foreach($dias as $dia)
 						<tr>
 							@if(isset($educador->jornadas{$dia}))
-							<td rowspan="{{count($educador->jornadas{$dia})+1}}">{{$dia}}</td>
+							<td rowspan="{{count($educador->jornadas{$dia})+1}}">
 							@else
-							<td rowspan="2">{{$dia}}</td>
-							@endif							
+							<td rowspan="2">
+							@endif	
+							@switch($dia)
+								@case('seg')
+									Segunda
+									@break
+								@case('ter')
+									Terça
+									@break
+								@case('qua')
+									Quarta
+									@break
+								@case('qui')
+									Quinta
+									@break
+								@case('sex')
+									Sexta
+									@break
+								@case('sab')
+									Sábado
+									@break
+								@default
+									ND
+									
+							@endswitch
+							</td>						
 							<td>
-								@if(isset($educador->jornadas{$dia}[0]))
-									{{$educador->jornadas{$dia}[0]->inicio}}
+								@if(isset($educador->jornadas{$dia}))
+									{{$educador->jornadas{$dia}->first()->inicio}}
 								@endif
 							</td>
 							<td>
 								@if(isset($educador->jornadas{$dia}))
-									{{$educador->jornadas{$dia}{0}->termino}}
+									{{$educador->jornadas{$dia}->first()->termino}}
 								@endif
 							</td>
 							<td>
 								@if(isset($educador->jornadas{$dia}))
-								{{$educador->jornadas{$dia}{0}->descricao}}</td>
+								{{$educador->jornadas{$dia}->first()->descricao}}</td>
 								@else
 								Sem atividades neste dia
 								@endif
 							</td>
 							<td>
 								@if(isset($educador->jornadas{$dia}))
-									{{$educador->jornadas{$dia}{0}->local}}
+									{{$educador->jornadas{$dia}->first()->local}}
 								@endif
 							</td>
 							<td>
 								@if(isset($educador->jornadas{$dia}))
-								{{$educador->jornadas{$dia}{0}->carga}}</td>
+								{{floor($educador->jornadas{$dia}->first()->carga/60)}}:{{str_pad($educador->jornadas{$dia}->first()->carga%60,2,'0',STR_PAD_LEFT)}}
 								@endif
-							@php
-								if(isset($educador->jornadas{$dia}))
-									$carga[$dia] = $educador->jornadas{$dia}{0}->carga;
-								else
-									$carga[$dia] = 0;
-							@endphp
+							</td>
+							
 						</tr>
 						@if(isset($educador->jornadas{$dia}))
 						@for($i=1;$i<count($educador->jornadas{$dia});$i++)
 						<tr>						
-							<td>{{$educador->jornadas{$dia}{$i}->inicio}}</td>
-							<td>{{$educador->jornadas{$dia}{$i}->termino}}</td>
-							<td>{{$educador->jornadas{$dia}{$i}->descricao}}</td>
-							<td>{{$educador->jornadas{$dia}{$i}->local}}</td>
-							<td>{{$educador->jornadas{$dia}{$i}->carga}}</td>
-							@php
-								$carga{$dia} += $educador->jornadas{$dia}{$i}->carga;
-							@endphp
+							<td>{{$educador->jornadas{$dia}->skip($i)->take(1)->first()->inicio}}</td>
+							<td>{{$educador->jornadas{$dia}->skip($i)->take(1)->first()->termino}}</td>
+							<td>{{$educador->jornadas{$dia}->skip($i)->take(1)->first()->descricao}}</td>
+							<td>{{$educador->jornadas{$dia}->skip($i)->take(1)->first()->local}}</td>
+							
+							<td>{{floor($educador->jornadas{$dia}->skip($i)->take(1)->first()->carga/60)}}:{{str_pad($educador->jornadas{$dia}->skip($i)->take(1)->first()->carga%60,2,'0',STR_PAD_LEFT)}}</td>
+
+							
 						</tr>
 						@endfor
 						@endif
 
 						<tr>
 							<th colspan="4" align="right">Total/dia</th>
-							<th>{{$carga[$dia]}}</th>
+							<th>{{floor($educador->carga_semanal->$dia/60)}}:{{str_pad($educador->carga_semanal->$dia%60,2,'0',STR_PAD_LEFT)}}</th>
 						</tr>
 						@endforeach
 
@@ -182,8 +202,8 @@
 
 
 						<tr>
-							<th colspan="4">Horas efetivas totais</th>
-							<th>{{$educador->carga_ativa->floatDiffInHours(\Carbon\Carbon::Today())}}</th>
+							<th colspan="5">Horas efetivas totais</th>
+							<th>{{floor($educador->carga_ativa->floatDiffinMinutes(\Carbon\Carbon::Today())/60)}}:{{str_pad($educador->carga_ativa->floatDiffinMinutes(\Carbon\Carbon::Today())%60,2,'0',STR_PAD_LEFT)}}</th>
 						</tr>
 						
                     	
@@ -195,74 +215,6 @@
              </div>
         </div>
 		@endforeach
-
-
-
-
-
-		<div class="row">
-            <div class="col-sm-12">
-				<p><strong>Fulano : <small>40h contratuais</small></strong></p>
-                <table class="table table-striped table-condensed table-sm table-bordered">
-					
-                    <thead >
-                        <th>&nbsp;</th>
-						<th>Início</th>
-						<th>Término</th>
-						<th>Atividade</th>
-						<th>Carga (h)</th>
-                    </thead>
-                    <tbody>
-						<tr>
-							<td rowspan="3">Segunda</td>
-							<td>08:00</td>
-							<td>10:00</td>
-							<td>Aula na turma 123</td>
-							<td>2</td>
-						</tr>
-						<tr>
-							
-							<td>10:00</td>
-							<td>12:00</td>
-							<td>Aula na turma 123</td>
-							<td>2</td>
-						</tr>
-						<tr>
-							<th colspan="3" align="right">Total/dia</th>
-							<th>4</th>
-						</tr>
-
-						<tr>
-							<td rowspan="3">Terça</td>
-							<td>08:00</td>
-							<td>10:00</td>
-							<td>Aula na turma 123</td>
-							<td>2</td>
-						</tr>
-						<tr>
-							
-							<td>10:00</td>
-							<td>12:00</td>
-							<td>Aula na turma 123</td>
-							<td>2</td>
-						</tr>
-						<tr>
-							<th colspan="3" align="right">Total/dia</th>
-							<th>4</th>
-						</tr>
-						<tr>
-							<th colspan="4">Horas totais</th>
-							<th>8</th>
-						</tr>
-						
-                    	
-                    	
-                    	
-                	</tbody>
-                </table>
-				
-             </div>
-        </div>
 		
         
 

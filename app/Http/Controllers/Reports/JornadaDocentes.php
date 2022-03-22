@@ -21,7 +21,7 @@ class JornadaDocentes extends Controller
 
         //dd($educadores);
         foreach($educadores as $educador){
-            //$educador->horarios = array();
+            $educador->carga_semanal = new \stdClass;
             $educador->carga_ativa = Carbon::createFromTime(0, 0, 0, 'America/Sao_Paulo'); 
             $educador->jornadas = collect();
 
@@ -42,6 +42,8 @@ class JornadaDocentes extends Controller
                 foreach($turma->dias_semana as $dia){
                     if(!isset($educador->jornadas[$dia]))
                         $educador->jornadas[$dia] = collect();
+                    if(!isset($educador->carga_semanal->$dia))
+                        $educador->carga_semanal->$dia = 0;
 
                     $jornada = new \stdClass;
                     $jornada->inicio = $turma->hora_inicio;
@@ -51,9 +53,10 @@ class JornadaDocentes extends Controller
                     
                     $inicio = Carbon::createFromFormat('H:i', $turma->hora_inicio);
                     $termino = Carbon::createFromFormat('H:i', $turma->hora_termino);
-                    $jornada->carga = $inicio->diffInMinutes($termino)/60;
+                    $jornada->carga = $inicio->diffInMinutes($termino);
                     $educador->jornadas[$dia]->push($jornada);                    
                     $educador->carga_ativa->addMinutes($inicio->diffInMinutes($termino));
+                    $educador->carga_semanal->$dia += $inicio->diffInMinutes($termino);
                 }
             }
             foreach($jornadas_ativas as $jornada){
@@ -61,41 +64,56 @@ class JornadaDocentes extends Controller
                    
                     if(!isset($educador->jornadas[$dia]))
                         $educador->jornadas[$dia] = collect();
+                    if(!isset($educador->carga_semanal->$dia))
+                        $educador->carga_semanal->$dia = 0;
 
                     $atividade = new \stdClass;
                     $atividade->inicio = substr($jornada->hora_inicio,0,5);
                     $atividade->termino = substr($jornada->hora_termino,0,5);
                     $atividade->descricao = $jornada->tipo;
                     $atividade->local = '-';
-                    /*
+                  
                     $sala = \App\Sala::find($jornada->sala);                    
                 
-                    if($sala){
-                        $local = $locais->where('id',$sala->local);                  
-                        $atividade->local = $local->sigla;
+                    if(isset($sala->id)){
+                        $local = $locais->where('id',$sala->local);
+                        if(isset($local->first()->sigla))                  
+                            $atividade->local = $local->first()->sigla;
                     }
                     else
-                        $atividade->local = '';
-                        */
-
+                        $atividade->local = '-';
                         
-                    
-
-                
                     $inicio = Carbon::createFromFormat('H:i:s', $jornada->hora_inicio);
                     $termino = Carbon::createFromFormat('H:i:s', $jornada->hora_termino);
 
-                    $atividade->carga = $inicio->diffInMinutes($termino)/60;
+                    $atividade->carga = $inicio->diffInMinutes($termino);
+                    $educador->carga_semanal->$dia += $inicio->diffInMinutes($termino);
                     $educador->carga_ativa->addMinutes($inicio->diffInMinutes($termino));
-                    $educador->jornadas[$dia]->push($atividade);  
+
+                    if($atividade->descricao != 'Translado')
+                        $educador->jornadas[$dia]->push($atividade); 
+
+                    
 
 
     
                 }
             }
 
-            /*if($educador->id == '13474')
-                dd($educador->jornadas);*/
+           foreach($dias as $dia){
+                if(isset($educador->jornadas[$dia]))
+                    $educador->jornadas[$dia] = $educador->jornadas[$dia]->sortBy('inicio');
+                if(!isset($educador->carga_semanal->$dia))
+                    $educador->carga_semanal->$dia = 0;
+
+            }
+                
+
+           /*if($educador->id == '13474'){
+                $educador->jornadas['seg'] = $educador->jornadas['seg']->sortBy('inicio');
+                //dd($educador->jornadas['seg']->skip(1)->take(1)->first()->inicio);
+            }*/
+                
     
 
         }

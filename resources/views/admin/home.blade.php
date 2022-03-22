@@ -56,7 +56,7 @@
                         &nbsp;&nbsp;Alunos</a>
                     </div>
                     <div>
-                        <a href="/relatorios/carga-educadores"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Relatório contendo todos os Educadores, os respectivos cursos, cargas horárias previstas e efetivamente realizadas em 2018;">
+                        <a href="/relatorios/carga-docentes"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Relatório contendo todos os Educadores, os respectivos cursos, cargas horárias previstas e efetivamente realizadas em 2018;">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Educadores</a>
                     </div>

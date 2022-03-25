@@ -61,7 +61,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-2 col-sm-2">
-			<img src="{{asset('/')}}/img/logofesc.png" width="80"/>
+			<img src="{{asset('/img/logofesc.png')}}" width="80"/>
 			</div>
 			<div class="col-xs-10 col-sm-10">
              <small>   
@@ -82,11 +82,33 @@
             <h5 class="title" style="font-size:11px"> Filtrado por 
             		 @foreach($filtros as $filtro=>$valor)
                         @if(count($filtros[$filtro]))
-                                @if($filtro == 'pordata')
-                                <strong>datas</strong>: {{implode(',',$valor)}},
-                                @else
-                                <strong>{{$filtro}}</strong>: {{implode(', ',$valor)}},
-                                @endif
+                                @switch($filtro)
+                                    @case('pordata')
+                                        <strong>datas</strong>: {{implode(',',$valor)}},                                        
+                                        @break
+                                    @case('professor')
+                                        <strong>professorer</strong>: 
+                                        @foreach($valor as $i)
+                                            {{\App\Pessoa::getNome($i)}},
+                                        @endforeach
+                                        @break;
+                                    @case('programa')
+                                        <strong>programas</strong>: 
+                                        @foreach($valor as $i)
+                                            {{\App\Programa::getSigla($i)}},
+                                        @endforeach
+                                        @break;
+                                    @case('local')
+                                        <strong>locais</strong>: 
+                                        @foreach($valor as $i)
+                                            {{\App\Local::getSigla($i)}},
+                                        @endforeach
+                                        @break;
+                                    
+                                    @default
+                                    <strong>{{$filtro}}</strong>: {{implode(', ',$valor)}},
+                                @endswitch
+                                
 		                @endif
 		            @endforeach
 
@@ -110,7 +132,7 @@
 	            @foreach($filtros as $filtro=>$valor)
 	                @if(count($filtros[$filtro]))
 
-	                    <a href="?removefiltro={{$filtro}}" title="Remover este filtro {{implode($valor,', ')}}">
+	                    <a href="?removefiltro={{$filtro}}" title="Remover este filtro">
 	                        <i class="fa fa-remove" style="color:red"></i>
 	                        {{$filtro}}
 	                    </a>
@@ -279,55 +301,90 @@
                         </div>
                    -->
                 	
-                        <div class="action dropdown " style="float: left; margin-right: 10px;"> 
-                            <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Status
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
-                                @if(isset($filtros['status']))
-
-                                <a class="dropdown-item" href="?filtro=status&valor=inscricao{{array_search('inscricao',$filtros['status'])!==false?'&remove=1':''}}">
-                                    <i class="fa fa-{{array_search('inscricao',$filtros['status'])!==false?'check-':''}}circle-o icon"></i>  Com matrículas abertas
-                                </a>
-                               
-                                <a class="dropdown-item" href="?filtro=status&valor=espera{{array_search('espera',$filtros['status'])!==false?'&remove=1':''}}">
-                                    <i class="fa fa-{{array_search('espera',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Aguardando / matrículas Suspensas
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=iniciada{{array_search('iniciada',$filtros['status'])!==false?'&remove=1':''}}" >
-                                    <i class="fa fa-{{array_search('iniciada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Em andamento / matrícula aberta
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=andamento{{array_search('andamento',$filtros['status'])!==false?'&remove=1':''}}" >
-                                    <i class="fa fa-{{array_search('andamento',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Em andamento / matricula fechada
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=encerrada{{array_search('encerrada',$filtros['status'])!==false?'&remove=1':''}}" >
-                                    <i class="fa fa-{{array_search('encerrada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Encerradas
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=cancelada{{array_search('cancelada',$filtros['status'])!==false?'&remove=1':''}}" >
-                                    <i class="fa fa-{{array_search('cancelada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Canceladas 
-                                </a>
-                                
-                                @else
-                                <a class="dropdown-item" href="?filtro=status&valor=inscricao" >
-                                    <i class="fa fa-circle-o icon"></i> Com matrículas Abertas
-                                </a> 
-                                <a class="dropdown-item" href="?filtro=status&valor=espera"  >
-                                    <i class="fa fa-circle-o icon"></i>  Aguardando / matrículas Suspensas
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=iniciada" >
-                                    <i class="fa fa-circle-o icon"></i> Em andamento / matrícula aberta
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=andamento" >
-                                    <i class="fa fa-circle-o icon"></i> Em andamento / matricula fechada
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=encerrada" >
-                                    <i class="fa fa-circle-o icon"></i> Encerradas
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=cancelada" >
-                                    <i class="fa fa-circle-o icon"></i> Canceladas 
-                                </a>
-                                
-                                @endif
-                            </div>
-                        </div>
+                   <div class="action dropdown " style="float: left; margin-right: 10px;"> 
+                    <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Status
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu4"> 
+                        @if(isset($filtros['status']))                             
+                   
+                        <a class="dropdown-item" href="?filtro=status&valor=espera{{array_search('lancada',$filtros['status'])!==false?'&remove=1':''}}">
+                            <i class="fa fa-{{array_search('espera',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Lançadas
+                        </a>
+                        <a class="dropdown-item" href="?filtro=status&valor=iniciada{{array_search('iniciada',$filtros['status'])!==false?'&remove=1':''}}" >
+                            <i class="fa fa-{{array_search('iniciada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Iniciadas
+                        </a>
+                        <a class="dropdown-item" href="?filtro=status&valor=encerrada{{array_search('encerrada',$filtros['status'])!==false?'&remove=1':''}}" >
+                            <i class="fa fa-{{array_search('encerrada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Encerradas
+                        </a>
+                        <a class="dropdown-item" href="?filtro=status&valor=cancelada{{array_search('cancelada',$filtros['status'])!==false?'&remove=1':''}}" >
+                            <i class="fa fa-{{array_search('cancelada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Canceladas 
+                        </a>
+                        
+                        @else
+                
+                        <a class="dropdown-item" href="?filtro=status&valor=lancada"  >
+                            <i class="fa fa-circle-o icon"></i>  Lançadas
+                        </a>
+                        <a class="dropdown-item" href="?filtro=status&valor=iniciada" >
+                            <i class="fa fa-circle-o icon"></i> Iniciadas
+                        </a>
+                        <a class="dropdown-item" href="?filtro=status&valor=encerrada" >
+                            <i class="fa fa-circle-o icon"></i> Encerradas
+                        </a>
+                        <a class="dropdown-item" href="?filtro=status&valor=cancelada" >
+                            <i class="fa fa-circle-o icon"></i> Canceladas 
+                        </a>
+                        
+                        @endif
+                </div>
+                    
+                    
+                </div>
+                <div class="action dropdown " style="float: left; margin-right: 10px;"> 
+                    <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Matrículas
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu4"> 
+                    @if(isset($filtros['status_matriculas']))                             
+                   
+                    <a class="dropdown-item" href="?filtro=status_matriculas&valor=aberta{{array_search('aberta',$filtros['status_matriculas'])!==false?'&remove=1':''}}">
+                        <i class="fa fa-{{array_search('aberta',$filtros['status_matriculas'])!==false?'check-':''}}circle-o icon"></i> Aberta
+                    </a>
+                    <a class="dropdown-item" href="?filtro=status_matriculas&valor=fechada{{array_search('fechada',$filtros['status_matriculas'])!==false?'&remove=1':''}}" >
+                        <i class="fa fa-{{array_search('fechada',$filtros['status_matriculas'])!==false?'check-':''}}circle-o icon"></i> Fechada
+                    </a>
+                    <a class="dropdown-item" href="?filtro=status_matriculas&valor=rematricula{{array_search('rematricula',$filtros['status_matriculas'])!==false?'&remove=1':''}}" >
+                        <i class="fa fa-{{array_search('rematricula',$filtros['status_matriculas'])!==false?'check-':''}}circle-o icon"></i> Rematrícula
+                    </a>
+                    <a class="dropdown-item" href="?filtro=status_matriculas&valor=online{{array_search('online',$filtros['status_matriculas'])!==false?'&remove=1':''}}" >
+                        <i class="fa fa-{{array_search('online',$filtros['status_matriculas'])!==false?'check-':''}}circle-o icon"></i> Online 
+                    </a>
+                    <a class="dropdown-item" href="?filtro=status_matriculas&valor=presencial{{array_search('presencial',$filtros['status_matriculas'])!==false?'&remove=1':''}}" >
+                        <i class="fa fa-{{array_search('presencial',$filtros['status_matriculas'])!==false?'check-':''}}circle-o icon"></i> Presencial 
+                    </a>
+                    
+                    @else
+            
+                    <a class="dropdown-item" href="?filtro=status_matriculas&valor=aberta"  >
+                        <i class="fa fa-circle-o icon"></i>  Aberta
+                    </a>
+                    <a class="dropdown-item" href="?filtro=status_matriculas&valor=fechada" >
+                        <i class="fa fa-circle-o icon"></i> Fechadas
+                    </a>
+                    <a class="dropdown-item" href="?filtro=status_matriculas&valor=rematricula" >
+                        <i class="fa fa-circle-o icon"></i> Rematrícula
+                    </a>
+                    <a class="dropdown-item" href="?filtro=status_matriculas&valor=online" >
+                        <i class="fa fa-circle-o icon"></i> Online 
+                    </a>
+                    <a class="dropdown-item" href="?filtro=status_matriculas&valor=online" >
+                        <i class="fa fa-circle-o icon"></i> Presencial 
+                    </a>
+                    
+                    @endif
+                </div>
+                    
+                    
+                </div>
                         <div class="action dropdown " style="float: left; margin-right: 10px;"> 
                             <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Por datas
                             </button>
@@ -399,7 +456,7 @@
         </footer>
 	</div>
         	
-	<script src="{{asset('/')}}/js/vendor.js">
+	<script src="{{asset('/js/vendor.js')}}">
 	</script>
     <script type="text/javascript">
         function addFiltroData(){

@@ -11,7 +11,7 @@
 
 	<p class="small">Consultado em {{date('d/m/Y H:i')}}. 
 		Turmas UATI para pessoas a partir de 40 anos. 
-		EMG somente para funcionários públicos municipais.</p>
+		EMG somente para funcionários públicos municipais. (MP) Somente matrículas presenciais. (MO) Somente matrículas online.</p>
 	
 	@if(isset($professor))
 		<h4> Prof. {{$professor}} </h4>
@@ -20,7 +20,7 @@
 		<thead>
 		
 			<th scope="col">Turma</th>
-			<th scope="col-xs-1 col-sm-1 col-md-1 col-lg-1"">Curso/Disciplina</th>
+			<th scope="col-xs-1 col-sm-1 col-md-1 col-lg-1">Curso/Disciplina</th>
 			<th scope="col">Programa</th>
 			<th scope="col">Dia(s)</th>
 			<th scope="col">Horários</th>
@@ -38,7 +38,21 @@
 			 <tr>
 			 	
 			 	<td>{{$turma->id}}</td>
-				 <td>{{$turma->nome_curso}}</td>
+				<td>{{$turma->nome_curso}}{{$turma->nome_curso}}
+				@switch($turma->status_matriculas)
+					@case('presencial')
+						(MP)
+						@break
+					@case('online')
+						(MO)
+						
+						@break
+					@default
+						
+						
+				@endswitch
+				 
+				</td>
 				 <td>{{$turma->programa->sigla}}</td>
 			 	<td>{{implode(', ',$turma->dias_semana)}}</td>
 			 	<td>{{$turma->hora_inicio}} às {{$turma->hora_termino}}</td>

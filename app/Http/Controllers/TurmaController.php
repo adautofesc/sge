@@ -702,42 +702,26 @@ class TurmaController extends Controller
                     $turmas_af->push(Turma::find($turma));
             }
         }
-
-        
-        
-
-
         //se não tiver nenhuma turma atual
         if(count($turmas_af)==0){ 
 
             $turmas = Turma::select(['turmas.*','cursos.nome as nome_curso','disciplinas.nome as disciplina_nome','pessoas.nome as nome_professor','programas.sigla as sigla_programa'])
-                        ->join('cursos', 'cursos.id', '=', 'turmas.curso')
-                        ->leftjoin('disciplinas', 'disciplinas.id', '=', 'turmas.disciplina')
-                        ->join('pessoas', 'pessoas.id', '=', 'turmas.professor')
-                        ->join('programas', 'programas.id', '=', 'turmas.programa')
-                        ->whereIn('turmas.status_matriculas', ['aberta','presencial'])
-                        ->where(function($busca) use ($query){
-                            $busca->where('cursos.nome', 'like','%'.$query.'%')
-                                    ->orwhere('turmas.id', $query)
-                                    ->orwhere('disciplinas.nome', 'like','%'.$query.'%')
-                                    ->orwhere('pessoas.nome', 'like','%'.$query.'%')
-                                    ->orwhere('programas.sigla', 'like','%'.$query.'%')
-                                    ->orwhere('dias_semana', 'like','%'.$query.'%');
-                        })
-                        ->orderBy('cursos.nome')->orderBy('disciplinas.nome')
-                        ->limit(30)
-                        ->get();
-
-            /*
-    
-            $turmas = Turma::whereIn('turmas.status_matriculas', ['aberta','presencial'])
-                            ->get();
-                            
-            foreach($turmas as $turma){
-                $turma->parcelas = $turma->getParcelas();
-            }
-            $turmas = $turmas->SortBy('cursos.nome')->SortBy('disciplinas.nome');*/
-            
+                ->join('cursos', 'cursos.id', '=', 'turmas.curso')
+                ->leftjoin('disciplinas', 'disciplinas.id', '=', 'turmas.disciplina')
+                ->join('pessoas', 'pessoas.id', '=', 'turmas.professor')
+                ->join('programas', 'programas.id', '=', 'turmas.programa')
+                ->whereIn('turmas.status_matriculas', ['aberta','presencial'])
+                ->where(function($busca) use ($query){
+                    $busca->where('cursos.nome', 'like','%'.$query.'%')
+                            ->orwhere('turmas.id', $query)
+                            ->orwhere('disciplinas.nome', 'like','%'.$query.'%')
+                            ->orwhere('pessoas.nome', 'like','%'.$query.'%')
+                            ->orwhere('programas.sigla', 'like','%'.$query.'%')
+                            ->orwhere('dias_semana', 'like','%'.$query.'%');
+                })
+                ->orderBy('cursos.nome')->orderBy('disciplinas.nome')
+                ->limit(30)
+                ->get();
            
             return view('turmas.lista-matricula', compact('turmas'))->with('pessoa',$pessoa);
         }
@@ -750,55 +734,38 @@ class TurmaController extends Controller
                         $lista[]=Turma::where('dias_semana', 'like', '%'.$turm.'%')->whereBetween('hora_inicio', [$turma->hora_inicio,$hora_fim])->where('data_inicio','<=',$data)->get(['id']);
                     }
                     
-                }
-            
+                }   
             foreach($lista as $col_turma){
                 foreach($col_turma as $obj_turma)
                     $lst[]=$obj_turma->id;
 
             }
-
             $turmas = Turma::select(['turmas.*','cursos.nome as nome_curso','disciplinas.nome as disciplina_nome','pessoas.nome as nome_professor','programas.sigla as sigla_programa'])
-                        ->join('cursos', 'cursos.id', '=', 'turmas.curso')
-                        ->leftjoin('disciplinas', 'disciplinas.id', '=', 'turmas.disciplina')
-                        ->join('pessoas', 'pessoas.id', '=', 'turmas.professor')
-                        ->join('programas', 'programas.id', '=', 'turmas.programa')
-                        ->whereIn('turmas.status_matriculas', ['aberta','presencial'])
-                        ->whereNotIn('turmas.id', $lst)
-                        ->where(function($busca) use ($query){
-                            $busca->where('cursos.nome', 'like','%'.$query.'%')
-                                    ->orwhere('turmas.id',$query)
-                                    ->orwhere('disciplinas.nome', 'like','%'.$query.'%')
-                                    ->orwhere('pessoas.nome', 'like','%'.$query.'%')
-                                    ->orwhere('programas.sigla', 'like','%'.$query.'%')
-                                    ->orwhere('dias_semana', 'like','%'.$query.'%');
-                        })
-                        ->orderBy('cursos.nome')->orderBy('disciplinas.nome')
-                        ->get();
-
-            /*
-
-            $turmas = Turma::whereIn('turmas.status_matriculas', ['aberta','presencial'])
-                            ->whereNotIn('turmas.id', $lst)
-                            ->get();
-            foreach($turmas as $turma){
-                $turma->parcelas = $turma->getParcelas();
-                $turma->nome_curso = $turma->getNomeCurso();
-            }
-            $turmas = $turmas->SortBy('nome_curso');
-            */
+                ->join('cursos', 'cursos.id', '=', 'turmas.curso')
+                ->leftjoin('disciplinas', 'disciplinas.id', '=', 'turmas.disciplina')
+                ->join('pessoas', 'pessoas.id', '=', 'turmas.professor')
+                ->join('programas', 'programas.id', '=', 'turmas.programa')
+                ->whereIn('turmas.status_matriculas', ['aberta','presencial'])
+                ->whereNotIn('turmas.id', $lst)
+                ->where(function($busca) use ($query){
+                    $busca->where('cursos.nome', 'like','%'.$query.'%')
+                            ->orwhere('turmas.id',$query)
+                            ->orwhere('disciplinas.nome', 'like','%'.$query.'%')
+                            ->orwhere('pessoas.nome', 'like','%'.$query.'%')
+                            ->orwhere('programas.sigla', 'like','%'.$query.'%')
+                            ->orwhere('dias_semana', 'like','%'.$query.'%');
+                })
+                ->orderBy('cursos.nome')->orderBy('disciplinas.nome')
+                ->get();
             foreach($turmas as $turma){
                 $turma->parcelas = $turma->getParcelas();
                 //$turma->nome_curso = $turma->getNomeCurso();
             }
-            
-
-
         }
-       
-        return view('turmas.lista-matricula', compact('turmas'))->with('pessoa',$pessoa);
-        
+        return view('turmas.lista-matricula', compact('turmas'))->with('pessoa',$pessoa);  
     }
+
+
     public function turmasEscolhidas($lista='0'){
         $turmas=collect();
         $valor=0;
@@ -849,7 +816,7 @@ class TurmaController extends Controller
     public function turmasSite(){
 
         
-        $turmas=Turma::where('turmas.status_matriculas', 'aberta')
+        $turmas=Turma::whereIn('turmas.status_matriculas', ['aberta','online','presencial'])
                 ->whereIn('turmas.local',[84,85,86,118])
                 ->whereColumn('turmas.vagas','>','turmas.matriculados')
                 ->get();

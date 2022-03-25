@@ -3,17 +3,19 @@
 
 <head>
 	<style type="text/css">
-		@media screen,print {
+@media screen,print {
 
-/* *** TIPOGRAFIA BASICA *** */
-.page-break { 
-page-break-before: always; 
+    /* *** TIPOGRAFIA BASICA *** */
+    .page-break { 
+    page-break-before: always; 
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+    }
 }
 
-* {
-	margin: 0;
-	padding: 0;
-}
 	</style>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 <link rel="stylesheet" href="{{asset('/css/vendor.css')}}"/>

@@ -1,6 +1,6 @@
 @extends('layout.app')
 @section('pagina')
-<link rel="stylesheet" type="text/css" href="{{asset('/css/fluent_calendar.css')}}">
+
 <div class="title-block">
     <div class="row">
         <div class="col-md-6">
@@ -170,7 +170,19 @@
           
     </div>
     <!-- row -->
+
+    
 </section>
+<section>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="placeholder" style="width:600px;height:300px">
+
+            </div>
+        </div>
+    </div>
+</section>
+
 
 @endsection
 @section('scripts')
@@ -190,6 +202,40 @@
             window.location.replace("{{asset('financeiro/boletos/confirmar-impressao')}}");
         }
     }
+    function gt(time) {
+        let hora = time.substring(0,2);
+        let minuto = time.substring(2,2);
+        let tempo = new Date(2022,3,25,hora,minuto,0).getTime();
+       
+        
+        return tempo ;
+    }
+    minimo = new Date(2022,3,25,6,0,0).getTime();
+    maximo = new Date(2022,3,25,22,59,0).getTime();
+
+    var data = [ 
+        { label: "Aula", data: [ [1,gt('11:00')],[2,gt('15:00')]] },
+    
+        ];
+    var options = {
+
+        series: {
+            bars: { show: true },
+            
+        },
+        yaxis : {
+            minTickSize : [ 1, "hour" ],
+            min: minimo,
+            max: maximo,
+            
+            show: true,
+            mode : "time",
+            timeformat : "%H:%M"
+        }
+    };
+  
+    var plot = $("#placeholder").plot(data, options).data("plot");
+    
 
 </script>
 @endsection

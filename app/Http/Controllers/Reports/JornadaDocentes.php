@@ -90,7 +90,7 @@ class JornadaDocentes extends Controller
                     $educador->carga_semanal->$dia += $inicio->diffInMinutes($termino);
                     $educador->carga_ativa->addMinutes($inicio->diffInMinutes($termino));
 
-                    if($atividade->descricao != 'Translado')
+                    if($atividade->descricao != 'Translado' && $atividade->descricao != 'Intervalo entre aulas')
                         $educador->jornadas[$dia]->push($atividade); 
 
                     

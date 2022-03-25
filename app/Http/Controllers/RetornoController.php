@@ -248,13 +248,15 @@ class RetornoController extends Controller
 
 					switch($linha->ocorrenciaTipo){
 						case 1: //Liquidação
+							if($boleto->status == 'cancelar')
+								\App\Lancamento::where('boleto',$boleto->id)->update(['status'=>'']);
 							$boleto->status = 'pago';
 							$boleto->pagamento = \Carbon\Carbon::createFromFormat('d/m/Y H:i:s', $data, 'Europe/London');
 							$boleto->pago = $linha->valor;
 							$boleto->encargos = $linha->valorMulta + $linha->valorMora + $linha->valorIOF;
 							$boleto->descontos = $linha->valorDesconto;
 							$boleto->retorno = $retorno_id;
-							$boleto->save();
+							$boleto->save();							
 							LogController::alteracaoBoleto($boleto->id,'Pagamento confirmado, retorno: '.$retorno_id.': '.$linha->ocorrenciaDescricao.' '.$linha->error);
 							//MatriculaController::liberarMatriculadoBoleto($boleto);
 
@@ -346,6 +348,8 @@ class RetornoController extends Controller
 
 					switch($linha->ocorrenciaTipo){
 						case 1: //Liquidação
+							if($boleto->status == 'cancelar')
+								\App\Lancamento::where('boleto',$boleto->id)->update(['status'=>'']);
 							$boleto->status = 'pago';
 							$boleto->pagamento = \Carbon\Carbon::createFromFormat('d/m/Y H:i:s', $data, 'Europe/London');
 							$boleto->pago = $linha->valor;

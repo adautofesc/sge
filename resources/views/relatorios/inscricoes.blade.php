@@ -78,11 +78,36 @@
 		<br/>
 		<div class="title-block">
 			<center>
-            <h3 class="title"> Relatório de turmas</h3>
-            <h5 class="title"> Filtrado por 
+            <h3 class="title"> Relatório de inscrições</h3>
+            <h5 class="title"  style="font-size:11px"> Filtrado por 
             		 @foreach($filtros as $filtro=>$valor)
 		                @if(count($filtros[$filtro]))
-		                        <strong>{{$filtro}}</strong>,
+                            @switch($filtro)
+                                @case('pordata')
+                                    <strong>datas</strong>: {{implode(',',$valor)}},                                        
+                                    @break
+                                @case('professor')
+                                    <strong>professorer</strong>: 
+                                    @foreach($valor as $i)
+                                        {{\App\Pessoa::getNome($i)}},
+                                    @endforeach
+                                    @break;
+                                @case('programa')
+                                    <strong>programas</strong>: 
+                                    @foreach($valor as $i)
+                                        {{\App\Programa::getSigla($i)}},
+                                    @endforeach
+                                    @break;
+                                @case('local')
+                                    <strong>locais</strong>: 
+                                    @foreach($valor as $i)
+                                        {{\App\Local::getSigla($i)}},
+                                    @endforeach
+                                    @break;
+                                
+                                @default
+                                    <strong>{{$filtro}}</strong>: {{implode(', ',$valor)}},
+                            @endswitch
 		                @endif
 		            @endforeach
 

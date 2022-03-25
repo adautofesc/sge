@@ -495,7 +495,8 @@ Event::where('status' , 0)
              die('O ano informado é inválido.');
         $programas = array('1','2','3','4','12');
             foreach($programas as $programa){
-                $vagas[$programa] = \App\Turma::whereYear('data_inicio',$ano)->where('programa',$programa)->sum('vagas');
+                $vagas[$programa] = \App\Turma::whereYear('data_inicio',$ano)->where('programa',$programa)->whereIn('status',['iniciada','encerrada'])->sum('vagas');
+                //dd(\App\Turma::whereYear('data_inicio',$ano)->where('programa',2)->whereIn('status',['iniciada','encerrada'])->get());
                 if($ano == 2020){
                     $ocupacao[$programa] = \App\Inscricao::select('inscricoes.id','programa')
                                                         ->join('turmas','turmas.id','=','inscricoes.turma')

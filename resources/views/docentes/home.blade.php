@@ -11,10 +11,11 @@
         </div>
     </div>
 </div>
+@include('inc.errors')
 <section class="section">
- @include('inc.errors')
+
     <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-6">
             <div class="card">
             <div class="card card-block">
                 <div class="card-title-block">
@@ -49,7 +50,7 @@
                                                 &nbsp;&nbsp;<small><a  title="{{$horario->hora_inicio}} -> {{$horario->hora_termino}} | {{$horario->getNomeCurso()}} | {{$horario->local->sigla}} | {{$horario->nome_sala}}" href="/docentes/frequencia/nova-aula/{{$horario->id}}">{{$horario->id}}</a></small>
                                                 @elseif(isset($horario->tipo))
                                                 
-                                                &nbsp;&nbsp;<small><a href="#"  title="{{$horario->hora_inicio}} -> {{$horario->hora_termino}} - {{$horario->getLocal()->sigla}}"> {{$horario->tipo}}  </a></small>
+                                                &nbsp;&nbsp;<small><span  title="{{$horario->hora_inicio}} -> {{$horario->hora_termino}} - {{$horario->getLocal()->sigla}}"> {{$horario->tipo}}  </span></small>
 
                                                 @else
                                                 
@@ -74,11 +75,21 @@
                 </table>
                 </section>
 
+                <section>
+                    <div id="placeholder" style="width:29rem;height:25rem">
+
+
+                    </div>
+                    <div id="legendContainer"></div>    
+                
+                </section>
+
+
             </div>
             </div>
 
         </div>
-        <div class="col-md-5 center-block">
+        <div class="col-md-6 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
@@ -93,6 +104,7 @@
                             <th>Início</th>
                             <th>Termino</th>
                             <th>Tipo</th>
+                            <th>Local</th>
                             <th>&nbsp;</th>
                         </tr>
                         
@@ -113,6 +125,7 @@
                             <td><small>{{$jornada->hora_inicio}}</small></td>
                             <td><small>{{$jornada->hora_termino}}</small></td>
                             <td><small>{{$jornada->tipo}}</small></td>
+                            <td><small>{{$jornada->getLocal()->sigla}}</small></td>
                             <td>
                                 @if(in_array('17', Auth::user()->recursos))
                                 <small><a href="#" data-toggle="modal" data-target="#modal-exclusao-jornada" title="Excluir Jornada" onclick="atribJornada('{{$jornada->id}}')">
@@ -373,5 +386,221 @@ function excluirJornada(){
         alert('Falha ao excluir jornada: '+msg.statusText);
     });
 }
+
+
+
+//----------------------- Gráfio de horários
+
+
+function gt(time) {
+        let hora = time.substring(0,2)-3;
+        let minuto = time.substring(5,3);
+        let tempo = new Date(1970,0,1,hora,minuto,0).getTime();
+        //console.log(time+'->'+tempo);
+       
+        
+        return tempo ;
+    }
+
+    function msToTime(duration) {
+        var milliseconds = Math.floor((duration % 1000) / 100),
+            seconds = Math.floor((duration / 1000) % 60),
+            minutes = Math.floor((duration / (1000 * 60)) % 60),
+            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+        return hours + ":" + minutes;
+    }
+
+    minimo = new Date(1970,0,1,4,0,0).getTime();
+    maximo = new Date(1970,0,1,20,0,0).getTime();
+    
+
+    var data = [ /*
+        { label: "Aula",
+          link:"#",
+          data: [ [1,gt('10:00'),gt('12:00'),"teste"],[1,gt('13:00'),gt('15:00'),"teste2"]] ,
+         
+        },*/
+     
+      
+        {            
+            label: "Aula",
+            data: [ 
+              @foreach($ghoras_turmas as $horax)
+                @if(substr($horax[3],0,5)=='Turma')
+                    [{{$horax[0]}},gt('{{$horax[1]}}'),gt('{{$horax[2]}}'),'{{$horax[3]}}','{{$horax[4]}}'],
+                @endif
+              @endforeach
+            ] ,
+        },
+
+        {            
+            label: "HTP",
+            data: [ 
+              @foreach($ghoras_turmas as $horax)
+                @if($horax[3]=='HTP')
+                    [{{$horax[0]}},gt('{{$horax[1]}}'),gt('{{$horax[2]}}'),'{{$horax[3]}}','{{$horax[4]}}'],
+                @endif
+              @endforeach
+            ] ,
+        },
+        {            
+            label: "Translado",
+            data: [ 
+              @foreach($ghoras_turmas as $horax)
+                @if($horax[3]=='Translado')
+                    [{{$horax[0]}},gt('{{$horax[1]}}'),gt('{{$horax[2]}}'),'{{$horax[3]}}','{{$horax[4]}}'],
+                @endif
+              @endforeach
+            ] ,
+        },
+        {            
+            label: "Disponível",
+            data: [ 
+              @foreach($ghoras_turmas as $horax)
+                @if($horax[3]=='Aula')
+                    [{{$horax[0]}},gt('{{$horax[1]}}'),gt('{{$horax[2]}}'),'{{$horax[3]}}','{{$horax[4]}}'],
+                @endif
+              @endforeach
+            ] ,
+        },
+        {            
+            label: "Projeto",
+            data: [ 
+              @foreach($ghoras_turmas as $horax)
+                @if($horax[3]=='Projeto')
+                    [{{$horax[0]}},gt('{{$horax[1]}}'),gt('{{$horax[2]}}'),'{{$horax[3]}}','{{$horax[4]}}'],
+                @endif
+              @endforeach
+            ] ,
+        },
+        {            
+            label: "Coordenação",
+            data: [ 
+              @foreach($ghoras_turmas as $horax)
+                @if($horax[3]=='Coordenação')
+                    [{{$horax[0]}},gt('{{$horax[1]}}'),gt('{{$horax[2]}}'),'{{$horax[3]}}','{{$horax[4]}}'],
+                @endif
+              @endforeach
+            ] ,
+        },
+     
+
+        {            
+            label: "Intervalo",
+            data: [ 
+              @foreach($ghoras_turmas as $horax)
+                @if($horax[3]=='Intervalo entre turmas')
+                    [{{$horax[0]}},gt('{{$horax[1]}}'),gt('{{$horax[2]}}'),'{{$horax[3]}}','{{$horax[4]}}'],
+                @endif
+              @endforeach
+            ] ,
+        },
+       
+    
+        ];
+    var options = {
+
+        series: {
+            bars: {
+                show: true,
+                align:'center',
+                
+                fill: true,
+                fillColor: {
+                    colors: [{
+                        opacity: 0.8
+                    }, {
+                        opacity: 0.8
+                    }]
+                },
+                
+               
+            }
+            
+        },
+        yaxis : {
+            //minTickSize : [ 1, "hour" ],
+            //TickSize : [ 1, "hour" ],
+            
+            axis: 2,
+            show: true,
+            mode : "time",
+            timeformat : "%H:%M",
+            //ticks: 20,
+            //min: minimo,
+            //max: maximo
+            //tickLength:0,
+        },
+        xaxis :{
+            show : true,
+            position: "top",
+            tickLength:0,
+            ticks: [
+     
+                [1, "Segunda"], 
+                [2, "Terça"], 
+                [3, "Quarta"],
+                [4,"Quinta"],
+                [5,"Sexta"],
+                [6,"Sábado"],
+                [7,""]],
+       
+          
+            
+           
+        },
+        
+        grid: {
+            
+            hoverable: true,
+            clickable: true,            
+            borderWidth:0
+        },
+        legend: {
+            container:$("#legendContainer"),    
+            noColumns: 4,
+           
+        },
+        tooltip: true,
+        tooltipOpts: {
+            //content: "início: %y %s"
+           content: function(label, x, y, flotItem){
+                //console.log(flotItem.seriesIndex);
+                return '<strong>'+data[flotItem.seriesIndex].data[flotItem.dataIndex][3]+'</strong>'
+                +" <br> %y às "+ msToTime(data[flotItem.seriesIndex].data[flotItem.dataIndex][2])
+                + '<br>Local: '+data[flotItem.seriesIndex].data[flotItem.dataIndex][4];
+            },
+            //content: "Orders <b>%y</b> for <span>"+y+"</span>",
+        }
+    };
+  
+    var plot = $("#placeholder").plot(data, options).data("plot");
+
+    $("#placeholder").bind("plotclick", function (event, pos, flotItem) {
+        if (flotItem) { 
+            //window.location = links[item.dataIndex];
+            //window.open(links[dataIndex, '_blank']);
+            if(data[flotItem.seriesIndex].data[flotItem.dataIndex][3].substring(0,5) == 'Turma')
+                window.location = "/docentes/frequencia/nova-aula/"+data[flotItem.seriesIndex].data[flotItem.dataIndex][3].substring(6);
+            else
+                console.log(data[flotItem.seriesIndex].data[flotItem.dataIndex][3]);
+           // here you can write location = "http://your-doamin.com";
+        }
+    });
+
+    $("#placeholder").bind("plothover", function(event, pos, item) {
+        if(item && data[item.seriesIndex].data[item.dataIndex][3].substring(0,5) == 'Turma' )
+            $("#placeholder").css("cursor","pointer","important");
+        else
+            $("#placeholder").css("cursor","default", "important");
+    });
+ 
+
+    //console.log(data[0].data[0][2]);
 </script>
 @endsection

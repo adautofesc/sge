@@ -124,6 +124,12 @@ class painelController extends Controller
         $jornadas_ativas = $jornadas->where('status','ativa');
         $locais = \App\Local::select(['id','nome'])->orderBy('nome')->get();
         $carga = \App\PessoaDadosAdministrativos::where('dado','carga_horaria')->where('pessoa',$id)->first();
+        $ghoras_turmas = array();
+        $ghoras_HTP = array();
+        $ghoras_projetos = array();
+        $ghoras_coordenacao = array();
+        $ghoras_outros = array();
+        $glocais = array();
 
         //dd($jornadas);
 
@@ -140,7 +146,33 @@ class painelController extends Controller
                 $inicio = Carbon::createFromFormat('H:i', $turma->hora_inicio);
                 $termino = Carbon::createFromFormat('H:i', $turma->hora_termino);
                 $carga_ativa->addMinutes($inicio->diffInMinutes($termino));
+                switch($dia){
+                    case 'seg':
+                        $ndia= 1;
+                        break;
+                    case 'ter':
+                        $ndia= 2;
+                        break;
+                    case 'qua': 
+                        $ndia= 3;
+                        break;
+                    case 'qui': 
+                        $ndia= 4;
+                        break;
+                    case 'sex': 
+                        $ndia= 5;
+                        break;
+                    case 'sab': 
+                        $ndia= 6;
+                        break;
+                    default:
+                        $ndia= 0;
+                }
+                $ghoras_turmas[] = [$ndia,$turma->hora_inicio,$turma->hora_termino,'Turma '.$turma->id,$turma->local->nome];
+
             }
+            if(!in_array($turma->local->sigla,$glocais))
+                $glocais[] = $turma->local->sigla;
         }
         foreach($jornadas_ativas as $jornada){
             foreach($jornada->dias_semana as $dia){
@@ -148,6 +180,29 @@ class painelController extends Controller
                 $inicio = Carbon::createFromFormat('H:i:s', $jornada->hora_inicio);
                 $termino = Carbon::createFromFormat('H:i:s', $jornada->hora_termino);
                 $carga_ativa->addMinutes($inicio->diffInMinutes($termino));
+                switch($dia){
+                    case 'seg':
+                        $ndia= 1;
+                        break;
+                    case 'ter':
+                        $ndia= 2;
+                        break;
+                    case 'qua': 
+                        $ndia= 3;
+                        break;
+                    case 'qui': 
+                        $ndia= 4;
+                        break;
+                    case 'sex': 
+                        $ndia= 5;
+                        break;
+                    case 'sab': 
+                        $ndia= 6;
+                        break;
+                    default:
+                        $ndia= 0;
+                }
+                $ghoras_turmas[] = [$ndia,$jornada->hora_inicio,$jornada->hora_termino,$jornada->tipo,$jornada->getLocal()->nome];
 
             }
         }
@@ -159,6 +214,8 @@ class painelController extends Controller
     
 
         $semestres = \App\classes\Data::semestres();
+
+        //dd($ghoras_turmas);
         
                     
         
@@ -170,8 +227,10 @@ class painelController extends Controller
             ->with('horarios',$horarios)
             ->with('dias',$dias)
             ->with('locais',$locais)
+            ->with('glocais',$glocais)
             ->with('carga',$carga)
             ->with('carga_ativa',$carga_ativa)
+            ->with('ghoras_turmas',$ghoras_turmas)
             ->with('jornadas',$jornadas);
             
 

@@ -105,7 +105,7 @@
                         <a href="/relatorios/carga-docentes" class="btn btn-primary-outline col-xs-12 text-xs-left">
                             <i class=" fa fa-file-text-o"></i>
                             &nbsp;&nbsp;Relatório de educadores</a>
-                            <a href="/relatorios/salas/84" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                            <a href="/relatorios/salas" class="btn btn-primary-outline col-xs-12 text-xs-left">
                                 <i class=" fa fa-file-text-o"></i>
                                 &nbsp;&nbsp;Relatório de Salas</a>
                     </div>

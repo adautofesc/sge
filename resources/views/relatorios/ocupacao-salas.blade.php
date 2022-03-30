@@ -82,7 +82,7 @@
                         </ul>
                     </div>
                     <div class="action dropdown" style="float: left; margin-right: 10px;"> 
-                        <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Desconto
+                        <button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Salas
                         </button>
                
                         <ul class="dropdown-menu" style="width: 400px;" id="select-sala">

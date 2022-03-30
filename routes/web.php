@@ -13,6 +13,7 @@
 
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\Reports\JornadaDocentes;
+use App\Http\Controllers\SalaController;
 
 Route::get('/', 'painelController@index');
 
@@ -686,6 +687,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('celulares','PessoaController@relatorioCelulares');
 		Route::get('receita-anual-programa/{ano}/{mes?}','Reports\ReceitaAnualReportController@receitaPorPrograma');
 		Route::get('carga-docentes', [JornadaDocentes::class,'relatorioGeral']); //rotas inteligentes
+		Route::get('salas',  [SalaController::class,'relatorioOcupacao']); 
 		
 
 

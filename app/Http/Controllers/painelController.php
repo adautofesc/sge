@@ -177,8 +177,8 @@ class painelController extends Controller
         foreach($jornadas_ativas as $jornada){
             foreach($jornada->dias_semana as $dia){
                 $horarios[$dia][substr($jornada->hora_inicio,0,2)][substr($jornada->hora_inicio,3,2)] = $jornada;
-                $inicio = Carbon::createFromFormat('H:i:s', $jornada->hora_inicio);
-                $termino = Carbon::createFromFormat('H:i:s', $jornada->hora_termino);
+                $inicio = Carbon::createFromFormat('H:i', $jornada->hora_inicio);
+                $termino = Carbon::createFromFormat('H:i', $jornada->hora_termino);
                 $carga_ativa->addMinutes($inicio->diffInMinutes($termino));
                 switch($dia){
                     case 'seg':

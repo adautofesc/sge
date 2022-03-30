@@ -68,8 +68,8 @@ class JornadaDocentes extends Controller
                         $educador->carga_semanal->$dia = 0;
 
                     $atividade = new \stdClass;
-                    $atividade->inicio = substr($jornada->hora_inicio,0,5);
-                    $atividade->termino = substr($jornada->hora_termino,0,5);
+                    $atividade->inicio = $jornada->hora_inicio;
+                    $atividade->termino = $jornada->hora_termino;
                     $atividade->descricao = $jornada->tipo;
                     $atividade->local = '-';
                   
@@ -83,8 +83,8 @@ class JornadaDocentes extends Controller
                     else
                         $atividade->local = '-';
                         
-                    $inicio = Carbon::createFromFormat('H:i:s', $jornada->hora_inicio);
-                    $termino = Carbon::createFromFormat('H:i:s', $jornada->hora_termino);
+                    $inicio = Carbon::createFromFormat('H:i', $jornada->hora_inicio);
+                    $termino = Carbon::createFromFormat('H:i', $jornada->hora_termino);
 
                     $atividade->carga = $inicio->diffInMinutes($termino);
                     $educador->carga_semanal->$dia += $inicio->diffInMinutes($termino);

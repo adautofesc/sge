@@ -23,4 +23,15 @@ class Jornada extends Model
 		return $local;
 
 	}
+	public function getPessoa(){
+		$pessoa = \App\Pessoa::find($this->pessoa);
+		return $pessoa;
+	}
+
+	public function getHoraInicioAttribute($value){	
+		return substr($value,0,5);
+	}
+	public function getHoraTerminoAttribute($value){	
+		return substr($value,0,5);
+	}
 }

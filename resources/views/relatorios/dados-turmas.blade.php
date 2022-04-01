@@ -84,6 +84,7 @@
                             <th width="0px">&nbsp;</th>
                             <th>Nome</th>
                             <th>Telefone</th>
+                            <th>E-mail</th>
                             <th>Venc. Atestado</th>
                         </thead>
                         <tbody>
@@ -114,6 +115,9 @@
                                     {{\App\classes\Strings::formataTelefone($telefone->valor)}} . 
                                     @endforeach
                                     
+                                </td>
+                                <td>
+                                    <e-mail>{{$inscricao->pessoa->getEmail()}}</e-mail>
                                 </td>
                                 <td>
                                     @if(isset($inscricao->atestado))

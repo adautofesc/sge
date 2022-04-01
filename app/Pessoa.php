@@ -141,4 +141,12 @@ class Pessoa extends Model
 		return $programas;
 	}
 
+	public function getEmail(){
+		$email =   PessoaDadosContato::where('pessoa',$this->id)->where('dado','1')->OrderByDesc('id')->first();
+		if($email)
+			return $email->valor;
+		else
+			return 'ND';
+	}
+
 }

@@ -153,6 +153,6 @@
                                 <a href=""> <i class="fa fa-cog"></i> Personalize </a>
                             </li>
                         </ul>
-                    </foter>
+                    </footer>
 </aside>
 <div class="sidebar-overlay" id="sidebar-overlay"></div>

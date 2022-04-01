@@ -1,6 +1,14 @@
 @extends('layout.app')
 @section('pagina')
-
+<style>
+    #area-chart,
+#line-chart,
+#bar-chart,
+#stacked,
+#pie-chart{
+  min-height: 250px;
+}
+</style>
 <div class="title-block">
     <div class="row">
         <div class="col-md-6">
@@ -82,9 +90,7 @@
 <section>
     <div class="row">
         <div class="col-md-12">
-            <div id="placeholder" style="width:600px;height:300px">
-
-            </div>
+            <canvas id="myChart"></canvas>
         </div>
     </div>
 </section>
@@ -92,162 +98,42 @@
 
 @endsection
 @section('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
 <script type="text/javascript">
-    function gerarBoletos(){
-        if(confirm("Tem certeza que deseja gerar os boletos desse mês?")){
-            window.location.replace("{{asset('financeiro/boletos/gerar-boletos')}}");
-        }
-    }
-    function gerarCarnes(){
-        if(confirm("Tem certeza que deseja gerar os carnês de todos alunos?")){
-            window.location.replace("{{asset('financeiro/carne/gerar')}}");
-        }
-    }
-    function gerarImpressao(){
-        if(confirm("Os boletos foram todos impressos?")){
-            window.location.replace("{{asset('financeiro/boletos/confirmar-impressao')}}");
-        }
-    }
-    function gt(time) {
-        let hora = time.substring(0,2)-3;
-        let minuto = time.substring(5,3);
-        let tempo = new Date(1970,0,1,hora,minuto,0).getTime();
-        console.log(time+'->'+tempo);
-       
-        
-        return tempo ;
-    }
+const labels = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+  ];
 
-    function msToTime(duration) {
-        var milliseconds = Math.floor((duration % 1000) / 100),
-            seconds = Math.floor((duration / 1000) % 60),
-            minutes = Math.floor((duration / (1000 * 60)) % 60),
-            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+  const data = {
+    labels: labels,
+    datasets: [{
+      label: 'My First dataset',
+      backgroundColor: 'rgb(255, 99, 132)',
+      borderColor: 'rgb(255, 99, 132)',
+      data: [0, 10, 5, 2, 20, 30, 45],
+    }]
+  };
 
-        hours = (hours < 10) ? "0" + hours : hours;
-        minutes = (minutes < 10) ? "0" + minutes : minutes;
-        seconds = (seconds < 10) ? "0" + seconds : seconds;
+  const configChart = {
+    type: 'bar',
+    data: data,
+    options: {}
+  };
 
-        return hours + ":" + minutes;
-    }
+  const myChart = new Chart(
+    document.getElementById('myChart'),
+    configChart
+  );
 
-    minimo = new Date(1970,0,1,4,0,0).getTime();
-    maximo = new Date(1970,0,1,20,0,0).getTime();
-    
 
-    var data = [ 
-        { label: "Aula",
-          link:"#",
-          data: [ [1,gt('10:00'),gt('12:00'),"teste"],[1,gt('13:00'),gt('15:00'),"teste2"]] ,
-         
-        },
-        { label: "Atividade",
-        link:"#1",
-          data: [ [6,gt('12:00'),gt('19:30'),"Desc/turma",""]] ,
-          
-        },
-        { label: "HTP",
-        link:"#1",
-          data: [ [3,gt('08:00'),gt('09:30'),"Desc/turma",""]] ,
-          
-        },
-
-       
-    
-        ];
-    var options = {
-
-        series: {
-            bars: {
-                show: true,
-                align:'center',
-                
-                fill: true,
-                fillColor: {
-                    colors: [{
-                        opacity: 0.8
-                    }, {
-                        opacity: 0.8
-                    }]
-                },
-                
-               
-            }
-            
-        },
-        yaxis : {
-            //minTickSize : [ 1, "hour" ],
-            //TickSize : [ 1, "hour" ],
-            
-            axis: 2,
-            show: true,
-            mode : "time",
-            timeformat : "%H:%M",
-            ticks: 20,
-            min: minimo,
-            max: maximo
-        },
-        xaxis :{
-            show : true,
-            position: "top",
-            tickLength:2,
-            ticks: [
-     
-                [1, "Segunda"], 
-                [2, "Terça"], 
-                [3, "Quarta"],
-                [4,"Quinta"],
-                [5,"Sexta"],
-                [6,"Sábado"],
-                [7,""]],
-       
-          
-            
-           
-        },
-        
-        grid: {
-            
-            hoverable: true,
-            clickable: true,            
-            borderWidth:0
-        },
-        legend: {
-            show: false
-        },
-        tooltip: true,
-        tooltipOpts: {
-            //content: "início: %y %s"
-           content: function(label, x, y, flotItem){
-                //console.log(flotItem.seriesIndex);
-                return "%s das %y às "+msToTime(data[flotItem.seriesIndex].data[0][2]);
-            },
-            //content: "Orders <b>%y</b> for <span>"+y+"</span>",
-        }
-    };
-  
-    var plot = $("#placeholder").plot(data, options).data("plot");
-
-    $("#placeholder").bind("plotclick", function (event, pos, flotItem) {
-        if (flotItem) { 
-            //window.location = links[item.dataIndex];
-            //window.open(links[dataIndex, '_blank']);
-            console.log(data[flotItem.seriesIndex].data[flotItem.dataIndex][3]);
-           // here you can write location = "http://your-doamin.com";
-        }
-    });
-
-    $("#placeholder").bind("plothover", function(event, pos, item) {
-        if(item)
-            $("#placeholder").css("cursor","pointer","important");
-        else
-            $("#placeholder").css("cursor","default", "important");
-    });
- 
-
-    //console.log(data[0].data[0][2]);
     
 
 </script>
+
 
 @endsection

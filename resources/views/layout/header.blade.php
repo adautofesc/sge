@@ -7,7 +7,7 @@
     <link rel="apple-touch-icon" href="{{asset('apple-touch-icon.png') }}">
     <!-- Place favicon.ico in the root directory -->
     <link rel="icon" href="{{ asset('img/moon.png')}}">
-    <link rel="stylesheet" href="{{ asset('css/vendor.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/vendor-min.css')}}">
     <!-- Theme initialization -->
     <script>
         var themeSettings = (localStorage.getItem('themeSettings')) ? JSON.parse(localStorage.getItem('themeSettings')) :

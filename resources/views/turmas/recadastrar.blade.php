@@ -7,7 +7,7 @@
 </div>
 @include('inc.errors')
 <form name="item" method="post" action="/turmas/recadastrar">
-	<input type="hidden" name="turmas" value="{{implode($turmas,',')}}">
+	<input type="hidden" name="turmas" value="{{implode(',',$turmas)}}">
     <div class="card card-block">
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">

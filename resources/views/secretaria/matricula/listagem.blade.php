@@ -212,7 +212,7 @@
                                     <div><small>{{$inscricao->turma->professor->nome_simples}} </small></div>
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
-                                    <div><small>{{implode($inscricao->turma->dias_semana,', ').' '.$inscricao->turma->hora_inicio. '-'.$inscricao->turma->hora_termino}}</small></div>
+                                    <div><small>{{implode(', ',$inscricao->turma->dias_semana).' '.$inscricao->turma->hora_inicio. '-'.$inscricao->turma->hora_termino}}</small></div>
                                 </div>
                                 <div class="col-xl-1" style="line-height:40px !important;">
                                     <div><small title="{{$inscricao->turma->local->nome}}">{{$inscricao->turma->local->sigla}}</small></div>

@@ -333,7 +333,7 @@
 	</tr>
 	<tr style="height:23px;">
 		<td colspan="11" data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;TURMA: 2ª feiras das 08h às 10h&quot;}" rowspan="1" style="border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:top;font-family:Arial;font-size:8pt;font-weight:normal;color:#000000;">
-		TURMA: {{$inscritos->first()->turma->id}} - {{implode($inscritos->first()->turma->dias_semana,',')}} feiras das {{$inscritos->first()->turma->hora_inicio}} às {{$inscritos->first()->turma->hora_termino}}</td>
+		TURMA: {{$inscritos->first()->turma->id}} - {{implode(',',$inscritos->first()->turma->dias_semana)}} feiras das {{$inscritos->first()->turma->hora_inicio}} às {{$inscritos->first()->turma->hora_termino}}</td>
 		<td class="stilo4">
 		</td>
 		<td class="stilo4">

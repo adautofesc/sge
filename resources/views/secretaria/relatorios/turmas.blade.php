@@ -106,7 +106,7 @@
 	            @foreach($filtros as $filtro=>$valor)
 	                @if(count($filtros[$filtro]))
 
-	                    <a href="?removefiltro={{$filtro}}" title="Remover este filtro {{implode($valor,', ')}}">
+	                    <a href="?removefiltro={{$filtro}}" title="Remover este filtro {{implode(', ',$valor)}}">
 	                        <i class="fa fa-remove" style="color:red"></i>
 	                        {{$filtro}}
 	                    </a>

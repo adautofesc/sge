@@ -335,7 +335,7 @@
 	</tr>
 	<tr style="height:23px;">
 		<td colspan="11" data-sheets-value="" rowspan="1" style="border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:top;font-family:Arial;font-size:8pt;font-weight:normal;color:#000000;">
-		TURMA: {{$turma->id}} - {{implode($turma->dias_semana,',')}} feiras das {{$turma->hora_inicio}} às {{$turma->hora_termino}}</td>
+		TURMA: {{$turma->id}} - {{implode(',',$turma->dias_semana)}} feiras das {{$turma->hora_inicio}} às {{$turma->hora_termino}}</td>
 		<td class="stilo4">
 		</td>
 		<td class="stilo4">

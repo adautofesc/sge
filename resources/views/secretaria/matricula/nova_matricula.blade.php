@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-md-6">
 
-                <h3 class="title"> Nova matrícula </h3>
+                <h3 class="title"> Nova matrícula</h3>
 
                 <p class="title-description"> {{$pessoa->nome}}</p>
             </div>

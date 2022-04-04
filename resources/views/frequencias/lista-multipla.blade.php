@@ -111,7 +111,7 @@ body{
 				{{$turma->sala->nome}}
 			@endif
 			<br>
-			TURMA: {{$turma->id}} - {{implode($turma->dias_semana,',')}} feiras das {{$turma->hora_inicio}} às {{$turma->hora_termino}}
+			TURMA: {{$turma->id}} - {{implode(',',$turma->dias_semana)}} feiras das {{$turma->hora_inicio}} às {{$turma->hora_termino}}
 
 		</td>
 		<td >&nbsp;

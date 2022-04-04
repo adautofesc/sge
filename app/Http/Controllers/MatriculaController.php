@@ -744,7 +744,7 @@ class MatriculaController extends Controller
 
                     $alternativas = \App\TurmaDados::where('turma',$inscricao->turma->id)->where('dado','proxima_turma')->get();
                     foreach($alternativas as $alternativa){
-                        $turma =\App\ Turma::find($alternativa->valor);
+                        $turma =\App\Turma::find($alternativa->valor);
                         $inscricao->proxima_turma->push($turma);
 
                     }

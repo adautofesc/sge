@@ -29,6 +29,7 @@
                             <option value="Intervalo entre turmas" >Intervalo entre turmas</option>
                             <option value="Translado">Translado</option>
                             <option value="Projeto">Projeto</option>
+                            <option value="Uso Livre">Uso Livre</option>
                            
                 
                         </select> 

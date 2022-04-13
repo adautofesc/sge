@@ -46,7 +46,8 @@ class DividaAtiva extends Model
             $boletos_divida = Boleto::where('pessoa',$pessoa)->where('status','emitido')->whereYear('vencimento',$ano-1)->get();
             //dd($boletos_divida);
             foreach($boletos_divida as $boleto){
-                $da->valor_consolidado = DividaAtiva::atualizarValor($boleto->valor,$boleto->vencimento);
+                //$da->valor_consolidado = DividaAtiva::atualizarValor($boleto->valor,$boleto->vencimento);
+                $da->valor_consolidado = DividaAtiva::atualizarValor('50','2021-02-10');
             }
 
 

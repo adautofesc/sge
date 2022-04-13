@@ -60,6 +60,19 @@
 .shadow-none {
     box-shadow: none!important;
 }
+.bg-light{
+  background-color: #fb771a !important;
+  border-radius: .25rem;
+  
+}
+.navbar-brand, .nav-link{
+  color:#fff !important;
+}
+.list-group-item a{
+  color: #fb771a !important;
+
+}
+
 
        
     </style>
@@ -70,7 +83,7 @@
     <div class="container">
         <div class="main-body">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <span class="navbar-brand" >Perfil FESC</span>
+                <span class="navbar-brand" >Perfil<strong>FESC</strong></span>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon"></span>
                 </button>
@@ -78,27 +91,13 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                   <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
+                     
                       <a class="nav-link" href="/perfil">Home</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" href="https://fesc.saocarlos.sp.gov.br">Site</a>
                     </li>
-                    <!--
-                    <li class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Dropdown
-                      </a>
-                      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                      </div>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link disabled" href="#">Disabled</a>
-                    </li>
-                -->
+                   
                   </ul>
                   <form class="form-inline my-2 my-lg-0">
                     <div class=" navbar-nav nav-item dropdown">
@@ -137,18 +136,17 @@
                           <small>clique em alterar dados para cadastrar</small>
                           @endif
                           <a href="/perfil/alterar-dados">Alterar dados do perfil</a>
-                          <!--
-                          <button class="btn btn-primary">Follow</button>
-                          <button class="btn btn-outline-primary">Message</button>
-                          -->
+                       
                         </div>
                       </div>
                     </div>
                   </div>
                   <div class="card mt-3">
-                    <ul class="list-group list-group-flush">
+                    <ul class="list-group list-group-flush menu">
                       <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                        <!-- <a href="/perfil/atendimento"> -->
+                        
+                    
+
                         <a href="http://agendamento.saocarlos.sp.gov.br/agendamentoFesc.php">
                             <h6 class="mb-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-globe mr-2 icon-inline"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
@@ -203,20 +201,7 @@
                             </h6>
                         </a>
                       </li>
-                      
-                      <!--<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                        <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter mr-2 icon-inline text-info"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>Twitter</h6>
-                        <span class="text-secondary">@bootdey</span>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                        <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-instagram mr-2 icon-inline text-danger"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>Instagram</h6>
-                        <span class="text-secondary">bootdey</span>
-                      </li>
-                      <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                        <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-facebook mr-2 icon-inline text-primary"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>Facebook</h6>
-                        <span class="text-secondary">bootdey</span>
-                      </li>
-                    -->
+                    
                     </ul>
                   </div>
                 </div>

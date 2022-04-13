@@ -17,7 +17,7 @@ class PerfilAuthController extends Controller
     public function validaCPF($cpf) { 
         // Extrai somente os números
         $cpf = preg_replace( '/[^0-9]/is', '', $cpf );
-         
+                         
         // Verifica se foi informado todos os digitos corretamente
         if (strlen($cpf) != 11) {
             return false;
@@ -69,43 +69,43 @@ class PerfilAuthController extends Controller
 
 
     }
+    
 
-    public function autenticaCPF($cpf, Request $r){
+    public function autenticaCPF(Request $r){
+        $numcpf= preg_replace("/[^0-9]/", "", $r->cpf);
         if(session('login_tries')!=null && session('login_tries')>4)
             return redirect()->back()->withErrors(['Excesso de tentivas. Retorne mais tarde.']);
-        if(!is_numeric($cpf))
+      
+        if(!$this->validaCPF($numcpf))
             return redirect()->back()->withErrors(['CPF inválido']);
-        elseif(!$this->validaCPF($cpf))
-            return redirect()->back()->withErrors(['CPF inválido']);
+
+        $pessoa = PessoaDadosGerais::where('dado',3)->where('valor',$numcpf)->first();
+        if($pessoa == null)
+            return redirect('/perfil/cadastrar-pessoa/')->with('cpf',$numcpf);
         else{
-            $cpf = PessoaDadosGerais::where('dado',3)->where('valor',$cpf)->first();
-            if($cpf->pessoa == null)
-                return redirect('/perfil/cadastro');
-            else
-                $senha = PessoaDadosGerais::where('dado',26)->where('pessoa',$cpf->pessoa)->first();
+            $senha = PessoaDadosGerais::where('dado',26)->where('pessoa',$pessoa->pessoa)->first();
+            if($senha == null)
+                return view('perfil.cadastra-senha')->with('pessoa',$pessoa->pessoa);
+            else{
+                if(Hash::check($r->senha,$senha->valor)){
+                    session(['pessoa_perfil' => $senha->pessoa]);
+                    session(['login_tries'=>0]);
+                    return redirect('/perfil');
+                }
+                else{
+                    if(session('login_tries')!=null){
+                        $tentativas = session('login_tries');
+                        $tentativas++;
+                        session(['login_tries'=>$tentativas]);
+                        unset($tentativas);
+                       
+                    }
+                    else
+                        session(['login_tries'=>1]);
+                    return redirect()->back()->withErrors(['Senha incorreta. Tentativa '.session('login_tries').'/5']);
+                }
+            }    
         }
-        if(Hash::check($r->senha,$senha->valor)){
-            session(['pessoa_perfil' => $senha->pessoa]);
-            return redirect('/perfil');
-        }
-        else{
-            if(session('login_tries')!=null){
-                $tentativas = session('login_tries');
-                $tentativas++;
-                session(['login_tries'=>$tentativas]);
-                unset($tentativas);
-               
-            }
-            else
-                session(['login_tries'=>1]);
-            return redirect()->back()->withErrors(['Senha incorreta. Tentativa '.session('login_tries').'/5']);
-        }
-        
-
-        
-        
-
-
     }
 
 
@@ -113,42 +113,38 @@ class PerfilAuthController extends Controller
 
     public function cadastrarSenha(Request $r){
         if(!is_numeric($r->pessoa) || $r->pessoa ==0){
-            return redirect()->back()->withErrors(['Problemas na identificação da pessoa']);
+            return redirect()->back()->withErrors(['Problemas na identificação da pessoa: id inválido']);
         }
         $pessoa = Pessoa::find($r->pessoa);
         if($pessoa->id == null)
             return redirect()->back()->withErrors(['Problemas na identificação da pessoa']);
-
         $rg = PessoaDadosGerais::where('pessoa',$pessoa->id)->where('dado',4)->orderBy('id','desc')->first();
         $email = PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',1)->first();
         $nome = explode(' ',$pessoa->nome_simples);
         $nome = strtolower($nome[0]);
-
-        if($r->senha != $r->contrasenha)
+        $nome_informado = explode(' ',$r->nome);
+        if($r->senha <> $r->contrasenha)
             return redirect()->back()->withErrors(['Os dois campos de senha dever ser iguais.']);
+        if($rg->valor <> preg_replace("/[^0-9]/", "", $r->rg))
+            return redirect()->back()->withErrors(['Numero de RG não corresponde ao dado informado.']);
+        if($nome <> strtolower($nome_informado[0]))
+            return redirect()->back()->withErrors(['Nome não corresponde ao dado informado.']);  
         
-        if($rg->valor == $r->rg && $nome == strtolower($r->nome)){
-            $dado = new PessoaDadosGerais;
-            $dado->pessoa = $r->pessoa;
-            $dado->dado = 26;
-            $dado->valor = Hash::make($r->senha);
-            $dado->save();
-        }
-
-        if($email == null || $email->valor != $r->email){
+        $dado = new PessoaDadosGerais;
+        $dado->pessoa = $r->pessoa;
+        $dado->dado = 26;
+        $dado->valor = Hash::make($r->senha);
+        $dado->save();
+        
+        if($email == null || $email->valor <> $r->email){
             $dado = new PessoaDadosContato;
             $dado->pessoa = $r->pessoa;
             $dado->dado = 1;
             $dado->valor = $r->email;
             $dado->save();
-
         }
-
-
         session(['pessoa_perfil'=>$r->pessoa]);
-        return redirect('/perfil');
-
-           
+        return redirect('/perfil');       
     }
 
 
@@ -177,7 +173,7 @@ class PerfilAuthController extends Controller
             $message->to($email->valor);
             $message->subject('Redefinição de senha do perfil');
             });
-        return view('perfil.recovery')->with('email',$email->valor);
+        return view('perfil.recovery')->with('email',substr_replace( $email->valor, '*****', 1, strpos( $email->valor, '@') - 2));
         
 
 

@@ -1,123 +1,154 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Perfil Pessoal</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+<!doctype html>
+<html lang="br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{asset('fonts/icomoon/style.css')}}">
+    <link rel="stylesheet" href="{{asset('css/owl.carousel.min.css')}}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
+    <!-- Style -->
+    <link rel="stylesheet" href="{{asset('css/login_perfil.css')}}">
     <style>
-        body, .row{
-            background-color:WhiteSmoke;
+        .title{
+            color:black;
         }
-        h1 {margin-top:2rem;
-            font-size:14pt;
-            font-weight: bold;}
-        .description{
-            margin-top:2rem;
-            font-size:12pt;
+        #error{
+          display: none;
         }
-        .form{
-            margin-top:2rem;
-        }
-        .button{
-            margin-top:.1rem;
-        }
-        .container-fluid{
-            margin-top:5rem;
-            background-color:white;
-        
-            
-        }
-        .col-md-8{
-            background-color:white;
-            -webkit-box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.38);
-            -moz-box-shadow:    1px 1px 5px 0px rgba(50, 50, 50, 0.38);
-            box-shadow:         1px 1px 5px 0px rgba(50, 50, 50, 0.38);
-            
-        }
-        
-        
-        
-        
+        .top{
+          margin-top:2rem;
+        }   
     </style>
-    <script>
-        function ValidaCPF(){
+    <title>Login Perfil FESC</title>
+  </head>
+  <body>
+  <div class="d-lg-flex half">
+    <div class="bg order-1 order-md-2" style="background-image: url('{{asset('img/fesc_high.jpg')}}');"></div>
+    <div class="contents order-2 order-md-1">
+      <div class="container">
+        <div class="row  justify-content-center"> 
+          <div class="col-md-7 top">
+            <h3>Login em <strong>PefilFESC</strong></h3>
+            <p class="mb-4"> Nesta área você poderá alterar seus dados, fazer consultas de faltas, emitir certificados, cadastrar atestados, realizar matrículas, rematrículas e cadastrar seu currículo para parcerias.</p>
+            <p class="mb-4">Para iniciar seu acesso entre com seu CPF, mesmo que ainda não tenha cadastro.</p>           
+            <div id="error"  class="alert alert-danger hide" role="alert" >
+              <strong>Falha</strong>: <span id="error_msg">CPF inválido.</span>
+            </div>
+            @if($errors->any())
+              @foreach($errors->all() as $erro)
+                <div class="alert alert-danger" >
+                  <button type="button" class="close" data-dismiss="alert" >×</button>       
+                  <p class="text-secondary"> {{$erro}}</p>
+                </div>
+              @endforeach
+            @endif
+            <form action="/perfil/autentica" onsubmit="return false;" method="get">
+              <div class="form-group first">
+                <label for="username">CPF</label>
+                <input type="text" class="form-control"  name="cpf" id="cpf" title="Preencha para acessar ou cadastrar" required>
+              </div>
+              <br>
+              <input type="submit" value="Avançar" class="btn btn-block btn-primary" onclick="ValidaCPF();">
+              <input type="reset" value="Limpar" class="btn btn-block btn-secondary">
+              @csrf
+            </form>
+          </div>
+        </div>
+      </div>
+    </div> 
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" ></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+  <script>
+    $(function() {
+      $(document).on('click', '.close', function() {
+          $(this).parent().hide('slow');
+      })
+    });
+      $(function() {
+
+            $('.btn-link[aria-expanded="true"]').closest('.accordion-item').addClass('active');
+            $('.collapse').on('show.bs.collapse', function () {
+            $(this).closest('.accordion-item').addClass('active');
+            });
+
+            $('.collapse').on('hidden.bs.collapse', function () {
+            $(this).closest('.accordion-item').removeClass('active');
+            });
+});
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+function ValidaCPF(x){
+           if(getCookie('we-love-cookies') != 1){
+            $('#error_msg').html('É necessário aceitar a utilização de cookies clicando em "aceito" na barra abaixo.');
+            $('#error').show('slow');
+            setTimeout(function() {
+                $("#error").hide("slow", function(){
+                    console.log('cookie error')
+                });				
+                }, 9000);			
+            return false;
+           }
             
             numero = document.getElementById("cpf").value;
+            numero = numero.replace(/\D/g,'');
             
-            if(numero.length<9 || numero.length>11 || numero=='11111111111'){
-                alert("CPF Inválido");
+            if(numero.length<9 || numero.length>11){
+                $('#error_msg').html('Erro de CPF')
+                $('#error').show('slow');
+                document.getElementById("cpf").focus();                
+                		
+                setTimeout(function() {
+                $(".alert").hide("slow", function(){
+                    console.log('cpf lenght error')
+                });				
+                }, 2000);			
+    
                 return false;
             }
-            else{
-                window.location.href = '/perfil/autentica/'+numero;
-                //document.forms[0].submit();
-
+            for(i=0;i<10;i++){               
+              if(numero == ''+i+i+i+i+i+i+i+i+i+i+i){
+                $('#error').show('slow');
+                document.getElementById("cpf").focus();                
+                		
+                setTimeout(function() {
+                  $(".alert").hide("slow", function(){
+                      console.log('cpf repetition')
+                  });				
+                }, 2000);	
+                return false;
+              }
             }
-
-
-            
-            //
+            window.location.href = '/perfil/autentica/'+numero;
         }
-            
-       
-    </script>
-</head>
-<body>
-    <div class="container-fluid">
-        <div class="row justify-content-md-center" >
-            <div class="col-md-8">
-                <p class="text-center" >
-                    <img src="{{asset('/img/matriculas_2021_01.jpg')}}" width="450rem">
-                </p>
-                <noscript>
-                    <!-- referência a arquivo externo -->
-                    <div class="alert alert-danger"> Ative o javascript ou acesse o site de outro navegador.</div>
-                </noscript>
-                <p class="description">
-                    Bem-vindo! <br>
-                    Esta área é dedicada à alunos, parceiros e colaboradores.<br>
-                    Nela você poderá alterar seus dados, fazer consultas de faltas, emitir certificados, realizar matrículas, rematrículas e cadastrar seu currículo para parcerias.<br>
-                </p>
-                <p>
-                    Caso desejar visualizar a lista de vagas disponíveis, <a href="https://vagas.fesc.com.br" target="_blank">clique aqui.</a>
-                </p>
-                @if($errors->any())
-                    @foreach($errors->all() as $erro)
-                        <div class="alert alert-danger" onload="console.log('pau')">
-                                <button type="button" class="close" data-dismiss="alert" >×</button>       
-                                <p class="modal-title"><i class="fa fa-warning"></i> {{$erro}}</p>
-                        </div>
-                    @endforeach
-                @endif
-                <form method="GET" action="/rematricula/autentica" onsubmit="return false;">
-                <div class="row">
-                    <div class="col-sm-5">
-                        <label for="RegraValida">Para começar, digite seu CPF. <br><small>(somente números)</small></label>
-                        <input type="number" class="form-control form-control-sm" name="cpf" id="cpf" maxlength="11" max-size="11">
-                    </div>
-                    
-                    <div class="col-sm-7 align-self-end"><button onclick="ValidaCPF();" class="btn btn-info"> Continuar</button></div>
-                </div>
-                    
-                    
-                
-
-                    
-                    </form>
-                <p>&nbsp;</p>
-               
-            
-
-            </div>
-        </div>     
-    </div>
-        
-   
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
-</body>
-
+  
+  </script>
+  <script type="text/javascript" id="cookieinfo"
+      data-message="Nós usamos cookies e outras tecnologias semelhantes. Você aceita a utilização destes recursos?"
+      data-linkmsg=""
+      data-bg="#fb771a"
+      data-fg="#FFF"
+      data-divlink="#000"
+      data-close-text="Aceito" 
+      data-divlinkbg="#ffffff"
+      src="{{asset('/js/cookies.js')}}">
+</script>
+  </body>
 </html>

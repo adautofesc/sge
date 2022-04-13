@@ -1,116 +1,112 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Perfil Pessoal</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+<!doctype html>
+<html lang="br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="{{asset('fonts/icomoon/style.css')}}">
+    <link rel="stylesheet" href="{{asset('css/owl.carousel.min.css')}}">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
+    <!-- Style -->
+    <link rel="stylesheet" href="{{asset('css/login_perfil.css')}}">
     <style>
-        body, .row{
-            background-color:WhiteSmoke;
+        .title{
+            color:black;
         }
-        h1 {margin-top:2rem;
-            font-size:14pt;
-            font-weight: bold;}
-        .description{
-            margin-top:2rem;
-            font-size:12pt;
+        #error{
+          display: none;
         }
-        .form{
-            margin-top:2rem;
+        .top{
+          margin-top:2rem;
         }
-        .button{
-            margin-top:.1rem;
-        }
-        .container-fluid{
-            margin-top:5rem;
-            background-color:white;
-        
-            
-        }
-        .col-md-5{
-            background-color:white;
-            -webkit-box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.38);
-            -moz-box-shadow:    1px 1px 5px 0px rgba(50, 50, 50, 0.38);
-            box-shadow:         1px 1px 5px 0px rgba(50, 50, 50, 0.38);
-            
-        }
-        
-        
-        
         
     </style>
-   
-</head>
-<body>
-    <div class="container-fluid">
-        <div class="row justify-content-md-center" >
-            <div class="col-md-5">
-                <h1>
-                <img src="{{asset('img/chave.svg')}}" width="24px" alt="icone de chave">
-                    Perfil FESC
-                </h1>
-                <noscript>
-                    <!-- referência a arquivo externo -->
-                    <div class="alert alert-danger"> Ative o javascript ou acesse o site de outro navegador.</div>
-                </noscript>
-                <p class="description">
-                  
-                    Agora complete os dados abaixo para cadastrar uma senha de acesso.
 
-                </p>
-                @if($errors->any())
-                    @foreach($errors->all() as $erro)
-                        <div class="alert alert-danger" onload="console.log('erro:{{$erro}}')">
-                                <button type="button" class="close" data-dismiss="alert" >×</button>       
-                                <p class="modal-title"><i class="fa fa-warning"></i> {{$erro}}</p>
-                        </div>
-                    @endforeach
-                @endif
+    <title>Login Perfil FESC</title>
+  </head>
+  <body>
+  
 
-                <form method="POST" action="/perfil/cadastrar-senha">
-                    
-                    <div class="col-md-7 form-group form">
-                        <label for="nome">Qual seu primeiro nome?</label>
-                        <input type="text" class="form-control form-control-sm" name="nome"  maxlength="11" max-size="11" required>
-                    </div>
-                    <div class="col-md-7 form-group form">
-                        <label for="rg">Qual seu RG? <small>Somente números</small></label>
-                        <input type="number" class="form-control form-control-sm" name="rg"  maxlength="11" max-size="11" required>
-                    </div>
-                    <div class="col-md-7 form-group form">
-                        <label for="rg">Qual seu e-mail? </label>
-                        <input type="email" class="form-control form-control-sm" name="email"  maxlength="150" max-size="150" required>
-                    </div>
-                    <div class="col-md-7 form-group form">
-                        <label for="senha">Agora digite uma senha. <small>De 6 a 20 caracteres</small> </label>
-                        <input type="password" class="form-control form-control-sm" name="senha"  minlength="6" maxlength="20" max-size="20" required>
-                    </div>
-                    <div class="col-md-7 form-group form">
-                        <label for="contrasenha">Confirme sua senha. </label>
-                        <input type="password" class="form-control form-control-sm" name="contrasenha" minlength="6" maxlength="20" max-size="20" required>
-                    </div>
-                    <input type="hidden" name="pessoa" value="{{$pessoa}}"/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    <button class="btn btn-info" type="submit" name="btn" value="1">Continuar</button> 
-					<button type="reset" name="btn"  class="btn btn-secondary">Limpar</button>
-                	<button type="cancel" name="btn" class="btn btn-secondary" onclick="history.back(-2);return false;">Cancelar</button>
-                    @csrf
-                </form>
-                <p>
-                &nbsp;
-                </p>
+  <div class="d-lg-flex half">
+    <div class="bg order-1 order-md-2" style="background-image: url('{{asset('img/fesc_high.jpg')}}');"></div>
+    <div class="contents order-2 order-md-1">
+
+      <div class="container">
+        <div class="row  justify-content-center">
+           
+          <div class="col-md-7 top">
+            <h3>Login em <strong>PefilFESC</strong></h3>
+            <p class="mb-4"> Cadastre uma senha para completar seu acesso.</p>
+            @if($errors->any())
+            @foreach($errors->all() as $erro)
+                <div class="alert alert-danger" >
+                        <button type="button" class="close" data-dismiss="alert" >×</button>       
+                        <p class="text-secondary"> {{$erro}}</p>
+                </div>
+            @endforeach
+        @endif
+            <form method="POST" action="/perfil/cadastrar-senha">
+              <div class="form-group first">
+                <label for="username">Primeiro nome</label>
+                <input type="text" class="form-control"  name="nome"  maxlength="11" max-size="11" required>
+              </div>
+              <div class="form-group first">
+                <label for="username">RG</label>
+                <input type="text" class="form-control" name="rg"  maxlength="14" max-size="14" required>
+              </div>
+              <div class="form-group first">
+                <label for="username">E-mail</label>
+                <input type="email" class="form-control" name="email"  maxlength="150" max-size="150" required>
+              </div>
+
+              <div class="form-group last mb-3">
+                <label for="password">Senha</label>
+                <input type="password" class="form-control" name="senha"  minlength="6" maxlength="20" max-size="20" required >
+              </div>
+
+              <div class="form-group last mb-3">
+                <label for="password">Confirme sua senha</label>
+                <input type="password" class="form-control"  name="contrasenha" minlength="6" maxlength="20" max-size="20" required >
+              </div>
+              
             
+            
+              <br>
+              <input type="hidden" name="pessoa" value="{{$pessoa}}"/>
+              <input type="submit" value="Cadastrar" class="btn btn-block btn-primary" id="submit">
+              <input type="reset" value="Limpar" class="btn btn-block btn-secondary">
+              
 
-            </div>
-        </div>     
+              @csrf
+
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
-        
-   
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
-</body>
 
+    
+  </div>
+    
+    
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" ></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+ <script>
+   $('#submit').on('click',function (){
+     document.preventDefault();
+     let senha = $('input[name=senha]').val();
+     console.log(senha);
+     
+
+   });
+
+ </script>
+  </body>
 </html>

@@ -51,4 +51,5 @@ class Inscricao extends Model
 		return true;
 	}
 
+
 }

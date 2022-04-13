@@ -1,242 +1,218 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Perfil Pessoal</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+<!doctype html>
+<html lang="br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="{{asset('fonts/icomoon/style.css')}}">
+    <link rel="stylesheet" href="{{asset('css/owl.carousel.min.css')}}">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
+    <!-- Style -->
+    <link rel="stylesheet" href="{{asset('css/login_perfil.css')}}">
     <style>
-        body, .smoke {
-            background-color:WhiteSmoke;
+        .title{
+            color:black;
         }
-        h1 {margin-top:2rem;
-            font-size:14pt;
-            font-weight: bold;}
-        .description{
-            margin-top:2rem;
-            font-size:12pt;
+        body{
+          background-color: #f6f7fc;
         }
-        .form{
-            margin-top:2rem;
-        }
-        .button{
-            margin-top:.1rem;
-        }
-        .container-fluid{
-            margin-top:5rem;
-            background-color:white;
-        
-            
-        }
-        .col-md-5{
-            background-color:white;
-            -webkit-box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.38);
-            -moz-box-shadow:    1px 1px 5px 0px rgba(50, 50, 50, 0.38);
-            box-shadow:         1px 1px 5px 0px rgba(50, 50, 50, 0.38);
-            
+        .top{
+          margin-top:2rem;
         }
         
-        
-        
+        .fixo{
+          position : fixed;
+        }
         
     </style>
-   
-</head>
-<body>
-    <div class="container-fluid">
-        <div class="row justify-content-md-center smoke" >
-            <div class="col-md-5">
-                <h1>
-                <img src="{{asset('img/chave.svg')}}" width="24px" alt="icone de chave">
-                    Cadastro Perfil FESC
-                </h1>
-                <noscript>
-                    <!-- referência a arquivo externo -->
-                    <div class="alert alert-danger"> Ative o javascript ou acesse o site de outro navegador.</div>
-                </noscript>
-                <p class="description">
-                  
-                    Cadastre-se para matrículas, rematrículas, parcerias e consultas diversas.
 
-                </p>
-                @if($errors->any())
-                    @foreach($errors->all() as $erro)
-                        <div class="alert alert-danger" onload="console.log('erro:{{$erro}}')">
-                                <button type="button" class="close" data-dismiss="alert" >×</button>       
-                                <p class="modal-title"><i class="fa fa-warning"></i> {{$erro}}</p>
-                        </div>
-                    @endforeach
-                @endif
+    <title>Login Perfil FESC</title>
+  </head>
+  <body>
+  
 
-                <form method="POST" id="cadastro" action="/perfil/cadastrar-pessoa/{{$cpf}}" onsubmit="event.preventDefault(); return valida()">
-                    
-                    <div class="form-group row"> 
-                        <label class="col-sm-2 form-control-label text-xs-right">Nome/social</label>
-                        <div class="col-sm-10"> 
-                            <input type="text" class="form-control boxed" placeholder="Preencha o nome completo, sem abreviações." name="nome" required> 
-                        </div>
-                    </div>
-                    
-                    <div class="form-group row">
-                        
-                        <label class="col-sm-2 form-control-label text-xs-right">Nascimento</label>
-                        <div class="col-sm-3">
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
-                                <input type="date" class="form-control boxed" placeholder="dd/mm/aaaa" name="nascimento" required> 
-                            </div>
-                        </div>
-                        <label class="col-sm-2 form-control-label text-xs-right">Celular</label>
-                        <div class="col-sm-3"> 
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-phone"></i></span> 
-                                <input type="tel" class="form-control boxed" placeholder="Somente numeros" name="telefone" minlength="11" maxlength="11"> 
-                            </div>
-                        </div>
-                    </div>
-                        
-                    
-                    <div class="form-group row"> 
-                        <label class="col-sm-2 form-control-label text-xs-right">Gênero</label>
-                        <div class="col-sm-10"> 
-                            <label>
-                                <input class="radio" name="genero" type="radio" value="M" required>
-                                <span>Masculino</span>
-                            </label>
-                            <label>
-                                <input class="radio" name="genero" type="radio" value="F" >
-                                <span>Feminino</span>
-                            </label>
-                        
-                            <label>
-                                <input class="radio" name="genero" type="radio" value="Z" >
-                                <span>Não informarei</span>
-                            </label>
-                        </div>
-                    </div>
+  <div class="d-lg-flex half">
+    <div class="bg order-1 order-md-2 " style="background-image: url('{{asset('img/fesc_high.jpg')}}');"></div>
+    <div class="contents order-2 order-md-1">
 
-                    <div class="form-group row"> 
-                        <label class="col-sm-2 form-control-label text-xs-right">RG </label>
-                        <div class="col-sm-3"> 
-                            <input type="number" class="form-control boxed" placeholder="Somente numeros" name="rg" required> 
-                        </div>
-                        <label class="col-sm-2 form-control-label text-xs-right">CPF* <small title="Caso não tiver CPF o responsável legal deverá ser cadastrado"><i class="fa fa-info-circle"></i></small></label>
-                        <div class="col-sm-3"> 
-                            <input type="number" class="form-control boxed" placeholder="Somente numeros" name="cpf" value="{{$cpf}}" readonly="true" required>
-                        </div>
-                        
-                        
-                    </div> 
-                    <div class="form-group row">
-                        <label class="col-sm-2 form-control-label text-xs-right">E-mail </label>
-                        <div class="col-sm-4"> 
-                            <input type="email" class="form-control boxed" name="email" required> 
-                        </div>
-
-                        <label class="col-sm-2 form-control-label text-xs-right" >CEP</label>
-                        <div class="col-sm-4"> 
-                            <input type="text" class="form-control boxed" placeholder="00000-000" name="cep"  onkeyup="mycep();" required minlength="8" maxlength="9"> 
-                        </div> 
-    
-                    </div>
-                        <div class="form-group row">
-                            <label class="col-sm-2 form-control-label text-xs-right">Logradouro</label>
-                            <div class="col-sm-10"> 
-                                <input type="text" class="form-control boxed" placeholder="Rua, avenida, etc" name="rua" required> 
-                            </div>  
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-2 form-control-label text-xs-right">Número</label>
-                            <div class="col-sm-2"> 
-                                <input type="text" class="form-control boxed" placeholder="" name="numero_endereco" required> 
-                            </div>  
-                            <label class="col-sm-2 form-control-label text-xs-right">Complemento</label>
-                            <div class="col-sm-2"> 
-                                <input type="text" class="form-control boxed" placeholder="" name="complemento_endereco"> 
-                            </div> 
-                            
-        
-                            <label class="col-sm-1 form-control-label text-xs-right">Bairro</label>
-                            <div class="col-sm-3"> 
-                                <input id="bairro" type="text" class="form-control boxed"  name="bairro_str" required> 
-                                
-                            </div> 
-                             
-                           
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-2 form-control-label text-xs-right">Cidade</label>
-                            <div class="col-sm-4"> 
-                                <input type="text" class="form-control boxed" placeholder="" name="cidade" value="São Carlos"> 
-                            </div>  
-                            <label class="col-sm-2 form-control-label text-xs-right">Estado</label>
-                            <div class="col-sm-4"> 
-                                <select  class="form-control boxed"  name="estado" required> 
-                                    <option value="AC">Acre</option>
-                                    <option value="AL">Alagoas</option>
-                                    <option value="AP">Amapá</option>
-                                    <option value="AM">Amazonas</option>
-                                    <option value="BA">Bahia</option>
-                                    <option value="CE">Ceará</option>
-                                    <option value="DF">Distrito Federal</option>
-                                    <option value="ES">Espirito Santo</option>
-                                    <option value="GO">Goiás</option>
-                                    <option value="MA">Maranhão</option>
-                                    <option value="MS">Mato Grosso do Sul</option>
-                                    <option value="MT">Mato Grosso</option>
-                                    <option value="MG">Minas Gerais</option>
-                                    <option value="PA">Pará</option>
-                                    <option value="PB">Paraíba</option>
-                                    <option value="PR">Paraná</option>
-                                    <option value="PE">Pernambuco</option>
-                                    <option value="PI">Piauí</option>
-                                    <option value="RJ">Rio de Janeiro</option>
-                                    <option value="RN">Rio Grande do Norte</option>
-                                    <option value="RS">Rio Grande do Sul</option>
-                                    <option value="RO">Rondônia</option>
-                                    <option value="RR">Roraima</option>
-                                    <option value="SC">Santa Catarina</option>
-                                    <option value="SP" selected="selected">São Paulo</option>
-                                    <option value="SE">Sergipe</option>
-                                    <option value="TO">Tocantins</option>
-                                </select>
-                            </div>  
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-2 form-control-label text-xs-right">Senha </label>
-                            <div class="col-sm-4"> 
-                                <input type="password" class="form-control boxed" placeholder="Pelo menos 6 caracteres" name="senha" minlength="6" required> 
-                            </div>
-    
-                            <label class="col-sm-2 form-control-label text-xs-right" >Redigite a senha</label>
-                            <div class="col-sm-4"> 
-                                <input type="password" class="form-control boxed"  name="contrasenha" minlength="6" required > 
-                            </div> 
-        
-                        </div>
-                    
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    <button class="btn btn-info" type="submit" name="btn" value="1">Continuar</button> 
-					<button type="reset" name="btn"  class="btn btn-secondary">Limpar</button>
-                	<button type="cancel" name="btn" class="btn btn-secondary" onclick="history.back(-2);return false;">Cancelar</button>
-                    @csrf
-                </form>
-                <p>
-                &nbsp;
-                </p>
+      <div class="container">
+        <div class="row top justify-content-center">
+           
+          <div class="col-md-7">
             
-
+            <h3>Cadastro <strong>PefilFESC</strong></h3>
+            <p class="mb-4"> Cadastre-se para matrículas, rematrículas, parcerias e consultas diversas.</p>
+            @if($errors->any())
+            @foreach($errors->all() as $erro)
+                <div class="alert alert-danger" >
+                        <button type="button" class="close" data-dismiss="alert" >×</button>       
+                        <p class="text-secondary"> {{$erro}}</p>
+                </div>
+            @endforeach
+        @endif
+        <form method="POST" id="cadastro" action="/perfil/cadastrar-pessoa/{{$cpf}}" onsubmit="event.preventDefault(); return valida()">
+            
+          <div class="form-group first"> 
+                <label >Nome/social</label>
+                <input type="text" class="form-control" placeholder="Preencha o nome completo, sem abreviações." name="nome" required> 
             </div>
-        </div>     
-    </div>
-        
+
+            <div class="form-group first"> 
+              <label >Genero</label><br>
+              <div class="form-control">
+              <label >
+                <input class="radio" name="genero" type="radio" value="M" required>
+                <span>Masculino</span>&nbsp;
+            </label>
+            <label>
+                <input class="radio" name="genero" type="radio" value="F" >
+                <span>Feminino</span>&nbsp;
+            </label>     
+            <label>
+                <input class="radio" name="genero" type="radio" value="Z" >
+                <span>Não Binário</span>
+            </label>  </div>
+            </div> 
+
+            <div class="form-group first"> 
+              <label >Nascimento</label>
+              <input type="date" class="form-control boxed" placeholder="dd/mm/aaaa" name="nascimento" required> 
+            </div>
+            <div class="form-group first"> 
+              <label >Celular</label>
+              <input type="tel" class="form-control boxed" placeholder="Somente numeros" name="telefone" minlength="11" maxlength="11">  
+            </div>
+          
+            
+            <div class="form-group first"> 
+              <label >RG</label>
+              <input type="text" class="form-control boxed"  name="rg" maxlength="10" required>   
+            </div>
+            <div class="form-group first"> 
+              <label >CPF</label>
+              <input type="text" class="form-control boxed"  name="cpf" value="{{$cpf}}" readonly="true" maxlength="14" required>
    
-    <script src="{{asset('/js/vendor.js')}}"></script>
-    <script src="{{asset('/js/app.js')}} "></script>  
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
-    <script>
+            </div>
+            <div class="form-group first"> 
+              <label >E-Mail</label>
+              <input type="email" class="form-control boxed" name="email" required> 
+   
+            </div>
+            <div class="form-group first"> 
+              <label >CEP</label>
+              <input type="text" class="form-control boxed" placeholder="00000-000" name="cep"  onkeyup="mycep();" required minlength="8" maxlength="9">
+   
+            </div>
+            <div class="form-group first"> 
+              <label >Logradouro</label>
+              <input type="text" class="form-control boxed" placeholder="Rua, avenida, etc" name="rua" required> 
+   
+            </div>
+            <div class="form-group first"> 
+              <label >Numero</label>
+              <input type="text" class="form-control " placeholder="Número" name="numero_endereco" maxlenght="4" required>  
+            </div>
+            <div class="form-group first"> 
+              <label >Complemento</label>
+              <input type="text" class="form-control boxed" placeholder="" name="complemento_endereco">   
+            </div>
+            
+            <div class="form-group first"> 
+              <label >Bairro</label>
+              <input id="bairro" type="text" class="form-control boxed"  name="bairro_str" required>
+            </div>
+
+            <div class="form-group first"> 
+              <label >Cidade</label>
+              <input type="text" class="form-control boxed" placeholder="" name="cidade" value="São Carlos"> 
+   
+            </div>
+            <div class="form-group first"> 
+              <label >Estado</label>
+              <select  class="form-control boxed"  name="estado" required> 
+                <option value="AC">Acre</option>
+                <option value="AL">Alagoas</option>
+                <option value="AP">Amapá</option>
+                <option value="AM">Amazonas</option>
+                <option value="BA">Bahia</option>
+                <option value="CE">Ceará</option>
+                <option value="DF">Distrito Federal</option>
+                <option value="ES">Espirito Santo</option>
+                <option value="GO">Goiás</option>
+                <option value="MA">Maranhão</option>
+                <option value="MS">Mato Grosso do Sul</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="PA">Pará</option>
+                <option value="PB">Paraíba</option>
+                <option value="PR">Paraná</option>
+                <option value="PE">Pernambuco</option>
+                <option value="PI">Piauí</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="RN">Rio Grande do Norte</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="RO">Rondônia</option>
+                <option value="RR">Roraima</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="SP" selected="selected">São Paulo</option>
+                <option value="SE">Sergipe</option>
+                <option value="TO">Tocantins</option>
+            </select>
+   
+            </div>
+
+              <div class="form-group last mb-3">
+                <label for="password">Senha</label>
+                <input type="password" class="form-control" name="senha" id="password" minlength="6" required>
+              </div>
+              <div class="form-group last mb-3">
+                <label for="password">Redigite a senha</label>
+                <input type="password" class="form-control" name="contrasenha" minlength="6" required>
+              </div>
+              <br>
+              <input type="submit" value="Cadastrar" class="btn btn-block btn-primary" >
+              <input type="reset" value="Limpar" class="btn btn-block btn-secondary">
+
+              
+              @csrf
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+  </div>
+    
+    
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" ></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+  <script>
+      $(function() {
+
+            $('.btn-link[aria-expanded="true"]').closest('.accordion-item').addClass('active');
+            $('.collapse').on('show.bs.collapse', function () {
+            $(this).closest('.accordion-item').addClass('active');
+            });
+
+            $('.collapse').on('hidden.bs.collapse', function () {
+            $(this).closest('.accordion-item').removeClass('active');
+            });
+
+
+
+});
+
+  </script>
+  <script>
     function mycep(){
     var cep = $('[name=cep]').val();
     $('[name=rua]').val('Carregando dados a partir do CEP...');
@@ -294,10 +270,10 @@ function valida(){
         return false;
 
     }
+
         
 }
 </script>
-
-</body>
-
+ 
+  </body>
 </html>

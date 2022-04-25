@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\AgendaAtendimento;
+use App\Pessoa;
 
 class AgendaAtendimentoController extends Controller
 {
@@ -41,7 +42,7 @@ class AgendaAtendimentoController extends Controller
 				'genero'=>'required'				
 
 			]);
-            $pessoanobd=Pessoa::where('nome', $request->nome)->where('nascimento',\Carbon\Carbon::createFromFormat('d/m/Y',$r->nascimento))->first();
+            $pessoanobd=Pessoa::where('nome', $r->nome)->where('nascimento',\Carbon\Carbon::createFromFormat('d/m/Y',$r->nascimento))->first();
             if($pessoanobd)
                 $agendamento->pessoa = $pessoanobd->id;
             else{

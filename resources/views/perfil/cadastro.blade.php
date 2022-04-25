@@ -37,7 +37,7 @@
   
 
   <div class="d-lg-flex half">
-    <div class="bg order-1 order-md-2 " style="background-image: url('{{asset('img/fesc_high.jpg')}}');"></div>
+    <div class="bg order-1 order-md-2" style="background-image: url('{{asset('img/DJI_0063.webp')}}');"></div>
     <div class="contents order-2 order-md-1">
 
       <div class="container">

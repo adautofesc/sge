@@ -40,10 +40,11 @@
                 
                 <div class="form-group col-md-3">
                      <div class="header-block header-block-search hidden-sm-down">
-                        <form method="GET">
+                        <form action="/administrativo/locais" method="GET">
+                            @csrf
                             <div class="input-group input-group-sm" style="float:right;">
                                 <input type="text" class="form-control" placeholder="Buscar..." name="buscar">
-                                <i class="input-group-addon fa fa-search" onclick="document.forms[0].submit();"></i>
+                                <i class="input-group-addon fa fa-search" onclick="document.forms[1].submit();"></i>
                             </div>
                         </form>
                     </div>

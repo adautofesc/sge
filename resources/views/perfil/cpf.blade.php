@@ -26,13 +26,13 @@
   </head>
   <body>
   <div class="d-lg-flex half">
-    <div class="bg order-1 order-md-2" style="background-image: url('{{asset('img/fesc_high.jpg')}}');"></div>
+    <div class="bg order-1 order-md-2" style="background-image: url('{{asset('img/DJI_0063.webp')}}');"></div>
     <div class="contents order-2 order-md-1">
       <div class="container">
         <div class="row  justify-content-center"> 
           <div class="col-md-7 top">
             <h3>Login em <strong>PefilFESC</strong></h3>
-            <p class="mb-4"> Nesta área você poderá alterar seus dados, fazer consultas de faltas, emitir certificados, cadastrar atestados, realizar matrículas, rematrículas e cadastrar seu currículo para parcerias.</p>
+            <p class="mb-4"> Nesta área você poderá fazer consultas, cadastrar atestados, realizar matrículas e cadastrar seu currículo para parcerias.</p>
             <p class="mb-4">Para iniciar seu acesso entre com seu CPF, mesmo que ainda não tenha cadastro.</p>           
             <div id="error"  class="alert alert-danger hide" role="alert" >
               <strong>Falha</strong>: <span id="error_msg">CPF inválido.</span>

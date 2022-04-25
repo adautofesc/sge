@@ -14,6 +14,7 @@
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\Reports\JornadaDocentes;
 use App\Http\Controllers\SalaController;
+use App\Http\Controllers\UsoLivreController;
 
 Route::get('/', 'painelController@index');
 
@@ -258,6 +259,11 @@ Route::middleware(['auth','login']) ->group(function(){
 	});
 	Route::prefix('boletos')->group(function(){
 		Route::get('/','BoletoController@painel');
+
+	});
+
+	Route::prefix('uso-livre')->group(function(){
+		Route::get('/',[UsoLivreController::class,'index']);
 
 	});
 

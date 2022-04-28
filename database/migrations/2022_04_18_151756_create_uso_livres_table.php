@@ -14,7 +14,7 @@ class CreateUsoLivresTable extends Migration
     public function up()
     {
         Schema::create('uso_livres', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->unsignedInteger('atendido');
             $table->unsignedInteger('responsavel');
             $table->unsignedInteger('sala');        

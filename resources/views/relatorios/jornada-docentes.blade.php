@@ -116,8 +116,8 @@
                     <tbody>
 						@foreach($dias as $dia)
 						<tr>
-							@if(isset($educador->jornadas{$dia}))
-							<td rowspan="{{count($educador->jornadas{$dia})+1}}">
+							@if(isset($educador->jornadas[$dia]))
+							<td rowspan="{{count($educador->jornadas[$dia])+1}}">
 							@else
 							<td rowspan="2">
 							@endif	
@@ -146,43 +146,43 @@
 							@endswitch
 							</td>						
 							<td>
-								@if(isset($educador->jornadas{$dia}))
-									{{$educador->jornadas{$dia}->first()->inicio}}
+								@if(isset($educador->jornadas[$dia]))
+									{{$educador->jornadas[$dia]->first()->inicio}}
 								@endif
 							</td>
 							<td>
-								@if(isset($educador->jornadas{$dia}))
-									{{$educador->jornadas{$dia}->first()->termino}}
+								@if(isset($educador->jornadas[$dia]))
+									{{$educador->jornadas[$dia]->first()->termino}}
 								@endif
 							</td>
 							<td>
-								@if(isset($educador->jornadas{$dia}))
-								{{$educador->jornadas{$dia}->first()->descricao}}</td>
+								@if(isset($educador->jornadas[$dia]))
+								{{$educador->jornadas[$dia]->first()->descricao}}</td>
 								@else
 								Sem atividades neste dia
 								@endif
 							</td>
 							<td>
-								@if(isset($educador->jornadas{$dia}))
-									{{$educador->jornadas{$dia}->first()->local}}
+								@if(isset($educador->jornadas[$dia]))
+									{{$educador->jornadas[$dia]->first()->local}}
 								@endif
 							</td>
 							<td>
-								@if(isset($educador->jornadas{$dia}))
-								{{floor($educador->jornadas{$dia}->first()->carga/60)}}:{{str_pad($educador->jornadas{$dia}->first()->carga%60,2,'0',STR_PAD_LEFT)}}
+								@if(isset($educador->jornadas[$dia]))
+								{{floor($educador->jornadas[$dia]->first()->carga/60)}}:{{str_pad($educador->jornadas[$dia]->first()->carga%60,2,'0',STR_PAD_LEFT)}}
 								@endif
 							</td>
 							
 						</tr>
-						@if(isset($educador->jornadas{$dia}))
-						@for($i=1;$i<count($educador->jornadas{$dia});$i++)
+						@if(isset($educador->jornadas[$dia]))
+						@for($i=1;$i<count($educador->jornadas[$dia]);$i++)
 						<tr>						
-							<td>{{$educador->jornadas{$dia}->skip($i)->take(1)->first()->inicio}}</td>
-							<td>{{$educador->jornadas{$dia}->skip($i)->take(1)->first()->termino}}</td>
-							<td>{{$educador->jornadas{$dia}->skip($i)->take(1)->first()->descricao}}</td>
-							<td>{{$educador->jornadas{$dia}->skip($i)->take(1)->first()->local}}</td>
+							<td>{{$educador->jornadas[$dia]->skip($i)->take(1)->first()->inicio}}</td>
+							<td>{{$educador->jornadas[$dia]->skip($i)->take(1)->first()->termino}}</td>
+							<td>{{$educador->jornadas[$dia]->skip($i)->take(1)->first()->descricao}}</td>
+							<td>{{$educador->jornadas[$dia]->skip($i)->take(1)->first()->local}}</td>
 							
-							<td>{{floor($educador->jornadas{$dia}->skip($i)->take(1)->first()->carga/60)}}:{{str_pad($educador->jornadas{$dia}->skip($i)->take(1)->first()->carga%60,2,'0',STR_PAD_LEFT)}}</td>
+							<td>{{floor($educador->jornadas[$dia]->skip($i)->take(1)->first()->carga/60)}}:{{str_pad($educador->jornadas[$dia]->skip($i)->take(1)->first()->carga%60,2,'0',STR_PAD_LEFT)}}</td>
 
 							
 						</tr>

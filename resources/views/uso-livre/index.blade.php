@@ -31,10 +31,10 @@
                     <table class="table table-striped table-condensed">
                     
                         <thead class="row">
-                            <th class="col-sm-1 col-xs-1"><small>Horário</small></th>
+                            <th class="col-sm-2 col-xs-2"><small>Horário</small></th>
                             <th class="col-sm-9 col-xs-9"><small>Pessoa</small></th>
 
-                            <th class="col-sm-2 col-xs-2"><small>Opções</small></th>
+                            <th class="col-sm-1 col-xs-1"><small>Opções</small></th>
                         </thead>
                     
                         <tbody>
@@ -70,9 +70,12 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-2 form-control-label text-xs-right text-secondary">Local </label>
-                            <div class="col-sm-4"> 
-                                <select name="local" class="form-control">
-                                  <option>Selecione um local</option>
+                            <div class="col-sm-10"> 
+                                <select name="local" class="form-control" placeholder="selecione">
+                                  
+                                  @foreach($locais as $local)
+                                  <option value="{{$local->id_sala}}">{{$local->local}}</option>
+                                  @endforeach
                   
                                 </select>
                             </div>
@@ -92,6 +95,23 @@
                           </div>
                         
                         </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label text-xs-right text-secondary">Atividade</label>
+                            <div class="col-sm-9"> 
+                                <select name="atividade" class="form-control" placeholder="selecione">
+                                  
+                                  
+                                  <option value="comunicação" title="Enviar e-mails, fazer chamadas ou conversar">Comunicação</option>
+                                  <option value="estudo" title="Ralizar trabalhos escolares">Estudo</option>
+                                  <option value="recreação" title="Jogar ou usar Redes sociais" selected>Recreação</option>
+                                  <option value="serviço público" title="Acessar algum serviço público - agenda Poupatempo, Detran, Gov.br">Serviço público</option>
+                                  <option value="trabalho" title="Criar currículo, pesquisar vagas de emprego ou algo relacionado a trabalho">Trabalho</option>
+                                  
+                  
+                                </select>
+                            </div>
+                          
+                          </div>
                         <div class="form-group row">
                           <div class="col-sm-9 offset-sm-2">
                             <input type="hidden" name="pessoa" id="pessoa" value="">

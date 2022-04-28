@@ -108,6 +108,8 @@ class Local extends Model
         return $eventos;
     }
 
+    
+
 
 
 }

@@ -4,6 +4,14 @@
     label{
         font-size: 10pt;
     }
+
+    .table{
+        margin-top:30px;
+        
+    }
+    .table th{
+        font-weight: 500%;
+    }
 </style>
 <div class="title-block">
     <div class="row">
@@ -15,6 +23,8 @@
 </div>
 <section class="section">
  @include('inc.errors')
+ @include('uso-livre.modal-confirma-baixa')
+ @include('uso-livre.modal-confirma-exclusao')
     <div class="row">
         <div class="col-md-6 center-block">
             <div class="card card-primary">
@@ -27,17 +37,48 @@
                 </div>
 
                 <div class="card-block">
+                    <div class="pull-right form-group">
+                        <select name="selected_items" class="form-control" onchange="lote(this.value)">
+                            <option value="0">Com os selecionados</option>
+                            <option value="concluir">Finalizar acesso</option>
+                            <option value="excluir">Excluir</option>
+                        </select>
+                    </div>
+                    <div></div>
+                    <table class="table table-striped table-condensed" >
                     
-                    <table class="table table-striped table-condensed">
-                    
-                        <thead class="row">
-                            <th class="col-sm-2 col-xs-2"><small>Horário</small></th>
-                            <th class="col-sm-9 col-xs-9"><small>Pessoa</small></th>
+                        <thead >
+                            
+                            <th><!--<input type="checkbox" id="all" class="checkbox" onclick="marcardesmarcar(this);">-->
+                                <label class="item-check">
+                                    <input type="checkbox" class="checkbox" onclick="marcardesmarcar(this);">
+                                    <span></span>
+                                </label> 
+                            </th>
+                            <th><small>Início</small></th>
+                            <th><small>Pessoa</small></th>
 
-                            <th class="col-sm-1 col-xs-1"><small>Opções</small></th>
+                            <th><small>Opções</small></th>
+                            
                         </thead>
                     
                         <tbody>
+                            @foreach($uso_livre as $item)
+                            <tr>
+                                <td>
+                                    <label class="item-check">
+                                        <input type="checkbox" class="checkbox" name="uso_livre" value="{{$item->id}}">
+                                        <span></span>
+                                    </label> 
+                                </td>
+                                <td>{{substr($item->hora_inicio,0,5)}}</td>
+                                <td>{{$item->getUsuario()}}</td>
+                                <td class="pull-right">
+                                    <a href="#" title="Terminar acesso"  data-toggle="modal" data-target="#modal-concluir-atendimento" onclick="selecionar('{{$item->id}}')"><i class="fa fa-caret-square-o-down"></i></a>&nbsp;
+                                    <a href="#" title="Excluir acesso"  data-toggle="modal" data-target="#modal-excluir-atendimento" onclick="selecionar('{{$item->id}}')"><i class="fa fa-times"></i></a>
+                                </td>
+                            </tr>
+                            @endforeach
                             
                             
                         </tbody>
@@ -60,7 +101,7 @@
                         <div class="form-group row">
                             <label class="col-sm-2 form-control-label text-xs-right text-secondary">Pessoa </label>
                             <div class="col-sm-10"> 
-                                <input type="text" class="form-control boxed" name="nome" id="search" required> 
+                                <input type="text" class="form-control boxed" name="nome" id="search" placeholder="Comece por aqui mesmo para não cadastrados" required> 
                             </div>
                         </div>
                         <div class="form-group row">
@@ -138,6 +179,7 @@
 @endsection
 @section('scripts')
 <script type="text/javascript">
+    var item = '';
 
   $(document).ready(function() 
       {
@@ -216,7 +258,43 @@
 
    });
 
+function selecionar(id){
+    item = id;
+}
+function lote(acao){
+    item='';
+    let itens =   $('input[name="uso_livre"]:checked');
+    itens.each(function(i){
+        item = item+$(this).val()+';';
+    })
+    if(itens.length>0 && item != ''){
+        if(acao == 'concluir')
+            $('#modal-concluir-atendimento').modal('show');
+        if(acao == 'excluir')
+            $('#modal-excluir-atendimento').modal('show');
+    }
+    else{
+        $('#error').html('Selecione ao menos um item');
+        $('#error').show('slow');
+        setTimeout(function() {
+            $("#error").hide("slow")		
+            }, 3000);	
+    }
+        
 
+}
+function modificarAtendimento(acao){
+    $.get("{{asset('/uso-livre/')}}/"+acao+"/"+item)
+            .done(function(data) 
+            {
+              window.location.replace('/uso-livre');
+            })
+            .fail(function(){
+                console.log('Falha ao solicitar '+acao);
+            })
+  
+
+}
 function escolhePessoa(id,nome){
     const d = new Date()
     let hora = (d.getHours()).toString();
@@ -233,6 +311,16 @@ function escolhePessoa(id,nome){
     $("#listapessoas").html("");
 
 }
+
+function marcardesmarcar(campo){
+	$("input:checkbox").each(
+		function(){
+			$(this).prop("checked", campo.checked)
+		}
+	);
+}
+
+ 
 
 function alterar(id,acao){
     if(confirm("Confirmar alteração do status do horário?")){

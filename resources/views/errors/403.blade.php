@@ -26,6 +26,11 @@
             }
     
         </script>
+        <style>
+            .btn{
+                box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+            }
+        </style>
     </head>
 
     <body>
@@ -33,19 +38,21 @@
             <article class="content">
                 <div class="error-card global">
                     <div class="error-title-block">
-                        <h1 class="error-title"><i class="fa fa-gears"></i></h1>
-                        <h2 class="error-sub-title"> Sistema em manuteção</h2>
+                        <h1 class="error-title"><i class="fa fa-ban"></i></h1>
+                        <h2 class="error-sub-title"> Sem permissão de acesso </h2>
                     </div>
                     <div class="error-container">
-                        <p>Por favor, aguarde alguns minutos e tente novamente.</p>
-                        <p><small>Error 503</small></p>
-                       
+                        <p>Para acessar esse recurso você precisa se uma autorização específica. Comunique o responsável para adquirí-la</p>
+                        <p><small>Error 403</small></p>
+                        <a class="btn btn-primary" href="javascript:history.back(-1)"> <i class="fa fa-angle-left"></i> Voltar para página anterior. </a>
                     </div>
                 </div>
             </article>
         </div>
-        <script src="{{ asset('js/vendor-min.js') }}" ></script>
-        <script src="{{ asset('js/app.js') }} "></script>
+      ]
+       
+      <script src="{{ asset('js/vendor-min.js') }}" ></script>
+      <script src="{{ asset('js/app.js') }} "></script>
     </body>
 
 </html>

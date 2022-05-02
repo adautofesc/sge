@@ -264,6 +264,9 @@ Route::middleware(['auth','login']) ->group(function(){
 
 	Route::prefix('uso-livre')->group(function(){
 		Route::get('/',[UsoLivreController::class,'index']);
+		Route::post('/',[UsoLivreController::class,'store']);
+		route::get('/concluir/{var}',[UsoLivreController::class,'concluir']);
+		route::get('/excluir/{var}',[UsoLivreController::class,'excluir']);
 
 	});
 
@@ -780,17 +783,18 @@ Route::get('renova-login','loginController@sendNewPassword');
 //----------------------------- Errors treatment
 
 Route::get('403',function(){
-   return view('error-403');
+   return view('errors.403');
 })->name('403');
 Route::get('404',function(){
-   return view('error-404');
+   return view('errors.404');
 })->name('404');
 Route::get('503',function(){
-   return view('error-503');
+   return view('errors.503');
 });
 Route::get('500',function(){
-	return view('error-500');
+	return view('errors.500');
  });
+ 
 Route::get('about',function(){
    return 'Sistema de Gestão Educacional. Todos direitos reservados';
 });

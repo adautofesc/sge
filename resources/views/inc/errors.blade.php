@@ -7,7 +7,9 @@
     @endforeach
 @endif
 
-
+<div id="error"  class="alert alert-danger hide" role="alert" style="display: none;">
+        <strong>Falha</strong>: senha inválida.
+ </div>
 
 <!-- nesse caso basta colocar ->with('success','mensagem') no código -->
 @if ($message = Session::get('success'))

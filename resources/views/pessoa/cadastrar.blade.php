@@ -51,14 +51,7 @@
                                         <input class="radio" name="genero" type="radio" value="F" >
                                         <span>Feminino</span>
                                     </label>
-                                    <label>
-                                        <input class="radio" name="genero" type="radio" value="x" >
-                                        <span>Trans Masculino</span>
-                                    </label>
-                                    <label>
-                                        <input class="radio" name="genero" type="radio" value="Y" >
-                                        <span>Trans Feminino</span>
-                                    </label>
+                            
                                     <label>
                                         <input class="radio" name="genero" type="radio" value="Z" >
                                         <span>Não Classificar</span>
@@ -69,7 +62,7 @@
                             <div class="form-group row"> 
                                 <label class="col-sm-2 form-control-label text-xs-right">Nome Registro</label>
                                 <div class="col-sm-10"> 
-                                    <input type="text" class="form-control boxed" placeholder="nome social" name="nome_social"> 
+                                    <input type="text" class="form-control boxed" placeholder="Caso preencher o nome como social" name="nome_social"> 
                                 </div>
                             </div>    
                                 

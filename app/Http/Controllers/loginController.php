@@ -397,8 +397,8 @@ class loginController extends Controller
 		if(!$pessoa)
 			return view('error-404-alt')->with(array('error'=>['id'=>'404','desc'=>'Código de pessoa não encontrado. LoginController(525) ']));
 		$recursos_usuario=ControleAcessoRecurso::where('pessoa',$id)->get();
-		$dados=RecursoSistema::all();
-		foreach($dados->all() as $recurso){
+		$dados=RecursoSistema::select('*')->orderBy('desc')->get();
+		foreach($dados as $recurso){
 			foreach($recursos_usuario as $recurso_usuario){
 				if($recurso_usuario->recurso==$recurso->id)
 					$recurso->checked='checked';

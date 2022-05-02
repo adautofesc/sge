@@ -81,6 +81,7 @@
                                     <a href="{{asset('secretaria/atender').'/'.session('pessoa_atendimento')}}"> <i class="fa fa-arrow-right"></i> Retomar atendimento</a>
                                 </li>
                                 @endif
+
                                         
                                 <li>
                                     <a href="{{route('turmas')}}"> <i class="fa fa-arrow-right"></i> Turmas </a>
@@ -88,6 +89,11 @@
                                     
                                     
                                 
+                                @endif
+                                @if(in_array('28', Auth::user()->recursos))
+                                <li  >
+                                    <a href="{{asset('/uso-livre')}}"> <i class="fa fa-desktop"></i> Uso Livre </a>
+                                </li>
                                 @endif
                                 
                             </ul>

@@ -1,5 +1,5 @@
 
-<script src="{{ asset('js/vendor-min.js') }}" ></script>
+
 
 
 
@@ -26,13 +26,13 @@
 
 -->
 
-
+<script src="{{ asset('js/vendor-min.js') }}" ></script>
 <script src="{{ asset('js/app.js') }} "></script>
 <script>
     $(document).ready(function(){			
         setTimeout(function() {
-        $(".alert").fadeOut("slow", function(){
-            $(this).alert('close');
+        $(".alert").hide("slow", function(){
+           
         });				
         }, 10000);			
     });

@@ -3,7 +3,7 @@
 
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-<link rel="stylesheet" href="{{asset('/')}}/css/vendor.css"/>
+<link rel="stylesheet" href="{{asset('/css/vendor.css')}}"/>
 <title>Cancelamento de matrícula - Fesc</title>
 <style type="text/css">
 	h5{
@@ -42,7 +42,7 @@
 		</div>
 		<div class="row" style="margin-bottom: 0;">
 			<div class="col-xs-2" tyle="margin-bottom: 0;">
-				<img src="{{asset('/')}}/img/logofesc.png" width="80"/>
+				<img src="{{asset('/img/logofesc.png')}}" width="80"/>
 			</div>
 			<div class="col-xs-6" tyle="margin-bottom: 0;">
 				<p>
@@ -168,7 +168,7 @@
 
 	</div>
 	     	
-	<script src="{{asset('/')}}/js/vendor.js">
+	<script src="{{asset('/js/vendor.js')}}">
 	</script>
 </body>
 

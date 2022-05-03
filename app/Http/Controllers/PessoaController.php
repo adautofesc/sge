@@ -34,7 +34,7 @@ class PessoaController extends Controller
 	 * @param   Int $responsavel - retorna formulario com id do dependente dessa pessoa
  	 * @return \Illuminate\Http\Response 
  	 */
-	public function create ($erros='',$sucessos='',$responsavel='')
+	public function create ($erros=[],$sucessos='',$responsavel='')
 	{
 
 		
@@ -43,7 +43,7 @@ class PessoaController extends Controller
 		{ // pede permissao para acessar o formulário
 			$bairros=DB::table('bairros_sanca')->get();          
 			$dados=['bairros'=>$bairros,'alert_danger'=>$erros,'alert_sucess'=>$sucessos,'responsavel_por'=>$responsavel];
-			return view('pessoa.cadastrar', compact('dados'));
+			return view('pessoa.cadastrar', compact('dados'))->withErrors($erros);
 
 		}
 		else

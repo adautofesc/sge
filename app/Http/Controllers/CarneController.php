@@ -288,14 +288,18 @@ class CarneController extends Controller
 			//****************geração dos boletos
 			//lista boletos já lançados dessa matrícula
 			$boletos_lancados = \App\Lancamento::leftjoin('boletos','lancamentos.boleto','=','boletos.id')
+													->whereIn('boletos.status',['pago','gravado','emitido','impresso'])
 													->where('lancamentos.matricula',$matricula->id)
 													->where('lancamentos.status', null)
 													->where('boleto','!=', null)
 													->get();
+
 			
 			//calcula quantos boletos falta gerar
 			$boletos_restantes = $matricula->getParcelas()-$boletos_lancados->count();
 			//dd($matricula->getParcelas());
+			//dd($boletos_restantes);
+			//dd($boletos_lancados);
 
 			
 
@@ -390,7 +394,31 @@ class CarneController extends Controller
 
 			$boletos_gravados = \App\Boleto::where('pessoa',$pessoa)->where('status','gravado')->get();
 
+			//dd($boletos_gravados);
+			
+
 			foreach($boletos_gravados as $boleto){
+				//seleciona boleto com lancamento da matricula com vencimento no mesmo mes
+				$boleto_lancamento = \App\Boleto::join('lancamentos','boletos.id','=','lancamentos.boleto')
+													->whereIn('boletos.status',['pago','gravado','emitido','impresso'])
+													->where('lancamentos.matricula',$matricula->id)
+													->where('lancamentos.status', null)
+													->whereMonth('boletos.vencimento','=', $primeiro_vencimento->format('m'))
+													->whereYear('boletos.vencimento','=', $primeiro_vencimento->format('Y'))
+													->get();	
+				while($boleto_lancamento->count()>0){
+					$primeiro_vencimento->modify('+1 month');
+					$boleto_lancamento = Boleto::join('lancamentos','boletos.id','=','lancamentos.boleto')
+													->whereIn('boletos.status',['pago','gravado','emitido','impresso'])
+													->where('lancamentos.matricula',$matricula->id)
+													->where('lancamentos.status', null)
+													->whereMonth('boletos.vencimento','=', $primeiro_vencimento->format('m'))
+													->whereYear('boletos.vencimento','=', $primeiro_vencimento->format('Y'))
+													->get();
+
+				}
+
+
 				if($boleto->vencimento == '0000-00-00 00:00:00'){
 					$boleto->vencimento = $primeiro_vencimento->format('Y-m-d');
 					$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$primeiro_vencimento->format('m'),$this::vencimento);
@@ -403,13 +431,11 @@ class CarneController extends Controller
 					$primeiro_vencimento->modify('+1 month');
 				}
 			
-				//seleciona boleto com lancamento da matricula com vencimento no mesmo mes
-				$boleto_lancamento = \App\Boleto::join('lancamentos','boletos.id','=','lancamentos.boleto')
-													->where('lancamentos.matricula',$matricula->id)
-													->where('lancamentos.status', null)
-													->whereMonth('boletos.vencimento','=', $primeiro_vencimento->format('m'))
-													->whereYear('boletos.vencimento','=', $primeiro_vencimento->format('Y'))
-													->get();	
+				
+
+				//dd($primeiro_vencimento);
+
+
 																				
 			
 				/******************************atribuindo */
@@ -421,10 +447,15 @@ class CarneController extends Controller
 										->where('matricula',$matricula->id)
 										->orderBy('parcela')
 										->first();
-				if(!$lancamento || $boleto_lancamento->count()>0 && $boleto->valor==0){
+
+				//dd($lancamento);
+				if(!isset($lancamento->id) && $boleto->valor==0){
 					$boleto->forceDelete();
 					continue;
-
+				}
+				if(!isset($lancamento->id)){
+					
+					continue;
 				}
 											
 				$data_util = new \App\classes\Data(\App\classes\Data::converteParaUsuario($boleto->vencimento));

@@ -32,6 +32,20 @@
         	</div>
                 
         </div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">Descontos / Pendências</label>
+            <div class="col-sm-10"> 
+            	@foreach($lancamentos as $lancamento)
+				<div>
+					<label>
+					<input class="checkbox" id="{{$lancamento->id}}" type="checkbox" name="lancamentos[]" onchange="atualizaValor({{$lancamento->id}},{{$lancamento->valor}})" value="{{$lancamento->id}}">
+					<span>{{$lancamento->referencia}}: {{' R$ '.number_format($lancamento->valor,2,',','.')}} </span>
+					</label>
+				</div>
+				@endforeach
+        	</div>
+                
+        </div>
 
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">

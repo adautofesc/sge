@@ -417,6 +417,9 @@ class LancamentoController extends Controller
 		$lancamento->boleto = $r->boleto;
 		$lancamento->valor =  str_replace(',','.',$r->valor);
 		$lancamento->save();
+		if($r->boleto>0){
+			BoletoController::atualizarValor($r->boleto);
+		}
 
 		return redirect(asset('secretaria/atender/').'/'.$lancamento->pessoa);
 
@@ -771,7 +774,7 @@ class LancamentoController extends Controller
 	 * @param  [int] $matricula [id da matrícula ]
 	 * @return [void]           
 	 */
-	public function excluirSemBoletosPorMatricula($matricula){
+	public static function excluirSemBoletosPorMatricula(int $matricula){
 		$lancamentos = Lancamento::where('matricula',$matricula)->where('boleto',null)->get();
 		foreach($lancamentos as $lancamento){
 			$lancamento->delete();

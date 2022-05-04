@@ -72,18 +72,20 @@ class BoletoController extends Controller
 		$boletos = Boleto::whereIn('id',$lancamentos)->where('vencimento', '>', date('Y-m-d H:i:s'))->get();
 		foreach($boletos as $boleto){
 			BoletoController::alterarStatus($boleto,'cancelar','matricula alterada/cancelada');
+			
 		}
+        LancamentoController::excluirSemBoletosPorMatricula($matricula->id);
 	}
 
 	public static function alterarStatus(Boleto $boleto, string $status, string $motivo = ''){
 		switch($status){
 			
 			case 'cancelar':
-				$BC = new BoletoController;
+				
 				if($motivo)
-					$BC->cancelamentoDireto($boleto->id, 'Solicitação de cancelamento motivo: '.$motivo);
+					BoletoController::cancelamentoDireto($boleto->id, 'Solicitação de cancelamento motivo: '.$motivo);
 				else
-					$BC->cancelamentoDireto($boleto->id, 'Solicitação de cancelamento pelo sistema');
+					BoletoController::cancelamentoDireto($boleto->id, 'Solicitação de cancelamento pelo sistema');
 
 			break;
 			case 'reativar':
@@ -470,14 +472,14 @@ class BoletoController extends Controller
 
 
 	public function cancelar(Request $r){
-		$this->cancelamentoDireto($r->boleto, $r->motivo.' '.$r->motivo2);
+		BoletoController::cancelamentoDireto($r->boleto, $r->motivo.' '.$r->motivo2);
 		return redirect('/secretaria/atender/');
 
 	}
 
 
 
-	public function cancelamentoDireto($id,$motivo){
+	public static function cancelamentoDireto($id,$motivo){
 		$boleto=Boleto::find($id);
 
 		if($boleto != null){
@@ -525,15 +527,16 @@ class BoletoController extends Controller
 	}
 
 	/**
-	 * Cancelar todos boletos FUTUROS
+	 * Cancelar todos boletos FUTUROS + 
 	 * @param  Request $r [POST pessoa e motivo]
 	 * @return [type]     [description]
 	 */
 	public function cancelarTodos(Request $r){
+		Boleto::where('pessoa',$r->pessoa)->where('status','gravado')->forceDelete();
 		$boletos = Boleto::where('pessoa',$r->pessoa)->where('vencimento', '>', date('Y-m-d H:i:s'))->get();
 		//dd($boletos);
 		foreach($boletos as $boleto){
-			$this->cancelamentoDireto($boleto->id,$r->motivo.$r->motivo2);
+			BoletoController::cancelamentoDireto($boleto->id,$r->motivo.$r->motivo2);
 		}
 		return redirect('/secretaria/atender/'.$r->pessoa);
 	}
@@ -627,22 +630,21 @@ class BoletoController extends Controller
 
 
 			$matriculas = \App\Matricula::where('pessoa',$pessoa)->whereIn('status',['ativa','pendente','espera'])->get();
-			//$lancamentos = Lancamento::where('pessoa',$pessoa)->where('boleto',null)->where('status',null)->get();
-			return view('financeiro.boletos.novo')->with('matriculas',$matriculas)->with('pessoa',$pessoa);
+			$lancamentos = Lancamento::where('pessoa',$pessoa)->where('boleto',null)->where('status',null)->get();
+			return view('financeiro.boletos.novo')->with('matriculas',$matriculas)->with('pessoa',$pessoa)->with('lancamentos',$lancamentos);
 
 		}
 
 
 		public function create(Request $r){
 			if($r->valor >0){
-				if(isset($r->matriculas)){
-					$boleto = new Boleto;
+				$boleto = new Boleto;
 					$boleto->vencimento = $r->vencimento;
 					$boleto->pessoa = $r->pessoa;
 					$boleto->valor = $r->valor;
 					$boleto->status = 'gravado';
 					$boleto->save();
-				
+				if(isset($r->matriculas) && count($r->matriculas)){				
 					foreach ($r->matriculas as $id_matricula){
 						$matricula = \App\Matricula::find($id_matricula);
 						if($matricula){
@@ -654,22 +656,14 @@ class BoletoController extends Controller
 							$lancamento->boleto = $boleto->id;
 							$lancamento->save();
 						}
-
-						/*
-						$lancamento_bd = Lancamento::find($lancamento);
-						if($lancamento_bd != null){
-							$lancamento_bd->boleto = $boleto->id;
-							$lancamento_bd->save();
-						}*/
-
 					}	
 				}
-				else{
-					return redirect()->back()->withErrors(['Para gerar um boleto é necessário selecionar uma matrícula.']);
-				}
-				
-				
+				if(isset($r->lancamentos) && count($r->lancamentos)){
+					$lancamentos = Lancamento::whereIn('id',$r->lancamentos)->update(['boleto'=>$boleto->id]);	
+				}		
 			}
+			else
+				return redirect()->back()->with(['danger'=>'Para gerar um boleto é necessário que o valor não seja zero.']);
 			AtendimentoController::novoAtendimento("Criação manual de boleto: ".$boleto->id, $boleto->pessoa, Auth::user()->pessoa);
 			return redirect(asset('secretaria/atender/'.$r->pessoa));
 
@@ -761,6 +755,19 @@ class BoletoController extends Controller
 
 
 		}
+
+		/**
+		 * Atualiza valor os boletos devido alguma alteração do valor dos lançamentos.
+		 *
+		 * @param integer $boleto
+		 * @return void
+		 */
+		public static function atualizarValor(int $numero_boleto){
+			$boleto = Boleto::find($numero_boleto);
+			$boleto->valor = Lancamento::where('boleto',$boleto->id)->sum('valor');
+			$boleto->save();
+
+		}
 		
 		
 		/**
@@ -798,26 +805,7 @@ class BoletoController extends Controller
 		}
 
 		
-		public function atualizarBoletosGravados(){
-			$boletos = Boleto::where('status','gravado')->get();
-			foreach($boletos as $boleto){
-				$valor=0;
-				$lancamentos1 = Lancamento::where('boleto',$boleto->id)->where('status',null)->get();
-				foreach($lancamentos1 as $lancamentox){
-					$valor+=$lancamentox->valor;
-				}
-				$lancamentos2 = Lancamento::where('pessoa',$boleto->pessoa)->where('boleto',null)->where('status',null)->get();
-				foreach($lancamentos2 as $lancamentoy){
-					$lancamentoy->boleto = $boleto->id;
-					$lancamentoy->save();
-					$valor+=$lancamentoy->valor;
-				}
-				$boleto->valor = $valor;
-				$boleto->save();
-			}
 
-			return $boletos->count()." boletos atualizados.";
-		}
 
 	
 	/**

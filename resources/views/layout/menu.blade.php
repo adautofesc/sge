@@ -49,7 +49,7 @@
                                 </li>
                                 @endif
                                 
-                                @if(in_array('24', Auth::user()->recursos))
+                                @if(in_array('14', Auth::user()->recursos))
                                 <li  >
                                     <a href="{{asset('/financeiro')}}"> <i class="fa fa-usd"></i> Financeiro </a>
                                 </li>

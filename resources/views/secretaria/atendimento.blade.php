@@ -672,7 +672,7 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white" title="O conjunto de lançamentos de cada matrícula geram os boletos.">Lançamentos (parcelas)</p>
+                        <p class="title" style="color:white" title="O conjunto de lançamentos de cada matrícula geram os boletos.">Descontos / Pendências</p>
                         &nbsp;
                         <a href="{{asset('financeiro/lancamentos/novo'.'/'.session('pessoa_atendimento'))}}" title="Gerar parcela individual" class="text-white te" style="" ><i class=" fa fa-plus-circle "></i></a>
                         &nbsp;

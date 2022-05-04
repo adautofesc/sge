@@ -462,9 +462,6 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::middleware('liberar.recurso:23')->get('cancelar-todos/{id}','BoletoController@cancelarTodosVw');
 			Route::middleware('liberar.recurso:23')->post('cancelar-todos/{id}','BoletoController@cancelarTodos');
 
-
-
-
 			Route::get('reativar/{id}','BoletoController@reativar');
 			Route::get('gerar-individual/{pessoa}','BoletoController@cadastarIndividualmente');
 			Route::get('gerar','BoletoController@gerar');

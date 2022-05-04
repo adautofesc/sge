@@ -1,15 +1,14 @@
 @extends('layout.app')
-@section('titulo')Gerador de parcelas. @endsection
+@section('titulo')Gerador de descontos/pendências. @endsection
 @section('pagina')
 <div class="title-block">
-    <h3 class="title"> Gerador de parcelas<span class="sparkline bar" data-type="bar"></span> </h3>
+    <h3 class="title"> Gerador de descontos/pendências<span class="sparkline bar" data-type="bar"></span> </h3>
 </div>
 @include('inc.errors')
 <form name="item" method="POST">
 	
     <div class="card card-block">
-		Não há mais necessidade de gerar as parcelas antes de gerar o boleto. 
-		<!--
+		
     	
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">Matricula</label>
@@ -32,7 +31,8 @@
 			</label>
 			<div class="col-sm-4"> 
 				<select class="c-select form-control boxed" name="parcela" required>
-					<option value="0">Selecione o mês</option>
+					<option value="0">Desconto / pendência</option>
+					
 					<option value="1" >Fevereiro</option>
 					<option value="2" >Março</option>
 					<option value="3" >Abril</option>
@@ -73,10 +73,10 @@
                 <button type="reset" name="btn"  class="btn btn-primary">Restaurar</button>
                 <button type="cancel" name="btn" class="btn btn-primary" onclick="history.back(-2);return false;">Cancelar</button>
 				<!-- 
-				<button type="submit" class="btn btn-primary"> Cadastrar</button> 
+				<button type="submit" class="btn btn-primary"> Cadastrar</button> -->
 				
 			</div>
-       </div>-->
+       </div>
     </div>
     {{csrf_field()}}
 </form>

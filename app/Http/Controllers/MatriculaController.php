@@ -417,7 +417,23 @@ class MatriculaController extends Controller
     }
     public function cancelarMatricula(Request $r){
         self::cancelar($r->matricula); 
-        
+         //cacelar os boletos automaticamente
+         if($r->cancelar_boletos == true){
+             BoletoController::cancelarPorMatricula($r->matricula);
+            //cancela os boletos
+            /*
+            $boleto_controller = new BoletoController;
+           $boletos = \App\Boleto::where('pessoa',$matricula->pessoa)->where('vencimento', '>', date('Y-m-d H:i:s'))->get();
+            //dd($boletos);
+            foreach($boletos as $boleto){
+                $boleto_controller->cancelamentoDireto($boleto->id,'Cancelamento de matrícula.');
+
+            }
+            //apagar lançamentos
+            $LC = new LancamentoController;
+            $LC->excluirSemBoletosPorMatricula($matricula->id);
+            */
+        }
 
         //LancamentoController::cancelamentoMatricula($id);
         if(!empty($r->cancelamento))
@@ -435,20 +451,7 @@ class MatriculaController extends Controller
         $pessoa = Pessoa::find($matricula->pessoa);
         $matricula->save();
         $insc=InscricaoController::cancelarPorMatricula($matricula->id);
-         //cacelar os boletos automaticamente
-         //if($r->cancelar_boletos == true){
-            //cancela os boletos
-            $boleto_controller = new BoletoController;
-            $boletos = \App\Boleto::where('pessoa',$matricula->pessoa)->where('vencimento', '>', date('Y-m-d H:i:s'))->get();
-            //dd($boletos);
-            foreach($boletos as $boleto){
-                $boleto_controller->cancelamentoDireto($boleto->id,'Cancelamento de matrícula.');
-
-            }
-            //apagar lançamentos
-            $LC = new LancamentoController;
-            $LC->excluirSemBoletosPorMatricula($matricula->id);
-        //}
+        
         
 
         //cancelar a bolsa se houver

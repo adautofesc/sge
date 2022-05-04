@@ -67,6 +67,14 @@ class BoletoController extends Controller
 
 	}
 
+	public static function cancelarPorMatricula(int $matricula){
+		$lancamentos = Lancamento::where('matricula',$matricula)->where('boleto','>','0')->where('status',null)->pluck('boleto')->toArray();
+		$boletos = Boleto::whereIn('id',$lancamentos)->where('vencimento', '>', date('Y-m-d H:i:s'))->get();
+		foreach($boletos as $boleto){
+			BoletoController::alterarStatus($boleto,'cancelar','matricula alterada/cancelada');
+		}
+	}
+
 	public static function alterarStatus(Boleto $boleto, string $status, string $motivo = ''){
 		switch($status){
 			

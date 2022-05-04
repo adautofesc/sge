@@ -138,7 +138,7 @@ class PerfilMatriculaController extends Controller
                 //dd(\Carbon\Carbon::createFromFormat('d/m/Y', $inscricao->turma->data_termino)->format('Y-m-d'));
                 $alternativas = \App\TurmaDados::where('turma',$inscricao->turma->id)->where('dado','proxima_turma')->get();
                 foreach($alternativas as $alternativa){
-                    $turma =\App\ Turma::find($alternativa->valor);
+                    $turma = \App\Turma::find($alternativa->valor);
                     $pacote = \App\TurmaDados::where('turma',$turma->id)->where('dado','pacote')->first();
                     if($pacote)
                         $turma->pacote = $pacote->valor;

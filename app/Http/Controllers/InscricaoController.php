@@ -297,10 +297,15 @@ class InscricaoController extends Controller
     }
 
     public function viewCancelar($id){
-
         $inscricao = Inscricao::find($id);
-        $pessoa = Pessoa::find($inscricao->pessoa->id);
-        return view('secretaria.inscricao.cancelamento')->with('pessoa',$pessoa)->with('inscricao',$inscricao);
+        $numero_inscricoes = Inscricao::where('matricula',$inscricao->matricula)->whereIn('status',['regular','pendente'])->count();
+        if ($numero_inscricoes == 1)
+            return redirect('/secretaria/matricula/cancelar/'.$inscricao->matricula);
+        else{
+            
+            $pessoa = Pessoa::find($inscricao->pessoa->id);
+            return view('secretaria.inscricao.cancelamento')->with('pessoa',$pessoa)->with('inscricao',$inscricao);
+        }
     }
 
     /**

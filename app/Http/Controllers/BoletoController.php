@@ -74,7 +74,7 @@ class BoletoController extends Controller
 			BoletoController::alterarStatus($boleto,'cancelar','matricula alterada/cancelada');
 			
 		}
-        LancamentoController::excluirSemBoletosPorMatricula($matricula->id);
+        LancamentoController::excluirSemBoletosPorMatricula($matricula);
 	}
 
 	public static function alterarStatus(Boleto $boleto, string $status, string $motivo = ''){

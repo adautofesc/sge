@@ -158,6 +158,21 @@ class TurmaController extends Controller
                 ->join('cursos', 'turmas.curso','=','cursos.id')
                 ->leftjoin('disciplinas', 'turmas.disciplina','=','disciplinas.id');
 
+        if(isset($filtros['busca'])){
+            $query = $filtros['busca'][0];
+            $turmas = $turmas
+            ->join('pessoas', 'pessoas.id', '=', 'turmas.professor')
+            ->join('programas', 'programas.id', '=', 'turmas.programa')
+            ->where(function($busca) use ($query){
+                $busca->where('cursos.nome', 'like','%'.$query.'%')
+                        ->orwhere('turmas.id', $query)
+                        ->orwhere('disciplinas.nome', 'like','%'.$query.'%')
+                        ->orwhere('pessoas.nome', 'like','%'.$query.'%')
+                        ->orwhere('programas.sigla', 'like','%'.$query.'%')
+                        ->orwhere('dias_semana', 'like','%'.$query.'%');
+            });
+        }        
+
         if(isset($filtros['programa']) && count($filtros['programa'])){
             $turmas = $turmas->whereIn('turmas.programa', $filtros['programa']); 
         }
@@ -239,6 +254,8 @@ class TurmaController extends Controller
             $turmas = $turmas->whereIn('turmas.status', ['iniciada','lancada']); 
 
         }
+
+       
     
 
         $turmas = $turmas->orderBy('cursos.nome')->orderBy('disciplinas.nome');

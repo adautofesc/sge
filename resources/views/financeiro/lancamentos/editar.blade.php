@@ -12,7 +12,7 @@
 			</label>
 			<div class="col-sm-3"> 
 				<div class="input-group">
-					<input type="text" class="form-control boxed" name="matricula" value="{{$lancamento->matricula}}" required> 
+					<input type="text" class="form-control boxed" name="matricula" value="{{$lancamento->matricula}}"> 
 				</div>
 			</div>
 		</div>
@@ -22,7 +22,7 @@
 			</label>
 			<div class="col-sm-3"> 
 				<div class="input-group">
-					<input type="number" class="form-control boxed" name="parcela" value="{{$lancamento->parcela}}" required> 
+					<input type="number" class="form-control boxed" name="parcela" value="{{$lancamento->parcela}}" > 
 				</div>
 			</div>
 		</div>

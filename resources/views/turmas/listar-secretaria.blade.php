@@ -1,17 +1,15 @@
 @extends('layout.app')
 @section('pagina')
-<style>
-    .nolinkdec{
-        text-decoration-style: none;
-    }
-</style>
+
 <div class="title-block">
     <h3 class="title"> Todas as turmas</h3>
     <div class="row">
         <br>
-        <div class="col-sm-9">
+        @include('inc.errors')
+        <div class=" card-block col-sm-9">
             
-            Mostrando {{count($turmas)}} turmas 
+            Mostrando {{count($turmas)}} turmas. Filtros:  
+
             <!--
             <a href="?limparfiltro=1">
                 <i class="fa fa-remove" style="color:red"></i>
@@ -20,8 +18,8 @@
             @foreach($filtros as $filtro=>$valor)
                 @if(count($filtros[$filtro]))
 
-                    <a href="?removefiltro={{$filtro}}" class="nolinkdec" title="Remover este filtro">
-                        <i class="fa fa-remove" style="color:red"></i>
+                    <a href="?removefiltro={{$filtro}}" class="badge badge-primary" style="color:white;text-decoration: none;" title="Remover este filtro">
+                        <i class="fa fa-remove" ></i>
                         {{$filtro}}
                     </a>
                 @endif
@@ -29,16 +27,13 @@
        
 
         </div>
-        <div class="col-sm-3">
-            Ordenar por: <strong>Curso</strong>
-
-        </div>
+        
     
     </div>
     <form>
     <div class="row ">
         <div class="col-sm-12">
-            <div class=" card card-block rounded-s small" style="height:4rem;">
+            <div class=" card card-block rounded small" style="height:4rem;">
                 <div class="form-group row "> 
                     <!--
                     <div class="col-sm-3"> 
@@ -59,13 +54,13 @@
                                 @foreach($programas as $programa)
 
                                 @if(isset($filtros['programa']) &&  array_search($programa->id,$filtros['programa']) !== false)
-                                <a class="dropdown-item" href="?filtro=programa&valor={{$programa->id}}&remove=1">
-                                    <i class="fa fa-check-circle-o icon"></i>{{$programa->sigla}}
-                                </a>
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=programa&valor={{$programa->id}}&remove=1')">
+                                    <i class="fa fa-check-circle-o icon"></i> {{$programa->sigla}}
+                                </label>
                                 @else
-                                <a class="dropdown-item" href="?filtro=programa&valor={{$programa->id}}">
-                                    <i class="fa fa-circle-o icon"></i>{{$programa->sigla}}
-                                </a>
+                                <label class="dropdown-item"  onclick="window.location.replace('?filtro=programa&valor={{$programa->id}}')">
+                                    <i class="fa fa-circle-o icon"></i> {{$programa->sigla}}
+                                </label>
                                 @endif
                                 @endforeach 
                                
@@ -77,13 +72,13 @@
                             <div class="dropdown-menu" style="height:30em;px;overflow-y:scroll;" aria-labelledby="dropdownMenu2"> 
                                 @foreach($professores as $professor)
                                 @if(isset($filtros['professor']) && array_search($professor->id,$filtros['professor']) !== false)
-                                <a class="dropdown-item" href="?filtro=professor&valor={{$professor->id}}&remove=1">
-                                    <i class="fa fa-check-circle-o icon"></i>{{$professor->nome_simples}}
-                                </a> 
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=professor&valor={{$professor->id}}&remove=1')">
+                                    <i class="fa fa-check-circle-o icon"></i> <strong>{{$professor->nome_simples}}</strong>
+                                </label> 
                                 @else
-                                <a class="dropdown-item" href="?filtro=professor&valor={{$professor->id}}">
-                                    <i class="fa fa-circle-o icon"></i>{{$professor->nome_simples}}
-                                </a> 
+                                <label class="dropdown-item"  onclick="window.location.replace('?filtro=professor&valor={{$professor->id}}')">
+                                    <i class="fa fa-circle-o icon"></i> {{$professor->nome_simples}}
+                                </label> 
                                 @endif
                                 @endforeach
                             </div>
@@ -93,54 +88,54 @@
                             </button>
                             <div class="dropdown-menu" style="height:30em;px;overflow-y:scroll;" aria-labelledby="dropdownMenu3">
                                 @if(isset($filtros['local']) && array_search(84,$filtros['local']) !== false)
-                                    <a class="dropdown-item" href="?filtro=local&valor=84&remove=1" title="FESC 1" >
+                                    <label class="dropdown-item" onclick="window.location.replace('?filtro=local&valor=84&remove=1')" title="FESC 1" >
                                         <i class="fa fa-check-circle-o icon"></i>FESC 1
-                                    </a>
+                                    </label>
                                 @else
-                                    <a class="dropdown-item" href="?filtro=local&valor=84" title="FESC 1" >
+                                    <label class="dropdown-item" onclick="window.location.replace('?filtro=local&valor=84')" title="FESC 1" >
                                         <i class="fa fa-circle-o icon"></i>FESC 1
-                                    </a> 
+                                    </label> 
                                 @endif
 
                                 @if(isset($filtros['local']) && array_search(85,$filtros['local']) !== false)
-                                    <a class="dropdown-item" href="?filtro=local&valor=85&remove=1" title="FESC 2" >
+                                    <label class="dropdown-item" onclick="window.location.replace('?filtro=local&valor=85&remove=1')" title="FESC 2" >
                                         <i class="fa fa-check-circle-o icon"></i>FESC 2
-                                    </a>
+                                    </label>
                                 @else
-                                    <a class="dropdown-item" href="?filtro=local&valor=85" title="FESC 2" >
+                                    <label class="dropdown-item" onclick="window.location.replace('?filtro=local&valor=85')" title="FESC 2" >
                                         <i class="fa fa-circle-o icon"></i>FESC 2
-                                    </a> 
+                                    </label> 
                                 @endif
 
                                 @if(isset($filtros['local']) && array_search(86,$filtros['local']) !== false)
-                                    <a class="dropdown-item" href="?filtro=local&valor=86&remove=1" title="FESC 3" >
+                                    <label class="dropdown-item" onclick="window.location.replace('?filtro=local&valor=86&remove=1')" title="FESC 3" >
                                         <i class="fa fa-check-circle-o icon"></i>FESC 3
-                                    </a>
+                                    </label>
                                 @else
-                                    <a class="dropdown-item" href="?filtro=local&valor=86" title="FESC 3" >
+                                    <label class="dropdown-item" onclick="window.location.replace('?filtro=local&valor=86')" title="FESC 3" >
                                         <i class="fa fa-circle-o icon"></i>FESC 3
-                                    </a> 
+                                    </label> 
                                 @endif
 
                                 @if(isset($filtros['local']) && array_search(118,$filtros['local']) !== false)
-                                    <a class="dropdown-item" href="?filtro=local&valor=118&remove=1" title="FESC VIRTUAL" >
+                                    <label class="dropdown-item" onclick="window.location.replace('?filtro=local&valor=118&remove=1')" title="FESC VIRTUAL" >
                                         <i class="fa fa-check-circle-o icon"></i>FESC VIRTUAL
-                                    </a>
+                                    </label>
                                 @else
-                                    <a class="dropdown-item" href="?filtro=local&valor=118" title="FESC VIRTUAL" >
+                                    <label class="dropdown-item" onclick="window.location.replace('?filtro=local&valor=118')" title="FESC VIRTUAL" >
                                         <i class="fa fa-circle-o icon"></i>FESC VIRTUAL
-                                    </a> 
+                                    </label> 
                                 @endif
                                 
                                 @foreach($locais as $local)
                                 @if(isset($filtros['local']) && array_search($local->id,$filtros['local']) !== false)
-                                <a class="dropdown-item" href="?filtro=local&valor={{$local->id}}&remove=1" title="Remover filtro: {{$local->nome}}" >
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=local&valor={{$local->id}}&remove=1')" title="Remover filtro: {{$local->nome}}" >
                                     <i class="fa fa-check-circle-o icon"></i>{{$local->sigla}}
-                                </a>
+                                </label>
                                 @else
-                                <a class="dropdown-item" href="?filtro=local&valor={{$local->id}}" title="{{$local->nome}}" >
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=local&valor={{$local->id}}')" title="{{$local->nome}}" >
                                     <i class="fa fa-circle-o icon"></i>{{$local->sigla}}
-                                </a> 
+                                </label> 
                                 @endif
                                 @endforeach
                                 
@@ -153,33 +148,33 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenu4"> 
                                 @if(isset($filtros['status']))                             
                                
-                                <a class="dropdown-item" href="?filtro=status&valor=espera{{array_search('lancada',$filtros['status'])!==false?'&remove=1':''}}">
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=espera{{array_search('lancada',$filtros['status'])!==false?'&remove=1':''}}');">
                                     <i class="fa fa-{{array_search('espera',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Lançadas
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=iniciada{{array_search('iniciada',$filtros['status'])!==false?'&remove=1':''}}" >
+                                </label>
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=iniciada{{array_search('iniciada',$filtros['status'])!==false?'&remove=1':''}}');">
                                     <i class="fa fa-{{array_search('iniciada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Iniciadas
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=encerrada{{array_search('encerrada',$filtros['status'])!==false?'&remove=1':''}}" >
+                                </label>
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=encerrada{{array_search('encerrada',$filtros['status'])!==false?'&remove=1':''}}');">
                                     <i class="fa fa-{{array_search('encerrada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Encerradas
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=cancelada{{array_search('cancelada',$filtros['status'])!==false?'&remove=1':''}}" >
+                                </label>
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=cancelada{{array_search('cancelada',$filtros['status'])!==false?'&remove=1':''}}');">
                                     <i class="fa fa-{{array_search('cancelada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Canceladas 
-                                </a>
+                                </label>
                                 
                                 @else
                         
-                                <a class="dropdown-item" href="?filtro=status&valor=lancada"  >
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=lancada');">
                                     <i class="fa fa-circle-o icon"></i>  Lançadas
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=iniciada" >
+                                </label>
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=iniciada');">
                                     <i class="fa fa-circle-o icon"></i> Iniciadas
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=encerrada" >
+                                </label>
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=encerrada');">
                                     <i class="fa fa-circle-o icon"></i> Encerradas
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status&valor=cancelada" >
+                                </label>
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=cancelada');">
                                     <i class="fa fa-circle-o icon"></i> Canceladas 
-                                </a>
+                                </label>
                                 
                                 @endif
                             </div>
@@ -191,39 +186,39 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenu4"> 
                                 @if(isset($filtros['status_matriculas']))                             
                                
-                                <a class="dropdown-item" href="?filtro=status_matriculas&valor=aberta{{array_search('aberta',$filtros['status_matriculas'])!==false?'&remove=1':''}}">
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=aberta{{array_search('aberta',$filtros['status_matriculas'])!==false?'&remove=1':''}}');">
                                     <i class="fa fa-{{array_search('aberta',$filtros['status_matriculas'])!==false?'check-':''}}circle-o icon"></i> Aberta
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status_matriculas&valor=fechada{{array_search('fechada',$filtros['status_matriculas'])!==false?'&remove=1':''}}" >
+                                </label>
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=fechada{{array_search('fechada',$filtros['status_matriculas'])!==false?'&remove=1':''}}');">
                                     <i class="fa fa-{{array_search('fechada',$filtros['status_matriculas'])!==false?'check-':''}}circle-o icon"></i> Fechada
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status_matriculas&valor=rematricula{{array_search('rematricula',$filtros['status_matriculas'])!==false?'&remove=1':''}}" >
+                                </label>
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=rematricula{{array_search('rematricula',$filtros['status_matriculas'])!==false?'&remove=1':''}}');">
                                     <i class="fa fa-{{array_search('rematricula',$filtros['status_matriculas'])!==false?'check-':''}}circle-o icon"></i> Rematrícula
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status_matriculas&valor=online{{array_search('online',$filtros['status_matriculas'])!==false?'&remove=1':''}}" >
+                                </label>
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=online{{array_search('online',$filtros['status_matriculas'])!==false?'&remove=1':''}}');">
                                     <i class="fa fa-{{array_search('online',$filtros['status_matriculas'])!==false?'check-':''}}circle-o icon"></i> Online 
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status_matriculas&valor=presencial{{array_search('presencial',$filtros['status_matriculas'])!==false?'&remove=1':''}}" >
+                                </label>
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=presencial{{array_search('presencial',$filtros['status_matriculas'])!==false?'&remove=1':''}}');">
                                     <i class="fa fa-{{array_search('presencial',$filtros['status_matriculas'])!==false?'check-':''}}circle-o icon"></i> Presencial 
-                                </a>
+                                </label>
                                 
                                 @else
                         
-                                <a class="dropdown-item" href="?filtro=status_matriculas&valor=aberta"  >
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=aberta');">
                                     <i class="fa fa-circle-o icon"></i>  Aberta
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status_matriculas&valor=fechada" >
+                                </label>
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=fechada');">
                                     <i class="fa fa-circle-o icon"></i> Fechadas
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status_matriculas&valor=rematricula" >
+                                </label>
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=rematricula');">
                                     <i class="fa fa-circle-o icon"></i> Rematrícula
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status_matriculas&valor=online" >
+                                </label>
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=online');">
                                     <i class="fa fa-circle-o icon"></i> Online 
-                                </a>
-                                <a class="dropdown-item" href="?filtro=status_matriculas&valor=online" >
+                                </label>
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=online');">
                                     <i class="fa fa-circle-o icon"></i> Presencial 
-                                </a>
+                                </label>
                                 
                                 @endif
                             </div>
@@ -237,13 +232,13 @@
                             <div class="dropdown-menu "  aria-labelledby="dropdownMenu5"> 
                                 @foreach($periodos as $periodo)
                                 @if(isset($filtros['periodo']) && array_search($periodo->semestre.$periodo->ano,$filtros['periodo']) !== false)
-                                <a class="dropdown-item" href="?filtro=periodo&valor={{$periodo->semestre.$periodo->ano}}&remove=1" style="text-decoration: none;">
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=periodo&valor={{$periodo->semestre.$periodo->ano}}&remove=1');" style="text-decoration: none;">
                                     <i class="fa fa-check-circle-o icon"></i> {{$periodo->semestre.'º Sem. '.$periodo->ano}}
-                                </a> 
+                                </label> 
                                 @else
-                                <a class="dropdown-item" href="?filtro=periodo&valor={{$periodo->semestre.$periodo->ano}}" style="text-decoration: none;">
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=periodo&valor={{$periodo->semestre.$periodo->ano}}');" style="text-decoration: none;">
                                     <i class="fa fa-circle-o icon"></i> {{$periodo->semestre.'º Sem. '.$periodo->ano}}
-                                </a> 
+                                </label> 
                                 @endif
                                 @endforeach
                             </div>
@@ -251,6 +246,12 @@
 
                 
          
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group input-group-sm" style="float:left;">
+                            <input type="text" class="form-control" name="buscar" id ="busca" placeholder="Buscar por turma" onkeypress="enter(event)" title="Você pode procurar pelo código da turma, nome do curso/disciplina, nome do professor, sigla do programa ou dia da semana (os 3 primeiros caracteres de cada dia, separado por virgula).">
+                            <i class="input-group-addon fa fa-search" onclick="buscar()" style="cursor:pointer;"></i>
+                        </div>
                     </div>
                 </div>
               
@@ -264,7 +265,7 @@
 </form>
 </div>
 
-@include('inc.errors')
+
 
 <form name="item" class="form-inline">
 	<section class="section">
@@ -275,20 +276,20 @@
                 <div class="card-block">
                     <!-- Nav tabs -->
                     <div class="row">
-                        <div class="col-xs-7">
+                        <div class="col-xs-4">
                                 {{ $turmas->links() }}
                         </div>
                             
-                        <div class="col-xs-5 text-xs-right">
+                        <div class="col-xs-8 text-xs-right">
                                 
-                                <a href="/pedagogico/turmas/cadastrar" class="btn btn-secondary text-success btn-sm rounded-s" ><i class="fa fa-asterisk"></i> Nova Turma</a>&nbsp;
+                                <a href="/pedagogico/turmas/cadastrar" class="btn btn-success-outline  btn-sm rounded-s" ><i class="fa fa-asterisk"></i> Nova Turma</a>&nbsp;&nbsp;
                             <div class="action dropdown pull-right "> 
-                                <button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenuAction" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Com os selecionados...
+                                <button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenuAction" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Alterar Selecionadas
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuAction"> 
-                                    <a class="dropdown-item" href="#" style="line-height: 20px;text-decoration: none;">
-                                    ------> MATRÍCULAS
-                                     </a>
+                                    <label class="dropdown-item btn btn-sm btn-primary" href="#" style="line-height: 20px;text-decoration: none; color:white">
+                                    Abertura de Matriculas
+                                    </label>
                                     <a class="dropdown-item" style="line-height: 30px; text-decoration: none;" href="#" onclick="alterarStatusMatricula('aberta')"  title="Abrir matrículas presenciais e online">
                                         <i class="fa fa-circle-o icon"></i> Abrir Matrículas Geral
                                     </a> 
@@ -298,50 +299,59 @@
                                     <a class="dropdown-item" style="line-height: 30px; text-decoration: none;" href="#" onclick="alterarStatusMatricula('online')"  title="Abrir matrículas somente para modalidade online">
                                         <i class="fa fa-circle-o icon"></i> Abrir Matrículas Online
                                     </a> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatusMatricula('fechada')" style="line-height: 30px; text-decoration: none">
+                                    <a class="dropdown-item" href="#" onclick="alterarStatusMatricula('fechada')" title="Encerra todas formas matrículas" style="line-height: 30px; text-decoration: none">
                                         <i class="fa fa-circle-o icon"></i> Fechar Matrículas
                                     </a>
-                                    <a class="dropdown-item" href="#" onclick="alterarStatusMatricula('rematricula')" style="line-height: 30px; text-decoration: none">
+                                    <a class="dropdown-item" href="#" onclick="alterarStatusMatricula('rematricula')" title="Abrir apenas para alunos anteriores" style="line-height: 30px; text-decoration: none">
                                         <i class="fa fa-circle-o icon"></i> Abrir para Rematrícula
                                     </a>
-                                    <a class="dropdown-item" href="#" style="line-height: 20px;text-decoration: none;">
-                                    ------> ESTADO
-                                     </a>
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('lancada')"  style="line-height: 30px;text-decoration: none;">
+                                    <label class="dropdown-item btn btn-sm btn-primary" href="#" style="line-height: 20px;text-decoration: none; color:white">
+                                    Alterar status para:
+                                     </label>
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('lancada')"  title="Se a turma ainda não começou" style="line-height: 30px;text-decoration: none;">
                                         <i class="fa fa-clock-o icon"></i> Lançada
                                     </a>
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('iniciada')" style="line-height: 30px;text-decoration: none;">
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('iniciada')" title="Se a turma já começou" style="line-height: 30px;text-decoration: none;">
                                         <i class="fa fa-check-circle-o icon"></i> Iniciar
                                     </a>
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('encerrada')" style="line-height: 30px;text-decoration: none;" >
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('encerrada')" title="Se a turma acabou" style="line-height: 30px;text-decoration: none;" >
                                         <i class="fa fa-minus-circle icon"></i> Encerrar
                                     </a>
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('cancelada')" style="line-height: 30px;text-decoration: none;">
+                                    <a class="dropdown-item" href="#" onclick="alterarStatus('cancelada')" title="Se a turma não aconteceu" style="line-height: 30px;text-decoration: none;">
                                         <i class="fa fa-ban icon"></i> Cancelar 
                                         
 
                                     </a>
-                                    <a class="dropdown-item" href="#" style="line-height: 20px;text-decoration: none;">
-                                        ------> FERRAMENTAS
-                                     </a>
-                                    <a class="dropdown-item" href="#" onclick="alterarlote('relancar')" style="line-height: 30px;text-decoration: none;">
-                                            <i class="fa fa-retweet icon"></i> Relançar Turmas
-                                        </a>
-                                    <a class="dropdown-item" href="#" onclick="alterarlote('requisitos')" style="line-height: 30px;text-decoration: none;">
-                                            <i class="fa fa-sign-in icon"></i> Alterar requisitos
-                                        </a>
-                                     <a class="dropdown-item" href="#" onclick="getDados();" style="line-height: 30px;text-decoration: none;">
-                                        <i class="fa fa-group icon"></i> Dados da(s) turma(s)
-                                    </a>
-                                     <a class="dropdown-item" href="#" onclick="getListas();" style="line-height: 30px;text-decoration: none;">
-                                        <i class="fa fa-print icon"></i> Imprimir listas
-                                    </a>
-                                    <a class="dropdown-item" href="#" onclick="exportar();" style="line-height: 30px;text-decoration: none;">
-                                        <img src="/img/excel.png" width="17px;"> Exportar alunos ativos
-                                    </a>
+                                   
+                                    
                                 </div>
-                             </div>
+                            </div>
+                            <div class="action dropdown pull-right "> 
+                                <button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenuAction" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Ferramentas
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuAction"> 
+                                    <a class="dropdown-item" href="#" onclick="alterarlote('relancar')" style="line-height: 30px;text-decoration: none;">
+                                        <i class="fa fa-retweet icon"></i> Relançar Turmas
+                                    </a>
+                                <a class="dropdown-item" href="#" onclick="alterarlote('requisitos')" style="line-height: 30px;text-decoration: none;">
+                                        <i class="fa fa-sign-in icon"></i> Alterar requisitos
+                                    </a>
+                                 <a class="dropdown-item" href="#" onclick="getDados();" style="line-height: 30px;text-decoration: none;">
+                                    <i class="fa fa-group icon"></i> Dados da(s) turma(s)
+                                </a>
+                                 <a class="dropdown-item" href="#" onclick="getListas();" style="line-height: 30px;text-decoration: none;">
+                                    <i class="fa fa-print icon"></i> Imprimir listas
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="exportar();" style="line-height: 30px;text-decoration: none;">
+                                    <img src="/img/excel.png" width="17px;"> Exportar alunos ativos
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="exportarSMS();" style="line-height: 30px;text-decoration: none;" title="Exporta os alunos das turmas selecionadas para o envio de SMS">
+                                    <i class="fa fa-comments-o icon"></i> Exportar TXT para SMS
+                                </a>
+                                </div>
+                            </div>
                         </div>
+                        
 
                     </div>
                     
@@ -654,6 +664,29 @@ function exportar(){
             alert('Nenhum item selecionado');
         else
             $(location).attr('href','/relatorios/alunos-turmas?turmas='+selecionados);
+
+}
+function exportarSMS(){
+    var selecionados='';
+        $("input:checkbox[name=turma]:checked").each(function () {
+            selecionados+=this.value+',';
+
+        });
+        if(selecionados=='')
+            alert('Nenhum item selecionado');
+        else
+            $(location).attr('href','/relatorios/alunos-turmas-sms?turmas='+selecionados);
+
+}
+function enter(e){
+    if (e.which == 13 || e.keyCode == 13 || e.key == 13) {
+        buscar();
+    }
+
+}
+function buscar(){
+    query = $('#busca').val();
+    $(location).attr('href','/turmas?filtro=busca&valor='+query);
 
 }
 

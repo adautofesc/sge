@@ -81,12 +81,16 @@ class BoletoController extends Controller
 		switch($status){
 			
 			case 'cancelar':
-				
-				if($motivo)
-					BoletoController::cancelamentoDireto($boleto->id, 'Solicitação de cancelamento motivo: '.$motivo);
-				else
-					BoletoController::cancelamentoDireto($boleto->id, 'Solicitação de cancelamento pelo sistema');
 
+				if($boleto->status == 'gravado')
+					$boleto->forceDelete();
+				else{
+					if($motivo)
+						BoletoController::cancelamentoDireto($boleto->id, 'Solicitação de cancelamento motivo: '.$motivo);
+					else
+						BoletoController::cancelamentoDireto($boleto->id, 'Solicitação de cancelamento pelo sistema');
+				}
+				
 			break;
 			case 'reativar':
 				$boleto->status = 'emitido';
@@ -485,8 +489,11 @@ class BoletoController extends Controller
 		if($boleto != null){
 
 			switch($boleto->status){
-				case 'impresso':
 				case 'gravado':
+					$boleto->forceDelete();
+					return response(200,'Boleto excluído');
+					break;
+				case 'impresso':
 				case 'divida':
 					$boleto->status = 'cancelado';
 					$boleto->save();

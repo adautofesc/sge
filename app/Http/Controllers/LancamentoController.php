@@ -410,16 +410,24 @@ class LancamentoController extends Controller
 		$lancamento = Lancamento::find($r->lancamento);
 		if($lancamento == null)
 			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Parcela não encontrada']);
+		if($r->valor <0 && !in_array('25', \Auth::user()->recursos))
+			return redirect('403');
 
+		$boleto = $lancamento->boleto;
+		
 		$lancamento->matricula = $r->matricula;
 		$lancamento->parcela = $r->parcela;
 		$lancamento->referencia = $r->referencia;
 		$lancamento->boleto = $r->boleto;
 		$lancamento->valor =  str_replace(',','.',$r->valor);
 		$lancamento->save();
-		if($r->boleto>0){
+		if($r->boleto>0)
 			BoletoController::atualizarValor($r->boleto);
-		}
+		if($boleto>0)
+			BoletoController::atualizarValor($boleto);
+
+		
+		
 
 		return redirect(asset('secretaria/atender/').'/'.$lancamento->pessoa);
 
@@ -602,10 +610,7 @@ class LancamentoController extends Controller
 	}
 	public function novo($id){
 		$matriculas = Matricula::where('pessoa', Session::get('pessoa_atendimento'))
-			 	->where(function($query){ $query
-							->where('status','ativa')
-							->orwhere('status', 'pendente');
-					})
+			 	->whereIn('status',['ativa','espera','pendente'])
 			 	->orderBy('id','desc')->get();
 		
 

@@ -24,8 +24,9 @@ class RelatorioController extends Controller
      * @return [type]         [description]
      */
     public function alunosTurmasExport(Request $request){
+        
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="'. 'relatorio' .'.xls"'); /*-- $filename is  xsl filename ---*/
+        header('Content-Disposition: attachment;filename="'. 'relatorio' .'.xls"'); //$filename is  xsl filename 
         header('Cache-Control: max-age=0');
 
         $tabela =  new Spreadsheet();
@@ -97,9 +98,46 @@ class RelatorioController extends Controller
                 $aluno->termino =  $concluinte->turma->data_termino;*/   
         }
         
-        return $arquivo->save('php://output', 'xls');
-        //return $concluintes;
+        return $arquivo->save('php://output');
+        //dd($planilha);
         
+    }
+
+    public function alunosTurmasExportSMS(Request $request){
+        $pessoas = array();
+
+        $turmas = explode(',',$request->turmas);
+        $inscricoes = \App\Inscricao::whereIn('turma',$turmas)->whereIn('status',['regular','pendente','finalizada'])->get();
+       // dd($inscricoes);
+        foreach($inscricoes as $inscricao){
+            
+            if(isset($inscricao->pessoa->id) && !in_array($inscricao->pessoa->nome_simples,$pessoas)){
+                $pessoas[$inscricao->pessoa->nome_simples] = $inscricao->pessoa->getCelular();
+            }         
+        }
+
+        //dd($pessoas);
+       
+        $file = "campanha.txt";
+        $txt = fopen($file, "w") or die("Unable to open file!");
+        fwrite($txt, "Nome da campanha"."\n");
+        fwrite($txt, "Descrição da campanha (até 150 caracteres)"."\n");
+        foreach($pessoas as $nome=>$celular){
+            if($celular != '-'){
+                fwrite($txt, $celular.';'.$nome."\n");
+            }
+        }
+        
+        fclose($txt);
+
+        header('Content-Description: File Transfer');
+        header('Content-Disposition: attachment; filename='.basename($file));
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($file));
+        header("Content-Type: text/plain");
+        readfile($file);
     }
 
 	public function turmas(Request $request){

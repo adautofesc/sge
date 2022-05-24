@@ -955,7 +955,7 @@ class MatriculaController extends Controller
 
             if(!$bolsa){
 
-                $lancamentos = \App\Lancamento::where('matricula',$matricula->matricula_id)->where('status',null)->count();
+                $lancamentos = \App\Lancamento::where('matricula',$matricula->matricula_id)->where('status',null)->where('boleto','>',0)->count();
                 $mat_parcela = Matricula::find($matricula->matricula_id);
                 //dd($mat_parcela->getParcelas());
 

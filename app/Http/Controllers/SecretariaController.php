@@ -381,7 +381,8 @@ class SecretariaController extends Controller
 				if($inscricao->status == 'transferida')
 					$inscricao->transferencia = $inscricao->getTransferencia();
 			}
-			$matricula->lancamentos = \App\Lancamento::where('matricula',$matricula->matricula_id)->where('status',null)->count();
+			$matricula->lancamentos = \App\Lancamento::where('matricula',$matricula->id)->where('status',null)->where('boleto','>','0')->count();
+			//dd($matricula->lancamentos);
 		}
 		/*$matriculas = collect();
 		foreach($array_matriculas as $id){

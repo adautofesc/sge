@@ -56,7 +56,7 @@
                 <div class="card-block">
                         <div>
                             <a href="/relatorios/receita-anual-programa/{{date('Y')-1}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                            <i class=" fa fa-envelope "></i>
+                            <i class=" fa fa-file-text-o "></i>
                             &nbsp;&nbsp;Receita Anual Por Programa</a>
                         </div>
                         <div>
@@ -95,9 +95,14 @@
                 </div>
                 <div class="card-block">
                     <div>
+                        <a href="{{asset('/')}}financeiro/divida-ativa/" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-list "></i>
+                        &nbsp;&nbsp;Gerenciamento</a>
+                    </div>
+                    <div>
                         <a href="{{asset('/')}}financeiro/relatorios/boletos/0" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-file-text-o "></i>
-                        &nbsp;&nbsp;Relação de cobranças</a>
+                        &nbsp;&nbsp;Relatório de boletos abertos</a>
                     </div>
                     <div>
                         <a href="{{asset('/')}}financeiro/relatorios/cobranca-xls/0" class="btn btn-primary-outline col-xs-12 text-xs-left">

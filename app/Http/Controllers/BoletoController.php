@@ -224,7 +224,7 @@ class BoletoController extends Controller
 		$inst = new BoletoFuncional;
 		foreach($boletos as $boleto){
 			
-			$pessoa = Pessoa::find($boleto->pessoa);
+			$pessoa = Pessoa::withTrashed()->find($boleto->pessoa);
 			
 
 			$boleto_completo = $inst->gerar($boleto);
@@ -321,7 +321,7 @@ class BoletoController extends Controller
 		
 		if($boleto->status == 'gravado' || $boleto->status == 'impresso'){
 
-			$pessoa = Pessoa::find($boleto->pessoa);
+			$pessoa = Pessoa::withTrashed()->find($boleto->pessoa);
 			$pessoa = PessoaController::formataParaMostrar($pessoa);
 			//dd($pessoa);
 			//$pessoa->formataParaMostrar();
@@ -526,7 +526,7 @@ class BoletoController extends Controller
 
 
 	public function cancelarTodosVw($pessoa){
-		$pessoa = Pessoa::find($pessoa);
+		$pessoa = Pessoa::withTrashed()->find($pessoa);
 		if($pessoa)
 			return view('financeiro.boletos.cancelamento-todos')->with('pessoa', $pessoa);
 		else
@@ -554,7 +554,7 @@ class BoletoController extends Controller
 	 * @return [type]
 	 */
 	public static function gerarBoleto(Boleto $boleto){
-		$cliente=Pessoa::find($boleto->pessoa);
+		$cliente=Pessoa::withTrashed()->find($boleto->pessoa);
 		$cliente=PessoaController::formataParaMostrar($cliente);
 		$lancamentos= LancamentoController::listarPorBoleto($boleto->id); //objetos lancamentos
 		$array_lancamentos = array();
@@ -747,7 +747,7 @@ class BoletoController extends Controller
 
 			$dados_pessoa = \App\PessoaDadosGerais::where('valor','like',$cpf_alt)->orWhere('valor','like',$cpf_alt_formated)->first();
 			if($dados_pessoa){
-				$pessoa = Pessoa::find($dados_pessoa->pessoa);
+				$pessoa = Pessoa::withTrashed()->find($dados_pessoa->pessoa);
 					
 					$boletos = Boleto::where('pessoa',$pessoa->id)
 							->where('status','emitido')
@@ -802,7 +802,7 @@ class BoletoController extends Controller
 				}
 
 			foreach($boletos as $boleto){
-				$boleto->aluno = \App\Pessoa::find($boleto->pessoa);
+				$boleto->aluno = \App\Pessoa::withTrashed()->find($boleto->pessoa);
 				$boleto->aluno->telefones =  $boleto->aluno->getTelefones();
 
 
@@ -811,78 +811,6 @@ class BoletoController extends Controller
 			return view('relatorios.boletos_vencidos')->with('boletos',$boletos)->with('ativos',$ativos);
 		}
 
-		
-
-
-	
-	/**
-	*
-	* Metodo para colocar os boletos abertos do ano como dívida
-	*
-	**/	
-	public function dividaAtiva(){
-		$boletos = Boleto::whereIn('status',['emitido'])->whereYear('vencimento','<',date('Y'))->paginate(1000);
-			
-		$beneficiario = new \Eduardokum\LaravelBoleto\Pessoa([
-		    'documento' => '45.361.904/0001-80',
-		    'nome'      => 'Fundação Educacional São Carlos',
-		    'cep'       => '13560-230',
-		    'endereco'  => 'Rua São Sebastiao, 2828, ',
-		    'bairro' => ' Vila Nery',
-		    'uf'        => 'SP',
-		    'cidade'    => 'São Carlos',
-		]);
-		$remessa = new \Eduardokum\LaravelBoleto\Cnab\Remessa\Cnab240\Banco\Bb(
-		    [
-		        'agencia'      => '0295',
-		        'carteira'     => 17,
-		        'conta'        => 52822,
-		        'convenio'     => 2838669,
-		        'variacaoCarteira' => '019',
-		        'beneficiario' => $beneficiario,
-		    ]
-		);
-		
-
-		if($boletos->count() == 0)
-			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Nenhum boleto encontrado']);
-
-
-		foreach($boletos as $boleto){
-			try{ //tentar gerar boleto completo
-				$boleto_completo = $this->gerarBoleto($boleto);
-			}
-			catch(\Exception $e){
-				NotificacaoController::notificarErro($boleto->pessoa,'Erro ao gerar Boleto');
-				continue;
-			}
-			
-			
-			try{//tentar gerar remessa desse boleto
-				$remessa->addBoleto($boleto_completo);
-			}
-			catch(\Exception $e){
-				NotificacaoController::notificarErro($boleto->pessoa,'Erro ao gerar Remessa');
-				continue;
-			}
-			if($boleto->status == 'emitido'){
-				$boleto_completo->baixarBoleto();
-				$boleto->status='divida';	
-			}
-			else{
-				
-				$boleto->status='emitido';
-				
-			}
-
-			
-			$boleto->save();
-
-		}
-		$remessa->save( 'remessas/'.date('YmdHi').'.rem');
-		$arquivo = date('YmdHi').'.rem';
-		return view('financeiro.remessa.arquivo',compact('boletos'))->with('arquivo',$arquivo);
-	}
 
 	public function limparDebitos(){
 		$matriculas = array();
@@ -916,7 +844,7 @@ class BoletoController extends Controller
 	public function historico($id){
 		$boleto = Boleto::find($id);
 		if(!is_null($boleto)){
-			$pessoa= Pessoa::find($boleto->pessoa);
+			$pessoa= Pessoa::withTrashed()->find($boleto->pessoa);
 			$dados = \App\Log::where('tipo','boleto')->where('codigo',$id)->get();
 			$dados_pessoa = \App\Atendimento::where('descricao','like','%boleto%'.$id."%")->get();
 			return view('financeiro.boletos.informacoes')->with('boleto',$boleto)->with('logs',$dados)->with('pessoais',$dados_pessoa)->with('pessoa',$pessoa);
@@ -941,6 +869,36 @@ class BoletoController extends Controller
 		else
 			return 'Nenhum boleto cancelado';
 	}
+
+	public static function getValorCorrigido(\App\Boleto $boleto, Array $ipca){
+        
+		//instancia objeto de data para manipulação
+        $vencimento = \DateTime::createFromFormat('Y-m-d H:i:s',$boleto->vencimento);
+        if (!$vencimento) {
+            throw new \InvalidArgumentException(sprintf("'%s' is not a valid date.", $boleto->vencimento));
+        }
+        $hoje =  new \DateTime('now');
+        $margem = clone($vencimento);
+        $margem->modify('+1 month');
+		$intervalo = $hoje->diff($margem);
+
+        //Pega somente o periodo correspondente ao boleto
+		$periodo_ipca_do_boleto = Array();
+		foreach($ipca as $chave => $valor){
+			if($chave > $vencimento->format('Ym') && $chave < $hoje->format('Ym'))
+				$periodo_ipca_do_boleto[$chave] = $valor;
+		}
+        
+		//inicia correção 
+		$valor = $boleto->valor;
+        $valor += $boleto->valor*ValorController::getFatorMultiplicador($periodo_ipca_do_boleto);
+        $valor += ValorController::getMulta($boleto->valor);
+        $valor += ValorController::getJuros($boleto->valor,$intervalo->days);
+
+
+        return   $valor;
+        //
+    }
 
 		
 

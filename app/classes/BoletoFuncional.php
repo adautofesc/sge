@@ -9,7 +9,7 @@ use Carbon\Carbon;
 class BoletoFuncional {
 
 public function gerar($boleto){
-		$cliente=Pessoa::find($boleto->pessoa);
+		$cliente=Pessoa::withTrashed()->find($boleto->pessoa);
 		if($cliente==null)
 			die("Boleto com problema. Não foi possivel gerar dados bancarios para esse boleto:".$boleto);
 		$cliente=PessoaController::formataParaMostrar($cliente);

@@ -60,7 +60,7 @@ class TurmaController extends Controller
         
         foreach ($inscricoes as $inscricao) {
             $inscricao->telefone = \App\PessoaDadosContato::getTelefone($inscricao->pessoa->id);
-            $inscricao->aluno = \App\Pessoa::find($inscricao->pessoa->id);
+            $inscricao->aluno = \App\Pessoa::withTrashed()->find($inscricao->pessoa->id);
 
             $inscricao->atestado = $inscricao->getAtestado();
             if($inscricao->atestado){

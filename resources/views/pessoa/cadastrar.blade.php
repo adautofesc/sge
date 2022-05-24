@@ -8,7 +8,7 @@
                     </div>
                    @include('inc.errors')
                     <div class="subtitle-block">
-                        <h3 class="subtitle"> Dados Gerais </h3>
+                        <h3 class="subtitle"> Dados Gerais <small>*dados obrigatórios</small></h3>
                     </div>
                     
                         <div class="card card-block">
@@ -71,7 +71,7 @@
                                 <div class="col-sm-3"> 
                                     <input type="text" class="form-control boxed" placeholder="Somente numeros" name="rg"> 
                                 </div>
-                                <label class="col-sm-2 form-control-label text-xs-right">CPF* <small title="Caso não tiver CPF o responsável legal deverá ser cadastrado"><i class="fa fa-info-circle"></i></small></label>
+                                <label class="col-sm-2 form-control-label text-xs-right">CPF <small title="Obrigatório para cursos pagos"><i class="fa fa-info-circle"></i></small></label>
                                 <div class="col-sm-3"> 
                                     <input type="text" class="form-control boxed" placeholder="Somente numeros" name="cpf">
                                 </div>
@@ -270,11 +270,12 @@
                                     @if(isset($dados['responsavel_por']) && $dados['responsavel_por']!='')
                                         <input type="hidden" name="responsavel_por" value="{{ $dados['responsavel_por' ]}}"/>
                                     @else
-                                        <button type="submit" name="btn_sub" value='2' class="btn btn-secondary" onclick="return enviar();">Salvar sem CPF e cadastrar Responsável</button>
+                                        <button type="submit" name="btn_sub" value='2' class="btn btn-secondary" onclick="return enviar();">Salvar sem CPF</button>
                                     @endif
                                     
-                                    <button type="submit" name="btn_sub" value='3'  class="btn btn-secondary">Salvar e inserir outra pessoa</button>
-                                   
+                                    <!--<button type="submit" name="btn_sub" value='3'  class="btn btn-secondary">Salvar e inserir outra pessoa</button>-->
+                                   <button type="reset" class="btn btn-secondary"> Limpar dados</button>
+                                   <button type="cancel" name="btn" class="btn btn-secondary" onclick="history.back(-1);return false;">Cancelar</button>
                                     {{ csrf_field() }}
                                 </div>
                                 

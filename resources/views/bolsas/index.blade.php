@@ -73,10 +73,10 @@
                 <div class="card-block">
                     <!-- Nav tabs -->
                     <div class="row">
-                        <div class="col-xs-6 text-xs">
+                        <div class="col-xs-10 text-xs">
                             {{ $bolsas->links() }}
                         </div>
-                        <div class="col-xs-6 text-xs-right">
+                        <div class="col-xs-2 text-xs-right">
 
                             
                             <div class="action dropdown pull-right "> 

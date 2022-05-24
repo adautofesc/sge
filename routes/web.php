@@ -15,6 +15,7 @@ use App\Http\Controllers\AulaController;
 use App\Http\Controllers\Reports\JornadaDocentes;
 use App\Http\Controllers\SalaController;
 use App\Http\Controllers\UsoLivreController;
+use App\Http\Controllers\MatriculaController;
 
 Route::get('/', 'painelController@index');
 
@@ -303,6 +304,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::post('registrar-contato','ContatoController@registrar');
 		Route::get('contato-whatsapp','ContatoController@enviarWhats');
 		Route::get('resetar-senha-perfil/{id}','Auth\PerfilAuthController@resetarSenha');
+	
 
 
 		Route::get ('listar','PessoaController@listarTodos');//->middleware('autorizar:56')
@@ -417,6 +419,11 @@ Route::middleware(['auth','login']) ->group(function(){
 
 		});
 
+		Route::prefix('divida-ativa')->group(function(){
+			Route::get('/','DividaAtivaController@index');
+
+		});
+
 		Route::prefix('lancamentos')->group(function(){
 			Route::get('home',  function(){ return view('financeiro.lancamentos.home'); });
 			Route::get('listar-por-pessoa','LancamentoController@listarPorPessoa');
@@ -453,7 +460,7 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::get('imprimir/{id}','BoletoController@imprimir');
 			Route::get('imprimir-carne/{pessoa}','CarneController@imprimirCarne');
 			//Route::get('registrar/{id}','BoletoController@registrar');//registrar para o banco
-			Route::get('divida-ativa','BoletoController@dividaAtiva');// envia boletos para divida ativa;
+			Route::get('divida-ativa','DividaAtivaController@gerarDividaAtiva');// envia boletos para divida ativa;
 			Route::get('listar-por-pessoa','BoletoController@listarPorPessoa');
 			Route::get('informacoes/{id}','BoletoController@historico');
 			Route::get('cancelar/{id}','BoletoController@cancelarView');
@@ -601,6 +608,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	Route::middleware('liberar.recurso:18')->prefix('secretaria')->group(function(){
 		
 		Route::get('/','painelController@secretaria')->name('secretaria');
+		Route::get('analisar-matriculas', [MatriculaController::class,'analiseFinanceira']);
 		Route::get('pre-atendimento','SecretariaController@iniciarAtendimento');
 		Route::post('pre-atendimento','SecretariaController@buscaPessoaAtendimento');
 		Route::get('atendimento','SecretariaController@atender');

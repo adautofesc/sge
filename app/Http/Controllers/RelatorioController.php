@@ -43,7 +43,8 @@ class RelatorioController extends Controller
         $planilha->setCellValue('G2', 'Início');
         $planilha->setCellValue('H2', 'Termino');
         $planilha->setCellValue('I2', 'Telefone(s)');
-        $planilha->setCellValue('J2', 'Turma');
+        $planilha->setCellValue('J2', 'Celular');
+        $planilha->setCellValue('K2', 'Turma');
       
         $linha = 3;
 
@@ -73,7 +74,10 @@ class RelatorioController extends Controller
             
         foreach($concluintes as $concluinte){ 
         	
-
+                if(isset($concluinte->pessoa->getTelefones()->last()->valor))
+                    $telefone = $concluinte->pessoa->getTelefones()->last()->valor;
+                else
+                    $telefone = '-';
                 $planilha->setCellValue('A'.$linha, $concluinte->pessoa->nome);
                 $planilha->setCellValue('B'.$linha, $concluinte->turma->programa->sigla);
                 $planilha->setCellValue('C'.$linha, $concluinte->turma->curso->nome);
@@ -82,8 +86,9 @@ class RelatorioController extends Controller
                 $planilha->setCellValue('F'.$linha, $concluinte->turma->carga);
                 $planilha->setCellValue('G'.$linha, $concluinte->turma->data_inicio);
                 $planilha->setCellValue('H'.$linha, $concluinte->turma->data_termino);
-                $planilha->setCellValue('I'.$linha, $concluinte->pessoa->getTelefones()->implode("valor",", "));
-                $planilha->setCellValue('J'.$linha, $concluinte->turma->id);
+                $planilha->setCellValue('I'.$linha, $telefone);
+                $planilha->setCellValue('J'.$linha, $concluinte->pessoa->getCelular());
+                $planilha->setCellValue('K'.$linha, $concluinte->turma->id);
                
                 $linha++;
                 /*
@@ -429,7 +434,7 @@ Event::where('status' , 0)
                 if($inscricao->pessoa){
                     //dd($inscricao->pessoa->id);
                     $alunos[$inscricao->pessoa->id]['nome'] = $inscricao->pessoa->nome;
-                    $alunos[$inscricao->pessoa->id]['dados'] = \App\Pessoa::find($inscricao->pessoa->id);
+                    $alunos[$inscricao->pessoa->id]['dados'] = \App\Pessoa::withTrashed()->find($inscricao->pessoa->id);
                     $alunos[$inscricao->pessoa->id]['inscricoes'][] = $inscricao;
                 }
             }
@@ -580,7 +585,7 @@ Event::where('status' , 0)
                 if($inscricao->pessoa && $inscricao->status=='regular' && in_array($inscricao->turma->programa->id,[3,12])){
                     //dd($inscricao->pessoa->id);
                     $alunos[$inscricao->pessoa->id]['nome'] = $inscricao->pessoa->nome;
-                    $alunos[$inscricao->pessoa->id]['dados'] = \App\Pessoa::find($inscricao->pessoa->id);
+                    $alunos[$inscricao->pessoa->id]['dados'] = \App\Pessoa::withTrashed()->find($inscricao->pessoa->id);
                     $alunos[$inscricao->pessoa->id]['inscricoes'][] = $inscricao;
                 }
             }

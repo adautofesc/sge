@@ -50,7 +50,7 @@ class Pessoa extends Model
 
 	public static function getNome($id)
 	{		
-		$query=Pessoa::find($id);
+		$query=Pessoa::withTrashed()->find($id);
 		if($query)
 			$nome=Strings::converteNomeParaUsuario($query->nome);
 		else
@@ -121,7 +121,7 @@ class Pessoa extends Model
 
 	public static function cabecalho($id)
 	{
-		$pessoa= Pessoa::find($id);
+		$pessoa= Pessoa::withTrashed()->find($id);
 		$pessoa=\App\Http\Controllers\PessoaController::formataParaMostrar($pessoa);
 		if(isset($pessoa->telefone))
 			$pessoa->telefone=\App\classes\Strings::formataTelefone($pessoa->telefone);

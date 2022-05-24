@@ -207,7 +207,7 @@ class painelController extends Controller
             }
         }
 
-        $docente = \App\Pessoa::find($id);
+        $docente = \App\Pessoa::withTrashed()->find($id);
       
        
 
@@ -273,18 +273,13 @@ class painelController extends Controller
             $id=session('rh_atendimento');
         }
         
-        $pessoa=Pessoa::find($id);
+        $pessoa=Pessoa::withTrashed()->find($id);
         // Verifica se a pessoa existe
         if(!$pessoa)
             return redirect(asset('/gestaopessoal/inicio-atendimento'));
         else
             Session::put('rh_atendimento',$id);
-        
 
-        $pessoa=Pessoa::find($id);
-        // Verifica se a pessoa existe
-        if(!$pessoa)
-            return view('gestaopessoal.inicio-atendimento');
 
         $pessoa_controller= new PessoaController;
         $pessoa=$pessoa_controller->formataParaMostrar($pessoa);
@@ -474,7 +469,7 @@ class painelController extends Controller
         foreach($turmas as $turma){
             $turma->getInscricoes(null);
             foreach($turma->inscricoes as $inscricao){
-                $pessoa = Pessoa::find($inscricao->pessoa->id);
+                $pessoa = Pessoa::withTrashed()->find($inscricao->pessoa->id);
                 $pessoa->idade = $pessoa->getIdade();
                 unset($pessoa->id);
                 unset($pessoa->genero);

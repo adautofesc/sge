@@ -53,6 +53,11 @@
                         <a href="/pedagogico/turmas/atualizar-inscritos" title="Atualiza o quantidade de vagas e inscritos nas turmas" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Atualizar vagas</a>
+                    </div>
+                    <div>
+                        <a href="/secretaria/ativar_matriculas_em_espera" class="btn btn-danger-outline col-xs-12 text-xs-left" title="Ativar matriculas que estao em espera. Necessita de credencial.">
+                        <i class=" fa fa-play-circle "></i>
+                        &nbsp;&nbsp;Ativar Matrículas</a>
                     </div>  
                     <div>
                         <a href="{{route('turmas.expiradas')}}" class="btn btn-danger-outline col-xs-12 text-xs-left">

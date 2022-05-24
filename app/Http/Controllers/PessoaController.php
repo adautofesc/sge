@@ -273,7 +273,7 @@ class PessoaController extends Controller
 		//**************** Redireciona para o setor responsável
 
 			if($request->btn_sub==2)
-				return $this->create('',['Dependente inserido com sucesso'],$pessoa->id);
+				return redirect()->back()->with(['success'=>'Pessoa cadastrada com sucesso']);
 			if($request->btn_sub==3)
 				return $this->create('',['Pessoa cadastrada com sucesso.'],'');
 			else
@@ -578,6 +578,14 @@ class PessoaController extends Controller
 		return view('pessoa.editar-dados-gerais', compact('dados'));
 	}
 	public function editarGeral_exec(Request $request){
+		if($request->action == 'delete'){
+				Pessoa::where('id',$request->pessoa)->delete();
+				return redirect('/')->withErrors(['Pessoa '.$request->pessoa.' excluida com sucesso.']);
+		}
+		if($request->action == 'exclude'){
+			Pessoa::where('id',$request->pessoa)->forceDelete();
+			return redirect('/')->withErrors(['Pessoa '.$request->pessoa.' excluida com sucesso.']);
+	}
 		$erros=array();
 		
 		if(!in_array('3', Auth::user()->recursos) && $request->pessoa != Auth::user()->pessoa)

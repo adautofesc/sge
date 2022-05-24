@@ -208,15 +208,21 @@ class ValorController extends Controller
 
     }
 
-    public function getIPCA($data_inicial='201901' ,$data_final = null){
-        $acumulado = 0;
-        if($data_final ==null)
-            $data_final=date('Y').'0'.(date('m')-1);
+    /**
+     * Função que retorna array com a serie de dados IPCA dado intervalo
+     * 
+     * Serve para atualizar o valor de uma dívida ativa, usado no calculo do fator multiplicador
+     *
+     * @return \Array [AAAAMM] => $valor
+     */
+    public static function getIPCA(){
 
-        //https://api.bcb.gov.br/dados/serie/bcdata.sgs.10844/dados?formato=json
-        $url = 'https://servicodados.ibge.gov.br/api/v3/agregados/6691/periodos/'.$data_inicial.'|'.$data_final.'/variaveis/63?localidades=N1[all]';
         
-        //$url = "http://api.sidra.ibge.gov.br/values/t/1419/p/".$data_inicial."-".$data_final."/n1/all/h/n/v/63/c315/7169/d/v63%205?formato=json";
+            $url = 'https://servicodados.ibge.gov.br/api/v3/agregados/6691/periodos/200101-'.date('Ym').'/variaveis/63?localidades=N1[all]'; //IBGE
+      
+            //$url = 'https://api.bcb.gov.br/dados/serie/bcdata.sgs.433/dados?formato=json'; //BACEN
+
+            //http://ipeadata.gov.br/api/odata4/ValoresSerie(SERCODIGO='PRECOS12_IPCAG12')  IPEA
 
         //dd($url);
 
@@ -236,74 +242,71 @@ class ValorController extends Controller
         //encerra o curl
 
         $status = curl_getinfo($ch);
-
         if($status["http_code"]== 400 || $status["http_code"]== 500)
                 throw new \Exception("Erro ".$status["http_code"]. " ao acessar URL com os dados IPCA em ValorController:getIPCA-> ".$url, 1);
                 
         curl_close($ch);
-
-
         $ws = json_decode($result);
         //dd($ws);
-       
-       
+
         if(isset($ws->erro) || !$ws)
                 throw new \Exception("Erro ao processar dados do IPCA. Verifique o status do serviço do IBGE: ".$ws->erro, 1);
 
-
-        return $ws;
-                
-        
+        return (array)$ws[0]->resultados[0]->series[0]->serie;  
     }
 
+    
+    /**
+     * Fator Multiplicador
+     * 
+     * Dada a série de dados obtidos do periodo do ipca ele calcula o fator multipplicador
+     *
+     * @param Array $serie
+     * @return void
+     */
+    public static function getFatorMultiplicador(Array $serie){
+        $primeiro = reset($serie);
+        $fator =  $primeiro/100+1;
+        //echo $fator."<br>";
+        foreach($serie as $key=>$taxa){
+            if($key != key($serie)){    
+                $fator = ($taxa/100+1)*$fator;
+                //echo $fator."<br>";
 
-    function jurosSimples($valor, $taxa, $parcelas) {
-            $taxa = $taxa / 100;
-     
-            $m = $valor * (1 + $taxa * $parcelas);
-            $valParcela = number_format($m / $parcelas, 2, ",", ".");
-     
-            return $valParcela;
+            }
+        }
+        //dd($fator);     
+        return $fator;
+
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param float $valor Valor do boleto
+     * @param integer $taxa em porcentagem ex. 1 (%)
+     * @param integer $periodo
+     * @return void
+     */
+    public static function getJuros(float $valor, int $periodo) {
+           
+            $m = ($valor * (0.033333 * $periodo))/100;
+            return $m;
     }
      
-    function jurosComposto($valor, $taxa, $parcelas) {
+    public static function jurosComposto($valor, $taxa, $parcelas) {
             $taxa = $taxa / 100;
-     
             $valParcela = $valor * pow((1 + $taxa), $parcelas);
             $valParcela = number_format($valParcela / $parcelas, 2, ",", ".");
      
             return $valParcela;
     }
 
-    function correcaoValor($valor, $vencimento){
-        //calcula os dias
-        $vencimento_formatado = strtotime($vencimento);
-        $margem = strtotime("+1 month", $vencimento_formatado);
-        $data__atual_formatada = strtotime(date('Y-m-d'));
-        $diferenca = (($data__atual_formatada - $vencimento_formatado)/86400)-1;
-
-        //calcula correcao
-        $taxa_acumulada_anterior= $this->getIPCA( date('Ym', $margem));
-        $taxa_acumulada= $this->getIPCA( date('Ym', $vencimento_formatado));
-        //dd(date('Ym', $margem));
-        //dd($taxa_acumulada_anterior);
-        dd((array)$taxa_acumulada_anterior[0]->resultados[0]->series[0]->serie);
-
-        /*
-        $valor_primeiro =  $taxa[0]/100+1;
-        $fator =  $serie[0]/100+1;
-        foreach($serie as $taxa){
-            $fator = $fator*$taxa
-        }
-        */
-     
-
-
-
-
-        return   $valor_taxa;
-        //
+    public static function getMulta($valor){
+        return $valor*0.02;
     }
+
+    
 
 
 }

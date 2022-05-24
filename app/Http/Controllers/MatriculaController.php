@@ -932,6 +932,46 @@ class MatriculaController extends Controller
 
     }
 
+    public function analiseFinanceira($id = null){
+        $matriculas_alvo = Array();
+        
+        if($id)
+            $matriculas_ativas = Matricula::select(['*','matriculas.id as matricula_id','inscricoes.id as inscricao_id', 'turmas.id as turma_id'])
+                                ->whereIn('matriculas.status',['ativa','pendente'])
+                                ->leftjoin('inscricoes','matriculas.id','=','inscricoes.matricula')//inscricao
+                                ->leftjoin('turmas','inscricoes.turma','=','turmas.id')//turmas
+                                ->where('matriculas.id',$id)
+                                ->get();
+        else
+            $matriculas_ativas = Matricula::select(['*','matriculas.id as matricula_id','inscricoes.id as inscricao_id', 'turmas.id as turma_id'])
+                                ->whereIn('matriculas.status',['ativa','pendente'])
+                                ->leftjoin('inscricoes','matriculas.id','=','inscricoes.matricula')//inscricao
+                                ->leftjoin('turmas','inscricoes.turma','=','turmas.id')//turmas
+                                ->where('turmas.local','85')
+                                ->get();
+        foreach($matriculas_ativas as $matricula){
+
+            $bolsa = \App\BolsaMatricula::where('matricula',$matricula->matricula_id)->first();
+
+            if(!$bolsa){
+
+                $lancamentos = \App\Lancamento::where('matricula',$matricula->matricula_id)->where('status',null)->count();
+                $mat_parcela = Matricula::find($matricula->matricula_id);
+                //dd($mat_parcela->getParcelas());
+
+                if($lancamentos != $mat_parcela->getParcelas())
+                    $matriculas_alvo[] = $matricula->matricula_id;
+            }
+            
+
+
+
+        }
+
+        
+        return  redirect('/secretaria/matricula/'.implode(',',$matriculas_alvo))->with(['info'=>'Linstando matrículas com número de parcelas divergentes na FESC 2.']);
+    }
+
     
 
 

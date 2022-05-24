@@ -265,7 +265,7 @@ class CobrancaController extends Controller
 	        $linha .= 'ATENÇÃO. Constatamos pendências em seu cadastro. Por favor, entre em contato: 3372-1308'."\n";
 
 	        foreach($devedores as $pessoax){
-	        	$pessoa = \App\Pessoa::find($pessoax->id);
+	        	$pessoa = \App\Pessoa::withTrashed()->find($pessoax->id);
 	        	$pessoa->celular = $pessoa->getCelular();
 	        	if($pessoa->celular == '-')
 					continue;

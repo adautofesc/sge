@@ -19,7 +19,7 @@ class Boleto extends Model
     }
 
     public function getNomePessoa(){
-        $pessoa = \App\Pessoa::find($this->pessoa);
+        $pessoa = \App\Pessoa::withTrashed()->find($this->pessoa);
         if(isset($pessoa->nome))
             return $pessoa->nome;
         else

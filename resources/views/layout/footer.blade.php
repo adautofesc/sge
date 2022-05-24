@@ -31,7 +31,7 @@
 <script>
     $(document).ready(function(){			
         setTimeout(function() {
-        $(".alert").hide("slow", function(){
+        $(".alert-dismissible").hide("slow", function(){
            
         });				
         }, 10000);			

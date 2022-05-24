@@ -11,7 +11,7 @@ class Inscricao extends Model
 	protected $table  = 'inscricoes';
     //
     public function getPessoaAttribute($value){
-		$pessoa=Pessoa::where('id',$value)->get(['id','nome'])->first();
+		$pessoa=Pessoa::withTrashed()->where('id',$value)->get(['id','nome'])->first();
 		return $pessoa;
 	}
 

@@ -39,7 +39,7 @@ class SecretariaController extends Controller
 			session('pessoa_atendimento',$id);
 		else
 			$id=session('pessoa_atendimento');		
-		$pessoa=Pessoa::find($id);
+		$pessoa=Pessoa::withTrashed()->find($id);
 		if(!$pessoa)
 			return redirect(asset('/secretaria/pre-atendimento'));
 		else
@@ -373,14 +373,15 @@ class SecretariaController extends Controller
 
 	public function viewMatricula($ids){
 		$array_matriculas = explode(',',$ids);
-		$matriculas = Matricula::whereIn('id',$array_matriculas)->get();
-		foreach($matriculas as $matricula){
+		$matriculas = Matricula::whereIn('id',$array_matriculas)->paginate(50);
+		foreach($matriculas as &$matricula){
 			$matricula->getInscricoes();
 			$matricula->pessoa_obj = \App\Pessoa::find($matricula->pessoa);
 			foreach($matricula->inscricoes as $inscricao){
 				if($inscricao->status == 'transferida')
 					$inscricao->transferencia = $inscricao->getTransferencia();
 			}
+			$matricula->lancamentos = \App\Lancamento::where('matricula',$matricula->matricula_id)->where('status',null)->count();
 		}
 		/*$matriculas = collect();
 		foreach($array_matriculas as $id){

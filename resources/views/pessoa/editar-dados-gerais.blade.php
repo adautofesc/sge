@@ -86,9 +86,12 @@
                                 <label class="col-sm-2 form-control-label text-xs-right"></label>
                                 <div class="col-sm-10 col-sm-offset-2"> 
                                     <input type="hidden" name="pessoa" value="{{$dados['id']}}">
+                                    <input type="hidden" name="action" id="input_action" value="edit">
                                     <button type="submit" name="btn_sub" value='1' class="btn btn-primary">Salvar</button>
-                                    <a href="#" class="btn btn-danger" onclick="excluirPessoa({{$dados['id']}})">Excluir Pessoa</a>
-                                   
+                                    <a href="#" class="btn btn-warning" onclick="excluirPessoa({{$dados['id']}})" title="Mantem os dados da pessoa mas oculta ela do sistema"> <i class="fa fa-trash"></i> Deletar Pessoa</a>
+                                    @if(\Auth::user()->pessoa == '19511')
+                                    <a href="#" class="btn btn-danger" onclick="excluirPessoaDefinitivo({{$dados['id']}})" title="Apaga completamente do sistema"> <i class="fa fa-times"></i> Excluir Pessoa</a>
+                                    @endif
                                    
                                     {{ csrf_field() }}
                                 </div>
@@ -101,7 +104,16 @@
 @section('scripts')
 <script>
     function excluirPessoa(pessoa){
-        alert('Recurso requer autorização.')
+        if(confirm('Deseja mesmo excluir esta pessoa do SGE?')){
+            $('#input_action').val('delete');
+            $('form').submit();
+        }
+    }
+    function excluirPessoaDefinitivo(pessoa){
+        if(confirm('DESEJA EXCLUIR COMPLETAMENTE ESSA PESSOA DO SISTEMA?')){
+            $('#input_action').val('exclude');
+            $('form').submit();
+        }
     }
 </script>
 @endsection

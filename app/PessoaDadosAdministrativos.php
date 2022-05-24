@@ -31,7 +31,7 @@ class PessoaDadosAdministrativos extends Model
 
 		$funcionarios=collect();
 		foreach($funcionarios_ri as $dado){
-			$pessoa = Pessoa::find($dado->pessoa);
+			$pessoa = Pessoa::withTrashed()->find($dado->pessoa);
 			$funcionarios->push($pessoa);
 		}
 		$funcionarios = $funcionarios->sortBy('nome');

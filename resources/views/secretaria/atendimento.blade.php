@@ -24,7 +24,9 @@
             <form class="form-inline" method="POST">
             {{csrf_field()}}
                 <div class="input-group"> 
+                    @if(!$pessoa->trashed())
                     <a href="#" class="btn btn-secondary btn-sm rounded-s" title="Registrar contato" data-toggle="modal" data-target="#modal-contato"><i class="fa fa-phone"></i></a>&nbsp;
+                    @endif
                     @if(isset($_GET['mostrar']))
                     &nbsp;<a href="?" class="btn btn-primary btn-sm rounded-s">Exibir ativos</a>
                     @else
@@ -37,7 +39,7 @@
         </div>
     </div>
 </div>
-
+@if(!$pessoa->trashed())
 <div class="modal fade in" id="modal-contato" style="display: none;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -86,6 +88,27 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+@endif
+@include('inc.errors')
+@if($pessoa->trashed())
+<div class="alert alert-danger">
+    <a href="#" class="close">&times;</a>
+    <strong title="Alguém apagou essa pessoa do sistema. Apenas a visualização dos dados estará disponível."><i class="fa fa-ban"></i> PESSOA DESATIVADA DO SISTEMA</strong>
+  </div>
+@endif
+@foreach($errosPessoa as $erros)
+<div class="alert alert-danger">
+  <a href="#" class="close" onclick="apagaErro({{$erros->id}});" >&times;</a>
+  <strong><i class="fa fa-warning"></i> ATENÇÃO:</strong> {{$erros->valor}}.
+</div>
+@endforeach
+@foreach($pendencias as $pendencia)
+<div class="alert alert-danger">
+  <a href="#" class="close" onclick="apagaPendencia({{$pendencia->id}})")>&times;</a>
+  <strong><i class="fa fa-warning"></i> ATENÇÃO:</strong> {{$pendencia->valor}}.
+</div>
+@endforeach
+
 <section class="section">
     <div class="row">
         <div class="col-xl-4 center-block">
@@ -96,13 +119,13 @@
                     </div>
                 </div>
                 <div class="card-block">
-                    @if($devedor == false)
+                    @if($devedor == false && $pessoa->trashed()==false)
                     <div><a href="{{asset('/secretaria/matricula/nova').'/'.$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-plus-circle "></i>  <small>Nova Matrícula</small></a></div>
                     <div><a href="/secretaria/matricula/renovar/{{$pessoa->id}}" class="btn btn-warning-outline col-xs-12 text-xs-left"><i class="fa fa-check-square-o"></i> <small> Renovar (Rematricula) </small> </a></div>
                     <div><a href="#" class="btn btn-secondary-outline col-xs-12 text-xs-left"><i class="fa fa-check-square-o"></i> <small> Certificados </small> </a></div>
                     @else 
                     <div><span class="text-danger text-center"> <i class="fa fa-warning"></i></span></div>
-                    <div><span class="text-danger"> <strong>Atenção:</strong> boletos em aberto. Regularize para liberar a matrícula. </span></div>
+                    <div><span class="text-danger"> <strong>Atenção:</strong> Pendências encontradas. Regularize para liberar a matrícula. </span></div>
                     <!--
                     <div><a href="#" class="btn btn-secondary col-xs-12 text-xs-left" title="Rematrículas encerradas."><i class="fa fa-check-square-o"></i> <small> Rematricula ENCERRADA </small> </a></div>
                     -->
@@ -152,19 +175,7 @@
         </div>
     </div>
 </section>
-@include('inc.errors')
-@foreach($errosPessoa as $erros)
-<div class="alert alert-danger alert-dismissible">
-  <a href="#" class="close" onclick="apagaErro({{$erros->id}});" >&times;</a>
-  <strong><i class="fa fa-warning"></i> ATENÇÃO:</strong> {{$erros->valor}}.
-</div>
-@endforeach
-@foreach($pendencias as $pendencia)
-<div class="alert alert-danger alert-dismissible">
-  <a href="#" class="close" onclick="apagaPendencia({{$pendencia->id}})")>&times;</a>
-  <strong><i class="fa fa-warning"></i> ATENÇÃO:</strong> {{$pendencia->valor}}.
-</div>
-@endforeach
+
 <section class="section">
     <div class="row">
         <div class="col-xl-12 center-block">

@@ -376,7 +376,9 @@ class SecretariaController extends Controller
 		$matriculas = Matricula::whereIn('id',$array_matriculas)->paginate(50);
 		foreach($matriculas as &$matricula){
 			$matricula->getInscricoes();
-			$matricula->pessoa_obj = \App\Pessoa::find($matricula->pessoa);
+			$matricula->pessoa_obj = \App\Pessoa::withTrashed()->find($matricula->pessoa);
+			//if(!$matricula->pessoa_obj)
+			//dd($matricula);
 			foreach($matricula->inscricoes as $inscricao){
 				if($inscricao->status == 'transferida')
 					$inscricao->transferencia = $inscricao->getTransferencia();

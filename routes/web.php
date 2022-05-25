@@ -608,7 +608,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	Route::middleware('liberar.recurso:18')->prefix('secretaria')->group(function(){
 		
 		Route::get('/','painelController@secretaria')->name('secretaria');
-		Route::get('analisar-matriculas', [MatriculaController::class,'analiseFinanceira']);
+		//Route::get('analisar-matriculas', [MatriculaController::class,'analiseFinanceira']);
 		Route::get('pre-atendimento','SecretariaController@iniciarAtendimento');
 		Route::post('pre-atendimento','SecretariaController@buscaPessoaAtendimento');
 		Route::get('atendimento','SecretariaController@atender');

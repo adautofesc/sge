@@ -233,11 +233,11 @@
                                 @foreach($periodos as $periodo)
                                 @if(isset($filtros['periodo']) && array_search($periodo->semestre.$periodo->ano,$filtros['periodo']) !== false)
                                 <label class="dropdown-item" onclick="window.location.replace('?filtro=periodo&valor={{$periodo->semestre.$periodo->ano}}&remove=1');" style="text-decoration: none;">
-                                    <i class="fa fa-check-circle-o icon"></i> {{$periodo->semestre.'º Sem. '.$periodo->ano}}
+                                    <i class="fa fa-check-circle-o icon"></i> {{$periodo->semestre>0?$periodo->semestre.'º Sem. '.$periodo->ano:' '.$periodo->ano}}
                                 </label> 
                                 @else
                                 <label class="dropdown-item" onclick="window.location.replace('?filtro=periodo&valor={{$periodo->semestre.$periodo->ano}}');" style="text-decoration: none;">
-                                    <i class="fa fa-circle-o icon"></i> {{$periodo->semestre.'º Sem. '.$periodo->ano}}
+                                    <i class="fa fa-circle-o icon"></i>  {{$periodo->semestre>0?$periodo->semestre.'º Sem. '.$periodo->ano:' '.$periodo->ano}}
                                 </label> 
                                 @endif
                                 @endforeach

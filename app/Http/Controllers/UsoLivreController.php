@@ -33,17 +33,15 @@ class UsoLivreController extends Controller
        return redirect()->back()->with(['success'=>'Registro '. $r->inicio.' gravado']);
     }
 
-    public function concluir($id){
-        $itens = explode(';',$id);
-        UsoLivre::whereIn("id", $itens)->update(["hora_termino" => date('H:i')]);
-        /*
-        foreach($itens as $item){
-            $uso = UsoLivre::find($item);
-            if(isset($uso->id)){
-                $uso->hora_termino = date('H:i');
-                $uso->save();
-            }
-        }*/
+    public function concluir(Request $r){
+        
+        $itens = explode(';',$r->usuarios_conclusao);
+        if($r->atividade_fim)
+            UsoLivre::whereIn("id", $itens)->update(["hora_termino" => $r->termino,"obs"=>$r->obs,'atividade' => $r->atividade_fim]);
+        else
+            UsoLivre::whereIn("id", $itens)->update(["hora_termino" => $r->termino,"obs"=>$r->obs]);
+
+        return redirect()->back()->with(['success'=>'Iten(s) atualizados com sucesso.']);
     }
     public function excluir($id){
         $itens = explode(';',$id);

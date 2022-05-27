@@ -9,6 +9,8 @@ use App\PessoaDadosAdministrativos;
 use App\Local;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
+use Illuminate\Support\Arr;
+
 ini_set('max_execution_time', 300);
 
 class RelatorioController extends Controller
@@ -440,7 +442,7 @@ Event::where('status' , 0)
             }
 
         }
-        $alunos = array_values(array_sort($alunos, function ($value) {
+        $alunos = array_values(Arr::sort($alunos, function ($value) {
             return $value['nome'];
         }));
 

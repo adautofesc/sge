@@ -10,10 +10,11 @@ use Carbon\Carbon;
 
 class JornadaDocentes extends Controller
 {
-    public function relatorioGeral(Request $r)
+    public function relatorioGeral($ano = '2022')
     {
         
         $dias = ['seg','ter','qua','qui','sex','sab'];
+        $ano_anterior = $ano-1;
         
         $educadores = PessoaDadosAdministrativos::getFuncionarios('Educador');
         $educadores->pull(29);
@@ -25,10 +26,15 @@ class JornadaDocentes extends Controller
             $educador->carga_ativa = Carbon::createFromTime(0, 0, 0, 'America/Sao_Paulo'); 
             $educador->jornadas = collect();
 
-            $educador->turmas = \App\Http\Controllers\TurmaController::listarTurmasDocente($educador->id,0);
-            $jornadas = \App\Jornada::where('pessoa',$educador->id)->get();
-            $jornadas_ativas = $jornadas->where('status','ativa');
-            $carga = \App\PessoaDadosAdministrativos::where('dado','carga_horaria')->where('pessoa',$educador->id)->first();
+
+            $educador->turmas = \App\Http\Controllers\TurmaController::listarTurmasDocente($educador->id,'0'.$ano);
+            $jornadas = \App\Jornada::where('pessoa',$educador->id)->where('inicio','>',$ano_anterior.'-12-01')->where('termino','>=',$ano.'-12-01')->get();
+            if($ano == date('Y'))
+                $jornadas_ativas = $jornadas->where('status','ativa');
+            else
+                $jornadas_ativas = $jornadas->whereIn('status',['ativa','encerrada']);
+
+            $carga = \App\PessoaDadosJornadas::where('pessoa',$educador->id)->where('inicio','>',$ano_anterior.'-12-01')->where('termino','>=',$ano.'-12-01')->get();
 
             
             if($carga)

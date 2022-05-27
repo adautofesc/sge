@@ -266,7 +266,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	Route::prefix('uso-livre')->group(function(){
 		Route::get('/',[UsoLivreController::class,'index']);
 		Route::post('/',[UsoLivreController::class,'store']);
-		route::get('/concluir/{var}',[UsoLivreController::class,'concluir']);
+		route::post('/concluir',[UsoLivreController::class,'concluir']);
 		route::get('/excluir/{var}',[UsoLivreController::class,'excluir']);
 
 	});
@@ -693,7 +693,8 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('bolsas-fpm','RelatorioController@bolsasFuncionariosMunicipais');
 		Route::get('bolsas','RelatorioController@bolsas');
 		Route::get('tce-alunos/{ano?}','RelatorioController@tceAlunos');
-		Route::get('tce-educadores/{ano?}','RelatorioController@tceEducadores');
+		Route::get('tce-educadores/{ano?}',[JornadaDocentes::class,'relatorioGeral']);
+		//Route::get('tce-educadores/{ano?}','RelatorioController@tceEducadores');
 		Route::get('tce-turmas/{ano?}','RelatorioController@tceTurmas');
 		Route::get('tce-turmas-alunos/{ano?}','RelatorioController@tceTurmasAlunos');
 		Route::get('tce-vagas/{ano?}','RelatorioController@tceVagas');
@@ -701,7 +702,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('bolsistas-com-3-faltas','RelatorioController@bolsistasComTresFaltas');
 		Route::get('celulares','PessoaController@relatorioCelulares');
 		Route::get('receita-anual-programa/{ano}/{mes?}','Reports\ReceitaAnualReportController@receitaPorPrograma');
-		Route::get('carga-docentes', [JornadaDocentes::class,'relatorioGeral']); //rotas inteligentes
+		Route::get('carga-docentes/{ano?}', [JornadaDocentes::class,'relatorioGeral']); //rotas inteligentes
 		Route::get('salas',  [SalaController::class,'relatorioOcupacao']); 
 		
 

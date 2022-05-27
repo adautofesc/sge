@@ -169,11 +169,11 @@
                                 @foreach($semestres as $semestre)
                                 @if(isset($semestre_selecionado) && array_search($semestre->semestre.$semestre->ano,[$semestre_selecionado]) !== false)
                                 <a class="dropdown-item" href="/docentes/{{$docente->id}}/{{$semestre->semestre.$semestre->ano}}" style="text-decoration: none;">
-                                    <i class="fa fa-check-circle-o icon"></i> {{$semestre->semestre.'º Sem. '.$semestre->ano}}
+                                    <i class="fa fa-check-circle-o icon"></i> {{$semestre->semestre>0?$semestre->semestre.'º Sem. '.$semestre->ano:' '.$semestre->ano}}
                                 </a> 
                                 @else
                                 <a class="dropdown-item" href="/docentes/{{$docente->id}}/{{$semestre->semestre.$semestre->ano}}" style="text-decoration: none;">
-                                    <i class="fa fa-circle-o icon"></i> {{$semestre->semestre.'º Sem. '.$semestre->ano}}
+                                    <i class="fa fa-circle-o icon"></i> {{$semestre->semestre>0?$semestre->semestre.'º Sem. '.$semestre->ano:' '.$semestre->ano}}
                                 </a> 
                                 @endif
                                 @endforeach

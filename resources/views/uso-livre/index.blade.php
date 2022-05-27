@@ -115,7 +115,7 @@
                                 <select name="local" class="form-control" placeholder="selecione">
                                   
                                   @foreach($locais as $local)
-                                  <option value="{{$local->id_sala}}">{{$local->local}}</option>
+                                  <option value="{{$local->id_local}}">{{$local->local}}</option>
                                   @endforeach
                   
                                 </select>
@@ -260,13 +260,24 @@
 
 function selecionar(id){
     item = id;
+    $('input[name="usuarios_conclusao"]').val(id);
+    const d = new Date()
+    let hora = (d.getHours()).toString();
+    let minuto = '' + d.getMinutes();
+    
+    if(hora < 10)
+        hora = "0" + hora;
+    if(minuto < 10)
+        minuto = "0" + minuto;
+    $("#encerramento").val(hora + ':' + minuto);
 }
 function lote(acao){
-    item='';
+    selecionar('');
     let itens =   $('input[name="uso_livre"]:checked');
     itens.each(function(i){
-        item = item+$(this).val()+';';
+        item = item+$(this).val()+';';      
     })
+    $('input[name="usuarios_conclusao"]').val(item);
     if(itens.length>0 && item != ''){
         if(acao == 'concluir')
             $('#modal-concluir-atendimento').modal('show');

@@ -208,16 +208,7 @@ class painelController extends Controller
         }
 
         $docente = \App\Pessoa::withTrashed()->find($id);
-      
-       
-
-    
-
         $semestres = \App\classes\Data::semestres();
-
-        //dd($ghoras_turmas);
-        
-                    
         
         return view('docentes.home')
             ->with('turmas',$turmas)

@@ -120,31 +120,59 @@ Class Data
             return $anos;
         }
         public static function semestres(){
-            $semestres = \DB::select( \DB::raw('select CASE WHEN month(data_termino)<=7 THEN 1 else 2 end as semestre,year(data_termino)as ano FROM turmas where deleted_at is null GROUP BY semestre,ano order by ano DESC, semestre DESC'));
+            //$semestres = \DB::select( \DB::raw('select CASE WHEN month(data_termino)<=7 THEN 1 else 2 end as semestre,year(data_termino)as ano FROM turmas where deleted_at is null GROUP BY semestre,ano order by ano DESC, semestre DESC'));
+            $semestres = collect();
+            for($ano=2018;$ano<=date('Y');$ano++){
+                for($i=0;$i<3;$i++){
+                    $semestre = new \stdClass;
+                    $semestre->semestre = $i;
+                    $semestre->ano = $ano;
+                    $semestres->push($semestre);
+                }
+            }
             return $semestres;
         }
 
         public static function periodoSemestre($valor){
-            if($valor==0){
-				if(date('m')<8)
-					$semestre = 1;
-				else
-					$semestre = 2;
-				$ano = date('Y');
-			}
-			else{
-				$semestre = substr($valor, 0,1);
-            	$ano= substr($valor, 1,4);
-			}    
             
 
-            if($semestre == 1)
-                $datas = [($ano-1).'-11-20%', $ano.'-06-30%'];
-            else
-                $datas = [$ano.'-07-01%',$ano.'-11-19%'];
+            if($valor==0){
 
+                if(date('m')<8)
+                        $semestre = 1;
+                else
+                        $semestre = 2;
+                $ano = date('Y');
+            }
+            else{
+                    $semestre = substr($valor, 0,1);
+                    $ano= substr($valor, 1,4);
+            }  
+            
+           
+        
+
+            switch($semestre){
+
+                case 0:
+                    $datas = [($ano-1).'-11-20%', $ano.'-11-19%']; //ano td
+                    break;
+                
+                case 1:
+                    $datas = [($ano-1).'-11-20%', $ano.'-06-30%']; //1º semestre
+                    break;
+                
+                case 2:
+                    $datas = [$ano.'-07-01%',$ano.'-11-19%']; //2º semestre
+                    break;
+                
+                default :
+                    $datas = [($ano-1).'-11-20%', $ano.'-11-19%']; // padrão ano td.
+                    
+            }
+
+            //dd($datas);
             return $datas;
-
 
         }
 

@@ -513,11 +513,19 @@ class painelController extends Controller
     }
     
     public function testarClasse(){
+
+        
+        dd('Testador =)');
+
+
+
+        /*
         $routeCollection = \Illuminate\Support\Facades\Route::getRoutes();
 
         foreach ($routeCollection as $value) {
             echo $value->uri."<br>";
         } 
+
 
 
         //\App\DividaAtiva::gerarLivroCorrente();

@@ -10,9 +10,11 @@ use Carbon\Carbon;
 
 class JornadaDocentes extends Controller
 {
-    public function relatorioGeral($ano = '2022')
+    public function relatorioGeral($ano = null)
     {
-        
+        if(!$ano)
+            $ano = date('Y');
+
         $dias = ['seg','ter','qua','qui','sex','sab'];
         $ano_anterior = $ano-1;
         
@@ -27,20 +29,42 @@ class JornadaDocentes extends Controller
             $educador->jornadas = collect();
 
 
-            $educador->turmas = \App\Http\Controllers\TurmaController::listarTurmasDocente($educador->id,'0'.$ano);
-            $jornadas = \App\Jornada::where('pessoa',$educador->id)->where('inicio','>',$ano_anterior.'-12-01')->where('termino','>=',$ano.'-12-01')->get();
-            if($ano == date('Y'))
-                $jornadas_ativas = $jornadas->where('status','ativa');
-            else
-                $jornadas_ativas = $jornadas->whereIn('status',['ativa','encerrada']);
+            //$educador->turmas = \App\Http\Controllers\TurmaController::listarTurmasDocente($educador->id,'0'.$ano);
+           
+            if($ano == date('Y')){
+                $educador->turmas = \App\Turma::where('professor',$educador->id)->where('data_inicio','>',$ano.'-01-01')->where('data_termino','>',date('Y-m-d'))->where('status','iniciada')->get();
+                $jornadas_ativas = \App\Jornada::where('pessoa',$educador->id)->where('status','ativa')->get();
+                $carga = \App\PessoaDadosJornadas::where('pessoa',$educador->id)
+                ->where('termino', null)
+                ->orwhere('termino','0000-00-00')
+                ->orderByDesc('id')->first();
+            }
+            else{
+                $educador->turmas = \App\Turma::where('professor',$educador->id)->whereBetween('data_termino',[$ano.'-11-01',$ano.'-12-31'])->where('status','encerrada')->get();
+                $jornadas_ativas = \App\Jornada::where('pessoa',$educador->id)
+                                                ->whereIn('status',['ativa','encerrada'])
+                                                ->where('inicio','<=',$ano.'-12-01')
+                                                ->where(function($query) use($ano){
+                                                        return $query->where('termino','>=',$ano.'-12-01')
+                                                        ->orwhere('termino',null);})
+                                                ->orderByDesc('id')->get();
+                $carga = \App\PessoaDadosJornadas::where('pessoa',$educador->id)
+                ->where('inicio','<=',$ano.'-12-01')
+                ->where(function($query) use($ano){
+                        return $query->where('termino','>=',$ano.'-12-01')
+                        ->orwhere('termino',null)
+                        ->orwhere('termino','0000-00-00');})
+                ->orderByDesc('id')->first();
+            }
 
-            $carga = \App\PessoaDadosJornadas::where('pessoa',$educador->id)->where('inicio','>',$ano_anterior.'-12-01')->where('termino','>=',$ano.'-12-01')->get();
+            
 
             
             if($carga)
-                $educador->carga = $carga->valor;
+                $educador->carga = $carga->carga;
             else
                 $educador->carga = 0;
+
 
 
 
@@ -132,6 +156,7 @@ class JornadaDocentes extends Controller
 
         return view('relatorios.jornada-docentes')
             ->with('dias',$dias)
+            ->with('ano',$ano)
             ->with('educadores',$educadores);
 
     }

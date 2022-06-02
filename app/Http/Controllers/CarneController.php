@@ -355,11 +355,14 @@ class CarneController extends Controller
 			
 			if($data_matricula>$data_ini_curso){
 				
+				
 				//gerar boletos para pessoas que entram em cursos já iniciados
 				if(date('d') >= $this::data_corte ){
 					
-					$primeiro_vencimento->modify('+1 month');
-					$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$primeiro_vencimento->format('m'),$this::vencimento);
+					
+					//$primeiro_vencimento->modify('+1 month');
+					$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$primeiro_vencimento->format('m')+1,$this::vencimento);
+					
 
 				}
 				else{
@@ -415,6 +418,7 @@ class CarneController extends Controller
 													->whereMonth('boletos.vencimento','=', $primeiro_vencimento->format('m'))
 													->whereYear('boletos.vencimento','=', $primeiro_vencimento->format('Y'))
 													->get();
+													
 
 				}
 

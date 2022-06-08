@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-6">
             <h3 class="title">Departamento de Docência da FESC</h3>
-            <p class="title-description"><strong>Prof.:</strong> {{$docente->nome}} | <strong>{{$carga_ativa->floatDiffInHours(\Carbon\Carbon::Today())}}h/{{isset($carga->valor)?$carga->valor:'00'}}h</strong>  </p>
+            <p class="title-description"><strong>Prof.:</strong> {{$docente->nome}} | <strong>{{$carga_ativa->floatDiffInHours(\Carbon\Carbon::Today())}}h/{{isset($carga->carga)?$carga->carga:'00'}}h</strong>  </p>
         </div>
     </div>
 </div>

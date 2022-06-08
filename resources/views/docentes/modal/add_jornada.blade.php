@@ -12,15 +12,15 @@
             <div class="modal-body">
                 <div class="form-group row"> 
                     <label class="col-sm-12 form-control-label text-warning text-xs-center" >
-                        <i class="fa fa-warning"></i> Não há verificação de ocupação de sala neste cadastro.
+                        <i class="fa fa-warning"></i> Não há verificação de ocupação de sala ou conflito de horários neste cadastro.
                     </label>
                 </div>
 
                 <div class="form-group row"> 
-                    <label class="col-sm-2 form-control-label text-xs-right">
+                    <label class="col-sm-2 text-xs-right">
                         Atividade
                     </label>
-                    <div class="col-sm-6"> 
+                    <div class="col-sm-9"> 
                         <select class="c-select form-control boxed" name="tipo" required>
                             <option>Selecione uma opção</option>
                             <option value="Aula" title="Utilizado para turmas posteriores ou mudanças de horários">Aula - turma a definir</option>
@@ -30,6 +30,7 @@
                             <option value="Translado">Translado</option>
                             <option value="Projeto">Projeto</option>
                             <option value="Uso Livre">Uso Livre</option>
+                            <option value="Home Office">Home Office</option>
                            
                 
                         </select> 
@@ -37,14 +38,20 @@
                 </div>
 
                 <div class="form-group row"> 
-                    <label class="col-sm-2 form-control-label text-xs-right">
-                        Data de início
+                    <label class="col-sm-2 text-xs-right">
+                        Início
                     </label>
-                    <div class="col-sm-2"> 
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
-                            <input type="date" class="form-control boxed" name="dt_inicio" placeholder="dd/mm/aaaa" required> 
-                        </div>
+                    <div class="col-sm-4">                         
+                        <input type="date" class="form-control boxed" name="dt_inicio" placeholder="Início" required> 
+                    </div>
+                
+                    <label class="col-sm-1 text-xs-right">
+                        Fim
+                    </label>
+                    <div class="col-sm-4"> 
+                        
+                            <input type="date" class="form-control boxed" name="dt_termino" placeholder="Termino" required> 
+                        
                     </div>
                     
                 </div>
@@ -53,7 +60,7 @@
                     <label class="col-sm-2 form-control-label text-xs-right">
                         Local
                     </label>
-                    <div class="col-sm-3"> 
+                    <div class="col-sm-4 "> 
                         <select class="c-select form-control boxed" name="unidade" onchange="carregarSalas(this.value)" required >
                             <option>Selecione ums unidade de atendimento</option>
                             <option value="84">FESC 1</option>
@@ -70,7 +77,7 @@
                     <label class="col-sm-2 form-control-label text-xs-right">
                         Sala
                     </label>
-                    <div class="col-sm-2"> 
+                    <div class="col-sm-3"> 
                         <select class="c-select form-control boxed" name="sala" id="select_sala" required >
                             <option>Selecione um local antes.</option>
                         

@@ -139,22 +139,7 @@
                                                         <div class="action dropdown pull-right "> 
                                                             <div id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor:pointer;">
                                                                 <i class="fa fa-filter"></i> <span >Tipo</span> 
-                                                            </div>
-                                                            <!--<div class="dropdown-menu" aria-labelledby="dropdownMenu2" id="filtro2" style="padding-left:10px;"> 
-                                                                
-                                                                    <label>
-                                                                        <input class="checkbox" type="checkbox" onclick="parado();">
-                                                                        <span>Option one</span>
-                                                                    </label>
-                                                                    <br>
-                                                                    <label>
-                                                                        <input class="checkbox" type="checkbox" onclick="parado();">
-                                                                        <span>Option two</span>
-                                                                    </label>
-                                                                    <br>
-                                                                    <button class="btn btn-sm btn-primary rounded-s">Aplicar</button>
-                                                                
-                                                            </div>-->
+                                                            </div>   
                                                         </div>
                                                     </div>
                                                     <div class="item-col item-col-header ">

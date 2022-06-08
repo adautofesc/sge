@@ -8,6 +8,16 @@ use Auth;
 
 class JornadaController extends Controller
 {
+    public function indexModal(){
+        if(isset($p))
+            $jornadas = Jornada::where('pessoa',$p)->paginate('20');       
+        else
+            $jornadas =  Jornada::where('pessoa', \Auth::user()->pessoa)->paginate('20');
+
+        return view('docentes.modal.index-jornada',compact('jornadas'));
+        
+    }
+
     public function cadastrar(Request $r)
     {
         $r->validate([
@@ -20,6 +30,7 @@ class JornadaController extends Controller
         $jornada->hora_inicio = $r->hr_inicio;
         $jornada->hora_termino = $r->hr_termino;
         $jornada->inicio = $r->dt_inicio;
+        $jornada->termino = $r->dt_termino;
         $jornada->tipo = $r->tipo;
         $jornada->status = 'solicitada';
         if(in_array('17', Auth::user()->recursos))

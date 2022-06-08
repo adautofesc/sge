@@ -9,5 +9,8 @@ use App\PessoaDadosAdministrativos;
 
 class PessoaDadosJornadasController extends Controller
 {
-    //
+    public function modalCargaDocente($pessoa = 0){
+        return 'oi';
+
+    }
 }

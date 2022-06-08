@@ -23,7 +23,7 @@ class UsoLivreController extends Controller
         $ul = new UsoLivre;
         $ul->atendido = $r->pessoa;
         $ul->responsavel = Auth::user()->pessoa;
-        $ul->sala = $r->local;
+        $ul->local = $r->local;
         $ul->hora_inicio = $r->inicio;
         $ul->inicio = $r->data;
         $ul->atividade = $r->atividade;

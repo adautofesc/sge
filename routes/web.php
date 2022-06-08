@@ -12,10 +12,12 @@
 */
 
 use App\Http\Controllers\AulaController;
+use App\Http\Controllers\JornadaController;
 use App\Http\Controllers\Reports\JornadaDocentes;
 use App\Http\Controllers\SalaController;
 use App\Http\Controllers\UsoLivreController;
 use App\Http\Controllers\MatriculaController;
+use App\Http\Controllers\PessoaDadosJornadasController;
 
 Route::get('/', 'painelController@index');
 
@@ -268,6 +270,11 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::post('/',[UsoLivreController::class,'store']);
 		route::post('/concluir',[UsoLivreController::class,'concluir']);
 		route::get('/excluir/{var}',[UsoLivreController::class,'excluir']);
+
+	});
+
+	Route::middleware('liberar.recurso:17')->prefix('jornadas')->group(function(){
+		Route::get('index-modal/{p?}', [JornadaController::class,'indexModal']);
 
 	});
 
@@ -573,7 +580,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('/','painelController@pedagogico');
 		//Turmas
 		Route::prefix('turmas')->group(function(){
-			Route::get('cadastrar','TurmaController@create')->name('turmas.cadastrar');
+			Route::get('cadastrar','TurmaController@create');
 			Route::post('cadastrar','TurmaController@store');
 			Route::post('recadastrar','TurmaController@storeRecadastro');
 			Route::get('/','TurmaController@index');
@@ -589,7 +596,7 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::get('importar', function(){ return view('pedagogico.turma.upload');});
 			Route::post('importar', 'TurmaController@uploadImportaTurma' );
 			Route::post('processar-importacao', 'TurmaController@processarImportacao');
-			Route::get('expiradas','TurmaController@processarTurmasExpiradas')->name('turmas.expiradas');
+			Route::get('expiradas','TurmaController@processarTurmasExpiradas');
 			Route::get('modificar-requisitos/{id}','RequisitosController@editRequisitosTurma');
 			Route::post('turmas-requisitos','RequisitosController@editRequisitosTurma');
 			Route::post('modificar-requisitos/{id}','RequisitosController@storeRequisitosTurma');
@@ -715,9 +722,19 @@ Route::middleware(['auth','login']) ->group(function(){
 	//Docentes
 	
 	Route::middleware('liberar.recurso:13')->prefix('docentes')->group(function(){
-		Route::get('/{id?}/{semestre?}','painelController@docentes');
+		
+		Route::get('docente/{id?}/{semestre?}','painelController@docentes');
 		Route::get('turmas-professor', 'TurmaController@listarProfessores');
 		Route::post('turmas-professor', 'TurmaController@turmasProfessor');
+		
+		
+	
+
+		Route::get('jornadas/{educador?}',[JornadaController::class,'modalJornadaDocente']);
+		Route::get('cargas/{educador?}',[PessoaDadosJornadaController::class,'modalCargaDocente']);
+		
+
+		
 		
 		Route::prefix('frequencia')->group( function(){
 			Route::get('listar/{turma}','FrequenciaController@listaChamada');

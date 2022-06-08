@@ -59,6 +59,9 @@
 	margin-left: 1rem;
 	line-height: 2rem;
 }
+.posicao{	
+	font-size: 11px;
+}
 
 </style>
 </head>
@@ -90,7 +93,7 @@
 		<div class="title-block">
 			<center>
             <h3 class="title"> Relatório de Jornada dos Educadores</h3>
-			<h5 class="title"> Relatório geral 2022
+			<h5 class="title"> Relatório geral {{$ano}} <br><br> <span class="posicao">Posição em 01/12/{{$ano}} - emitido em {{date("d/m/Y H:i")}}</span>
 				
             </h5></center>
         </div>

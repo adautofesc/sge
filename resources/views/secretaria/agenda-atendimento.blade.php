@@ -241,7 +241,7 @@
                         
 
                         });
-                        namelist+='<li class="item item-list-header hidden-sm-down"><a href="#">Cadastrar</a></li>';
+                        
                         //console.log(namelist);
                         $("#listapessoas").html(namelist).show();
 

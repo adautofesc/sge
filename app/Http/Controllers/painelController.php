@@ -123,7 +123,10 @@ class painelController extends Controller
         $jornadas = \App\Jornada::where('pessoa',$id)->get();
         $jornadas_ativas = $jornadas->where('status','ativa');
         $locais = \App\Local::select(['id','nome'])->orderBy('nome')->get();
-        $carga = \App\PessoaDadosAdministrativos::where('dado','carga_horaria')->where('pessoa',$id)->first();
+        $carga = \App\PessoaDadosJornadas::where('pessoa',$id)
+                ->where('termino', null)
+                ->orwhere('termino','0000-00-00')
+                ->orderByDesc('id')->first();
         $ghoras_turmas = array();
         $ghoras_HTP = array();
         $ghoras_projetos = array();

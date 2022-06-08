@@ -50,7 +50,7 @@
                     </label>
                     <div class="col-sm-4"> 
                         
-                            <input type="date" class="form-control boxed" name="dt_termino" placeholder="Termino" required> 
+                            <input type="date" class="form-control boxed" name="dt_termino" placeholder="Termino"> 
                         
                     </div>
                     

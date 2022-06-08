@@ -32,9 +32,16 @@ class JornadaController extends Controller
         $jornada->inicio = $r->dt_inicio;
         $jornada->termino = $r->dt_termino;
         $jornada->tipo = $r->tipo;
-        $jornada->status = 'solicitada';
-        if(in_array('17', Auth::user()->recursos))
-            $jornada->status = 'ativa';
+
+        if($jornada->termino)
+            $jornada->status = 'encerrada';
+        else{
+            $jornada->status = 'solicitada';
+
+            if(in_array('17', Auth::user()->recursos))
+                $jornada->status = 'ativa';
+        }
+            
 
         $jornada->save();
 

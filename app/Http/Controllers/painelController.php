@@ -120,13 +120,18 @@ class painelController extends Controller
         //$carga_ativa = 0;
 
         $turmas = \App\Http\Controllers\TurmaController::listarTurmasDocente($id,$semestre);
+        
         $jornadas = \App\Jornada::where('pessoa',$id)->get();
         $jornadas_ativas = $jornadas->where('status','ativa');
+
         $locais = \App\Local::select(['id','nome'])->orderBy('nome')->get();
+        
         $carga = \App\PessoaDadosJornadas::where('pessoa',$id)
-                ->where('termino', null)
-                ->orwhere('termino','0000-00-00')
-                ->orderByDesc('id')->first();
+                ->where(function($query){
+                    $query->where('termino', null)->orwhere('termino','0000-00-00');
+                })
+                ->orderByDesc('id')
+                ->first();
         $ghoras_turmas = array();
         $ghoras_HTP = array();
         $ghoras_projetos = array();
@@ -134,7 +139,7 @@ class painelController extends Controller
         $ghoras_outros = array();
         $glocais = array();
 
-        //dd($jornadas);
+        //dd($carga);
 
         foreach($turmas as $turma){
             foreach($turma->dias_semana as $dia){
@@ -177,6 +182,7 @@ class painelController extends Controller
             if(!in_array($turma->local->sigla,$glocais))
                 $glocais[] = $turma->local->sigla;
         }
+        //dd($carga_ativa->floatDiffInHours(\Carbon\Carbon::Today()));
         foreach($jornadas_ativas as $jornada){
             foreach($jornada->dias_semana as $dia){
                 $horarios[$dia][substr($jornada->hora_inicio,0,2)][substr($jornada->hora_inicio,3,2)] = $jornada;

@@ -35,8 +35,9 @@ class JornadaDocentes extends Controller
                 $educador->turmas = \App\Turma::where('professor',$educador->id)->where('data_inicio','>',$ano.'-01-01')->where('data_termino','>',date('Y-m-d'))->where('status','iniciada')->get();
                 $jornadas_ativas = \App\Jornada::where('pessoa',$educador->id)->where('status','ativa')->get();
                 $carga = \App\PessoaDadosJornadas::where('pessoa',$educador->id)
-                ->where('termino', null)
-                ->orwhere('termino','0000-00-00')
+                ->where(function($query){
+                    $query->where('termino', null)->orwhere('termino','0000-00-00');
+                })
                 ->orderByDesc('id')->first();
             }
             else{

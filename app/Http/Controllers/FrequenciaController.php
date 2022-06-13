@@ -113,7 +113,7 @@ class FrequenciaController extends Controller
                 \App\Inscricao::addConceito($key,$value);
             }
         }
-        return redirect(asset("/docentes"))->with('success','Dados da turma '.$r->turma.' gravados com sucesso.');
+        return redirect(asset("/docentes/docente"))->with('success','Dados da turma '.$r->turma.' gravados com sucesso.');
         
 
     }
@@ -199,7 +199,7 @@ class FrequenciaController extends Controller
         $aula->status = 'executada';
         $aula->save();
         
-        return redirect(asset('/docentes'))->withErrors(['Chamada registrada.']);
+        return redirect(asset('/docentes/docente'))->withErrors(['Chamada registrada.']);
 
     }
 

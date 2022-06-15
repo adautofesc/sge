@@ -1063,7 +1063,7 @@ class TurmaController extends Controller
         
         $turmas = explode(',', $r->turmas);
 
-        //dd($turmas);
+        
         foreach($turmas as $turma_id){
 
             if($turma_id>0)
@@ -1102,6 +1102,8 @@ class TurmaController extends Controller
                 $novaturma->local = $turma->local->id;
             if($r->sala> 0 )
                 $novaturma->sala = $r->sala;
+            else
+                $novaturma->sala = $turma->sala;
 
             if($r->parceria > 0 )
                 $novaturma->parceria = $r->parceria;
@@ -1161,6 +1163,8 @@ class TurmaController extends Controller
             $novaturma->status = 'lancada';
             $novaturma->status_matriculas = 'fechada';
 
+            //dd($novaturma);
+
             $novaturma->save();
             LogController::registrar('turma',$novaturma->id,'Turma criada a partir da turma '.$turma->id, \Auth::user()->pessoa);
             LogController::registrar('turma',$turma->id,'Turma relançada sobre o código '.$novaturma->id, \Auth::user()->pessoa);
@@ -1170,7 +1174,7 @@ class TurmaController extends Controller
                 $novo_requisito = new CursoRequisito;
                 $novo_requisito->para_tipo = 'turma';
                 $novo_requisito->curso = $novaturma->id;
-                $novo_requisito->requisito = $requisito->requisito;
+                $novo_requisito->requisito = $requisito->requisito->id;
                 $novo_requisito->obrigatorio = $requisito->obrigatorio;
                 $novo_requisito->save();
             }

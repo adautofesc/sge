@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CursoRequisito extends Model
 {
     //
+    public $timestamps = false;
     protected $table  = 'cursos_requisitos';
 
     public function curso(){

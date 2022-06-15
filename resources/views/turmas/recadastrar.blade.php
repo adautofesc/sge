@@ -86,7 +86,7 @@
 			</label>
 			<div class="col-sm-6"> 
 				<select class="c-select form-control boxed" name="unidade" onchange="carregarSalas(this.value)" required>
-					<option>Selecione uma unidade de atendimento</option>
+					<option value="0">Selecione uma unidade de atendimento</option>
 					@if(isset($dados['unidades']))
 					@foreach($dados['unidades'] as $unidade)
 					<option value="{{$unidade->id}}">{{$unidade->nome}}</option>
@@ -101,7 +101,7 @@
 			</label>
 			<div class="col-sm-6"> 
 				<select class="c-select form-control boxed" name="sala" id="select_sala" required>
-					<option>Selecione uma unidade de atendimento</option>
+					<option value="0">Selecione uma unidade de atendimento</option>
 					@if(isset($dados['salas']))
 					@foreach($dados['salas'] as $sala)
 					<option value="{{$sala->id}}">{{$sala->nome}}</option>
@@ -177,7 +177,7 @@
 			<div class="col-sm-3"> 
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
-					<input type="date" class="form-control boxed" name="dt_inicio" placeholder="dd/mm/aaaa" > 
+					<input type="date" class="form-control boxed" name="dt_inicio" placeholder="dd/mm/aaaa" required> 
 				</div>
 			</div>
 		</div>
@@ -188,7 +188,7 @@
 			<div class="col-sm-3"> 
 				<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
-					<input type="date" class="form-control boxed" name="dt_termino" placeholder="dd/mm/aaaa" > 
+					<input type="date" class="form-control boxed" name="dt_termino" placeholder="dd/mm/aaaa" required> 
 				</div>
 			</div>
 		</div>
@@ -243,7 +243,7 @@
 			</label>
 			<div class="col-sm-1"> 
 				<div class="input-group">
-					<input type="number" class="form-control boxed" name="parcelas" value="" required> 
+					<input type="number" class="form-control boxed" name="parcelas" value=""> 
 				</div>
 			</div>
 			

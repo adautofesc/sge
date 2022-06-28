@@ -532,7 +532,9 @@ Event::where('status' , 0)
             ->with('educadores',$educadores);
     }
 
-    public function tceVagas($ano = 2020){
+    public function tceVagas($ano = null){
+        if(!$ano)
+            $ano = date('Y');
         
         $vagas = array();
         $ocupacao = array();
@@ -563,6 +565,30 @@ Event::where('status' , 0)
                                                         ->sum('matriculados');
         
             }
+
+            switch($ano){
+                case '2019' :
+                    $vagas[3] = 1507;
+                    $vagas[2] = 1159;
+                    $vagas[1] = 873;
+                    $vagas[4] = 225;
+                    $ocupacao[3] = 1301;
+                    $ocupacao[2] = 951;
+                    $ocupacao[1] = 740;
+                    $ocupacao[4] = 177;
+                    break;
+                case '2018' :
+                    $vagas[3] = 2362;
+                    $vagas[2] = 1683;
+                    $vagas[1] = 623;
+                    $vagas[4] = 1385;
+                    $ocupacao[3] = 1563;
+                    $ocupacao[2] = 1247;
+                    $ocupacao[1] = 498;
+                    $ocupacao[4] = 1385;
+                    break;
+                
+        }
     
         return view('relatorios.vagas')->with('ano',$ano)->with('ocupacao',$ocupacao)->with('vagas',$vagas);
         

@@ -94,6 +94,7 @@
 					<option value="2">2 - Disciplina não correspondeu as expectativas</option>
 					<option value="3">3 - Atividade muito intensa</option>
 					<option value="4">4 - Problemas com o professor</option>
+					<option value="5">5 - Disciplina encerrada pela Instituição</option>
 				</select> 
 			</div>
 		</div>       

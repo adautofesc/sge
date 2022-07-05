@@ -138,9 +138,19 @@ class Matricula extends Model
 		if($dt_mt->format('m') < $pp_dt->format('m') || $dt_mt->format('Y') < $pp_dt->format('Y'))
 			return $parcelas;
 		else{
+			
 			$parcelas = $parcelas - ($dt_mt->format('m')-$pp_dt->format('m'));
-			if($dt_mt->format('d')>$this::CORTE)
+			if($dt_mt->format('d')>$this::CORTE)//n
 				$parcelas--;
+
+			// Bloco criado para retirar a parcela de julho e jogar para dezembro
+			if($dt_mt->format('m')>7 || ($dt_mt->format('m')==7 && $dt_mt->format('d')>$this::CORTE)){
+				$parcelas++;//4
+
+			}
+			
+
+
 		}
 	
 		/*

@@ -223,7 +223,7 @@
                             <a class="dropdown-item" href="?filtro=status_matriculas&valor=online" >
                                 <i class="fa fa-circle-o icon"></i> Online 
                             </a>
-                            <a class="dropdown-item" href="?filtro=status_matriculas&valor=online" >
+                            <a class="dropdown-item" href="?filtro=status_matriculas&valor=presencial" >
                                 <i class="fa fa-circle-o icon"></i> Presencial 
                             </a>
                             

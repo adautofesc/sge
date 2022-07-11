@@ -124,7 +124,7 @@ class RequisitosController extends Controller
 
     public static function listar()
     {
-        $requisitos=Requisito::paginate(50);
+        $requisitos=Requisito::orderBy('nome')->paginate(50);
         return $requisitos;
     }
 

@@ -726,10 +726,6 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('docente/{id?}/{semestre?}','painelController@docentes');
 		Route::get('turmas-professor', 'TurmaController@listarProfessores');
 		Route::post('turmas-professor', 'TurmaController@turmasProfessor');
-		
-		
-	
-
 		Route::get('jornadas/{educador?}',[JornadaController::class,'modalJornadaDocente']);
 		Route::get('cargas/{educador?}',[PessoaDadosJornadaController::class,'modalCargaDocente']);
 		

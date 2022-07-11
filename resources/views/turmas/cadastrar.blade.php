@@ -1,16 +1,19 @@
 @extends('layout.app')
 @section('pagina')
 <div class="title-block">
-    <h3 class="title"> Criar nova turma <span class="sparkline bar" data-type="bar"></span> </h3>
+    <h3 class="title"> Cadastrar nova turma <span class="sparkline bar" data-type="bar"></span> </h3>
 </div>
 @include('inc.errors')
 <form name="item" method="POST">
     <div class="card card-block">
+		<div class="subtitle-block">
+			<h3 class="title">Dados básicos obrigatórios</h3>
+		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Programa 
 			</label>
-			<div class="col-sm-6"> 
+			<div class="col-sm-6 "> 
 				<select class="c-select form-control boxed" name="programa" required>
 					<option >Selecione um programa</option>
 					@if(isset($dados['programas']))
@@ -20,6 +23,7 @@
 					@endif
 				</select> 
 			</div>
+			<div class="col-sm-4">&nbsp;</div>
 		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
@@ -36,6 +40,7 @@
 				 </ul>
 				</div> 
 			</div>
+			
 		</div>
 		<div class="form-group row" id="row_modulos" style="display:none"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
@@ -140,8 +145,8 @@
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Dia(s) semana.
 			</label>
-			<div class="col-sm-10"> 
-				<label><input class="checkbox" disabled="disabled" type="checkbox"><span>Dom</span></label>
+			<div class="col-sm-6"> 
+				
 				<label><input class="checkbox" name="dias[]" value="seg" type="checkbox"><span>Seg</span></label>
 				<label><input class="checkbox" name="dias[]" value="ter" type="checkbox"><span>Ter</span></label>
 				<label><input class="checkbox" name="dias[]" value="qua" type="checkbox"><span>Qua</span></label>
@@ -155,19 +160,17 @@
 				Data de início
 			</label>
 			<div class="col-sm-2"> 
-				<div class="input-group">
-					<span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
+				
 					<input type="date" class="form-control boxed" name="dt_inicio" placeholder="dd/mm/aaaa" required> 
-				</div>
+				
 			</div>
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Data do termino
 			</label>
 			<div class="col-sm-2"> 
-				<div class="input-group">
-					<span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
+				
 					<input type="date" class="form-control boxed" name="dt_termino" placeholder="dd/mm/aaaa" required> 
-				</div>
+				
 			</div>
 		</div>
 
@@ -203,7 +206,12 @@
 				</div>
 			</div>
 		</div>
-	
+		<div class="subtitle-block">
+			<br>
+			<br>
+			<h3 class="title">Dados financeiros</h3>
+		
+		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Valor
@@ -226,7 +234,7 @@
 		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">Pacotes Cursos</label>
-            <div class="col-sm-2"> 		
+            <div class="col-sm-6"> 		
 				@foreach($pacote_cursos as $pacote)
 				<div>
 					<label>
@@ -236,8 +244,17 @@
 				</div>
 				@endforeach			
         	</div>
-			<label class="col-sm-2 form-control-label text-xs-right">Requisitos obrigatórios</label>
-            <div class="col-sm-2"> 
+		</div>
+		<div class="subtitle-block">
+			<br>
+			<br>
+			<h3 class="title">Dados diversos</h3>
+		
+		</div>
+		
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">Requisitos </label>
+            <div class="col-sm-6"> 
             	@foreach($requisitos as $requisito)
 				<div>
 					<label>

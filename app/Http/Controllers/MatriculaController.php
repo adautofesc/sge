@@ -182,12 +182,22 @@ class MatriculaController extends Controller
         $pessoa=PessoaController::formataParaMostrar($pessoa);
 
         
-        
-        if($matricula->status == 'cancelada')
-            $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->where('status','cancelada')->get();
-        else
-            $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->whereIn('status',['regular','pendente','finalizada'])->get();
+        switch($matricula->status){
+            case 'cancelada':
+                $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->where('status','cancelada')->get();
+                break;
+            case 'ativa': 
+            case 'pendente':
+                $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->whereIn('status',['regular','pendente'])->get();
+                break;
+            case 'expirada':
+                $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->where('status','finalizada')->get();
+                break;
+            default:
+                $inscricoes=Inscricao::where('matricula', '=', $matricula->id)->whereIn('status',['regular','pendente'])->get();
+                break;
 
+        }
             
         foreach($inscricoes as $inscricao){
             $inscricao->turmac=Turma::find($inscricao->turma->id);
@@ -947,7 +957,7 @@ class MatriculaController extends Controller
                                 ->whereIn('matriculas.status',['ativa','pendente'])
                                 ->leftjoin('inscricoes','matriculas.id','=','inscricoes.matricula')//inscricao
                                 ->leftjoin('turmas','inscricoes.turma','=','turmas.id')//turmas
-                                ->where('turmas.local','85')
+                                ->whereIn('turmas.local',[84,85,86])
                                 ->get();
         foreach($matriculas_ativas as $matricula){
 
@@ -969,7 +979,7 @@ class MatriculaController extends Controller
         }
 
         
-        return  redirect('/secretaria/matricula/'.implode(',',$matriculas_alvo))->with(['info'=>'Linstando matrículas com número de parcelas divergentes na FESC 2.']);
+        return  redirect('/secretaria/matricula/'.implode(',',$matriculas_alvo))->with(['info'=>'Listando matrículas com número de parcelas divergentes.']);
     }
 
     

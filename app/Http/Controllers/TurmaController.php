@@ -650,9 +650,9 @@ class TurmaController extends Controller
             if(is_numeric($turma)){
                 $turma=Turma::find($turma);
                 if(isset($turma->id)){
+                    LogController::registrar('turma',$turma->id,'Status alterado de '.$turma->status.' para '.$status, \Auth::user()->pessoa);  
                     switch($status){
                         case 'encerrada':
-                            LogController::registrar('turma',$turma->id,'Status alterado para finalizada', \Auth::user()->pessoa);
                             $this->finalizarTurma($turma);
                             break;
                         case 'iniciada' : //turmas abertas que aceitam matriculas
@@ -664,9 +664,9 @@ class TurmaController extends Controller
                             }
                             InscricaoController::alterarStatus($lista_inscricoes,'regular');
                             unset($turma->inscricoes);
-                            LogController::registrar('turma',$turma->id,'Status alterado para iniciada', \Auth::user()->pessoa);
                             break;
                         case 'cancelada': 
+                            $turma->status_matriculas = 'fechada';
                             
                             break;
                         default:
@@ -675,14 +675,15 @@ class TurmaController extends Controller
                             
 
                     }
-                    $msgs['alert_sucess'][]="Turma ".$turma->id." modificada com sucesso.";      
                     $turma->status=$status;
                     $turma->save();
+                    
+                    
                     
                 }
             }
         }
-        return redirect()->back()->withErrors($msgs);
+        return redirect()->back()->with('success','Status das turmas alteradas com sucesso.');
     }
 
     public function statusMatriculas($status,$itens_url)
@@ -692,12 +693,14 @@ class TurmaController extends Controller
             if(is_numeric($turma)){
                 $turma=Turma::find($turma);
                 LogController::registrar('turma',$turma->id,'Status de Matrículas da turma alterado de '.$turma->status_matriculas.' para '.$status, \Auth::user()->pessoa);
-                if(isset($turma->id)){
+                if(isset($turma->id) && $turma->status!='encerrada' && $turma->status!='cancelada'){
                     $turma->status_matriculas = $status;
                     $msgs['alert_sucess'][]="Turma ".$turma->id." modificada com sucesso.";      
                     $turma->save();
                     
                 }
+                else
+                    $msgs['alert_warning'][]="Turma ".$turma->id." não pôde ser alteradada pois está encerrada ou cancelada.";   
             }
         }
         return redirect()->back()->withErrors($msgs);
@@ -1305,7 +1308,7 @@ class TurmaController extends Controller
         if($turma->termino > date('Y-m-d'))
             die('Turma '.$turma->id. ' não pode ser encerrada pois a data de término não foi atingida. Se a turma não ocorreu utilize a opção CANCELAR.');
         $inscricoes = Inscricao::where('turma', $turma->id)->get();   
-        
+        $turma->status_matriculas = 'fechada';
         $turma->status = 'encerrada';
         $turma->save();
 

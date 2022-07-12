@@ -216,7 +216,7 @@
                                 <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=online');">
                                     <i class="fa fa-circle-o icon"></i> Online 
                                 </label>
-                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=online');">
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=presencial');">
                                     <i class="fa fa-circle-o icon"></i> Presencial 
                                 </label>
                                 

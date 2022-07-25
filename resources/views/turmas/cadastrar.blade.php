@@ -200,10 +200,9 @@
 				Carga Horária
 			</label>
 			<div class="col-sm-2"> 
-				<div class="input-group">
 					 
 					<input type="number" class="form-control boxed" name="carga" placeholder="" required> 
-				</div>
+				
 			</div>
 		</div>
 		<div class="subtitle-block">
@@ -225,12 +224,33 @@
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Parcelas
 			</label>
-			<div class="col-sm-1"> 
+			<div class="col-sm-2"> 
 				<div class="input-group">
 					<input type="number" class="form-control boxed" name="parcelas" value="1" required> 
 				</div>
 			</div>
 			
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">Turma mista</label>
+            <div class="col-sm-2"> 		
+				<div>
+					<label>
+						<input class="checkbox" name="mista" type="checkbox" value="true">
+						<span title="Turma mista com alunos EMG">Mista EMG</span>
+						</label>
+				</div>
+						
+        	</div>
+			<label class="col-sm-2 form-control-label text-xs-right">Vagas EMG</label>
+            <div class="col-sm-2"> 		
+				
+					
+						<input type="number" class="form-control boxed" name="vagas_emg" placeholder="" > 
+						
+				
+						
+        	</div>
 		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">Pacotes Cursos</label>
@@ -250,6 +270,29 @@
 			<br>
 			<h3 class="title">Dados diversos</h3>
 		
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Professor Extra
+			</label>
+			<div class="col-sm-6"> 
+				<select class="c-select form-control boxed" name="professor_extra">
+					<option>Selecione um professor</option>
+					@if(isset($dados['professores']))
+					@foreach($dados['professores'] as $professor)
+					<option value="{{$professor->id}}">{{$professor->nome}}</option>
+					@endforeach
+					@endif
+				</select> 
+			</div>
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Próxima turma
+			</label>
+			<div class="col-sm-2"> 
+				<input type="number" class="form-control boxed" name="proxima_turma" placeholder="Código" title="Digite o código caso já houver turma de continuação definida para rematrícula"> 
+			</div>
 		</div>
 		
 		<div class="form-group row"> 

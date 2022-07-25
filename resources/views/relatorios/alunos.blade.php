@@ -120,7 +120,8 @@
 		<br/>
 		<div class="title-block">
 			<center>
-            <h3 class="title"> Relatório de Alunos </h3>
+            <h3 class="title" title="Data base utilizada: termino da turma"> Relatório de Alunos </h3>
+			
 			<h5 class="title"> Locais: <small>
 				@if(isset($r->local))
 					@php 
@@ -159,97 +160,41 @@
                         <th width="10rem">TOTAL(unico)</th>
                     </thead>
                     <tbody>
+						@for($i=2018;$i<=date('Y');$i++)
                     	
                     	<tr>
-							<th>1 semestre 2018</th>
-							<td>{{count($alunos[2018][1]['ce'])}}</td>
-							<td>{{count($alunos[2018][1]['emg'])}}</td>
-							<td>{{count($alunos[2018][1]['pid'])}}</td>
-							<td>{{count($alunos[2018][1]['uati'])}}</td>
-							<td>{{count($alunos[2018][1]['unit'])}}</td>
-							<td><strong>{{count($alunos[2018][1]['totais'])}}</strong></td>
+							<th>1 semestre {{$i}}</th>
+							<td>{{count($alunos[$i][1]['ce'])}}</td>
+							<td>{{count($alunos[$i][1]['emg'])}}</td>
+							<td>{{count($alunos[$i][1]['pid'])}}</td>
+							<td>{{count($alunos[$i][1]['uati'])}}</td>
+							<td>{{count($alunos[$i][1]['unit'])}}</td>
+							<td><strong>{{count($alunos[$i][1]['totais'])}}</strong></td>
                     		
 						</tr>
 						<tr>
-							<th>2 semestre 2018</th>
-							<td>{{count($alunos[2018][2]['ce'])}}</td>
-							<td>{{count($alunos[2018][2]['emg'])}}</td>
-							<td>{{count($alunos[2018][2]['pid'])}}</td>
-							<td>{{count($alunos[2018][2]['uati'])}}</td>
-							<td>{{count($alunos[2018][2]['unit'])}}</td>
-							<td><strong>{{count($alunos[2018][2]['totais'])}}</strong></td>
+							<th>2 semestre {{$i}}</th>
+							<td>{{count($alunos[$i][2]['ce'])}}</td>
+							<td>{{count($alunos[$i][2]['emg'])}}</td>
+							<td>{{count($alunos[$i][2]['pid'])}}</td>
+							<td>{{count($alunos[$i][2]['uati'])}}</td>
+							<td>{{count($alunos[$i][2]['unit'])}}</td>
+							<td><strong>{{count($alunos[$i][2]['totais'])}}</strong></td>
                     		
 						</tr>
 						<tr>
-							<th>Total 2018</th>
-							<td>{{count($alunos[2018][0]['ce'])}}</td>
-							<td>{{count($alunos[2018][0]['emg'])}}</td>
-							<td>{{count($alunos[2018][0]['pid'])}}</td>
-							<td>{{count($alunos[2018][0]['uati'])}}</td>
-							<td>{{count($alunos[2018][0]['unit'])}}</td>
-							<td><strong>{{count($alunos[2018][0]['totais'])}}</strong></td>
+							<th>Total {{$i}}</th>
+							<td>{{count($alunos[$i][0]['ce'])}}</td>
+							<td>{{count($alunos[$i][0]['emg'])}}</td>
+							<td>{{count($alunos[$i][0]['pid'])}}</td>
+							<td>{{count($alunos[$i][0]['uati'])}}</td>
+							<td>{{count($alunos[$i][0]['unit'])}}</td>
+							<td><strong>{{count($alunos[$i][0]['totais'])}}</strong></td>
                     		
 						</tr>
-						<tr>
-							<th>1 semestre 2019</th>
-							<td>{{count($alunos[2019][1]['ce'])}}</td>
-							<td>{{count($alunos[2019][1]['emg'])}}</td>
-							<td>{{count($alunos[2019][1]['pid'])}}</td>
-							<td>{{count($alunos[2019][1]['uati'])}}</td>
-							<td>{{count($alunos[2019][1]['unit'])}}</td>
-							<td><strong>{{count($alunos[2019][1]['totais'])}}</strong></td>
-                    		
-						</tr>
-						<tr>
-							<th>2 semestre 2019</th>
-							<td>{{count($alunos[2019][2]['ce'])}}</td>
-							<td>{{count($alunos[2019][2]['emg'])}}</td>
-							<td>{{count($alunos[2019][2]['pid'])}}</td>
-							<td>{{count($alunos[2019][2]['uati'])}}</td>
-							<td>{{count($alunos[2019][2]['unit'])}}</td>
-							<td><strong>{{count($alunos[2019][2]['totais'])}}</strong></td>
-                    		
-						</tr>
-						<tr>
-							<th>Total 2019</th>
-							<td>{{count($alunos[2019][0]['ce'])}}</td>
-							<td>{{count($alunos[2019][0]['emg'])}}</td>
-							<td>{{count($alunos[2019][0]['pid'])}}</td>
-							<td>{{count($alunos[2019][0]['uati'])}}</td>
-							<td>{{count($alunos[2019][0]['unit'])}}</td>
-							<td><strong>{{count($alunos[2019][0]['totais'])}}</strong></td>
-                    		
-						</tr>
-						<tr>
-							<th>1 semestre 2020</th>
-							<td>{{count($alunos[2020][1]['ce'])}}</td>
-							<td>{{count($alunos[2020][1]['emg'])}}</td>
-							<td>{{count($alunos[2020][1]['pid'])}}</td>
-							<td>{{count($alunos[2020][1]['uati'])}}</td>
-							<td>{{count($alunos[2020][1]['unit'])}}</td>
-							<td><strong>{{count($alunos[2020][1]['totais'])}}</strong></td>
-                    		
-						</tr>
-						<tr>
-							<th>2 semestre 2020</th>
-							<td>{{count($alunos[2020][2]['ce'])}}</td>
-							<td>{{count($alunos[2020][2]['emg'])}}</td>
-							<td>{{count($alunos[2020][2]['pid'])}}</td>
-							<td>{{count($alunos[2020][2]['uati'])}}</td>
-							<td>{{count($alunos[2020][2]['unit'])}}</td>
-							<td><strong>{{count($alunos[2020][2]['totais'])}}</strong></td>
-                    		
-						</tr>
-						<tr>
-							<th>Total 2020</th>
-							<td>{{count($alunos[2020][0]['ce'])}}</td>
-							<td>{{count($alunos[2020][0]['emg'])}}</td>
-							<td>{{count($alunos[2020][0]['pid'])}}</td>
-							<td>{{count($alunos[2020][0]['uati'])}}</td>
-							<td>{{count($alunos[2020][0]['unit'])}}</td>
-							<td><strong>{{count($alunos[2020][0]['totais'])}}</strong></td>
-                    		
-                    	</tr>
+
+						@endfor
+						
                     	
                 	</tbody>
                 </table>

@@ -654,7 +654,7 @@ Event::where('status' , 0)
     }
 
     public function numeroAlunos(Request $r){
-        define("ANO_INICIAL",2018);
+        define("ANO_INICIAL",2018);//se for alterar mexer tbm na view
         
 
         $locais = \App\Local::orderBy('sigla')->whereNotIn('id',[84,85,86])->get();

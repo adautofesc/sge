@@ -300,18 +300,21 @@ class PessoaController extends Controller
 		{
 		//verifica se pode ver outras pessoas
 			if(!in_array('4', Auth::user()->recursos))
-					return view('error-404-alt')->with(array('error'=>['id'=>'403.41','desc'=>'Seu cadastro não permite que você veja os dados de outra pessoa']));
+					return die(redirect('403'));
+					//return view('error-404-alt')->with(array('error'=>['id'=>'403.41','desc'=>'Seu cadastro não permite que você veja os dados de outra pessoa']));
 					//return $this->listar();	
 			// verifica se a pessoa tem relação institucional
 				$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', '16'));
 				if($relacao_institucional && !in_array('5', Auth::user()->recursos))
 				{
-					return view('error-404-alt')->with(array('error'=>['id'=>'403.5','desc'=>'Você não possui acesso a dados de pessoas ligadas à instituição.']));		
+					return die(redirect('403'));
+					//return view('error-404-alt')->with(array('error'=>['id'=>'403.5','desc'=>'Você não possui acesso a dados de pessoas ligadas à instituição.']));		
 				}
 			// Verifica se a pessoa tem perfil privado.
 				$pessoa_restrita=count($pessoa->dadosGerais->where('dado',17));
 				if($pessoa_restrita && !in_array('6', Auth::user()->recursos))
-					return view('error-404-alt')->with(array('error'=>['id'=>'403.6','desc'=>'Esta pessoa possui restrição de acesso aos seus dados']));	
+					return die(redirect('403'));	
+				//return view('error-404-alt')->with(array('error'=>['id'=>'403.6','desc'=>'Esta pessoa possui restrição de acesso aos seus dados']));	
 
 		}
 	

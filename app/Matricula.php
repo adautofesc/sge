@@ -136,7 +136,11 @@ class Matricula extends Model
 		$interval = $pp_dt->diff($dt_mt);
 
 		if($dt_mt->format('m') < $pp_dt->format('m') || $dt_mt->format('Y') < $pp_dt->format('Y'))
-			return $parcelas;
+			//para reduzir numero de parcelas
+			if($this->pacote>0 && $pp_dt->format('m')>=7)
+				return 5;
+			else
+				return $parcelas;
 		else{
 			
 			$parcelas = $parcelas - ($dt_mt->format('m')-$pp_dt->format('m'));
@@ -152,24 +156,6 @@ class Matricula extends Model
 
 
 		}
-	
-		/*
-		//reduz a quantidade de parcelas de acordo com a diferença entre as datas de início e a data de matrícula
-		if($interval->invert ==1){	
-			
-		}
-		else{
-			//dd($interval->m);
-			if($dt_mt->format('d')<$this::CORTE && $interval->m>0 ){
-				$parcelas = $parcelas - $interval->m;
-				$parcelas++;
-			}
-			else
-				
-				$parcelas = $parcelas - $interval->m;
-
-		}
-		*/
 		return $parcelas;
 
 	}

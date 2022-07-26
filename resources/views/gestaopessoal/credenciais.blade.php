@@ -50,7 +50,7 @@
                 <div class="item-col fixed pull-left item-col-title">
                     <div class="item-heading">dado</div>
                     <div>                        
-                        <h4 class="item-title">{{ $dado->desc }} </h4>
+                        <h4 class="item-title"><small>{{$dado->id}}</small> - {{ $dado->desc }} </h4>
                     </div>
                 </div>  
             </div>

@@ -900,6 +900,27 @@ class BoletoController extends Controller
         //
     }
 
+	public function corrigir2022(){
+		$lancamentos = Lancamento::where('referencia','like','%Janeiro%')->where('parcela',5)->get();
+		foreach($lancamentos as $lancamento){
+			$lancamento->status = 'cancelado';
+			$lancamento->save();
+			$boleto = Boleto::where('id',$lancamento->boleto)->update(['status' => 'cancelar']);
+			LogController::alteracaoBoleto($lancamento->boleto, 'Boleto cancelado por erro na geração dos carnês');
+			
+			
+		}
+		$boletos = Boleto::where('vencimento','>','2022-12-31')->get();
+		foreach($boletos as $boleto){
+			Lancamento::where('boleto',$boleto->id)->update(['status' => 'cancelado']);
+			$boleto->status = 'cancelar';
+			$boleto->save();
+
+		}
+		return 'feito.';
+		
+	}
+
 		
 
 }

@@ -38,33 +38,11 @@ class CarneController extends Controller
 	 * Gerar PDF's
 	 */
 	public function carneFase4(){
-		
-
-		//contador
-		/*
-		list($usec, $sec) = explode(' ', microtime());
-		$script_start = (float) $sec + (float) $usec;
-		*/
-
-		
-			//$boletos = Boleto::where('status','gravado')->where('pessoa', '22610')->paginate(500);
-	
-			//$boletos = Boleto::where('status','gravado')->orderBy('pessoa')->orderBy('vencimento')->paginate(500);
-			$boletos = Boleto::where('status','emitido')->where('created_at', '>','2022-02-16 00:00:00')->orderBy('pessoa')->orderBy('vencimento')->paginate(500);
-			//dd($boletos);
-
-			//dd($boletos);
-		
-		//$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
+		$boletos = Boleto::where('status','gravado')->orderBy('pessoa')->orderBy('vencimento')->paginate(500);	
 		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
-
-
 		foreach($boletos as $boleto){
-
 			try{
 				$boleto_completo = BoletoController::gerarBoleto($boleto);
-				//$boleto->status = 'impresso';
-				//$boleto->save();
 				$html->addBoleto($boleto_completo);
 			}
 			catch(\Exception $e){
@@ -72,37 +50,12 @@ class CarneController extends Controller
 				continue;
 			}
 		}
-			
-		//$html->hideInstrucoes();
-		//$html->showPrint();
-		
-		//return $html->gerarCarne();
-		//dd(getcwd());
+
 		if(!isset($_GET['page']))
 			$_GET['page']=1;
 
-
-		//################################################################################################################
-		//################################################################################################################
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  IMPORTANTE o método gerarCarne da classe Pdf é uma implementação prória!!!!
-		
-		//$html->gerarCarne($dest = $html::OUTPUT_SAVE, $save_path = 'documentos/carnes/'.date('Y-m-d_').$_GET['page'].'.pdf');
+		//!!!!!!!  IMPORTANTE o método gerarCarne da classe Pdf é uma implementação prória!!!!
 		$html->gerarCarne($dest = $html::OUTPUT_SAVE, $save_path = 'documentos/carnes/'.date('Y-m-d_').$_GET['page'].'.pdf');
-		//**************************************************************************************************************** */
-
-			
-		
-
-		/*finaliza contador
-		
-		list($usec, $sec) = explode(' ', microtime());
-		$script_end = (float) $sec + (float) $usec;
-		$elapsed_time = round($script_end - $script_start, 5);*/
-		//****************************************************
-
-		//$this->logMe(date('Y-m-d H:i:s').' Executado metodo fase 4 em '.$elapsed_time.' secs. Consumindo '.round(((memory_get_peak_usage(true) / 1024) / 1024), 2).' Mb de memória.');
-
-
 		return view('financeiro.carne.fase4')->with('boletos',$boletos);
 
 
@@ -358,7 +311,7 @@ class CarneController extends Controller
 				
 				//gerar boletos para pessoas que entram em cursos já iniciados ou fizeram matricula em julho
 				
-				if(date('d') >= $this::data_corte || $data_matricula->format('m') == 7){
+				if(date('d') >= $this::data_corte || $primeiro_vencimento->format('m') == 7){
 				//if(date('d') >= $this::data_corte){	
 					
 					//$primeiro_vencimento->modify('+1 month');
@@ -561,6 +514,37 @@ class CarneController extends Controller
 		
 
 	}
+
+
+	/**
+	 * Gerar PDF's de boletos já emitidos
+	 */
+	public function reimpressao(){
+		$boletos = Boleto::where('status','emitido')->orderBy('pessoa')->orderBy('vencimento')->paginate(500);	
+		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
+		foreach($boletos as $boleto){
+			try{
+				$boleto_completo = BoletoController::gerarBoleto($boleto);
+				$html->addBoleto($boleto_completo);
+			}
+			catch(\Exception $e){
+				NotificacaoController::notificarErro($boleto->pessoa,'Erro ao gerar Boleto');
+				continue;
+			}
+		}
+
+		if(!isset($_GET['page']))
+			$_GET['page']=1;
+
+		//!!!!!!!  IMPORTANTE o método gerarCarne da classe Pdf é uma implementação prória!!!!
+		$html->gerarCarne($dest = $html::OUTPUT_SAVE, $save_path = 'documentos/carnes/'.date('Y-m-d_').$_GET['page'].'.pdf');
+		return view('financeiro.carne.fase4')->with('boletos',$boletos);
+
+
+	}
+
+
+
 
 
 

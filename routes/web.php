@@ -455,7 +455,7 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::get('fase5/{pessoa?}','CarneController@carneFase5');//confirma impressão
 			Route::get('fase6/{pessoa?}','CarneController@carneFase6');//gera remessa
 			Route::get('fase7/{pessoa?}','CarneController@carneFase7');//download de arquivos
-
+			Route::get('reimpressao','CarneController@reimpressao');//
 
 		});
 
@@ -485,6 +485,7 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::get('novo/{pesssoa}', 'BoletoController@novo');//precisa de middleware
 			Route::post('novo/{pesssoa}', 'BoletoController@create');//precisa de middleware
 			Route::get('/lote-csv', 'BoletoController@gerarArquivoCSV');
+			Route::get('corrigir2022','BoletoController@corrigir2022');
 
 
 			

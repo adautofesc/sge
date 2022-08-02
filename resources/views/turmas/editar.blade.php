@@ -6,6 +6,9 @@
 @include('inc.errors')
 <form name="item" method="POST">
     <div class="card card-block">
+		<div class="subtitle-block">
+			<h3 class="title">Dados básicos obrigatórios</h3>
+		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Programa 
@@ -183,7 +186,7 @@
 		
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Nº de vagas
+				Vagas Ofertadas
 			</label>
 			<div class="col-sm-2"> 
 				<input type="number" class="form-control boxed" name="vagas" value="{{$turma->vagas}}" placeholder="Recomendado: 30 vagas"> 
@@ -214,7 +217,7 @@
 			</label>
 			<div class="col-sm-1"> 
 				<div class="input-group">
-					<input type="number" class="form-control boxed" name="parcelas" value="{{$turma->parcelas}}"  required> 
+					<input type="number" class="form-control boxed" name="parcelas" value="{{$turma->parcelas}}" > 
 				</div>
 			</div>
 			
@@ -237,6 +240,103 @@
             	
 				<a href="/turmas/modificar-requisitos/{{$turma->id}}" target="_blank">Modificar Requisitos obrigatórios</a>
 				
+        	</div>        
+        </div>
+		<div class="subtitle-block">
+			<br>
+			<br>
+			<h3 class="title">Dados financeiros</h3>
+		
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Valor
+			</label>
+			<div class="col-sm-2"> 
+				<div class="input-group">
+					<span class="input-group-addon">R$ </span> 
+					<input type="text" class="form-control boxed" name="valor" placeholder="Valor TOTAL" value="{{number_format($turma->valor,2,',','.')}}"> 
+				</div>
+			</div>
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Parcelas
+			</label>
+			<div class="col-sm-2"> 
+				<div class="input-group">
+					<input type="number" class="form-control boxed" name="parcelas" value="{{$turma->parcelas}}"> 
+				</div>
+			</div>		
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">Turma mista</label>
+            <div class="col-sm-2"> 		
+				<div>
+					<label>
+						<input class="checkbox" name="mista" type="checkbox" value="true">
+						<span title="Turma mista com alunos EMG">Mista EMG</span>
+						</label>
+				</div>		
+        	</div>
+			<label class="col-sm-2 form-control-label text-xs-right">Vagas EMG</label>
+            <div class="col-sm-2"> 
+				<input type="number" class="form-control boxed" name="vagas_emg" placeholder="" > 		
+        	</div>
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">Pacotes Cursos</label>
+            <div class="col-sm-3"> 		
+				@foreach($pacote_cursos as $pacote)
+				<div>
+					<label>
+						<input class="checkbox" name="pacote[]" type="checkbox" value="{{$pacote->id}}"  {{isset($turma->pacote) && in_array($pacote->id,$turma->pacote)?'checked ':''}}>
+						<span title="{{$pacote->descricao}}">{{$pacote->nome}}</span>
+						</label>
+				</div>
+				@endforeach			
+        	</div>
+			<label class="col-sm-3 form-control-label text-xs-right"><small>*Capacidade de atendimento definido no cadastro do curso</small></label>        
+		</div>
+		<div class="subtitle-block">
+			<br>
+			<br>
+			<h3 class="title">Dados diversos</h3>
+		
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Professor Extra
+			</label>
+			<div class="col-sm-6"> 
+				<select class="c-select form-control boxed" name="professor_extra">
+					<option>Selecione um professor</option>
+					@if(isset($dados['professores']))
+					@foreach($dados['professores'] as $professor)
+					<option value="{{$professor->id}}">{{$professor->nome}}</option>
+					@endforeach
+					@endif
+				</select> 
+			</div>
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Próxima turma
+			</label>
+			<div class="col-sm-2"> 
+				<input type="number" class="form-control boxed" name="proxima_turma" placeholder="Código" title="Digite o código caso já houver turma de continuação definida para rematrícula"> 
+			</div>
+		</div>
+		
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">Requisitos </label>
+            <div class="col-sm-6"> 
+            	@foreach($requisitos as $requisito)
+				<div>
+					<label>
+					<input class="checkbox" type="checkbox" name="requisito[]" value="{{$requisito->id}}">
+					<span>{{$requisito->nome}}</span>
+					</label>
+				</div>
+				@endforeach
         	</div>
 			
                 
@@ -264,38 +364,23 @@ $(document).ready(function()
 		@if(isset($turma->disciplina))
 			$('#row_disciplina').show();
 		@endif
- 
    //On pressing a key on "Search box" in "search.php" file. This function will be called.
- 
-   $("#fcurso").keyup(function() {
-   		
+   $("#fcurso").keyup(function() {	
    		$('#fmodulo').val('1');
    		$('#row_modulos').hide();
    		var disciplina = $("input[name=disciplina]").val('');
    		$("#fdisciplina").val('');
    		$('#row_disciplina').hide();
-
- 
        //Assigning search box value to javascript variable named as "name".
- 
        var name = $('#fcurso').val();
        var namelist="";
-
- 
        //Validating, if "name" is empty.
- 
        if (name == "") {
- 
            //Assigning empty value to "display" div in "search.php" file.
- 
            $("#listacursos").html("");
- 
        }
- 
        //If name is not empty.
- 
        else {
- 
            //AJAX is called.
  			$.get("{{asset('cursos/listarporprogramajs/')}}"+"/"+name)
  				.done(function(data) 
@@ -311,42 +396,24 @@ $(document).ready(function()
  					$("#listacursos").html(namelist).show();
  				});
        }
- 
   	});
    $("#fdisciplina").keyup(function() {
-  
-   		
-   	
- 
        //Assigning search box value to javascript variable named as "name".
- 
        var name = $('#fdisciplina').val();
        var namelist="";
        var curso = $("input[name=curso]").val();
        var disciplina = $("input[name=disciplina]").val('');
-
-
-
        if (curso<=0){
        	alert("escolha um curso");
-       }
-       	
-
- 
+       } 	
        //Validating, if "name" is empty.
- 
        if (name == "") {
- 
            //Assigning empty value to "display" div in "search.php" file.
- 
            $("#listadisciplinas").html("");
- 
        }
- 
        //If name is not empty.
- 
-       else {
- 
+       else 
+	   {
            //AJAX is called.
  			$.get("{{asset('cursos/disciplinas/grade/')}}"+"/"+curso+"/"+name)
  				.done(function(data) 
@@ -357,43 +424,17 @@ $(document).ready(function()
  										+val.id+' - '+val.nome
  									+'</a>'
  								  +'</li>';
- 					
-
  					});
  					//console.log(namelist);
  					$("#listadisciplinas").html(namelist).show();
-
-
-
  				});
-
- 				/*
- 				<option value="324000000000 Adauto Junior 10/11/1984 id:0000014">
-					<option value="326500000000 Fulano 06/07/1924 id:0000015">
-					<option value="3232320000xx Beltrano 20/02/1972 id:0000016">
-					<option value="066521200010 Ciclano 03/08/1945 id:0000017">
-					*/
- 			
- 			
- 
        }
- 
-  	});
- 
+  	}); 
 });
 function cursoEscolhido(id,nome){
 	$("#listacursos").hide();
 	$("#fcurso").val(id +' - '+nome);
 	$("input[name=curso]").val(id);
-/* -- Curso em módulos
-	$.get("{{asset('/pedagogico/curso/modulos/')}}"+"/"+id)
-		.done(function(data) {
-			//console.log(data);
-			if(data>1){
-				$('#row_modulos').show();
-				$('#fmodulo').attr('max',data);
-			}
-		});*/
 	$.get("{{asset('cursos/disciplinas/grade/')}}"+"/"+id)
 		.done(function(data) {
 			
@@ -403,47 +444,28 @@ function cursoEscolhido(id,nome){
 		});
 
 }
+
 function disciplinaEscolhida(id,nome){
 	$("#fdisciplina").val(id +' - '+nome);
 	$("input[name=disciplina]").val(id);
 	$('#listadisciplinas').hide();
 
 }
+
 function carregarSalas(local){
 	var salas;
 	$("#select_sala").html('<option>Sem salas cadastradas</option>');
 	$.get("{{asset('services/salas-api/')}}"+"/"+local)
- 				.done(function(data) 
- 				{
- 					$.each(data, function(key, val){
-						console.log(val.nome);
- 						salas+='<option value="'+val.id+'">'+val.nome+'</option>';
- 					});
- 					//console.log(namelist);
- 					$("#select_sala").html(salas);
-				 });
-				 
+		.done(function(data) 
+		{
+			$.each(data, function(key, val){
+				console.log(val.nome);
+				salas+='<option value="'+val.id+'">'+val.nome+'</option>';
+			});
+			
+			$("#select_sala").html(salas);
+			});			 
 }
-/* ao selecionar a unidade mostra as salas
-$("select[name=unidade]").change( function(){
-	var salas='<option selected>Selecione a Sala</option>';
-	$("select[name=local]").html('');
-	$.get("{{asset('administrativo/salasdaunidade/')}}"+"/"+$("select[name=unidade]").val())
- 				.done(function(data) 
- 				{
- 					$.each(data, function(key, val){
- 						salas+='<option value="'+val.id+'">'+val.sala+'</option>';
- 					});
- 					//console.log(namelist);
- 					$("select[name=local]").html(salas).show();
- 				})
-	
-
-	
-	});*/
-
-	
-
 
 </script>
 

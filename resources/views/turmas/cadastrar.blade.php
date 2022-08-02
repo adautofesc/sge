@@ -191,7 +191,7 @@
 		
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Nº de vagas
+				Vagas Ofertadas
 			</label>
 			<div class="col-sm-2"> 
 				<input type="number" class="form-control boxed" name="vagas" placeholder="Recomendado: 30 vagas"> 
@@ -254,7 +254,7 @@
 		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">Pacotes Cursos</label>
-            <div class="col-sm-6"> 		
+            <div class="col-sm-3"> 		
 				@foreach($pacote_cursos as $pacote)
 				<div>
 					<label>
@@ -264,6 +264,8 @@
 				</div>
 				@endforeach			
         	</div>
+			<label class="col-sm-3 form-control-label text-xs-right"><small>*Capacidade de atendimento definido no cadastro do curso</small></label>
+            
 		</div>
 		<div class="subtitle-block">
 			<br>

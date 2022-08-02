@@ -431,13 +431,42 @@ class TurmaController extends Controller
             }
 
         }
-        if(isset($request->ead)){
-            $ead = new \App\TurmaDados;
-            $ead->turma = $turma->id;
-            $ead->dado = 'ead';
-            $ead->valor = '1';
-            $ead->save();
 
+        if(isset($request->mista)){
+            $dado_turma = new \App\TurmaDados;
+            $dado_turma->turma = $turma->id;
+            $dado_turma->dado = 'mista_emg';
+            $dado_turma->valor = '1';
+            $dado_turma->save();
+            unset($dado_turma);
+
+        }
+
+        if(isset($request->vagas_emg)){
+            $dado_turma = new \App\TurmaDados;
+            $dado_turma->turma = $turma->id;
+            $dado_turma->dado = 'vagas_emg';
+            $dado_turma->valor = $request->vagas_emg;
+            $dado_turma->save();
+            unset($dado_turma);
+        }
+    
+        if(isset($request->professor_extra)){
+            $dado_turma = new \App\TurmaDados;
+            $dado_turma->turma = $turma->id;
+            $dado_turma->dado = 'professor_extra';
+            $dado_turma->valor = $request->professor_extra;
+            $dado_turma->save();
+            unset($dado_turma);
+        }
+
+        if(isset($request->proxima_turma)){
+            $dado_turma = new \App\TurmaDados;
+            $dado_turma->turma = $turma->id;
+            $dado_turma->dado = 'proxima_turma';
+            $dado_turma->valor = $request->proxima_turma;
+            $dado_turma->save();
+            unset($dado_turma);
         }
         LogController::registrar('turma',$turma->id,'Turma cadastrada', \Auth::user()->pessoa);
 
@@ -475,7 +504,13 @@ class TurmaController extends Controller
             $turma->data_terminov=Data::converteParaBd($turma->data_termino);
             $turma_dados = \App\TurmaDados::where('turma',$turma->id)->get();
             $turma->pacote = $turma_dados->where('dado','pacote')->pluck('valor')->toArray();
-            //dd($turma->pacote);
+            $turma->mista = $turma_dados->where('dado','mista_emg')->first();
+            $turma->vagas_emg = $turma_dados->where('dado','proxima_turma')->pluck('valor')->toArray();
+            $turma->professor_extra = $turma_dados->where('dado','professor_extra')->first()->pluck('valor');
+            $turma->vagas_emg = $turma_dados->where('dado','vagas_emg')->first()->pluck('valor');
+            
+            //dd($turma->pacote); 
+
 
          
 
@@ -502,7 +537,7 @@ class TurmaController extends Controller
             "turmaid"=>"required|numeric",
             "programa"=>"required|numeric",
             "curso"=>"required|numeric",
-            "professor"=>"required|numeric",
+            "professor"=>"required|numeric", 
             "unidade"=>"required|numeric",
             "dias"=>"required",
             "dt_inicio"=>"required",

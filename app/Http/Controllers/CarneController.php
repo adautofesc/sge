@@ -520,7 +520,8 @@ class CarneController extends Controller
 	 * Gerar PDF's de boletos já emitidos
 	 */
 	public function reimpressao(){
-		$boletos = Boleto::whereIn('status',['emitido','impresso'])->orderBy('pessoa')->orderBy('vencimento')->paginate(300);	
+		$boletos = Boleto::where('status','emitido')->orwhere('status','impresso')->orderBy('pessoa')->orderBy('vencimento')->paginate(200);	
+
 		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
 		foreach($boletos as $boleto){
 			try{

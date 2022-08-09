@@ -38,25 +38,31 @@ class CarneController extends Controller
 	 * Gerar PDF's
 	 */
 	public function carneFase4(){
-		$boletos = Boleto::where('status','gravado')->orderBy('pessoa')->orderBy('vencimento')->paginate(500);	
-		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
-		foreach($boletos as $boleto){
-			try{
-				$boleto_completo = BoletoController::gerarBoleto($boleto);
-				$html->addBoleto($boleto_completo);
+		$pessoas = Boleto::whereIn('status',['emitido','impresso'])->groupBy('pessoa')->paginate(20);
+		foreach($pessoas as $pessoa){
+			$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
+			$boletos = Boleto::where('pessoa',$pessoa->pessoa)->whereIn('status',['emitido','impresso'])->orderBy('pessoa')->orderBy('vencimento')->get();	
+			foreach($boletos as $boleto){
+
+				try{
+					$boleto_completo = BoletoController::gerarBoleto($boleto);
+					$html->addBoleto($boleto_completo);
+				}
+				catch(\Exception $e){
+					NotificacaoController::notificarErro($boleto->pessoa,'Erro ao gerar Boleto');
+					continue;
+				}
 			}
-			catch(\Exception $e){
-				NotificacaoController::notificarErro($boleto->pessoa,'Erro ao gerar Boleto');
-				continue;
-			}
+			$html->gerarCarne($dest = $html::OUTPUT_SAVE, $save_path = 'documentos/carnes/'.date('Y-m-d_').$pessoa->pessoa.'.pdf');
+
+			//$html->gerarCarne($dest = $html::OUTPUT_SAVE, $save_path = 'documentos/carnes/'.date('Y-m-d_').$pessoa.'.pdf');
 		}
 
 		if(!isset($_GET['page']))
 			$_GET['page']=1;
 
 		//!!!!!!!  IMPORTANTE o método gerarCarne da classe Pdf é uma implementação prória!!!!
-		$html->gerarCarne($dest = $html::OUTPUT_SAVE, $save_path = 'documentos/carnes/'.date('Y-m-d_').$_GET['page'].'.pdf');
-		return view('financeiro.carne.fase4')->with('boletos',$boletos);
+		return view('financeiro.carne.fase4')->with('boletos',$pessoas);
 
 
 	}
@@ -521,7 +527,7 @@ class CarneController extends Controller
 	 */
 	public function reimpressao(){
 		$boletos = Boleto::where('status','emitido')->orwhere('status','impresso')->orderBy('pessoa')->orderBy('vencimento')->paginate(200);	
-
+		
 		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
 		foreach($boletos as $boleto){
 			try{
@@ -541,6 +547,39 @@ class CarneController extends Controller
 		$html->gerarCarne($dest = $html::OUTPUT_SAVE, $save_path = 'documentos/carnes/'.date('Y-m-d_').$_GET['page'].'.pdf');
 		return view('financeiro.carne.fase4')->with('boletos',$boletos);
 
+
+	}
+
+
+	public function gerarPDF(int $pessoa){
+		//dd('teste');
+		$boletos = Boleto::where('pessoa',$pessoa)->whereIn('status',['emitido','gravado','impresso'])->get();
+		
+		//$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
+		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
+
+
+		foreach($boletos as $boleto){
+			if($boleto->status == 'gravado'){
+				$boleto->status = 'impresso';
+				$boleto->save();
+			}
+			$boleto_completo = BoletoController::gerarBoleto($boleto);
+			//$boleto->status = 'impresso';
+			//$boleto->save();
+			$html->addBoleto($boleto_completo);
+		}
+		//$html->hideInstrucoes();
+		//$html->showPrint();
+		
+		//return $html->gerarCarne();
+		//dd(getcwd());
+		if(!isset($_GET['page']))
+			$_GET['page']=1;
+
+		$html->gerarCarne($dest = $html::OUTPUT_SAVE, $save_path = 'documentos/carnes/'.date('Y-m-d_P').$pessoa.'.pdf');
+		return true;
+		
 
 	}
 

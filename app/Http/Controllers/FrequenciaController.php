@@ -312,6 +312,12 @@ class FrequenciaController extends Controller
 
     }
 
+    public function controleDeFrequencia(){
+        //$job = new JobClass();
+       // $this->dispatch($job)
+        return response(200);
+    }
+
 
     
 

@@ -58,4 +58,33 @@ class JornadaController extends Controller
 
         return response('Done!',200);
     }
+
+    public function encerrar(Request $r){
+       $jornada = Jornada::find($r->jornada);
+       $jornada->status = 'encerrada';
+       $jornada->termino= $r->encerramento;
+       $jornada->save();
+
+       return response('Done',200);
+
+    }
+
+    public static function listarDocente($docente,$semestre){
+        if($semestre > 0){
+            $intervalo = \App\classes\Data::periodoSemestre($semestre);
+            $jornadas = Jornada::where('pessoa', $docente)->whereIn('status',['ativa','solicitada','encerrada'])->whereBetween('inicio', $intervalo)->orderBy('hora_inicio')->get();
+        }
+        else{
+            $jornadas = Jornada::where('pessoa', $docente)->where('status','ativa')->orderBy('hora_inicio')->get();
+        }
+
+        foreach($jornadas as $jornada){
+              
+            $jornada->weekday = \App\classes\Strings::convertWeekDay($jornada->dias_semana[0]);
+
+        }
+    
+        $jornadas = $jornadas->sortBy('weekday');
+         return $jornadas;
+    }
 }

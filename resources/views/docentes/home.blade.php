@@ -2,6 +2,7 @@
 @section('pagina')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 @include('docentes.modal.add_jornada')
+@include('docentes.modal.editar_jornada')
 @include('docentes.modal.exclusao_jornada')
 <div class="title-block">
     <div class="row">
@@ -19,7 +20,7 @@
             <div class="card">
             <div class="card card-block">
                 <div class="card-title-block">
-                    <h3 class="title"> Horário semanal </h3>
+                    <h3 class="title"> Horário semanal <a href="#" class="btn btn-oval btn-sm btn-primary" onclick="graph_open();"><i class="fa fa-bar-chart-o"></i></a></h3>
                 </div>
                 <section>
                 <table class="table table-striped table-bordered table-sm">
@@ -75,8 +76,8 @@
                 </table>
                 </section>
 
-                <section>
-                    <div id="placeholder" style="width:29rem;height:25rem">
+                <section id="grafico" style="display:none;">
+                    <div id="placeholder" style="width:29rem;height:25rem;">
 
 
                     </div>
@@ -100,9 +101,10 @@
                     <table class="table table-sm table-striped">
                         <tr>
                             <th>&nbsp;</th>
+                            <th>Datas</th>
                             <th>Dia(s)</th>
-                            <th>Início</th>
-                            <th>Termino</th>
+                            <th>Início<br>Termino</th>
+                            
                             <th>Tipo</th>
                             <th>Local</th>
                             <th>&nbsp;</th>
@@ -113,27 +115,43 @@
                             <td><small>
                                 @switch($jornada->status)
                                     @case('analisando')
-                                        <i class="fa fa-clock-o"></i>
+                                        <i class="fa fa-clock-o" title="Em análise"></i>
                                         @break
                                     @case('ativa')
-                                        <i class="fa fa-check text-success"></i>
+                                        <i class="fa fa-check text-success" title="Jornada Ativa"></i>
                                         @break
                                     @default
                                         
                                 @endswitch</small></td>
-                            <td><small>{{implode(',',$jornada->dias_semana)}}</small></td>
-                            <td><small>{{$jornada->hora_inicio}}</small></td>
-                            <td><small>{{$jornada->hora_termino}}</small></td>
+                            <td><small>{{$jornada->inicio->format('d/m/y')}}<br>{{isset($jornada->termino)?$jornada->termino->format('d/m/y'):'Ativa'}}</small></td>
+                            <td><small>
+                                @foreach($jornada->dias_semana as $dia)
+                                    {{$dia}}<br>
+                                @endforeach
+
+                                <!--{{implode(', ',$jornada->dias_semana)}}-->
+                            </small></td>
+                            <td><small>{{$jornada->hora_inicio}}<br>{{$jornada->hora_termino}}</small></td>
+                            
                             <td><small>{{$jornada->tipo}}</small></td>
                             <td><small>{{$jornada->getLocal()->sigla}}</small></td>
                             <td>
-                                @if(in_array('17', Auth::user()->recursos))
-                                <small><a href="#" data-toggle="modal" data-target="#modal-exclusao-jornada" title="Excluir Jornada" onclick="atribJornada('{{$jornada->id}}')">
-                                            <i class="fa fa-times text-danger"></i>
-                                        </a>
-                                </small>
+                                @if($jornada->status == 'analisando')
+                                
+                                    <a href="#" data-toggle="modal" data-target="#modal-exclusao-jornada" title="Excluir Jornada" onclick="atribJornada('{{$jornada->id}}')">
+                                        <i class="fa fa-times text-danger"></i>
+                                    </a>
+                                
+
                                 @else
                                 &nbsp;
+                                @endif
+                                @if(in_array('17', Auth::user()->recursos))
+                                
+                                    <a href="#" data-toggle="modal" data-target="#modal-encerrar-jornada" title="Gerenciar Jornada" onclick="atribJornada('{{$jornada->id}}')">
+                                        <i class="fa fa-toggle-down"></i>
+                                    </a>
+                                
                                 @endif
                             </td>
 
@@ -143,7 +161,7 @@
                     
                     </table>
                    
-                    <p>&nbsp;</p>
+                    <p style="display: hide;">&nbsp;</p>
                     <div class="row">
                         <div class="col-sm-12">
                             <a href="#" data-toggle="modal" data-target="#modal-add-jornada" class="btn btn-sm btn-primary">Adicionar</a>
@@ -348,6 +366,12 @@
 @endsection
 @section('scripts')
 <script>
+function graph_open(){
+    if($('#grafico').css('display') == 'none')
+        $('#grafico').show("slow");
+    else
+        $('#grafico').hide("slow");
+}
 function carregarSalas(local){
 	var salas;
 	$("#select_sala").html('<option>Sem salas cadastradas</option>');
@@ -375,7 +399,7 @@ function excluirJornada(){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         method: "POST",
-        url: "/jornada/excluir",
+        url: "/jornada/encerrar",
         data: { jornada }
         
     })
@@ -384,6 +408,25 @@ function excluirJornada(){
 	})
     .fail(function(msg){
         alert('Falha ao excluir jornada: '+msg.statusText);
+    });
+}
+
+function encerrarJornada(){
+    encerramento = $("#data_encerramento").val();
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        method: "POST",
+        url: "/jornada/encerrar",
+        data: { jornada,encerramento }
+        
+    })
+	.done(function(msg){
+		location.reload(true);
+	})
+    .fail(function(msg){
+        alert('Falha ao encerrar jornada: '+msg.statusText);
     });
 }
 

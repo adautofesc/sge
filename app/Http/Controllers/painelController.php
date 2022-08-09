@@ -120,8 +120,9 @@ class painelController extends Controller
         //$carga_ativa = 0;
 
         $turmas = \App\Http\Controllers\TurmaController::listarTurmasDocente($id,$semestre);
+        $jornadas = \App\Http\Controllers\JornadaController::listarDocente($id,$semestre);
         
-        $jornadas = \App\Jornada::where('pessoa',$id)->get();
+        //$jornadas = \App\Jornada::where('pessoa',$id)->get();
         $jornadas_ativas = $jornadas->where('status','ativa');
 
         $locais = \App\Local::select(['id','nome'])->orderBy('nome')->get();

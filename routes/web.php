@@ -754,6 +754,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	Route::middleware('liberar.recurso:13')->prefix('jornada')->group(function(){
 		Route::post('cadastrar','JornadaController@cadastrar');
 		Route::post('excluir','JornadaController@excluir');
+		Route::post('encerrar','JornadaController@encerrar');
 
 	});
 	Route::get('chamada/{id}/{pg}/{url}/{hide?}','TurmaController@getChamada'); //optional parameter is used here!

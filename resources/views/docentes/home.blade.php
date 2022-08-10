@@ -148,7 +148,7 @@
                                 @endif
                                 @if(in_array('17', Auth::user()->recursos))
                                 
-                                    <a href="#" data-toggle="modal" data-target="#modal-encerrar-jornada" title="Gerenciar Jornada" onclick="atribJornada('{{$jornada->id}}')">
+                                    <a href="#" data-toggle="modal" data-target="#modal-encerrar-jornada" title="Modificar Jornada" onclick="atribJornada('{{$jornada->id}}')">
                                         <i class="fa fa-toggle-down"></i>
                                     </a>
                                 

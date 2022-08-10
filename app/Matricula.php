@@ -137,9 +137,11 @@ class Matricula extends Model
 
 		
 
+		
+
 		if($dt_mt->format('m') < $pp_dt->format('m') || $dt_mt->format('Y') < $pp_dt->format('Y'))
 			//para reduzir numero de parcelas em julho
-			if($parcelas>5 && $dt_mt->format('m')>=7)
+			if($parcelas>5 && $dt_mt->format('m')>=7 && $dt_mt->format('Y') == $pp_dt->format('Y'))
 				return 5;
 			else
 				return $parcelas;
@@ -168,6 +170,8 @@ class Matricula extends Model
 
 
 		}
+
+
 		return $parcelas;
 
 	}

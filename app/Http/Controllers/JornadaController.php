@@ -61,8 +61,16 @@ class JornadaController extends Controller
 
     public function encerrar(Request $r){
        $jornada = Jornada::find($r->jornada);
-       $jornada->status = 'encerrada';
-       $jornada->termino= $r->encerramento;
+       if($jornada->status =='encerrada'){
+           $jornada->status = 'ativa';
+           $jornada->termino = null;
+
+       }else{
+        $jornada->status = 'encerrada';
+        $jornada->termino= $r->encerramento;
+
+       }
+      
        $jornada->save();
 
        return response('Done',200);

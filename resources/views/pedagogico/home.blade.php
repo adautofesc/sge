@@ -105,9 +105,44 @@
                         <a href="/relatorios/carga-docentes" class="btn btn-primary-outline col-xs-12 text-xs-left">
                             <i class=" fa fa-file-text-o"></i>
                             &nbsp;&nbsp;Relatório de educadores</a>
+
                             <a href="/relatorios/salas" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                            <i class=" fa fa-file-text-o"></i>
+                             &nbsp;&nbsp;Relatório de Salas</a>
+
+                               @if(in_array('1',$programas))
+                                <a href="/relatorios/jornadas-por-programa/unit" class="btn btn-primary-outline col-xs-12 text-xs-left">
                                 <i class=" fa fa-file-text-o"></i>
-                                &nbsp;&nbsp;Relatório de Salas</a>
+                                 &nbsp;&nbsp;Jornadas UNIT</a>
+                                @endif
+
+                                @if(in_array('2',$programas))
+                                <a href="/relatorios/jornadas-por-programa/unit" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                                    <i class=" fa fa-file-text-o"></i>
+                                     &nbsp;&nbsp;Jornadas PID</a>
+
+                                     <a href="/relatorios/uso-livre" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                                        <i class=" fa fa-file-text-o"></i>
+                                         &nbsp;&nbsp;Uso Livre</a>
+                                @endif
+
+                                @if(in_array('3',$programas))
+                                <a href="/relatorios/jornadas-por-programa/uati" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                                    <i class=" fa fa-file-text-o"></i>
+                                     &nbsp;&nbsp;Jornadas UATI</a>
+                                @endif
+
+                                @if(in_array('4',$programas))
+                                <a href="/relatorios/jornadas-por-programa/emg" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                                    <i class=" fa fa-file-text-o"></i>
+                                     &nbsp;&nbsp;Jornadas EMG</a>
+                                @endif
+
+                                @if(in_array('12',$programas))
+                                <a href="/relatorios/jornadas-por-programa/cec" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                                    <i class=" fa fa-file-text-o"></i>
+                                     &nbsp;&nbsp;Jornadas CEC</a>
+                            @endif
                     </div>
 
                 </div>

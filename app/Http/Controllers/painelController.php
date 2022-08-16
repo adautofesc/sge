@@ -525,7 +525,34 @@ class painelController extends Controller
     public function testarClasse(){
 
         
-        dd('Testador =)');
+        $input='./documentos/g1.xlsx';
+        $cpfs = array();
+        //$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($input);
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $spreadsheet = $reader->load($input);
+        for($i=2;$i<=140;$i++){
+            
+            $cpf=$spreadsheet->getActiveSheet()->getCell('A'.$i)->getValue();
+            
+            $pessoa = \App\PessoaDadosGerais::where('dado',3)->where('valor',$cpf)->first();
+            //dd($pessoa);
+            if(isset($pessoa->id)){
+                $spreadsheet->getActiveSheet()->getCell('C'.$i)->setValue($pessoa->id);
+                array_push($cpfs,$pessoa->id);
+                $matricula = \App\Matricula::where('pessoa',$pessoa->id)->where('status','ativa')->first();
+                if(isset($matricula->id))
+                    $spreadsheet->getActiveSheet()->getCell('D'.$i)->setValue('Matricula ativa');
+
+            }
+                
+
+
+        }
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer->save($input);
+        return $cpfs;
+        
 
 
 

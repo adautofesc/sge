@@ -19,6 +19,16 @@
             <h3 class="title">Controle de Uso Livre</h3>
             <p class="title-description">Cadastro de utilização dos espaços do PID</p>
         </div>
+        <div class="col-md-6 text-xs-right">
+           
+            <div class="action dropdown show">
+                <button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">  <i class="fa fa-ellipsis-v title"></i> </button>
+                <div class="dropdown-menu show" aria-labelledby="dropdownMenu1" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: -120px; transform: translate3d(0px, 5px, 0px);" x-out-of-boundaries="">
+                    <a class="dropdown-item" href="/uso-livre/gerenciar">Minhas entradas</a>
+                    <a class="dropdown-item" href="/relatorios/uso-livre">Relatório</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <section class="section">
@@ -113,9 +123,18 @@
                             <label class="col-sm-2 form-control-label text-xs-right text-secondary">Local </label>
                             <div class="col-sm-10"> 
                                 <select name="local" class="form-control" placeholder="selecione">
+                                 
+                                 <option value="0">Selecione</option>
+                                 
+
                                   
                                   @foreach($locais as $local)
+                                  @if(session('local') && session('local')==$local->id_local)
+                        
+                                  <option value="{{$local->id_local}}" selected="selected">{{$local->local}}</option>
+                                  @else
                                   <option value="{{$local->id_local}}">{{$local->local}}</option>
+                                  @endif
                                   @endforeach
                   
                                 </select>

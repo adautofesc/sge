@@ -714,6 +714,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('carga-docentes/{ano?}', [JornadaDocentes::class,'relatorioGeral']); //rotas inteligentes
 		Route::get('salas',  [SalaController::class,'relatorioOcupacao']);
 		Route::get('jornadas-por-programa/{programa}', [JornadaPrograma::class,'index']);
+		Route::get('uso-livre', [UsoLivreController::class,'relatorio']);
 		
 
 

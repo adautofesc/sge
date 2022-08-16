@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use App\Sala;
+use App\Local;
 use App\UsoLivre;
 use Illuminate\Http\Request;
 
@@ -20,6 +21,8 @@ class UsoLivreController extends Controller
     }
 
     public function store(Request $r){
+        if($r->local ==0)
+            return redirect()->back()->with('danger','Local não selecionado');
         $ul = new UsoLivre;
         $ul->atendido = $r->pessoa;
         $ul->responsavel = Auth::user()->pessoa;
@@ -28,6 +31,7 @@ class UsoLivreController extends Controller
         $ul->inicio = $r->data;
         $ul->atividade = $r->atividade;
         $ul->save();
+        session(['local'=>$r->local]);
 
 
        return redirect()->back()->with(['success'=>'Registro '. $r->inicio.' gravado']);
@@ -54,5 +58,24 @@ class UsoLivreController extends Controller
                 $uso->save();
             }
         }*/
+    }
+
+    public function relatorio(Request $r){
+        $locais = Local::orderBy('nome')->get();
+        //dd($r->local);
+
+        if($r->local)
+            $registros = UsoLivre::whereIn('local',$r->local)->get();
+        else
+            $registros = UsoLivre::whereYear('inicio',2022)->get();
+
+      
+
+
+        //dd($registros);
+        return view('relatorios.uso-livre')
+            ->with('registros',$registros)
+            ->with('local_filtro',$r->local)
+            ->with('locais',$locais);
     }
 }

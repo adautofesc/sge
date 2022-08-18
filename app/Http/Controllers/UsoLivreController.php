@@ -65,9 +65,9 @@ class UsoLivreController extends Controller
         //dd($r->local);
 
         if($r->local)
-            $registros = UsoLivre::whereIn('local',$r->local)->get();
+            $registros = UsoLivre::whereIn('local',$r->local)->orderByDesc('inicio')->get();
         else
-            $registros = UsoLivre::whereYear('inicio',2022)->get();
+            $registros = UsoLivre::whereYear('inicio',2022)->orderByDesc('inicio')->get();
 
       
 

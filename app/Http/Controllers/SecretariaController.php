@@ -33,7 +33,7 @@ class SecretariaController extends Controller
 
 
 	public function atender($id=0){
-	
+		$devedor = false;
 
 		if($id>0)
 			session('pessoa_atendimento',$id);
@@ -65,6 +65,11 @@ class SecretariaController extends Controller
 		}
 		$errosMsg=\App\PessoaDadosGerais::where('pessoa',$id)->where('dado',20)->get();
 		$pendenciasMsg=\App\PessoaDadosAdministrativos::where('pessoa',$id)->where('dado','pendencia')->get();
+		foreach($pendenciasMsg as $pendencia){
+			if($pendencia->valor == 'Dívida ativa')
+				$devedor = true;
+			
+		}
 		
 		if(isset($_GET["mostrar"])){
 			 $matriculas=Matricula::where('pessoa', Session::get('pessoa_atendimento'))->orderBy('id','desc')->limit(20)->get();
@@ -113,8 +118,7 @@ class SecretariaController extends Controller
 		$boleto_vencido = $boletos->whereIn('status',['emitido','divida','aberto executado'])->where('vencimento','<',$vencimento->toDateString());
 		if(count($boleto_vencido)>0)	
 			$devedor=true;
-		else 
-			$devedor=false;
+		
 		
 
 		$atestado = \App\Atestado::where('pessoa',$id)->where('tipo','saude')->orderByDesc('id')->first();

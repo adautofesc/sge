@@ -537,12 +537,19 @@ class painelController extends Controller
             $pessoa = \App\PessoaDadosGerais::where('dado',3)->where('valor',$cpf)->first();
             //dd($pessoa);
             if(isset($pessoa->id)){
+                $pendencia = new \App\PessoaDadosAdministrativos;
+                $pendencia->pessoa = $pessoa->pessoa;
+                $pendencia->dado = 'pendencia';
+                $pendencia->valor = 'Dívida ativa';
+                $pendencia->save();
+                array_push($cpfs,$pessoa->pessoa);
+                /*
                 $spreadsheet->getActiveSheet()->getCell('C'.$i)->setValue($pessoa->id);
                 array_push($cpfs,$pessoa->id);
                 $matricula = \App\Matricula::where('pessoa',$pessoa->id)->where('status','ativa')->first();
                 if(isset($matricula->id))
                     $spreadsheet->getActiveSheet()->getCell('D'.$i)->setValue('Matricula ativa');
-
+                */
             }
                 
 

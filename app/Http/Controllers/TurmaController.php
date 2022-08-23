@@ -1019,6 +1019,7 @@ class TurmaController extends Controller
                      return redirect()->back()->withErrors(['Não foi possivel efetuar sua solicitação: Nenhuma turma selecionada.']);
         switch ($acao) {
             case 'encerrar':
+                
                 foreach($turmas as $turma_id){
                     $turma = Turma::find($turma_id);
                     if(isset($turma->id)){

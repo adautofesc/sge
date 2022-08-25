@@ -19,7 +19,7 @@ class JornadaDocentes extends Controller
         $ano_anterior = $ano-1;
         
         $educadores = PessoaDadosAdministrativos::getFuncionarios('Educador');
-        $educadores->pull(29);
+        $educadores->pull(29);//retira o cadastro 0 SEG a definir
         $locais = \App\Local::select(['id','sigla'])->orderBy('sigla')->get();
 
         //dd($educadores);

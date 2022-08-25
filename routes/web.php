@@ -14,6 +14,7 @@
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\JornadaController;
 use App\Http\Controllers\Reports\JornadaDocentes;
+use App\Http\Controllers\Reports\JornadaPrograma;
 use App\Http\Controllers\SalaController;
 use App\Http\Controllers\UsoLivreController;
 use App\Http\Controllers\MatriculaController;
@@ -455,7 +456,7 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::get('fase5/{pessoa?}','CarneController@carneFase5');//confirma impressão
 			Route::get('fase6/{pessoa?}','CarneController@carneFase6');//gera remessa
 			Route::get('fase7/{pessoa?}','CarneController@carneFase7');//download de arquivos
-
+			Route::get('reimpressao','CarneController@reimpressao');//
 
 		});
 
@@ -485,6 +486,7 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::get('novo/{pesssoa}', 'BoletoController@novo');//precisa de middleware
 			Route::post('novo/{pesssoa}', 'BoletoController@create');//precisa de middleware
 			Route::get('/lote-csv', 'BoletoController@gerarArquivoCSV');
+			Route::get('corrigir2022','BoletoController@corrigir2022');
 
 
 			
@@ -710,7 +712,9 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('celulares','PessoaController@relatorioCelulares');
 		Route::get('receita-anual-programa/{ano}/{mes?}','Reports\ReceitaAnualReportController@receitaPorPrograma');
 		Route::get('carga-docentes/{ano?}', [JornadaDocentes::class,'relatorioGeral']); //rotas inteligentes
-		Route::get('salas',  [SalaController::class,'relatorioOcupacao']); 
+		Route::get('salas',  [SalaController::class,'relatorioOcupacao']);
+		Route::get('jornadas-por-programa/{programa}', [JornadaPrograma::class,'index']);
+		Route::get('uso-livre', [UsoLivreController::class,'relatorio']);
 		
 
 
@@ -749,6 +753,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	Route::middleware('liberar.recurso:13')->prefix('jornada')->group(function(){
 		Route::post('cadastrar','JornadaController@cadastrar');
 		Route::post('excluir','JornadaController@excluir');
+		Route::post('encerrar','JornadaController@encerrar');
 
 	});
 	Route::get('chamada/{id}/{pg}/{url}/{hide?}','TurmaController@getChamada'); //optional parameter is used here!

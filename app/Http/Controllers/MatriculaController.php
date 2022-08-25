@@ -246,8 +246,6 @@ class MatriculaController extends Controller
         return view('secretaria.matricula.lista-por-pessoa',compact('matriculas'))->with('nome',$nome)->with('pessoa_id',Session::get('pessoa_atendimento'));
 
     }
-    
-
 
 
 
@@ -280,87 +278,6 @@ class MatriculaController extends Controller
         else{
             return false;
         }
-/*
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        dd($data->format('Y'));
-        //if($data->format('Y-m-d') > date("Y-m-d")){
-            if($pacote > 0){
-                //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! arrumar isso
-                $matriculas_ativas=Matricula::where('pessoa',$pessoa)
-                ->where('pacote',$pacote)
-                ->WhereYear('data', $data->format('Y'))
-                ->get();//
-
-                if($matriculas_ativas->count()>0)
-                    return $matriculas_ativas->first()->id;
-                else
-                    return false;
-
-            }
-            elseif($curso == 307)
-            {
-                $matriculas_ativas=Matricula::where('pessoa',$pessoa)
-                ->where('curso',$curso)
-                ->WhereIn('status',['espera'])
-                ->WhereYear('data', $data->format('Y'))
-                ->get();
-
-                if($matriculas_ativas->count()>0)
-                    return $matriculas_ativas->first()->id;
-                else
-                    return false;
-            }
-            else
-                return false;
-        }
-        else{
-            if($pacote > 0){
-                $matriculas_ativas=Matricula::where('pessoa',$pessoa)
-                ->where('pacote',$pacote)
-                ->WhereIn('status',['ativa','pendente'])
-                ->get();
-
-                if($matriculas_ativas->count()>0)
-                    return $matriculas_ativas->first()->id;
-                else
-                    return false;
-            }
-            elseif($curso == 307)
-            {
-                $matriculas_ativas=Matricula::where('pessoa',$pessoa)
-                ->where('curso',$curso)
-                ->WhereIn('status',['ativa','pendente'])
-                ->get();
-
-                if($matriculas_ativas->count()>0)
-                    return $matriculas_ativas->first()->id;
-                else
-                    return false;
-            }
-            else
-                return false;
-
-        }*/
            
     }
 
@@ -474,19 +391,21 @@ class MatriculaController extends Controller
      * @return [Matricula]     [retorna objeto matrícula.]
      */
     public static function atualizar($id){
-
         $matricula = Matricula::find($id);
         if(isset($matricula->id)){
+           
             $inscricoes = InscricaoController::inscricoesPorMatricula($id,'todas');
             if($inscricoes->count()==0){
                 $matricula->status = 'cancelada';
                 $matricula->save();
+                \App\BolsaMatricula::atualizarPorMatricula($matricula->id);
                 return $matricula;
             }
             $regulares = $inscricoes->where('status','regular');
             if($regulares->count()>0){
                 $matricula->status = 'ativa';
                 $matricula->save();
+                \App\BolsaMatricula::atualizarPorMatricula($matricula->id);
                 return $matricula;
             }              
             else{
@@ -494,6 +413,7 @@ class MatriculaController extends Controller
                 if($pendentes->count()>0){
                     $matricula->status = 'pendente';
                     $matricula->save();
+                    \App\BolsaMatricula::atualizarPorMatricula($matricula->id);
                     return $matricula;
                 }
                 else{
@@ -501,15 +421,19 @@ class MatriculaController extends Controller
                     if($finalizadas->count()>0){
                         $matricula->status = 'expirada';
                         $matricula->save();
+                        \App\BolsaMatricula::atualizarPorMatricula($matricula->id);
                         return $matricula;
                     }
                     else{
                         $matricula->status = 'cancelada';
                         $matricula->save();
+                        \App\BolsaMatricula::atualizarPorMatricula($matricula->id);
                         return $matricula;
                     }
                 }
-            }  
+            }
+            
+            
         }  
         else
             dd('Erro em MatriculaController::atualizar -> Matrícula'.$id.' não encontrada');  
@@ -929,7 +853,7 @@ class MatriculaController extends Controller
                         InscricaoController::atualizarPorMatricula($matricula->id,$matricula->status); 
                     }
                 }
-                    
+                \App\BolsaMatricula::atualizarPorMatricula($matricula->id);                 
             }
         }
     }

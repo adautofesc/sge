@@ -135,27 +135,43 @@ class Matricula extends Model
 		$dt_mt = \DateTime::createFromFormat('Y-m-d',$this->data);
 		$interval = $pp_dt->diff($dt_mt);
 
+		
+
+		
+
 		if($dt_mt->format('m') < $pp_dt->format('m') || $dt_mt->format('Y') < $pp_dt->format('Y'))
-			//para reduzir numero de parcelas
-			if($this->pacote>0 && $pp_dt->format('m')>=7)
+			//para reduzir numero de parcelas em julho
+			if($parcelas>5 && $dt_mt->format('m')>=7 && $dt_mt->format('Y') == $pp_dt->format('Y'))
 				return 5;
 			else
 				return $parcelas;
 		else{
+
+			if($parcelas >5 && $dt_mt->format('m')>7)
+				$parcelas++;//n
+				
 			
-			$parcelas = $parcelas - ($dt_mt->format('m')-$pp_dt->format('m'));
+			if($dt_mt->format('d')>$this::CORTE && $dt_mt->format('m')==7 && $parcelas>5)//n
+					$parcelas++;//n
+			
+	
 			if($dt_mt->format('d')>$this::CORTE)//n
-				$parcelas--;
-
+				$parcelas--;//10
+			
+						// - 6
+			$parcelas = $parcelas - ($dt_mt->format('m')-$pp_dt->format('m'));
+			//
 			// Bloco criado para retirar a parcela de julho e jogar para dezembro
-			if($dt_mt->format('m')>7 || ($dt_mt->format('m')==7 && $dt_mt->format('d')>$this::CORTE)){
-				$parcelas++;//4
+			//if($dt_mt->format('m')>7 || ($dt_mt->format('m')==7 && $dt_mt->format('d')>$this::CORTE)){
+				//$parcelas++;//4
 
-			}
+			//}
 			
 
 
 		}
+
+
 		return $parcelas;
 
 	}

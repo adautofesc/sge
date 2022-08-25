@@ -115,15 +115,11 @@
                         &nbsp;&nbsp;Relatório de Bolsas</a>
                     </div> 
                     <div>
-                        <a href="/relatorios/alunos-posto/"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="/relatorios/jornadas-por-programa/xxx"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Alunos por unidade</a>
-                    </div>
-                    <div>
-                        <a href="/relatorios/faixasuati/"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Faixas insc. UATI</a>
-                    </div>  
+                        &nbsp;&nbsp;Jornadas P/Programa</a>
+                    </div> 
+                   
                     <div>
                         <a href="/relatorios/bolsistas-com-3-faltas/"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>

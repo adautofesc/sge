@@ -19,6 +19,7 @@ use App\Http\Controllers\SalaController;
 use App\Http\Controllers\UsoLivreController;
 use App\Http\Controllers\MatriculaController;
 use App\Http\Controllers\PessoaDadosJornadasController;
+use App\Http\Controllers\FichaTecnicaController;
 
 Route::get('/', 'painelController@index');
 
@@ -276,6 +277,18 @@ Route::middleware(['auth','login']) ->group(function(){
 
 	Route::middleware('liberar.recurso:17')->prefix('jornadas')->group(function(){
 		Route::get('index-modal/{p?}', [JornadaController::class,'indexModal']);
+
+	});
+
+	Route::prefix('fichas')->group(function(){
+		Route::get('/',[FichaTecnicaController::class,'index']);
+		Route::get('cadastrar',[FichaTecnicaController::class,'cadastrar']);
+		Route::post('cadastrar',[FichaTecnicaController::class,'gravar']);
+		Route::get('visualizar/{id}',[FichaTecnicaController::class,'visualizar']);
+		Route::get('editar/{id}',[FichaTecnicaController::class,'editar']);
+		Route::post('editar/{id}',[FichaTecnicaController::class,'update']);
+		Route::post('excluir', [FichaTecnicaController::class,'excluir']);
+		Route::get('pesquisa',[FichaTecnicaController::class,'pesquisar']);
 
 	});
 

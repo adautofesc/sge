@@ -42,13 +42,18 @@
                                     <a href="/docentes/docente"> <i class="fa fa-th-large"></i> Docente </a>
                                 </li>
                                 @endif
-                                
+                                @if(in_array('13', Auth::user()->recursos))
+                                <li  >
+                                    <a href="/fichas/"> <i class="fa fa-thumb-tack"></i> Fichas Técnicas </a>
+                                </li>
+                                @endif
+                                <!--
                                 @if(in_array('13', Auth::user()->recursos))
                                 <li  >
                                     <a href="{{asset('/planos-ensino')}}"> <i class="fa fa-location-arrow"></i> Planos de ensino </a>
                                 </li>
                                 @endif
-                                
+                                -->
                                 @if(in_array('14', Auth::user()->recursos))
                                 <li  >
                                     <a href="{{asset('/financeiro')}}"> <i class="fa fa-usd"></i> Financeiro </a>

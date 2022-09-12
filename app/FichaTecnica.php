@@ -4,10 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use SoftDeletes;
 
 class FichaTecnica extends Model
 {
     use HasFactory;
+    
+
     protected $table  = 'fichas_tecnicas';
     protected $dates = ['data_inicio','data_termino'];
 
@@ -34,6 +37,10 @@ class FichaTecnica extends Model
         return $sala->nome;
 
 
+    }
+
+    public function getValor(){
+        return number_format($this->valor/100,2,',');
     }
 
     public function getHoraInicioAttribute($value){

@@ -193,7 +193,7 @@
 				Valor
 			</label>
 			<div class="col-md-2">
-				<input type="text" class="form-control" name="valor" maxlength="6"  value="{{$ficha->valor}}">
+				<input type="text" class="form-control" name="valor" maxlength="6"  value="{{$ficha->getValor()}}">
 			</div>
 			
 		</div>

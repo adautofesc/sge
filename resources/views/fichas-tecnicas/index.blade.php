@@ -37,9 +37,8 @@
                     <div class="action dropdown">
                         <button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opções... </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu1" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 5px, 0px);" x-out-of-boundaries="">
-                            <a class="dropdown-item" href="#" style="text-decoration: none; font-weight: 550;"><i class="fa fa-bar-chart-o icon"></i>Relatórios</a>
-                            <a class="dropdown-item" href="#" style="text-decoration: none; font-weight: 550;" data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-share icon"></i>Exportar</a>
-                            <a class="dropdown-item" href="#" style="text-decoration: none; font-weight: 550;" data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-rss-square text-warning icon"></i>Logs</a>
+                            <a class="dropdown-item" href="#" style="text-decoration: none; font-weight: 550;"><i class="fa fa-bar-chart-o icon"></i>Em construção</a>
+                            
                         </div>
                     </div>
                 </h3>
@@ -149,7 +148,7 @@
                                 Estado
                             </th>
                             <th class="tb_opt">
-                                &nbsp;
+                                Opções
                             </th>
                         </thead>
                         <tbody>
@@ -185,10 +184,12 @@
                                     
                                 </td>
                                 <td>
-                                    <a href="./editar/{{$ficha->id}}" title="Editar Ficha"> <h5><i class="fa fa-edit "></i></a>
-                                    
+                                    <h5>
+                                    <a href="./editar/{{$ficha->id}}" title="Editar Ficha"> <i class="fa fa-edit "></i></a>
+                                    <!--<a href="./copiar/{{$ficha->id}}" title="Criar cópia Ficha"> <i class="fa fa-copy"></i></a> -->
                                     <a href="#" onclick="excluir({{$ficha->id}})" title="Excluir ficha"><i class="fa fa-times-circle text-danger"></i> </a>
                                     </h5>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

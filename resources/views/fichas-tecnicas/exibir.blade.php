@@ -152,7 +152,7 @@
 				Valor
 			</label>
 			<div class="col-md-2">
-				R$ {{$ficha->valor}}
+				R$ {{$ficha->getValor()}}
 			</div>
 			
 		</div>

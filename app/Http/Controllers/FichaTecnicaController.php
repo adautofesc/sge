@@ -53,7 +53,7 @@ class FichaTecnicaController extends Controller
         $ficha->hora_termino = $r->hora_termino;
         $ficha->lotacao_maxima = $r->lotacao_max;
         $ficha->lotacao_minima = $r->lotacao_min;
-        $ficha->valor = $r->valor;
+        $ficha->valor = str_replace(',','.',$r->valor)*100;
         $ficha->local = $r->local;
         $ficha->sala = $r->sala;
         $ficha->status = 'docente';
@@ -63,7 +63,7 @@ class FichaTecnicaController extends Controller
         if($r->btn==2)
             return redirect()->back()->with('success','Ficha cadastrada com sucesso');
         else
-            return redirect('fichas')->with('success','Ficha cadastrada com sucesso');
+            return redirect('fichas/#')->with('success','Ficha cadastrada com sucesso');
 
     }
 
@@ -104,13 +104,13 @@ class FichaTecnicaController extends Controller
         $ficha->hora_termino = $r->hora_termino;
         $ficha->lotacao_maxima = $r->lotacao_max;
         $ficha->lotacao_minima = $r->lotacao_min;
-        $ficha->valor = $r->valor;
+        $ficha->valor = str_replace(',','.',$r->valor)*100;
         $ficha->local = $r->local;
         $ficha->sala = $r->sala;
         $ficha->status = 'docente';
         $ficha->save();
 
-        return redirect('fichas')->with('success','Ficha cadastrada com sucesso');
+        return redirect('fichas/#')->with('success','Ficha cadastrada com sucesso');
 
     }
 
@@ -123,5 +123,18 @@ class FichaTecnicaController extends Controller
         }
         else        
             return response('Id não encontrado',404);
+     }
+
+     public function clonar($ids){
+        $fichas = explode(',',$ids);
+        foreach($fichas as $id){
+            $ficha = FichaTecnica::find($id);
+            if(isset($ficha->id)){
+                $novaficha = $ficha->replicate();
+                $novaficha->created_at = now();
+                $novaficha->save();
+            }
+        }
+        
      }
 }

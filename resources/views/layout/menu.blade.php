@@ -42,7 +42,7 @@
                                     <a href="/docentes/docente"> <i class="fa fa-th-large"></i> Docente </a>
                                 </li>
                                 @endif
-                                @if(in_array('13', Auth::user()->recursos))
+                                @if(in_array('29', Auth::user()->recursos))
                                 <li  >
                                     <a href="/fichas/"> <i class="fa fa-thumb-tack"></i> Fichas Técnicas </a>
                                 </li>

@@ -280,7 +280,7 @@ Route::middleware(['auth','login']) ->group(function(){
 
 	});
 
-	Route::prefix('fichas')->group(function(){
+	Route::middleware('liberar.recurso:29')->prefix('fichas')->group(function(){
 		Route::get('/',[FichaTecnicaController::class,'index']);
 		Route::get('cadastrar',[FichaTecnicaController::class,'cadastrar']);
 		Route::post('cadastrar',[FichaTecnicaController::class,'gravar']);

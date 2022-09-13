@@ -289,6 +289,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::post('editar/{id}',[FichaTecnicaController::class,'update']);
 		Route::post('excluir', [FichaTecnicaController::class,'excluir']);
 		Route::get('pesquisa',[FichaTecnicaController::class,'pesquisar']);
+		Route::get('copiar/{id}',[FichaTecnicaController::class,'copiar']);
 
 	});
 

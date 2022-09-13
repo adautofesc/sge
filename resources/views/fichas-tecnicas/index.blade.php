@@ -31,7 +31,7 @@
     <div class="title-block">
         <div class="row">
             <div class="col-md-6">
-                <h3 class="title"> Fichas Técnicas <a href="./cadastrar" class="btn btn-primary btn-sm rounded-s"> Cadastrar nova </a>
+                <h3 class="title"> Fichas Técnicas <a href="/fichas/cadastrar" class="btn btn-primary btn-sm rounded-s"> Cadastrar nova </a>
                     <!--
 -->
                     <div class="action dropdown">
@@ -162,7 +162,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <a href="./visualizar/{{$ficha->id}}">#{{$ficha->id}}</a>
+                                    <a href="/fichas/visualizar/{{$ficha->id}}">#{{$ficha->id}}</a>
                                 </td>
                                 <td>
                                     {{$ficha->getDocente()}}
@@ -185,8 +185,8 @@
                                 </td>
                                 <td>
                                     <h5>
-                                    <a href="./editar/{{$ficha->id}}" title="Editar Ficha"> <i class="fa fa-edit "></i></a>
-                                    <!--<a href="./copiar/{{$ficha->id}}" title="Criar cópia Ficha"> <i class="fa fa-copy"></i></a> -->
+                                    <a href="/fichas/editar/{{$ficha->id}}" title="Editar Ficha"> <i class="fa fa-edit "></i></a>
+                                    <a href="/fichas/copiar/{{$ficha->id}}" title="Criar cópia Ficha"> <i class="fa fa-copy"></i></a>
                                     <a href="#" onclick="excluir({{$ficha->id}})" title="Excluir ficha"><i class="fa fa-times-circle text-danger"></i> </a>
                                     </h5>
                                 </td>
@@ -238,7 +238,7 @@ function alterarStatus(status){
             $(location).attr('href','./analisar/'+selecionados);
         else
             if(confirm('Deseja realmente alterar as bolsas selecionadas?'))
-                $(location).attr('href','./status/'+status+'/'+selecionados);
+                $(location).attr('href','/fichas/status/'+status+'/'+selecionados);
 
         return false;
 

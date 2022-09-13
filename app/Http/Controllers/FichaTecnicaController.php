@@ -39,7 +39,7 @@ class FichaTecnicaController extends Controller
         $ficha = new FichaTecnica;
         $ficha->programa = $r->programa;
         $ficha->docente = $r->professor;
-        $ficha->curso = $r->curso;
+        $ficha->curso = strtoupper($r->curso);
         $ficha->objetivo = $r->objetivos;
         $ficha->requisitos = $r->requisitos;
         $ficha->idade_minima = $r->idade_min;
@@ -63,7 +63,7 @@ class FichaTecnicaController extends Controller
         if($r->btn==2)
             return redirect()->back()->with('success','Ficha cadastrada com sucesso');
         else
-            return redirect('fichas/#')->with('success','Ficha cadastrada com sucesso');
+            return redirect('/fichas')->with('success','Ficha cadastrada com sucesso');
 
     }
 
@@ -90,7 +90,7 @@ class FichaTecnicaController extends Controller
         $ficha = FichaTecnica::find($r->id);
         $ficha->programa = $r->programa;
         $ficha->docente = $r->professor;
-        $ficha->curso = $r->curso;
+        $ficha->curso = strtoupper($r->curso);
         $ficha->objetivo = $r->objetivos;
         $ficha->requisitos = $r->requisitos;
         $ficha->idade_minima = $r->idade_min;
@@ -110,7 +110,7 @@ class FichaTecnicaController extends Controller
         $ficha->status = 'docente';
         $ficha->save();
 
-        return redirect('fichas/#')->with('success','Ficha cadastrada com sucesso');
+        return redirect('/fichas')->with('success','Ficha cadastrada com sucesso');
 
     }
 
@@ -125,16 +125,19 @@ class FichaTecnicaController extends Controller
             return response('Id não encontrado',404);
      }
 
-     public function clonar($ids){
-        $fichas = explode(',',$ids);
-        foreach($fichas as $id){
-            $ficha = FichaTecnica::find($id);
-            if(isset($ficha->id)){
-                $novaficha = $ficha->replicate();
-                $novaficha->created_at = now();
-                $novaficha->save();
-            }
-        }
-        
+     public function copiar($id){
+        $ficha = FichaTecnica::find($id);
+        if(!isset($ficha->id))
+            return redirect()->back()->with('warning','Ficha não encontrada');
+        $programas = Programa::all();
+        $unidades = Local::get(['id' ,'nome']);
+        $salas = Sala::where('local',$ficha->local)->get();
+        $professores = PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
+        return view('fichas-tecnicas.copiar',compact('ficha'))
+                ->with('professores',$professores)
+                ->with('salas',$salas)
+                ->with('unidades',$unidades)
+                ->with('programas',$programas);
+    
      }
 }

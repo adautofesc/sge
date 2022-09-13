@@ -39,7 +39,7 @@ class FichaTecnicaController extends Controller
         $ficha = new FichaTecnica;
         $ficha->programa = $r->programa;
         $ficha->docente = $r->professor;
-        $ficha->curso = strtoupper($r->curso);
+        $ficha->curso = mb_strtoupper($r->curso,'UTF-8');
         $ficha->objetivo = $r->objetivos;
         $ficha->requisitos = $r->requisitos;
         $ficha->idade_minima = $r->idade_min;
@@ -90,7 +90,7 @@ class FichaTecnicaController extends Controller
         $ficha = FichaTecnica::find($r->id);
         $ficha->programa = $r->programa;
         $ficha->docente = $r->professor;
-        $ficha->curso = strtoupper($r->curso);
+        $ficha->curso = mb_strtoupper($r->curso,'UTF-8');
         $ficha->objetivo = $r->objetivos;
         $ficha->requisitos = $r->requisitos;
         $ficha->idade_minima = $r->idade_min;

@@ -1,11 +1,16 @@
 @extends('layout.app')
 @section('pagina')
 <div class="title-block">
-    <h3 class="title"> Ficha técnica {{$ficha->id}}<span class="sparkline bar" data-type="bar"></span> </h3>
+    <h3 class="title"> Ficha Técnica #{{$ficha->id}}<span class="sparkline bar" data-type="bar"></span> </h3>
 </div>
 @include('inc.errors')
 
     <div class="card card-block">
+		<div class="subtitle-block">
+			<h3 class="title">Descrição</h3>
+
+		</div>
+		
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Programa 
@@ -153,6 +158,22 @@
 			</label>
 			<div class="col-md-2">
 				R$ {{$ficha->getValor()}}
+			</div>
+			
+		</div>
+
+		<div class="subtitle-block">
+			<h3 class="title">Histórico</h3>
+
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Ação
+			</label>
+			<div class="col-md-10">
+				@foreach($dados as $dado)
+				{{$dado->created_at->format('d/m/Y H:i')}} - {{$dado->conteudo}} @if(in_array('26', Auth::user()->recursos)) por {{$dado->getPessoa('nome_simples')}}@endif<br>
+				@endforeach
 			</div>
 			
 		</div>

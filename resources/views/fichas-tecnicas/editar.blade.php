@@ -15,7 +15,6 @@
 					<option >Selecione um programa</option>
 					@if(isset($programas))
 					@foreach($programas as $programa)
-
 					<option value="{{$programa->id}}" {{$programa->id==$ficha->programa?'selected':''}}>{{$programa->nome}}</option>
 					@endforeach
 					@endif

@@ -304,32 +304,17 @@ class painelController extends Controller
     public function juridico(){
         return view('juridico.home');
     }
+
     public function pedagogico(){
         $user = Auth::user();
         $professores_dos_programas = collect();
         $programas = \App\PessoaDadosAdministrativos::where('pessoa',$user->pessoa)->where('dado','programa')->pluck('valor')->toArray();
-
         $professores = \App\PessoaDadosAdministrativos::getFuncionarios('Educador');
-    
-
-
         foreach($professores as $professor){
             $comparisson = array_intersect($programas,$professor->getProgramas());
             if(count($comparisson))
                 $professores_dos_programas->push($professor);
-
-/*if($professor->id == '19511'){          
-                $comparisson = array_intersect($programas,$professor->getProgramas());
-                dd( count($comparisson));
-                if(in_array($programas,$professor->getProgramas()))
-                dd($programasx);
-                else
-                dd($programas);
-            }*/
-
         }
-        //dd($professores_dos_programas);
-       
         
         return view('pedagogico.home')->with('professores',$professores_dos_programas)->with('programas',$programas);
 

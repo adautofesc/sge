@@ -55,6 +55,14 @@
 		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
+				Conteúdo Programático
+			</label>
+			<div class="col-sm-6"> 
+				<textarea rows="3" class="form-control" name="conteudo" maxlenght="500"></textarea>
+			</div>
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
 				Requisitos
 			</label>
 			<div class="col-sm-6"> 

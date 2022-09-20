@@ -14,6 +14,17 @@ use Auth;
 
 class FichaTecnicaController extends Controller
 {
+    /**
+     * O dados das fichas são liberados de acordo 2 recursos: docentes - 13 - e secretaria - 17
+     * 
+     *  No caso de professor ele verifica se tem o recurso docente não tem o cordenador
+     *  No caso do coordenador, ele com certeza terá os dois
+     *  No caso da secretaria ele não cairá em nenhum dos casos acima, pois com certeza ele não terá o recurso de docente.
+     * 
+     */
+
+
+
     public function index(){
         
         $fichas = FichaTecnica::paginate(50);
@@ -74,6 +85,7 @@ class FichaTecnicaController extends Controller
         $ficha->docente = $r->professor;
         $ficha->curso = mb_strtoupper($r->curso,'UTF-8');
         $ficha->objetivo = $r->objetivos;
+        $ficha->conteudo = $r->conteudo;
         $ficha->requisitos = $r->requisitos;
         $ficha->idade_minima = $r->idade_min;
         $ficha->idade_maxima = $r->idade_max;
@@ -165,6 +177,9 @@ class FichaTecnicaController extends Controller
         if($ficha->objetivo != $r->objetivos)
             $edicoes .= 'objetivo: '.$ficha->objetivo. ' => '.$r->objetivos;
         $ficha->objetivo = $r->objetivos;
+        if($ficha->conteudo = $r->conteudo)
+            $edicoes .= 'conteudo: '.$ficha->conteudo.' => '.$r->conteudo;
+        $ficha->conteudo = $r->conteudo;
         if($ficha->requisitos != $r->requisitos)
             $edicoes .= 'requisitos: '.$ficha->requisitos. ' => '.$r->requisitos;
         $ficha->requisitos = $r->requisitos;

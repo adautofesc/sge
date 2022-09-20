@@ -16,6 +16,9 @@
             var themeSettings = (localStorage.getItem('themeSettings')) ? JSON.parse(localStorage.getItem('themeSettings')) :
             {};
             var themeName = themeSettings.themeName || '';
+            
+            
+
             if (themeName)
             {
                 document.write('<link rel="stylesheet" id="theme-style" href="css/app-' + themeName + '.css">');
@@ -24,14 +27,27 @@
             {
                 document.write('<link rel="stylesheet" id="theme-style" href="css/app.css">');
             }
+            
+            
             function validaUsername(){
                 re = /\S+@+/;
                 username = document.getElementById("username").value;
+                remUsername = document.getElementById("remember").checked;
+                
+                
+
 
                 if(re.test(username))
                     alert("O campo USUÁRIO deve ser preenchido com seu nome de usuário, não o e-mail.");
-                else
+                else{
+                    
+                    if(remUsername)
+                        localStorage.setItem('username',username);
+                    else
+                        localStorage.removeItem('username');
+
                     document.forms[0].submit();
+                }
 
                 
 
@@ -65,7 +81,7 @@
                             </div>
                             <div class="form-group"> 
                                 <label for="remember">
-                                    <input class="checkbox" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}> 
+                                    <input class="checkbox" type="checkbox" id="remember" {{ old('remember') ? 'checked' : '' }}> 
                                     <span>Lembrar</span>
                                 </label> 
                                
@@ -94,6 +110,16 @@
                 <div class="color-secondary"></div>
             </div>
         </div>
+        <script>
+            var localUsername = localStorage.getItem('username');
+            if(localUsername){
+                document.getElementById("username").value = localUsername;
+                document.getElementById("remember").checked = true;
+                document.getElementById("password").focus();
+                
+            }
+
+        </script>
 
 
     </body>

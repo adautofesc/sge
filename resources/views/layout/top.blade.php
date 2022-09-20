@@ -28,6 +28,7 @@
     </sup> </a>
                 <div class="dropdown-menu notifications-dropdown-menu">
                     <ul class="notifications-container">
+                        <!--
                         <li>
                             <a href="" class="notification-item">
                                 <div class="img-col">
@@ -57,13 +58,15 @@
                                     <p> <span class="accent">Andy Nouman</span> deployed new version of <span class="accent">NodeJS REST Api V3</span> </p>
                                 </div>
                             </a>
-                        </li>
+                        </li>-->
                     </ul>
                     <footer>
                         <ul>
-                        <li> <a href="/notificacoes">
-           <small> Ver tudo </small>
-          </a> </li>
+                            <li>
+                                <a href="/notificacoes">
+                                    <small> Ver tudo </small>
+                                </a> 
+                            </li>
                         </ul>
                     </footer>
                 </div>

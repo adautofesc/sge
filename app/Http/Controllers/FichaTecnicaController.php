@@ -266,4 +266,24 @@ class FichaTecnicaController extends Controller
                 ->with('programas',$programas);
     
      }
+
+     public function encaminhar($id,$local){
+        $ficha = FichaTecnica::find($id);
+        if(!isset($ficha->id))
+            return redirect()->back()->with('warning','Ficha não encontrada');
+        $ficha->status = $local;
+        $ficha->save();
+
+        $dados_ficha = new FichaTecnicaDados;
+        $dados_ficha->ficha = $ficha->id;
+        $dados_ficha->dado = 'log';
+        $dados_ficha->conteudo = 'Ficha encaminhada para '.$local;
+        $dados_ficha->agente = Auth::user()->pessoa;
+        $dados_ficha->save();
+
+        return redirect('/fichas');
+
+
+
+     }
 }

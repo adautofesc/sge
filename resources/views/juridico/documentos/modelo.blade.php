@@ -33,7 +33,7 @@
 						FUNDAÇÃO EDUCACIONAL SÃO CARLOS</strong><br/>
 						Rua São Sebastião, 2828, Vila Nery <br/>
 						São Carlos - SP. CEP 13560-230<br/>
-						Tel.: (16) 3372-1308 e 3372-1325
+						Tel.: (16) 3362-0580 e 3362-0581
 					</small></small>
 				</p>
 			</div>

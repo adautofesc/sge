@@ -66,7 +66,7 @@
                     @endforeach
                       </tbody>
                     </table></small>
-                    <p><small> Qualquer divergência de valores entre em contato conosco: 3372-1308.</small></p>
+                    <p><small> Qualquer divergência de valores entre em contato conosco: 3362-0580.</small></p>
                     </div>
                 </div>
             </div>

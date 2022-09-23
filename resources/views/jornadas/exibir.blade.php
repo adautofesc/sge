@@ -196,20 +196,6 @@
 			</label>
 			<div class="col-sm-10 col-sm-offset-2">
 				<button type="cancel" name="btn" value="1" class="btn btn-primary" onclick="history.back(2)">Voltar</button> 
-				
-				@switch($ficha->status)
-					@case('docente')
-					<a class="btn btn-primary" href="/fichas/editar/{{$ficha->id}}">Editar</a> 
-						<a class="btn btn-success" href="#" onclick="sendTo('coordenacao');">Enviar para coordenação</a> 
-						@break
-					@case('coordenacao')
-					<a class="btn btn-primary" href="/fichas/editar/{{$ficha->id}}">Editar</a> 
-					<a class="btn btn-success" href="#" onclick="sendTo('diretoria');">Enviar para direção</a> 
-					<a class="btn btn-success" href="#" onclick="sendTo('docente')">Retornar para docente</a> 
-
-						@break
-					@endswitch
-
 			</div>
        </div>
     </div>
@@ -217,12 +203,5 @@
         
 @endsection
 @section('scripts')
-<script>
-	function sendTo(target){
-		if(confirm("Deseja mesmo encaminhar a ficha para "+target+" ?")){
-			window.location="/fichas/encaminhar/{{$ficha->id}}/"+target;
-		}
-	}
-</script>
 
 @endsection

@@ -41,7 +41,7 @@
       </div>
       <div class="alert alert-warning">
         <button type="button" class="close" data-dismiss="alert" >×</button>       
-        <p class="modal-title"><i class="fa fa-warning"></i> Os cursos virtuais serão realizados de forma síncrona (nos dias e horários previstos) através da plataforma Microsoft Teams. Os alunos receberão os dados de acesso e instruções por e-mail antes do início das aulas. Em caso de dúvidas ligue: (16) 3372-1308</p>
+        <p class="modal-title"><i class="fa fa-warning"></i> Os cursos virtuais serão realizados de forma síncrona (nos dias e horários previstos) através da plataforma Microsoft Teams. Os alunos receberão os dados de acesso e instruções por e-mail antes do início das aulas. Em caso de dúvidas ligue: (16) 3362-0580</p>
       </div>
       <div class="alert alert-danger">
         <button type="button" class="close" data-dismiss="alert" >×</button>       

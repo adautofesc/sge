@@ -155,7 +155,7 @@ class PerfilAuthController extends Controller
         $email = PessoaDadosContato::where('dado', 1)->where('pessoa',$cpf->pessoa)->orderByDesc('id')->first();
 
         if($email ==null)
-            return view('perfil.recovery')->withErrors(['Não foi possivel encontrar e-mail para enviar o link de redefinição de senha. Entre em contato pelo telefone 3372-1308 e solicite a redefinição. (será necessária a confirmação de diversos dados)']);
+            return view('perfil.recovery')->withErrors(['Não foi possivel encontrar e-mail para enviar o link de redefinição de senha. Entre em contato pelo telefone 3362-0580 e solicite a redefinição. (será necessária a confirmação de diversos dados)']);
         $old_hash = PessoaDadosGerais::where('dado',27)->where('pessoa',$cpf->pessoa)->first();
         if($old_hash)
             $old_hash->delete();

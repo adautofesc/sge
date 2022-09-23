@@ -82,7 +82,7 @@ Class Strings
 	*
 	* @param $val valor da string a ser convertida ex.: 1633721308
 	* @param $mask: formato da string '(##) ####-####'
-	* @return String formatada: (16) 3372-1308
+	* @return String formatada: (16) 3362-0580
 	**/
 	public static function mask($val, $mask)
 	{

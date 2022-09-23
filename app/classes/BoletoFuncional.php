@@ -59,7 +59,7 @@ public function gerar($boleto){
 		$dadosboleto["instrucoes1"] = "- Sr. Caixa, cobrar multa de 2% após o vencimento";
 		$dadosboleto["instrucoes2"] = "- Cobrar juros de 1% ao mês por atraso.";
 		$dadosboleto["instrucoes3"] = "- Pagável em qualquer agência bancária ou lotérica até o vencimento";
-		$dadosboleto["instrucoes4"] = "- Em caso de dúvidas entre em contato conosco: 3372-1308";
+		$dadosboleto["instrucoes4"] = "- Em caso de dúvidas entre em contato conosco: 3362-0580";
 
 		// DADOS OPCIONAIS DE ACORDO COM O BANCO OU CLIENTE
 		$dadosboleto["quantidade"] = "1";

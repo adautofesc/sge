@@ -43,7 +43,7 @@
             <h3>Login em <strong>PefilFESC</strong></h3>
             <p class="mb-4">&nbsp;</p>
             <p class="mb-4"><strong> Sua senha pode ser modificada através de um link que acabamos de enviar para o e-mail "{{$email}}". <br></strong></p>           
-            <p>Caso tiver algum problema para acessá-lo contate-nos pelo telefone: (16) 3372-1308</p>
+            <p>Caso tiver algum problema para acessá-lo contate-nos pelo telefone: (16) 3362-0580</p>
             @if($errors->any())
             @foreach($errors->all() as $erro)
                 <div class="alert alert-danger" >

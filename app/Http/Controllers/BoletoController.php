@@ -607,7 +607,7 @@ class BoletoController extends Controller
 		    	'Sr. Caixa, cobrar multa de 2% após o vencimento', 
 		    	'Cobrar juros de 1% ao mês por atraso.', 
 		    	'Após o vencimento, o pagamento dever ser feito no Banco do Brasil',
-		    	'Em caso de dúvidas ou divergências entre em contato conosco: 3372-1308'
+		    	'Em caso de dúvidas ou divergências entre em contato conosco: 3362-0580'
 		    ],
 		]);
 			//dd($bb);
@@ -758,7 +758,7 @@ class BoletoController extends Controller
 			}
 			else
 
-				return redirect('/meuboleto')->withErrors(["Desculpe, não encontramos registro com os dados informados. Verifique o preenchimento e tente novamente. Caso o problema persistir entre em contato conosco pelo telefone 3372-1308 ou 3372-1325."]);
+				return redirect('/meuboleto')->withErrors(["Desculpe, não encontramos registro com os dados informados. Verifique o preenchimento e tente novamente. Caso o problema persistir entre em contato conosco pelo telefone 3362-0580 ou 3362-0581."]);
 
 
 		}

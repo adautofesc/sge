@@ -902,12 +902,17 @@ class TurmaController extends Controller
     }
     
     public function uploadImportaTurma(Request $request){
+
+        $ext = $request->arquivo->extension();
+        //dd($ext);
+        if($ext != 'xlsx' && $ext != 'XLSX')
+        return redirect()->back()->withErrors('Erro: o arquivo importado precisa ser do tipo excel xlsx (>2003)');
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         $spreadsheet = $reader->load($request->arquivo);
         $worksheet = $spreadsheet->getActiveSheet();
         $highestRow = $worksheet->getHighestDataRow();
-        if($highestRow>51)
-            return redirect()->back()->withErrors('Erro: o arquivo importado não pode ter mais de 50 registros neste momento.');
+        if($highestRow>200)
+            return redirect()->back()->withErrors('Erro: o arquivo importado não pode ter mais de 200 registros neste momento.');
         $pessoas = collect();
         for($i=2;$i<=$highestRow;$i++){
             if($worksheet->getCell('A'.$i)->getValue() != null){

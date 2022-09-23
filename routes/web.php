@@ -277,6 +277,8 @@ Route::middleware(['auth','login']) ->group(function(){
 
 	Route::middleware('liberar.recurso:17')->prefix('jornadas')->group(function(){
 		Route::get('index-modal/{p?}', [JornadaController::class,'indexModal']);
+		Route::get('/{id}',[JornadaController::class,'index']);
+
 
 	});
 
@@ -290,6 +292,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::post('excluir', [FichaTecnicaController::class,'excluir']);
 		Route::get('pesquisa',[FichaTecnicaController::class,'pesquisar']);
 		Route::get('copiar/{id}',[FichaTecnicaController::class,'copiar']);
+		Route::get('encaminhar/{id}/{local}',[FichaTecnicaController::class,'encaminhar']);
 
 	});
 

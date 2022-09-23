@@ -40,7 +40,7 @@
                 <tr>
                     <td colspan="2" align="center" class="texto">Rua São Sebastião, 2828 - Campus Rui
 						Barbosa" - CEP 13560-230 - São Carlos - SP<br>
-                        Fone: (16) 3372-1308 Fone /Fax: (16) 33721325 - e-mail:
+                        Fone: (16) 3362-0580 Fone /Fax: (16) 33721325 - e-mail:
 						fesc@saocarlos.sp.gov.br</td>
                 </tr>
             </table>

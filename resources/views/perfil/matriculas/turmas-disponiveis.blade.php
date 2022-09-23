@@ -32,7 +32,7 @@
           <p class="text-secondary"><small>Escolha as turmas que deseja se matricular.</small></p>
           <div class="alert alert-warning">
             <button type="button" class="close" data-dismiss="alert" >×</button>       
-            <p class="modal-title"><i class="fa fa-warning"></i> Os cursos virtuais serão realizados de forma síncrona (nos dias e horários previstos) através da plataforma Microsoft Teams. Os alunos receberão os dados de acesso e instruções por e-mail antes do início das aulas. Em caso de dúvidas ligue: (16) 3372-1308
+            <p class="modal-title"><i class="fa fa-warning"></i> Os cursos virtuais serão realizados de forma síncrona (nos dias e horários previstos) através da plataforma Microsoft Teams. Os alunos receberão os dados de acesso e instruções por e-mail antes do início das aulas. Em caso de dúvidas ligue: (16) 3362-0580
             <br> Antes de se matricular verifique se sua conexão e seu equipamento de acesso suportam o aplicativo Microsoft Teams</p>
           </div>
          

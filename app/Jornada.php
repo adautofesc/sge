@@ -25,6 +25,7 @@ class Jornada extends Model
 
 	}
 	public function getPessoa(){
+
 		$pessoa = \App\Pessoa::withTrashed()->find($this->pessoa);
 		return $pessoa;
 	}

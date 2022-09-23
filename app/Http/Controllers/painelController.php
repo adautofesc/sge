@@ -506,8 +506,35 @@ class painelController extends Controller
         return $pendentes;
 
     }
-    
+
     public function testarClasse(){
+        $counter = 0;
+        $professores = \App\PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
+        foreach($professores as $professor){
+            if($professor->id>0){
+                $recurso = \App\ControleAcessoRecurso::where('pessoa',$professor->id)->where('recurso',29)->first();
+                if($recurso)
+                    continue;
+                else {
+                $recurso = new \App\ControleAcessoRecurso;
+                $recurso->pessoa = $professor->id;
+                $recurso->recurso = 29;
+                $recurso->save();
+                $counter++;
+                }
+            }
+
+        }
+
+        return "Acesso a ".$counter." professores ao recurso de ficha tecnica liberado";
+    }
+    
+    /**
+     * Verifica os cpfs do arquivo excel para colocar pendencia de divida ativa no cadastro
+     *
+     * @return void
+     */
+    public function dividaAtiva(){
 
         
         $input='./documentos/g1.xlsx';
@@ -705,7 +732,7 @@ class painelController extends Controller
     public function alertaCovid(){
         $CC = new ContatoController;
         //$msg = "FESC INFORMA: Aulas suspensas por tempo indeterminado. Saiba mais no site fesc.com.br";
-        //$msg = "FESC INFORMA: Aulas suspensas A PARTIR DO DIA 17/03 por tempo indeterminado. Duvidas? Ligue 3372-1308";
+        //$msg = "FESC INFORMA: Aulas suspensas A PARTIR DO DIA 17/03 por tempo indeterminado. Duvidas? Ligue 3362-0580";
         //$msg = "FESC INFORMA: Prezados alunos, os boletos do mês de maio, com vencimento em 10/05 serão cancelados.Fique seguro, fique em casa.";
         //$msg = "FESC INFORMA: Prezados alunos, os boletos do mês de julho, com vencimento em 10/07 serão cancelados.Fique seguro, fique em casa.";
         $msg = "FESC INFORMA: Prezados alunos, os boletos do mês de agosto, com vencimento em 10/08 serão cancelados.Fique seguro, fique em casa.";

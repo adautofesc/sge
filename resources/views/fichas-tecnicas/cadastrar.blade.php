@@ -148,7 +148,7 @@
 				Carga
 			</label>
 			<div class="col-md-2">
-				<input type="number" class="form-control" name="carga" max="240" min="0" value="0">
+				<input type="number" class="form-control" name="carga" max="999" min="0" value="0">
 			</div>
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Periodicidade(t)

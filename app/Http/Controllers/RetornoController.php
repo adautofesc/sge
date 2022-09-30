@@ -276,25 +276,18 @@ class RetornoController extends Controller
 							}
 
 						case 9://rejeição
-							if($linha->ocorrenciaDescricao == 'Entrada Rejeitada, Entrada para Título já Cadastrado'){
-								if($boleto->status == 'impresso'){
-									$boleto->status = 'emitido';
-									$boleto->save();
-								}								
+							if($boleto->status == 'impresso'){
+								$boleto->status = 'erro';
+								$boleto->save();
 							}
-							else{
-								if( $boleto->status =='impresso' || $boleto->status =='emitido' || $boleto->status == 'cancelar'){
-									$boleto->status = 'erro';
-									$boleto->save();
-									
-								}
-								LogController::alteracaoBoleto($boleto->id,'Boleto Rejeitado: '.$linha->ocorrenciaDescricao);
+							if($boleto->status == 'cancelar'){
+								$boleto->status = 'cancelado';
+								$boleto->save();
 							}
+
 							
-
-
-						
-
+							
+							LogController::alteracaoBoleto($boleto->id,'Boleto Rejeitado: '.$linha->ocorrenciaDescricao);
 							
 							
 						break;
@@ -360,21 +353,17 @@ class RetornoController extends Controller
 							}
 
 						case 9://reieição
-							if($linha->ocorrenciaDescricao == 'Entrada Rejeitada, Entrada para Título já Cadastrado'){
-								if($boleto->status == 'impresso'){
-									$boleto->status = 'emitido';
-									$boleto->save();
-								}								
-				
+							if($boleto->status == 'impresso'){
+								$boleto->status = 'erro';
+								$boleto->save();
 							}
-							else{
-								if( $boleto->status =='impresso' || $boleto->status =='emitido' || $boleto->status == 'cancelar'){
-									$boleto->status = 'erro';
-									$boleto->save();
-									
-								}
-								LogController::alteracaoBoleto($boleto->id,'ERRO: '.$linha->ocorrenciaDescricao);
+							if($boleto->status == 'cancelar'){
+								$boleto->status = 'cancelado';
+								$boleto->save();
 							}
+							
+							LogController::alteracaoBoleto($boleto->id,'ERRO: '.$linha->ocorrenciaDescricao);
+							
 						
 							
 						break;

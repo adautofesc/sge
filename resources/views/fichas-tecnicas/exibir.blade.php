@@ -203,9 +203,11 @@
 						<a class="btn btn-success" href="#" onclick="sendTo('coordenacao');">Enviar para coordenação</a> 
 						@break
 					@case('coordenacao')
-					<a class="btn btn-primary" href="/fichas/editar/{{$ficha->id}}">Editar</a> 
-					<a class="btn btn-success" href="#" onclick="sendTo('diretoria');">Enviar para direção</a> 
-					<a class="btn btn-success" href="#" onclick="sendTo('docente')">Retornar para docente</a> 
+						@if(in_array('13', Auth::user()->recursos) && in_array('17', Auth::user()->recursos))
+						<a class="btn btn-primary" href="/fichas/editar/{{$ficha->id}}">Editar</a> 
+						<a class="btn btn-success" href="#" onclick="sendTo('diretoria');">Enviar para direção</a> 
+						<a class="btn btn-success" href="#" onclick="sendTo('docente')">Retornar para docente</a>
+						@endif
 
 						@break
 					@endswitch

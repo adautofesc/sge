@@ -278,6 +278,9 @@ Route::middleware(['auth','login']) ->group(function(){
 	Route::middleware('liberar.recurso:17')->prefix('jornadas')->group(function(){
 		Route::get('index-modal/{p?}', [JornadaController::class,'indexModal']);
 		Route::get('/{id}',[JornadaController::class,'index']);
+		Route::get('/{id}/cadastrar',[JornadaController::class,'cadastrar']);
+		Route::post('/{id}/cadastrar',[JornadaController::class,'store']);
+		Route::post('/{id}/excluir',[JornadaController::class,'excluir']);
 
 
 	});

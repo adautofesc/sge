@@ -175,10 +175,10 @@ class FichaTecnicaController extends Controller
             $edicoes .= 'curso: '.$ficha->curso. ' => '. mb_strtoupper($r->curso,'UTF-8');
         $ficha->curso = mb_strtoupper($r->curso,'UTF-8');
         if($ficha->objetivo != $r->objetivos)
-            $edicoes .= 'objetivo: '.$ficha->objetivo. ' => '.$r->objetivos;
+            $edicoes .= 'objetivo modificado';
         $ficha->objetivo = $r->objetivos;
-        if($ficha->conteudo = $r->conteudo)
-            $edicoes .= 'conteudo: '.$ficha->conteudo.' => '.$r->conteudo;
+        if($ficha->conteudo != $r->conteudo)
+            $edicoes .= 'conteudo modificado';
         $ficha->conteudo = $r->conteudo;
         if($ficha->requisitos != $r->requisitos)
             $edicoes .= 'requisitos: '.$ficha->requisitos. ' => '.$r->requisitos;

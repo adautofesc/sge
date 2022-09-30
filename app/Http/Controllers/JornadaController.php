@@ -10,28 +10,38 @@ use Auth;
 class JornadaController extends Controller
 {
     public function index($id,$semestre='0'){
+
+        
         if($id == 0){
             $id = Auth::user()->pessoa;
         }
         $horarios = array();
         $dias = ['seg','ter','qua','qui','sex','sab'];
-        $carga_ativa = Carbon::createFromTime(0, 0, 0, 'America/Sao_Paulo'); ;
-        //$carga_ativa = 0;
+        $carga_efetiva = Carbon::createFromTime(0, 0, 0, 'America/Sao_Paulo'); 
+        $carga = Array();
 
         $turmas = \App\Http\Controllers\TurmaController::listarTurmasDocente($id,$semestre);
         $jornadas_contagem = \App\Http\Controllers\JornadaController::listarDocente($id,$semestre);
         
-        //$jornadas = \App\Jornada::where('pessoa',$id)->get();
-        $jornadas_ativas = $jornadas_contagem->where('status','ativa');
-
-        $locais = \App\Local::select(['id','nome'])->orderBy('nome')->get();
         
-        $carga = \App\PessoaDadosJornadas::where('pessoa',$id)
+        if(isset($_GET['mostrar']))
+            $jornadas = Jornada::where('pessoa', $id)->orderBy('status')->orderBy('dias_semana')->orderBy('hora_inicio')->paginate(20);  
+        else
+            $jornadas = Jornada::where('pessoa', $id)->whereIn('status',['ativa','solicitada'])->orderBy('hora_inicio')->paginate(20);
+        
+        $carga_horaria = \App\PessoaDadosJornadas::where('pessoa',$id)
                 ->where(function($query){
-                    $query->where('termino', null)->orwhere('termino','0000-00-00');
+                    $query->where('inicio','>=',)->orwhere('termino','0000-00-00');
                 })
                 ->orderByDesc('id')
                 ->first();
+        
+
+        //$jornadas = \App\Jornada::where('pessoa',$id)->get();
+        $jornadas_ativas = $jornadas_contagem->where('status','ativa');
+
+        
+        
         $ghoras_turmas = array();
         $ghoras_HTP = array();
         $ghoras_projetos = array();
@@ -53,7 +63,17 @@ class JornadaController extends Controller
                 //dd($turma->hora_inicio);
                 $inicio = Carbon::createFromFormat('H:i', $turma->hora_inicio);
                 $termino = Carbon::createFromFormat('H:i', $turma->hora_termino);
-                $carga_ativa->addMinutes($inicio->diffInMinutes($termino));
+                $carga_efetiva->addMinutes($inicio->diffInMinutes($termino));
+                if(isset($carga['turma']))
+                    $carga['turma']->addMinutes($inicio->diffInMinutes($termino));
+                else{
+                    $carga['turma'] =  Carbon::createFromTime(0, 0, 0, 'America/Sao_Paulo');
+                    $carga['turma']->addMinutes($inicio->diffInMinutes($termino));
+
+
+                }
+
+
                 switch($dia){
                     case 'seg':
                         $ndia= 1;
@@ -88,7 +108,14 @@ class JornadaController extends Controller
                 $horarios[$dia][substr($jornada->hora_inicio,0,2)][substr($jornada->hora_inicio,3,2)] = $jornada;
                 $inicio = Carbon::createFromFormat('H:i', $jornada->hora_inicio);
                 $termino = Carbon::createFromFormat('H:i', $jornada->hora_termino);
-                $carga_ativa->addMinutes($inicio->diffInMinutes($termino));
+                $carga_efetiva->addMinutes($inicio->diffInMinutes($termino));
+                if(isset($carga[$jornada->tipo]))
+                    $carga[$jornada->tipo]->addMinutes($inicio->diffInMinutes($termino));
+                else{
+                    $carga[$jornada->tipo] =  Carbon::createFromTime(0, 0, 0, 'America/Sao_Paulo');
+                    $carga[$jornada->tipo]->addMinutes($inicio->diffInMinutes($termino));
+                }
+        
                 switch($dia){
                     case 'seg':
                         $ndia= 1;
@@ -117,20 +144,20 @@ class JornadaController extends Controller
         }
 
         $docente = \App\Pessoa::withTrashed()->find($id);
-        $semestres = \App\classes\Data::semestres();
-        $jornadas = Jornada::where('pessoa',$id)->orderByDesc('id')->paginate('20');  
+        
+        //dd(($carga['Projeto']->floatDiffInMinutes(\Carbon\Carbon::Today()))/60);
         return view('jornadas.index',compact('jornadas'))
+            ->with('carga',$carga)
             ->with('turmas',$turmas)
-            ->with('semestres',$semestres)
-            ->with('semestre_selecionado',$semestre)
+           
             ->with('docente',$docente)
             ->with('horarios',$horarios)
             ->with('dias',$dias)
-            ->with('locais',$locais)
             ->with('glocais',$glocais)
-            ->with('carga',$carga)
-            ->with('carga_ativa',$carga_ativa)
+            ->with('carga_horaria',$carga_horaria)
+            ->with('carga_efetiva',$carga_efetiva)
             ->with('ghoras_turmas',$ghoras_turmas);
+
 
     }
     public function indexModal(){
@@ -143,11 +170,21 @@ class JornadaController extends Controller
         
     }
 
-    public function cadastrar(Request $r)
+    public function cadastrar($docente){
+        $locais = \App\Local::select(['id','nome'])->orderBy('nome')->get();
+        return view('jornadas.cadastrar')
+                ->with('docente',$docente)
+                ->with('locais',$locais);
+        
+    }
+
+    public function store(Request $r)
     {
         $r->validate([
             'pessoa => required|number'
         ]);
+
+        
         $jornada = new Jornada;
         $jornada->pessoa = $r->pessoa;
         $jornada->sala = $r->sala;
@@ -170,18 +207,27 @@ class JornadaController extends Controller
 
         $jornada->save();
 
+        if(isset($r->retornar))
+            return redirect()->back()->with('success','Jornada cadastrada com sucesso.');
 
-        return redirect()->back()->with('success','Jornada cadastrada com sucesso.');
+        else
+            return redirect('/jornadas/'.$r->pessoa.'/')->with('success','Jornada cadastrada com sucesso.');
 
     }
 
     public function excluir(Request $r){
+        $ids = explode(',',$r->id);
 
-       $jornada = Jornada::find($r->jornada);
-       $jornada->delete();
+        foreach($ids as $id){
+            $jornada = Jornada::find($id);
+            if(isset($jornada->id))
+                $jornada->delete();
+        } 
 
-
-        return response('Done!',200);
+        return response('OK',200);
+            
+        
+      
     }
 
     public function encerrar(Request $r){

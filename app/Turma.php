@@ -149,7 +149,7 @@ class Turma extends Model
 		return explode(',',$value);
 	}
 	public function getProfessorAttribute($value){
-		$professor=Pessoa::where('id',$value)->get(['id','nome'])->first();
+		$professor=Pessoa::withTrashed()->where('id',$value)->get(['id','nome'])->first();
 		return $professor;
 	}
 	public function getDataInicioAttribute($value){

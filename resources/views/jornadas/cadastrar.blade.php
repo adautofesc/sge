@@ -6,8 +6,8 @@
 @include('inc.errors')
 <form name="item" method="POST">
     <div class="card card-block">
-		<div class="alert alert-warning">
-			<label><i class="fa fa-warning"></i> Atenção: Esse cadastro não verifica a ocupação das salas.</label>
+		<div>
+			<label class="alert text-warning"><i class="fa fa-warning"></i> Atenção: Esse cadastro não verifica a ocupação das salas.</label>
 		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 text-xs-right">

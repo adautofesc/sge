@@ -21,7 +21,8 @@
 					<option value="Chefia">Chefia</option>
 					<option value="Contador">Contador</option>
 					<option value="Coordenador de Programa">Coordenador de Programa</option>
-					<option value="Diretor">Diretor</option>
+					<option value="Diretor">Diretor Pedagógico</option>
+					<option value="Diretor">Diretor Administrativo</option>
 					<option value="Educador">Educador</option>
 					<option value="Educador de Parceria">Educador de parceria</option>
 					<option value="Estagiário">Estagiário</option>

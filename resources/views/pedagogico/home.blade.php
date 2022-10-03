@@ -36,40 +36,8 @@
     </div>
 </div>
 <section class="section">
-    <div class="row">
-        <div class="col-md-4 center-block">
-            <div class="card card-primary">
-                <div class="card-header">
-                    <div class="header-block">
-                        <p class="title" style="color:white">Turmas</p>
-                    </div>
-                </div>
-                <div class="card-block">
-                    <div class="input-group input-group-sm">
-                          <input type="text" class="form-control" placeholder="Código da turma" id="turma" maxlength="10" size="2">
-                          <span class="input-group-btn">
-                            <button class="btn btn-primary" type="button" onclick="abreTurma();">Consultar</button>
-                          </span>
-                    </div><!-- /input-group -->
-                    <div>
-                        <a href="/turmas/listar" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-bookmark "></i>
-                        &nbsp;&nbsp;Listar</a>
-                    </div>
-                    <!--
-                    <div>
-                        <a href="{{route('turmas.cadastrar')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-plus-circle "></i>
-                        &nbsp;&nbsp;Cadastrar</a>
-                    </div>
-                     -->
-                                       
-                                   
-                </div>
-            </div>  
-        </div>
-        
-        <div class="col-md-4 center-block">
+    <div class="row">        
+        <div class="col-md-8 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
@@ -77,13 +45,27 @@
                     </div>
                 </div>
                 <div class="card-block">
-                     <div>
-                         <ul>
-                             @foreach($professores as $professor)
-                             <li><a href="/docentes/docente/{{$professor->id}}">{{$professor->nome_simples}}</a></li>
+                    <table class="table table-bordered table-hover">
+                        <tr>
+                            <th>Educador</th>
+                            <th>Opções</th>
+
+                        </tr>
+                        @foreach($professores as $professor)
+                            <tr>
+                                <td>{{$professor->nome_simples}}</td>
+                                <td><h5>
+                                    <a href="/jornadas/{{$professor->id}}" title="Jornadas"><i class="fa fa-dashboard"></i></a>
+                                    &nbsp;
+                                    <a href="/docentes/docente/{{$professor->id}}" title="Chamadas"><i class="fa fa-check-square-o"></i></a>
+                                    </h5>
+                                </td>
+                            </tr>
+                            
                              @endforeach
-                         </ul>
-                    </div>
+
+                    </table>
+                     
 
                 </div>
             </div>  
@@ -145,6 +127,39 @@
                             @endif
                     </div>
 
+                </div>
+            </div>  
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Turmas</p>
+                    </div>
+                </div>
+                <div class="card-block">
+                    <div class="input-group input-group-sm">
+                          <input type="text" class="form-control" placeholder="Código da turma" id="turma" maxlength="10" size="2">
+                          <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" onclick="abreTurma();">Consultar</button>
+                          </span>
+                    </div><!-- /input-group -->
+                    <div>
+                        <a href="/turmas/listar" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-bookmark "></i>
+                        &nbsp;&nbsp;Listar</a>
+                    </div>
+                    <!--
+                    <div>
+                        <a href="{{route('turmas.cadastrar')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-plus-circle "></i>
+                        &nbsp;&nbsp;Cadastrar</a>
+                    </div>
+                     -->
+                                       
+                                   
                 </div>
             </div>  
         </div>

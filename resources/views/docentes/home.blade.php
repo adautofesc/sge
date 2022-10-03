@@ -14,6 +14,7 @@
 </div>
 @include('inc.errors')
 <section class="section">
+    <div class="alert alert-info">O sistema será atualizado em breve. As chamadas e sua jornada ficarão em áreas distintas.</div>
 
     <div class="row">
         <div class="col-md-6">

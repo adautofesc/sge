@@ -24,11 +24,14 @@ class JornadaController extends Controller
         $jornadas_contagem = \App\Http\Controllers\JornadaController::listarDocente($id,$semestre);
         
         
-        if(isset($_GET['mostrar']))
+        if(isset($_GET['mostrar'])){
+            $mostrar = true;
             $jornadas = Jornada::where('pessoa', $id)->orderBy('status')->orderBy('dias_semana')->orderBy('hora_inicio')->paginate(20);  
-        else
+        }
+        else{
+            $mostrar = false;          
             $jornadas = Jornada::where('pessoa', $id)->whereIn('status',['ativa','solicitada'])->orderBy('hora_inicio')->paginate(20);
-        
+        }
         $carga_horaria = \App\PessoaDadosJornadas::where('pessoa',$id)
                 ->where(function($query){
                     $query->where('inicio','>=',)->orwhere('termino','0000-00-00');
@@ -149,7 +152,7 @@ class JornadaController extends Controller
         return view('jornadas.index',compact('jornadas'))
             ->with('carga',$carga)
             ->with('turmas',$turmas)
-           
+            ->with('mostrar',$mostrar)
             ->with('docente',$docente)
             ->with('horarios',$horarios)
             ->with('dias',$dias)
@@ -212,6 +215,38 @@ class JornadaController extends Controller
 
         else
             return redirect('/jornadas/'.$r->pessoa.'/')->with('success','Jornada cadastrada com sucesso.');
+
+    }
+
+    public function editar($docente,$jornada){
+        $locais = \App\Local::select(['id','nome'])->orderBy('nome')->get();
+
+        $jornada = Jornada::find($jornada);
+        $salas= \App\Sala::where('local',$jornada->getLocal()->id)->get();
+        return view('jornadas.editar')
+                ->with('docente',$docente)
+                ->with('salas',$salas)
+                ->with('jornada',$jornada)
+                ->with('locais',$locais);
+        
+    }
+
+    public function update($docente,$jornada,Request $r){
+        if($r->status == 'encerrada' && !$r->dt_termino)
+            return redirect()->back()->with(['warning'=>'Data de encerramento não foi definida']);
+        $jornada = Jornada::find($jornada);
+        $jornada->pessoa = $r->pessoa;
+        $jornada->sala = $r->sala;
+        $jornada->dias_semana = $r->dias;
+        $jornada->hora_inicio = $r->hr_inicio;
+        $jornada->hora_termino = $r->hr_termino;
+        $jornada->inicio = $r->dt_inicio;
+        $jornada->termino = $r->dt_termino;
+        $jornada->tipo = $r->tipo;
+        $jornada->status = $r->status;
+        $jornada->save();
+
+        return redirect('/jornadas/'.$r->pessoa.'/')->with('success','Jornada modificada com sucesso.');
 
     }
 

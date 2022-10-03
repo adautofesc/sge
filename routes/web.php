@@ -281,6 +281,8 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('/{id}/cadastrar',[JornadaController::class,'cadastrar']);
 		Route::post('/{id}/cadastrar',[JornadaController::class,'store']);
 		Route::post('/{id}/excluir',[JornadaController::class,'excluir']);
+		Route::get('/{docente}/editar/{jornada}',[JornadaController::class,'editar']);
+		Route::post('/{docente}/editar/{jornada}',[JornadaController::class,'update']);
 
 
 	});

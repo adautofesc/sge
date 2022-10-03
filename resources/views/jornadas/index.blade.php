@@ -38,8 +38,11 @@
                         <button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opções... </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu1" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 5px, 0px);" x-out-of-boundaries="">
                             <a class="dropdown-item" href="#" style="text-decoration: none; font-weight: 550;"><i class="fa fa-bar-chart-o icon"></i>Gráfico</a>
+                            @if($mostrar)
+                            <a class="dropdown-item" href="/jornadas/{{$docente->id}}" style="text-decoration: none; font-weight: 550;"><i class="fa fa-eye icon text-success"></i>Exibir ativos</a>
+                            @else
                             <a class="dropdown-item" href="?mostrar=todos" style="text-decoration: none; font-weight: 550;"><i class="fa fa-eye icon"></i>Exibir todos</a>
-                            
+                            @endif
                         </div>
                     </div>
                 </h3>
@@ -244,7 +247,7 @@
 
                                 <td>
                                     <h5>
-                                    <a href="#" data-toggle="modal" data-target="#modal-encerrar-jornada" title="Editar jornada"  onclick="atribJornada('{{$jornada->id}}')"> <i class="fa fa-edit "></i></a>
+                                    <a href="/jornadas/{{$docente->id}}/editar/{{$jornada->id}}" title="Editar jornada"> <i class="fa fa-edit "></i></a>
                                     <a href="#" onclick="excluir({{$jornada->id}})" title="Excluir jornada"><i class="fa fa-times-circle text-danger"></i> </a>
                                     </h5>
                                 </td>

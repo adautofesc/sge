@@ -193,9 +193,9 @@
                                 <table border="0" cellpadding="2" cellspacing="2" width="100%" style="height:100px;" class="texto">
                                     <tr>
                                     <td align="center" style="text-align:center;">
-                                        <img src="{{asset('img/dir_sign.jpg')}}" width="150px"  /></br>
+                                        <img src="{{asset('img/Assintura_Reginaldo.jpg')}}" width="150px"  /></br>
                                         __________________________________</spam><br/>
-                                            Fernando Henrique Carvalho
+                                            Reginaldo Godoy
                                             </br>
                                             <strong>Diretor Presidente da FESC</strong>
                                        

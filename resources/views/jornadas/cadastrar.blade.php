@@ -33,6 +33,7 @@
 			</label>
 			<div class="col-sm-3"> 
 				<select class="c-select form-control boxed" name="status" required>
+					<option value="prevista">Prevista</option>
 					<option value="ativa">Ativa</option>
 					<option value="encerrada" >Encerrada</option>
 					<option value="solicitada" >Solicitada</option>

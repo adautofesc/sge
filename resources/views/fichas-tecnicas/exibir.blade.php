@@ -62,6 +62,15 @@
 		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
+				Recursos necessários
+			</label>
+			<div class="col-sm-6"> 
+				{{$ficha->materiais}}
+			</div>
+		</div>
+		
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
 				Dia(s) semana.
 			</label>
 			<div class="col-sm-6"> 
@@ -168,6 +177,14 @@
 				R$ {{$ficha->getValor()}}
 			</div>
 			
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Mais Informações
+			</label>
+			<div class="col-sm-6"> 
+				{{$ficha->obs}}
+			</div>
 		</div>
 
 		<div class="subtitle-block">

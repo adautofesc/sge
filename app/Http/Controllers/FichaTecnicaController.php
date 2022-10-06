@@ -102,6 +102,8 @@ class FichaTecnicaController extends Controller
         $ficha->local = $r->local;
         $ficha->sala = $r->sala;
         $ficha->status = 'docente';
+        $ficha->materiais = $r->materiais;
+        $ficha->obs = $r->obs;
         $ficha->save();
 
         $dados_ficha = new FichaTecnicaDados;
@@ -166,65 +168,71 @@ class FichaTecnicaController extends Controller
         $ficha = FichaTecnica::find($r->id);
         $edicoes = '';
         if($ficha->programa != $r->programa)
-            $edicoes .= 'programa: '.$ficha->programa. ' => '.$r->programa;
+            $edicoes .= 'programa: '.$ficha->programa. ' => '.$r->programa.', ';
         $ficha->programa = $r->programa;
         if($ficha->docente != $r->professor)
-            $edicoes .= 'docente: '.$ficha->docente. ' => '.$r->professor;
+            $edicoes .= 'docente: '.$ficha->docente. ' => '.$r->professor.', ';
         $ficha->docente = $r->professor;
         if($ficha->curso !=  mb_strtoupper($r->curso,'UTF-8'))
-            $edicoes .= 'curso: '.$ficha->curso. ' => '. mb_strtoupper($r->curso,'UTF-8');
+            $edicoes .= 'curso: '.$ficha->curso. ' => '. mb_strtoupper($r->curso,'UTF-8').', ';
         $ficha->curso = mb_strtoupper($r->curso,'UTF-8');
         if($ficha->objetivo != $r->objetivos)
-            $edicoes .= 'objetivo modificado';
+            $edicoes .= 'objetivo modificado, ';
         $ficha->objetivo = $r->objetivos;
         if($ficha->conteudo != $r->conteudo)
-            $edicoes .= 'conteudo modificado';
+            $edicoes .= 'conteudo modificado, ';
         $ficha->conteudo = $r->conteudo;
         if($ficha->requisitos != $r->requisitos)
-            $edicoes .= 'requisitos: '.$ficha->requisitos. ' => '.$r->requisitos;
+            $edicoes .= 'requisitos: '.$ficha->requisitos. ' => '.$r->requisitos.', ';
         $ficha->requisitos = $r->requisitos;
         if($ficha->idade_minima != $r->idade_min)
-            $edicoes .= 'idade mínima: '.$ficha->idade_minima. ' => '.$r->idade_min;
+            $edicoes .= 'idade mínima: '.$ficha->idade_minima. ' => '.$r->idade_min.', ';
         $ficha->idade_minima = $r->idade_min;
         if($ficha->idade_maxima != $r->idade_max)
-            $edicoes .= 'idade máxima: '.$ficha->idade_maxima. ' => '.$r->idade_max;
+            $edicoes .= 'idade máxima: '.$ficha->idade_maxima. ' => '.$r->idade_max.', ';
         $ficha->idade_maxima = $r->idade_max;
         if($ficha->carga != $r->carga)
-            $edicoes .= 'carga: '.$ficha->carga. ' => '.$r->carga;
+            $edicoes .= 'carga: '.$ficha->carga. ' => '.$r->carga.', ';
         $ficha->carga = $r->carga;
         if($ficha->periodicidade != $r->periodicidade)
-            $edicoes .= 'periodicidade: '.$ficha->periodicidade. ' => '.$r->periodicidade;
+            $edicoes .= 'periodicidade: '.$ficha->periodicidade. ' => '.$r->periodicidade.', ';
         $ficha->periodicidade = $r->periodicidade;
         if($ficha->dias_semana != implode(',',$r->dias))
-            $edicoes .= 'dias: '.$ficha->dias_semana. ' => '.implode(',',$r->dias);
+            $edicoes .= 'dias: '.$ficha->dias_semana. ' => '.implode(',',$r->dias).', ';
         $ficha->dias_semana = implode(',',$r->dias);
         if($ficha->data_inicio->format('Y-m-d') != $r->data_inicio)
-            $edicoes .= 'data inicio: '.$ficha->data_inicio->format('Y-m-d'). ' => '.$r->data_inicio;
+            $edicoes .= 'data inicio: '.$ficha->data_inicio->format('Y-m-d'). ' => '.$r->data_inicio.', ';
         $ficha->data_inicio = $r->data_inicio;
         if($ficha->data_termino->format('Y-m-d') != $r->data_termino)
-            $edicoes .= 'data termino: '.$ficha->data_termino->format('Y-m-d'). ' => '.$r->data_termino;
+            $edicoes .= 'data termino: '.$ficha->data_termino->format('Y-m-d'). ' => '.$r->data_termino.', ';
         $ficha->data_termino = $r->data_termino;
         if($ficha->hora_inicio != $r->hora_inicio)
-            $edicoes .= 'hora inicio: '.$ficha->hora_inicio. ' => '.$r->hora_inicio;
+            $edicoes .= 'hora inicio: '.$ficha->hora_inicio. ' => '.$r->hora_inicio.', ';
         $ficha->hora_inicio = $r->hora_inicio;
         if($ficha->hora_termino != $r->hora_termino)
-            $edicoes .= 'hora termino: '.$ficha->hora_termino. ' => '.$r->hora_termino;
+            $edicoes .= 'hora termino: '.$ficha->hora_termino. ' => '.$r->hora_termino.', ';
         $ficha->hora_termino = $r->hora_termino;
         if($ficha->lotacao_maxima != $r->lotacao_max)
-            $edicoes .= 'lotação máxima: '.$ficha->lotacao_maxima. ' => '.$r->lotacao_max;
+            $edicoes .= 'lotação máxima: '.$ficha->lotacao_maxima. ' => '.$r->lotacao_max.', ';
         $ficha->lotacao_maxima = $r->lotacao_max;
         if($ficha->lotacao_minima != $r->lotacao_min)
-            $edicoes .= 'lotação mínima: '.$ficha->lotacao_minima. ' => '.$r->lotacao_min;
+            $edicoes .= 'lotação mínima: '.$ficha->lotacao_minima. ' => '.$r->lotacao_min.', ';
         $ficha->lotacao_minima = $r->lotacao_min;
         if($ficha->valor != str_replace(',','.',$r->valor)*100)
-            $edicoes .= 'valor: '.$ficha->valor. ' => '.$r->valor;
+            $edicoes .= 'valor: '.$ficha->valor. ' => '.$r->valor.', ';
         $ficha->valor = str_replace(',','.',$r->valor)*100;
         if($ficha->local != $r->local)
-            $edicoes .= 'local: '.$ficha->local. ' => '.$r->local;
+            $edicoes .= 'local: '.$ficha->local. ' => '.$r->local.', ';
         $ficha->local = $r->local;
         if($ficha->sala != $r->sala)
-            $edicoes .= 'sala: '.$ficha->sala. ' => '.$r->sala;
+            $edicoes .= 'sala: '.$ficha->sala. ' => '.$r->sala.', ';
         $ficha->sala = $r->sala;
+        if($ficha->materiais != $r->materiais)
+            $edicoes .= 'recursos necessários alterado, ';
+        $ficha->materiais = $r->materiais;
+        if($ficha->obs != $r->obs)
+            $edicoes .= 'mais informações alterado, ';
+        $ficha->materiais = $r->materiais;
 
         $ficha->save();
        
@@ -255,7 +263,7 @@ class FichaTecnicaController extends Controller
         $ficha = FichaTecnica::find($id);
         if(!isset($ficha->id))
             return redirect()->back()->with('warning','Ficha não encontrada');
-        $programas = Programa::all();
+        /*$programas = Programa::all();
         $unidades = Local::get(['id' ,'nome']);
         $salas = Sala::where('local',$ficha->local)->get();
         $professores = PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
@@ -263,11 +271,38 @@ class FichaTecnicaController extends Controller
                 ->with('professores',$professores)
                 ->with('salas',$salas)
                 ->with('unidades',$unidades)
-                ->with('programas',$programas);
+                ->with('programas',$programas);*/
+        $unidades = Local::get(['id' ,'nome']);
+        $salas = Sala::where('local',$ficha->local)->get();
+        
+        $programas = Programa::all();
+        $professores = PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
+
+        if(in_array('13', Auth::user()->recursos) && !in_array('17', Auth::user()->recursos)){
+            $programa = \App\PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','programa')->pluck('valor')->toArray();
+            $programas = Programa::whereIn('id',$programa)->get();
+            $professores = Pessoa::where('id',Auth::user()->pessoa)->get();
+
+        }
+        if(in_array('17', Auth::user()->recursos) && in_array('13', Auth::user()->recursos)){
+            $programa = \App\PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','programa')->pluck('valor')->toArray();
+            $programas = Programa::whereIn('id',$programa)->get();
+            $professores_dos_programas = collect();
+            $professoress = \App\PessoaDadosAdministrativos::getFuncionarios('Educador');
+            foreach($professoress as $professor){
+                $comparisson = array_intersect($programa,$professor->getProgramas());
+                if(count($comparisson))
+                    $professores_dos_programas->push($professor);
+            }
+            $professores = Pessoa::whereIn('id', $professores_dos_programas->pluck('id')->toArray())->get();
+            $professores = $professores->sortBy('nome');
+            //dd($professores);
+
+        }
     
      }
 
-     public function encaminhar($id,$local){
+     public function encaminhar($id,$local,$conteudo=''){
         $ficha = FichaTecnica::find($id);
         if(!isset($ficha->id))
             return redirect()->back()->with('warning','Ficha não encontrada');

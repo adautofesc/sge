@@ -185,19 +185,11 @@
                                 </td>
                                 <td>
                                     <h5>
-                                    @if($ficha->status == 'docente' || $ficha->status == 'coordenacao')
-                                        @if($ficha->status =='coordenacao')
-                                            @if(in_array('13', Auth::user()->recursos) && in_array('17', Auth::user()->recursos))
-                                                <a href="/fichas/editar/{{$ficha->id}}" title="Editar Ficha"> <i class="fa fa-edit "></i></a>
-                                                <a href="#" onclick="excluir({{$ficha->id}})" title="Excluir ficha"><i class="fa fa-times-circle text-danger"></i> </a>
-
-                                            @endif
-                                        @else
+                                    
                                         <a href="/fichas/editar/{{$ficha->id}}" title="Editar Ficha"> <i class="fa fa-edit "></i></a>
                                         <a href="#" onclick="excluir({{$ficha->id}})" title="Excluir ficha"><i class="fa fa-times-circle text-danger"></i> </a>
 
-                                        @endif
-                                    @endif 
+                                      
                                     <a href="/fichas/copiar/{{$ficha->id}}" title="Criar cópia Ficha"> <i class="fa fa-copy"></i></a>
    
                                     </h5>

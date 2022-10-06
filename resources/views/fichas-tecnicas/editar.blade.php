@@ -50,7 +50,7 @@
 				Objetivo
 			</label>
 			<div class="col-sm-6"> 
-				<textarea rows="3" class="form-control" name="objetivos" maxlenght="500">{{$ficha->objetivo}}</textarea>
+				<textarea rows="5" class="form-control" name="objetivos" maxlenght="500">{{$ficha->objetivo}}</textarea>
 			</div>
 		</div>
 		<div class="form-group row"> 
@@ -58,7 +58,7 @@
 				Conteúdo Programático
 			</label>
 			<div class="col-sm-6"> 
-				<textarea rows="3" class="form-control" name="conteudo" maxlenght="500">{{$ficha->conteudo}}</textarea>
+				<textarea rows="10" class="form-control" name="conteudo" maxlenght="500">{{$ficha->conteudo}}</textarea>
 			</div>
 		</div>
 		<div class="form-group row"> 
@@ -67,6 +67,22 @@
 			</label>
 			<div class="col-sm-6"> 
 				<textarea rows="3" class="form-control" name="requisitos" maxlenght="500">{{$ficha->requisitos}}</textarea>
+			</div>
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Material Utilizado
+			</label>
+			<div class="col-sm-6"> 
+				<textarea rows="2" class="form-control" name="materiais" maxlenght="500">{{$ficha->material}}</textarea>
+			</div>
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Mais informações
+			</label>
+			<div class="col-sm-6"> 
+				<textarea rows="2" class="form-control" name="obs" maxlenght="500">{{$ficha->obs}}</textarea>
 			</div>
 		</div>
 		<div class="form-group row"> 

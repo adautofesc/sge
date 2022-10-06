@@ -50,7 +50,7 @@
 				Objetivo
 			</label>
 			<div class="col-sm-6"> 
-				<textarea rows="3" class="form-control" name="objetivos" maxlenght="500"></textarea>
+				<textarea rows="5" class="form-control" name="objetivos" maxlenght="500"></textarea>
 			</div>
 		</div>
 		<div class="form-group row"> 
@@ -58,7 +58,7 @@
 				Conteúdo Programático
 			</label>
 			<div class="col-sm-6"> 
-				<textarea rows="3" class="form-control" name="conteudo" maxlenght="500"></textarea>
+				<textarea rows="10" class="form-control" name="conteudo" maxlenght="750"></textarea>
 			</div>
 		</div>
 		<div class="form-group row"> 
@@ -66,9 +66,18 @@
 				Requisitos
 			</label>
 			<div class="col-sm-6"> 
-				<textarea rows="3" class="form-control" name="requisitos" maxlenght="500"></textarea>
+				<textarea rows="2" class="form-control" name="requisitos" maxlenght="500"></textarea>
 			</div>
 		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Recursos necessários
+			</label>
+			<div class="col-sm-6"> 
+				<textarea rows="2" class="form-control" name="materiais" maxlenght="500"></textarea>
+			</div>
+		</div>
+		
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Dia(s) semana.
@@ -198,6 +207,14 @@
 				<input type="text" class="form-control" name="valor" maxlength="6" value="0">
 			</div>
 			
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Mais informações
+			</label>
+			<div class="col-sm-6"> 
+				<textarea rows="2" class="form-control" name="obs" maxlenght="500"></textarea>
+			</div>
 		</div>
 		
 		

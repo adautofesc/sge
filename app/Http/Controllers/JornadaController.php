@@ -20,8 +20,8 @@ class JornadaController extends Controller
         $carga_efetiva = Carbon::createFromTime(0, 0, 0, 'America/Sao_Paulo'); 
         $carga = Array();
 
-        $turmas = \App\Http\Controllers\TurmaController::listarTurmasDocente($id,$semestre);
-        $jornadas_contagem = \App\Http\Controllers\JornadaController::listarDocente($id,$semestre);
+        $turmas = \App\Turma::where('professor',$id)->where('status','iniciada')->get();
+        $jornadas_contagem = \App\Jornada::where('pessoa', $id)->where('status','ativa')->get();
         
         
         if(isset($_GET['mostrar'])){

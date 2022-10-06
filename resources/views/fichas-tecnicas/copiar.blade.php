@@ -60,9 +60,18 @@
 				Requisitos
 			</label>
 			<div class="col-sm-6"> 
-				<textarea rows="3" class="form-control" name="requisitos" maxlenght="500">{{$ficha->requisitos}}</textarea>
+				<textarea rows="2" class="form-control" name="requisitos" maxlenght="500">{{$ficha->requisitos}}</textarea>
 			</div>
 		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Recursos necessários
+			</label>
+			<div class="col-sm-6"> 
+				<textarea rows="2" class="form-control" name="materiais" maxlenght="500">{{$ficha->material}}</textarea>
+			</div>
+		</div>
+		
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Dia(s) semana.
@@ -198,10 +207,16 @@
 			</div>
 			
 		</div>
-		
-		
-		
 
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Mais informações
+			</label>
+			<div class="col-sm-6"> 
+				<textarea rows="2" class="form-control" name="obs" maxlenght="500">{{$ficha->obs}}</textarea>
+			</div>
+		</div>
+		
             
 		<div class="form-group row">
 			<label class="col-sm-2 form-control-label text-xs-right">

@@ -10,7 +10,7 @@
         {{$turma->curso->nome}}
 
     </h3>
-    <p class="title-description">
+    <div class="title-description col-md-6">
         @foreach($turma->dias_semana as $dia)
             {{ucwords($dia)}}, 
         @endforeach
@@ -30,7 +30,12 @@
             <i class="fa fa-{{$turma->icone_status}} icon"></i> {{$turma->status}}
         </span>
         Início em {{$turma->data_inicio}} Término em {{$turma->data_termino}}
-    </p>
+    </div>
+    <div class="col-md-6 text-xs-right">
+        <strong>{{$turma->local->nome}}</strong><br>
+        {{$turma->getSala()->nome}}
+
+    </div>
 
 </div>
 @include('inc.errors')

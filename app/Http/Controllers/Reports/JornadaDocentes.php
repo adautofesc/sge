@@ -19,11 +19,16 @@ class JornadaDocentes extends Controller
         $ano_anterior = $ano-1;
         
         $educadores = PessoaDadosAdministrativos::getFuncionarios('Educador');
-        $educadores->pull(29);//retira o cadastro 0 SEG a definir
+        //dd($educadores);
+        //$educadores->pull(29);//retira o cadastro 0 SEG a definir
         $locais = \App\Local::select(['id','sigla'])->orderBy('sigla')->get();
 
         //dd($educadores);
-        foreach($educadores as $educador){
+        foreach($educadores as $key=>$educador){
+            if($educador->id == 0){
+                $educadores->forget($key);
+                continue;
+            }
             $educador->carga_semanal = new \stdClass;
             $educador->carga_ativa = Carbon::createFromTime(0, 0, 0, 'America/Sao_Paulo'); 
             $educador->jornadas = collect();

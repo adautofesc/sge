@@ -22,7 +22,7 @@ class FichaTecnica extends Model
 
     public function getPrograma(){
         $programa = \App\Programa::find($this->programa);
-        return $programa->nome;
+        return $programa;
         
     }
 

@@ -22,12 +22,12 @@ class PessoaDadosAdministrativos extends Model
 
 	public static function getFuncionarios($categoria=''){
 		if($categoria=='')
-			$funcionarios_ri=PessoaDadosAdministrativos::where('dado','16')->get();
+			$funcionarios_ri=PessoaDadosAdministrativos::where('dado','relacao_institucional')->get();
 		elseif (is_array($categoria)) {
-			$funcionarios_ri=PessoaDadosAdministrativos::where('dado','16')->whereIn('valor', $categoria)->get();
+			$funcionarios_ri=PessoaDadosAdministrativos::where('dado','relacao_institucional')->whereIn('valor', $categoria)->get();
 		}
 		else
-			$funcionarios_ri=PessoaDadosAdministrativos::where('dado','16')->where('valor', $categoria)->get();
+			$funcionarios_ri=PessoaDadosAdministrativos::where('dado','relacao_institucional')->where('valor', $categoria)->get();
 
 		$funcionarios=collect();
 		foreach($funcionarios_ri as $dado){

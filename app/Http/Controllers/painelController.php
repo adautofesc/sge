@@ -288,7 +288,7 @@ class painelController extends Controller
         if(!$pessoa_acesso)
             $pessoa_acesso=0;
         $pessoa->acesso=$pessoa_acesso;
-        $pessoa->relacoes_institucionais = \App\PessoaDadosAdministrativos::where('dado','16')->where('pessoa',$pessoa->id)->get();
+        $pessoa->relacoes_institucionais = \App\PessoaDadosAdministrativos::where('dado','relacao_institucional')->where('pessoa',$pessoa->id)->get();
         $programas = \App\Programa::whereIn('id',[1,2,3,4,12])->orderby('nome')->get();
         $vinculo_programas = \App\PessoaDadosAdministrativos::where('dado','programa')->where('pessoa',$pessoa->id)->get();
         $carga = \App\PessoaDadosAdministrativos::where('dado','carga_horaria')->where('pessoa',$pessoa->id)->first();

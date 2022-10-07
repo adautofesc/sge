@@ -121,9 +121,13 @@ class FichaTecnicaController extends Controller
     }
 
     public function visualizar($id){
+        $relacao = PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','relacao_institucional')->first();
+        dd($relacao);
         $ficha = FichaTecnica::find($id);
         $dados_ficha = FichaTecnicaDados::where('ficha',$ficha->id)->get();
-        return view('fichas-tecnicas.exibir',compact('ficha'))->with('dados',$dados_ficha);
+        return view('fichas-tecnicas.exibir',compact('ficha'))
+            ->with('dados',$dados_ficha)
+            ->with('relacao',$relacao);
                     
     }
 

@@ -25,6 +25,7 @@ class JornadaDocentes extends Controller
 
         //dd($educadores);
         foreach($educadores as $key=>$educador){
+            //retirar o cadastro 0
             if($educador->id == 0){
                 $educadores->forget($key);
                 continue;

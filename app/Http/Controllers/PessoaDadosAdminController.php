@@ -146,10 +146,10 @@ class PessoaDadosAdminController extends Controller
     }
 
     public function listarFuncionarios(){ // lista pessoas com relação institucional (RI)
-		$com_ri = PessoaDadosAdministrativos::select('pessoa')->where('dado','16')->groupBy('pessoa')->get();
+		$com_ri = PessoaDadosAdministrativos::select('pessoa')->where('dado','relacao_institucional')->groupBy('pessoa')->get();
 		$pessoas = Pessoa::whereIn('id',$com_ri)->orderBy('nome')->paginate(50);
 		foreach($pessoas as $pessoa){
-			$pessoa->cargo = PessoaDadosAdministrativos::where('pessoa',$pessoa->id)->where('dado','16')->first()->valor;
+			$pessoa->cargo = PessoaDadosAdministrativos::where('pessoa',$pessoa->id)->where('dado','relacao_institucional')->first()->valor;
 			$telefone = \App\PessoaDadosContato::where('pessoa',$pessoa->id)->where('dado',2)->orderByDesc('id')->first();
             $pessoa->carga = PessoaDadosAdministrativos::where('dado','carga_horaria')->where('pessoa',$pessoa->id)->first();
 			if($telefone)

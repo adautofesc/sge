@@ -126,15 +126,16 @@
                                     </label>
                                 </div>    
                             </th>
-                            <th class="tb_id">
-                                Id
-                            </th>
-                            <th class="tb_docente">
-                                Docente
-                            </th>
+            
                             <th class="tb_curso">
                                 Curso
                             </th>
+                            <th class="tb_programa">
+                                Programa
+                            </th>
+                            <th class="tb_docente">
+                                Docente
+                            </th>   
                             <th class="tb_dias">
                                 Dias
                             </th>
@@ -157,19 +158,20 @@
                                 <td>
                                     <div class="item-col item-col-header fixed item-col-check"> 
                                         <label class="item-check" id="select-all-items">
-                                            <input type="checkbox" class="checkbox" name="ficha" value="{{$ficha->id}}"><span></span>
+                                            <input type="checkbox" class="checkbox" name="ficha" value="{{$ficha->id}}"><span></span>#{{$ficha->id}}
                                         </label>
                                     </div>
                                 </td>
                                 <td>
-                                    <a href="/fichas/visualizar/{{$ficha->id}}">#{{$ficha->id}}</a>
+                                    <a href="/fichas/visualizar/{{$ficha->id}}" title="Analizar">{{$ficha->curso}}</a>
+                                </td>
+                                <td>
+                                    {{$ficha->getPrograma()->sigla}}
                                 </td>
                                 <td>
                                     {{$ficha->getDocente()}}
                                 </td>
-                                <td>
-                                    {{$ficha->curso}}
-                                </td>
+                               
                                 <td>
                                     {{$ficha->dias_semana}}
                                 </td>
@@ -184,15 +186,12 @@
                                     
                                 </td>
                                 <td>
-                                    <h5>
                                     
-                                        <a href="/fichas/editar/{{$ficha->id}}" title="Editar Ficha"> <i class="fa fa-edit "></i></a>
-                                        <a href="#" onclick="excluir({{$ficha->id}})" title="Excluir ficha"><i class="fa fa-times-circle text-danger"></i> </a>
-
-                                      
-                                    <a href="/fichas/copiar/{{$ficha->id}}" title="Criar cópia Ficha"> <i class="fa fa-copy"></i></a>
-   
-                                    </h5>
+                                    <a href="/fichas/visualizar/{{$ficha->id}}" class="btn btn-sm rounded-s btn-primary-outline" title="Analizar"><i class="fa fa-search"></i></a>
+                                    <a href="/fichas/editar/{{$ficha->id}}" title="Editar Ficha" class="btn btn-sm rounded-s btn-primary-outline"><i class="fa fa-edit "></i></a>
+                                    <a href="/fichas/copiar/{{$ficha->id}}" title="Criar cópia Ficha" class="btn btn-sm rounded-s btn-primary-outline"><i class="fa fa-copy"></i></a>
+                                    <a href="#" onclick="excluir({{$ficha->id}})" title="Excluir ficha" class="btn btn-sm rounded-s btn-danger-outline"><i class="fa fa-times-circle"></i></a>
+                                    
                                 </td>
                             </tr>
                             @endforeach

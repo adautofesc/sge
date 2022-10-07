@@ -117,7 +117,7 @@
                         </div>
 
                     </div>
-                    <table class="table">
+                    <table class="table table-hover table-sm">
                         <thead>
                             <th>
                                 <div class="item-col item-col-header fixed item-col-check"> 

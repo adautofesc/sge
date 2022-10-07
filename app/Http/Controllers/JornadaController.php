@@ -148,6 +148,7 @@ class JornadaController extends Controller
 
         $docente = \App\Pessoa::withTrashed()->find($id);
         
+        
         //dd(($carga['Projeto']->floatDiffInMinutes(\Carbon\Carbon::Today()))/60);
         return view('jornadas.index',compact('jornadas'))
             ->with('carga',$carga)

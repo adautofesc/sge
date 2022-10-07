@@ -407,6 +407,9 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('apagar-email-fesc/{id}','PessoaDadosAcademicosController@apagarEmailFesc');
 		Route::get('inscrever-equipe-teams/{pessoa}/{turma}','PessoaDadosAcademicosController@inscreverTeams');
 		Route::get('remover-equipe-teams/{id}','PessoaDadosAcademicosController@removerTeams');
+		Route::get('profile',function(){
+			return view('pessoa.profile');
+		});
 
 	});//prefix pessoa
 
@@ -559,8 +562,8 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('atender/{var}','painelController@atendimentoPessoalPara');
 		Route::get('funcionarios','PessoaDadosAdminController@listarFuncionarios');
 		Route::get('remover-relacao/{id}','PessoaDadosAdminController@excluir');
-		Route::get('relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_view');
-		Route::post('relacaoinstitucional/{var}','PessoaController@relacaoInstitucional_exec');
+		Route::get('relacaoinstitucional/{var}','PessoaDadosAdminController@relacaoInstitucional_view');
+		Route::post('relacaoinstitucional/{var}','PessoaDadosAdminController@relacaoInstitucional_exec');
 		Route::get('vincular-programa/{pessoa}/{programa}','PessoaDadosAdminController@vincularPrograma');
 		Route::get('desvincular-programa/{pessoa}/{programa}','PessoaDadosAdminController@desvincularPrograma');
 		Route::get('definir-carga/{pessoa}/{valor}', 'PessoaDadosAdminController@definirCarga');

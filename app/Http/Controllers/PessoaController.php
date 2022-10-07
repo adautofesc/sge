@@ -304,7 +304,7 @@ class PessoaController extends Controller
 					//return view('error-404-alt')->with(array('error'=>['id'=>'403.41','desc'=>'Seu cadastro não permite que você veja os dados de outra pessoa']));
 					//return $this->listar();	
 			// verifica se a pessoa tem relação institucional
-				$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', '16'));
+				$relacao_institucional=count($pessoa->dadosAdministrativos->where('dado', 'relacao_institucional'));
 				if($relacao_institucional && !in_array('5', Auth::user()->recursos))
 				{
 					return die(redirect('403'));
@@ -848,49 +848,7 @@ class PessoaController extends Controller
 			return $endereco;
 
 	}
-	public function relacaoInstitucional_view($id){
-		if(!in_array('3', Auth::user()->recursos))
-			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
-		if(!loginController::autorizarDadosPessoais($id))
-			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional ou não está acessivel. O código de pessoa também pode ser inválido']));
-
-		$nome = Pessoa::getNome($id);
-		if(!$nome)
-			return view('error-404-alt')->with(array('error'=>['id'=>'404','desc'=>'Pessoa não encontrada']));
-
-
-		return view('gestaopessoal.relacao-institucional')->with('nome',$nome)->with('id',$id);
-
-
-
-	}
-	public function relacaoInstitucional_exec(Request $request){
-		
-		if(!in_array('3', Auth::user()->recursos))
-			return view('error-404-alt')->with(array('error'=>['id'=>'403.3','desc'=>'Você não pode editar os cadastrados.']));
-		if(!loginController::autorizarDadosPessoais($request->pessoa))
-			return view('error-404-alt')->with(array('error'=>['id'=>'403','desc'=>'Erro: pessoa a ser editada possui relação institucional, não está acessivel ou não existe.']));
-		/*
-		$rel_atual=PessoaDadosAdministrativos::where('pessoa',$request->pessoa)->where('dado',16)->first();
-
-		if($rel_atual)
-			$rel_atual->delete();
-		*/
-		$nova_relacao=new PessoaDadosAdministrativos;
-		//$nova_relacao->timestamps=false;
-		$nova_relacao->dado='16';
-		$nova_relacao->pessoa=$request->pessoa;
-		$nova_relacao->valor=$request->cargo;
-		$nova_relacao->save();
-
-
-
-
-		return redirect(asset('gestaopessoal/atender').'/'.$request->pessoa);
-
-
-
-	}
+	
 	
 	public function iniciarRecadastramento(Request $rq){
 		$dado = PessoaDadosGerais::where('dado',3)->where('valor',preg_replace( '/[^0-9]/is', '',$rq->cpf))->get();

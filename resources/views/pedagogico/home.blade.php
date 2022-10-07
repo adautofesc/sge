@@ -37,7 +37,7 @@
 </div>
 <section class="section">
     <div class="row">        
-        <div class="col-md-8 center-block">
+        <div class="col-md-6 center-block">
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
@@ -45,20 +45,19 @@
                     </div>
                 </div>
                 <div class="card-block">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-hover table-sm">
                         <tr>
                             <th>Educador</th>
-                            <th>Opções</th>
+                            <th>&nbsp;</th>
 
                         </tr>
                         @foreach($professores as $professor)
                             <tr>
                                 <td>{{$professor->nome_simples}}</td>
-                                <td><h5>
-                                    <a href="/jornadas/{{$professor->id}}" title="Jornadas"><i class="fa fa-dashboard"></i></a>
-                                    &nbsp;
-                                    <a href="/docentes/docente/{{$professor->id}}" title="Chamadas"><i class="fa fa-check-square-o"></i></a>
-                                    </h5>
+                                <td align="right">
+                                    <a href="/jornadas/{{$professor->id}}" title="Jornadas" class="btn btn-sm rounded-s btn-primary-outline"><i class="fa fa-dashboard"></i></a>
+                                    <a href="/docentes/docente/{{$professor->id}}" title="Chamadas" class="btn btn-sm rounded-s btn-primary-outline"><i class="fa fa-check-square-o"></i></a>
+                                    
                                 </td>
                             </tr>
                             

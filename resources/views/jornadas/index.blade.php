@@ -53,20 +53,6 @@
         </div>
     </div>
 
-
-    <!--<div class="items-search">
-        <form class="form-inline" method="GET>
-        {{csrf_field()}}
-            <div class="input-group"> 
-                <input type="text" class="form-control boxed rounded-s" name="codigo" placeholder="Procurar p/ código.">
-                <span class="input-group-btn">
-                    <button class="btn btn-secondary rounded-s" type="submit">
-                        <i class="fa fa-search"></i>
-                    </button>
-                </span>
-            </div>
-        </form>
-    </div>-->
     <div class="items-search col-md-3">
         <div class="header-block header-block-search hidden-sm-down">
            <form action="/fichas/pesquisa" method="GET">
@@ -89,6 +75,14 @@
             <div class="card card-block">
                 <div class="card-title-block">
                     <h3 class="title"> Horário semanal </h3>
+                    <section id="grafico">
+                        <div id="placeholder" style="width:35rem;height:25rem;">
+    
+    
+                        </div>
+                        <div id="legendContainer"></div>    
+                    
+                    </section>
                     
                    
                 </div>
@@ -125,23 +119,10 @@
                             <a href="/jornadas/{{$docente->id}}/cadastrar" class="btn btn-primary btn-sm rounded-s"> Cadastrar nova </a>
                             &nbsp;
                             <div class="action dropdown pull-right "> 
-                                <!-- <a href="#" class="btn btn-sm rounded-s btn-secondary" title="Exportar para excel"><img src="/img/excel.svg" alt="excel" width="20px"></a> -->
                                 <button class="btn btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Com os selecionadas...
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
-                <!--
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('aprovar')">
-                                        <label><i class="fa fa-check-circle-o icon text-success"></i> Aprovar</label>
-                                    </a> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('negar')">
-                                        <label><i class="fa fa-ban icon text-danger"></i> Negar</label>
-                                    </a> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('analisando')">
-                                        <label><i class="fa fa-clock-o icon text-warning"></i><span> Analisando</span></label>
-                                    </a> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('cancelar')">
-                                        <label><i class="fa fa-minus-circle icon text-danger"></i> <span> Cancelar</span></label>
-                                    </a> -->
+              
                                     <a class="dropdown-item" href="#" onclick="excluirSelecionados()">
                                         <label><i class="fa fa-times-circle icon text-danger"></i> <span> Excluir</span></label>
                                     </a> 
@@ -289,6 +270,7 @@
     @if(isset($carga['Coordenação'])) 'Coordenação', @endif
     @if(isset($carga['Intervalo entre turmas'])) 'Intervalo entre turmas', @endif
     @if(isset($carga['Home Office'])) 'Home Office', @endif
+    @if(isset($carga['Translado'])) 'Translado', @endif
 
     @if(isset($carga['Aula'])) 'Atribuídas', @endif
 
@@ -306,6 +288,8 @@
         @if(isset($carga['Intervalo entre turmas'])) '{{($carga['Intervalo entre turmas']->floatDiffInMinutes(\Carbon\Carbon::Today()))/60}}', @endif
         @if(isset($carga['Home Office'])) '{{($carga['Home Office']->floatDiffInMinutes(\Carbon\Carbon::Today()))/60}}', @endif
         @if(isset($carga['Aula'])) '{{($carga['Aula']->floatDiffInMinutes(\Carbon\Carbon::Today()))/60}}', @endif
+        @if(isset($carga['Translado'])) '{{($carga['Translado']->floatDiffInMinutes(\Carbon\Carbon::Today()))/60}}', @endif
+
   ],
         
     backgroundColor: [
@@ -316,7 +300,7 @@
         @if(isset($carga['Coordenação'])) 'rgb(78, 89, 152)', @endif
         @if(isset($carga['Intervalo entre turmas'])) 'rgb(95, 168, 208)', @endif
         @if(isset($carga['Home Office'])) 'rgb(60, 106, 131)', @endif
-
+        @if(isset($carga['Translado'])) 'rgb(192, 192, 192)', @endif 
         @if(isset($carga['Aula'])) 'rgb(220, 63, 48)', @endif
      
     ],
@@ -337,7 +321,270 @@
     config_graph
   );
 
- //************************************************** 
+ //************************************************ fim grafico doughnuts
+
+
+//----------------------- Gráfio de horários https://www.flotcharts.org/
+
+
+function gt(time) {
+        let hora = time.substring(0,2)-3;
+        let minuto = time.substring(5,3);
+        let tempo = new Date(1970,0,1,hora,minuto,0).getTime();
+        //console.log(time+'->'+tempo);
+       
+        
+        return tempo ;
+    }
+
+    function msToTime(duration) {
+        var milliseconds = Math.floor((duration % 1000) / 100),
+            seconds = Math.floor((duration / 1000) % 60),
+            minutes = Math.floor((duration / (1000 * 60)) % 60),
+            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+        return hours + ":" + minutes;
+    }
+
+    minimo = new Date(1970,0,1,4,0,0).getTime();
+    maximo = new Date(1970,0,1,20,0,0).getTime();
+    
+
+    var data = [ /*
+        { label: "Aula",
+          link:"#",
+          data: [ [1,gt('10:00'),gt('12:00'),"teste"],[1,gt('13:00'),gt('15:00'),"teste2"]] ,
+         
+        },*/
+     
+        @if(isset($carga['turma']))
+        {    
+
+            label: "Aula ",
+            color: '#87c041',
+            data: [ 
+              @foreach($ghoras_turmas as $horax)
+                @if(substr($horax[3],0,5)=='Turma')
+                    [{{$horax[0]}},gt('{{$horax[1]}}'),gt('{{$horax[2]}}'),'{{$horax[3]}}','{{$horax[4]}}'],
+                @endif
+              @endforeach
+            ] ,
+        },
+        @endif
+        @if(isset($carga['HTP']))
+
+        {            
+            label: "HTP ",
+            color: '#ffc234',
+            data: [ 
+              @foreach($ghoras_turmas as $horax)
+                @if($horax[3]=='HTP')
+                    [{{$horax[0]}},gt('{{$horax[1]}}'),gt('{{$horax[2]}}'),'{{$horax[3]}}','{{$horax[4]}}'],
+                @endif
+              @endforeach
+            ] ,
+        },
+        @endif
+        @if(isset($carga['Uso Livre']))
+
+        {            
+            label: "Uso Livre ",
+            color: '#925491',
+            data: [ 
+              @foreach($ghoras_turmas as $horax)
+                @if($horax[3]=='Uso Livre')
+                    [{{$horax[0]}},gt('{{$horax[1]}}'),gt('{{$horax[2]}}'),'{{$horax[3]}}','{{$horax[4]}}'],
+                @endif
+              @endforeach
+            ] ,
+        },
+        @endif
+        @if(isset($carga['Home Office']))
+
+        {            
+            label: "Home Office ",
+            color: '#3c6a83',
+            data: [ 
+              @foreach($ghoras_turmas as $horax)
+                @if($horax[3]=='Home Office')
+                    [{{$horax[0]}},gt('{{$horax[1]}}'),gt('{{$horax[2]}}'),'{{$horax[3]}}','{{$horax[4]}}'],
+                @endif
+              @endforeach
+            ] ,
+        },
+        @endif
+        @if(isset($carga['Translado']))
+        {            
+            label: "Translado ",
+            color: "#c0c0c0",
+            data: [ 
+              @foreach($ghoras_turmas as $horax)
+                @if($horax[3]=='Translado')
+                    [{{$horax[0]}},gt('{{$horax[1]}}'),gt('{{$horax[2]}}'),'{{$horax[3]}}','{{$horax[4]}}'],
+                @endif
+              @endforeach
+            ] ,
+        },
+        @endif
+        @if(isset($carga['Aula']))
+        {            
+            label: "Atribuídas ",
+            color: "#f11400",
+            data: [ 
+              @foreach($ghoras_turmas as $horax)
+                @if($horax[3]=='Aula')
+                    [{{$horax[0]}},gt('{{$horax[1]}}'),gt('{{$horax[2]}}'),'{{$horax[3]}}','{{$horax[4]}}'],
+                @endif
+              @endforeach
+            ] ,
+        },
+        @endif
+        @if(isset($carga['Projeto']))
+        {            
+            label: "Projeto ",
+            color:"#36A2EB",
+            data: [ 
+              @foreach($ghoras_turmas as $horax)
+                @if($horax[3]=='Projeto')
+                    [{{$horax[0]}},gt('{{$horax[1]}}'),gt('{{$horax[2]}}'),'{{$horax[3]}}','{{$horax[4]}}'],
+                @endif
+              @endforeach
+            ] ,
+        },
+        @endif
+        @if(isset($carga['Coordenação']))
+        {            
+            label: "Coordenação ",
+            color: "#4e5998",
+            data: [ 
+              @foreach($ghoras_turmas as $horax)
+                @if($horax[3]=='Coordenação')
+                    [{{$horax[0]}},gt('{{$horax[1]}}'),gt('{{$horax[2]}}'),'{{$horax[3]}}','{{$horax[4]}}'],
+                @endif
+              @endforeach
+            ] ,
+        },
+        @endif
+        @if(isset($carga['Intervalo entre turmas']))
+     
+
+        {            
+            label: "Intervalo ",
+            color:"#5fa8d0",
+            data: [ 
+              @foreach($ghoras_turmas as $horax)
+                @if($horax[3]=='Intervalo entre turmas')
+                    [{{$horax[0]}},gt('{{$horax[1]}}'),gt('{{$horax[2]}}'),'{{$horax[3]}}','{{$horax[4]}}'],
+                @endif
+              @endforeach
+            ] ,
+        },
+        @endif
+       
+    
+        ];
+    var options = {
+
+        series: {
+            bars: {
+                show: true,
+                align:'center',
+                
+                fill: true,
+                fillColor: {
+                    colors: [{
+                        opacity: 0.8
+                    }, {
+                        opacity: 0.8
+                    }]
+                },
+                
+               
+            }
+            
+        },
+        yaxis : {
+            //minTickSize : [ 1, "hour" ],
+            //TickSize : [ 1, "hour" ],
+            
+            axis: 2,
+            show: true,
+            mode : "time",
+            timeformat : "%H:%M",
+            //ticks: 20,
+            //min: minimo,
+            //max: maximo
+            //tickLength:0,
+        },
+        xaxis :{
+            show : true,
+            position: "top",
+            tickLength:0,
+            ticks: [
+     
+                [1, "Segunda"], 
+                [2, "Terça"], 
+                [3, "Quarta"],
+                [4,"Quinta"],
+                [5,"Sexta"],
+                [6,"Sábado"],
+                [7,""]],
+       
+          
+            
+           
+        },
+        
+        grid: {
+            
+            hoverable: true,
+            clickable: true,            
+            borderWidth:0
+        },
+        legend: {
+            container:$("#legendContainer"),    
+            noColumns: 4,
+           
+        },
+        tooltip: true,
+        tooltipOpts: {
+            //content: "início: %y %s"
+           content: function(label, x, y, flotItem){
+                //console.log(flotItem.seriesIndex);
+                return '<strong>'+data[flotItem.seriesIndex].data[flotItem.dataIndex][3]+'</strong>'
+                +" <br> %y às "+ msToTime(data[flotItem.seriesIndex].data[flotItem.dataIndex][2])
+                + '<br>Local: '+data[flotItem.seriesIndex].data[flotItem.dataIndex][4];
+            },
+            //content: "Orders <b>%y</b> for <span>"+y+"</span>",
+        }
+    };
+  
+    var plot = $("#placeholder").plot(data, options).data("plot");
+
+    $("#placeholder").bind("plotclick", function (event, pos, flotItem) {
+        if (flotItem) { 
+            //window.location = links[item.dataIndex];
+            //window.open(links[dataIndex, '_blank']);
+            if(data[flotItem.seriesIndex].data[flotItem.dataIndex][3].substring(0,5) == 'Turma')
+                window.location = "/docentes/frequencia/nova-aula/"+data[flotItem.seriesIndex].data[flotItem.dataIndex][3].substring(6);
+            else
+                console.log(data[flotItem.seriesIndex].data[flotItem.dataIndex][3]);
+           // here you can write location = "http://your-doamin.com";
+        }
+    });
+
+    $("#placeholder").bind("plothover", function(event, pos, item) {
+        if(item && data[item.seriesIndex].data[item.dataIndex][3].substring(0,5) == 'Turma' )
+            $("#placeholder").css("cursor","pointer","important");
+        else
+            $("#placeholder").css("cursor","default", "important");
+    });
+
+ //************************************************** fim grafico horarios
 
  function carregarSalas(local){
 	var salas;

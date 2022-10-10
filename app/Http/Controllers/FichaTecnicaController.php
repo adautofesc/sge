@@ -27,13 +27,20 @@ class FichaTecnicaController extends Controller
 
     public function index(){
         
-        $fichas = FichaTecnica::paginate(50);
+        $fichas = FichaTecnica::where('1','1');
         if(in_array('13', Auth::user()->recursos) && !in_array('17', Auth::user()->recursos))
-            $fichas = FichaTecnica::where('docente',Auth::user()->pessoa)->paginate(50);
+            $fichas = FichaTecnica::where('docente',Auth::user()->pessoa);
         if(in_array('17', Auth::user()->recursos) && in_array('13', Auth::user()->recursos)){
             $programas = \App\PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','programa')->pluck('valor')->toArray();
-            $fichas = FichaTecnica::whereIn('programa',$programas)->paginate(50);
-        }     
+            $fichas = FichaTecnica::whereIn('programa',$programas);
+        }  
+        if(isset($_GET['busca'])){
+            
+            $fichas = $fichas->where('id',$_GET['busca'])->orwhere('curso','like','%'.$_GET['busca'].'%');
+
+        }
+        
+        $fichas = $fichas->paginate(50);
 
         return view('fichas-tecnicas.index')->with('fichas',$fichas);
 
@@ -122,7 +129,7 @@ class FichaTecnicaController extends Controller
 
     public function visualizar($id){
         $relacao = PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','relacao_institucional')->first();
-        dd($relacao);
+        //dd($relacao);
         $ficha = FichaTecnica::find($id);
         $dados_ficha = FichaTecnicaDados::where('ficha',$ficha->id)->get();
         return view('fichas-tecnicas.exibir',compact('ficha'))
@@ -236,7 +243,7 @@ class FichaTecnicaController extends Controller
         $ficha->materiais = $r->materiais;
         if($ficha->obs != $r->obs)
             $edicoes .= 'mais informações alterado, ';
-        $ficha->materiais = $r->materiais;
+        $ficha->obs = $r->obs;
 
         $ficha->save();
        

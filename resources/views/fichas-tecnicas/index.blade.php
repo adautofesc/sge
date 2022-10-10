@@ -63,10 +63,10 @@
     </div>-->
     <div class="items-search col-md-3">
         <div class="header-block header-block-search hidden-sm-down">
-           <form action="/fichas/pesquisa" method="GET">
+           <form action="/fichas/" method="GET">
             {{csrf_field()}}
                <div class="input-group input-group-sm" style="float:right;">
-                   <input type="text" class="form-control" name="curso" placeholder="Buscar por curso">
+                   <input type="text" class="form-control" name="busca" placeholder="Buscar por id/curso">
                    <i class="input-group-addon fa fa-search" onclick="document.forms[1].submit();" style="cursor:pointer;"></i>
                </div>
            </form>

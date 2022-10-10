@@ -74,7 +74,7 @@
 				Material Utilizado
 			</label>
 			<div class="col-sm-6"> 
-				<textarea rows="2" class="form-control" name="materiais" maxlenght="500">{{$ficha->material}}</textarea>
+				<textarea rows="2" class="form-control" name="materiais" maxlenght="500">{{$ficha->materiais}}</textarea>
 			</div>
 		</div>
 		<div class="form-group row"> 

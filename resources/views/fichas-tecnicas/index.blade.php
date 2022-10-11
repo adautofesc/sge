@@ -83,7 +83,18 @@
                 <div class="card-block">
                     <!-- Nav tabs -->
                     <div class="row">
-                        <div class="col-xs-10 text-xs">
+                        
+                        <div class="col-xs-5">
+                            @foreach($filtros as $filtro=>$valor)
+                                @if(count($filtros[$filtro]))
+                                    <a href="?removefiltro={{$filtro}}" class="badge badge-primary" style="color:white;text-decoration: none;" title="Remover este filtro">
+                                        <i class="fa fa-remove" ></i>
+                                        {{$filtro}}
+                                    </a>
+                                @endif
+                            @endforeach
+                        </div>
+                        <div class="col-xs-5 text-xs">
                             {{ $fichas->links() }}
                         </div>
                         <div class="col-xs-2 text-xs-right">
@@ -128,13 +139,50 @@
                             </th>
             
                             <th class="tb_curso">
-                                Curso
+                                Curso 
+                                
                             </th>
                             <th class="tb_programa">
-                                Programa
+                                <div class="action dropdown "> 
+                                    <button class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Programa 
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
+                                        @foreach($programas as $programa)
+        
+                                        @if(isset($filtros['programa']) &&  array_search($programa->id,$filtros['programa']) !== false)
+                                        <label class="dropdown-item" onclick="window.location.replace('?filtro=programa&valor={{$programa->id}}&remove=1')">
+                                            <i class="fa fa-check-circle-o icon"></i> {{$programa->sigla}}
+                                        </label>
+                                        @else
+                                        <label class="dropdown-item"  onclick="window.location.replace('?filtro=programa&valor={{$programa->id}}')">
+                                            <i class="fa fa-circle-o icon"></i> {{$programa->sigla}}
+                                        </label>
+                                        @endif
+                                        @endforeach 
+                                       
+                                    </div>
+                                </div>
                             </th>
                             <th class="tb_docente">
-                                Docente
+                                <div class="action dropdown "> 
+                                    <button class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Docente 
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
+                                        @foreach($professores as $professor)
+        
+                                        @if(isset($filtros['professor']) &&  array_search($professor->id,$filtros['professor']) !== false)
+                                        <label class="dropdown-item" onclick="window.location.replace('?filtro=professor&valor={{$professor->id}}&remove=1')">
+                                            <i class="fa fa-check-circle-o icon"></i> {{$professor->nome_simples}}
+                                        </label>
+                                        @else
+                                        <label class="dropdown-item"  onclick="window.location.replace('?filtro=professor&valor={{$professor->id}}')">
+                                            <i class="fa fa-circle-o icon"></i> {{$professor->nome_simples}}
+                                        </label>
+                                        @endif
+                                        @endforeach 
+                                       
+                                    </div>
+                                </div>
                             </th>   
                             <th class="tb_dias">
                                 Dias
@@ -146,7 +194,50 @@
                                 Horários
                             </th>
                             <th class="tb_status">
-                                Estado
+                                <div class="action dropdown "> 
+                                    <button class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Status
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu4"> 
+                                        @if(isset($filtros['status']))                             
+                                       
+                                        <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=docente{{array_search('docente',$filtros['status'])!==false?'&remove=1':''}}');">
+                                            <i class="fa fa-{{array_search('docente',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Docente
+                                        </label>
+                                        <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=coordenacao{{array_search('coordenacao',$filtros['status'])!==false?'&remove=1':''}}');">
+                                            <i class="fa fa-{{array_search('coordenacao',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Coordenação
+                                        </label>
+                                        <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=diretoria{{array_search('diretoria',$filtros['status'])!==false?'&remove=1':''}}');">
+                                            <i class="fa fa-{{array_search('diretoria',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Diretoria
+                                        </label>
+                                        <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=administracao{{array_search('administracao',$filtros['status'])!==false?'&remove=1':''}}');">
+                                            <i class="fa fa-{{array_search('administracao',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Administração 
+                                        </label>
+                                        <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=presidencia{{array_search('presidencia',$filtros['status'])!==false?'&remove=1':''}}');">
+                                            <i class="fa fa-{{array_search('presidencia',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Presidência 
+                                        </label>
+                                        
+                                        @else
+                                
+                                        <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=docente');">
+                                            <i class="fa fa-circle-o icon"></i>  Docente
+                                        </label>
+                                        <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=coordenacao');">
+                                            <i class="fa fa-circle-o icon"></i> Coordenação
+                                        </label>
+                                        <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=diretoria');">
+                                            <i class="fa fa-circle-o icon"></i> Diretorias
+                                        </label>
+                                        <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=administracao');">
+                                            <i class="fa fa-circle-o icon"></i> Administração
+                                        </label>
+                                        <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=presidencia');">
+                                            <i class="fa fa-circle-o icon"></i> Presidência
+                                        </label>
+                                        
+                                        @endif
+                                    </div>
+        
+                                </div>
                             </th>
                             <th class="tb_opt">
                                 Opções
@@ -163,7 +254,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <a href="/fichas/visualizar/{{$ficha->id}}" title="Analizar">{{$ficha->curso}}</a>
+                                    <a href="/fichas/visualizar/{{$ficha->id}}" title="Analisar">{{$ficha->curso}}</a>
                                 </td>
                                 <td>
                                     {{$ficha->getPrograma()->sigla}}
@@ -187,7 +278,7 @@
                                 </td>
                                 <td>
                                     
-                                    <a href="/fichas/visualizar/{{$ficha->id}}" class="btn btn-sm rounded-s btn-primary-outline" title="Analizar"><i class="fa fa-search"></i></a>
+                                    <a href="/fichas/visualizar/{{$ficha->id}}" class="btn btn-sm rounded-s btn-primary-outline" title="Analisar"><i class="fa fa-search"></i></a>
                                     <a href="/fichas/editar/{{$ficha->id}}" title="Editar Ficha" class="btn btn-sm rounded-s btn-primary-outline"><i class="fa fa-edit "></i></a>
                                     <a href="/fichas/copiar/{{$ficha->id}}" title="Criar cópia Ficha" class="btn btn-sm rounded-s btn-primary-outline"><i class="fa fa-copy"></i></a>
                                     <a href="#" onclick="excluir({{$ficha->id}})" title="Excluir ficha" class="btn btn-sm rounded-s btn-danger-outline"><i class="fa fa-times-circle"></i></a>

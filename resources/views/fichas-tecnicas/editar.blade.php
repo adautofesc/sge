@@ -71,7 +71,7 @@
 		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Material Utilizado
+				Recursos necessários
 			</label>
 			<div class="col-sm-6"> 
 				<textarea rows="2" class="form-control" name="materiais" maxlenght="500">{{$ficha->materiais}}</textarea>

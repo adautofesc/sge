@@ -25,24 +25,102 @@ class FichaTecnicaController extends Controller
 
 
 
-    public function index(){
+    public function index($filtro=null,$valor=null,$rem_filtro=null,$remove=0,$ipp=50){
+
+        session_start();
+        //dd($_GET['rem_filtro']);
+ 
+        
+        if(isset($_SESSION['filtro_fichas']))
+            $filtros = $_SESSION['filtro_fichas'];
+        
+        else
+            $filtros = array();
+            
+        if(isset($_GET['filtro']) && isset($_GET['valor'])){
+           
+            if(array_key_exists($_GET['filtro'], $filtros)){
+                
+                if(array_search($_GET['valor'], $filtros[$_GET['filtro']]) === false){
+                    $filtros[$_GET['filtro']][] = $_GET['valor'];
+                }
+                else
+                {
+                    if(isset($_GET['remove']) && $_GET['remove'] > 0){
+                        unset($filtros[$_GET['filtro']][array_search($_GET['valor'], $filtros[$_GET['filtro']])]);
+                    }
+                }
+            }
+            else{
+                $filtros[$_GET['filtro']][] = $_GET['valor'];
+            }
+            
+        }
+        if(isset($_GET['removefiltro']) && $_GET['removefiltro'] != null){
+            if(isset($filtros[$_GET['removefiltro']]))
+                unset($filtros[$_GET['removefiltro']]);
+        }
+        
+
+        $_SESSION['filtro_fichas'] = $filtros;
         
         $fichas = FichaTecnica::where('1','1');
-        if(in_array('13', Auth::user()->recursos) && !in_array('17', Auth::user()->recursos))
+        $programas=Programa::whereIn('id',[1,2,3,4,12])->orderBy('sigla')->get();
+
+        if(in_array('13', Auth::user()->recursos) && !in_array('17', Auth::user()->recursos)){
             $fichas = FichaTecnica::where('docente',Auth::user()->pessoa);
+            $programa = \App\PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','programa')->pluck('valor')->toArray();
+            $programas = Programa::whereIn('id',$programa)->get();
+            $professores = Pessoa::where('id',Auth::user()->pessoa)->get();
+
+        }
         if(in_array('17', Auth::user()->recursos) && in_array('13', Auth::user()->recursos)){
-            $programas = \App\PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','programa')->pluck('valor')->toArray();
-            $fichas = FichaTecnica::whereIn('programa',$programas);
+            $programa = \App\PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','programa')->pluck('valor')->toArray();
+            $programas = Programa::whereIn('id',$programa)->get();
+            $professores_dos_programas = collect();
+            $professoress = \App\PessoaDadosAdministrativos::getFuncionarios('Educador');
+            foreach($professoress as $professor){
+                $comparisson = array_intersect($programa,$professor->getProgramas());
+                if(count($comparisson))
+                    $professores_dos_programas->push($professor);
+            }
+            $professores = Pessoa::whereIn('id', $professores_dos_programas->pluck('id')->toArray())->get();
+            $professores = $professores->sortBy('nome');
+            $programas_ficha = \App\PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','programa')->pluck('valor')->toArray();
+            $fichas = FichaTecnica::whereIn('programa',$programas_ficha);
         }  
         if(isset($_GET['busca'])){
             
             $fichas = $fichas->where('id',$_GET['busca'])->orwhere('curso','like','%'.$_GET['busca'].'%');
 
         }
-        
-        $fichas = $fichas->paginate(50);
 
-        return view('fichas-tecnicas.index')->with('fichas',$fichas);
+        if(isset($filtros['programa']) && count($filtros['programa'])){
+            $fichas = $fichas->whereIn('programa', $filtros['programa']); 
+        }
+
+        if(isset($filtros['professor']) && count($filtros['professor'])){
+            $fichas = $fichas->whereIn('docente', $filtros['professor']); 
+        }
+        if(isset($filtros['local']) && count($filtros['local'])){
+            $fichas = $fichas->whereIn('local', $filtros['local']); 
+        }
+
+        if(isset($filtros['status']) && count($filtros['status'])){
+            $fichas = $fichas->whereIn('status', $filtros['status']); 
+        }
+        
+        $fichas = $fichas->paginate($ipp);
+        $locais = Local::all();
+
+        
+
+        return view('fichas-tecnicas.index')
+            ->with('programas',$programas)
+            ->with('locais',$locais)
+            ->with('professores',$professores)
+            ->with('filtros',$_SESSION['filtro_fichas'])
+            ->with('fichas',$fichas);
 
     }
     public function pesquisar(Request $r){
@@ -271,6 +349,7 @@ class FichaTecnicaController extends Controller
      }
 
      public function copiar($id){
+       
         $ficha = FichaTecnica::find($id);
         if(!isset($ficha->id))
             return redirect()->back()->with('warning','Ficha não encontrada');
@@ -310,6 +389,11 @@ class FichaTecnicaController extends Controller
             //dd($professores);
 
         }
+        return view('fichas-tecnicas.copiar',compact('ficha'))
+                ->with('professores',$professores)
+                ->with('salas',$salas)
+                ->with('unidades',$unidades)
+                ->with('programas',$programas);
     
      }
 

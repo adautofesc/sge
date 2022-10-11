@@ -52,7 +52,15 @@
 				Objetivo
 			</label>
 			<div class="col-sm-6"> 
-				<textarea rows="3" class="form-control" name="objetivos" maxlenght="500">{{$ficha->objetivo}}</textarea>
+				<textarea rows="5" class="form-control" name="objetivos" maxlenght="500">{{$ficha->objetivo}}</textarea>
+			</div>
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Conteúdo Programático
+			</label>
+			<div class="col-sm-6"> 
+				<textarea rows="10" class="form-control" name="conteudo" maxlenght="750">{{$ficha->conteudo}}</textarea>
 			</div>
 		</div>
 		<div class="form-group row"> 

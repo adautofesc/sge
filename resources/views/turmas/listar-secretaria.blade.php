@@ -148,8 +148,8 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenu4"> 
                                 @if(isset($filtros['status']))                             
                                
-                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=espera{{array_search('lancada',$filtros['status'])!==false?'&remove=1':''}}');">
-                                    <i class="fa fa-{{array_search('espera',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Lançadas
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=lancada{{array_search('lancada',$filtros['status'])!==false?'&remove=1':''}}');">
+                                    <i class="fa fa-{{array_search('lancada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Lançadas
                                 </label>
                                 <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=iniciada{{array_search('iniciada',$filtros['status'])!==false?'&remove=1':''}}');">
                                     <i class="fa fa-{{array_search('iniciada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Iniciadas

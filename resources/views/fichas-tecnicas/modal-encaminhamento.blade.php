@@ -24,7 +24,7 @@
                             <option value="docente">Docente</option>
                             <option value="coordenacao">Coordenação {{$ficha->status=='docente'?'(Próxima etapa)':''}}</option>
 
-                            @if($ri == 'Coordenador de Programa' || $ri == 'Diretor Administrativo' || $ri == 'Presidente' || $ri == 'Auxiliar Administrativo' )
+                            @if($ri == 'Coordenador de Programa' || $ri == 'Contador' || $ri == 'Presidente' || $ri == 'Diretor' || $ri == 'Auxiliar Administrativo' )
                                 <option value="diretoria">Diretoria  {{$ficha->status=='coordenacao'?'(Próxima etapa)':''}}</option>
                                 <option value="administracao">Administração  {{$ficha->status=='diretoria'?'(Próxima etapa)':''}}</option>
                                 <option value="presidencia">Presidência  {{$ficha->status=='presidencia'?'(Próxima etapa)':''}}</option>

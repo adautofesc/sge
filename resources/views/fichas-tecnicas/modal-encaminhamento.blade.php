@@ -16,7 +16,7 @@
 
                 <div class="form-group row">                
                     <label class="col-sm-3 text-xs-right">
-                        Para
+                        Para {{$ri}}
                     </label>
                     <div class="col-sm-4"> 
                         <select class="c-select form-control boxed" name="depto" id="depto" required>

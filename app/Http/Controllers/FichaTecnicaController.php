@@ -210,7 +210,7 @@ class FichaTecnicaController extends Controller
         $ficha = FichaTecnica::find($id);
         $dados_ficha = FichaTecnicaDados::where('ficha',$ficha->id)->get();
         return view('fichas-tecnicas.exibir',compact('ficha'))
-            ->with('ri',$relacao->educador)
+            ->with('ri',$relacao->valor)
             ->with('dados',$dados_ficha);
     
                     

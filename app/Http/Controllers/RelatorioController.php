@@ -148,10 +148,43 @@ class RelatorioController extends Controller
     }
 
 	public function turmas(Request $request){
+        $outro=[
+            1365,
+            1366,
+            1367,
+            1368,
+            1369,
+            1370,
+            1371,
+            1372,
+            1373,
+            1374,
+            1375,
+            1428,
+            1429,
+            1430,
+            1431,
+            1432,
+            1433,
+            1434,
+            1435,
+            1436,
+            1437,
+            1439,
+            1440,
+            1441,
+            1442,
+            1443
+        ];
+      
 		$total_vagas = 0;
 		$total_inscricoes = 0;
 		$tc =  new \App\Http\Controllers\TurmaController;
 		$turmas = $tc->listagemGlobal($request->filtro,$request->valor,$request->removefiltro,$request->remove,500);
+        $atuais = $turmas->pluck('id')->toArray();
+        //dd(array_diff($atuais,$outro));
+
+
 
 		foreach($turmas as $turma){
 			$total_vagas = $total_vagas+$turma->vagas;
@@ -543,6 +576,9 @@ Event::where('status' , 0)
         $programas = array('1','2','3','4','12');
             foreach($programas as $programa){
                 $vagas[$programa] = \App\Turma::whereYear('data_inicio',$ano)->where('programa',$programa)->whereIn('status',['iniciada','encerrada'])->sum('vagas');
+                $turmas[$programa] = \App\Turma::whereYear('data_inicio',$ano)->where('programa',$programa)->whereIn('status',['iniciada','encerrada'])->count();
+
+
                 //dd(\App\Turma::whereYear('data_inicio',$ano)->where('programa',2)->whereIn('status',['iniciada','encerrada'])->get());
                 if($ano == 2020){
                     $ocupacao[$programa] = \App\Inscricao::select('inscricoes.id','programa')
@@ -588,9 +624,11 @@ Event::where('status' , 0)
                     $ocupacao[4] = 1385;
                     break;
                 
-        }
+            }
+        //return $turmas[4];
     
-        return view('relatorios.vagas')->with('ano',$ano)->with('ocupacao',$ocupacao)->with('vagas',$vagas);
+    
+        return view('relatorios.vagas')->with('ano',$ano)->with('ocupacao',$ocupacao)->with('vagas',$vagas)->with('turmas',$turmas);
         
     }
 

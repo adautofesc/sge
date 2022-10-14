@@ -193,6 +193,7 @@ class TurmaController extends Controller
         }
 
         if(isset($filtros['pordata']) && count($filtros['pordata'])){
+            
             $str1 = substr($filtros['pordata'][0],1,10);
             if($str1 == 'undefined'){
                 $str2 = substr($filtros['pordata'][0],11,10);
@@ -235,14 +236,14 @@ class TurmaController extends Controller
         if(isset($filtros['periodo']) && count($filtros['periodo'])){
             if(count($filtros['periodo'])==1){
                 $elemento = current($filtros['periodo']);
-                $intervalo = \App\classes\Data::periodoSemestre($elemento);
+                $intervalo = \App\classes\Data::periodoSemestreTurmas($elemento);
                 $turmas = $turmas->whereBetween('turmas.data_inicio', $intervalo);
             }      
             else{
                 //Parameter Grouping
                 $turmas = $turmas->where(function ($query) use ($filtros){
                     foreach($filtros['periodo'] as $periodo){
-                        $intervalo = \App\classes\Data::periodoSemestre($periodo);
+                        $intervalo = \App\classes\Data::periodoSemestreTurmas($periodo);
                         $query = $query->orWhereBetween('turmas.data_inicio', $intervalo);
                     }
 
@@ -1238,7 +1239,7 @@ class TurmaController extends Controller
     }
     public static function listarTurmasDocente($docente,$semestre){
         if($semestre > 0){
-            $intervalo = \App\classes\Data::periodoSemestre($semestre);
+            $intervalo = \App\classes\Data::periodoSemestreTurmas($semestre);
             $turmas = Turma::where('professor', $docente)->whereIn('status',['lancada','iniciada','encerrada'])->whereBetween('data_inicio', $intervalo)->orderBy('hora_inicio')->get();
         }
         else{

@@ -1,5 +1,7 @@
 @extends('layout.app')
 @section('pagina')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+@include('fichas-tecnicas.modal-encaminhamento')
 <div class="title-block">
     <h3 class="title"> Ficha Técnica #{{$ficha->id}}<span class="sparkline bar" data-type="bar"></span> </h3>
 </div>
@@ -11,6 +13,14 @@
 
 		</div>
 		
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Estado 
+			</label>
+			<div class="col-sm-6"> 
+				{{$ficha->status}}
+			</div>
+		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Programa 
@@ -214,21 +224,11 @@
 			<div class="col-sm-10 col-sm-offset-2">
 				
 				<button type="cancel" name="btn" value="1" class="btn btn-primary" onclick="history.back(2)">Voltar</button> 
+				<a class="btn btn-primary" href="/fichas/editar/{{$ficha->id}}">Editar</a> 
+				<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal-encaminhar-ficha" title="Encaminhar ficha para..." >
+					Encaminhar para ...
+				</a>
 				
-				@switch($ficha->status)
-					@case('docente')
-					<a class="btn btn-primary" href="/fichas/editar/{{$ficha->id}}">Editar</a> 
-						<a class="btn btn-success" href="#" onclick="sendTo('coordenacao');">Enviar para coordenação</a> 
-						@break
-					@case('coordenacao')
-						@if(in_array('13', Auth::user()->recursos) && in_array('17', Auth::user()->recursos))
-						<a class="btn btn-primary" href="/fichas/editar/{{$ficha->id}}">Editar</a> 
-						<a class="btn btn-success" href="#" onclick="sendTo('diretoria');">Enviar para direção</a> 
-						<a class="btn btn-success" href="#" onclick="sendTo('docente')">Retornar para docente</a>
-						@endif
-
-						@break
-					@endswitch
 
 			</div>
        </div>
@@ -238,10 +238,24 @@
 @endsection
 @section('scripts')
 <script>
-	function sendTo(target){
-		if(confirm("Deseja mesmo encaminhar a ficha para "+target+" ?")){
-			window.location="/fichas/encaminhar/{{$ficha->id}}/"+target;
-		}
+	function encaminhar(id){
+		depto = $("#depto").val();
+		obs = $("#obs").val();
+		$.ajax({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			},
+			method: "POST",
+			url: "/fichas/encaminhar",
+			data: { id,depto,obs }
+			
+		})
+		.done(function(msg){
+			location.reload(true);
+		})
+		.fail(function(msg){
+			alert('Falha ao encaminhar ficha: '+msg.statusText);
+		});
 	}
 </script>
 

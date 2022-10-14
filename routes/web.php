@@ -297,7 +297,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::post('excluir', [FichaTecnicaController::class,'excluir']);
 		Route::get('pesquisa',[FichaTecnicaController::class,'pesquisar']);
 		Route::get('copiar/{id}',[FichaTecnicaController::class,'copiar']);
-		Route::get('encaminhar/{id}/{local}',[FichaTecnicaController::class,'encaminhar']);
+		Route::post('encaminhar',[FichaTecnicaController::class,'encaminhar']);
 
 	});
 

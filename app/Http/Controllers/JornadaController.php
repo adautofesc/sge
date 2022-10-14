@@ -286,7 +286,7 @@ class JornadaController extends Controller
 
     public static function listarDocente($docente,$semestre){
         if($semestre > 0){
-            $intervalo = \App\classes\Data::periodoSemestre($semestre);
+            $intervalo = \App\classes\Data::periodoSemestreTurmas($semestre);
             $jornadas = Jornada::where('pessoa', $docente)->whereIn('status',['ativa','solicitada','encerrada'])->whereBetween('inicio', $intervalo)->orderBy('hora_inicio')->get();
         }
         else{

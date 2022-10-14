@@ -125,7 +125,6 @@ class FichaTecnicaController extends Controller
     }
     public function pesquisar(Request $r){
         $fichas = FichaTecnica::where('curso','like','%'.$r->curso.'%')->paginate(50);
-
         return view('fichas-tecnicas.index')->with('fichas',$fichas);
 
     }
@@ -207,12 +206,13 @@ class FichaTecnicaController extends Controller
 
     public function visualizar($id){
         $relacao = PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','relacao_institucional')->first();
-        //dd($relacao);
+        //dd($relacao->valor);
         $ficha = FichaTecnica::find($id);
         $dados_ficha = FichaTecnicaDados::where('ficha',$ficha->id)->get();
         return view('fichas-tecnicas.exibir',compact('ficha'))
-            ->with('dados',$dados_ficha)
-            ->with('relacao',$relacao);
+            ->with('ri',$relacao->educador)
+            ->with('dados',$dados_ficha);
+    
                     
     }
 
@@ -397,23 +397,21 @@ class FichaTecnicaController extends Controller
     
      }
 
-     public function encaminhar($id,$local,$conteudo=''){
-        $ficha = FichaTecnica::find($id);
+     public function encaminhar(Request $r){
+        $ficha = FichaTecnica::find($r->id);
         if(!isset($ficha->id))
-            return redirect()->back()->with('warning','Ficha não encontrada');
-        $ficha->status = $local;
+            return response('Não encontrada',404);
+        $ficha->status = $r->depto;
         $ficha->save();
 
         $dados_ficha = new FichaTecnicaDados;
         $dados_ficha->ficha = $ficha->id;
         $dados_ficha->dado = 'log';
-        $dados_ficha->conteudo = 'Ficha encaminhada para '.$local;
+        $dados_ficha->conteudo = 'Ficha encaminhada para '.$r->depto. '. '.$r->obs;
         $dados_ficha->agente = Auth::user()->pessoa;
         $dados_ficha->save();
-
-        return redirect('/fichas');
-
-
+        
+        return response('OK',200);
 
      }
 }

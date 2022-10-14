@@ -92,6 +92,7 @@
                 <table class="table table-striped table-condensed">
                     <thead >
                         <th width="30rem">Programa</th>
+						<th width="10rem">Turmas</th>
 						<th width="10rem">Vagas</th>
                         <th width="10rem">Ocupadas</th>
                         <th width="10rem">% Ocupação</th>
@@ -101,6 +102,7 @@
                     	
                     	<tr>
 							<th>Universidade Aberta da Terceira Idade</th>
+							<td>{{$turmas['3']}}</td>
 							<td>{{$vagas['3']}}</td>
 							<td>{{$ocupacao['3']}}</td>
 							<td>{{number_format(($ocupacao['3']*100)/$vagas['3'],2)}}</td>
@@ -109,6 +111,7 @@
 						</tr>
 						<tr>
 							<th>Universidade Aberto do Trabalhador</th>
+							<td>{{$turmas['1']}}</td>
 							<td>{{$vagas['1']}}</td>
 							<td>{{$ocupacao['1']}}</td>
 							<td>{{number_format(($ocupacao['1']*100)/$vagas['1'],2)}}</td>
@@ -117,6 +120,7 @@
 						</tr>
 						<tr>
 							<th>Programa de Inclusão Digital</th>
+							<td>{{$turmas['2']}}</td>
 							<td>{{$vagas['2']}}</td>
 							<td>{{$ocupacao['2']}}</td>
 							<td>{{number_format(($ocupacao['2']*100)/$vagas['2'],2)}}</td>
@@ -125,6 +129,7 @@
 						</tr>
 						<tr>
 							<th>Escola Municipal de Governo</th>
+							<td>{{$turmas['4']}}</td>
 							<td>{{$vagas['4']}}</td>
 							<td>{{$ocupacao['4']}}</td>
 							<td>{{number_format(($ocupacao['4']*100)/$vagas['4'],2)}}</td>
@@ -133,6 +138,7 @@
 						</tr>
 						<tr>
 							<th>Centro Esportivo</th>
+							<td>{{$turmas['12']}}</td>
 							<td>{{$vagas['12']}}</td>
 							<td>{{$ocupacao['12']}}</td>
 							<td>{{number_format(($ocupacao['12']*100)/$vagas['12'],2)}}</td>

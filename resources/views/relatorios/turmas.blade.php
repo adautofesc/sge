@@ -4,7 +4,7 @@
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 <link rel="stylesheet" href="{{asset('/css/vendor.css')}}"/>
-<title>Documento Oficial - Fesc</title>
+<title>Relatório de Turmas - SGE Fesc</title>
 <style type="text/css">
 	@media print {
             .hide-onprint { 
@@ -412,8 +412,9 @@
         		<thead>
         			<th class="col-md-1 col-sm-1" >Turma</th>
         			<th class="col-md-3 col-sm-3">Curso</th>
-        			<th class="col-md-3 col-sm-3">Dia/Horário</th>
-        			<th class="col-md-2 col-sm-2">Professor</th>
+        			<th class="col-md-2 col-sm-2">Dia/Horário</th>
+                    <th class="col-md-1 col-sm-1">Período</th>
+        			<th class="col-md-2 col-sm-2">Programa/Prof.</th>
         			<th class="col-md-1 col-sm-1">Local</th>
                     <th class="col-md-1 col-sm-1">Vagas</th>
                     <th class="col-md-1 col-sm-1">Inscritos</th>
@@ -423,19 +424,19 @@
         			<tr>
         				<td class="col-md-1 col-sm-1">{{$turma->id}}</td>
         				<td class="col-md-3 col-sm-3">
-        					@if(isset($turma->disciplina))
-                            	
+                            Estado: {{$turma->status}}<br>
+        					@if(isset($turma->disciplina))	
                                  {{$turma->disciplina->nome}}     
-                                <small>{{$turma->curso->nome}}</small>
-                            
+                                <small>{{$turma->curso->nome}}</small>                            
                            @else
                
                                  {{$turma->curso->nome}}         
                             
                             @endif
                         </td>
-        				<td class="col-md-3 col-sm-3">{{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}</td>
-        				<td class="col-md-2 col-sm-2">{{$turma->professor->nome_simples}}</td>
+        				<td class="col-md-2 col-sm-2">{{implode(', ',$turma->dias_semana)}} <br> {{$turma->hora_inicio}} ás {{$turma->hora_termino}}</td>
+                        <td class="col-md-1 col-sm-1">{{$turma->data_inicio}}<br>{{$turma->data_termino}}</td>
+        				<td class="col-md-2 col-sm-2">{{$turma->programa->sigla}}<br>{{$turma->professor->nome_simples}}</td>
         				<td class="col-md-1 col-sm-1">{{$turma->local->sigla}}</td>
                         <td class="col-md-1 col-sm-1">{{$turma->vagas}}</td>
                         <td class="col-md-1 col-sm-1">{{$turma->matriculados}}</td>
@@ -463,7 +464,7 @@
         
             inicio = document.getElementsByName("data_inicio")[0].value;
             termino = document.getElementsByName("data_termino")[0].value;
-            window.location.href = './turmas/?filtro=pordata&valor=i'+inicio+'t'+termino;
+            window.location.href = '/relatorios/turmas/?filtro=pordata&valor=i'+inicio+'t'+termino;
         }
     </script>
 </body>

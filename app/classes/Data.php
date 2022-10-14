@@ -134,10 +134,7 @@ Class Data
         }
 
         public static function periodoSemestre($valor){
-            
-
             if($valor==0){
-
                 if(date('m')<8)
                         $semestre = 1;
                 else
@@ -147,25 +144,17 @@ Class Data
             else{
                     $semestre = substr($valor, 0,1);
                     $ano= substr($valor, 1,4);
-            }  
-            
-           
-        
-
+            }         
             switch($semestre){
-
                 case 0:
                     $datas = [($ano-1).'-11-20%', $ano.'-11-19%']; //ano td
-                    break;
-                
+                    break;    
                 case 1:
                     $datas = [($ano-1).'-11-20%', $ano.'-06-30%']; //1º semestre
-                    break;
-                
+                    break;       
                 case 2:
                     $datas = [$ano.'-07-01%',$ano.'-11-19%']; //2º semestre
-                    break;
-                
+                    break;         
                 default :
                     $datas = [($ano-1).'-11-20%', $ano.'-11-19%']; // padrão ano td.
                     
@@ -174,6 +163,37 @@ Class Data
             //dd($datas);
             return $datas;
 
+        }
+        public static function periodoSemestreTurmas($valor){
+                if($valor==0){
+                    if(date('m')<8)
+                            $semestre = 1;
+                    else
+                            $semestre = 2;
+                    $ano = date('Y');
+                }
+                else{
+                        $semestre = substr($valor, 0,1);
+                        $ano= substr($valor, 1,4);
+                }         
+                switch($semestre){
+                    case 0:
+                        $datas = [($ano).'-01-01%', $ano.'-12-31%']; //ano td
+                        break;    
+                    case 1:
+                        $datas = [($ano).'-01-01%', $ano.'-06-30%']; //1º semestre
+                        break;       
+                    case 2:
+                        $datas = [$ano.'-07-01%',$ano.'-12-31%']; //2º semestre
+                        break;         
+                    default :
+                        $datas = [($ano).'-01-01%', $ano.'-12-31%']; // padrão ano td.
+                        
+                }
+    
+                //dd($datas);
+                return $datas;
+    
         }
 
         public static function stringDiaSemana($data){

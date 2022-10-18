@@ -101,7 +101,7 @@
                     <tbody>
                     	
                     	<tr>
-							<th>Universidade Aberta da Terceira Idade</th>
+							<td>Universidade Aberta da Terceira Idade</td>
 							<td>{{$turmas['3']}}</td>
 							<td>{{$vagas['3']}}</td>
 							<td>{{$ocupacao['3']}}</td>
@@ -110,7 +110,7 @@
                     		
 						</tr>
 						<tr>
-							<th>Universidade Aberto do Trabalhador</th>
+							<td>Universidade Aberto do Trabalhador</td>
 							<td>{{$turmas['1']}}</td>
 							<td>{{$vagas['1']}}</td>
 							<td>{{$ocupacao['1']}}</td>
@@ -119,7 +119,7 @@
                     		
 						</tr>
 						<tr>
-							<th>Programa de Inclusão Digital</th>
+							<td>Programa de Inclusão Digital</td>
 							<td>{{$turmas['2']}}</td>
 							<td>{{$vagas['2']}}</td>
 							<td>{{$ocupacao['2']}}</td>
@@ -128,7 +128,7 @@
                     		
 						</tr>
 						<tr>
-							<th>Escola Municipal de Governo</th>
+							<td>Escola Municipal de Governo</td>
 							<td>{{$turmas['4']}}</td>
 							<td>{{$vagas['4']}}</td>
 							<td>{{$ocupacao['4']}}</td>
@@ -137,7 +137,7 @@
                     		
 						</tr>
 						<tr>
-							<th>Centro Esportivo</th>
+							<td>Centro Esportivo</td>
 							<td>{{$turmas['12']}}</td>
 							<td>{{$vagas['12']}}</td>
 							<td>{{$ocupacao['12']}}</td>
@@ -145,11 +145,22 @@
 					
                     		
 						</tr>
+						<tr>
+							<th>Total</th>
+							<td>{{array_sum($turmas)}}</td>
+							<td>{{array_sum($vagas)}}</td>
+							<td>{{array_sum($ocupacao)}}</td>
+							<td>{{number_format((array_sum($ocupacao)*100)/array_sum($vagas),2)}}</td>
+					
+                    		
+						</tr>
 						
                 	</tbody>
                 </table>
+				<small>Gerador atualizado em 17/10/22</small>
              </div>
         </div>
+		
 		
         
 

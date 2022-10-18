@@ -16,7 +16,7 @@
 
                 <div class="form-group row">                
                     <label class="col-sm-3 text-xs-right">
-                        Para {{$ri}}
+                        Para 
                     </label>
                     <div class="col-sm-4"> 
                         <select class="c-select form-control boxed" name="depto" id="depto" required>
@@ -24,7 +24,7 @@
                             <option value="docente">Docente</option>
                             <option value="coordenacao">Coordenação {{$ficha->status=='docente'?'(Próxima etapa)':''}}</option>
 
-                            @if($ri == 'Coordenador de Programa' || $ri == 'Contador' || $ri == 'Presidente' || $ri == 'Diretor' || $ri == 'Auxiliar Administrativo' )
+                            @if(in_array(array('Coordenador de Programa','Contador','Presidente','Diretor','Auxiliar Administrativo'),$ri))
                                 <option value="diretoria">Diretoria  {{$ficha->status=='coordenacao'?'(Próxima etapa)':''}}</option>
                                 <option value="administracao">Administração  {{$ficha->status=='diretoria'?'(Próxima etapa)':''}}</option>
                                 <option value="presidencia">Presidência  {{$ficha->status=='presidencia'?'(Próxima etapa)':''}}</option>

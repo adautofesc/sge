@@ -118,6 +118,10 @@
                                     <a class="dropdown-item" href="#" onclick="alterarStatus('cancelar')">
                                         <label><i class="fa fa-minus-circle icon text-danger"></i> <span> Cancelar</span></label>
                                     </a> -->
+                                    
+                                    <a class="dropdown-item" href="#" onclick="imprimirSelecionados()">
+                                        <label><i class="fa fa-print icon "></i> <span> Imprimir</span></label>
+                                    </a> 
                                     <a class="dropdown-item" href="#" onclick="excluirSelecionados()">
                                         <label><i class="fa fa-times-circle icon text-danger"></i> <span> Excluir</span></label>
                                     </a> 
@@ -278,7 +282,7 @@
                                 </td>
                                 <td>
                                     
-                                    <a href="/fichas/visualizar/{{$ficha->id}}" class="btn btn-sm rounded-s btn-primary-outline" title="Analisar"><i class="fa fa-search"></i></a>
+                                    <a href="/fichas/imprimir/{{$ficha->id}}" target="_blank" class="btn btn-sm rounded-s btn-primary-outline" title="Imprimir"><i class="fa fa-print"></i></a>
                                     <a href="/fichas/editar/{{$ficha->id}}" title="Editar Ficha" class="btn btn-sm rounded-s btn-primary-outline"><i class="fa fa-edit "></i></a>
                                     <a href="/fichas/copiar/{{$ficha->id}}" title="Criar cópia Ficha" class="btn btn-sm rounded-s btn-primary-outline"><i class="fa fa-copy"></i></a>
                                     <a href="#" onclick="excluir({{$ficha->id}})" title="Excluir ficha" class="btn btn-sm rounded-s btn-danger-outline"><i class="fa fa-times-circle"></i></a>
@@ -349,6 +353,18 @@ function excluirSelecionados(){
     }
 
     
+}
+function imprimirSelecionados(){
+
+    itens='';
+    $("input:checkbox[name=ficha]:checked").each(function () {
+        itens+=this.value+',';
+
+    });
+    location.href = '/fichas/imprimir/'+itens;
+
+
+
 }
 function parado(){
     console.log('parei');

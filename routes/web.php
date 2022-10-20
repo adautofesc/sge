@@ -292,6 +292,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('cadastrar',[FichaTecnicaController::class,'cadastrar']);
 		Route::post('cadastrar',[FichaTecnicaController::class,'gravar']);
 		Route::get('visualizar/{id}',[FichaTecnicaController::class,'visualizar']);
+		Route::get('imprimir/{id}',[FichaTecnicaController::class,'imprimir']);
 		Route::get('editar/{id}',[FichaTecnicaController::class,'editar']);
 		Route::post('editar/{id}',[FichaTecnicaController::class,'update']);
 		Route::post('excluir', [FichaTecnicaController::class,'excluir']);

@@ -219,6 +219,15 @@ class FichaTecnicaController extends Controller
                     
     }
 
+    public function imprimir($id){
+        $fichas =  explode(',',$id);
+        $fichas = FichaTecnica::whereIn('id',$fichas)->get();
+        
+        return view('fichas-tecnicas.imprimir',compact('fichas'));
+            
+    }
+
+
     public function editar($id){
         $ficha = FichaTecnica::find($id);
         $unidades = Local::get(['id' ,'nome']);

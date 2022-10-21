@@ -212,8 +212,16 @@ class FichaTecnicaController extends Controller
         //dd($relacao->valor);
         $ficha = FichaTecnica::find($id);
         $dados_ficha = FichaTecnicaDados::where('ficha',$ficha->id)->get();
+        $administrativo = array('Coordenador de Programa','Contador','Presidente','Diretor','Auxiliar Administrativo');
+        $adm = false;
+        foreach($relacao as $ri)
+            if(in_array($ri,$administrativo))
+                $adm = true;
+       
+
+
         return view('fichas-tecnicas.exibir',compact('ficha'))
-            ->with('ri',$relacao)
+            ->with('adm',$adm)
             ->with('dados',$dados_ficha);
     
                     

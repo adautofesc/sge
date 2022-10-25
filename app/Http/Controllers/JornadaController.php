@@ -32,12 +32,9 @@ class JornadaController extends Controller
             $mostrar = false;          
             $jornadas = Jornada::where('pessoa', $id)->whereIn('status',['ativa','solicitada'])->orderBy('hora_inicio')->paginate(20);
         }
-        $carga_horaria = \App\PessoaDadosJornadas::where('pessoa',$id)
-                ->where(function($query){
-                    $query->where('inicio','>=',)->orwhere('termino','0000-00-00');
-                })
-                ->orderByDesc('id')
-                ->first();
+        $carga_horaria = \App\PessoaDadosJornadas::where('pessoa',$id)->get();
+        $carga_horaria_ativa = \App\PessoaDadosJornadas::where('pessoa',$id)->where('status','ativa')->first();
+               
         
 
         //$jornadas = \App\Jornada::where('pessoa',$id)->get();
@@ -159,6 +156,7 @@ class JornadaController extends Controller
             ->with('dias',$dias)
             ->with('glocais',$glocais)
             ->with('carga_horaria',$carga_horaria)
+            ->with('carga_horaria_ativa',$carga_horaria_ativa)
             ->with('carga_efetiva',$carga_efetiva)
             ->with('ghoras_turmas',$ghoras_turmas);
 

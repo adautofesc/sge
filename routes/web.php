@@ -20,6 +20,7 @@ use App\Http\Controllers\UsoLivreController;
 use App\Http\Controllers\MatriculaController;
 use App\Http\Controllers\PessoaDadosJornadasController;
 use App\Http\Controllers\FichaTecnicaController;
+use App\Http\Controllers\TurmaController;
 
 Route::get('/', 'painelController@index');
 
@@ -166,37 +167,39 @@ Route::middleware(['auth','login']) ->group(function(){
 
 	});
 	Route::prefix('turmas')->group(function(){
-		Route::get('cadastrar','TurmaController@create')->name('turmas.cadastrar');
-		
+		Route::get('cadastrar',[TurmaController::class,'create'])->name('turmas.cadastrar');
+		Route::get('gerar-por-ficha/{id?}',[TurmaController::class,'gerarPorFichaView']);
+		Route::post('gerar-por-ficha/{id?}',[TurmaController::class,'gerarPorFichaExec']);
+
 
 		Route::middleware('liberar.recurso:18')->group(function(){
-			Route::post('cadastrar','TurmaController@store');
-			Route::post('recadastrar','TurmaController@storeRecadastro');
-			Route::get('/','TurmaController@listarSecretaria')->name('turmas');
-			Route::get('/alterar/{acao}/{turmas}','TurmaController@acaolote');
-			Route::post('editar/{var}','TurmaController@update');
-			Route::get('status/{status}/{turma}','TurmaController@status');
-			Route::get('status-matriculas/{status}/{turma}','TurmaController@statusMatriculas');
-			Route::post('importar', 'TurmaController@uploadImportaTurma' );
+			Route::post('cadastrar',[TurmaController::class,'store']);
+			Route::post('recadastrar',[TurmaController::class,'storeRecadastro']);
+			Route::get('/',[TurmaController::class,'listarSecretaria'])->name('turmas');
+			Route::get('/alterar/{acao}/{turmas}', [TurmaController::class,'acaolote']);
+			Route::post('editar/{var}', [TurmaController::class,'update']);
+			Route::get('status/{status}/{turma}', [TurmaController::class,'status']);
+			Route::get('status-matriculas/{status}/{turma}', [TurmaController::class,'statusMatriculas']);
+			Route::post('importar', [TurmaController::class, 'uploadImportaTurma'] );
 
 		});
 		
-		Route::get('listar','TurmaController@index');
-		Route::get('apagar/{var}','TurmaController@destroy');
-		Route::get('editar/{var}','TurmaController@edit');		
-		Route::get('turmasjson','TurmaController@turmasJSON');
+		Route::get('listar', [TurmaController::class, 'index']);
+		Route::get('apagar/{var}', [TurmaController::class, 'destroy']);
+		Route::get('editar/{var}', [TurmaController::class, 'edit']);		
+		Route::get('turmasjson', [TurmaController::class, 'turmasJSON']);
 		Route::get('inscritos/{turma}','InscricaoController@verInscritos');
 		Route::get('lista/{id}','painelController@chamada');
 		Route::get('importar', function(){ return view('turmas.upload');});		
-		Route::post('processar-importacao', 'TurmaController@processarImportacao');
-		Route::get('expiradas','TurmaController@processarTurmasExpiradas')->name('turmas.expiradas');
+		Route::post('processar-importacao', [TurmaController::class, 'processarImportacao']);
+		Route::get('expiradas', [TurmaController::class, 'processarTurmasExpiradas'])->name('turmas.expiradas');
 		Route::get('modificar-requisitos/{id}','RequisitosController@editRequisitosTurma');
 		Route::post('turmas-requisitos','RequisitosController@editRequisitosTurma');
 		Route::post('modificar-requisitos/{id}','RequisitosController@storeRequisitosTurma');
-		Route::get('atualizar-inscritos','TurmaController@atualizarInscritos');
+		Route::get('atualizar-inscritos', [TurmaController::class, 'atualizarInscritos']);
 		Route::get('/{turma}', 'InscricaoController@verInscricoes'); //dados da turma secretaria
 		Route::post('/{turma}', 'InscricaoController@inscreverAlunoLote'); // inserção de alunos direto pelo painel
-		Route::get('/dados-gerais/{turma}', 'TurmaController@mostrarTurma');//dados da turma pedagógico
+		Route::get('/dados-gerais/{turma}', [TurmaController::class, 'mostrarTurma']);//dados da turma pedagógico
 
 	});
 
@@ -299,6 +302,16 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('pesquisa',[FichaTecnicaController::class,'pesquisar']);
 		Route::get('copiar/{id}',[FichaTecnicaController::class,'copiar']);
 		Route::post('encaminhar',[FichaTecnicaController::class,'encaminhar']);
+
+	});
+	Route::prefix('carga-horaria')->group(function(){
+		Route::get('importar',[PessoaDadosJornadasController::class,'importar']);
+		Route::get('cadastrar/{pessoa}',[PessoaDadosJornadasController::class,'cadastrar']);
+		Route::post('cadastrar/{pessoa}',[PessoaDadosJornadasController::class,'store']);
+		Route::get('editar/{id}',[PessoaDadosJornadasController::class,'editar']);
+		Route::post('editar/{id}',[PessoaDadosJornadasController::class,'update']);
+		Route::post('excluir',[PessoaDadosJornadasController::class,'excluir']);
+
 
 	});
 
@@ -643,7 +656,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	Route::middleware('liberar.recurso:18')->prefix('secretaria')->group(function(){
 		
 		Route::get('/','painelController@secretaria')->name('secretaria');
-		//Route::get('analisar-matriculas', [MatriculaController::class,'analiseFinanceira']);
+		Route::get('analisar-matriculas', [MatriculaController::class,'analiseFinanceira']);
 		Route::get('pre-atendimento','SecretariaController@iniciarAtendimento');
 		Route::post('pre-atendimento','SecretariaController@buscaPessoaAtendimento');
 		Route::get('atendimento','SecretariaController@atender');

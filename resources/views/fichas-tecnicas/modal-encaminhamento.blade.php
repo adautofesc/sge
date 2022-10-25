@@ -29,7 +29,7 @@
                                 <option value="administracao">Administração  {{$ficha->status=='diretoria'?'(Próxima etapa)':''}}</option>
                                 <option value="presidencia">Presidência  {{$ficha->status=='administracao'?'(Próxima etapa)':''}}</option>
                                 <option value="secretaria">Secretaria  {{$ficha->status=='presidencia'?'(Próxima etapa)':''}}</option>
-                                <option value="negado">** Recusar Ficha ** </option>
+                                <option value="negada">** Recusar Ficha ** </option>
                             @endif
                         </select>
 

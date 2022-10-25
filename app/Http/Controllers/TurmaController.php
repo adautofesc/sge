@@ -1410,6 +1410,20 @@ class TurmaController extends Controller
         return $aulas.$frequencias;
     }
 
+    public function gerarPorFichaView($id = 0){
+        if($id != 0)
+            $ficha = \App\FichaTecnica::find($id);         
+        else
+            $ficha = \App\FichaTecnica::where('status','secretaria')->first();
+
+        dd($ficha);
+        
+    }
+
+    public function gerarPorFichaExec(){
+        return 'ok 2';
+    }
+
 
    
     

@@ -228,6 +228,9 @@
 				<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal-encaminhar-ficha" title="Encaminhar ficha para..." >
 					Encaminhar para ...
 				</a>
+				@if($ficha->status =='secretaria')
+				<a class="btn btn-primary" href="/turmas/gerar-por-ficha//{{$ficha->id}}">Gerar turma</a> 
+				@endif
 				
 
 			</div>

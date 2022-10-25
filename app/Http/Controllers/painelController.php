@@ -271,7 +271,7 @@ class painelController extends Controller
             session('rh_atendimento',$id);
         }
         else{
-            $id=session('rh_atendimento');
+            $id=session('rh_atendimento'); 
         }
         
         $pessoa=Pessoa::withTrashed()->find($id);
@@ -291,7 +291,11 @@ class painelController extends Controller
         $pessoa->relacoes_institucionais = \App\PessoaDadosAdministrativos::where('dado','relacao_institucional')->where('pessoa',$pessoa->id)->get();
         $programas = \App\Programa::whereIn('id',[1,2,3,4,12])->orderby('nome')->get();
         $vinculo_programas = \App\PessoaDadosAdministrativos::where('dado','programa')->where('pessoa',$pessoa->id)->get();
-        $carga = \App\PessoaDadosAdministrativos::where('dado','carga_horaria')->where('pessoa',$pessoa->id)->first();
+        //$carga = \App\PessoaDadosAdministrativos::where('dado','carga_horaria')->where('pessoa',$pessoa->id)->first();
+
+        $carga = \App\PessoaDadosJornadas::where('pessoa',$pessoa->id)->where('status','ativa')->first();
+
+
 
         return view('gestaopessoal.atendimento', compact('pessoa'))
             ->with('programas',$programas)

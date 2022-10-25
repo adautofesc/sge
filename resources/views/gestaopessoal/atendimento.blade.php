@@ -3,7 +3,6 @@
 
 @include('inc.errors')
 @include('gestaopessoal.modals.vincular-programa')
-@include('gestaopessoal.modals.add-carga')
 <div class="title-block">
                         <h3 class="title"> {{$pessoa->nome}} 
                         	@if(isset($pessoa->nome_resgistro))
@@ -124,7 +123,7 @@
 								</label>
 								<div class="col-sm-4"> 
 									@if(isset($carga->id))
-									{{$carga->valor}}h <a href="#" onclick="removerCarga('{{$carga->id}}')" class="badge badge-pill badge-danger" style="text-decoration: none; color: white;" title="Excluir carga">X</a>
+									{{$carga->carga}}h <a href="#" onclick="removerCarga('{{$carga->id}}')" class="badge badge-pill badge-danger" style="text-decoration: none; color: white;" title="Excluir carga">X</a>
 									@endif
 								</div>
 							</div>
@@ -172,7 +171,7 @@
 										</div>
 										<div class="card-block">
 											<div><a href="#" data-toggle="modal" data-target="#modal-vinc-programa" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-location-arrow"></i> Vincular a Programa </a></div>
-											<div><a href="#" data-toggle="modal" data-target="#modal-carga" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-location-arrow"></i> Adicionar Carga  </a></div>
+											<div><a href="/carga-horaria/cadastrar/{{$pessoa->id}}"  class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-location-arrow"></i> Adicionar Carga  </a></div>
 										</div>
 							
 										

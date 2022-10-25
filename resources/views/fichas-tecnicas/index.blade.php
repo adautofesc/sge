@@ -219,6 +219,13 @@
                                         <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=presidencia{{array_search('presidencia',$filtros['status'])!==false?'&remove=1':''}}');">
                                             <i class="fa fa-{{array_search('presidencia',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Presidência 
                                         </label>
+                                        <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=secretaria{{array_search('secretaria',$filtros['status'])!==false?'&remove=1':''}}');">
+                                            <i class="fa fa-{{array_search('secretaria',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Secretaria 
+                                        </label>
+                                        <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=lancada{{array_search('lancada',$filtros['status'])!==false?'&remove=1':''}}');">
+                                            <i class="fa fa-{{array_search('lancada',$filtros['status'])!==false?'check-':''}}circle-o icon"></i> Lançada
+                                        </label>
+                                        
                                         
                                         @else
                                 
@@ -236,6 +243,12 @@
                                         </label>
                                         <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=presidencia');">
                                             <i class="fa fa-circle-o icon"></i> Presidência
+                                        </label>
+                                        <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=secretaria');">
+                                            <i class="fa fa-circle-o icon"></i> Secretaria
+                                        </label>
+                                        <label class="dropdown-item" onclick="window.location.replace('?filtro=status&valor=lancada');">
+                                            <i class="fa fa-circle-o icon"></i> Lançada
                                         </label>
                                         
                                         @endif

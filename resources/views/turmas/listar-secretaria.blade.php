@@ -282,7 +282,7 @@
                             
                         <div class="col-xs-8 text-xs-right">
                                 
-                                <a href="/pedagogico/turmas/cadastrar" class="btn btn-success-outline  btn-sm rounded-s" ><i class="fa fa-asterisk"></i> Nova Turma</a>&nbsp;&nbsp;
+                                <a href="/turmas/cadastrar" class="btn btn-success-outline  btn-sm rounded-s" ><i class="fa fa-asterisk"></i> Nova Turma</a>&nbsp;&nbsp;
                             <div class="action dropdown pull-right "> 
                                 <button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenuAction" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Alterar Selecionadas
                                 </button>
@@ -319,8 +319,6 @@
                                     </a>
                                     <a class="dropdown-item" href="#" onclick="alterarStatus('cancelada')" title="Se a turma não aconteceu" style="line-height: 30px;text-decoration: none;">
                                         <i class="fa fa-ban icon"></i> Cancelar 
-                                        
-
                                     </a>
                                    
                                     
@@ -498,9 +496,7 @@
                                                                     @if($turma->parcelas>0)
                                                                     R$ {{number_format($turma->valor/$turma->parcelas,2,',','.')}}
                                                                     @endif
-                                                            @endif
-                                                            
-                                                            
+                                                            @endif   
                                                     </div>
                                                   
 

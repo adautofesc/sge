@@ -48,7 +48,7 @@
                 </h3>
                 <p class="title-description">
                      <strong>Prof.:</strong> {{$docente->nome}} <br>
-                     <strong class="badge badge-pill badge-primary">{{$carga_efetiva->floatDiffInHours(\Carbon\Carbon::Today())}}h</strong> Efetivas | <strong class="badge badge-pill badge-primary">{{isset($carga_horaria->carga)?$carga_horaria->carga:'00'}}h</strong> Carga Semanal </p>
+                     <strong class="badge badge-pill badge-primary">{{$carga_efetiva->floatDiffInHours(\Carbon\Carbon::Today())}}h</strong> Efetivas | <strong class="badge badge-pill badge-primary">{{isset($carga_horaria_ativa->carga)?$carga_horaria_ativa->carga:'00'}}h</strong> Carga Semanal </p>
             </div>
         </div>
     </div>
@@ -225,7 +225,6 @@
                                     @endswitch                                
                                         {{$jornada->status}}</span>                                  
                                 </td>
-
                                 <td>
                                     <h5>
                                     <a href="/jornadas/{{$docente->id}}/editar/{{$jornada->id}}" title="Editar jornada"> <i class="fa fa-edit "></i></a>
@@ -250,6 +249,56 @@
         <!-- /.col-xl-6 -->
         
         <!-- /.col-xl-6 -->
+    </div>
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card sameheight-item">
+                <div class="card-block">
+                    <!-- Nav tabs -->
+                    <div class="row">
+                        <div class="col-xs-7 text-xs">
+                            <a href="/carga-horaria/cadastrar/{{$docente->id}}" class="btn btn-sm btn-primary rounded-s">Nova carga horária</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>Carga</th>
+                                    <th>Início</th>
+                                    <th>Termino</th>
+                                    <th>Status</th>
+                                    <th>Opções</th>
+                                </tr>
+                               @foreach($carga_horaria as $ch)
+                                <tr>
+                                    <td>{{$ch->carga}}h</td>
+                                    <td>{{$ch->inicio->format('d/m/Y')}}</td>
+                                    <td>
+                                        @if(!is_null($ch->termino) || $ch->termino=='0000-00-00' )
+                                        {{$ch->termino->format('d/m/Y')}}
+                                        @else
+                                        -
+                                        @endif
+                                    </td>
+                                    <td>{{$ch->status}}</td>
+                                    <td>
+                                    <h5>
+                                    <a href="/carga-horaria/editar/{{$ch->id}}" title="Editar"><i class="fa fa-edit"></i></a>
+                                    <a href="#" title="Excluir" onclick="excluirCarga('{{$ch->id}}')"><i class="fa fa-times text-danger"></i></a>
+
+                                </h5>
+                                    </td>
+                                </tr>
+                                @endforeach
+                                
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 {{ $jornadas->links() }}
@@ -662,6 +711,28 @@ function encerrarJornada(){
     .fail(function(msg){
         alert('Falha ao encerrar jornada: '+msg.statusText);
     });
+}
+
+function excluirCarga(id){
+
+   if(confirm("Deseja mesmo excluir essa carga?")){
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            method: "POST",
+            url: "/carga-horaria/excluir",
+            data: { id}
+            
+        })
+        .done(function(msg){
+            location.reload(true);
+        })
+        .fail(function(msg){
+            alert('Falha ao encerrar jornada: '+msg.statusText);
+        });
+    }
+
 }
 
 

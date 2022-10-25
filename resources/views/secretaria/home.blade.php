@@ -70,11 +70,20 @@
                 <div class="card-block">
                     <div>
                         <a href="{{route('turmas')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Liberação de Matrículas</a>
+                        <i class=" fa fa-bars "></i>
+                        &nbsp;&nbsp;Listagem de Turmas</a>
                     </div>
-                    
-                       
+                    <div>
+                        <a href="/turmas/cadastrar" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-asterisk"></i>
+                        &nbsp;&nbsp;Nova Turma</a>
+                    </div>
+
+                    <div>
+                        <a href="/turmas/gerar-por-ficha/" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Gerar Turmas pela fichas</a>
+                    </div>
                     
                     <div>
                         <a href="/relatorios/turmas" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">

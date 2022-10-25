@@ -40,11 +40,8 @@ class JornadaDocentes extends Controller
             if($ano == date('Y')){
                 $educador->turmas = \App\Turma::where('professor',$educador->id)->where('data_inicio','>',$ano.'-01-01')->where('data_termino','>',date('Y-m-d'))->where('status','iniciada')->get();
                 $jornadas_ativas = \App\Jornada::where('pessoa',$educador->id)->where('status','ativa')->get();
-                $carga = \App\PessoaDadosJornadas::where('pessoa',$educador->id)
-                ->where(function($query){
-                    $query->where('termino', null)->orwhere('termino','0000-00-00');
-                })
-                ->orderByDesc('id')->first();
+                $carga = \App\PessoaDadosJornadas::where('pessoa',$educador->id)->where('status','ativa')->first();
+
             }
             else{
                 $educador->turmas = \App\Turma::where('professor',$educador->id)->whereBetween('data_termino',[$ano.'-11-01',$ano.'-12-31'])->where('status','encerrada')->get();

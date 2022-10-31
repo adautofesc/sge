@@ -473,8 +473,19 @@ class TurmaController extends Controller
 
         if($request->btn==1)
             return redirect(asset('/turmas'));
-        else
+        if($request->btn==2)
             return redirect(asset('/turmas/cadastrar'));
+        if($request->btn==3){
+            //alterar status da ficha
+            $ficha = \App\FichaTecnica::find($request->ficha);
+            $ficha->status = 'lancada';
+            $ficha->turma = $turma->id;
+            $ficha->save();
+
+            //criar um item que aponte para a turma gerada
+            return redirect(asset('/turmas/gerar-por-ficha/'))->with('success','Turma '.$turma->id. ' cadastrada com sucesso.');
+        }
+            
         
     }
 
@@ -1415,15 +1426,33 @@ class TurmaController extends Controller
             $ficha = \App\FichaTecnica::find($id);         
         else
             $ficha = \App\FichaTecnica::where('status','secretaria')->first();
+        
+        if(!isset($ficha->id))
+        return redirect('/fichas')->with('warning','Nenhuma ficha com status de secretaria encontrada.');
 
-        dd($ficha);
+        
+        $programas=Programa::get();
+        $requisitos=RequisitosController::listar();
+        $professores=PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
+        $unidades=Local::get(['id' ,'nome']);
+        $salas = \App\Sala::where('local',$ficha->local)->get();
+        $parcerias=Parceria::orderBy('nome')->get();
+        $pacote_cursos =\App\PacoteCurso::get();
+
+
+        return view('turmas.gerar-por-ficha')
+                    ->with('ficha',$ficha)
+                    ->with('programas',$programas)
+                    ->with('professores',$professores)
+                    ->with('unidades',$unidades)
+                    ->with('salas',$salas)
+                    ->with('parcerias',$parcerias)
+                    ->with('requisitos',$requisitos)
+                    ->with('pacote_cursos',$pacote_cursos);
         
     }
 
-    public function gerarPorFichaExec(){
-        return 'ok 2';
-    }
-
+   
 
    
     

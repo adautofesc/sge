@@ -16,9 +16,10 @@
 			<div class="col-sm-6 "> 
 				<select class="c-select form-control boxed" name="programa" required>
 					<option >Selecione um programa</option>
-					@if(isset($dados['programas']))
-						@foreach($dados['programas'] as $programa)
-							<option value="{{$programa->id}}">{{$programa->sigla.' - '.$programa->nome}}</option>
+					@if(isset($programas))
+						@foreach($programas as $programa)
+						<option value="{{$programa->id}}" {{$programa->id==$ficha->programa?'selected':''}}>{{$programa->nome}}</option>
+
 						@endforeach
 					@endif
 				</select> 
@@ -30,6 +31,7 @@
 				Curso/Atividade
 			</label>
 			<div class="col-sm-6"> 
+				{{$ficha->curso}}
 				<div class="input-group">
 					<span class="input-group-addon"><i class=" fa fa-toggle-right  "></i></span> 
 					<input type="text" class="form-control boxed" id="fcurso" name="fcurso" placeholder="Digite e selecione. Cód. 307 para UATI" required> 
@@ -75,9 +77,9 @@
 			<div class="col-sm-6"> 
 				<select class="c-select form-control boxed" name="professor" required>
 					<option>Selecione um professor</option>
-					@if(isset($dados['professores']))
-					@foreach($dados['professores'] as $professor)
-					<option value="{{$professor->id}}">{{$professor->nome}}</option>
+					@if(isset($professores))
+					@foreach($professores as $professor)
+					<option value="{{$professor->id}}" {{$professor->id==$ficha->docente?'selected':''}}>{{$professor->nome}}</option>
 					@endforeach
 					@endif
 				</select> 
@@ -90,9 +92,9 @@
 			<div class="col-sm-2"> 
 				<select class="c-select form-control boxed" name="unidade" onchange="carregarSalas(this.value)" required >
 					<option>Selecione ums unidade de atendimento</option>
-					@if(isset($dados['unidades']))
-					@foreach($dados['unidades'] as $unidade)
-					<option value="{{$unidade->id}}">{{$unidade->nome}}</option>
+					@if(isset($unidades))
+					@foreach($unidades as $unidade)
+					<option value="{{$unidade->id}}" {{$unidade->id==$ficha->local?'selected':''}}>{{$unidade->nome}}</option>
 					@endforeach
 					@endif
 				</select> 
@@ -103,6 +105,11 @@
 			<div class="col-sm-2"> 
 				<select class="c-select form-control boxed" name="sala" id="select_sala" required >
 					<option>Selecione um local antes.</option>
+					@if(isset($salas))
+					@foreach($salas as $sala)
+					<option value="{{$sala->id}}" {{$sala->id==$ficha->sala?'selected':''}}>{{$sala->nome}}</option>
+					@endforeach
+					@endif
 				
 				</select> 
 			</div>
@@ -115,8 +122,8 @@
 			<div class="col-sm-6"> 
 				<select class="c-select form-control boxed" name="parceria" required>
 					<option value="0" >Selecione parceria, se houver</option>
-					@if(isset($dados['parcerias']))
-					@foreach($dados['parcerias'] as $parceria)
+					@if(isset($parcerias))
+					@foreach($parcerias as $parceria)
 					<option value="{{$parceria->id}}">{{$parceria->nome}}</option>
 					@endforeach
 					@endif
@@ -130,13 +137,13 @@
 			<div class="col-sm-6"> 
 				<select class="c-select form-control boxed" name="periodicidade" required>
 					<option>Selecione o período da turma</option>
-					<option value="mensal">Mensal</option>
-					<option value="bimestral">Bimestral</option>
-					<option value="trimestral">Trimestral</option>
-					<option value="semestral" selected="selected">Semestral</option>
-					<option value="anual">Anual</option>
-					<option value="eventual">Eventual</option>
-					<option value="ND">Não Definido</option>
+					<option value="mensal"{{$ficha->periodicidade=='mensal'?'selected':''}}>Mensal</option>
+					<option value="bimestral" {{$ficha->periodicidade=='bimestral'?'selected':''}}>Bimestral</option>
+					<option value="trimestral" {{$ficha->periodicidade=='trimestral'?'selected':''}}>Trimestral</option>
+					<option value="semestral" {{$ficha->periodicidade=='semestral'?'selected':''}}>Semestral</option>
+					<option value="anual" {{$ficha->periodicidade=='anual'?'selected':''}}>Anual</option>
+					<option value="eventual" {{$ficha->periodicidade=='eventual'?'selected':''}}>Eventual</option>
+					<option value="ND" {{$ficha->periodicidade==''?'selected':''}}>Não Definido</option>
 		
 				</select> 
 			</div>
@@ -148,12 +155,13 @@
 			</label>
 			<div class="col-sm-6"> 
 				
-				<label><input class="checkbox" name="dias[]" value="seg" type="checkbox"><span>Seg</span></label>
-				<label><input class="checkbox" name="dias[]" value="ter" type="checkbox"><span>Ter</span></label>
-				<label><input class="checkbox" name="dias[]" value="qua" type="checkbox"><span>Qua</span></label>
-				<label><input class="checkbox" name="dias[]" value="qui" type="checkbox"><span>Qui</span></label>
-				<label><input class="checkbox" name="dias[]" value="sex" type="checkbox"><span>Sex</span></label>
-				<label><input class="checkbox" name="dias[]" value="sab" type="checkbox"><span>Sab</span></label>
+				<label><input class="checkbox" name="dias[]" value="dom" type="checkbox" {{str_contains($ficha->dias_semana,'dom')?'checked':''}}><span>Dom</span></label>
+				<label><input class="checkbox" name="dias[]" value="seg" type="checkbox" {{str_contains($ficha->dias_semana,'seg')?'checked':''}}><span>Seg</span></label>
+				<label><input class="checkbox" name="dias[]" value="ter" type="checkbox" {{str_contains($ficha->dias_semana,'ter')?'checked':''}}><span>Ter</span></label>
+				<label><input class="checkbox" name="dias[]" value="qua" type="checkbox" {{str_contains($ficha->dias_semana,'qua')?'checked':''}}><span>Qua</span></label>
+				<label><input class="checkbox" name="dias[]" value="qui" type="checkbox" {{str_contains($ficha->dias_semana,'qui')?'checked':''}}><span>Qui</span></label>
+				<label><input class="checkbox" name="dias[]" value="sex" type="checkbox" {{str_contains($ficha->dias_semana,'sex')?'checked':''}}><span>Sex</span></label>
+				<label><input class="checkbox" name="dias[]" value="sab" type="checkbox" {{str_contains($ficha->dias_semana,'sab')?'checked':''}}><span>Sab</span></label>
 			</div>
 		</div>
 		<div class="form-group row"> 
@@ -161,14 +169,14 @@
 				Data de início
 			</label>
 			<div class="col-sm-2"> 
-					<input type="date" class="form-control boxed" name="dt_inicio" placeholder="dd/mm/aaaa" required> 	
+					<input type="date" class="form-control boxed" name="dt_inicio" placeholder="dd/mm/aaaa" value="{{$ficha->data_inicio->format('Y-m-d')}}" required> 	
 			</div>
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Data do termino
 			</label>
 			<div class="col-sm-2"> 
 				
-					<input type="date" class="form-control boxed" name="dt_termino" placeholder="dd/mm/aaaa" required> 
+					<input type="date" class="form-control boxed" name="dt_termino" placeholder="dd/mm/aaaa" value="{{$ficha->data_termino->format('Y-m-d')}}" required> 
 				
 			</div>
 		</div>
@@ -178,29 +186,29 @@
 				Horário de início
 			</label>
 			<div class="col-sm-2"> 
-				<input type="time" class="form-control boxed" name="hr_inicio" placeholder="00:00" required > 
+				<input type="time" class="form-control boxed" name="hr_inicio" placeholder="00:00" value="{{$ficha->hora_inicio}}" required > 
 			</div>
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Horário Termino
 			</label>
 			<div class="col-sm-2"> 
-				<input type="time" class="form-control boxed" name="hr_termino" placeholder="00:00" required> 
+				<input type="time" class="form-control boxed" name="hr_termino" placeholder="00:00" value="{{$ficha->hora_termino}}"required> 
 			</div>
 		</div>
 		
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-				Vagas Ofertadas
+				Vagas Ofertadas<br><small>max {{$ficha->lotacao_maxima}} / min {{$ficha->lotacao_minima}}</small>
 			</label>
 			<div class="col-sm-2"> 
-				<input type="number" class="form-control boxed" name="vagas" placeholder="Recomendado: 30 vagas"> 
+				<input type="number" class="form-control boxed" name="vagas" title="Campo preenchido com a quantidade média de vagas das turmas anteriores"> 
 			</div>
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Carga Horária
 			</label>
 			<div class="col-sm-2"> 
 					 
-					<input type="number" class="form-control boxed" name="carga" placeholder="" required> 
+					<input type="number" class="form-control boxed" name="carga" placeholder="" value="{{$ficha->carga}}" required> 
 				
 			</div>
 		</div>
@@ -217,7 +225,7 @@
 			<div class="col-sm-2"> 
 				<div class="input-group">
 					<span class="input-group-addon">R$ </span> 
-					<input type="text" class="form-control boxed" name="valor" placeholder="Valor TOTAL" required> 
+					<input type="text" class="form-control boxed" name="valor" placeholder="Valor TOTAL" value="{{$ficha->valor/100}}" required> 
 				</div>
 			</div>
 			<label class="col-sm-2 form-control-label text-xs-right">
@@ -243,12 +251,7 @@
         	</div>
 			<label class="col-sm-2 form-control-label text-xs-right">Vagas EMG</label>
             <div class="col-sm-2"> 		
-				
-					
-						<input type="number" class="form-control boxed" name="vagas_emg" placeholder="" > 
-						
-				
-						
+				<input type="number" class="form-control boxed" name="vagas_emg" placeholder="" > 			
         	</div>
 		</div>
 		<div class="form-group row"> 
@@ -279,8 +282,8 @@
 			<div class="col-sm-6"> 
 				<select class="c-select form-control boxed" name="professor_extra">
 					<option>Selecione um professor</option>
-					@if(isset($dados['professores']))
-					@foreach($dados['professores'] as $professor)
+					@if(isset($professores))
+					@foreach($professores as $professor)
 					<option value="{{$professor->id}}">{{$professor->nome}}</option>
 					@endforeach
 					@endif
@@ -316,8 +319,9 @@
             
 		<div class="form-group row">
 			<div class="col-sm-10 col-sm-offset-2">
-				<button type="submit" name="btn" value="1" class="btn btn-primary">Cadastrar</button> 
-				<button type="submit" name="btn" value="2" href="disciplinas_show.php?" class="btn btn-secondary">Cadastrar a próxima</button> 
+				<input type="hidden" name="ficha" value="{{$ficha->id}}">
+				<button type="submit" name="btn" value="3" class="btn btn-primary">Cadastrar</button> 
+				
 				<!-- 
 				<button type="submit" class="btn btn-primary"> Cadastrar</button> 
 				-->
@@ -453,6 +457,17 @@ function cursoEscolhido(id,nome){
 	$("#listacursos").hide();
 	$("#fcurso").val(id +' - '+nome);
 	$("input[name=curso]").val(id);
+
+	$.get("{{asset('cursos/media-vagas')}}"+"/"+id+"/C")
+		.done(function(data) {
+			
+			if(data.length>0){
+				$("input[name=vagas]").val(data);
+			}
+	});
+
+	
+
 /*
 	$.get("{{asset('/pedagogico/curso/modulos/')}}"+"/"+id)
 		.done(function(data) {
@@ -476,6 +491,16 @@ function disciplinaEscolhida(id,nome){
 	$("#fdisciplina").val(id +' - '+nome);
 	$("input[name=disciplina]").val(id);
 	$('#listadisciplinas').hide();
+
+	$.get("{{asset('cursos/media-vagas')}}"+"/"+id+"/D")
+		.done(function(data) {
+			
+			if(data.length>0){
+				$("input[name=vagas]").val(data);
+			}
+	});
+
+
 
 }
 function carregarSalas(local){

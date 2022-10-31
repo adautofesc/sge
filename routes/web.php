@@ -169,7 +169,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	Route::prefix('turmas')->group(function(){
 		Route::get('cadastrar',[TurmaController::class,'create'])->name('turmas.cadastrar');
 		Route::get('gerar-por-ficha/{id?}',[TurmaController::class,'gerarPorFichaView']);
-		Route::post('gerar-por-ficha/{id?}',[TurmaController::class,'gerarPorFichaExec']);
+		Route::post('gerar-por-ficha/{id?}',[TurmaController::class,'store']);
 
 
 		Route::middleware('liberar.recurso:18')->group(function(){
@@ -220,6 +220,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('apagar','CursoController@destroy');
 		Route::get('curso/{var}','CursoController@show');
 		Route::get('curso/modulos/{var}','CursoController@qndeModulos');
+		Route::get('media-vagas/{id}/{tipo}','CursoController@mediaVagas');
 
 		//Disciplinas
 		Route::prefix('disciplinas')->group(function(){

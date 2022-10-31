@@ -207,4 +207,13 @@ class CursoController extends Controller
             return "";
     }
 
+    public function mediaVagas($id,$tipo){
+        if($tipo == 'C')
+            $array_vagas = \App\Turma::where('curso',$id)->pluck('vagas')->toArray();
+        else
+            $array_vagas = \App\Turma::where('disciplina',$id)->pluck('vagas')->toArray();
+        
+        return round(array_sum($array_vagas)/count($array_vagas));
+    }
+
 }

@@ -103,7 +103,11 @@
 				Data Termino
 			</label>
 			<div class="col-md-2">
+				@if($ficha->data_termino)
 				{{$ficha->data_termino->format('d/m/y')}}
+				@else
+				SEM DATA DE TERMINO
+				@endif
 			</div>
 		</div>
 		<div class="form-group row"> 
@@ -117,11 +121,7 @@
 				Hora Termino
 			</label>
 			<div class="col-md-2">
-				@if($ficha->data_termino)
-				{{$ficha->data_termino->format('d/m/y')}}
-				@else
-				SEM DATA DE TERMINO
-				@endif
+				{{$ficha->hora_termino}}
 			</div>
 		</div>
 

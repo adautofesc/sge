@@ -520,14 +520,6 @@ class TurmaController extends Controller
             $turma->vagas_emg = $turma_dados->where('dado','proxima_turma')->pluck('valor')->toArray();
             $turma->professor_extra = $turma_dados->where('dado','professor_extra')->pluck('valor')->first();
             $turma->vagas_emg = $turma_dados->where('dado','vagas_emg')->pluck('valor')->first();
-            
-            //dd($turma->pacote); 
-
-
-         
-
-
-            //return $turma;
 
             return view('turmas.editar',compact('dados'))->with('turma',$turma)->with('requisitos',$requisitos)->with('pacote_cursos',$pacote_cursos);
         }

@@ -291,6 +291,9 @@
                                 </td>
                                 <td>
                                     <span class="badge badge-pill badge-primary">{{$ficha->status}}</span>
+                                    @if($ficha->status == 'lancada')
+                                        <br><small> <a href="/turmas/{{$ficha->turma}}"> Turma {{$ficha->turma}}</a></small>
+                                    @endif
                                     
                                 </td>
                                 <td>

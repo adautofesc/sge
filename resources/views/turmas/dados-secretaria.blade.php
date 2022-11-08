@@ -229,7 +229,7 @@
                     </div>
                     <div>
                         <i class=" fa fa-sign-in icon"></i> 
-                        &nbsp;&nbsp;<a href="#" target="_blank" onclick="alterarOpcoes('requisitos')" title="Alterar requisitos">Alterar requisitos</a>
+                        &nbsp;&nbsp;<a href="/turmas/modificar-requisitos/{{$turma->id}}"  title="Alterar requisitos">Alterar requisitos</a>
                     </div>
                     <div>
                         <i class=" fa fa-ban text-warning"></i> 

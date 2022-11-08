@@ -28,6 +28,7 @@ ini_set('max_execution_time', 300);
 class BoletoController extends Controller
 {	
 	public function painel(Request $r){
+		
 		if(isset($r->codigo)){
 			$tipo = 'por código';
 			$codigos = explode(',',$r->codigo);
@@ -45,9 +46,15 @@ class BoletoController extends Controller
 			$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->paginate(50);
 			$tipo = 'vencidos';
 		}
-		foreach($boletos as &$boleto){
+		foreach($boletos as $key => $boleto){
 			$boleto->lancamentos = $boleto->getLancamentos();
 			$boleto->vencimento = \DateTime::createFromFormat('Y-m-d H:i:s',$boleto->vencimento);
+			$matricula = Matricula::find($boleto->lancamentos->first()->matricula);
+			if($matricula->status =='cancelada'){
+				$boletos->forget($key);
+
+			}
+
 		}
 
 		//dd($boletos);

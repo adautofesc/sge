@@ -269,6 +269,29 @@ class Turma extends Model
 		return $dados;
 	}
 
+	public function getVagasEmg(){
+		$mista = TurmaDados::where('id', $this->id)->where('dado','mista_emg')->first();
+		if($mista){
+			$vagas = TurmaDados::where('id', $this->id)->where('dado','vagas_emg')->first();
+			$inscritos = TurmaDados::where('id', $this->id)->where('dado','inscritos_emg')->first();
+			if($vagas && $inscritos){
+				return $vagas->valor - $inscritos->valor;
+			}
+			elseif($vagas){
+				return $vagas->valor;
+			}
+			else{
+				return $this->vagas;
+			}
+		}
+		else{
+			return -1;
+		}
+			
+
+
+	}
+
 	public function verificaRequisitos($aluno, $relatorio = false){
 	
 		$aluno = Pessoa::find($aluno);

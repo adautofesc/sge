@@ -51,7 +51,10 @@
                     <strong>Prof.</strong> {{$turma->professor->nome_simples}}<br/>
                     <strong>Local</strong> {{$turma->local->nome}}<br/>
                     <strong>Início:</strong> {{$turma->data_inicio}} <strong>Término</strong> {{$turma->data_termino}}<br/>
-                    <strong>Dia(s): </strong>{{implode(', ',$turma->dias_semana)}} <strong> Horários:</strong> {{$turma->hora_inicio}} às {{$turma->hora_termino}}
+                    <strong>Dia(s): </strong>{{implode(', ',$turma->dias_semana)}} <strong> Horários:</strong> {{$turma->hora_inicio}} às {{$turma->hora_termino}}<br/>
+                    @if($turma->getVagasEMG()>0)
+                    <input type="checkbox" name="emg[{{$turma->id}}]"> Inscrição EMG
+                    @endif
 
                 </div>
                 <div class="col-xs-6">

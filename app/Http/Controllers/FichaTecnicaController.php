@@ -435,4 +435,26 @@ class FichaTecnicaController extends Controller
 
      }
 
+     public function exportar(){
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'. 'fichas-tecnicas' .'.xls"'); //$filename is  xsl filename 
+        header('Cache-Control: max-age=0');
+
+        $tabela =  new Spreadsheet();
+        $arquivo = new Xls($tabela);
+
+        $planilha = $tabela->getActiveSheet();
+        $planilha->setCellValue('A1', 'Dias');
+        $planilha->setCellValue('B1', 'Hora início');
+        $planilha->setCellValue('C1', 'Hora termino');
+        $planilha->setCellValue('D1', 'Professor');
+        $planilha->setCellValue('E1', 'Local');
+        $planilha->setCellValue('F1', 'Carga Horária');
+        $planilha->setCellValue('G1', 'Início');
+        $planilha->setCellValue('H1', 'Termino');
+        $planilha->setCellValue('I1', 'Telefone(s)');
+        $planilha->setCellValue('J1', 'Celular');
+        $planilha->setCellValue('K1', 'Turma');
+     }
+
 }

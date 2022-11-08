@@ -105,13 +105,21 @@
 				Data Início
 			</label>
 			<div class="col-md-2">
-				<input type="date" class="form-control" name="data_inicio" value="{{$ficha->data_inicio->format('Y-m-d')}}" >
+				@if($ficha->data_inicio)
+				<input type="date" class="form-control" name="data_inicio" value="{{$ficha->data_inicio->format('Y-m-d')}}" required>
+				@else
+				<input type="date" class="form-control" name="data_inicio" value="" required>
+				@endif
 			</div>
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Data Termino
 			</label>
 			<div class="col-md-2">
-				<input type="date" class="form-control" name="data_termino" value="{{$ficha->data_termino->format('Y-m-d')}}" >
+				@if($ficha->data_termino)
+				<input type="date" class="form-control" name="data_termino" value="{{$ficha->data_termino->format('Y-m-d')}}" required >
+				@else
+				<input type="date" class="form-control" name="data_termino" value="" required>
+				@endif
 			</div>
 		</div>
 		<div class="form-group row"> 

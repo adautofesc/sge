@@ -284,7 +284,18 @@
                                     {{$ficha->dias_semana}}
                                 </td>
                                 <td>
-                                    {{$ficha->data_inicio->format('d/m/y')}} <br>{{$ficha->data_termino->format('d/m/y')}}
+                                    @if($ficha->data_inicio)
+                                    {{$ficha->data_inicio->format('d/m/y')}}
+                                    @else
+                                    SEM DATA DE INICIO
+                                    @endif
+                                    <br>
+                                    @if($ficha->data_termino)
+                                    {{$ficha->data_termino->format('d/m/y')}}
+                                    @else
+                                    SEM DATA DE TERMINO
+                                    @endif
+                                    
                                 </td>
                                 <td>
                                     {{$ficha->hora_inicio}} <br>{{$ficha->hora_termino}}

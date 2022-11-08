@@ -303,6 +303,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('pesquisa',[FichaTecnicaController::class,'pesquisar']);
 		Route::get('copiar/{id}',[FichaTecnicaController::class,'copiar']);
 		Route::post('encaminhar',[FichaTecnicaController::class,'encaminhar']);
+		Route::get('exportar',[FichaTecnicaController::class,'exportar']);
 
 	});
 	Route::prefix('carga-horaria')->group(function(){

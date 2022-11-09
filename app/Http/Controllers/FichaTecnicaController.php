@@ -10,6 +10,8 @@ use App\Pessoa;
 use App\PessoaDadosAdministrativos;
 use App\Local;
 use App\Sala;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use Auth;
 
 class FichaTecnicaController extends Controller
@@ -442,19 +444,69 @@ class FichaTecnicaController extends Controller
 
         $tabela =  new Spreadsheet();
         $arquivo = new Xls($tabela);
+        $linha = 2;
+
+        $fichas = FichaTecnica::where('id','>','1');
+        if(in_array('13', Auth::user()->recursos) && !in_array('17', Auth::user()->recursos)){
+            $fichas = FichaTecnica::where('docente',Auth::user()->pessoa);
+        }
+        if(in_array('17', Auth::user()->recursos) && in_array('13', Auth::user()->recursos)){
+            $programas_ficha = \App\PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','programa')->pluck('valor')->toArray();
+            $fichas = FichaTecnica::whereIn('programa',$programas_ficha);
+        } 
+
+        $fichas = $fichas->get();
 
         $planilha = $tabela->getActiveSheet();
-        $planilha->setCellValue('A1', 'Dias');
-        $planilha->setCellValue('B1', 'Hora início');
-        $planilha->setCellValue('C1', 'Hora termino');
-        $planilha->setCellValue('D1', 'Professor');
-        $planilha->setCellValue('E1', 'Local');
-        $planilha->setCellValue('F1', 'Carga Horária');
-        $planilha->setCellValue('G1', 'Início');
-        $planilha->setCellValue('H1', 'Termino');
-        $planilha->setCellValue('I1', 'Telefone(s)');
-        $planilha->setCellValue('J1', 'Celular');
-        $planilha->setCellValue('K1', 'Turma');
+        $planilha->setCellValue('A1', 'Ficha');
+        $planilha->setCellValue('B1', 'Turma');
+        $planilha->setCellValue('C1', 'Dias');
+        $planilha->setCellValue('D1', 'Hora início');
+        $planilha->setCellValue('E1', 'Hora termino');
+        $planilha->setCellValue('F1', 'Disciplina');
+        $planilha->setCellValue('G1', 'Educador');
+        $planilha->setCellValue('H1', 'Vagas');
+        $planilha->setCellValue('I1', 'Local');
+        $planilha->setCellValue('J1', 'Sala');
+        $planilha->setCellValue('K1', 'Carga');
+        $planilha->setCellValue('L1', 'Início');
+        $planilha->setCellValue('M1', 'Termino');
+        $planilha->setCellValue('N1', 'Valor');
+        $planilha->setCellValue('O1', 'Estado');
+
+
+        foreach($fichas as $ficha){ 
+        	
+        
+            $planilha->setCellValue('A'.$linha, $ficha->id);
+            $planilha->setCellValue('B'.$linha, $ficha->turma);
+            $planilha->setCellValue('C'.$linha, $ficha->dias_semana);
+            $planilha->setCellValue('D'.$linha, $ficha->hora_inicio);
+            $planilha->setCellValue('E'.$linha, $ficha->hora_termino);
+            $planilha->setCellValue('F'.$linha, $ficha->curso);
+            $planilha->setCellValue('G'.$linha, $ficha->getDocente());
+            $planilha->setCellValue('H'.$linha, $ficha->lotacao_minima);
+            $planilha->setCellValue('I'.$linha, $ficha->getLocal());
+            $planilha->setCellValue('J'.$linha, $ficha->getSala());
+            $planilha->setCellValue('K'.$linha, $ficha->carga);
+            if(!$ficha->data_inicio)
+                $planilha->setCellValue('L'.$linha, 'ND');
+            else
+                $planilha->setCellValue('L'.$linha, $ficha->data_inicio->format('d/m/Y'));
+
+            if($ficha->data_termino)
+                $planilha->setCellValue('M'.$linha, $ficha->data_termino->format('d/m/Y'));
+            else
+                $planilha->setCellValue('M'.$linha,'ND');
+            $planilha->setCellValue('N'.$linha, $ficha->valor);
+            $planilha->setCellValue('O'.$linha, $ficha->status);
+           
+            $linha++;
+            
+    }
+    
+    
+    return $arquivo->save('php://output');
      }
 
 }

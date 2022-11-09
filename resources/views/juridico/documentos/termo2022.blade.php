@@ -173,7 +173,7 @@
                         <br>
                         7.5 O(A) Aluno(a) e/ou seu Representante Legal e o(s) Responsável(is) Financeiro(s) se obrigam a manter sempre atualizados os dados fornecidos no Contrato, especialmente o endereço, e-mail celular, assumindo integral responsabilidade pelos danos decorrentes de eventual desatualização.
                         <br>
-                        7.6 O aluno declara neste termo, estar em plenas condições de saúde, apto a realizar atividades físicas e não portar nenhuma moléstia contagiosa que possa prejudicar os demais alunos da FESC. Não obstante a declaração de saúde, é dever do aluno apresentar atestado médico específico para a prática da(s) atividade(s) contratada(s), comprometendo-se a apresentar atestado médico no ato da matrícula e renová-lo anualmente, para os cursos da UATI, ou semestralmente, para os cursos da Piscina Aquecida.
+                        7.6 O aluno declara neste termo, estar em plenas condições de saúde, apto a realizar atividades físicas e não portar nenhuma moléstia contagiosa que possa prejudicar os demais alunos da FESC. Não obstante a declaração de saúde, é dever do aluno apresentar atestado médico específico para a prática da(s) atividade(s) contratada(s), comprometendo-se a apresentar o original do atestado médico até o primeiro dia de aula e renová-lo anualmente, mas semestralmente no caso de atividades físicas aquáticas, sob pena de ser proibido o seu acesso enquanto não regularizada a pendência.
                         <br>
                     <strong>8.	FORO</strong><br>
                         8.1 Fica eleito o Foro da Comarca de São Carlos para dirimir quaisquer controvérsias oriundas do presente ajuste.

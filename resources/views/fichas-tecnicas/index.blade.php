@@ -37,7 +37,7 @@
                     <div class="action dropdown">
                         <button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opções... </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu1" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 5px, 0px);" x-out-of-boundaries="">
-                            <a class="dropdown-item" href="#" style="text-decoration: none; font-weight: 550;"><i class="fa fa-bar-chart-o icon"></i>Em construção</a>
+                            <a class="dropdown-item" href="/fichas/exportar" style="text-decoration: none; font-weight: 550;"><img src="/img/excel.png" width="17px;"> Exportar dados</a>
                             
                         </div>
                     </div>

@@ -93,16 +93,7 @@ class RelatorioController extends Controller
                 $planilha->setCellValue('K'.$linha, $concluinte->turma->id);
                
                 $linha++;
-                /*
-                $aluno->turma = $concluinte->turma->id;
-                $aluno->nome = $concluinte->pessoa->nome;
-                $aluno->programa = $concluinte->turma->programa->sigla;
-                $aluno->curso = $concluinte->turma->curso->nome;
-                $aluno->professor = $concluinte->turma->professor->nome;
-                $aluno->unidade = $concluinte->turma->local->nome;
-                $aluno->carga= $concluinte->turma->carga;
-                $aluno->inicio =  $concluinte->turma->data_inicio;
-                $aluno->termino =  $concluinte->turma->data_termino;*/   
+                 
         }
         
         return $arquivo->save('php://output');

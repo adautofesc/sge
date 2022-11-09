@@ -93,9 +93,21 @@
 				</tr>
 				<tr>
 					<th>Início</th>
-					<td>{{$ficha->data_inicio->format('d/m/y')}}</td>
+					<td>
+						@if($ficha->data_inicio)
+						{{$ficha->data_inicio->format('d/m/y')}}
+						@else
+						SEM DATA DE INICIO
+						@endif
+					</td>
 					<th>Término</th>
-					<td>{{$ficha->data_termino->format('d/m/y')}}</td>
+					<td>
+						@if($ficha->data_termino)
+						{{$ficha->data_termino->format('d/m/y')}}
+						@else
+						SEM DATA DE TERMINO
+						@endif
+					</td>
 				</tr>
 				<tr>
 					<th>Entrada</th>

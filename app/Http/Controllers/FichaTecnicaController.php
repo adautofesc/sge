@@ -473,6 +473,8 @@ class FichaTecnicaController extends Controller
         $planilha->setCellValue('M1', 'Termino');
         $planilha->setCellValue('N1', 'Valor');
         $planilha->setCellValue('O1', 'Estado');
+        $planilha->setCellValue('P1', 'Programa');
+
 
 
         foreach($fichas as $ficha){ 
@@ -485,7 +487,7 @@ class FichaTecnicaController extends Controller
             $planilha->setCellValue('E'.$linha, $ficha->hora_termino);
             $planilha->setCellValue('F'.$linha, $ficha->curso);
             $planilha->setCellValue('G'.$linha, $ficha->getDocente());
-            $planilha->setCellValue('H'.$linha, $ficha->lotacao_minima);
+            $planilha->setCellValue('H'.$linha, $ficha->lotacao_maxima);
             $planilha->setCellValue('I'.$linha, $ficha->getLocal());
             $planilha->setCellValue('J'.$linha, $ficha->getSala());
             $planilha->setCellValue('K'.$linha, $ficha->carga);
@@ -500,6 +502,7 @@ class FichaTecnicaController extends Controller
                 $planilha->setCellValue('M'.$linha,'ND');
             $planilha->setCellValue('N'.$linha, $ficha->valor);
             $planilha->setCellValue('O'.$linha, $ficha->status);
+            $planilha->setCellValue('P'.$linha, $ficha->getPrograma()->sigla);
            
             $linha++;
             

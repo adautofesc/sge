@@ -36,8 +36,6 @@ class Turma extends Model
 	*/
 	public function getValorAttribute($value){
 		//return $this->getRawOriginal('valor');
-		
-		
 
 		//verifica se o curso é fora da fesc, se for, retorna valor 0
 		$fesc=[84,85,86,118];
@@ -53,23 +51,6 @@ class Turma extends Model
 		//verifica se é parceria social
 		if($this->parceria)
 			return 0;
-
-		//se está no pacote
-		/*
-		$pacote = TurmaDados::where('dado','pacote')->where('turma',$this->id)->first();
-		if($pacote != null){
-			//dd($pacote);
-			$valor= Valor::where('pacote',$pacote->valor)->where('ano',substr($this->data_inicio,-4))->first();
-			if($valor != null){
-				return $valor->valor;
-			}
-			else{
-				//$this->status_matriculas = 'fechada';
-				//$this->save();
-				dd("Ops. Turma ".$this->id." está com pacote definido (".$pacote->id.") mas este pacote não consta na tabela de valores. As inscrições para essa turma foram suspensas.");
-			}
-		}
-		*/
 		
 		// se for do curso atividades uati
 		if($this->curso->id == 307 && $this->carga<10)
@@ -163,12 +144,12 @@ class Turma extends Model
 	}
 	public function getCursoAttribute($value){
 		$curso=Curso::where('id',$value)->get(['id','nome','carga'])->first();
-		//$curso->requisito();
+	
 		return $curso;
 	}
 	public function getDisciplinaAttribute($value){
 		$disciplina=Disciplina::where('id',$value)->get(['id','nome','carga'])->first();
-		//$disciplina->requisito();
+		
 		return $disciplina;
 	}
 	public function getParceriaAttribute($value){	
@@ -311,81 +292,6 @@ class Turma extends Model
 		$idade_minima = 0;
 		$idade_maxima = 0;
 		$atestado = 0;
-		/*
-		$reqs = CursoRequisito::where('para_tipo','curso')->where('curso',$this->id)->get();
-		foreach($reqs as $req){
-			switch($req->requisito->id){
-				case 22:
-					$idade_minima = 40;
-					break;
-				case 23:
-					$idade_minima = 16;
-					break;
-				case 24:
-					$idade_minima = 40;
-					$idade_maxima = 60;
-					break;
-				case 25:
-					$idade_minima = 60;
-					break;
-				case 26:
-					$idade_minima = 18;
-					$idade_maxima = 39;
-					break;
-				case 21:
-					$idade_minima = 14;
-					break;
-				case 20:
-					$idade_minima = 10;
-					$idade_maxima = 14;
-					break;
-				case 18:
-					if($req->obrigatorio)
-					$atestado = 1;
-					break;
-				case 1:
-					$idade_minima = 18;
-					break;
-			}
-		}
-		
-		$reqs = CursoRequisito::where('para_tipo','disciplina')->where('curso',$this->disciplina)->get();
-		foreach($reqs as $req){
-			switch($req->requisito->id){
-				case 22:
-					$idade_minima = 40;
-					break;
-				case 23:
-					$idade_minima = 16;
-					break;
-				case 24:
-					$idade_minima = 40;
-					$idade_maxima = 60;
-					break;
-				case 25:		
-					$idade_minima = 60;
-					break;
-				case 26:
-						$idade_minima = 18;
-						$idade_maxima = 39;
-						break;
-				case 21:
-					$idade_minima = 14;
-					break;
-				case 20:
-					$idade_minima = 10;
-					$idade_maxima = 14;
-					break;
-				case 18:
-					if($req->obrigatorio)
-					$atestado = 1;
-					break;
-				case 1:
-					$idade_minima = 18;
-					break;
-			}
-		}
-		*/
 		$reqs = CursoRequisito::where('para_tipo','turma')->where('curso',$this->id)->get();
 		foreach($reqs as $req){
 			switch($req->requisito->id){
@@ -447,9 +353,7 @@ class Turma extends Model
 			else
 				return false;
 		}
-		/*
-		if($this->id ==1382)
-		dd($reqs);*/
+		
 		
 			
 		
@@ -468,12 +372,7 @@ class Turma extends Model
 					return false;
 			}
 				
-			/*
-			else{
-				$vencimento = $atestado->calculaVencimento($this->programa->id);
-				if($vencimento < date('Y-m-d 23:23:59'))
-					//redirect()->back()->withErrors(['Atestado fora da data de validade']);
-			}*/
+			
 		}
 		
 

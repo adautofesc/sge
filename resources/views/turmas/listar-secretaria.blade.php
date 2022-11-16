@@ -346,6 +346,10 @@
                                 <a class="dropdown-item" href="#" onclick="exportarSMS();" style="line-height: 30px;text-decoration: none;" title="Exporta os alunos das turmas selecionadas para o envio de SMS">
                                     <i class="fa fa-comments-o icon"></i> Exportar TXT para SMS
                                 </a>
+                                <a class="dropdown-item" href="/relatorios/planilha-turmas"  style="line-height: 30px;text-decoration: none;" title="Exporta turmas atuais para uma planilha XLS">
+                                    <img src="/img/excel.png" width="17px;"> Exportar para planilha
+                                </a>
+                                
                                 </div>
                             </div>
                         </div>

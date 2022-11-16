@@ -139,40 +139,12 @@ class RelatorioController extends Controller
     }
 
 	public function turmas(Request $request){
-        $outro=[
-            1365,
-            1366,
-            1367,
-            1368,
-            1369,
-            1370,
-            1371,
-            1372,
-            1373,
-            1374,
-            1375,
-            1428,
-            1429,
-            1430,
-            1431,
-            1432,
-            1433,
-            1434,
-            1435,
-            1436,
-            1437,
-            1439,
-            1440,
-            1441,
-            1442,
-            1443
-        ];
       
 		$total_vagas = 0;
 		$total_inscricoes = 0;
 		$tc =  new \App\Http\Controllers\TurmaController;
 		$turmas = $tc->listagemGlobal($request->filtro,$request->valor,$request->removefiltro,$request->remove,500);
-        $atuais = $turmas->pluck('id')->toArray();
+        //$atuais = $turmas->pluck('id')->toArray();
         //dd(array_diff($atuais,$outro));
 
 
@@ -199,6 +171,66 @@ class RelatorioController extends Controller
 		return view('relatorios.turmas',compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$_SESSION['filtro_turmas'])->with('vagas',$total_vagas)->with('inscricoes',$total_inscricoes)->with('porcentagem',$inscricoes_porcentagem);
 
 	}
+
+    public function exportarTurmas(Request $request){
+        
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'. 'relatorio turmas' .'.xls"'); //$filename is  xsl filename 
+        header('Cache-Control: max-age=0');
+
+        $tabela =  new Spreadsheet();
+        $arquivo = new Xls($tabela);
+        $linha = 3;
+
+        $planilha = $tabela->getActiveSheet();
+        $planilha->setCellValue('A1', date('d/m/Y'));
+        $planilha->setCellValue('A2', 'ID');
+        $planilha->setCellValue('B2', 'Programa');
+        $planilha->setCellValue('C2', 'Curso');
+        $planilha->setCellValue('D2', 'Professor');
+        $planilha->setCellValue('E2', 'Local');
+        $planilha->setCellValue('F2', 'Dia(s)');
+        $planilha->setCellValue('G2', 'Início');
+        $planilha->setCellValue('H2', 'Termino');
+        $planilha->setCellValue('I2', 'Entrada');
+        $planilha->setCellValue('J2', 'Saída');
+        $planilha->setCellValue('K2', 'Vagas');
+        $planilha->setCellValue('L2', 'Inscritos');
+        $planilha->setCellValue('M2', 'Estado');
+        $planilha->setCellValue('N2', 'Matriculas');
+        $planilha->setCellValue('O2', 'Sala');
+
+
+        $tc =  new \App\Http\Controllers\TurmaController;
+		$turmas = $tc->listagemGlobal($request->filtro,$request->valor,$request->removefiltro,$request->remove,500);
+
+        foreach($turmas as $turma){
+            $sala = $turma->getSala();
+            $planilha->setCellValue('A'.$linha, $turma->id);
+            $planilha->setCellValue('B'.$linha, $turma->programa->sigla);
+            $planilha->setCellValue('C'.$linha, $turma->getNomeCurso());
+            $planilha->setCellValue('D'.$linha, $turma->professor->nome);
+            $planilha->setCellValue('E'.$linha, $turma->local->sigla);
+            $planilha->setCellValue('F'.$linha, implode(',',$turma->dias_semana));
+            $planilha->setCellValue('G'.$linha, $turma->data_inicio);
+            $planilha->setCellValue('H'.$linha, $turma->data_termino);
+            $planilha->setCellValue('I'.$linha, $turma->hora_inicio);
+            $planilha->setCellValue('J'.$linha, $turma->hora_termino);
+            $planilha->setCellValue('K'.$linha, $turma->vagas);
+            $planilha->setCellValue('L'.$linha, $turma->matriculados);
+            $planilha->setCellValue('M'.$linha, $turma->status);
+            $planilha->setCellValue('N'.$linha, $turma->status_matriculas);
+            
+            if($sala)
+                $planilha->setCellValue('O'.$linha, $sala[0]->nome);
+            else
+                $planilha->setCellValue('O'.$linha, 'ND');
+            $linha++;
+        }
+
+        return $arquivo->save('php://output');
+
+    }
 
 	public function dadosTurmas($string){
 
@@ -330,7 +362,14 @@ class RelatorioController extends Controller
         $professores = $professores->sortBy('nome_simples');
         $locais = Local::select(['id','sigla','nome'])->orderBy('sigla')->get();
 
-        return view('relatorios.inscricoes',compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$_SESSION['filtro_turmas'])->with('vagas',$total_vagas)->with('inscricoes',$total_inscricoes)->with('periodos',\App\classes\Data::semestres());
+        return view('relatorios.inscricoes',compact('turmas'))
+            ->with('programas',$programas)
+            ->with('professores', $professores)
+            ->with('locais',$locais)
+            ->with('filtros',$_SESSION['filtro_turmas'])
+            ->with('vagas',$total_vagas)
+            ->with('inscricoes',$total_inscricoes)
+            ->with('periodos',\App\classes\Data::semestres());
     }
 
     /**

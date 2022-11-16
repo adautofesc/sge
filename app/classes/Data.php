@@ -122,7 +122,7 @@ Class Data
         public static function semestres(){
             //$semestres = \DB::select( \DB::raw('select CASE WHEN month(data_termino)<=7 THEN 1 else 2 end as semestre,year(data_termino)as ano FROM turmas where deleted_at is null GROUP BY semestre,ano order by ano DESC, semestre DESC'));
             $semestres = collect();
-            for($ano=2018;$ano<=date('Y');$ano++){
+            for($ano=2018;$ano<=date('Y')+1;$ano++){
                 for($i=0;$i<3;$i++){
                     $semestre = new \stdClass;
                     $semestre->semestre = $i;

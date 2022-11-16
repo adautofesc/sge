@@ -732,6 +732,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	Route::prefix('relatorios')->group(function(){
 		Route::get('alunos','RelatorioController@numeroAlunos');
 		Route::get('turmas', 'RelatorioController@turmas');
+		Route::get('planilha-turmas', 'RelatorioController@exportarTurmas');
 		Route::get('dados-turmas/{turmas}', 'RelatorioController@dadosTurmas');
 		Route::get('matriculas/{programa}','RelatorioController@matriculasPrograma');
 		//Route::get('matriculas','RelatorioController@matriculas');

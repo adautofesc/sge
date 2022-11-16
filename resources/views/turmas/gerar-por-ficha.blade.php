@@ -201,7 +201,7 @@
 				Vagas Ofertadas<br><small>max {{$ficha->lotacao_maxima}} / min {{$ficha->lotacao_minima}}</small>
 			</label>
 			<div class="col-sm-2"> 
-				<input type="number" class="form-control boxed" name="vagas" title="Campo preenchido com a quantidade média de vagas das turmas anteriores"> 
+				<input type="number" class="form-control boxed" name="vagas" title="Campo preenchido com a quantidade média de vagas das turmas anteriores" min="{{$ficha->lotacao_minima}}" max="{{$ficha->lotacao_maxima}}"> 
 			</div>
 			<label class="col-sm-2 form-control-label text-xs-right">
 				Carga Horária

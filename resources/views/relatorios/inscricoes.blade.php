@@ -432,6 +432,7 @@
         			<th  width="5%" >Turma</th>
         			<th>Curso</th>
                     <th>Início</th>
+                    <th>Termino</th>
         			<th>Dia/Horário</th>
         			<th>Professor</th>
         			<th>Local</th>
@@ -455,6 +456,7 @@
                             @endif
                         </td>
                         <td>{{$turma->data_inicio}}</td>
+                        <td>{{$turma->data_termino}}</td>
         				<td>{{implode(', ',$turma->dias_semana)}} - {{$turma->hora_inicio}} ás {{$turma->hora_termino}}</td>
         				<td>{{$turma->professor->nome_simples}}</td>
         				<td>{{$turma->local->sigla}}</td>

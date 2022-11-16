@@ -397,7 +397,7 @@
                             <button type="button" name="inicio"  class="btn btn-sm btn-primary " onclick="addFiltroData()">Aplicar</button>
                         </div>
                     </div>
-                    <a href="/relatorios/planilha-turma" class="btn btn-secondary" title="Exporta os dados para um arquivos XLS">Exportar</a>
+                    <a href="/relatorios/planilha-turmas" class="btn btn-secondary" title="Exporta os dados para um arquivos XLS">Exportar</a>
                 
          
                     </div>

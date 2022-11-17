@@ -517,9 +517,22 @@ class TurmaController extends Controller
             $turma_dados = \App\TurmaDados::where('turma',$turma->id)->get();
             $turma->pacote = $turma_dados->where('dado','pacote')->pluck('valor')->toArray();
             $turma->mista = $turma_dados->where('dado','mista_emg')->first();
-            $turma->vagas_emg = $turma_dados->where('dado','proxima_turma')->pluck('valor')->toArray();
+            $turma->vagas_emg = $turma_dados->where('dado','vagas_emg')->first();
+            $turma->proxima = $turma_dados->where('dado','proxima_turma')->pluck('valor')->toArray();
             $turma->professor_extra = $turma_dados->where('dado','professor_extra')->pluck('valor')->first();
-            $turma->vagas_emg = $turma_dados->where('dado','vagas_emg')->pluck('valor')->first();
+            
+            
+           
+            foreach($requisitos as $requisito){
+                $rc=CursoRequisito::where('curso', $turma->id)->where('para_tipo','turma')->where('requisito',$requisito->id)->first();
+                if(isset($rc->id)){
+                    $requisito->checked="checked";
+                    if($rc->obrigatorio==1)
+                        $requisito->obrigatorio="checked";
+                }
+            }
+            
+            //$turma->vagas_emg = $turma_dados->where('dado','vagas_emg')->pluck('valor')->first();
 
             return view('turmas.editar',compact('dados'))->with('turma',$turma)->with('requisitos',$requisitos)->with('pacote_cursos',$pacote_cursos);
         }
@@ -621,9 +634,26 @@ class TurmaController extends Controller
         $turma->update();
 
         $turma_dados = \App\TurmaDados::where('turma',$turma->id)->get();
+       
+        $turma->proxima = $turma_dados->where('dado','proxima_turma');
+        foreach($turma->proxima as $nx_turma){
+            \App\TurmaDados::destroy($nx_turma->id);
+            if($request->proxima_turma !='')
+                LogController::registrar('turma',$turma->id,'Próxima turma excluída', \Auth::user()->pessoa);
+
+        }
+        if($request->proxima_turma !=''){   
+            $nx_turma = new \App\TurmaDados;
+            $nx_turma->turma = $turma->id;
+            $nx_turma->dado = 'proxima_turma';
+            $nx_turma->valor = $request->proxima_turma;
+            $nx_turma->save();
+            LogController::registrar('turma',$turma->id,'Modificação de proxima turma ', \Auth::user()->pessoa);
+
+        }
+        
+
         $turma->pacote = $turma_dados->where('dado','pacote')->pluck('valor')->toArray();
-
-
         foreach($turma->pacote as $pcte){ 
             if(!isset($request->pacote) || !in_array($pcte,$request->pacote)){
                 \App\TurmaDados::where('turma',$turma->id)->where('dado','pacote')->where('valor',$pcte)->delete();
@@ -631,7 +661,7 @@ class TurmaController extends Controller
 
             }
         }
-        if(isset($request->pacote))
+        if(isset($request->pacote)){
             foreach($request->pacote as $pcte){
                 if(!in_array($pcte,$turma->pacote)){
                     $pacote = new \App\TurmaDados;
@@ -643,10 +673,83 @@ class TurmaController extends Controller
                 }
                     
             }
+        }
+        
+        $turma->mista = $turma_dados->where('dado','mista_emg');
+        foreach($turma->mista as $mista){
+            \App\TurmaDados::destroy($mista->id);
+            if(!isset($request->mista))
+                LogController::registrar('turma',$turma->id,'Removido atributo de turma mista EMG ', \Auth::user()->pessoa);
+
+        }
+        if(isset($request->mista)){   
+            $dado_mista = new \App\TurmaDados;
+            $dado_mista->turma = $turma->id;
+            $dado_mista->dado = 'mista_emg';
+            $dado_mista->valor = '1';
+            $dado_mista->save();
+            LogController::registrar('turma',$turma->id,'Adicionado atributo de turma mista EMG ', \Auth::user()->pessoa);
+        }
+    
+        $turma->vagas_emg = $turma_dados->where('dado','vagas_emg');
+        foreach($turma->vagas_emg as $vagas_emg){
+            \App\TurmaDados::destroy($vagas_emg->id);
+            if(!isset($request->vagas_emg))
+                LogController::registrar('turma',$turma->id,'Removido atributo vagas EMG ', \Auth::user()->pessoa);
+
+        }
+        if(isset($request->vagas_emg)){   
+            $dado_vagas_emg = new \App\TurmaDados;
+            $dado_vagas_emg->turma = $turma->id;
+            $dado_vagas_emg->dado = 'vagas_emg';
+            $dado_vagas_emg->valor = $request->vagas_emg;
+            $dado_vagas_emg->save();
+            LogController::registrar('turma',$turma->id,'Adicionado atributo de vagas EMG ', \Auth::user()->pessoa);
+        }
+
+        $turma->prof_extra = $turma_dados->where('dado','professor_extra');
+        foreach($turma->prof_extra as $prof_extra){
+            \App\TurmaDados::destroy($prof_extra->id);
+            if($request->professor_extra == 0)
+                LogController::registrar('turma',$turma->id,'Removido atributo professor extra', \Auth::user()->pessoa);
+
+        }
+        if($request->professor_extra>0){   
+            $prof_extra = new \App\TurmaDados;
+            $prof_extra->turma = $turma->id;
+            $prof_extra->dado = 'professor_extra';
+            $prof_extra->valor = $request->professor_extra;
+            $prof_extra->save();
+            LogController::registrar('turma',$turma->id,'Adicionado atributo de professor extra', \Auth::user()->pessoa);
+        }
+
+        CursoRequisito::where('curso', $turma->id)->where('para_tipo','turma')->delete();
+        if($request->requisito){
+            foreach($request->requisito as $requisito){
+                $reqcur = new CursoRequisito;
+                $reqcur->para_tipo = 'turma'; 
+                $reqcur->curso = $turma->id;
+                $reqcur->requisito = $requisito;
+                $reqcur->timestamps=false;
+
+                if(isset($request->obrigatorio))
+                    if(in_array($requisito, $request->obrigatorio))
+                        $reqcur->obrigatorio = 1;       
+                    else
+                        $reqcur->obrigatorio = 0;
+                else
+                    $reqcur->obrigatorio = 0;
+
+                $reqcur->save();
+
+            
+            }
+        }
+        
 
 
 
-        return redirect(asset('/turmas'));
+        return redirect(asset('/turmas'))->with(['success'=>'Turma modificada com sucesso.']);
        
     }
 

@@ -154,7 +154,7 @@
 			</label>
 			<div class="col-sm-2"> 
 				<div class="input-group">
-					<span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
+					
 					<input type="date" class="form-control boxed" name="dt_inicio" value="{{$turma->data_iniciov}}" placeholder="dd/mm/aaaa" required> 
 				</div>
 			</div>
@@ -163,7 +163,7 @@
 			</label>
 			<div class="col-sm-2"> 
 				<div class="input-group">
-					<span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
+					 
 					<input type="date" class="form-control boxed" name="dt_termino" value="{{$turma->data_terminov}}" placeholder="dd/mm/aaaa" required> 
 				</div>
 			</div>
@@ -272,14 +272,14 @@
             <div class="col-sm-2"> 		
 				<div>
 					<label>
-						<input class="checkbox" name="mista" type="checkbox" value="true">
+						<input class="checkbox" name="mista" type="checkbox" {{isset($turma->mista->id)?'checked':''}} value="true">
 						<span title="Turma mista com alunos EMG">Mista EMG</span>
 						</label>
 				</div>		
         	</div>
 			<label class="col-sm-2 form-control-label text-xs-right">Vagas EMG</label>
             <div class="col-sm-2"> 
-				<input type="number" class="form-control boxed" name="vagas_emg" placeholder="" > 		
+				<input type="number" class="form-control boxed" name="vagas_emg" value="{{isset($turma->vagas_emg->valor)?$turma->vagas_emg->valor:''}}" min="1" max="{{$turma->vagas}}" > 		
         	</div>
 		</div>
 		<div class="form-group row"> 
@@ -308,11 +308,15 @@
 			</label>
 			<div class="col-sm-6"> 
 				<select class="c-select form-control boxed" name="professor_extra">
-					<option>Selecione um professor</option>
+					<option value='0'>Selecione um professor</option>
 					@if(isset($dados['professores']))
-					@foreach($dados['professores'] as $professor)
-					<option value="{{$professor->id}}">{{$professor->nome}}</option>
-					@endforeach
+						@foreach($dados['professores'] as $professor)
+							@if(isset($turma->professor_extra) && $turma->professor_extra == $professor->id)
+								<option value="{{$professor->id}}" selected="selected" >{{$professor->nome}}</option>
+							@else
+								<option value="{{$professor->id}}">{{$professor->nome}}</option>
+							@endif
+						@endforeach
 					@endif
 				</select> 
 			</div>
@@ -322,21 +326,24 @@
 				Próxima turma
 			</label>
 			<div class="col-sm-2"> 
-				<input type="number" class="form-control boxed" name="proxima_turma" placeholder="Código" title="Digite o código caso já houver turma de continuação definida para rematrícula"> 
+				<input type="text" class="form-control boxed" name="proxima_turma" placeholder="Código" title="Digite o código caso já houver turma de continuação definida para rematrícula" value="{{implode(',',$turma->proxima)}}"> 
 			</div>
 		</div>
 		
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">Requisitos </label>
             <div class="col-sm-6"> 
-            	@foreach($requisitos as $requisito)
+            	
+				@foreach($requisitos as $requisito)
 				<div>
 					<label>
-					<input class="checkbox" type="checkbox" name="requisito[]" value="{{$requisito->id}}">
+					<input class="checkbox" type="checkbox" {{$requisito->checked}} name="requisito[]" value="{{$requisito->id}}">
 					<span>{{$requisito->nome}}</span>
 					</label>
 				</div>
+				
 				@endforeach
+
         	</div>
 			
                 

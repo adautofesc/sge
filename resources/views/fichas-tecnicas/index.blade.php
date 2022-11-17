@@ -310,9 +310,16 @@
                                 <td>
                                     
                                     <a href="/fichas/imprimir/{{$ficha->id}}" target="_blank" class="btn btn-sm rounded-s btn-primary-outline" title="Imprimir"><i class="fa fa-print"></i></a>
-                                    <a href="/fichas/editar/{{$ficha->id}}" title="Editar Ficha" class="btn btn-sm rounded-s btn-primary-outline"><i class="fa fa-edit "></i></a>
                                     <a href="/fichas/copiar/{{$ficha->id}}" title="Criar cópia Ficha" class="btn btn-sm rounded-s btn-primary-outline"><i class="fa fa-copy"></i></a>
-                                    <a href="#" onclick="excluir({{$ficha->id}})" title="Excluir ficha" class="btn btn-sm rounded-s btn-danger-outline"><i class="fa fa-times-circle"></i></a>
+                                    @if($ficha->status == 'lancada' && !in_array('30', Auth::user()->recursos))
+                                        <a href="#" title="Ficha já lançada, favor alterar a turma" class="btn btn-sm rounded-s btn-secondary-outline"><i class="fa fa-edit "></i></a>
+                                        <a href="#" title="Ficha já lançada, favor alterar a turma" class="btn btn-sm rounded-s btn-secondary-outline"><i class="fa fa-times-circle"></i></a>
+                                    @else
+                                        <a href="/fichas/editar/{{$ficha->id}}" title="Editar Ficha" class="btn btn-sm rounded-s btn-primary-outline"><i class="fa fa-edit "></i></a>
+                                        <a href="#" onclick="excluir({{$ficha->id}})" title="Excluir ficha" class="btn btn-sm rounded-s btn-danger-outline"><i class="fa fa-times-circle"></i></a>
+                                    @endif
+                                    
+                                    
                                     
                                 </td>
                             </tr>

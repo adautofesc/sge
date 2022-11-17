@@ -168,8 +168,8 @@ Route::middleware(['auth','login']) ->group(function(){
 	});
 	Route::prefix('turmas')->group(function(){
 		Route::get('cadastrar',[TurmaController::class,'create'])->name('turmas.cadastrar');
-		Route::get('gerar-por-ficha/{id?}',[TurmaController::class,'gerarPorFichaView']);
-		Route::post('gerar-por-ficha/{id?}',[TurmaController::class,'store']);
+		Route::middleware('liberar.recurso:30')->get('gerar-por-ficha/{id?}',[TurmaController::class,'gerarPorFichaView']);
+		Route::middleware('liberar.recurso:30')->post('gerar-por-ficha/{id?}',[TurmaController::class,'store']);
 
 
 		Route::middleware('liberar.recurso:18')->group(function(){

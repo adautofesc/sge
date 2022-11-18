@@ -867,7 +867,7 @@ class TurmaController extends Controller
         //se não tiver nenhuma turma atual
         if(count($turmas_af)==0){ 
 
-            $turmas = Turma::select(['turmas.*','cursos.nome as nome_curso','disciplinas.nome as disciplina_nome','pessoas.nome as nome_professor','programas.sigla as sigla_programa'])
+            $turmas= Turma::select(['turmas.*','cursos.nome as nome_curso','disciplinas.nome as disciplina_nome','pessoas.nome as nome_professor','programas.sigla as sigla_programa'])
                 ->join('cursos', 'cursos.id', '=', 'turmas.curso')
                 ->leftjoin('disciplinas', 'disciplinas.id', '=', 'turmas.disciplina')
                 ->join('pessoas', 'pessoas.id', '=', 'turmas.professor')
@@ -884,6 +884,18 @@ class TurmaController extends Controller
                 ->orderBy('cursos.nome')->orderBy('disciplinas.nome')
                 ->limit(30)
                 ->get();
+
+                //$turmas = Turma::whereIn('id',$turmas_query)->get();
+
+                foreach($turmas as $turma){
+                    //$turma->parcelas = Turma::find($turma->id);
+                    $pacote = TurmaDados::where('dado','pacote')->where('turma',$turma->id)->first();
+                    $turma->pacote = $pacote;
+                    $turma->parcelas = $turma->getParcelas();
+                    
+                }
+
+                
            
             return view('turmas.lista-matricula', compact('turmas'))->with('pessoa',$pessoa);
         }
@@ -921,6 +933,8 @@ class TurmaController extends Controller
                 ->get();
             foreach($turmas as $turma){
                 $turma->parcelas = $turma->getParcelas();
+                $pacote = TurmaDados::where('dado','pacote')->where('turma',$turma->id)->first();
+                $turma->pacote = $pacote;
                 //$turma->nome_curso = $turma->getNomeCurso();
             }
         }

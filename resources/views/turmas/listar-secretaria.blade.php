@@ -496,9 +496,9 @@
                                                                 Confira o valor <br> do pacote
                                                             @else
                                                                 R$ {{number_format($turma->valor,2,',','.')}}<br>
-                                                                Em {{$turma->parcelas}}X <br>
-                                                                    @if($turma->parcelas>0)
-                                                                    R$ {{number_format($turma->valor/$turma->parcelas,2,',','.')}}
+                                                                Em {{$turma->getParcelas()}}X <br>
+                                                                    @if($turma->getParcelas()>0)
+                                                                    R$ {{number_format($turma->valor/$turma->getParcelas(),2,',','.')}}
                                                                     @endif
                                                             @endif   
                                                     </div>

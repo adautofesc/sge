@@ -213,14 +213,12 @@ class AtestadoController extends Controller
 			return true;
 		$vacina = true;
 		$atestado = true;
+		/* Verificação do atestado de vacinação COVID-19
 		$vacinacao = Atestado::where('pessoa',$pessoa)->where('tipo','vacinacao')->where('status','aprovado')->first();
-		
 		if(!$vacinacao){
-			
 			\App\PessoaDadosAdministrativos::cadastrarUnico($pessoa,'pendencia','Falta atestado de vacinação aprovado.');
-			$vacina = false;
-			
-		}
+			$vacina = false;		
+		}*/
 		
 
 		$requisito_turma = \App\CursoRequisito::where('para_tipo','turma')->where('curso',$turma->id)->where('requisito',18)->first();

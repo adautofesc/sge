@@ -97,28 +97,36 @@ class Turma extends Model
 	}
 
 	public function getParcelas(){
-		/*
-		//METRODO ACIMA getValorAttribute MODIFICA $THIS->PARCELAS CASO ESTEJA EM PACOTE
-		$pacote = TurmaDados::where('dado','pacote')->where('turma',$this->id)->first();
-		if($pacote != null){
-			//dd($pacote);
-			$valor= Valor::where('pacote',$pacote->valor)->where('ano',substr($this->data_inicio,-4))->first();
-			if($valor != null)					
-				return $valor->parcelas;
-			
-		}
-		*/
+		//procura curso/carga/ano.
+		$valorc= Valor::where('curso',$this->curso->id)->where('carga',$this->carga)->where('ano',substr($this->data_inicio,-4))->get();
+		if($valorc->count()!=1)
 
-		if($this->parcelas == 0){	
-			$dt_i=Carbon::createFromFormat('d/m/Y', $this->data_inicio);
-			$dt_t=Carbon::createFromFormat('d/m/Y', $this->data_termino);
-			$diference=$dt_i->diffInMonths($dt_t);
-			$diference++;
-			return $diference;
-			
+				//procura curso/ano
+				$valorc= Valor::where('curso',$this->curso->id)->where('ano',substr($this->data_inicio,-4))->get();
+
+		if($valorc->count()!=1)
+
+			//programa/carga/ano
+			$valorc= Valor::where('programa',$this->programa->id)->where('carga',$this->carga)->where('ano',substr($this->data_inicio,-4))->get();
+
+		if($valorc->count()!=1){
+			if($this->parcelas == 0){
+				//se não tiver na tabela, pega do valor da tabela turma mesmo;
+				$dt_i=Carbon::createFromFormat('d/m/Y', $this->data_inicio);
+				$dt_t=Carbon::createFromFormat('d/m/Y', $this->data_termino);
+				$diference=$dt_i->diffInMonths($dt_t);
+				$diference++;
+				return $diference;
+			}
+			else
+				return $this->parcelas;
 		}
 		else
-			return $this->parcelas;
+			//dd( $valorc);
+			return $valorc->first()->parcelas;
+				
+
+		
 	}
 
 

@@ -112,11 +112,11 @@ class MatriculaController extends Controller
         foreach($turmas as $turma){
             $insc=InscricaoController::inscreverAluno($r->pessoa,$turma->id);
         }
-        /*
+        
         $CC = new CarneController;
         $CC->gerarCarneIndividual($r->pessoa);
-        $boletos = \App\Boleto::where('pessoa',$r->pessoa)->where('status','gravado')->get();
-        */
+        //$boletos = \App\Boleto::where('pessoa',$r->pessoa)->where('status','gravado')->get();
+        
         
         
         return redirect(asset("secretaria/atender").'/'.$r->pessoa);

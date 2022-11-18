@@ -17,7 +17,14 @@ class ValorController extends Controller
     public function cadastrarValores(){
         
         $itens = array();
-        $itens[1] = ['programa' => 3,
+        $itens[1] = ['programa' => 12,
+                     'curso' => 0,
+                     'carga' => 40,
+                     'referencia' => "Piscina 40h semanal",
+                     'valor'=> 294,
+                     'parcelas' => 10,
+                     'ano' => 2021];
+        $itens[2] = ['programa' => 3,
                      'curso' => 307,
                      'carga' => 1,
                      'referencia' => "UATI 1 disciplina",

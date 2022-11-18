@@ -168,7 +168,14 @@ class RelatorioController extends Controller
 
 		//return $turmas;
 		
-		return view('relatorios.turmas',compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$_SESSION['filtro_turmas'])->with('vagas',$total_vagas)->with('inscricoes',$total_inscricoes)->with('porcentagem',$inscricoes_porcentagem);
+		return view('relatorios.turmas',compact('turmas'))->with('programas',$programas)
+            ->with('professores', $professores)
+            ->with('locais',$locais)
+            ->with('filtros',$_SESSION['filtro_turmas'])
+            ->with('vagas',$total_vagas)
+            ->with('periodos',\App\classes\Data::semestres())
+            ->with('inscricoes',$total_inscricoes)
+            ->with('porcentagem',$inscricoes_porcentagem);
 
 	}
 
@@ -205,7 +212,7 @@ class RelatorioController extends Controller
 		$turmas = $tc->listagemGlobal($request->filtro,$request->valor,$request->removefiltro,$request->remove,500);
 
         foreach($turmas as $turma){
-            $sala = $turma->getSala();
+           
             $planilha->setCellValue('A'.$linha, $turma->id);
             $planilha->setCellValue('B'.$linha, $turma->programa->sigla);
             $planilha->setCellValue('C'.$linha, $turma->getNomeCurso());
@@ -221,8 +228,8 @@ class RelatorioController extends Controller
             $planilha->setCellValue('M'.$linha, $turma->status);
             $planilha->setCellValue('N'.$linha, $turma->status_matriculas);
             
-            if($sala)
-                $planilha->setCellValue('O'.$linha, $sala[0]->nome);
+            if(isset($turma->sala->nome))
+                $planilha->setCellValue('O'.$linha, $turma->sala->nome);
             else
                 $planilha->setCellValue('O'.$linha, 'ND');
             $linha++;

@@ -665,11 +665,15 @@ class MatriculaController extends Controller
               
 
 
-                    $alternativas = \App\TurmaDados::where('turma',$inscricao->turma->id)->where('dado','proxima_turma')->get();
-                    foreach($alternativas as $alternativa){
-                        $turma =\App\Turma::find($alternativa->valor);
-                        $inscricao->proxima_turma->push($turma);
+                    $alternativas = \App\TurmaDados::where('turma',$inscricao->turma->id)->where('dado','proxima_turma')->first();
+                    if($alternativas){
+                        $array_alternativas = explode(',',$alternativas->valor);
+                        foreach($array_alternativas as $alternativa){
+                            $turma =\App\Turma::find($alternativa);
+                            if($turma)
+                                $inscricao->proxima_turma->push($turma);
 
+                        }
                     }
                     //dd($inscricao->turma->vagas);->where('vagas', $inscricao->turma->vagas)
                 }

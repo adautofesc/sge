@@ -326,7 +326,7 @@
 				Próxima turma
 			</label>
 			<div class="col-sm-2"> 
-				<input type="text" class="form-control boxed" name="proxima_turma" placeholder="Código" title="Digite o código caso já houver turma de continuação definida para rematrícula" value="{{implode(',',$turma->proxima)}}"> 
+				<input type="text" class="form-control boxed" name="proxima_turma" title="Digite o código caso já houver turma de continuação definida para rematrícula, separadas por vírgula" placeholder="xxxx, xxxx ..."value="{{implode(',',$turma->proxima)}}"> 
 			</div>
 		</div>
 		

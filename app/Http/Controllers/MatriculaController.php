@@ -653,7 +653,7 @@ class MatriculaController extends Controller
        $pessoa = \App\Pessoa::cabecalho($pessoa);
        $matriculas = Matricula::where('pessoa', $pessoa->id)
                 ->whereIn('status',['expirada','ativa'])
-                ->whereDate('data','>','2021-07-01')
+                ->whereDate('data','>','2021-11-01')
                 ->orderBy('id','desc')->get();
 
                 //dd($matriculas);

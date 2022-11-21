@@ -124,7 +124,7 @@ class PerfilMatriculaController extends Controller
             return redirect()->back()->withErrors(['Pendências encontradas em seu cadastro. Verifique seus boletos ou entre em contato com nossa secretaria.']);
         $matriculas = Matricula::where('pessoa', $r->pessoa->id)
                 ->whereIn('status',['expirada','ativa'])
-                ->whereDate('data','>','2021-04-01')
+                ->whereDate('data','>','2021-11-01')
                 ->orderBy('id','desc')->get();
         foreach($matriculas as $matricula){
             $matricula->inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','finalizada'])->get();
@@ -139,10 +139,13 @@ class PerfilMatriculaController extends Controller
                 $alternativas = \App\TurmaDados::where('turma',$inscricao->turma->id)->where('dado','proxima_turma')->get();
                 foreach($alternativas as $alternativa){
                     $turma = \App\Turma::find($alternativa->valor);
-                    $pacote = \App\TurmaDados::where('turma',$turma->id)->where('dado','pacote')->first();
-                    if($pacote)
-                        $turma->pacote = $pacote->valor;
-                    $inscricao->proxima_turma->push($turma);
+                    
+                    if($turma && $turma->status_matriculas == 'rematricula'){
+                        $pacote = \App\TurmaDados::where('turma',$turma->id)->where('dado','pacote')->first();
+                        if($pacote)
+                            $turma->pacote = $pacote->valor;                        
+                        $inscricao->proxima_turma->push($turma);
+                    }
 
                 }
             }

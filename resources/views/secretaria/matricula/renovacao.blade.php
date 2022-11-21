@@ -121,7 +121,7 @@
                                 <div class="item-col fixed item-col-check "> 
 
                                     <label class="item-check" id="select-all-items">
-                                    @if($next->vagas > $next->matriculados)
+                                    @if($next->vagas >= $next->matriculados)
                                     <input type="radio" class="radio" name="turmas[{{$inscricao->turma->id}}]" value="{{$next->id}}" >
                                     @else
                                     <input type="radio" class="radio" disabled="disabled" title="Todas as vagas ja foram preenchidas" >
@@ -132,7 +132,7 @@
                                 </div>
                                 <div class="">
                                     
-                                         <div style="margin-bottom:5px;" class="color-primary">Turma {{$next->id}} - <i class="fa fa-{{$next->icone_status}}" ></i><small> {{$next->texto_status. ' - Começa em  ' .$next->data_inicio}}</small></div> 
+                                         <div style="margin-bottom:5px;" class="color-primary">Turma {{$next->id}} - <i class="fa fa-{{$next->icone_status}}" ></i><small> {{$next->texto_status. ' - Começa em  ' .$next->data_inicio}} - {{$next->vagas - $next->matriculados}} vagas</small></div> 
                                         <strong>
 
                                    
@@ -177,7 +177,7 @@
 			<div class="col-sm-10 col-sm-offset-2"> 
 				<input type="hidden" name="pessoa" value="{{$pessoa->id}}">
                 <button type="submit" name="btn"  class="btn btn-primary">Salvar</button>
-                <button type="reset" name="btn"  class="btn btn-primary">Restaurar</button>
+                <button type="reset" name="btn"  class="btn btn-primary">Limpar</button>
                 <button type="cancel" name="btn" class="btn btn-primary" onclick="history.back(-2);return false;">Cancelar</button>
 			</div>
        </div>

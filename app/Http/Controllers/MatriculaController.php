@@ -259,22 +259,25 @@ class MatriculaController extends Controller
     public static function verificaSeMatriculado($pessoa,$curso,$data,$pacote=null)
     {
         //$data = \Carbon\Carbon::createFromFormat('d/m/Y', $data);
-        $data = \Carbon\Carbon::createFromFormat('d/m/Y', $data);
-        //dd($data->year);
+        $inicio_turma = \Carbon\Carbon::createFromFormat('d/m/Y', $data);
+        $hoje = \Carbon\Carbon::createFromFormat('d/m/Y', date('d/m/Y'));
 
         
         if($pacote > 0){
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! arrumar isso precisa fazer um join pra pegar uma inscricao da matricula e verificar se é do mesmo ano
-            $matriculas_ativas = Matricula::where('pessoa',$pessoa)
-            ->where('pacote',$pacote)
-            //->whereYear('data',$data->year)
-            ->WhereIn('status',['espera'])
-            ->get();//
-            //dd($matriculas_ativas);
             
+            if($hoje->gte($inicio_turma))
+                $matricula = Matricula::where('pessoa',$pessoa)
+                    ->where('pacote',$pacote)   
+                    ->Where('status','ativa')
+                    ->first();
+            else
+                $matricula = Matricula::where('pessoa',$pessoa)
+                    ->where('pacote',$pacote)   
+                    ->WhereIn('status',['espera','pendente'])
+                    ->first();
 
-            if($matriculas_ativas->count()>0)
-                return $matriculas_ativas->first();
+            if($matricula)
+                return $matricula;
             else
                 return false;
 
@@ -710,7 +713,7 @@ class MatriculaController extends Controller
 
 
     /**
-     * Renovação de matrícula
+     * Renovação de matrícula online
      * Verifica
      * @param  Request $r [description]
      * @return [type]     [description]

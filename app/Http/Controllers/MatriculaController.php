@@ -259,12 +259,14 @@ class MatriculaController extends Controller
     public static function verificaSeMatriculado($pessoa,$curso,$data,$pacote=null)
     {
         $data = \Carbon\Carbon::createFromFormat('d/m/Y', $data);
+        //dd($data->year);
 
         
         if($pacote > 0){
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! arrumar isso precisa fazer um join pra pegar uma inscricao da matricula e verificar se é do mesmo ano
             $matriculas_ativas = Matricula::where('pessoa',$pessoa)
             ->where('pacote',$pacote)
+            ->whereYear('data',$data->year)
             ->WhereIn('status',['ativa','espera','pendente'])
             ->get();//
             

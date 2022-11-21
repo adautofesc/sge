@@ -136,17 +136,23 @@ class PerfilMatriculaController extends Controller
                                                         ->where('status_matriculas','rematricula')
                                                         ->get();
                 //dd(\Carbon\Carbon::createFromFormat('d/m/Y', $inscricao->turma->data_termino)->format('Y-m-d'));
-                $alternativas = \App\TurmaDados::where('turma',$inscricao->turma->id)->where('dado','proxima_turma')->get();
-                foreach($alternativas as $alternativa){
-                    $turma = \App\Turma::find($alternativa->valor);
-                    
-                    if($turma && $turma->status_matriculas == 'rematricula'){
-                        $pacote = \App\TurmaDados::where('turma',$turma->id)->where('dado','pacote')->first();
-                        if($pacote)
-                            $turma->pacote = $pacote->valor;                        
-                        $inscricao->proxima_turma->push($turma);
-                    }
+                $alternativas = \App\TurmaDados::where('turma',$inscricao->turma->id)->where('dado','proxima_turma')->first();
+                if($alternativas){
+                    $alternativas = explode(',',$alternativas->valor);
+                    foreach($alternativas as $alternativa){
+                        $turma = \App\Turma::find($alternativa);
+                        
+                        if($turma && $turma->status_matriculas == 'rematricula'){
+                            $pacote = \App\TurmaDados::where('turma',$turma->id)->where('dado','pacote')->first();
+                            if($pacote)
+                                $turma->pacote = $pacote->valor;
 
+                            $x = $inscricao->proxima_turma->where('id',$turma->id);
+                            if($x->count() == 0)                                             
+                                $inscricao->proxima_turma->push($turma);
+                        }
+
+                    }
                 }
             }
         }

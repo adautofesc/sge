@@ -82,11 +82,12 @@ class PerfilMatriculaController extends Controller
         
         $CC = new CarneController;
         $CC->gerarCarneIndividual($r->pessoa->id);
+        /*
         $boletos = \App\Boleto::where('pessoa',$r->pessoa->id)->where('status','gravado')->get();
         foreach($boletos as $boleto){
             $boleto->status = 'impresso';
             $boleto->save();
-        }
+        }*/
         
 
         return redirect('/perfil/matricula');

@@ -38,7 +38,7 @@ class Matricula extends Model
 
 	public function getNomeCurso(){	
 			$inscricoes = $this->getInscricoes();
-			if($inscricoes!=null)
+			if($inscricoes->count() > 0 )
 				return $inscricoes->first()->turma->curso->nome;
 			else
 				return 'Matrícula sem curso cadastrado';	

@@ -78,9 +78,11 @@ class FichaTecnicaController extends Controller
 
         }
         if(in_array('17', Auth::user()->recursos) && in_array('13', Auth::user()->recursos)){
+            //dd('aqui');
             $programa = \App\PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','programa')->pluck('valor')->toArray();
             $programas = Programa::whereIn('id',$programa)->get();
             $professores_dos_programas = collect();
+
             
             foreach($professores as $professor){
                 $comparisson = array_intersect($programa,$professor->getProgramas());
@@ -117,6 +119,7 @@ class FichaTecnicaController extends Controller
         $fichas = $fichas->paginate($ipp);
         $locais = Local::all();
 
+       
 
         
 

@@ -728,12 +728,11 @@ class MatriculaController extends Controller
         foreach($r->turmas as $turma){
                 $inscricao = InscricaoController::inscreverAluno($r->pessoa,$turma,0,Auth::user()->pessoa);
             }
-        /*
+        
     
         $CC = new CarneController;
         $CC->gerarCarneIndividual($r->pessoa);
-        $boletos = \App\Boleto::where('pessoa',$r->pessoa)->where('status','gravado')->get();
-        */
+        
            
         if(isset($inscricao->id))    
             return redirect("/secretaria/atender/".$r->pessoa."?mostrar=todos")->with('dados["alert_sucess"]',['Turmas rematriculadas com sucesso']);
@@ -742,7 +741,7 @@ class MatriculaController extends Controller
     }
 
 
-    public function gravarRematricula(Request $r){
+    /*public function gravarRematricula(Request $r){
         if(!isset($r->agree) || $r->agree==false)
             return redirect()->back()->withErrors(['Só é possivel fazer a rematrícula concordando com o Termo de Matrícula, clicando na caixa correspondente.']);
 
@@ -779,7 +778,7 @@ class MatriculaController extends Controller
         }
         return view('rematricula.confirma')->with('matriculas',$matriculas)->with('pessoa',$r->pessoa);
         
-    }
+    }*/
 
 
 
@@ -802,6 +801,7 @@ class MatriculaController extends Controller
         $nova->status = 'espera';
         $nova->resp_financeiro = $original->resp_financeiro;
         $nova->obs = '';
+        $nova->pacote = $original->pacote;
         $nova->save();
         $nova->atendimento = AtendimentoController::novoAtendimento("Matrícula ".$nova->id." copiada da matricula ".$original->id, $nova->pessoa);
 

@@ -79,6 +79,8 @@ class loginController extends Controller
 		{
 			$usuario->password = bcrypt($r->novasenha);
 			$usuario->save();
+			LogController::registrar('pessoa',$usuario->pessoa,'Senha de acesso modificada pelo usuário', Auth::user()->pessoa);
+
 			return redirect('home')->with("dados['alert_sucess']",'Senha redefinida com sucesso.');
 		}
 		else
@@ -227,6 +229,8 @@ class loginController extends Controller
 		$acesso->password=bcrypt($request->nova_senha);
 		$acesso->save();
 		$dados=['alert_sucess'=>['Senha alterada com sucesso!']];
+		LogController::registrar('pessoa',$acesso->pessoa,'Senha de acesso modificada por terceiro', Auth::user()->pessoa);
+
 
 		return view('pessoa.trocar-senha-usuario', compact('dados'));
 
@@ -336,6 +340,8 @@ class loginController extends Controller
 
 				}
 				$dados=array_merge($dados,$this->listarUsuarios_data());
+				LogController::registrar('pessoa',$acesso->pessoa,'Acesso ao sistema renovado', Auth::user()->pessoa);
+
 				return view('admin.listarusuarios', compact('dados'));
 			break;
 			case 2: // Ativar acesso
@@ -361,7 +367,8 @@ class loginController extends Controller
 					$dados['alert_sucess'][]=$acesso->usuario." alterado com sucesso";
 				}
 				$dados=array_merge($dados,$this->listarUsuarios_data());
-			
+				LogController::registrar('pessoa',$acesso->pessoa,'Acesso ao sistema ativado', Auth::user()->pessoa);
+
 				return view('admin.listarusuarios', compact('dados'));
 			break;
 			case 3: // desativar acesso
@@ -388,6 +395,8 @@ class loginController extends Controller
 					$dados['alert_sucess']=[$acesso->usuario." alterado com sucesso"];
 					}
 				$dados=array_merge($dados,$this->listarUsuarios_data());
+				LogController::registrar('pessoa',$acesso->pessoa,'Acesso ao sistema desativado', Auth::user()->pessoa);
+
 				return view('admin.listarusuarios', compact('dados'));
 				break;
 		}// end switch
@@ -431,6 +440,8 @@ class loginController extends Controller
 				$novo_recurso->save();
 			}
 		}
+		LogController::registrar('pessoa',$request->pessoa,'Alteração de credenciais', Auth::user()->pessoa);
+
 		
 
 		return $this->credenciais_view($request->pessoa,'Credenciais atualizadas' );
@@ -443,7 +454,8 @@ class loginController extends Controller
 			$user->password = bcrypt($password);
 			$user->save();
 			if(!empty($user->email)){
-				
+				LogController::registrar('pessoa',$acesso->pessoa,'Acesso ao sistema desativado', Auth::user()->pessoa);
+
 				Mail::send('emails.default', ['username' => $user->username , 'password' => $password], function ($message) use($user){
 					$message->from('no-reply@fesc.saocarlos.sp.gov.br', 'Sistema Fesc');
 					$message->to($user->email);

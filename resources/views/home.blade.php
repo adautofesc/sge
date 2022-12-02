@@ -24,8 +24,16 @@
                 <div class="card-block">
 
                     <div class="text-xs-left">
-                    <img src="{{asset('/img/cartazes_motivacionais/00'.str_pad(rand(1,10),2,"0",STR_PAD_LEFT).'.jpg')}}" alt="Cartaz motivacional" width="100%">
-                    </div>
+                    @if($aniversariante)
+                        <img src="{{asset('/img/aniversario.png')}}" alt="Cartaz motivacional" width="100%">    
+                    @else
+                        @if(file_exists(public_path().'/img/home.png'))
+
+                            <img src="{{asset('/img/home.png')}}" alt="Cartaz motivacional" width="100%">
+                        @else
+                            <img src="{{asset('/img/home.jpg')}}" alt="Cartaz motivacional" width="100%">
+                        @endif
+                    @endif</div>
  
                 </div>
             </div> 

@@ -29,19 +29,30 @@ class painelController extends Controller
              return redirect('login');
         
         $hoje=new Data();
-            $data=$hoje->getData();        
-            $dados=['data'=>$data];
+        $data=$hoje->getData();        
+        $dados=['data'=>$data];
+        
+        $user = Auth::user();
+        $pessoa = Pessoa::find($user->pessoa);
+        //dd(substr($pessoa->nascimento,5,5));
+        if($pessoa){
+            if(date('m-d') == substr($pessoa->nascimento,5,5))
+                $aniversariante = true;
+            else
+                $aniversariante = false;
+
+        }
+        else
+            $aniversariante = false;
             
-            $user = Auth::user();
-            //dd($user->recursos);
             
 
         if(in_array('18',$user->recursos)){
             $pendencias = \App\PessoaDadosGerais::where('dado',20)->paginate(10);
-            return view('home', compact('dados'))->with("pendencias",$pendencias);
+            return view('home', compact('dados'))->with("pendencias",$pendencias)->with('aniversariante',$aniversariante);
 
         }
-        return view('home', compact('dados'));
+        return view('home', compact('dados'))->with('aniversariante',$aniversariante);
 	
     }
 
@@ -338,63 +349,7 @@ class painelController extends Controller
         return $salas;
 
     }
-    /**
-     * Função para corrigir eventuais problemas que ocorreram de importação de pessoas para as turmas das parcerias.
-     * verifica se tem matriculas, se não tiver cria e atribui o numero para inscrição
-     * se tiver, verifica se a pessoa da matricula e inscrição é a mesma, senão cria uma nova ]
-     * @return [type] [description]
-     */
     
-
-    public function corrigeInscricoes(){
-
-     
-       
-        //$instance = new BoletoController;
-        //$inst = new LancamentoController; /// esse cara vai fazer os lancamentos atrasados
-        $inst= new TurmaController;
-
-        
-        $turmas=Turma::where('parceria','>','0')->get();
-        foreach($turmas as $turma){
-            $inscricoes = \App\Inscricao::where('turma',$turma->id)->get();
-            foreach($inscricoes as $inscricao){
-                if($inscricao->matricula != null){
-                    $matricula = \App\Matricula::find($inscricao->matricula);
-                    if($matricula->pessoa != $inscricao->pessoa->id){
-                        //dd($inscricao->turma->id);
-                        $matricula_nova = MatriculaController::gerarMatricula($inscricao->pessoa->id,$inscricao->turma->id,'ativa');
-                        $inscricao->matricula = $matricula_nova->id;
-                        $inscricao->save();
-
-                    }
-                        
-                }
-                else{
-                    $matricula_nova = MatriculaController::gerarMatricula($inscricao->pessoa->id,$inscricao->turma->id,'ativa');
-                    $inscricao->matricula = $matricula_nova->id;
-                    $inscricao->save();
-                }
-            }
-        }
-        return "inscrições normalizadas.";
-   
-
-        //return $inst->addPessoaLancamentos();
-        
-
-        
-       /*$dados = \App\PessoaDadosContato::where('dado',10)->get();
-        foreach($dados as $dado){
-            $dado->valor = preg_replace( '/[^0-9]/is', '', $dado->valor);
-            $dado->save();
-        }*/
-
-       
-       
-        
-        
-    }
     
 
 
@@ -431,21 +386,7 @@ class painelController extends Controller
         return $linha.$erros;
 
     }
-    public function atualizarParcelas(){
-        $arr_matriculas=array();
-        $matriculas = Matricula::whereIn('status',['pendente','ativa'])->get();
-        foreach($matriculas as $matricula){
-            $matricula->parcelas = $matricula->getParcelas();
-           
-            $matricula->save();
-
    
-        $arr_matriculas[]= 'Matricula '.$matricula->id.' com data de inscricao em '.$matricula->data.' possui '. $matricula->parcelas.' parcelas.';
-
-        }
-        return $arr_matriculas;
-        
-    }
     public function relatorioJson(){
 
         header('Contet-Type: text/csv');
@@ -481,6 +422,11 @@ class painelController extends Controller
              
     }
 
+    /**
+     * Cancelamento de pessoas com débitos de dívida ativa
+     *
+     * @return void
+     */
     public static function cancelandoPendentes(){
         $opa = [
             897,
@@ -511,7 +457,7 @@ class painelController extends Controller
 
     }
 
-    public function testarClasse(){
+    public function atribuirCredencial(){
         $counter = 0;
         $professores = \App\PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
         foreach($professores as $professor){
@@ -531,6 +477,9 @@ class painelController extends Controller
         }
 
         return "Acesso a ".$counter." professores ao recurso de ficha tecnica liberado";
+    }
+
+    public function testarClasse(){
     }
     
     /**

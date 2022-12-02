@@ -480,6 +480,8 @@ class painelController extends Controller
     }
 
     public function testarClasse(){
+
+        dd(public_path().'/img/home.png');
     }
     
     /**

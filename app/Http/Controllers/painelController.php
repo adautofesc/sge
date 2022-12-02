@@ -481,7 +481,10 @@ class painelController extends Controller
 
     public function testarClasse(){
 
-        dd(public_path().'/img/home.png');
+        //dd(curl_init($_SERVER['HTTP_HOST'].'/img/home.pnx') !== false);
+        
+
+        dd(realpath($_SERVER['DOCUMENT_ROOT'].'/img/home.png'));
     }
     
     /**

@@ -71,8 +71,16 @@ class FrequenciaController extends Controller
         return view('frequencias.lista-unitaria-editavel',compact('inscritos'))->with('i',1)->with('aulas',$aulas)->with('turma',$turma);
     }
 
-
+    /**
+     * Grava os dados da chamada completa
+     *
+     * @param Request $r
+     * @return void
+     */
     public function preencherChamada_exec(Request $r){
+        $presentes = json_decode($r->presente, true);
+        $conceitos = json_decode($r->conceitos, true);
+        //dd(isset($presentes['7597']['29178']));
         //carregar todas presenças dessa turma
         $turma = Turma::find($r->turma);
 
@@ -86,35 +94,40 @@ class FrequenciaController extends Controller
 
         //verifica se aluno tem frequencia registrada mas ela nao esta na lista de presenca enviada (retirar presença)
         foreach($frequencias as $frequencia){
-            //dd($frequencia);   
-            if(!isset($r->presente[$frequencia->aluno.','.$frequencia->aula])){
+            if(!isset($presentes[$frequencia->aluno][$frequencia->aula]) || $presentes[$frequencia->aluno][$frequencia->aula] == false){
                 //se tiver na lista atual de alunos, porque a pessoa pode estar na lista de cancelados
                 if(in_array($frequencia->aluno,$r->alunos)){
                     //dd("Apagar frequencia do aluno".$frequencia->aluno.' na aula '.$frequencia->aula);
                     Frequencia::destroy($frequencia->id);
+                    //dd('retirando item'.$presentes[$frequencia->aluno][$frequencia->aula]);
                 }                 
             }
         }
-        //verifica se ele recebeu alguma presença que não tinha (adicionar presença)
-        if(isset($r->presente)){
-            foreach($r->presente as $key=>$value){
-                $presenca = explode(",",$key);
-                $freq = $frequencias->where('aluno',$presenca[0])->where('aula',$presenca[1])->first();
-                if(!isset($freq->id))
-                    Frequencia::novaFrequencia($presenca[1],$presenca[0]);
 
-
+        //verifica se ele recebeu alguma presença que não tinha (adicionar presença)      
+        foreach($presentes as $aluno => $aulas){
+            foreach($aulas as $aula => $presenca){
                 
+                $freq = $frequencias->where('aluno',$aluno)->where('aula',$aula)->first();
+                if($presenca){
+                    if(!isset($freq->id) ){
+                        Frequencia::novaFrequencia($aula,$aluno);
+                    }
+                }
+
             }
         }
+        
+
         //atribui conceitos se houver
-        if(isset($r->conceito)){
-            foreach($r->conceito as $key => $value){
+        if(isset($conceitos)){
+            foreach($conceitos as $key => $value){
                 \App\Inscricao::addConceito($key,$value);
             }
         }
-        return redirect(asset("/docentes/docente"))->with('success','Dados da turma '.$r->turma.' gravados com sucesso.');
-        
+     
+        //return redirect()->back()->with('success','Dados da turma '.$r->turma.' gravados com sucesso.');
+        return response('Gravado!',200);
 
     }
 

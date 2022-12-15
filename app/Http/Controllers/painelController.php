@@ -44,15 +44,25 @@ class painelController extends Controller
         }
         else
             $aniversariante = false;
+
+        if(realpath($_SERVER['DOCUMENT_ROOT'].'/img/home.png'))
+            $img_ext = 'png';
+        else
+            $img_ext = 'jpg';
             
             
 
         if(in_array('18',$user->recursos)){
             $pendencias = \App\PessoaDadosGerais::where('dado',20)->paginate(10);
-            return view('home', compact('dados'))->with("pendencias",$pendencias)->with('aniversariante',$aniversariante);
+            return view('home', compact('dados'))
+                ->with("pendencias",$pendencias)
+                ->with('aniversariante',$aniversariante)
+                ->with('img_ext',$img_ext);
 
         }
-        return view('home', compact('dados'))->with('aniversariante',$aniversariante);
+        return view('home', compact('dados'))
+            ->with('aniversariante',$aniversariante)
+            ->with('img_ext',$img_ext);
 	
     }
 
@@ -481,10 +491,8 @@ class painelController extends Controller
 
     public function testarClasse(){
 
-        //dd(curl_init($_SERVER['HTTP_HOST'].'/img/home.pnx') !== false);
-        
-
-        dd(realpath($_SERVER['DOCUMENT_ROOT'].'/img/home.png'));
+        $this->dispatch(new \App\Jobs\GeradorCarnes);
+		return "Os boletos serão gerados";
     }
     
     /**

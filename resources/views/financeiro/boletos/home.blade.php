@@ -27,8 +27,9 @@
                    <div>
                         <a href="#" onclick="gerarCarnes();" class="btn btn-danger-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-circle-right "></i>
-                        &nbsp;&nbsp;Gerar Carnês</a>
-                    </div>  
+                        &nbsp;&nbsp;Gerador completo de Carnês</a>
+                    </div>
+
                     <div>
                         <a href="#" onclick="gerarBoletos();" class="btn btn-warning-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-circle-right "></i>

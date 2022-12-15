@@ -14,14 +14,17 @@ class GeradorCarnes implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $tries = 3;
+    private $pessoa;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($pessoa)
     {
-        //
+        $this->pessoa = $pessoa;
     }
 
     /**
@@ -31,7 +34,7 @@ class GeradorCarnes implements ShouldQueue
      */
     public function handle(CarneController $carne_controller)
     {
-        //$carne_controller->geradorSegundoPlano();
+        $carne_controller->geradorSegundoPlano($this->pessoa);
         //mail("Job Concluído");
     }
 }

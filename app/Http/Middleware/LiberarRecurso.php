@@ -21,13 +21,8 @@ class LiberarRecurso
         if(in_array($recurso,$user->recursos))
             return $next($request);
         else
-            return redirect()->route('403');
+            return view('errors.403')->with('recurso', $recurso);
 
-        /*foreach(unserialize(Session('recursos_usuario')) as $controle){
-            if($controle->recurso == $recurso)
-                return $next($request);
-        }*/
-        return redirect()->route('403');
         
             
     }

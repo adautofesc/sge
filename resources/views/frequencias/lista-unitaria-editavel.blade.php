@@ -4,6 +4,7 @@
 <head>
 <meta content="pt-br" http-equiv="Content-Language" />
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <title>Lista de frequência</title>
 <meta content="Sheets" name="generator" />
 <style type="text/css"><!--br {mso-data-placement:same-cell;}
@@ -71,6 +72,11 @@ body{
 	padding:0px 3px 0px 3px;
 	vertical-align:middle;
 }
+
+#status{
+	display:none;
+}
+
 @media print {
             .hide-onprint { 
                 display: none;
@@ -79,7 +85,7 @@ body{
 
 
 </style>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script>
 	function todos(){
 		location.href = location.href+'?filtrar=todos';
@@ -111,6 +117,102 @@ body{
 		$("#faltas-"+inscricao).html(faltas);
 		console.log(faltas);
 	}
+
+	function save(turma){
+		presencas = {};
+		lista = [];
+		conceitos = {};
+		alunos = [];
+		$("#status").css( "color","black" );
+		$("#status").html('Aguarde, gravando dados...');
+		$("#status").fadeIn("slow");
+
+		/*alunos = {'id_aluno1': {
+					'data1' : true,
+					'data2' : true,
+					'data3' : false,
+
+				},
+				'id_aluno2' : {
+					'data1' : true,
+					'data2' : true,
+					'data3' : false,
+				}};*/
+
+		
+		
+		$( "input[name^='presente']" ).each(
+			function(){
+				//console.log($(this).attr("pessoa")+' aula '+$(this).attr("aula")+' : '+$(this).prop("checked"));
+				pessoa = $(this).attr("pessoa");
+				aula = $(this).attr("aula");
+				if($(this).prop("checked"))
+					presenca = true;
+				else
+					presenca = false;
+				
+				/*if(pessoa != undefined){
+					console.log(pessoa);
+					console.log(aula);
+				}
+				else
+					console.log(pessoa+'  -  ' + aula + ' : '+presenca);*/
+
+				if(pessoa != undefined){
+					if(presencas[pessoa])
+						presencas[pessoa][aula] = presenca;
+					else{
+						presencas[pessoa] = {};
+						presencas[pessoa][aula] = presenca;
+					}
+						
+				};
+
+					
+				//lista[this.name] = 	$(this).prop("checked");		
+			}
+		);
+		$( "input[name^='alunos']" ).each(
+			function(){
+				//console.log($(this).attr("pessoa"));
+				alunos.push($(this).attr("pessoa"));
+		
+			}
+		);
+		$( "select[name^='conceito']" ).each(
+			function(){
+				inscricao =  $(this).attr("inscricao");
+				conceitos[inscricao] = 	$(this).val();
+				
+			}
+		);
+		//console.table(presencas);
+		console.table(alunos);
+
+		$.ajax({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			},
+			method: "POST",
+			url: "/docentes/frequencia/preencher/"+turma,
+			data: {presente : JSON.stringify(presencas),turma, conceitos : JSON.stringify(conceitos),alunos}
+			
+		})
+		.done(function(msg){
+			console.log('.done');
+			$("#status").css( "color","green" );
+			$("#status").html('Dados gravados com sucesso!');
+			
+			
+		})
+		.fail(function(msg){
+			console.log('Falha ao gravar');
+			$("#status").css( "color","red" );
+			$("#status").html('Falha ao gravar. Tente novamente em instantes.'); 
+			//alert('Falha ao encerrar jornada: '+msg.statusText);
+		});
+			console.log(JSON.stringify(lista));
+		}
 
 </script>
 </head>
@@ -152,7 +254,7 @@ body{
 	</tr>
 </table>
 <form method="POST">
-	{{csrf_field()}}
+	
 <input type="hidden" name="turma" value="{{$turma->id}}">
 <table cellpadding="0" cellspacing="0" dir="ltr" style="table-layout:fixed;font-size:11pt;font-family:Calibri;width:0px;" xmlns="http://www.w3.org/1999/xhtml">
 	<colgroup>
@@ -244,11 +346,11 @@ body{
 			&nbsp;<small>({{$inscrito->status}})</small>
 			
 			@endif
-			<input type="hidden" name="alunos[]" value="{{$inscrito->pessoa->id}}">
+			<input type="hidden" pessoa= "{{$inscrito->pessoa->id}}" name="alunos[]" value="{{$inscrito->pessoa->id}}">
 		</td>
 		<!-- Selecionador -->
 		<td style="border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;" >
-		<input type="checkbox" name="" id="" style="margin: 0;padding:0;" onclick="marcardesmarcar(this,'{{$inscrito->id}}')" class="hide-onprint">
+		<input type="checkbox" name="marcador" id="" style="margin: 0;padding:0;" onclick="marcardesmarcar(this,'{{$inscrito->id}}')" class="hide-onprint">
 		</td>
 		<!-- // fim selecionador -->
 
@@ -257,14 +359,14 @@ body{
 		@foreach($aulas as $aula)
 		<td class="presenca aula-{{$aula->id}} aluno-{{$inscrito->id}}" >
 		@if(isset($aula->presentes) && in_array($inscrito->pessoa->id,$aula->presentes))
-			<input type="checkbox" name="presente[{{$inscrito->pessoa->id}},{{$aula->id}}]" checked="true" style="margin: 0;padding:0;" class="aula-{{$aula->id}} insc-{{$inscrito->id}}" onclick="contarFaltas('{{$inscrito->id}}')">
+			<input type="checkbox" pessoa="{{$inscrito->pessoa->id}}" aula="{{$aula->id}}" name="presente[{{$inscrito->pessoa->id}},{{$aula->id}}]" checked="true" style="margin: 0;padding:0;" class="aula-{{$aula->id}} insc-{{$inscrito->id}}" onclick="contarFaltas('{{$inscrito->id}}')">
 		@elseif($aula->status == 'executada' &&  ($inscrito->status == 'regular' || $inscrito->status == 'finalizada' ) && $inscrito->created_at < $aula->data->format('Y-m-d') ) 
 			@php ($falta++)
-			<input type="checkbox" name="presente[{{$inscrito->pessoa->id}},{{$aula->id}}]"  id="" style="margin: 0;padding:0;" class="aula-{{$aula->id}} insc-{{$inscrito->id}}" onclick="contarFaltas('{{$inscrito->id}}')">
+			<input type="checkbox" pessoa="{{$inscrito->pessoa->id}}" aula="{{$aula->id}}" name="presente[{{$inscrito->pessoa->id}},{{$aula->id}}]"   style="margin: 0;padding:0;" class="aula-{{$aula->id}} insc-{{$inscrito->id}}" onclick="contarFaltas('{{$inscrito->id}}')">
 		@elseif($aula->status == 'executada')
-		<input type="checkbox"  disabled style="margin: 0;padding:0;" title="Inscrição cancelada/transferida">
+		<input type="checkbox"  name="disabled" disabled style="margin: 0;padding:0;" title="Inscrição cancelada/transferida">
 		@elseif($aula->status == 'cancelada')
-		<input type="checkbox"  disabled style="margin: 0;padding:0;" title="Aula cancelada">
+		<input type="checkbox"  name="disabled" disabled style="margin: 0;padding:0;" title="Aula cancelada">
 		@endif
 		</td>
 		@endforeach
@@ -273,7 +375,7 @@ body{
 		<td style="border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;text-align:center;" id="faltas-{{$inscrito->id}}">{{$falta}}
 		</td>
 		<td style="border-right:1px solid #000000;border-bottom:1px solid #000000;overflow:hidden;padding:0px 3px 0px 3px;vertical-align:middle;">
-			<select name="conceito[{{$inscrito->id}}]" id="">
+			<select inscricao="{{$inscrito->id}}" name="conceito[{{$inscrito->id}}]" id="">
 				<option value="">&nbsp;</option>
 				<option value="CA" {{$inscrito->conceito=="CA"?"selected":''}}>CA</option>
 				<option value="SA" {{$inscrito->conceito=="SA"?"selected":''}}>SA</option>
@@ -289,7 +391,8 @@ body{
 
 	<tr style="height:60px;">
 		<td class="stilo3 hide-onprint" colspan="33">
-			<button type="submit">Salvar dados</button>
+			<p id="status"></p>
+			<button type="button" onclick="save({{$turma->id}});">Salvar dados</button>
 			<button type="button" onclick="location.reload();return false;">Resetar dados</button>
 		<button type="button" onclick="location.replace('/docentes/frequencia/conteudos/{{$turma->id}}');return false;">Editar conteúdo</button>
 			<button type="button" onclick="location.reload();return false;">Editar ocorrências</button>

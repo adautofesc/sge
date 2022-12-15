@@ -43,7 +43,11 @@
                     </div>
                     <div class="error-container">
                         <p>Para acessar esse recurso você precisa se uma autorização específica. Comunique o responsável para adquirí-la</p>
+                        @if(isset($recurso))
+                        <p><small>Error 403:{{$recurso}}</small></p>
+                        @else
                         <p><small>Error 403</small></p>
+                        @endif
                         <a class="btn btn-primary" href="javascript:history.back(-1)"> <i class="fa fa-angle-left"></i> Voltar para página anterior. </a>
                     </div>
                 </div>

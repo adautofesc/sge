@@ -490,6 +490,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		});
 		Route::middleware('liberar.recurso:19')->prefix('carne')->group(function(){
 			Route::get('gerar', function(){ return view('financeiro.carne.home');});
+			Route::get('gerarBackground','CarneController@gerarBG');
 			Route::get('fase1/{pessoa?}','CarneController@carneFase1');//gera lancamentos
 			Route::get('fase2/{pessoa?}','CarneController@carneFase2');//gera boletos
 			Route::get('fase3/{pessoa?}','CarneController@carneFase3');//associa parcelas aos boletos

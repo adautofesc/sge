@@ -25,14 +25,10 @@
 
                     <div class="text-xs-left">
                     @if($aniversariante)
-                        <img src="{{asset('/img/aniversario.png')}}" alt="Cartaz motivacional" width="100%">    
+                        <img src="{{asset('/img/aniversario.png')}}" alt="Cartaz da tela inicial" width="100%">    
                     @else
-                        @if(file_exists(public_path().'/img/home.png'))
-
-                            <img src="{{asset('/img/home.png')}}" alt="Cartaz motivacional" width="100%">
-                        @else
-                            <img src="{{asset('/img/home.jpg')}}" alt="Cartaz motivacional" width="100%">
-                        @endif
+                        <img src="{{asset('/img/home.'.$img_ext)}}" alt="Cartaz da tela inicial" width="100%">
+                        
                     @endif</div>
  
                 </div>

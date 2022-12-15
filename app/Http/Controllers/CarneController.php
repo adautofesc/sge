@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Jobs\GeradorCarnes;
+use Illuminate\Support\Facades\Mail;
 use App\Boleto;
 use ZipArchive;
 
@@ -488,7 +490,12 @@ class CarneController extends Controller
 
 
 	   
-    
+    /**
+	 * Impressão individual
+	 *
+	 * @param [type] $pessoa
+	 * @return void
+	 */
     public function imprimirCarne($pessoa){
 		//dd('teste');
 		$boletos = Boleto::where('pessoa',$pessoa)->whereIn('status',['emitido','gravado','impresso'])->get();
@@ -565,8 +572,6 @@ class CarneController extends Controller
 				$boleto->save();
 			}
 			$boleto_completo = BoletoController::gerarBoleto($boleto);
-			//$boleto->status = 'impresso';
-			//$boleto->save();
 			$html->addBoleto($boleto_completo);
 		}
 		//$html->hideInstrucoes();
@@ -581,6 +586,37 @@ class CarneController extends Controller
 		return true;
 		
 
+	}
+	public function gerarBG(){
+		$pessoas = \App\Matricula::where('status','espera')->groupBy('pessoa')->pluck('pessoa')->toArray();  
+		
+		foreach($pessoas as $pessoa){
+			$this->dispatch(new \App\Jobs\GeradorCarnes($pessoa));
+			$msg[] =  'Solicitando geração dos boletos para pessoa '.$pessoa;
+		}
+		/*
+		Mail::send('emails.comunicado',['nome'=>'Adauto','mensagem' =>'Gostaría de avisar que os boletos foram gerados como esperado.'], function ($message){
+			$message->from('no-reply@fesc.saocarlos.sp.gov.br', 'Assistente SGE');
+			$message->to('adauto.oliveira@fesc.saocarlos.sp.gov.br');
+			$message->subject('Boletos gerados.');
+			});*/
+
+		return view('financeiro.carne.gerador')->with('msg',$msg);
+	}
+
+	public function geradorSegundoPlano($pessoa){
+		
+        echo 'Boleto da pessoa '.$pessoa."ok";
+        $this->gerarCarneIndividual($pessoa);
+        
+		/*
+		Mail::send('emails.comunicado',['nome'=>'Adauto','mensagem' =>'Gostaría de avisar que os boletos foram gerados como esperado.'], function ($message) use($user){
+			$message->from('no-reply@fesc.saocarlos.sp.gov.br', 'Assistente SGE');
+			$message->to('adauto.oliveira@fesc.saocarlos.sp.gov.br');
+			$message->subject('Boletos gerados.');
+			});*/
+			
+		
 	}
 
 

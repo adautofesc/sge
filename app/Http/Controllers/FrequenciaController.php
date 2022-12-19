@@ -88,7 +88,8 @@ class FrequenciaController extends Controller
             LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
         }
-
+        //$id_aulas = Aula::where('turma',$turma->id)->pluck('id')->toArray();
+        //$frequencias = Frequencia::whereIn('aula',$id_aulas)->get();
         $frequencias = Frequencia::select('*','frequencias.id as id')->join('aulas','frequencias.aula','aulas.id')->where('turma',$r->turma)->get();
 
 
@@ -106,15 +107,13 @@ class FrequenciaController extends Controller
 
         //verifica se ele recebeu alguma presença que não tinha (adicionar presença)      
         foreach($presentes as $aluno => $aulas){
-            foreach($aulas as $aula => $presenca){
-                
-                $freq = $frequencias->where('aluno',$aluno)->where('aula',$aula)->first();
+            foreach($aulas as $aula => $presenca){    
+                $freq = $frequencias->where('aluno',$aluno)->where('aula',$aula)->first();         
                 if($presenca){
                     if(!isset($freq->id) ){
                         Frequencia::novaFrequencia($aula,$aluno);
                     }
                 }
-
             }
         }
         

@@ -19,7 +19,7 @@ class CarneController extends Controller
 	 */
 	public function carneFase1(){
 		$pessoas = array();
-		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente','espera'])->where('data','>','2022-01-15')->paginate(50);
+		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente','espera'])->where('data','>','2022-11-01')->paginate(50);
 		//$matriculas = \App\Matricula::where('status','ativa')->where('obs','like','%IP%')->paginate(50);
 		//dd($matriculas);
 		foreach($matriculas as $matricula){
@@ -40,10 +40,11 @@ class CarneController extends Controller
 	 * Gerar PDF's
 	 */
 	public function carneFase4(){
-		$pessoas = Boleto::whereIn('status',['emitido','impresso'])->groupBy('pessoa')->paginate(20);
+		$pessoas = Boleto::whereIn('status',['gravado','emitido','impresso'])->where('vencimento','>=',date('Y-m-d'))->groupBy('pessoa')->paginate(20);
+		//dd($pessoas);
 		foreach($pessoas as $pessoa){
 			$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
-			$boletos = Boleto::where('pessoa',$pessoa->pessoa)->whereIn('status',['emitido','impresso'])->orderBy('pessoa')->orderBy('vencimento')->get();	
+			$boletos = Boleto::where('pessoa',$pessoa->pessoa)->whereIn('status',['gravado','emitido','impresso'])->where('vencimento','>=',date('Y-m-d'))->orderBy('pessoa')->orderBy('vencimento')->get();	
 			foreach($boletos as $boleto){
 
 				try{
@@ -77,7 +78,7 @@ class CarneController extends Controller
 		
 			//$boletos =Boleto::where('status','gravado')->orWhere('status','cancelar')->where('pessoa','22610')->paginate(500);
 		
-			$boletos =Boleto::where('status','gravado')->orWhere('status','cancelar')->paginate(500);
+			$boletos =Boleto::where('status','gravado')->where('vencimento','>=',date('Y-m-d'))->paginate(500);
 		foreach($boletos as $boleto){
 			$boleto->status = 'impresso';
 			$boleto->save();
@@ -116,7 +117,7 @@ class CarneController extends Controller
 		
 			//$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->where('pessoa', '22610')->paginate(500);
 		
-			$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->paginate(500);
+			$boletos =Boleto::whereIn('status',['impresso','cancelar'])->where('vencimento','>=',date('Y-m-d'))->paginate(500);
 
 		if(count($boletos) == 0)
 			return redirect()->back()->withErrors(['Nenhum boleto encontrado']);

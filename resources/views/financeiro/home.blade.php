@@ -26,14 +26,14 @@
                         &nbsp;&nbsp;Gerador Completo</a>
                     </div> 
                     <div>
-                        <a href="/financeiro/carne/gerarBackground" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="/financeiro/carne/gerarBackground" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Gera os carnês em segundo plano, deve-se aguardar uma hora para que todos sejam gerados">
                         <i class=" fa fa-arrow-circle-right "></i>
-                        &nbsp;&nbsp;Gerar Carnês</a>
+                        &nbsp;&nbsp;Gerador Offline</a>
                     </div>  
                     <div>
-                        <a href="/financeiro/carne/pdfs" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="/financeiro/carne/fase4" class="btn btn-primary-outline col-xs-12 text-xs-left" title="Gerar os arquivos de remessa e PDF's para gráfica em um arquivo ZIP">
                         <i class=" fa fa-arrow-circle-right "></i>
-                        &nbsp;&nbsp;Gerar PDF's</a>
+                        &nbsp;&nbsp;Gerar Zip para envio</a>
                     </div> 
                     <!--
                     <div>

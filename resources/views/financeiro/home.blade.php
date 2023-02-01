@@ -237,5 +237,10 @@
             window.location.replace("{{asset('financeiro/boletos/confirmar-impressao')}}");
         }
     }
+    function gerarRemessa(){
+        if(confirm("Tem certeza que deseja gerar um arquivo de remessa?")){
+            window.location.replace("{{asset('financeiro/boletos/remessa/gerar')}}");
+        }
+    }
 </script>
 @endsection

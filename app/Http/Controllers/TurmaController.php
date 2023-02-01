@@ -567,11 +567,15 @@ class TurmaController extends Controller
 
         ]);
         
-
-        if(date('Y', strtotime($request->dt_inicio))<date('Y')){
-            return redirect()->back()->withErrors(['Não é possível modificar dados de turmas de anos anteriores.']);
+        //limita edição somente até marco do ano seguinte
+        if(date('Y')-date('Y', strtotime($request->dt_inicio))>=1){      
+            if(date('Y')-date('Y', strtotime($request->dt_inicio))==1 && date('md')<'0330')
+            $alteracoes = 'Edição dos dados: '; 
+            else
+                return redirect()->back()->withErrors(['Não é possível modificar dados de turmas de anos anteriores.']);
             
         }
+      
         
         
         //verificar disponibilidade da sala.

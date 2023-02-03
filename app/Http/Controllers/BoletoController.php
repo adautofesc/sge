@@ -897,8 +897,8 @@ class BoletoController extends Controller
 		}
         
 		//inicia correção 
-		$valor = $boleto->valor;
-        $valor += $boleto->valor*ValorController::getFatorMultiplicador($periodo_ipca_do_boleto);
+		
+        $valor = $boleto->valor*ValorController::getFatorMultiplicador($periodo_ipca_do_boleto);
         $valor += ValorController::getMulta($boleto->valor);
         $valor += ValorController::getJuros($boleto->valor,$intervalo->days);
 

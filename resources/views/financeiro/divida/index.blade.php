@@ -149,7 +149,7 @@
                                      <td><input type="checkbox" name="" id=""></td>
                                      <td>{{$divida->id_divida}}</td>
                                      <td>{{$divida->ano}}</td>
-                                     <td>{{$divida->getNomePessoa()}}</td>
+                                     <td><a href="/secretaria/atender/{{$divida->pessoa}}">{{$divida->getNomePessoa()}}</a></td>
                                      <td>R$ {{number_format($divida->valor_consolidado,2,',','.') }} </td>
                                      <td>{{$divida->status}}</td>
                                      <td><i class="fa fa-cog"></i> </td>

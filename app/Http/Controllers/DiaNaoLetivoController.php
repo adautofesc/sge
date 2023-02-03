@@ -36,17 +36,28 @@ class DiaNaoLetivoController extends Controller
 
     public function ViewAddRecesso(){
 
-        return $this->addRecesso('06/07/2020','31/07/2020');
+        return $this->addRecesso('03/07/2023','14/07/2023');
     }
 
-    public function cadastroAnual($ano = 2022){
+    public function cadastroAnual($ano = 2023){
         $feriados_nacionais = \App\classes\Data::diasFeriados($ano);
         $feriados_estaduais =  ['Revolução Constitucionalista' => $ano.'-'.'07-09'];
         $feriados_municipais = ['N.S. da Babilônia' => $ano.'-'.'08-15', 
                                 'Aniversário da cidade' => $ano.'-'.'11-04'];
                             
-        $pontos_facultativos = ['Dia dos professores' => $ano.'-'.'10-15', 
-                               'Compensação do Dia do funcionalismo público 28/10' => $ano.'-'.'11-03']; 
+        $pontos_facultativos = ['Quarta de cinzas'=>$ano.'-02-22',
+                                'Ponto facultativo' => $ano.'-06-09',
+                                'Ponto facultativo' => $ano.'-08-14',
+                                'Ponto facultativo' => $ano.'-09-08',
+                                'Ponto facultativo' => $ano.'-10-13',
+                                'Ponto facultativo' => $ano.'-11-03',
+                                'Ponto facultativo' => $ano.'-12-26',
+
+                                'Dia do Funcionário Público' => $ano.'-10-28',
+                                
+
+       
+                               ]; 
 
         $feriados = array_merge($feriados_nacionais,$feriados_estaduais,$feriados_municipais,$pontos_facultativos);
 

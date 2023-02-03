@@ -36,9 +36,11 @@
 				Termino
 			</label>
 			<div class="col-sm-3"> 
-				
+					@if($carga->termino>0)
 					<input type="date" class="form-control boxed" name="termino" value="{{$carga->termino->format('Y-m-d')}}" > 
-				
+					@else
+					<input type="date" class="form-control boxed" name="termino" > 
+					@endif
 			</div>
 			
 		</div>
@@ -66,7 +68,7 @@
 			<div class="col-sm-10 col-sm-offset-2">
 				<input type="hidden" name="id" value="{{$carga->id}}">
 				<button type="submit" class="btn btn-primary" >Salvar</button>
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">cancelar</button>	
+				<button type="reset" class="btn btn-secondary" onclick="history.back(-2);return false;">cancelar</button>	
 			</div>
 
     	</div>

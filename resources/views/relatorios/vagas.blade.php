@@ -105,7 +105,11 @@
 							<td>{{$turmas['3']}}</td>
 							<td>{{$vagas['3']}}</td>
 							<td>{{$ocupacao['3']}}</td>
+							@if($vagas['3']>0)
 							<td>{{number_format(($ocupacao['3']*100)/$vagas['3'],2)}}</td>
+							@else 
+							<td>0</td>
+							@endif
 					
                     		
 						</tr>
@@ -114,7 +118,11 @@
 							<td>{{$turmas['1']}}</td>
 							<td>{{$vagas['1']}}</td>
 							<td>{{$ocupacao['1']}}</td>
+							@if($vagas['1']>0)
 							<td>{{number_format(($ocupacao['1']*100)/$vagas['1'],2)}}</td>
+							@else 
+							<td>0</td>
+							@endif
 					
                     		
 						</tr>
@@ -123,8 +131,12 @@
 							<td>{{$turmas['2']}}</td>
 							<td>{{$vagas['2']}}</td>
 							<td>{{$ocupacao['2']}}</td>
+							@if($vagas['2']>0)
 							<td>{{number_format(($ocupacao['2']*100)/$vagas['2'],2)}}</td>
-						
+							@else 
+							<td>0</td>
+							@endif
+					
                     		
 						</tr>
 						<tr>
@@ -132,8 +144,12 @@
 							<td>{{$turmas['4']}}</td>
 							<td>{{$vagas['4']}}</td>
 							<td>{{$ocupacao['4']}}</td>
+							@if($ocupacao['4']>0)
 							<td>{{number_format(($ocupacao['4']*100)/$vagas['4'],2)}}</td>
-						
+							@else 
+							<td>0</td>
+							@endif
+					
                     		
 						</tr>
 						<tr>
@@ -141,7 +157,11 @@
 							<td>{{$turmas['12']}}</td>
 							<td>{{$vagas['12']}}</td>
 							<td>{{$ocupacao['12']}}</td>
+							@if($vagas['12']>0)
 							<td>{{number_format(($ocupacao['12']*100)/$vagas['12'],2)}}</td>
+							@else 
+							<td>0</td>
+							@endif
 					
                     		
 						</tr>
@@ -150,7 +170,11 @@
 							<td>{{array_sum($turmas)}}</td>
 							<td>{{array_sum($vagas)}}</td>
 							<td>{{array_sum($ocupacao)}}</td>
+							@if(array_sum($vagas)>0)
 							<td>{{number_format((array_sum($ocupacao)*100)/array_sum($vagas),2)}}</td>
+							@else 
+							<td>0</td>
+							@endif
 					
                     		
 						</tr>

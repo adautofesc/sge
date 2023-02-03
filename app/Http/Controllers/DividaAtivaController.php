@@ -23,6 +23,7 @@ class DividaAtivaController extends Controller
 
     public function gerarDividaAtiva(){
 		$ipca = ValorController::getIPCA();
+		
 
 		$boletos = Boleto::where('status','emitido')->whereYear('vencimento','=',date('Y')-1)->paginate(900);
         //dd($boletos);
@@ -75,14 +76,14 @@ class DividaAtivaController extends Controller
 			
 			$boleto_completo->baixarBoleto();
 			$boleto->status='divida';			
-			//$boleto->save();
+			$boleto->save();
 			DividaAtiva::cadastrar($boleto, $ipca);
 
 
 
 		}
         //dd('divida ativa controller @ gerarDividaAtiva executado');
-		$remessa->save( 'remessas/'.date('YmdHi').'.rem');
+		$remessa->save( 'documentos/remessas/'.date('YmdHi').'.rem');
 		$arquivo = date('YmdHi').'.rem';
 		return view('financeiro.remessa.divida-arquivo',compact('boletos'))->with('arquivo',$arquivo);
 	}

@@ -490,8 +490,12 @@ class painelController extends Controller
     }
 
     public function testarClasse(){
+        dd(\App\Http\Controllers\DiaNaoLetivoController::cadastroAnual());
+        
 
-        $this->dispatch(new \App\Jobs\GeradorCarnes);
+
+
+       
 		return "Os boletos serão gerados";
     }
     

@@ -31,6 +31,12 @@
                         <a href="/dev/testar-classe" title="Executa classe de teste painelController." target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
                         &nbsp;&nbsp;Metodo de teste </a>
+                        <a href="/dev/gerar-dias-nao-letivos" title="Cadastrar dias não letivos" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                            <i class=" fa fa-arrow-right "></i>
+                            &nbsp;&nbsp;Cadastrar dias não letivos</a>
+                            <a href="/dev/add-recesso" title="Cadastrar recesso de dias não letivos" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                                <i class=" fa fa-arrow-right "></i>
+                                &nbsp;&nbsp;Cadastrar recesso</a>
                     </div>    
                             
                 </div>

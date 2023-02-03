@@ -327,7 +327,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('/bolsa/gerador', 'BolsaController@gerador');
 		Route::get('/corrigir-boletos','BoletoController@corrigirBoletosSemParcelas');
 		Route::get('ajusteBolsas', 'BolsaController@ajusteBolsaSemMatricula');
-		
+		Route::get('gerar-dias-nao-letivos','DiaNaoLetivoController@cadastroAnual');
 		Route::get('importar-status-boletos','painelController@importarStatusBoletos');
 		Route::get('add-recesso','DiaNaoLetivoController@ViewAddRecesso');
 		Route::get('cadastrarValores','ValorController@cadastrarValores');

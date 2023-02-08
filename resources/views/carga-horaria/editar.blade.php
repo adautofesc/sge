@@ -36,7 +36,7 @@
 				Termino
 			</label>
 			<div class="col-sm-3"> 
-					@if(isset($carga->termino))
+					@if(isset($carga->termino)) 
 					<input type="date" class="form-control boxed" name="termino" value="{{$carga->termino->format('Y-m-d')}}" > 
 					@else
 					<input type="date" class="form-control boxed" name="termino" > 

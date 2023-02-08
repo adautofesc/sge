@@ -96,8 +96,12 @@ class BolsaController extends Controller
     public function alterarStatusMatricula($bolsa,$status){
         $matriculas = $bolsa->getMatriculas(); 
         foreach($matriculas as $mat){
-            MatriculaController::alterarStatus($mat->id,$status);
+            MatriculaController::alterarStatus($mat->matricula,$status);
+            if($bolsa->status == 'ativa')
+                BoletoController::cancelarPorMatricula($mat->matricula);
         }
+        
+
     }
 
 
@@ -313,6 +317,7 @@ class BolsaController extends Controller
 
 
     public function gravarAnalise(Request $r){
+        //dd('teste');
          $this->validate($r,[
             'parecer' => 'required',
         ]);
@@ -322,13 +327,29 @@ class BolsaController extends Controller
         foreach($bolsa_array as $bolsa_i){
             $bolsa = Bolsa::find($bolsa_i);
             if($bolsa){
-                $bolsa->status = $r->parecer;
+
+                switch($r->parecer){
+                    case 'ativa':
+                        $bolsa->status = 'ativa';    
+                        $this->alterarStatusMatricula($bolsa,'ativa');
+
+                        $atendimento = AtendimentoController::novoAtendimento('Bolsa '.$bolsa->id.' aprovada.',$bolsa->pessoa);
+                        break;
+                    case 'indeferida':
+                        $bolsa->status = 'indeferida';                       
+                        $this->alterarStatusMatricula($bolsa,'cancelada');
+                        $atendimento = AtendimentoController::novoAtendimento('Bolsa '.$bolsa->id.' indeferida.',$bolsa->pessoa);
+                        break;
+                    
+                    
+                }
+
+                
                 $bolsa->obs = $r->obs."\n".date('d/m/Y').' parecer: '.$r->parecer.' por '.session('nome_usuario');
                 $bolsa->save();
             }
+
         }
-
-
         return redirect('/bolsas/liberacao')->withErrors(['Bolsa(s) alteradas com sucesso.']);
     }
 

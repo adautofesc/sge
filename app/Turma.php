@@ -259,10 +259,10 @@ class Turma extends Model
 	}
 
 	public function getVagasEmg(){
-		$mista = TurmaDados::where('id', $this->id)->where('dado','mista_emg')->first();
+		$mista = TurmaDados::where('turma', $this->id)->where('dado','mista_emg')->first();
 		if($mista){
-			$vagas = TurmaDados::where('id', $this->id)->where('dado','vagas_emg')->first();
-			$inscritos = TurmaDados::where('id', $this->id)->where('dado','inscritos_emg')->first();
+			$vagas = TurmaDados::where('turma', $this->id)->where('dado','vagas_emg')->first();
+			$inscritos = TurmaDados::where('turma', $this->id)->where('dado','inscritos_emg')->first();
 			if($vagas && $inscritos){
 				return $vagas->valor - $inscritos->valor;
 			}
@@ -338,7 +338,7 @@ class Turma extends Model
 		
 
 
-		if($idade_minima>0 && $idade_minima>=$aluno->getIdade()){
+		if($idade_minima>0 && $idade_minima>$aluno->getIdade()){
 			if($relatorio){
 				$retorno = new \stdClass;
 				$retorno->status = false;

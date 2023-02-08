@@ -51,14 +51,20 @@
                     <strong>Prof.</strong> {{$turma->professor->nome_simples}}<br/>
                     <strong>Local</strong> {{$turma->local->nome}}<br/>
                     <strong>Início:</strong> {{$turma->data_inicio}} <strong>Término</strong> {{$turma->data_termino}}<br/>
-                    <strong>Dia(s): </strong>{{implode(', ',$turma->dias_semana)}} <strong> Horários:</strong> {{$turma->hora_inicio}} às {{$turma->hora_termino}}<br/>
+                    <strong>Dia(s): </strong>{{implode(', ',$turma->dias_semana)}} <strong> Horários:</strong> {{$turma->hora_inicio}} às {{$turma->hora_termino}}<br/><br>
                     @if($turma->getVagasEMG()>0)
-                    <input type="checkbox" name="emg[{{$turma->id}}]"> Inscrição EMG
+                    <label class="item-check">
+                        <input type="checkbox" class="checkbox" name="emg[{{$turma->id}}]" value="true">
+                        <span>Inscrição mista EMG</span>
+                        </label>
                     @endif
-
+                    
+                    
+ 
                 </div>
                 <div class="col-xs-6">
                     Requisitos:
+                    
                     <ul>
                         @if(isset($turma->requisitos))
                             @foreach($turma->requisitos as $requisito)

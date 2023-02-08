@@ -100,6 +100,9 @@ class MatriculaController extends Controller
      * @return View     secretaria.inscricao.gravar
      */
     public function gravar(Request $r){
+        
+        //dd($r->emg);
+        
         //throw new \Exception("Matricula temporariamente suspensa. Tente novamente em instantes.", 1);
         
         //criar colections de objetos
@@ -107,7 +110,7 @@ class MatriculaController extends Controller
         $cursos=collect();
 
 
-        // recebe lista de turmas csv
+        //Recebe lista de turmas csv
         $turmas=TurmaController::csvTurmas($r->turmas); 
         foreach($turmas as $turma){
             $insc=InscricaoController::inscreverAluno($r->pessoa,$turma->id);

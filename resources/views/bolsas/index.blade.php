@@ -173,7 +173,7 @@
                                                     
                                                     <div class="item-col item-col-title pessoa">
                                                         <div class="item-heading">Pessoa</div>
-                                                        <div>{{$bolsa->getNomePessoa()}}</div> 
+                                                        <div><a href="/secretaria/atender/{{$bolsa->pessoa}}">{{$bolsa->getNomePessoa()}}</a></div> 
                                                     </div>
 
 

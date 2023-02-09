@@ -867,7 +867,7 @@ class MatriculaController extends Controller
                         InscricaoController::atualizarPorMatricula($matricula->id,$matricula->status); 
                     }
                 }
-                \App\BolsaMatricula::atualizarPorMatricula($matricula->id);                 
+                \App\BolsaMatricula::atualizarPorMatricula($matricula_id);                 
             }
         }
     }

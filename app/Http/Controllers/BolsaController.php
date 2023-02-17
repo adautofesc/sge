@@ -322,6 +322,8 @@ class BolsaController extends Controller
             'parecer' => 'required',
         ]);
 
+        //dd(\Session::get('nome_usuario'));
+
 
         $bolsa_array = explode(",", $r->bolsas);
         foreach($bolsa_array as $bolsa_i){
@@ -332,7 +334,6 @@ class BolsaController extends Controller
                     case 'ativa':
                         $bolsa->status = 'ativa';    
                         $this->alterarStatusMatricula($bolsa,'ativa');
-
                         $atendimento = AtendimentoController::novoAtendimento('Bolsa '.$bolsa->id.' aprovada.',$bolsa->pessoa);
                         break;
                     case 'indeferida':
@@ -345,7 +346,7 @@ class BolsaController extends Controller
                 }
 
                 
-                $bolsa->obs = $r->obs."\n".date('d/m/Y').' parecer: '.$r->parecer.' por '.session('nome_usuario');
+                $bolsa->obs = $r->obs."\n".date('d/m/Y').' parecer: '.$r->parecer.' por '.\Auth::user()->username;
                 $bolsa->save();
             }
 
@@ -548,6 +549,22 @@ class BolsaController extends Controller
       
 
         return $alunos;
+
+
+    }
+
+    /**
+     * Inscrição de aluno em turma mista
+     *
+     * @param integer $pessoa
+     * @param integer $turma
+     * @return void
+     */
+    public static function inscricaoEMG(\App\Inscricao $inscricao){
+        //verifica se há bolsa emg
+        //verifica se tem matricula vinculada a essa bolsa
+
+        
 
 
     }

@@ -26,9 +26,9 @@ class CobrancaController extends Controller
 				$boletos = Boleto::where('status','divida')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
 				break;
 			case 0:
-				$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y')-1)->orderBy('pessoa')->get();
+				$boletos = Boleto::whereIn('status',['emitido','divida'])->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y')-1)->orderBy('pessoa')->get();
 				foreach($boletos as $boleto){
-					BoletoController::alterarStatus($boleto, 'inscrever');
+					//BoletoController::alterarStatus($boleto, 'inscrever');
 				}
 				break;
 			default:

@@ -114,6 +114,7 @@ class MatriculaController extends Controller
         $turmas=TurmaController::csvTurmas($r->turmas); 
         foreach($turmas as $turma){
             $insc=InscricaoController::inscreverAluno($r->pessoa,$turma->id);
+            BolsaController::inscricaoEMG($insc);
         }
         
         $CC = new CarneController;

@@ -146,16 +146,7 @@ class FrequenciaController extends Controller
     }
 
     public function novaChamada_view(int $turma){
-        $aulas = Aula::where('turma',$turma)->where('status','prevista')->orderBy('data')->get();
-        
-        if($aulas->count()==0){
-            $AULA_CONTROLER = new AulaController;
-            $aulas = $AULA_CONTROLER->gerarAulas($turma);
-            if($aulas->count()==0){
-                dd('ERRO: aulas não geradas, por favor verifique as datas de início e termino da turma.');
-            }
-            
-        }           
+        $aulas = Aula::where('turma',$turma)->where('status','prevista')->orderBy('data')->get();         
         $turma = \App\Turma::find($turma);
 
         if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)){
@@ -183,7 +174,16 @@ class FrequenciaController extends Controller
 
     public function novaChamada_exec(Request $req){
        
-        $aula = Aula::find($req->aula);
+        if($req->aula>0)
+            $aula = Aula::find($req->aula);
+        else{
+            $aula = new Aula;
+            $aula->data = $req->data;
+            $aula->turma = $req->turma;
+            $aula->status = 'executada';
+            $aula->save();
+        }
+
 
         $turma = \App\Turma::find($aula->turma);
         
@@ -195,17 +195,17 @@ class FrequenciaController extends Controller
     
         if(!is_null($req->conteudo)){
             $auladado = new AulaDadoController;
-            $auladado->createDadoAula($req->aula,'conteudo',$req->conteudo);
+            $auladado->createDadoAula($aula->id,'conteudo',$req->conteudo);
             
         }
         if(!is_null($req->ocorrencia)){
             $auladado = new AulaDadoController;
-            $auladado->createDadoAula($req->aula,'ocorrencia', $req->ocorrencia);
+            $auladado->createDadoAula($aula->id,'ocorrencia', $req->ocorrencia);
             
         }
         if(isset($req->aluno)){
             foreach($req->aluno as $aluno){  
-               Frequencia::novaFrequencia($req->aula,$aluno);
+               Frequencia::novaFrequencia($aula->id,$aluno);
             }
         }
         $aula->status = 'executada';

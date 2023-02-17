@@ -315,15 +315,26 @@ class TurmaController extends Controller
         else
             return "Nenhum aluno cadastrado para esta turma.";
     }
+
+    
+
+    /**
+     * IMpressão de lista de chamada
+     *
+     * @param [type] $ids
+     * @return void
+     */
     public function impressaoMultipla($ids){
+        
         $turmas_arr = explode(',',$ids);
         $turmas = \App\Turma::whereIn('id',$turmas_arr)->get();
+
         
         foreach($turmas as $turma){
-            $turma->inscritos =\App\Inscricao::where('turma',$turma->id)->whereIn('status',['regular','espera','ativa'])->get();
+            $turma->inscritos =\App\Inscricao::where('turma',$turma->id)->whereIn('status',['regular','espera','ativa','finalizada'])->get();
             $turma->inscritos = $turma->inscritos->sortBy('pessoa.nome');
         }
-       // dd($turmas);
+        //dd($turmas);
         return view('frequencias.impressao-multiplas',compact('turmas'));
     }
 

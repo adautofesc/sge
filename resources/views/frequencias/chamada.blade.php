@@ -28,14 +28,19 @@
 				</label>
 				
 				<div class="col-sm-2"> 
+					@if($aulas->count()>0)
 					<select class="c-select form-control boxed" name="aula" required>
 						
 						@foreach($aulas as $aula)
 						<option value="{{$aula->id}}">{{$aula->data->format('d/m/Y')}}</option>
 						@endforeach
-						
-			
 					</select> 
+					@else
+						<input type="date" class="form-control" name="data">
+						<input type="hidden" name="aula" value="0">
+						<input type="hidden" name="turma" value="{{$turma->id}}">
+
+					@endif
 				</div>
 				
 				

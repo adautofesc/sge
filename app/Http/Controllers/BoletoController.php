@@ -101,23 +101,28 @@ class BoletoController extends Controller
 			break;
 			case 'reativar':
 				$boleto->status = 'emitido';
+				$boleto->save();
 				LogController::alteracaoBoleto($boleto->id,'Boleto reativado');
 			break;
 			case 'renegociar':
 				$boleto->status = 'renegociado';
+				$boleto->save();
 				LogController::alteracaoBoleto($boleto->id,'Boleto renegociado');
 			break;
 			case 'inscrever':
 				$boleto->status = 'divida';
+				$boleto->save();
 				LogController::alteracaoBoleto($boleto->id,'Boleto inscrito em dívida');
 			break;
 			case 'pago':
 				$boleto->status = 'pago';
+				$boleto->save();
 				LogController::alteracaoBoleto($boleto->id,'Boleto pago diretamente à FESC');
 			break;
 			
 
 		}
+		
 
 	}
 

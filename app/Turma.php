@@ -281,6 +281,12 @@ class Turma extends Model
 
 	}
 
+	public function getConceitos($tipo = 'ca'){
+		$num_inscricoes = Inscricao::where('turma',$this->id)->where('conceito',strtoupper($tipo))->where('status','finalizada')->count();
+		return $num_inscricoes;
+
+	}
+
 	public function verificaRequisitos($aluno, $relatorio = false){
 	
 		$aluno = Pessoa::find($aluno);

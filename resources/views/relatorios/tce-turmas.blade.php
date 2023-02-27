@@ -105,11 +105,20 @@
                     <thead style="line-height:40px;">
                       	<th width="60px">Id</th>
                         <th width="30%">Atividade</th>
-                        <th width="10%">Local</th>
-                        <th width="10%">Dias</th>
-                        <th width="15%">Horários</th>
-                        <th width="20%">Início/Termino</th>
+                        <th width="5%">Local</th>
+                        <th width="7%">Dias</th>
+                        <th width="9%">Horários</th>
+                        <th width="8%">Início</th>
+						<th width="8%">Termino</th>
                         <th width="12%">Professor</th>
+						<th width="3%" title="Vagas">V</th>
+						<th width="3%" title="Ocupação">O</th>
+						<th width="3%" title="Com Aproveitamento">CA</th>
+						<th width="3%" title="Sem Aproveitamento">SA</th>
+						<th width="3%" title="Evadidos">EV</th>
+						<th width="3%" title="Nunca Frenquentou">NF</th>
+						
+						
                         
                
                         
@@ -125,8 +134,15 @@
 	                    		<td>{{$turma->local->sigla}}</td>
 	                    		<td>{{implode(', ',$turma->dias_semana)}}</td>
 	                    		<td>{{$turma->hora_inicio. ' às '.$turma->hora_termino}}</td>
-	                    		<td>{{$turma->data_inicio .' até '.$turma->data_termino}}</td>
+	                    		<td>{{$turma->data_inicio}}</td>
+								<td>{{$turma->data_termino}}</td>
 	                    		<td>{{$turma->professor->nome_simples}}</td>
+								<td>{{$turma->vagas}}</td>
+								<td>{{$turma->matriculados}}</td>
+								<td>{{$turma->ca}}</td>
+								<td>{{$turma->sa}}</td>
+								<td>{{$turma->ev}}</td>
+								<td>{{$turma->nf}}</td>
 	                    	</tr>
 	                    	
 

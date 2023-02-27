@@ -206,6 +206,10 @@ class RelatorioController extends Controller
         $planilha->setCellValue('M2', 'Estado');
         $planilha->setCellValue('N2', 'Matriculas');
         $planilha->setCellValue('O2', 'Sala');
+        $planilha->setCellValue('P2', 'CA');
+        $planilha->setCellValue('Q2', 'SA');
+        $planilha->setCellValue('R2', 'EV');
+        $planilha->setCellValue('S2', 'NF');
 
 
         $tc =  new \App\Http\Controllers\TurmaController;
@@ -232,6 +236,13 @@ class RelatorioController extends Controller
                 $planilha->setCellValue('O'.$linha, $turma->sala->nome);
             else
                 $planilha->setCellValue('O'.$linha, 'ND');
+            
+            $planilha->setCellValue('P'.$linha, $turma->getConceitos('ca'));
+            $planilha->setCellValue('Q'.$linha, $turma->getConceitos('sa'));
+            $planilha->setCellValue('R'.$linha, $turma->getConceitos('ev'));
+            $planilha->setCellValue('S'.$linha, $turma->getConceitos('nf'));
+
+
             $linha++;
         }
 
@@ -564,10 +575,16 @@ Event::where('status' , 0)
         $turmas = \App\Turma::whereBetween('data_inicio', [($ano-1).'-11-20%',$ano.'-11-20%'])
             ->where('status', '!=','cancelada')
             ->orderBy('data_inicio')
+            
             ->get();
 
         foreach($turmas as $turma){   
             $turma->nome_curso = $turma->getNomeCurso();
+            $turma->ca = $turma->getConceitos('ca');
+            $turma->sa = $turma->getConceitos('sa');
+            $turma->ev = $turma->getConceitos('ev');
+            $turma->nf = $turma->getConceitos('nf');
+
         }
 
         $turmas = $turmas->sortBy('nome_curso');

@@ -305,6 +305,7 @@ class BoletoController extends Controller
 
 	}
 	public function imprimir($boleto,Request $r){
+
 		$boleto = Boleto::find($boleto);
 		if(!isset(Auth::user()->pessoa))
 			if(!isset($r->pessoa->id) || $r->pessoa->id != $boleto->pessoa)
@@ -332,14 +333,15 @@ class BoletoController extends Controller
 			}
 		
 		if($boleto->status == 'gravado' || $boleto->status == 'impresso'){
-
+			
 			$pessoa = Pessoa::withTrashed()->find($boleto->pessoa);
 			$pessoa = PessoaController::formataParaMostrar($pessoa);
 			//dd($pessoa);
 			//$pessoa->formataParaMostrar();
-			$boleto->status = 'emitido';
+			$boleto->status = 'pelosite';
 			$boleto->remessa=intval(date('YmdHi'));
 			$boleto->save();
+			
 
 			LogController::alteracaoBoleto($boleto->id,'Registro do boleto pelo site BB');
 

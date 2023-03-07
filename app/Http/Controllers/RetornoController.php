@@ -249,7 +249,7 @@ class RetornoController extends Controller
 					switch($linha->ocorrenciaTipo){
 						case 1: //Liquidação
 							if($boleto->status == 'cancelar')
-								\App\Lancamento::where('boleto',$boleto->id)->update(['status'=>'']);
+								\App\Lancamento::where('boleto',$boleto->id)->update(['status'=>'']);//coloca o status dos lançamentos desse boleto como null ao inves de cancelados
 							$boleto->status = 'pago';
 							$boleto->pagamento = \Carbon\Carbon::createFromFormat('d/m/Y H:i:s', $data, 'Europe/London');
 							$boleto->pago = $linha->valor;
@@ -339,7 +339,7 @@ class RetornoController extends Controller
 							LogController::alteracaoBoleto($boleto->id,'Pagamento confirmado');
 						break;
 						case 3: //Entrada confirmada
-							if($boleto->status == 'gravado' || $boleto->status == 'impresso'){
+							if($boleto->status == 'gravado' || $boleto->status == 'impresso' || $boleto->status == 'pelosite' ){
 								$boleto->status = 'emitido';
 								$boleto->save();
 								LogController::alteracaoBoleto($boleto->id,'Registro confirmado');
@@ -356,6 +356,8 @@ class RetornoController extends Controller
 							if($boleto->status == 'impresso'){
 								$boleto->status = 'erro';
 								$boleto->save();
+								//adicionar pendencia na pessoa
+								PessoaDadosAdministrativos::cadastrarUnico($boleto->pessoa,'pendencia','Erro no boleto'.$boleto->id.': '.$linha->ocorrenciaDescricao);
 							}
 							if($boleto->status == 'cancelar'){
 								$boleto->status = 'cancelado';

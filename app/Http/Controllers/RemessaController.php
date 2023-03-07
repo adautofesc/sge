@@ -29,7 +29,8 @@ class RemessaController extends Controller
 		    ]
 		);
 		
-		$boletos =Boleto::where('status','impresso')->orWhere('status','cancelar')->paginate(300);
+		//$boletos =Boleto::whereIn('status',['impresso','pelosite','cancelar'])->paginate(300);
+		$boletos =Boleto::where('status','emitido')->where('vencimento','like','2023-03-10 %')->paginate(300);
 
 		if($boletos->count() == 0)
 			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Nenhum boleto encontrado']);

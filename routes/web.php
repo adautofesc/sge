@@ -322,7 +322,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	//desenvoldedor
 	Route::middleware('liberar.recurso:22')->prefix('dev')->group(function(){
 		Route::get('/','painelController@indexDev');
-		Route::get('testar-classe', 'painelController@testarClasse');
+		Route::get('testar-classe/{var}', 'AulaDadoController@relatorioConteudo');
 		Route::post('testar-classe', 'painelController@testarClassePost');
 		Route::get('/bolsa/gerador', 'BolsaController@gerador');
 		Route::get('/corrigir-boletos','BoletoController@corrigirBoletosSemParcelas');

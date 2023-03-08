@@ -499,7 +499,7 @@ class CarneController extends Controller
 	 */
     public function imprimirCarne($pessoa){
 		//dd('teste');
-		$boletos = Boleto::where('pessoa',$pessoa)->whereIn('status',['emitido','gravado','impresso'])->get();
+		$boletos = Boleto::where('pessoa',$pessoa)->whereIn('status',['emitido','gravado','impresso','pelosite'])->get();
 		
 		//$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
 		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();

@@ -102,7 +102,7 @@ class SecretariaController extends Controller
 
 			 }
 			 $boletos = Boleto::where('pessoa',$id)
-			 	->whereIn('status',['gravado','impresso','emitido','divida','aberto executado','pago'])
+			 	->whereIn('status',['gravado','impresso','emitido','divida','aberto executado','pago','pelosite'])
 			 	->orderBy('id','desc')
 				->limit(20)
 			 	->get();

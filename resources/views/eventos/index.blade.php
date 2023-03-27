@@ -1,6 +1,7 @@
 @extends('layout.app')
 @section('titulo')Gerenciador de eventos @endsection
 @section('pagina')
+<link rel="stylesheet" href="{{asset('/css/calendario.evento.css')}}" >
 <style>
 @media (min-width: 767px){
     .codigo{
@@ -17,8 +18,9 @@
         font-size: 20px;
     }
 }
-    
+
 </style>
+
 <ol class="breadcrumb">
   <li class="breadcrumb-item"><a href="../../">Home</a></li>
 </ol>
@@ -69,42 +71,152 @@
             <div class="card sameheight-item">
                 <div class="card-block">
                     <!-- Nav tabs -->
-                    <div class="row">
-                        <div class="col-xs-6 text-xs">
-                            {{ $bolsas->links() }}
-                        </div>
-                        <div class="col-xs-6 text-xs-right">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"></div> 
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="row" first-day="1">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label for="locale">Select language:</label>
+                                                <select id="locale" class="form-control language-select">
+                                                    <option value="ar">AR</option> 
+                                                    <option value="en">EN</option> 
+                                                    <option value="de">DE</option>
+                                                </select>
+                                            </div>
+                                        </div> 
+                                        <div class="col-sm-4 header-center">
+                                            <div class="btn-group">
+                                                <button class="btn btn-outline btn-primary btn-sm">⇐ Anterior</button>
+                                                <button class="btn btn-outline btn-default btn-sm today-button ">⇓ Hoje</button> 
+                                                <button class="btn btn-outline btn-primary btn-sm">Próximo ⇒</button>
+                                            </div>
+                                        </div> 
+                                        <div class="col-sm-4">
+                                            <div class="title"> March 2023</div>
+                                        </div>
+                                    </div> 
+                                    <div class="full-calendar-body">
+                                        <div class="weeks">
+                                            <strong class="week">Dom</strong>
+                                            <strong class="week">Seg</strong>
+                                            <strong class="week">Ter</strong>
+                                            <strong class="week">Qua</strong>
+                                            <strong class="week">Qui</strong>
+                                            <strong class="week">Sex</strong>
+                                            <strong class="week">Sab</strong>
+                                        </div> 
+                                        <div class="dates">
+                                            <div class="week-row" firstday="1"><!----> 
+                                                <div class="day-cell weekend">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div style="display: none;">
+                                                                <span class="label label-success"> Add Event</span>
+                                                            </div>
+                                                        </div> 
+                                                        <div class="col-sm-6">
+                                                            <p class="day-number">27</p>
+                                                        </div>
+                                                    </div> 
+                                                    <div class="event-box"></div>
+                                                </div>
+                                                <div class="day-cell current-month">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div style="display: none;">
+                                                                <span class="label label-success"> Add Event</span>
+                                                            </div>
+                                                        </div> 
+                                                        <div class="col-sm-6">
+                                                            <p class="day-number">28</p>
+                                                        </div>
+                                                    </div> 
+                                                    <div class="event-box"></div>
+                                                </div>
+                                                <div class="day-cell today current-month">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div style="display: none;">
+                                                                <span class="label label-success"> Add Event</span>
+                                                            </div>
+                                                        </div> 
+                                                        <div class="col-sm-6">
+                                                            <p class="day-number">1</p>
+                                                        </div>
+                                                    </div> 
+                                                    <div class="event-box">
 
-                            
-                            <div class="action dropdown pull-right "> 
-                                <a href="#" class="btn btn-sm rounded-s btn-secondary" title="Exportar para excel"><img src="/img/excel.svg" alt="excel" width="20px"></a>
-                                <button class="btn btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Com os selecionados...
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
-                
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('aprovar')">
-                                        <label><i class="fa fa-check-circle-o icon text-success"></i> Aprovar</label>
-                                    </a> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('negar')">
-                                        <label><i class="fa fa-ban icon text-danger"></i> Negar</label>
-                                    </a> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('analisando')">
-                                        <label><i class="fa fa-clock-o icon text-warning"></i><span> Analisando</span></label>
-                                    </a> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('cancelar')">
-                                        <label><i class="fa fa-minus-circle icon text-danger"></i> <span> Cancelar</span></label>
-                                    </a> 
-                                    <a class="dropdown-item" href="#" onclick="alterarStatus('apagar')">
-                                        <label><i class="fa fa-times-circle icon text-danger"></i> <span> Excluir</span></label>
-                                    </a> 
-                                    
-                                </div>
-                             </div>
-                            
-                        </div>
 
-                    </div>
-                    
+                                                        <div class="panel no-margin panel-danger" day-date="Thu Mar 23 2023 00:00:00 GMT-0300">
+                                                            <div class="panel-heading event-title">Event 1</div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                                <div class="day-cell current-month">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div style="display: none;">
+                                                                <span class="label label-success"> Add Event</span>
+                                                            </div>
+                                                        </div> 
+                                                        <div class="col-sm-6">
+                                                            <p class="day-number">2</p>
+                                                        </div>
+                                                    </div> 
+                                                    <div class="event-box"></div>
+                                                </div>
+                                                <div class="day-cell current-month">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div style="display: none;">
+                                                                <span class="label label-success"> Add Event</span>
+                                                            </div>
+                                                        </div> 
+                                                        <div class="col-sm-6">
+                                                            <p class="day-number">3</p>
+                                                        </div>
+                                                    </div> 
+                                                    <div class="event-box"></div>
+                                                </div>
+                                                <div class="day-cell current-month">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div style="display: none;">
+                                                                <span class="label label-success"> Add Event</span>
+                                                            </div>
+                                                        </div> 
+                                                        <div class="col-sm-6">
+                                                            <p class="day-number">4</p>
+                                                        </div>
+                                                    </div> 
+                                                    <div class="event-box"></div>
+                                                </div>
+                                                <div class="day-cell current-month">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div style="display: none;">
+                                                                <span class="label label-success"> Add Event</span>
+                                                            </div>
+                                                        </div> 
+                                                        <div class="col-sm-6">
+                                                            <p class="day-number">5</p>
+                                                        </div>
+                                                    </div> 
+                                                    <div class="event-box"></div>
+                                                </div>
+                                            </div><!-- callendar week row -->
+                                        </div><!-- callendar dates -->
+                                    </div><!-- callendar full-c.body -->
+                                </div><!-- callendar col -->
+                            </div><!-- callendar row -->
+                        </div><!-- callendar panel-body -->
+                    </div><!-- callendar panel -->
+                                                
                     <div class="tab-content tabs-bordered">
 
                         <!-- Tab panes ******************************************************************************** -->
@@ -161,7 +273,7 @@
                                                     <div class="item-col item-col-header fixed item-col-actions-dropdown">&nbsp; </div>
                                                 </div>
                                             </li>
-                                            @foreach($bolsas as $bolsa)
+                                            @foreach($eventos as $evento)
 
 
                                                                                   
@@ -171,7 +283,7 @@
 
                                                     <div class="item-col fixed item-col-check" > 
                                                         <label class="item-check" >
-                                                        <input type="checkbox" class="checkbox" name="turma" value="{{$bolsa->id}}">
+                                                        <input type="checkbox" class="checkbox" name="turma" value="{{$evento->id}}">
                                                         <span></span>
                                                         </label>
                                                     </div>
@@ -179,20 +291,20 @@
 
                                                     <div class="item-col item-col codigo">
                                                         <div class="item-heading">id</div>
-                                                        <div > <a href="./analisar/{{$bolsa->id}} ">{{$bolsa->id}} </a></div>
+                                                        <div > </div>
                                                     </div>
                                         
                                                     
                                                     <div class="item-col item-col-title pessoa">
                                                         <div class="item-heading">Pessoa</div>
-                                                        <div>{{$bolsa->getNomePessoa()}}</div> 
+                                                        <div></div> 
                                                     </div>
 
 
                                                     <div class="item-col item-col pedidoem" >
                                                         <div class="item-heading">Data</div>
                                                         <div> 
-                                                            <small>{{$bolsa->created_at->format('d/m/Y')}}</small>
+                                                            <small>data</small>
                                                         </div>
                                                     </div>
 
@@ -201,27 +313,27 @@
                                                     <div class="item-col item-col">
                                                         <div class="item-heading">Tipo</div>
                                                      
-                                                        <div><small>{{$bolsa->desconto_str->nome}}</small></div>
+                                                        <div><small></small></div>
                                                      
                                                     </div>
                                                      
                                                    
                                                     <div class="item-col item-col">
                                                         <div class="item-heading">Status</div>
-                                                        <div> @if($bolsa->status == 'analisando')
+                                                        <div> @if($evento->status == 'analisando')
                                                             <span class="badge badge-pill badge-warning">
-                                                            @elseif($bolsa->status == 'ativa')
+                                                            @elseif($evento->status == 'ativa')
                                                             <span class="badge badge-pill badge-success">
-                                                            @elseif($bolsa->status == 'indeferida')
+                                                            @elseif($evento->status == 'indeferida')
                                                             <span class="badge badge-pill badge-danger">
-                                                            @elseif($bolsa->status == 'cancelada')
+                                                            @elseif($evento->status == 'cancelada')
                                                             <span class="badge badge-pill badge-danger">
-                                                            @elseif($bolsa->status == 'expirada')
+                                                            @elseif($evento->status == 'expirada')
                                                             <span class="badge badge-pill badge-secondary">
                                                             @else
                                                             <span>
                                                             @endif
-                                                            {{$bolsa->status}}</span>
+                                                            {{$evento->status}}</span>
                                                         </div>
                                                     </div>
 
@@ -239,16 +351,16 @@
                                                             <div class="item-actions-block">
                                                                 <ul class="item-actions-list">
                                                                     <li>
-                                                                     <a class="edit" title="Aprovar" href="#" onclick="alterarStatusIndividual('aprovar','{{$bolsa->id}}')"> <i class="fa fa-check-circle-o "></i> </a>
+                                                                     <a class="edit" title="Aprovar" href="#" onclick="alterarStatusIndividual('aprovar','{{$evento->id}}')"> <i class="fa fa-check-circle-o "></i> </a>
                                                                     </li>
                                                                     <li>
-                                                                     <a class="remove" title="Negar" href="#" onclick="alterarStatusIndividual('negar','{{$bolsa->id}}')"> <i class="fa fa-ban "></i> </a>
+                                                                     <a class="remove" title="Negar" href="#" onclick="alterarStatusIndividual('negar','{{$evento->id}}')"> <i class="fa fa-ban "></i> </a>
                                                                     </li>
                                                                     <li>
-                                                                     <a class="edit" title="Colocar para análise" href="#" onclick="alterarStatusIndividual('analisando','{{$bolsa->id}}')"> <i class="fa fa-clock-o "></i> </a>
+                                                                     <a class="edit" title="Colocar para análise" href="#" onclick="alterarStatusIndividual('analisando','{{$evento->id}}')"> <i class="fa fa-clock-o "></i> </a>
                                                                     </li>
                                                                     <li>
-                                                                     <a class="remove" title="Cancelar" href="#" onclick="alterarStatusIndividual('cancelar','{{$bolsa->id}}')"> <i class="fa fa-minus-circle "></i> </a>
+                                                                     <a class="remove" title="Cancelar" href="#" onclick="alterarStatusIndividual('cancelar','{{$evento->id}}')"> <i class="fa fa-minus-circle "></i> </a>
                                                                     </li>
                                                                     
                                                                 
@@ -276,7 +388,7 @@
         <!-- /.col-xl-6 -->
     </div>
 
-{{ $bolsas->links() }}
+links
 
 </form>
 </section>

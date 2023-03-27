@@ -322,7 +322,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	//desenvoldedor
 	Route::middleware('liberar.recurso:22')->prefix('dev')->group(function(){
 		Route::get('/','painelController@indexDev');
-		Route::get('testar-classe/{var}', 'AulaDadoController@relatorioConteudo');
+		Route::get('testar-classe/', 'BoletoLogController@migrarLogs');
 		Route::post('testar-classe', 'painelController@testarClassePost');
 		Route::get('/bolsa/gerador', 'BolsaController@gerador');
 		Route::get('/corrigir-boletos','BoletoController@corrigirBoletosSemParcelas');
@@ -665,6 +665,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('atendimento','SecretariaController@atender');
 		Route::get('atender','SecretariaController@atender')->name('secretaria.atender');
 		Route::get('atender/{var}','SecretariaController@atender');
+		Route::get('profile/{var}','SecretariaController@profile');
 		Route::get('processar-documentos','SecretariaController@processarDocumentos');
 
 		Route::get('turmas', 'TurmaController@listarSecretaria');

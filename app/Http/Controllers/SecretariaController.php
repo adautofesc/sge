@@ -147,6 +147,122 @@ class SecretariaController extends Controller
 			->with('atestado',$atestado)
 			->with('devedor',$devedor);
 	}
+
+	public function profile($id=0){
+		$devedor = false;
+
+		if($id>0)
+			session('pessoa_atendimento',$id);
+		else
+			$id=session('pessoa_atendimento');		
+		$pessoa=Pessoa::withTrashed()->find($id);
+		if(!$pessoa)
+			return redirect(asset('/secretaria/pre-atendimento'));
+		else
+			Session::put('pessoa_atendimento',$id);	
+		$pessoa=PessoaController::formataParaMostrar($pessoa);
+		//$pessoa->getTelefones();
+		if(isset($pessoa->telefone))
+			$pessoa->telefone=Strings::formataTelefone($pessoa->telefone);
+		if(isset($pessoa->telefone_alternativo))
+			$pessoa->telefone_alternativo=Strings::formataTelefone($pessoa->telefone_alternativo);
+		if(isset($pessoa->telefone_contato))
+			$pessoa->telefone_contato=Strings::formataTelefone($pessoa->telefone_contato);
+		
+		if(!Session::get('atendimento')){
+			
+			$atendimento=new Atendimento();
+			$atendimento->atendente=Auth::user()->pessoa;
+			$atendimento->usuario=$pessoa->id;
+			$atendimento->save();
+			
+			Session::put('atendimento', $atendimento->id);
+	
+		}
+		$errosMsg=\App\PessoaDadosGerais::where('pessoa',$id)->where('dado',20)->get();
+		$pendenciasMsg=\App\PessoaDadosAdministrativos::where('pessoa',$id)->where('dado','pendencia')->get();
+		foreach($pendenciasMsg as $pendencia){
+			if($pendencia->valor == 'Dívida ativa')
+				$devedor = true;
+			
+		}
+		
+		if(isset($_GET["mostrar"])){
+			 $matriculas=Matricula::where('pessoa', Session::get('pessoa_atendimento'))->orderBy('id','desc')->limit(20)->get();
+			 foreach($matriculas as $matricula){
+			 	$matricula->getInscricoes();
+			 	foreach($matricula->inscricoes as $inscricao){
+			 		if($inscricao->status == 'transferida')
+			 			$inscricao->transferencia = $inscricao->getTransferencia();
+			 	}
+			 }
+			 $boletos = Boleto::where('pessoa',$id)->orderBy('id','desc')->limit(50)->get();
+			 foreach($boletos as $boleto){
+			 	$boleto->getLancamentos();
+			 }
+		 	$lancamentos = Lancamento::where('pessoa',$id)->where('boleto',null)->get();
+		 				
+		}
+		else{
+			 $matriculas=Matricula::where('pessoa', Session::get('pessoa_atendimento'))
+			 	->whereIn('status',['ativa','pendente','espera'])
+			 	->orderBy('id','desc')->get();
+			 //listar inscrições de cada matricula;
+			 foreach($matriculas as $matricula){
+			 	$matricula->getInscricoes();
+			 	foreach($matricula->inscricoes as $inscricao){
+			 		if($inscricao->status == 'transferida')
+			 			$inscricao->transferencia = $inscricao->getTransferencia();
+
+			 	}
+
+			 }
+			 $boletos = Boleto::where('pessoa',$id)
+			 	->whereIn('status',['gravado','impresso','emitido','divida','aberto executado','pago','pelosite'])
+			 	->orderBy('id','desc')
+				->limit(20)
+			 	->get();
+			 foreach($boletos as $boleto){
+			 	$boleto->getLancamentos();
+			 }
+			
+			 $lancamentos = Lancamento::where('pessoa',$id)->where('boleto',null)->where('status',null)->get();
+			 
+		}
+		
+		$vencimento = \Carbon\Carbon::today()->addDays(-5);
+		$boleto_vencido = $boletos->whereIn('status',['emitido','divida','aberto executado'])->where('vencimento','<',$vencimento->toDateString());
+		if(count($boleto_vencido)>0)	
+			$devedor=true;
+		
+		
+
+		$atestado = \App\Atestado::where('pessoa',$id)->where('tipo','saude')->orderByDesc('id')->first();
+		
+		if($atestado){
+			$atividades_aquaticas = $matriculas->whereIn('status',['ativa','pendente','espera'])->WhereIn('curso',['898','1151','1152','1493']);
+			if(count($atividades_aquaticas)>0){
+				$atestado->validade = $atestado->calcularVencimento(12);
+			}
+				
+			else{
+				$atestado->validade = $atestado->calcularVencimento(3);
+			}
+				
+
+		}
+
+		
+
+		return view('pessoa.profile', compact('pessoa'))
+			->with('matriculas',$matriculas)
+			->with('boletos',$boletos)
+			->with('lancamentos',$lancamentos)
+			->with('errosPessoa',$errosMsg)
+			->with('pendencias',$pendenciasMsg)
+			->with('atestado',$atestado)
+			->with('devedor',$devedor);
+	}
 	public function uploadGlobal_vw(){
 		return view('secretaria.upload-global');
 	}

@@ -202,46 +202,7 @@
 			</div>
 		</div>
 	
-		<div class="form-group row"> 
-			<label class="col-sm-2 form-control-label text-xs-right">
-				Valor
-			</label>
-			<div class="col-sm-2"> 
-				<div class="input-group">
-					<span class="input-group-addon">R$ </span> 
-					<input type="text" class="form-control boxed" name="valor" value="{{number_format($turma->valor,2,',','.')}}" placeholder="Valor TOTAL"> 
-				</div>
-			</div>
-			<label class="col-sm-2 form-control-label text-xs-right">
-				Parcelas
-			</label>
-			<div class="col-sm-1"> 
-				<div class="input-group">
-					<input type="number" class="form-control boxed" name="parcelas" value="{{$turma->parcelas}}" > 
-				</div>
-			</div>
-			
-		</div>
-		<div class="form-group row">
-			<label class="col-sm-2 form-control-label text-xs-right">Pacotes Cursos</label>
-            <div class="col-sm-2"> 		
-				@foreach($pacote_cursos as $pacote)
-				<div>
-					<label>
-						<input class="checkbox" name="pacote[]" type="checkbox" value="{{$pacote->id}}"  {{isset($turma->pacote) && in_array($pacote->id,$turma->pacote)?'checked ':''}}>
-						<span title="{{$pacote->descricao}}">{{$pacote->nome}}</span>
-						</label>
-				</div>
-				@endforeach			
-        	</div>
-			
-			<label class="col-sm-2 form-control-label text-xs-right"></label>
-            <div class="col-sm-2"> 
-            	
-				<a href="/turmas/modificar-requisitos/{{$turma->id}}" target="_blank">Modificar Requisitos obrigatórios</a>
-				
-        	</div>        
-        </div>
+		
 		<div class="subtitle-block">
 			<br>
 			<br>

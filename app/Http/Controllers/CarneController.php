@@ -210,6 +210,14 @@ class CarneController extends Controller
 
 	public function gerarCarneIndividual(int $pessoa){
 		//$boletos = collect();
+		$boletos_gravados = Boleto::where('pessoa',$pessoa)->where('status','gravado')->get();
+		foreach($boletos_gravados as $boleto_gravado){
+			\App\Lancamento::where('boleto',$boleto_gravado->id)->delete();
+			$boleto_gravado->delete();
+
+
+		}
+		
 		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente', 'espera'])->where('pessoa',$pessoa)->get();	
 		if($matriculas->count()==0)
 			return redirect()->back()->withErrors('Nenhuma matrícula para gerar boletos.');

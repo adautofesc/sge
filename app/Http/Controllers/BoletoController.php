@@ -102,22 +102,22 @@ class BoletoController extends Controller
 			case 'reativar':
 				$boleto->status = 'emitido';
 				$boleto->save();
-				LogController::alteracaoBoleto($boleto->id,'Boleto reativado');
+				BoletoLogController::alteracaoBoleto($boleto->id,'Boleto reativado');
 			break;
 			case 'renegociar':
 				$boleto->status = 'renegociado';
 				$boleto->save();
-				LogController::alteracaoBoleto($boleto->id,'Boleto renegociado');
+				BoletoLogController::alteracaoBoleto($boleto->id,'Boleto renegociado');
 			break;
 			case 'inscrever':
 				$boleto->status = 'divida';
 				$boleto->save();
-				LogController::alteracaoBoleto($boleto->id,'Boleto inscrito em dívida');
+				BoletoLogController::alteracaoBoleto($boleto->id,'Boleto inscrito em dívida');
 			break;
 			case 'pago':
 				$boleto->status = 'pago';
 				$boleto->save();
-				LogController::alteracaoBoleto($boleto->id,'Boleto pago diretamente à FESC');
+				BoletoLogController::alteracaoBoleto($boleto->id,'Boleto pago diretamente à FESC');
 			break;
 			
 
@@ -343,7 +343,7 @@ class BoletoController extends Controller
 			$boleto->save();
 			
 
-			LogController::alteracaoBoleto($boleto->id,'Registro do boleto pelo site BB');
+			BoletoLogController::alteracaoBoleto($boleto->id,'Registro do boleto pelo site BB');
 
 			return view('financeiro.boletos.registrar')->with('boleto',$boleto)->with('lancamentos',$str_lancamentos)->with('pessoa',$pessoa)->with('vencido',$vencido);
 
@@ -528,8 +528,8 @@ class BoletoController extends Controller
 					break;
 			}
 			
-			LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento.: '.$motivo);
-			LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento por: '.Session::get('nome_usuario'));
+			BoletoLogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento.: '.$motivo);
+			BoletoLogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento por: '.Session::get('nome_usuario'));
 			
 
 		}
@@ -696,7 +696,7 @@ class BoletoController extends Controller
 			$boleto->status = 'impresso';
 			$boleto->save();
 			LancamentoController::reativarPorBoleto($id);
-			LogController::alteracaoBoleto($boleto->id,'Solicitação de reativação de boleto por '.Session::get('nome_usuario'));
+			BoletoLogController::alteracaoBoleto($boleto->id,'Solicitação de reativação de boleto por '.Session::get('nome_usuario'));
 			//AtendimentoController::novoAtendimento("Solicitação de reativação de boleto: ".$id, $boleto->pessoa, Auth::user()->pessoa);
 			return redirect($_SERVER['HTTP_REFERER']);
 
@@ -717,8 +717,8 @@ class BoletoController extends Controller
 			
 			if($r->boleto > 0){
 				$boleto = Boleto::find($r->id);
-				LogController::alteracaoBoleto($boleto->id,'Boleto editado por '.Auth::user()->getPessoa()->nome_simples);
-				LogController::alteracaoBoleto($boleto->id,'Boleto editado: '.\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y').'->'.$r->vencimento.' status: '.$boleto->status.' ->'.$r->status) .'por '.Auth::user()->pessoa;
+				BoletoLogController::alteracaoBoleto($boleto->id,'Boleto editado por '.Auth::user()->getPessoa()->nome_simples);
+				BoletoLogController::alteracaoBoleto($boleto->id,'Boleto editado: '.\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y').'->'.$r->vencimento.' status: '.$boleto->status.' ->'.$r->status) .'por '.Auth::user()->pessoa;
 				
 				if($boleto->vencimento != "0000-00-00 00:00:00")
 					$boleto->vencimento = \Carbon\Carbon::createFromFormat('d/m/Y', $r->vencimento, 'Europe/London')->format('Y-m-d 23:59:59');
@@ -859,7 +859,7 @@ class BoletoController extends Controller
 		$boleto = Boleto::find($id);
 		if(!is_null($boleto)){
 			$pessoa= Pessoa::withTrashed()->find($boleto->pessoa);
-			$dados = \App\Log::where('tipo','boleto')->where('codigo',$id)->get();
+			$dados = \App\BoletoLog::where('boleto',$id)->get();
 			$dados_pessoa = \App\Atendimento::where('descricao','like','%boleto%'.$id."%")->get();
 			return view('financeiro.boletos.informacoes')->with('boleto',$boleto)->with('logs',$dados)->with('pessoais',$dados_pessoa)->with('pessoa',$pessoa);
 		}
@@ -876,7 +876,7 @@ class BoletoController extends Controller
 		foreach($boletos as $boleto){
 			$boleto->status = 'cancelar';
 			$boleto->save();
-			LogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento.: Res. 05/2020, medidas administrativas sobre a COVID-19');
+			BoletoLogController::alteracaoBoleto($boleto->id, 'Solicitação de cancelamento.: Res. 05/2020, medidas administrativas sobre a COVID-19');
 		}
 		if($boletos->isNotEmpty())
 			return $boletos->count().' boletos cancelados';
@@ -920,7 +920,7 @@ class BoletoController extends Controller
 			$lancamento->status = 'cancelado';
 			$lancamento->save();
 			$boleto = Boleto::where('id',$lancamento->boleto)->update(['status' => 'cancelar']);
-			LogController::alteracaoBoleto($lancamento->boleto, 'Boleto cancelado por erro na geração dos carnês');
+			BoletoLogController::alteracaoBoleto($lancamento->boleto, 'Boleto cancelado por erro na geração dos carnês');
 			
 			
 		}
@@ -933,6 +933,21 @@ class BoletoController extends Controller
 		}
 		return 'feito.';
 		
+	}
+
+	public function registrarBoletosOnline(){
+		$BC =  new BoletoLogController;
+		$BC->migrarLogs();
+
+		$logs = \App\BoletoLog::where('evento','Registro do boleto pelo site BB')
+			->whereYear('data','2023')
+			->pluck('boleto')
+			->toArray();
+		$boletos = \App\Boleto::whereIn('id',$logs)
+			->whereIn('status',['gravado','impresso','emitido'])
+			->update(['status' =>'pelosite']);
+		
+		return $boletos;
 	}
 
 		

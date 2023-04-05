@@ -10,8 +10,6 @@
         max-width: 300px; }
     .pedidoem{
         max-width: 80px; }
-        
-        
     }
 @media (max-width: 766px){
     .pessoa{
@@ -89,13 +87,13 @@
                                         </div> 
                                         <div class="col-sm-4 header-center">
                                             <div class="btn-group">
-                                                <button class="btn btn-outline btn-primary btn-sm">⇐ Anterior</button>
+                                                <a class="btn btn-outline btn-primary btn-sm">⇐ Anterior</a>
                                                 <button class="btn btn-outline btn-default btn-sm today-button ">⇓ Hoje</button> 
-                                                <button class="btn btn-outline btn-primary btn-sm">Próximo ⇒</button>
+                                                <a class="btn btn-outline btn-primary btn-sm">Próximo ⇒</a>
                                             </div>
                                         </div> 
                                         <div class="col-sm-4">
-                                            <div class="title"> March 2023</div>
+                                            <div class="title">March 2023</div>
                                         </div>
                                     </div> 
                                     <div class="full-calendar-body">
@@ -109,107 +107,47 @@
                                             <strong class="week">Sab</strong>
                                         </div> 
                                         <div class="dates">
-                                            <div class="week-row" firstday="1"><!----> 
-                                                <div class="day-cell weekend">
-                                                    <div class="row">
-                                                        <div class="col-sm-6">
-                                                            <div style="display: none;">
-                                                                <span class="label label-success"> Add Event</span>
+                                            @foreach($mes as $dia)
+                                                @if($dia->weekday == '0')
+                                                    <div class="week-row">
+                                                        <div class="day-cell weekend {{$dia->class}}">
+                                                @else
+                                                    
+                                                    <div class="day-cell {{$dia->class}}">
+                                                   
+
+                                                @endif
+                                                            <div class="row">
+                                                                <div class="col-sm-6">
+                                                                    <div style="display: none;">
+                                                                        <span class="label label-success"> Add Event</span>
+                                                                    </div>
+                                                                </div> 
+                                                                <div class="col-sm-6">
+                                                                    <p class="day-number" title="{{$dia->title}}">{{$dia->number}}</p>
+                                                                </div>
+                                                            </div> 
+                                                            <div class="event-box">
+
+                                                                <!--
+                                                                <div class="panel no-margin panel-danger ">
+                                                                    <div class="panel-heading event-title">Event 1</div>
+                                                                </div>-->
+                                                               
+
                                                             </div>
-                                                        </div> 
-                                                        <div class="col-sm-6">
-                                                            <p class="day-number">27</p>
-                                                        </div>
-                                                    </div> 
-                                                    <div class="event-box"></div>
-                                                </div>
-                                                <div class="day-cell current-month">
-                                                    <div class="row">
-                                                        <div class="col-sm-6">
-                                                            <div style="display: none;">
-                                                                <span class="label label-success"> Add Event</span>
-                                                            </div>
-                                                        </div> 
-                                                        <div class="col-sm-6">
-                                                            <p class="day-number">28</p>
-                                                        </div>
-                                                    </div> 
-                                                    <div class="event-box"></div>
-                                                </div>
-                                                <div class="day-cell today current-month">
-                                                    <div class="row">
-                                                        <div class="col-sm-6">
-                                                            <div style="display: none;">
-                                                                <span class="label label-success"> Add Event</span>
-                                                            </div>
-                                                        </div> 
-                                                        <div class="col-sm-6">
-                                                            <p class="day-number">1</p>
-                                                        </div>
-                                                    </div> 
-                                                    <div class="event-box">
-
-
-                                                        <div class="panel no-margin panel-danger" day-date="Thu Mar 23 2023 00:00:00 GMT-0300">
-                                                            <div class="panel-heading event-title">Event 1</div>
-                                                        </div>
-
-
+                                                        </div><!-- end day -->
+                                                @if($dia->weekday == '6')
                                                     </div>
-                                                </div>
-                                                <div class="day-cell current-month">
-                                                    <div class="row">
-                                                        <div class="col-sm-6">
-                                                            <div style="display: none;">
-                                                                <span class="label label-success"> Add Event</span>
-                                                            </div>
-                                                        </div> 
-                                                        <div class="col-sm-6">
-                                                            <p class="day-number">2</p>
-                                                        </div>
-                                                    </div> 
-                                                    <div class="event-box"></div>
-                                                </div>
-                                                <div class="day-cell current-month">
-                                                    <div class="row">
-                                                        <div class="col-sm-6">
-                                                            <div style="display: none;">
-                                                                <span class="label label-success"> Add Event</span>
-                                                            </div>
-                                                        </div> 
-                                                        <div class="col-sm-6">
-                                                            <p class="day-number">3</p>
-                                                        </div>
-                                                    </div> 
-                                                    <div class="event-box"></div>
-                                                </div>
-                                                <div class="day-cell current-month">
-                                                    <div class="row">
-                                                        <div class="col-sm-6">
-                                                            <div style="display: none;">
-                                                                <span class="label label-success"> Add Event</span>
-                                                            </div>
-                                                        </div> 
-                                                        <div class="col-sm-6">
-                                                            <p class="day-number">4</p>
-                                                        </div>
-                                                    </div> 
-                                                    <div class="event-box"></div>
-                                                </div>
-                                                <div class="day-cell current-month">
-                                                    <div class="row">
-                                                        <div class="col-sm-6">
-                                                            <div style="display: none;">
-                                                                <span class="label label-success"> Add Event</span>
-                                                            </div>
-                                                        </div> 
-                                                        <div class="col-sm-6">
-                                                            <p class="day-number">5</p>
-                                                        </div>
-                                                    </div> 
-                                                    <div class="event-box"></div>
-                                                </div>
-                                            </div><!-- callendar week row -->
+                                                @endif
+                                            @endforeach
+
+                                            
+
+
+                                            
+                                            
+                                        
                                         </div><!-- callendar dates -->
                                     </div><!-- callendar full-c.body -->
                                 </div><!-- callendar col -->

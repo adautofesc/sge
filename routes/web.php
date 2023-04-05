@@ -206,7 +206,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	Route::prefix('eventos')->group(function(){
 		Route::get('cadastrar/{tipo?}','EventoController@create');
 		Route::post('cadastrar/{tipo?}','EventoController@store');
-		Route::get('/','EventoController@index');
+		Route::get('/{data?}','EventoController@index');
 
 	});
 	Route::prefix('cursos')->group(function(){
@@ -322,7 +322,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	//desenvoldedor
 	Route::middleware('liberar.recurso:22')->prefix('dev')->group(function(){
 		Route::get('/','painelController@indexDev');
-		Route::get('testar-classe/', 'BoletoLogController@migrarLogs');
+		Route::get('testar-classe/', 'BoletoController@registrarBoletosOnline');
 		Route::post('testar-classe', 'painelController@testarClassePost');
 		Route::get('/bolsa/gerador', 'BolsaController@gerador');
 		Route::get('/corrigir-boletos','BoletoController@corrigirBoletosSemParcelas');

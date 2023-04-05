@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\BoletoLog;
+use Auth;
 
 class BoletoLogController extends Controller
 {
@@ -31,6 +32,29 @@ class BoletoLogController extends Controller
 
 
         }
+
+    }
+
+    public static function alteracaoBoleto($boleto,$motivo){
+    	$log = new BoletoLog;
+    	$log->boleto = $boleto;
+    	$log->evento = $motivo;
+    	$log->data = date('Y-m-d H:i');
+    	$log->pessoa = Auth::user()->pessoa;
+    	$log->save();
+    }
+
+    public static function registrar($boleto,$evento,$autor=0){
+        if($autor == 0)
+            $autor = Auth::user()->pessoa;
+        
+        $log = new BoletoLog;
+        $log->boleto = $boleto;
+        $log->evento = $evento;
+        $log->data = date('Y-m-d H:i');
+        $log->pessoa = $autor;
+        $log->save();
+
 
     }
 

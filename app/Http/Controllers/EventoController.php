@@ -15,48 +15,90 @@ class EventoController extends Controller
         if(!isset($r->data))
             $data = new \DateTimeImmutable();
         else
-            $data =  \DateTimeImmutable::createFromFormat('Y-m-d',$r->data);
+            $data =  \DateTimeImmutable::createFromFormat('mY',$r->data);
         
-        //dd($data->format('w'));
+        //dd($data);
 
         $dias_mes = $this->get_days_count_in_month($data->format('Y'), $data->format('m'));
 
         //pegar o primeiro dia do mês
         $primeiro_dia = \DateTimeImmutable::createFromFormat('Y-m-d',$data->format('Y-m-01'));
-        $dia = $primeiro_dia->format('w');;
+        $ultimo_dia = \DateTimeImmutable::createFromFormat('Y-m-d',$data->format('Y-m-'.$dias_mes));
+        $dia = $primeiro_dia->format('w');
+        //dd($dia);
+
+
+        //pegar todos eventos do mês;
+
+
+
+        //Pegar todos dias não letivos
+        $dias_nao_letivos = \App\DiaNaoLetivo::whereYear('data',$data->format('Y'))->whereMonth('data',$data->format('m'))->get();
+        //dd($dias_nao_letivos );
+
+
         
         for($i=0;$i<$primeiro_dia->format('w');$i++){
+    
             $cell = new \stdClass();
             $cell->id = $i;
-            $cell->weekday = $primeiro_dia->format('w');
+            $cell->weekday = $i;
             $cell->class = '';
             $cell->number = '';
+            $cell->title = '';
             $mes->push($cell);
-
         }
         
 
-        for($i=0;$i<=$dias_mes;$i++){
+        for($i=1;$i<=$dias_mes;$i++){
+            
+            $cell = new \stdClass();
+            $cell->id = $i+$primeiro_dia->format('w');
+
+            if($primeiro_dia->format('Y')== date('Y') && $primeiro_dia->format('m')== date('m') && date('d') == $i)
+                $cell->class = 'current-month today';
+            else
+                $cell->class = 'current-month';
+            
+            $nl = $dias_nao_letivos->where('data',$data->format('Y').'-'.$data->format('m').'-'.str_pad($i , 2 , '0' , STR_PAD_LEFT))->first();
+            $cell->title = '';
+            if($nl){
+                $cell->class .= ' weekend';
+                $cell->title = $nl->descricao;
+            }
+
+
+
+            $cell->weekday = $dia;
+            $cell->number = $i;
+            $cell->events = [];
+            $mes->push($cell);
             if($dia == 6)
                 $dia = 0;
             else
                 $dia++;
-            $cell = new \stdClass();
-            $cell->id = $i+$primeiro_dia->format('w');
-            $cell->class = 'current-month';
-            $cell->weekday = $dia;
-            $cell->number = $i+1;
-            $cell->events = [];
-            $mes->push($cell);
-
-
-
+   
         }
 
-//dd($mes);
+        for($i=$ultimo_dia->format('w');$i<6;$i++){
+            
+            $cell = new \stdClass();
+            $cell->id = $i+$primeiro_dia->format('w');
+            $cell->class = '';
+            $cell->weekday = $i+1;
+            $cell->number = '';
+            $cell->title = '';
+            $cell->events = [];
+            $mes->push($cell);
+          
+
+            
+        }
+
+        //dd($mes);
 
 
-        $dia_semana = 0;
+       
 
        
 
@@ -65,7 +107,7 @@ class EventoController extends Controller
 
 
         $eventos = Evento::where('data_termino','>=',date('Y-m-d'))->orderBy('data_inicio')->get();
-        return view('eventos.index')->with('eventos',$eventos)->with('data',$data)->with('week',0);
+        return view('eventos.index')->with('eventos',$eventos)->with('data',$data)->with('mes',$mes);
 
     }
 
@@ -131,6 +173,8 @@ class EventoController extends Controller
         $evento->tipo = $r->tipo;
         $evento->nome = $r->nome;
         $evento->responsavel = $r->responsavel;
+        $evento->recorrencia = $r->recorrencia;
+        $evento->dias_semana = implode(',',$r->dias);
         $evento->data_inicio = $r->data_inicio;
         $evento->data_termino = $r->data_inicio;
         $evento->horario_inicio = $r->h_inicio;

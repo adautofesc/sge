@@ -22,15 +22,24 @@
 				</label>
 				<div class="col-sm-8"> 
 					<input type="search" id="search"  class="form-control boxed" placeholder="Você pode digitar numero, nome, RG e CPF" required> 
-	
 					<input type="hidden" id="id_pessoa" name="responsavel" >
 					<ul class="item-list" id="listapessoas">
 					</ul>
 				</div>
 		</div>
+		
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
-					Data
+				Data Início
+			</label>
+			<div class="col-sm-3"> 
+				<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-calendar"></i></span> 
+					<input type="date" class="form-control boxed" name="data_inicio" placeholder="dd/mm/aaaa" required> 
+				</div>
+			</div>
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Data Termino
 			</label>
 			<div class="col-sm-3"> 
 				<div class="input-group">
@@ -40,25 +49,47 @@
 			</div>
 		</div>
 		<div class="form-group row"> 
-				<label class="col-sm-2 form-control-label text-xs-right">
-					Início
-				</label>
-				<div class="col-sm-2"> 
-					<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-clock-o"></i></span>  
-						<input type="time" class="form-control boxed" name="h_inicio" required> 
-					</div>
-				</div>
-				<label class="col-sm-1 form-control-label text-xs-right">
-					Termino
-				</label>
-				<div class="col-sm-2"> 
-					<div class="input-group">
-						<span class="input-group-addon"><i class="fa fa-clock-o"></i></span> 
-						<input type="time" class="form-control boxed" name="h_termino"  required> 
-					</div>
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Início
+			</label>
+			<div class="col-sm-2"> 
+				<div class="input-group">
+						<span class="input-group-addon"><i class="fa fa-clock-o"></i></span>  
+					<input type="time" class="form-control boxed" name="h_inicio" required> 
 				</div>
 			</div>
+			<label class="col-sm-1 form-control-label text-xs-right">
+				Termino
+			</label>
+			<div class="col-sm-2"> 
+				<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-clock-o"></i></span> 
+					<input type="time" class="form-control boxed" name="h_termino"  required> 
+				</div>
+			</div>
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
+				Recorrência
+			</label>
+			<div class="col-sm-2"> 
+				<select class="c-select form-control boxed" name="professor" required>
+					<option>sem recorrência</option>
+					<option>semanal</option>
+					<option>quinzenal</option>
+					<option>mensal</option>
+				</select> 
+			</div>
+			<div class="col-sm-6"> 
+				
+				<label><input class="checkbox" name="dias[]" value="seg" type="checkbox"><span>Seg</span></label>
+				<label><input class="checkbox" name="dias[]" value="ter" type="checkbox"><span>Ter</span></label>
+				<label><input class="checkbox" name="dias[]" value="qua" type="checkbox"><span>Qua</span></label>
+				<label><input class="checkbox" name="dias[]" value="qui" type="checkbox"><span>Qui</span></label>
+				<label><input class="checkbox" name="dias[]" value="sex" type="checkbox"><span>Sex</span></label>
+				<label><input class="checkbox" name="dias[]" value="sab" type="checkbox"><span>Sab</span></label>
+			</div>
+		</div>	
 		<div class="form-group row"> 
 				
 			<label class="col-sm-2 form-control-label text-xs-right">

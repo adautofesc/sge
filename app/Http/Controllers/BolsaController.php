@@ -340,12 +340,8 @@ class BolsaController extends Controller
                         $bolsa->status = 'indeferida';                       
                         $this->alterarStatusMatricula($bolsa,'cancelada');
                         $atendimento = AtendimentoController::novoAtendimento('Bolsa '.$bolsa->id.' indeferida.',$bolsa->pessoa);
-                        break;
-                    
-                    
-                }
-
-                
+                        break;     
+                }                
                 $bolsa->obs = $r->obs."\n".date('d/m/Y').' parecer: '.$r->parecer.' por '.\Auth::user()->username;
                 $bolsa->save();
             }
@@ -362,14 +358,12 @@ class BolsaController extends Controller
 
 
     public function uploadExec(Request $r){
-        $arquivo = $r->file('arquivo');
-            
-                if (!empty($arquivo)) {
-                    $arquivo->move('documentos/bolsas/requerimentos',$r->matricula.'.pdf');
-                }
-
+        $arquivo = $r->file('arquivo');      
+            if (!empty($arquivo)) {
+                $arquivo->move('documentos/bolsas/requerimentos',$r->matricula.'.pdf');
+            }
             return redirect(asset('secretaria/atender'));
-    }
+    } 
 
 
 

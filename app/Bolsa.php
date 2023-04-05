@@ -34,13 +34,14 @@ class Bolsa extends Model
 	
 	}
 
-	public function getNomePessoa(){
+	public function getPessoa(){
 		$pessoa = Pessoa::withTrashed()->find($this->pessoa);
 		if($pessoa!=null)
-			return $pessoa->nome;
+			return $pessoa;
 		else
 			return "Nome não encontrado.";
 	}
+	
 
 	public function getMatriculas(){
 		$matriculas = BolsaMatricula::where('bolsa',$this->id)->get();

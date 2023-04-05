@@ -91,9 +91,10 @@
             <div class="col-sm-12">
                 <table>
                     <thead >
-                        <th width="5%">ID Pessoa</th>
-                        <th width="50%">Nome</th>
-						<th width="15%">Data da solicitação</th>
+                        <th width="5%">RA</th>
+                        <th width="35%">Nome</th>
+						<th width="15%">Telefone</th>
+						<th width="15%">Solicitada em</th>
 						<th width="30%">Tipo</th>
                         
                     </thead>
@@ -102,8 +103,11 @@
                     <tr style="border-bottom: 1px solid gray;">
                         <td><a href="/secretaria/atender/{{$bolsa->pessoa}}">{{$bolsa->pessoa}}</a></td>
                         <td>
-                            {{$bolsa->getNomePessoa()}}
+                            {{$bolsa->nome_aluno}}
                         </td>
+						<td>
+							{{$bolsa->telefone_aluno}}
+						</td>
                         <td>
                             {{$bolsa->created_at->format('d/m/Y')}}
 						</td>

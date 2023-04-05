@@ -74,7 +74,7 @@
 				Recursos necessários
 			</label>
 			<div class="col-sm-6"> 
-				<textarea rows="2" class="form-control" name="materiais" maxlenght="500"></textarea>
+				<textarea rows="2" class="form-control" name="recorrencia" maxlenght="500"></textarea>
 			</div>
 		</div>
 		

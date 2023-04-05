@@ -737,9 +737,11 @@ Event::where('status' , 0)
         }
         $bolsas = \App\Bolsa::whereIn('pessoa',$pessoas)->where('status','ativa')->groupBy('pessoa')->get();
         foreach($bolsas as $bolsa){
-            $bolsa->nome = $bolsa->getNomePessoa();
+            $bolsa->aluno = $bolsa->getPessoa();
+            $bolsa->nome_aluno = $bolsa->aluno->nome;
+            $bolsa->telefone_aluno = $bolsa->aluno->getCelular();
         }
-        $bolsasOrdenadas = $bolsas->sortBy('nome');
+        $bolsasOrdenadas = $bolsas->sortBy('nome_aluno');
         return view('relatorios.bolsistas')->with('bolsas',$bolsasOrdenadas);
         
     

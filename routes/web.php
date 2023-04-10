@@ -336,7 +336,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('/descontao','LancamentoController@descontao1');
 		Route::get('/descontao2','LancamentoController@descontao2');
 		Route::get('/executardesconto','BoletoController@atualizarBoletosGravados');
-
+		SHA256:4KGvUid3OM038AHcTnDFQ5wN48XJ+TGKPstOLkPNS1I 
 		*/
 
 	});

@@ -12,7 +12,7 @@ class Boleto extends Model
     //
     use SoftDeletes;
     public $timestamps = false;
-    protected $dates = ['vencimento'];
+    //protected $dates = ['vencimento'];
 
     public function getLancamentos(){
     	$this->lancamentos = Lancamento::where('boleto',$this->id)->get();

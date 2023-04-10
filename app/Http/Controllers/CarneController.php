@@ -392,6 +392,8 @@ class CarneController extends Controller
 													
 
 				}
+				//dd($primeiro_vencimento);
+				//dd($boleto->vencimento=='0000-00-00 00:00:00'?'yes':'no');
 
 
 				if($boleto->vencimento == '0000-00-00 00:00:00'){
@@ -403,6 +405,7 @@ class CarneController extends Controller
 					//dd($boleto);
 				}
 				else{
+					//dd($boleto);
 					$primeiro_vencimento->modify('+1 month');
 				}
 			

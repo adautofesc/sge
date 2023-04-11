@@ -97,16 +97,6 @@
                                  &nbsp;&nbsp;Jornadas UNIT</a>
                                 @endif
 
-                                @if(in_array('2',$programas))
-                                <a href="/relatorios/jornadas-por-programa/unit" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                                    <i class=" fa fa-file-text-o"></i>
-                                     &nbsp;&nbsp;Jornadas PID</a>
-
-                                     <a href="/relatorios/uso-livre" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                                        <i class=" fa fa-file-text-o"></i>
-                                         &nbsp;&nbsp;Uso Livre</a>
-                                @endif
-
                                 @if(in_array('3',$programas))
                                 <a href="/relatorios/jornadas-por-programa/uati" class="btn btn-primary-outline col-xs-12 text-xs-left">
                                     <i class=" fa fa-file-text-o"></i>
@@ -124,6 +114,18 @@
                                     <i class=" fa fa-file-text-o"></i>
                                      &nbsp;&nbsp;Jornadas CEC</a>
                             @endif
+
+                                @if(in_array('2',$programas))
+                                <a href="/relatorios/jornadas-por-programa/pid" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                                    <i class=" fa fa-file-text-o"></i>
+                                     &nbsp;&nbsp;Jornadas PID</a>
+
+                                     <a href="/relatorios/uso-livre" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                                        <i class=" fa fa-file-text-o"></i>
+                                         &nbsp;&nbsp;Uso Livre</a>
+                                @endif
+
+                                
                     </div>
 
                 </div>

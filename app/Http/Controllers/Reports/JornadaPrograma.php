@@ -32,8 +32,17 @@ class JornadaPrograma extends Controller
 
 
         }
-        $pessoal_programa = PessoaDadosAdministrativos::where('dado','programa')->where('valor',$id_programa)->pluck('pessoa')->toArray();
+        $pessoas_programa = PessoaDadosAdministrativos::where('dado','programa')->where('valor',$id_programa)->pluck('pessoa')->toArray();
         
+        $pessoal_programa = PessoaDadosAdministrativos::where('dado','relacao_institucional')
+            ->where('valor','Educador')
+            ->whereIn('pessoa',$pessoas_programa)
+            ->pluck('pessoa')
+            ->toArray();
+        
+        //dd($pessoal_programa);
+        
+
 
         $educadores = collect();
 
@@ -94,6 +103,7 @@ class JornadaPrograma extends Controller
             }
 
             $educadores->push($educador);
+            $educadores = $educadores->sortBy('nome');
         }
            
             

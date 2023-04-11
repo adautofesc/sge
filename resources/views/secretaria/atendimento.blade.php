@@ -1,6 +1,6 @@
 @extends('layout.app')
 <meta name="csrf-token" content="{{ csrf_token() }}">
-@section('titulo')Atendimento 2.2 @endsection
+@section('titulo')Atendimento 2.3 @endsection
 @section('pagina')
 
 <ol class="breadcrumb">
@@ -504,19 +504,38 @@
                     <div class="header-block">                       
                          <p class="title" style="color:white">Boletos</p>
                          &nbsp;
-                         <a href="{{asset('financeiro/boletos/novo'.'/'.session('pessoa_atendimento'))}}" title="Gerar novo boleto individual" class="text-white te" style="" ><i class=" fa fa-plus-circle "></i></a><!--
-                         &nbsp;
-                         <a href="#"  onclick="gerarBoletos();" title="Gerar boleto com todas parcelas em aberto para daqui 5 dias úteis." class="text-white te" style="" ><i class=" fa fa-cogs "></i></a>-->
-                         &nbsp;
-                         <a href="/financeiro/boletos/imprimir-carne/{{$pessoa->id}}" target="_blank"  onclick="" title="Imprimir carnê" class="text-white te" style="" ><i class=" fa fa-stack-overflow "></i></a>
-                          &nbsp;
-                         <a href="#"  onclick="cancelarBoletos();" title="Cancelar todos boletos em aberto." class="text-white" style="color:red;" ><i class=" fa fa-times"></i></a>
-                          &nbsp;
-                         <a href="#"  onclick="gerarCarneIndividual();" title="Gerar carnês" class="text-white" ><i class=" fa fa-cogs"></i></a>
-                         &nbsp;
-                         @if(in_array('25', Auth::user()->recursos))
-                            <a href="#" title="Alterar boletos para RENEGOCIADO" class="text-white" ><i class=" fa fa-external-link-square" ></i></a>
-                         @endif
+                         
+                         
+
+
+
+
+                        <div class="action dropdown pull-right "> 
+                            <!-- <a href="#" class="btn btn-sm rounded-s btn-secondary" title="Exportar para excel"><img src="/img/excel.svg" alt="excel" width="20px"></a> -->
+                            <button class="btn btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Clique para Opções
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
+                                <a class="dropdown-item" href="#" onclick="gerarCarneIndividual();" title="Gerar todos os boletos remanescentes">
+                                    <label><i class="fa fa-cogs icon text-success"></i> <span> Gerador Automático</span></label>
+                                </a> 
+                                <a class="dropdown-item" href="{{asset('financeiro/boletos/novo'.'/'.session('pessoa_atendimento'))}}" title="Cria um boleto manualmente">
+                                    <label><i class="fa fa-barcode icon text-success"></i> Boleto manual</label>
+                                </a> 
+                                <a class="dropdown-item" href="/financeiro/boletos/imprimir-carne/{{$pessoa->id}}" title="Gerar PDF do carnê com todos boletos">
+                                    <label><i class="fa fa-stack-overflow icon text-info"></i> Imprimir Carnê</label>
+                                </a> 
+                                <a class="dropdown-item" href="#"  onclick="cancelarBoletos();" title="Cancelar todos boletos em aberto.">
+                                    <label><i class="fa fa-times-circle icon text-danger"></i><span> Cancelar próximos</span></label>
+                                </a> 
+                                <!--
+                                <a class="dropdown-item" href="#" onclick="alterarStatus('apagar')">
+                                    <label><i class="fa fa-times-circle icon text-danger"></i> <span> Excluir Selecionados</span></label>
+                                </a> 
+                            -->
+                            </div>
+                        </div>
+
+
                     </div>
 
 
@@ -527,7 +546,7 @@
                         <li class="item item-list-header ">
                             <div class="row ">
                                 <div class="col-xl-5 " style="line-height:40px !important; padding-left: 30px;">
-                                    <div> &nbsp;<small><b>Número</b></small></div>
+                                    <div><input type="checkbox"> &nbsp;<small><b>Número</b></small></div>
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div><small><b>Vencimento</b></small></div>
@@ -552,7 +571,13 @@
                             <div class="row lista">
                                 
                                 <div class="col-xl-5 " style="line-height:40px !important; padding-left: 30px;">
-                                    <div class="dropdown-toggle"><i class=" fa fa-barcode "></i> &nbsp;<small>Documento nº <b><a href="/financeiro/boletos/informacoes/{{$boleto->id}}">{{$boleto->id}}</a></b></small></div>
+                                    <div class="dropdown-toggle">
+                                        @if($boleto->status == 'impresso' || $boleto->status == 'gravado' ||  $boleto->status == 'emitido')
+                                        <input type="checkbox">
+                                        @else
+                                        <i class=" fa fa-barcode "></i>
+                                        @endif
+                                        &nbsp;<small>Documento nº <b><a href="/financeiro/boletos/informacoes/{{$boleto->id}}">{{$boleto->id}}</a></b></small></div>
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div><small>{{\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/y')}}</small></div>

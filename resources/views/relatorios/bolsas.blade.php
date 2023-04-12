@@ -74,7 +74,7 @@
                              <ul class="dropdown-menu">
 					          <li><a href="#"  data-value="option1" tabIndex="-1"><input type="radio" @if(isset($r->tipo) && $r->tipo == 'Registros') checked @endif name="tipo" value="Registros"/>&nbsp;Registros</a></li>
 					          <li><a href="#"  data-value="option2" tabIndex="-1"><input type="radio" @if(isset($r->tipo) && $r->tipo == 'Resultados') checked @endif name="tipo" value="Resultados"/>&nbsp;Resultados</a></li>
-					          <li><a href="#"  data-value="option3" tabIndex="-1"><input type="radio" @if(isset($r->tipo) && $r->tipo == 'Comparativos') checked @endif name="tipo" value="Comparativo"/>&nbsp;Comparativo</a></li>
+					       
 					       
 					        </ul>
                 </div>
@@ -178,7 +178,7 @@
                     	<tr>
                     		<td><a href="/bolsas/analisar/{{$bolsa->id}}">{{$bolsa->id}}</a></td>
                     		<td><a href="/secretaria/atender/{{$bolsa->pessoa}}">{{$bolsa->pessoa}}</a></td>
-                    		<td>{{$bolsa->getNomePessoa()}}</td>
+                    		<td>{{$bolsa->nome}}</td>
                     		<td>{{$bolsa->created_at->format('d/m/y H:i')}}</td>
                     		<td>{{implode(', ', $bolsa->getPrograma()) }}</td>
                     		<td>{{$bolsa->status}}</td>

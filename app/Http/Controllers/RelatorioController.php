@@ -47,9 +47,7 @@ class RelatorioController extends Controller
         $planilha->setCellValue('I2', 'Telefone(s)');
         $planilha->setCellValue('J2', 'Celular');
         $planilha->setCellValue('K2', 'Turma');
-      
         $linha = 3;
-
         if(!isset($request->turmas)){
             $concluintes = \App\Inscricao::join('turmas', 'inscricoes.turma','=','turmas.id')
             ->where('inscricoes.status','pendente')
@@ -429,17 +427,12 @@ Event::where('status' , 0)
     	$programas=Programa::all();
     	$descontos = \App\Desconto::orderBy('nome')->get();
         $bolsas =  \App\Bolsa::select('*');
-
-        //dd($request->descontos);
         if(isset($request->descontos)){
-           
             $bolsas = $bolsas->whereIn('desconto',$request->descontos);
         }
         if(isset($request->status)){
-           
             $bolsas = $bolsas->whereIn('status',$request->status);
         }
-
         if(isset($request->periodos)){
             if(count($request->periodos)==1){
                 $intervalo = \App\classes\Data::periodoSemestre($request->periodos[0]);
@@ -452,53 +445,34 @@ Event::where('status' , 0)
                         $intervalo = \App\classes\Data::periodoSemestre($periodo);
                         $query = $query->orWhereBetween('created_at', $intervalo);
                     }
-
                 });
-            }
-               
-        }
-
-    	
+            }   
+        }	
     	if(isset($request->tipo)){
-
-
     		if($request->tipo=='Registros'){
-
-    			 $bolsas = $bolsas->get();
-              
-
+    			 $bolsas = $bolsas->get();        
     		}
     		if($request->tipo=='Resultados'){
-                $bolsas = $bolsas->select('*',\DB::raw('COUNT(*) as numero'))->groupBy('desconto')->get();
+                $bolsas = $bolsas->select('*',\DB::raw('COUNT(*) as numero'))->groupBy('desconto')->get();   			
+    		}
+    		/*if($request->tipo=='Comparativo'){
     			
 
-    		}
-    		if($request->tipo=='Comparativo'){
-    			
-
-    		}
-    	
-    	
+    		}*/   	
         	if (count($bolsas)>1){
                 foreach($bolsas as $bolsa){
-                   $bolsa->nome = $bolsa->getNomePessoa();
+                    $pessoa =  $bolsa->getPessoa();
+                    $bolsa->nome = $pessoa->nome;
                 }
                 $bolsas = $bolsas->sortBy('nome');
             }
-    	
         }
-        //dd($bolsas);
-
-           return view('relatorios.bolsas')
-                    ->with('r',$request)
-                    ->with('programas',$programas)
-                    ->with('descontos',$descontos)
-                    ->with('bolsas', $bolsas)
-                    ->with('periodos',\App\classes\Data::semestres());
-    	
-       
-
-    
+        return view('relatorios.bolsas')
+                ->with('r',$request)
+                ->with('programas',$programas)
+                ->with('descontos',$descontos)
+                ->with('bolsas', $bolsas)
+                ->with('periodos',\App\classes\Data::semestres());
     }
     
 
@@ -526,10 +500,6 @@ Event::where('status' , 0)
         $alunos = array_values(Arr::sort($alunos, function ($value) {
             return $value['nome'];
         }));
-
-        //dd($alunos);
-
-       
         return view('relatorios.tce-alunos')
             ->with('ano',$ano)
             ->with('alunos',$alunos);
@@ -714,10 +684,6 @@ Event::where('status' , 0)
         $alunos = array_values(array_sort($alunos, function ($value) {
             return $value['nome'];
         }));
-
-        //dd($alunos);
-
-       
         return view('relatorios.alunos-conselho')
             ->with('ano',$ano)
             ->with('alunos',$alunos);

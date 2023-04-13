@@ -19,11 +19,9 @@ class JornadaController extends Controller
         $dias = ['seg','ter','qua','qui','sex','sab'];
         $carga_efetiva = Carbon::createFromTime(0, 0, 0, 'America/Sao_Paulo'); 
         $carga = Array();
-
         $turmas = \App\Turma::where('professor',$id)->where('status','iniciada')->get();
         $jornadas_contagem = \App\Jornada::where('pessoa', $id)->where('status','ativa')->get();
-        
-        
+ 
         if(isset($_GET['mostrar'])){
             $mostrar = true;
             $jornadas = Jornada::where('pessoa', $id)->orderBy('status')->orderBy('dias_semana')->orderBy('hora_inicio')->paginate(20);  
@@ -96,13 +94,14 @@ class JornadaController extends Controller
                     default:
                         $ndia= 0;
                 }
+                //Grafico horas_turmas
                 $ghoras_turmas[] = [$ndia,$turma->hora_inicio,$turma->hora_termino,'Turma '.$turma->id,$turma->local->nome];
 
             }
             if(!in_array($turma->local->sigla,$glocais))
                 $glocais[] = $turma->local->sigla;
         }
-        //dd($carga_ativa->floatDiffInHours(\Carbon\Carbon::Today()));
+        //dd($carga_efetiva->floatDiffInHours(\Carbon\Carbon::Today()));
         foreach($jornadas_ativas as $jornada){
             foreach($jornada->dias_semana as $dia){
                 $horarios[$dia][substr($jornada->hora_inicio,0,2)][substr($jornada->hora_inicio,3,2)] = $jornada;

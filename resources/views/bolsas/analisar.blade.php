@@ -32,7 +32,7 @@
                                         @if(isset($bolsa))
                                         <p class="title-description"> {{$bolsa->desconto->nome}} </p>
                                         <br>
-                                        <p><small> <strong>Nome: </strong>{{$bolsa->getNomePessoa()}} (<a href="/secretaria/atender/{{$bolsa->pessoa}}">{{$bolsa->pessoa}}</a>) <strong></small><br>
+                                        <p><small> <strong>Nome: </strong>{{$bolsa->nome}} (<a href="/secretaria/atender/{{$bolsa->pessoa}}">{{$bolsa->pessoa}}</a>) <strong></small><br>
                                         <small> <strong>Solicitado em: </strong>{{$bolsa->created_at->format('d/m/Y')}} <strong>Alterada em: </strong>{{$bolsa->updated_at->format('d/m/Y')}}
                                             <strong>Validade: </strong>{{$bolsa->validade}} 
                                             <br>

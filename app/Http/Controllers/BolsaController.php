@@ -304,7 +304,10 @@ class BolsaController extends Controller
             if(!$bolsa){
                 return redirect()->back()->withErrors(["Bolsa ".$bolsa. " não encontrada em nosso sistema."]);
             }
-
+            else{
+                $pessoa = $bolsa->getPessoa();
+                $bolsa->nome = $pessoa->nome;
+            }
 
         }else 
             $bolsa=null;

@@ -459,8 +459,8 @@ Route::middleware(['auth','login']) ->group(function(){
 
 
 	// Financeiro
-	Route::middleware('liberar.recurso:14')->prefix('financeiro')->group(function(){
-		Route::get('/','painelController@financeiro');
+	Route::prefix('financeiro')->group(function(){
+		Route::middleware('liberar.recurso:14')->get('/','painelController@financeiro');
 		Route::get('limpar-debitos','BoletoController@limparDebitos');
 
 		Route::prefix('cobranca')->group(function(){
@@ -811,8 +811,8 @@ Route::middleware(['auth','login']) ->group(function(){
 	//Administração
 
 	Route::middleware('liberar.recurso:15')->prefix('admin')->group(function(){
-		Route::get('credenciais/{var}', 'loginController@credenciais_view');
-		Route::post('credenciais/{var}', 'loginController@credenciais_exec');
+		Route::middleware('liberar.recurso:8')->get('credenciais/{var}', 'loginController@credenciais_view');
+		Route::middleware('liberar.recurso:8')->post('credenciais/{var}', 'loginController@credenciais_exec');
 		Route::get('listarusuarios', 'loginController@listarUsuarios_view');
 		Route::get('listarusuarios/{var}', 'loginController@listarUsuarios_view');
 		Route::post('listarusuarios/{var}', 'loginController@listarUsuarios_action');

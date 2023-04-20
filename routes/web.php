@@ -21,6 +21,7 @@ use App\Http\Controllers\MatriculaController;
 use App\Http\Controllers\PessoaDadosJornadasController;
 use App\Http\Controllers\FichaTecnicaController;
 use App\Http\Controllers\TurmaController;
+use App\Http\Controllers\TagController;
 
 Route::get('/', 'painelController@index');
 
@@ -315,6 +316,12 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::post('excluir',[PessoaDadosJornadasController::class,'excluir']);
 
 
+	});
+
+	Route::prefix('tags')->group(function(){
+		Route::get('/{pessoa?}',[TagController::class,'index']);
+		Route::get('/apagar/{id}/{pessoa}',[TagController::class,'apagar']);
+		Route::post('/{pessoa}/criar',[TagController::class,'criar']);
 	});
 
 //**************************************************************************SETORES******************************** */

@@ -39,9 +39,6 @@ class PessoaDadosAdminController extends Controller
 		$nova_relacao->valor=$request->cargo;
 		$nova_relacao->save();
 
-
-
-
 		return redirect(asset('gestaopessoal/atender').'/'.$request->pessoa);
 
 

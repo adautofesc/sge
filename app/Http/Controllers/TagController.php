@@ -68,4 +68,30 @@ class TagController extends Controller
         return response('ok',200);
 
     }
+
+    public function tagAccess($tag,$key){
+        //dd(md5($tag));
+        if(md5($tag) !== $key)
+            return response('negado: chave invalida',400);
+        
+        
+        $tag = Tag::where('tag',$tag)->first();
+        if(!$tag)
+            return response('negado: tag invalida',400);
+        
+        
+        $pendencia = \App\PessoaDadosAdministrativos::where('pessoa',$tag->pessoa)->where('dado','pendencia')->first();
+        if($pendencia){
+            TagLogController::registrar('acesso_piscina_negado',$tag->pessoa);
+            return response('negado: pendente',400);
+        }
+        else{
+            TagLogController::registrar('acesso_piscina_liberado',$tag->pessoa);
+            return response ('liberado',200);
+        }
+            
+
+        
+
+    }
 }

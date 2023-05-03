@@ -1541,10 +1541,12 @@ label,
       bottom: 0;
       left: 0; }
     .logo .l.l2 {
-      width: 7px;
-      height: 7px;
+      /* FONT-VARIANT: JIS04; */
+      /* width: 7px; */
+      /* height: 7px; */
       bottom: 13px;
-      left: 10px; }
+      left: 0px;
+      }
     .logo .l.l3 {
       width: 7px;
       height: 7px;

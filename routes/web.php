@@ -134,18 +134,10 @@ Route::middleware(['auth','login']) ->group(function(){
 		return App\classes\Arquivo::show('documentos-.-atestados-.-'.$arquivo.'.pdf');
 
 	});
-	/*
-	Route::prefix('arquivo')->group(function(){
-		route::get('/atestado/{id}','AtestadoController@arquivo');
-
-	});*/
-	Route::get('/atestado/{id}', 'painelController@index');
-
 	
-
+	Route::get('/atestado/{id}', 'painelController@index');
 	Route::get('lista/{id}','TurmaController@impressao'); //lista de chamada aberta
 	Route::get('listas/{id}','TurmaController@impressaoMultipla'); //lista de chamada aberta
-	
 	Route::get('frequencia/{turma}','TurmaController@frequencia');
 	
 //******************************************************RECURSOS************************************************************** */	
@@ -155,12 +147,9 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('gerar/{turma}','AulaController@gerarAulas');
 		Route::POST('alterar-status','AulaController@alterarStatus');
 		Route::POST('limpar-dado', 'AulaDadoController@limparDado');
-		Route::GET('recriar/{turma}','AulaController@recriarAulasView');
-		
-		
+		Route::GET('recriar/{turma}','AulaController@recriarAulasView');	
 
 	});
-
 	Route::prefix('agendamento')->group(function(){
 		Route::get('/{data?}','AgendaAtendimentoController@index');
 		Route::post('/{data?}','AgendaAtendimentoController@gravar');
@@ -171,8 +160,6 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('cadastrar',[TurmaController::class,'create'])->name('turmas.cadastrar');
 		Route::middleware('liberar.recurso:30')->get('gerar-por-ficha/{id?}',[TurmaController::class,'gerarPorFichaView']);
 		Route::middleware('liberar.recurso:30')->post('gerar-por-ficha/{id?}',[TurmaController::class,'store']);
-
-
 		Route::middleware('liberar.recurso:18')->group(function(){
 			Route::post('cadastrar',[TurmaController::class,'store']);
 			Route::post('recadastrar',[TurmaController::class,'storeRecadastro']);
@@ -184,7 +171,6 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::post('importar', [TurmaController::class, 'uploadImportaTurma'] );
 
 		});
-		
 		Route::get('listar', [TurmaController::class, 'index']);
 		Route::get('apagar/{var}', [TurmaController::class, 'destroy']);
 		Route::get('editar/{var}', [TurmaController::class, 'edit']);		
@@ -318,7 +304,7 @@ Route::middleware(['auth','login']) ->group(function(){
 
 	});
 
-	Route::prefix('tags')->group(function(){
+	Route::middleware('liberar.recurso:18')->prefix('tags')->group(function(){
 		Route::get('/{pessoa?}',[TagController::class,'index']);
 		Route::get('/apagar/{id}/{pessoa}',[TagController::class,'apagar']);
 		Route::post('/{pessoa}/criar',[TagController::class,'criar']);
@@ -326,7 +312,7 @@ Route::middleware(['auth','login']) ->group(function(){
 
 //**************************************************************************SETORES******************************** */
 
-	//desenvoldedor
+	//Desenvoldedor
 	Route::middleware('liberar.recurso:22')->prefix('dev')->group(function(){
 		Route::get('/','painelController@indexDev');
 		Route::get('testar-classe/', 'BoletoController@registrarBoletosOnline');
@@ -338,28 +324,13 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('importar-status-boletos','painelController@importarStatusBoletos');
 		Route::get('add-recesso','DiaNaoLetivoController@ViewAddRecesso');
 		Route::get('cadastrarValores','ValorController@cadastrarValores');
-
-		/*
-		Route::get('/descontao','LancamentoController@descontao1');
-		Route::get('/descontao2','LancamentoController@descontao2');
-		Route::get('/executardesconto','BoletoController@atualizarBoletosGravados');
-		SHA256:4KGvUid3OM038AHcTnDFQ5wN48XJ+TGKPstOLkPNS1I 
-		*/
-
 	});
 
 	Route::prefix('pessoa')->group(function(){
 	// Pessoas
-		//Route::get('recadastramento', function(){ return view('pessoa.recadastramento');});
-		//Route::post('recadastramento','PessoaController@iniciarRecadastramento');
-		//Route::post('recadastrado','PessoaController@gravarRecadastro');
-
 		Route::post('registrar-contato','ContatoController@registrar');
 		Route::get('contato-whatsapp','ContatoController@enviarWhats');
 		Route::get('resetar-senha-perfil/{id}','Auth\PerfilAuthController@resetarSenha');
-	
-
-
 		Route::get ('listar','PessoaController@listarTodos');//->middleware('autorizar:56')
 		Route::post('listar','PessoaController@procurarPessoasAjax');
 		Route::get ('cadastrar', 'PessoaController@create')->name('pessoa.cadastrar');
@@ -425,7 +396,6 @@ Route::middleware(['auth','login']) ->group(function(){
 		});
 
 		Route::get('matriculas', 'MatriculaController@listarPorPessoa');
-
 		Route::get('registrar-email-fesc/{pessoa}/{endereco}','PessoaDadosAcademicosController@registrarEmailFesc');
 		Route::get('apagar-email-fesc/{id}','PessoaDadosAcademicosController@apagarEmailFesc');
 		Route::get('inscrever-equipe-teams/{pessoa}/{turma}','PessoaDadosAcademicosController@inscreverTeams');
@@ -436,8 +406,6 @@ Route::middleware(['auth','login']) ->group(function(){
 
 	});//prefix pessoa
 
-
-	
 
 	// Administrativo
 	Route::middleware('liberar.recurso:12')->prefix('administrativo')->group(function(){
@@ -454,7 +422,6 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::post('salas/cadastrar/{id}','SalaController@store');
 		Route::get('salas/alterar/{id}','SalaController@editar');
 		Route::post('salas/alterar/{id}','SalaController@update');
-
 		
 	});
 	Route::middleware('liberar.recurso:12')->prefix('agendamento-salas')->group(function(){
@@ -536,18 +503,12 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::post('novo/{pesssoa}', 'BoletoController@create');//precisa de middleware
 			Route::get('/lote-csv', 'BoletoController@gerarArquivoCSV');
 			Route::get('corrigir2022','BoletoController@corrigir2022');
-
-
-			
-
 			Route::prefix('remessa')->group(function(){
 				Route::get('home',  function(){ return view('financeiro.remessa.home'); });
 				Route::get('gerar', 'RemessaController@gerarRemessa');//precisa de middleware
 				Route::get('download/{file}', 'RemessaController@downloadRemessa');//precisa de middleware
 				Route::get('listar-arquivos', 'RemessaController@listarRemessas');
 			});
-
-
 			Route::prefix('retorno')->group(function(){//precisa de middleware
 				Route::get('home',  function(){ return view('financeiro.retorno.home'); });
 				Route::get('upload',  function(){ return view('financeiro.retorno.upload'); });
@@ -598,7 +559,6 @@ Route::middleware(['auth','login']) ->group(function(){
 	//Bolsas
 
 	Route::middleware('liberar.recurso:21')->prefix('bolsas')->group(function(){
-
 		Route::get('liberacao','BolsaController@listar');
 		Route::get('/status/{status}/{bolsas}','BolsaController@alterarStatus');
 		Route::get('analisar/{bolsa}','BolsaController@analisar');
@@ -611,9 +571,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	// Jurídico
 	Route::prefix('juridico')->group(function(){
 		Route::get('/','painelController@juridico');
-		//Documentos
-		//
-		
+		//Documentos	
 		Route::middleware('liberar.recurso:16')->prefix('documentos')->group(function(){
 			Route::get('/','DocumentoController@index');
 			Route::get('cadastrar','DocumentoController@cadastrar');
@@ -652,10 +610,6 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::post('turmas-requisitos','RequisitosController@editRequisitosTurma');
 			Route::post('modificar-requisitos/{id}','RequisitosController@storeRequisitosTurma');
 			Route::get('atualizar-inscritos','TurmaController@atualizarInscritos');
-			//Route::get('aulas/{turma}','AulaController@viewAulasTurma');
-
-
-
 
 		});
 		
@@ -663,8 +617,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	});
 
 	// Secretaria
-	Route::middleware('liberar.recurso:18')->prefix('secretaria')->group(function(){
-		
+	Route::middleware('liberar.recurso:18')->prefix('secretaria')->group(function(){	
 		Route::get('/','painelController@secretaria')->name('secretaria');
 		Route::get('analisar-matriculas', [MatriculaController::class,'analiseFinanceira']);
 		Route::get('pre-atendimento','SecretariaController@iniciarAtendimento');
@@ -674,24 +627,15 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('atender/{var}','SecretariaController@atender');
 		Route::get('profile/{var}','SecretariaController@profile');
 		Route::get('processar-documentos','SecretariaController@processarDocumentos');
-
 		Route::get('turmas', 'TurmaController@listarSecretaria');
 		Route::get('turmas-disponiveis/{pessoa}/{turmas}/{busca?}', 'TurmaController@turmasDisponiveis');
 		Route::get('turmas-escolhidas/{turmas}/', 'TurmaController@turmasEscolhidas');
-		
-
 		Route::get('upload','SecretariaController@uploadGlobal_vw');
 		Route::post('upload','SecretariaController@uploadGlobal');
 		Route::get('frequencia/{turma}','FrequenciaController@listaChamada');
-
 		Route::get('alunos','SecretariaController@alunos');
 		Route::get('alunos-cancelados','SecretariaController@alunosCancelados');
-
 		Route::get('listar-pendencias','PessoaDadosAdminController@relatorioPendentes');
-
-
-
-
 		Route::prefix('matricula')->group(function(){
 			Route::get('/{ids}','SecretariaController@viewMatricula');
 			Route::get('/nova/{pessoa}','InscricaoController@novaInscricao');
@@ -744,7 +688,6 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('planilha-turmas', 'RelatorioController@exportarTurmas');
 		Route::get('dados-turmas/{turmas}', 'RelatorioController@dadosTurmas');
 		Route::get('matriculas/{programa}','RelatorioController@matriculasPrograma');
-		//Route::get('matriculas','RelatorioController@matriculas');
 		Route::get('inscricoes','RelatorioController@inscricoes');
 		Route::get('alunos-turmas','RelatorioController@alunosTurmasExport');
 		Route::get('alunos-turmas-sms','RelatorioController@alunosTurmasExportSMS');
@@ -754,7 +697,6 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('bolsas','RelatorioController@bolsas');
 		Route::get('tce-alunos/{ano?}','RelatorioController@tceAlunos');
 		Route::get('tce-educadores/{ano?}',[JornadaDocentes::class,'relatorioGeral']);
-		//Route::get('tce-educadores/{ano?}','RelatorioController@tceEducadores');
 		Route::get('tce-turmas/{ano?}','RelatorioController@tceTurmas');
 		Route::get('tce-turmas-alunos/{ano?}','RelatorioController@tceTurmasAlunos');
 		Route::get('tce-vagas/{ano?}','RelatorioController@tceVagas');
@@ -768,25 +710,16 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('uso-livre', [UsoLivreController::class,'relatorio']);
 		
 
-
-
-
-
 	});
 
 	//Docentes
 	
 	Route::middleware('liberar.recurso:13')->prefix('docentes')->group(function(){
-		
 		Route::get('docente/{id?}/{semestre?}','painelController@docentes');
 		Route::get('turmas-professor', 'TurmaController@listarProfessores');
 		Route::post('turmas-professor', 'TurmaController@turmasProfessor');
 		Route::get('jornadas/{educador?}',[JornadaController::class,'modalJornadaDocente']);
 		Route::get('cargas/{educador?}',[PessoaDadosJornadaController::class,'modalCargaDocente']);
-		
-
-		
-		
 		Route::prefix('frequencia')->group( function(){
 			Route::get('listar/{turma}','FrequenciaController@listaChamada');
 			Route::get('nova-aula/{turma}/{aula?}','FrequenciaController@novaChamada_view');
@@ -799,7 +732,6 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::get('conteudos/{turma}','AulaDadoController@editarConteudo_view');
 			Route::post('conteudos/{turma}','AulaDadoController@editarConteudo_exec');
 		});
-		
 	});
 	Route::middleware('liberar.recurso:13')->prefix('jornada')->group(function(){
 		Route::post('cadastrar','JornadaController@cadastrar');
@@ -810,11 +742,6 @@ Route::middleware(['auth','login']) ->group(function(){
 	Route::get('chamada/{id}/{pg}/{url}/{hide?}','TurmaController@getChamada'); //optional parameter is used here!
 	Route::get('plano/{professor}/{tipo}/{curso}','TurmaController@getPlano');
 	
-
-
-
-
-
 	//Administração
 
 	Route::middleware('liberar.recurso:15')->prefix('admin')->group(function(){
@@ -830,12 +757,6 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('importarLocais','painelController@importarLocais');
 		Route::get('atualizar-inscritos','TurmaController@atualizarInscritos');
 		Route::get('inscricoes','InscricaoController@incricoesPorPosto');
-
-		//Route::get('revitaliza', 'MatriculaController@revitaliza');
-		//Route::get('auto-matriculas', 'MatriculaController@autoMatriculas');
-		//Route::get('recupera-inscricoes', 'InscricaoController@recuperarInscricoes');
-		//Route::get('importar-matriculas', 'MatriculaController@importarMatriculas');
-		//Route::get('importar-bairros', 'EnderecoController@importarBairros');
 	});
 
 	Route::get('cobranca-automatica','CobrancaController@cobrancaAutomatica');

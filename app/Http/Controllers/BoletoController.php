@@ -43,7 +43,7 @@ class BoletoController extends Controller
 			$tipo = 'por pessoa';
 		}
 		else{
-			$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->paginate(50);
+			$boletos = Boleto::whereIn('status',['emitido','pelosite'])->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->paginate(50);
 			$tipo = 'vencidos';
 		}
 		foreach($boletos as $key => $boleto){
@@ -797,20 +797,24 @@ class BoletoController extends Controller
 		 */
 		public function relatorioBoletosAbertos($ativos=1){
 			switch($ativos){
-				case 1:
-					$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->orderBy('pessoa')->get();
-					break;
-				case 2:
-					$boletos = Boleto::where('status','divida')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
-					break;
 				case 0:
 					$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y')-1)->orderBy('pessoa')->get();
 					foreach($boletos as $boleto){
 						BoletoController::alterarStatus($boleto, 'inscrever');
 					}
 					break;
-				default:
+				case 1:
 					$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->orderBy('pessoa')->get();
+					break;
+				case 2:
+					$boletos = Boleto::where('status','divida')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
+					break;
+				case 3:
+					$boletos = Boleto::where('status','pelosite')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
+					break;
+				
+				default:
+					$boletos = Boleto::whereIn('status',['emitido','pelosite'])->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->orderBy('pessoa')->get();
 					break;
 	
 				}

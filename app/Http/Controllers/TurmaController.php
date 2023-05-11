@@ -1546,7 +1546,6 @@ class TurmaController extends Controller
     }
 
     public function gerarPorFichaView($id = 0){
-        dd('oi');
         if($id != 0)
             $ficha = \App\FichaTecnica::find($id);         
         else

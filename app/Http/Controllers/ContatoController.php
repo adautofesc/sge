@@ -20,9 +20,13 @@ class ContatoController extends Controller
                 Mail::send('emails.default', ['username' => $user->username , 'password' => $password], function ($message) use($user){
 					$message->from('no-reply@fesc.saocarlos.sp.gov.br', 'Sistema Fesc');
 					$message->to($user->email);
-					$message->subject('Atualização de senha');
+					$message->subject('Contato');
 					});
               
+                break;
+            case 'pendencia':
+                $pendencia = \App\PessoaDadosAdministrativos::addPendencia($r->pessoa,$r->mensagem);   
+                return response($pendencia,200);
                 break;
 
             default:

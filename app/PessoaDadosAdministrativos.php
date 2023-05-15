@@ -55,4 +55,11 @@ class PessoaDadosAdministrativos extends Model
 
 	}
 
+
+	public static function addPendencia($pessoa, $descricao){
+		return PessoaDadosAdministrativos::cadastrarUnico($pessoa,'pendencia',$descricao);
+	}
+
+
+
 }

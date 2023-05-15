@@ -304,7 +304,7 @@ Route::middleware(['auth','login']) ->group(function(){
 
 	});
 
-	Route::middleware('liberar.recurso:18')->prefix('tags')->group(function(){
+	Route::middleware('liberar.recurso:18')->prefix('ins')->group(function(){
 		Route::get('/{pessoa?}',[TagController::class,'index']);
 		Route::get('/apagar/{id}/{pessoa}',[TagController::class,'apagar']);
 		Route::post('/{pessoa}/criar',[TagController::class,'criar']);

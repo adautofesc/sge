@@ -798,13 +798,13 @@ class BoletoController extends Controller
 		public function relatorioBoletosAbertos($ativos=1){
 			switch($ativos){
 				case 0:
-					$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y')-1)->orderBy('pessoa')->get();
+					$boletos = Boleto::whereIn('status',['emitido','pelosite'])->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y')-1)->orderBy('pessoa')->get();
 					foreach($boletos as $boleto){
 						BoletoController::alterarStatus($boleto, 'inscrever');
 					}
 					break;
 				case 1:
-					$boletos = Boleto::where('status','emitido')->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->orderBy('pessoa')->get();
+					$boletos = Boleto::whereIn('status',['emitido','pelosite'])->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->orderBy('pessoa')->get();
 					break;
 				case 2:
 					$boletos = Boleto::where('status','divida')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();

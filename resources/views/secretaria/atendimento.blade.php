@@ -25,7 +25,7 @@
             {{csrf_field()}}
                 <div class="input-group"> 
                     @if(!$pessoa->trashed())
-                    <a href="#" class="btn btn-secondary btn-sm rounded-s" title="Registrar contato" data-toggle="modal" data-target="#modal-contato"><i class="fa fa-phone"></i></a>&nbsp;
+                    <a href="#" class="btn btn-secondary btn-sm rounded-s" title="Registrar contato / Pendência" data-toggle="modal" data-target="#modal-contato">Contato / Pendência</a>&nbsp;
                     @endif
                     @if(isset($_GET['mostrar']))
                     &nbsp;<a href="?" class="btn btn-primary btn-sm rounded-s">Exibir ativos</a>
@@ -47,20 +47,21 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Fechar" title="Fechar caixa">
                     <span aria-hidden="true">×</span>
                 </button>
-                <h4 class="modal-title"><i class="fa fa-bullhorn"></i> Registrar contato</h4>
+                <h4 class="modal-title"><i class="fa fa-bullhorn"></i> Registrar/enviar contato/Pendência</h4>
             </div>
             <div class="modal-body">
                
                <div class="row">
                 <div class="col-xs-3">
                     <select class="form-control form-control-sm" name="meio">
-                        <option>Meio</option>
+                        <option>Meio/tipo</option>
                             <option value="telefone">Telefone</option>
                             <option value="sms">SMS</option>
                             <option value="carta">Carta</option>
                             <option value="pessoa">Pessoal</option>
                             <option value="email">E-mail</option>
                             <option value="whatsapp">WhatsApp</option>
+                            <option value="pendencia">Pendência</option>
                     </select>
                 </div>
                 <div class="col-xs-9">
@@ -167,7 +168,7 @@
                 <div class="card-block">
                     <div><a href="{{asset('/pessoa/mostrar/'.$pessoa->id)}}"  class="btn btn-primary-outline col-xs-12 text-xs-left"><i class=" fa fa-archive "></i> <small>Dados completos</small></a></div>
                     <div><a href="{{asset('/pessoa/bolsa/cadastrar/'.$pessoa->id)}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-plus-square-o"></i> <small>Solicitações de Bolsa</small></a></div>
-                    <div><a href="#" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-ticket"></i> <small>Protocolos</small></a></div>
+                    <div><a href="/tags/{{$pessoa->id}}" class="btn btn-primary-outline col-xs-12 text-xs-left"><i class="fa fa-ticket"></i> <small>Tag de Acesso</small></a></div>
 
                 </div>
                 
@@ -908,7 +909,10 @@ function registrar_contato(cod,content){
 
     if(meio == 'whatsapp'){
         window.open('/pessoa/contato-whatsapp?pessoa='+cod+'&msg='+mensagem,'_blank');
-        return true;}
+        return true;
+    }
+
+   
 
     
     $.ajax({
@@ -921,7 +925,11 @@ function registrar_contato(cod,content){
         
     })
     .done(function(msg){
-        alert('Registro gravado com sucesso!');
+        if(meio == 'pendencia')
+            $(location).attr('href','{{asset("/secretaria/atender/").'/'}}'+cod);     
+        else
+            alert('Registro gravado com sucesso!');
+
     })
     .fail(function(msg){
         alert('falha no registro de contato');

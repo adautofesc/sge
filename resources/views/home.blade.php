@@ -43,32 +43,26 @@
     @if(in_array('18', Auth::user()->recursos))
 
         <div class="col-md-6 center-block">
-            <div class="card card-warning">
+            <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Pendências de alunos</p>
+                        <p class="title" style="color:white">Agenda de Eventos</p>
                     </div>
                 </div>
                 <div class="card-block">
-                    <small>
-                    <table class="table">
-                        <thead>
-                            <th>Pessoa</th>
-                            <th>Pendência</th>
-                            <th>Apagar</th>
-                        </thead>
-
-                        @foreach($pendencias as $pendencia)
-                        <tr>
-                            <td><a href="/secretaria/atender/{{$pendencia->pessoa}}">{{$pendencia->pessoa}}</a></td>
-                            <td>{{$pendencia->valor}}</td>
-                            <td> <a href="#" class="close" onclick="apagaErro({{$pendencia->id}});" >&times;</a> </td>
-                        </tr>
-                        @endforeach
+                    <ul>
+                        <li>
+                            <strong>15:00</strong> - Nome do evento - FESC 1 - sala 24
+                        </li>
+                        <li>
+                            <strong>15:00</strong> - Nome do evento - FESC 1 - sala 24
+                        </li>
                         
+                    </ul>
+                    
+                    
 
-                    </table>
-                    </small>
+                    
                 </div>
             </div> 
         </div>
@@ -83,9 +77,11 @@
                 <div class="card-block">
                     
                         <div class="list-group">
-                            <a class="list-group-item" style="text-decoration:none;" href="http://fescprotocolo.navka.com/sistema/Login.aspx"><i class="fa fa-bookmark"></i> Sistema de Protocolo</a>
-                            <a class="list-group-item" style="text-decoration:none;" href="http://fesc.com.br/portarias/portarias-ano-2019"><i class="fa fa-file-text-o"></i> Portarias</a>
-                            <a class="list-group-item" style="text-decoration:none;" href="http://fesc.com.br/resolucoes-fesc/resolucoes-ano-2019"><i class="fa fa-file-text-o"></i> Resoluções</a>
+                            <a class="list-group-item" style="text-decoration:none;" href="https://outlook.office.com/mail/"><i class="fa fa-external-link"></i> Outlook (e-mail)</a>
+                            <a class="list-group-item" style="text-decoration:none;" href="https://registro.topponto.com.br/registro/login"><i class="fa fa-external-link"></i> Top Ponto</a>
+                            <a class="list-group-item" style="text-decoration:none;" href="http://fesc.com.br/portarias"><i class="fa fa-external-link"></i> Portarias (link atualizado)</a>
+                            <a class="list-group-item" style="text-decoration:none;" href="http://fesc.com.br/resolucoes-fesc"><i class="fa fa-external-link"></i> Resoluções (link atualizado)</a>
+
                         </div>
                    
                     

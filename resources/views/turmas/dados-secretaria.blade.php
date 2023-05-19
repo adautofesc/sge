@@ -131,7 +131,7 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Frequência</p>
+                        <p class="title" style="color:white">Ferramentas</p>
                     </div>
                 </div>
                 <div class="card-block" style="font-size: 0.8em;">
@@ -185,6 +185,14 @@
                                             
 
                     </div>
+                    @if($turma->getFichaTecnica())
+                    <div>
+                        <i class=" fa fa-arrow-right "></i> 
+                        &nbsp;&nbsp;<a href="/secretaria/visualizar-ficha-tecnica/{{$turma->getFichaTecnica()}}" >Ficha Tecnica</a>
+                                            
+
+                    </div>
+                    @endif
                     
                 
                 </div>   

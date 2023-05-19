@@ -211,7 +211,7 @@ class FrequenciaController extends Controller
         $aula->status = 'executada';
         $aula->save();
         
-        return redirect(asset('/docentes/docente'))->withErrors(['Chamada registrada.']);
+        return redirect()->back()->with(['success'=>'Chamada registrada.']);
 
     }
 
@@ -221,7 +221,7 @@ class FrequenciaController extends Controller
         $aula = Aula::find($aula);
     
         if(!isset($aula->id)){
-            return redirect()->back()->withErrors(['Aula inexistente']);
+            return redirect()->back()->with(['warning'=>'Aula inexistente']);
 
         }    
         
@@ -263,10 +263,7 @@ class FrequenciaController extends Controller
             ->with('frequencias',$arr_frequencias);
 
     }
-    public function editarChamada_exec(Request $req){
-
-        
-            
+    public function editarChamada_exec(Request $req){   
         $aula = Aula::find($req->aula);
         $aula->data = $req->data;
         $aula->save();
@@ -278,9 +275,7 @@ class FrequenciaController extends Controller
             LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
         }
-           
 
-        
         if(isset($_GET['filtrar']))
             $turma->getInscricoes('todas');
         else
@@ -320,7 +315,7 @@ class FrequenciaController extends Controller
 
         }
       
-        return redirect()->back()->withErrors(['Chamada da aula '.$aula->id.' atualizada.']);
+        return redirect()->back()->with(['success'=>'Chamada da aula '.$aula->id.' atualizada.']);
 
     }
 

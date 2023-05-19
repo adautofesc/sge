@@ -287,6 +287,14 @@ class Turma extends Model
 
 	}
 
+	public function getFichaTecnica(){
+		$ficha = \App\FichaTecnica::select('id')->where('turma',$this->id)->first();
+		if($ficha)
+			return $ficha->id;
+		else
+			return null;
+	}
+
 	public function verificaRequisitos($aluno, $relatorio = false){
 	
 		$aluno = Pessoa::find($aluno);

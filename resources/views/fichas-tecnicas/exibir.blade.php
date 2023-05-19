@@ -18,7 +18,15 @@
 				Estado 
 			</label>
 			<div class="col-sm-6"> 
-				{{$ficha->status}}
+				@if($ficha->status=='lancada')
+
+				<span class="badge badge-pill badge-success">{{$ficha->status}}</span>
+				&nbsp;
+				Turma <a href="/turmas/{{$ficha->turma}}"> {{$ficha->turma}} </a> criada.
+				@else
+				<span class="badge badge-pill badge-primary">{{$ficha->status}}</span>
+				@endif
+				
 			</div>
 		</div>
 		<div class="form-group row"> 
@@ -232,13 +240,16 @@
 			<div class="col-sm-10 col-sm-offset-2">
 				
 				<button type="cancel" name="btn" value="1" class="btn btn-primary" onclick="history.back(2)">Voltar</button> 
-				<a class="btn btn-primary" href="/fichas/editar/{{$ficha->id}}">Editar</a> 
-				<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal-encaminhar-ficha" title="Encaminhar ficha para..." >
-					Encaminhar para ...
-				</a>
-				@if($ficha->status =='secretaria' &&  in_array('30', Auth::user()->recursos))
-				<a class="btn btn-primary" href="/turmas/gerar-por-ficha/{{$ficha->id}}">Gerar turma</a> 
+				@if($ficha->status !='lancada' && in_array('13', Auth::user()->recursos))
+					<a class="btn btn-primary" href="/fichas/editar/{{$ficha->id}}">Editar</a> 
+					<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal-encaminhar-ficha" title="Encaminhar ficha para..." >
+						Encaminhar para ...
+					</a>
+					@if($ficha->status =='secretaria' &&  in_array('30', Auth::user()->recursos))
+					<a class="btn btn-primary" href="/turmas/gerar-por-ficha/{{$ficha->id}}">Gerar turma</a> 
+					@endif
 				@endif
+
 				
 
 			</div>

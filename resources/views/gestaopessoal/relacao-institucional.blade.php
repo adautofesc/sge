@@ -20,11 +20,15 @@
 					<option value="Assistente">Assistente</option>
 					<option value="Chefia">Chefia</option>
 					<option value="Contador">Contador</option>
+					<option value="Coordenador de Espaço">Coordenador de Espaço</option>
+					<option value="Coordenador de Parceria">Coordenador de Parceria</option>
 					<option value="Coordenador de Programa">Coordenador de Programa</option>
 					<option value="Desenvolvedor">Desenvolvedor de sistemas</option>
 					<option value="Diretor">Diretor Pedagógico</option>
 					<option value="Diretor">Diretor Administrativo</option>
 					<option value="Educador">Educador</option>
+					<option value="Educador Temporário">Educador Temporário</option>
+					<option value="Educador Tereceirizado">Educador Terceirizado</option>
 					<option value="Educador de Parceria">Educador de parceria</option>
 					<option value="Estagiário">Estagiário</option>
 					<option value="Gestor">Gestor</option>

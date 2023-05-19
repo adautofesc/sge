@@ -675,7 +675,7 @@ Route::middleware(['auth','login']) ->group(function(){
 			});
 		});
 		Route::middleware('liberar.recurso:20')->get('ativar_matriculas_em_espera','MatriculaController@ativarEmEspera');
-
+		Route::get('visualizar-ficha-tecnica/{id}',[FichaTecnicaController::class,'visualizar']);
 
 	});
 

@@ -68,7 +68,7 @@ class FichaTecnicaController extends Controller
         
         $fichas = FichaTecnica::where('id','>','1');
         $programas=Programa::whereIn('id',[1,2,3,4,12])->orderBy('sigla')->get();
-        $professores = \App\PessoaDadosAdministrativos::getFuncionarios('Educador');
+        $professores = \App\PessoaDadosAdministrativos::getFuncionarios('Educador','Educador Temporário','Educador Terceirizado','Educador de Parceria');
 
         if(in_array('13', Auth::user()->recursos) && !in_array('17', Auth::user()->recursos)){
             $fichas = FichaTecnica::where('docente',Auth::user()->pessoa);
@@ -141,7 +141,7 @@ class FichaTecnicaController extends Controller
         
         $unidades=Local::get(['id' ,'nome']);
         $programas = Programa::all();
-        $professores = PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
+        $professores = PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador Temporário','Educador Terceirizado','Educador de Parceria']);
 
         if(in_array('13', Auth::user()->recursos) && !in_array('17', Auth::user()->recursos)){
             $programa = \App\PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','programa')->pluck('valor')->toArray();
@@ -153,7 +153,7 @@ class FichaTecnicaController extends Controller
             $programa = \App\PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','programa')->pluck('valor')->toArray();
             $programas = Programa::whereIn('id',$programa)->get();
             $professores_dos_programas = collect();
-            $professoress = \App\PessoaDadosAdministrativos::getFuncionarios('Educador');
+            $professoress = \App\PessoaDadosAdministrativos::getFuncionarios('Educador','Educador Temporário','Educador Terceirizado','Educador de Parceria');
             foreach($professoress as $professor){
                 $comparisson = array_intersect($programa,$professor->getProgramas());
                 if(count($comparisson))
@@ -247,7 +247,7 @@ class FichaTecnicaController extends Controller
         $salas = Sala::where('local',$ficha->local)->get();
         
         $programas = Programa::all();
-        $professores = PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
+        $professores = PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador Temporário','Educador Terceirizado','Educador de Parceria']);
 
         if(in_array('13', Auth::user()->recursos) && !in_array('17', Auth::user()->recursos)){
             $programa = \App\PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','programa')->pluck('valor')->toArray();
@@ -259,7 +259,7 @@ class FichaTecnicaController extends Controller
             $programa = \App\PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','programa')->pluck('valor')->toArray();
             $programas = Programa::whereIn('id',$programa)->get();
             $professores_dos_programas = collect();
-            $professoress = \App\PessoaDadosAdministrativos::getFuncionarios('Educador');
+            $professoress = \App\PessoaDadosAdministrativos::getFuncionarios('Educador','Educador Temporário','Educador Terceirizado','Educador de Parceria');
             foreach($professoress as $professor){
                 $comparisson = array_intersect($programa,$professor->getProgramas());
                 if(count($comparisson))
@@ -391,7 +391,7 @@ class FichaTecnicaController extends Controller
         $salas = Sala::where('local',$ficha->local)->get();
         
         $programas = Programa::all();
-        $professores = PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
+        $professores = PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador Temporário','Educador Terceirizado','Educador de Parceria']);
 
         if(in_array('13', Auth::user()->recursos) && !in_array('17', Auth::user()->recursos)){
             $programa = \App\PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','programa')->pluck('valor')->toArray();
@@ -403,7 +403,7 @@ class FichaTecnicaController extends Controller
             $programa = \App\PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','programa')->pluck('valor')->toArray();
             $programas = Programa::whereIn('id',$programa)->get();
             $professores_dos_programas = collect();
-            $professoress = \App\PessoaDadosAdministrativos::getFuncionarios('Educador');
+            $professoress = \App\PessoaDadosAdministrativos::getFuncionarios('Educador','Educador Temporário','Educador Terceirizado','Educador de Parceria');
             foreach($professoress as $professor){
                 $comparisson = array_intersect($programa,$professor->getProgramas());
                 if(count($comparisson))

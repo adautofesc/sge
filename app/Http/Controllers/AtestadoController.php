@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Atestado;
+use App\AtestadoLog;
 use Auth;
 
 class AtestadoController extends Controller
@@ -27,20 +28,29 @@ class AtestadoController extends Controller
 		if(isset($r->validade) && substr($r->validade,0,4)<(date('Y')-1))
 			return redirect()->back()->withErrors(['Digite o ano com 4 algarismos']);    
 
+		if(isset($r->validade) && $r->emissao > $r->validade)
+			return redirect()->back()->withErrors(['Data de emissão maior que a data de validade']);    
+
 
 		$arquivo = $r->file('arquivo');
 		$atestado = new Atestado;
 				$atestado->pessoa = $r->pessoa;
 				$atestado->tipo = $r->tipo;
 				$atestado->emissao = $r->emissao;
-				$atestado->validade = $r->validade;
+
+				if(isset($r->validade))
+					$atestado->validade = $r->validade;
+				else
+					$atestado->validade = $r->emissao;
+
+
 				$atestado->atendente = Auth::user()->pessoa;
 				$atestado->status = 'aprovado';
 				$atestado->save();
         if (!empty($arquivo)) {	
                 $arquivo->move('documentos/atestados/', $atestado->id.'.pdf');
         }
-		LogController::registrar('atestado',$atestado->id,'Atestado cadastrado pela secretaria.', Auth::user()->pessoa);
+		AtestadoLogController::registrar($atestado->id,'Atestado cadastrado pela secretaria.', Auth::user()->pessoa);
 		if($atestado->tipo == 'vacinacao')					
 			PessoaDadosAdminController::liberarPendencia($atestado->pessoa,'Falta atestado de vacinação aprovado.');
 		if($atestado->tipo == 'saude')					
@@ -53,14 +63,18 @@ class AtestadoController extends Controller
 
 	}
 	public function listar(){
-		$atestados = Atestado::where('status','analisando')->orderByDesc('id')->paginate(50);
-		foreach($atestados as $atestado){
-			$atestado->pessoa = \App\Pessoa::getNome($atestado->pessoa);
-			$atestado->emissao = \Carbon\Carbon::parse($atestado->emissao)->format('d/m/Y');
-			$atestado->validade = \Carbon\Carbon::parse($atestado->validade)->format('d/m/Y');
-			$atestado->cadastro = \Carbon\Carbon::parse($atestado->created_at)->format('d/m/Y H:i');
+		$atestados = Atestado::where('emissao','>=', (date('Y')-1).'-01-01')->orderByDESC('id')->paginate(50);
+		$logs = \App\Log::where('tipo','atestado')->get();
+		foreach($logs as $log){
+			$atestado_log = new AtestadoLog;
+			$atestado_log->atestado = $log->codigo;
+			$atestado_log->evento = $log->evento;
+			$atestado_log->pessoa = $log->pessoa;
+			$atestado_log->data = $log->data;
+			$atestado_log->save();
+			$log->delete();
 		}
-		//dd($atestados);
+		
 		return view('atestados.listar',compact('atestados'));
 	}
 	public function buscar(Request $r){
@@ -92,7 +106,10 @@ class AtestadoController extends Controller
 		
 			if(isset($r->validade) && substr($r->validade,0,4)<(date('Y')-1))
 				return redirect()->back()->withErrors(['Digite o ano com 4 algarismos']); 
-				 
+			
+			if(isset($r->validade) && $r->emissao > $r->validade)
+				return redirect()->back()->withErrors(['Data de emissão maior que a data de validade']);    
+		
 			$atestado->emissao = $r->emissao;
 			$atestado->tipo = $r->tipo;
 			$atestado->save();
@@ -100,7 +117,9 @@ class AtestadoController extends Controller
        		if (!empty($arquivo)) {
        			$arquivo->move('documentos/atestados/', $atestado->id.'.pdf');
        		}
-       		return redirect()->back()->withErrors(['Atestado atualizado.']);
+
+			AtestadoLogController::registrar($atestado->id,'Atestado editado', Auth::user()->pessoa);
+       		return redirect()->back()->with(['success'=>'Atestado atualizado.']);
 		}
 		else
 			return redirect()->back()->withErrors(['Atestado não encontrado.']);
@@ -138,7 +157,9 @@ class AtestadoController extends Controller
 
 	public function Analisar_view(int $id){
 		$atestado = Atestado::find($id);
+		
 		if($atestado){
+			$logs = \App\AtestadoLog::where('atestado',$id)->get();
 			//$atestado->validade = \Carbon\Carbon::parse($atestado->validade)->format('d/m/Y');
 			$pessoa=\App\Pessoa::find($atestado->pessoa);
 			$pessoa=PessoaController::formataParaMostrar($pessoa);
@@ -148,14 +169,16 @@ class AtestadoController extends Controller
 				$pessoa->telefone_alternativo=\App\classes\Strings::formataTelefone($pessoa->telefone_alternativo);
 			if(isset($pessoa->telefone_contato))
 				$pessoa->telefone_contato=\App\classes\Strings::formataTelefone($pessoa->telefone_contato);
-			$atestado->emissao = \Carbon\Carbon::parse($atestado->emissao)->format('d/m/Y');
 			if(file_exists('documentos/atestados/'.$atestado->id.'.pdf')){
 				$arquivo = file_get_contents('documentos/atestados/'.$atestado->id.'.pdf');
 			}
 			else
 				$arquivo = 'Arquivo não encontrado';
 
-			return view('atestados.analisar-atestado')->with('atestado',$atestado)->with('pessoa',$pessoa)->with('arquivo',$arquivo);
+			return view('atestados.analisar-atestado')->with('atestado',$atestado)
+						->with('pessoa',$pessoa)
+						->with('logs',$logs)
+						->with('arquivo',$arquivo);
 		}else
 		 return redirect()->back()->withErrors(['Atestado não encontrado.']);
 
@@ -169,7 +192,7 @@ class AtestadoController extends Controller
 		if($atestado){
 			$atestado->status = $r->status;
 			if($r->status == 'aprovado'){
-				LogController::registrar('atestado',$id,'Atestado aprovado.', Auth::user()->pessoa);
+				AtestadoLogController::registrar($id,'Atestado aprovado.', Auth::user()->pessoa);
 				if($atestado->tipo == 'vacinacao')					
 					PessoaDadosAdminController::liberarPendencia($atestado->pessoa,'Falta atestado de vacinação aprovado.');
 				if($atestado->tipo == 'saude')					
@@ -177,7 +200,7 @@ class AtestadoController extends Controller
 				
 			}
 			if($r->status == 'recusado'){
-				LogController::registrar('atestado',$id,'Atestado RECUSADO: '."\n".$r->obs, Auth::user()->pessoa);
+				AtestadoLogController::registrar($id,'Atestado RECUSADO: '."\n".$r->obs, Auth::user()->pessoa);
 				$dado_email = \App\PessoaDadosContato::where('pessoa',$atestado->pessoa)->where('dado',1)->orderbyDesc('id')->first();
 
 				if($dado_email){
@@ -194,7 +217,7 @@ class AtestadoController extends Controller
 			}
 		
 		$atestado->save();	
-		return redirect("/pessoa/atestado/listar")->withErrors(['Atestado '.$atestado->id.' avaliado.']);
+		return redirect("/pessoa/atestado/listar")->with('success','Atestado '.$atestado->id.' avaliado.');
 		}
 		else
 		 return redirect()->back()->withErrors(['Atestado não encontrado.']);

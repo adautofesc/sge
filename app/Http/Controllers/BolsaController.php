@@ -487,7 +487,9 @@ class BolsaController extends Controller
         $array_bolsas = Bolsa::where('status','ativa')
                     ->whereIn('desconto',[1,2,6,7,8])
                     ->leftjoin('bolsa_matriculas', 'bolsas.id', '=', 'bolsa_matriculas.bolsa')
+                    
                     ->get();
+        
         foreach($array_bolsas as $array_bolsa){
             $matricula = Matricula::find($array_bolsa->matricula);
             $matricula->getInscricoes('regular');
@@ -522,7 +524,15 @@ class BolsaController extends Controller
                     }
                         
                     else{
-                        $falta++;
+                        //echo $data_aula;
+                        //echo \App\Frequencia::verificarSeAbonaFalta($inscricao->pessoa->id,$data_aula);
+                        //aqui vamos ver se a data está no atestado
+                        //dd(\App\Frequencia::verificarSeAbonaFalta($inscricao->pessoa->id,$data_aula));
+                        if(\App\Frequencia::verificarSeAbonaFalta($inscricao->pessoa->id,$data_aula))
+                            $falta=0; 
+                        else
+                            $falta++;
+
                        
                         if($falta>=3){
                             $alunos[$inscricao->pessoa->id] = 'turma '.$inscricao->turma->id.' aluno';

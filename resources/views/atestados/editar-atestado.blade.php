@@ -38,7 +38,7 @@
 				Emissão
 			</label>
 			<div class="col-sm-3"> 
-				<input type="date" class="form-control boxed" name="emissao" value="{{$atestado->emissao}}" placeholder="" > 
+				<input type="date" class="form-control boxed" name="emissao" value="{{$atestado->emissao->format('Y-m-d')}}" > 
 			</div>
         </div>
         <div class="form-group row"> 
@@ -46,7 +46,7 @@
 				Validade* <br> <small>Somente para atestados médicos</small>
 			</label>
 			<div class="col-sm-3"> 
-				<input type="date" class="form-control boxed" name="emissao" value="{{$atestado->emissao}}" placeholder="" > 
+				<input type="date" class="form-control boxed" name="validade" value="{{isset($atestado->validade)?$atestado->validade->format('Y-m-d'):''}}" > 
 			</div>
         </div>
 		<div class="form-group row"> 

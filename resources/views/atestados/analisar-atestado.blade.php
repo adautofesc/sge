@@ -33,7 +33,7 @@
 				Emissão
 			</label>
 			<div class="col-sm-3"> 
-                <strong>{{$atestado->emissao}}</strong>
+                <strong>{{$atestado->emissao->format('d/m/Y')}}</strong>
 				
 			</div>
         </div>
@@ -42,10 +42,10 @@
 				Validade
 			</label>
 			<div class="col-sm-3">
-                @if($atestado->tipo=='medico') 
-				    <strong>{{$atestado->validade}}</strong>                                 
+                @if(isset($atestado->validade)) 
+				    <strong>{{$atestado->validade->format('d/m/Y')}}</strong>                                 
                 @else
-                    <strong>Automática / Não se aplica</strong>  
+                    <strong>Não definida / Não se aplica</strong>  
                 @endif
 			</div>
         </div>
@@ -99,6 +99,27 @@
                 <button type="cancel" name="btn" class="btn btn-primary" onclick="history.back(-2);return false;">Cancelar</button>
 			</div>
        </div>
+
+       <div class="subtitle-block">
+        <h3 class="subtitle"><i class=" fa fa-medkit "></i> Histórico atestado número {{$atestado->id}}. </h3>
+        </div>
+        <div class="form-group row"> 
+            <table class="table">
+                <tr>
+                    <th>Data</th>
+                    <th>Evento</th>
+                    <th>Responsável</th>
+                </tr>
+                @foreach($logs as $log)
+                <tr>
+                    <td>{{$log->data->format('d/m/Y H:i')}} </td>
+                    <td>{{$log->evento}}</td>
+                    <td>{{$log->getNomeResponsavel()}} </td>
+
+                </tr>
+            @endforeach
+            </table>
+        </div>
     </div>
 </form>
 @endsection

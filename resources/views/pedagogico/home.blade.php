@@ -47,14 +47,24 @@
                 <div class="card-block">
                     <table class="table table-hover table-sm">
                         <tr>
+                            <th><input type="checkbox" name="" id=""></th>
                             <th>Educador</th>
-                            <th>&nbsp;</th>
+                            
+                            <th>                                    <a href="#" title="Jornadas" class="btn btn-sm rounded-s btn-primary-outline"><i class="fa fa-ellipsis-v"></i></a>
+                            </th>
 
                         </tr>
                         @foreach($professores as $professor)
                             <tr>
-                                <td>{{$professor->nome_simples}}</td>
+                                <td><input type="checkbox" name="" id=""></td>
+                                <td>
+                                    
+                                        {{$professor->nome_simples}}
+                            
+                                </td>
                                 <td align="right">
+                                    <a href="#" title="Jornadas" class="btn btn-sm rounded-s btn-primary-outline"><i class="fa fa-ellipsis-v"></i></a>
+                                    
                                     <a href="/jornadas/{{$professor->id}}" title="Jornadas" class="btn btn-sm rounded-s btn-primary-outline"><i class="fa fa-dashboard"></i></a>
                                     <a href="/docentes/docente/{{$professor->id}}" title="Chamadas" class="btn btn-sm rounded-s btn-primary-outline"><i class="fa fa-check-square-o"></i></a>
                                     

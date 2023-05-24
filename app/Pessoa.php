@@ -48,11 +48,19 @@ class Pessoa extends Model
 
 	}
 
-	public static function getNome($id)
+	public static function getNome($id,$t='completo')
 	{		
 		$query=Pessoa::withTrashed()->find($id);
-		if($query)
-			$nome=Strings::converteNomeParaUsuario($query->nome);
+		if($query){
+			if($t=='completo')
+				$nome=Strings::converteNomeParaUsuario($query->nome);
+			else{
+				$nome=$query->nome;
+				$nome=explode(' ',$nome);
+				$nome_simples = $nome[0].' '.$nome[count($nome)-1];
+				return $nome_simples;
+			}
+		}
 		else
 			$nome="Impossível encontrar o nome dessa pessoa";
 

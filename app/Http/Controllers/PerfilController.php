@@ -272,7 +272,7 @@ class PerfilController extends Controller
 
         if(substr($r->emissao,0,4)<(date('Y')-1))
             return redirect()->back()->withErrors(['Digite o ano com 4 algarismos']);    
-
+        
 
         $arquivo = $r->file('atestado');
 
@@ -302,6 +302,7 @@ class PerfilController extends Controller
                 $atestado->emissao = $r->emissao;
                 $atestado->status = 'analisando';
                 $atestado->save();  
+                \App\AtestadoLog::registrar($atestado->id,'Atestado cadastrado pelo aluno',$r->pessoa->id);
                 $mensagem = 'Atestado cadastrado com sucesso!' ;
             }
 

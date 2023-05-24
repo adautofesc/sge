@@ -93,4 +93,39 @@ class Frequencia extends Model
             $frequencia->delete();
         }     
     }
+
+    public static function verificarSeAbonaFalta(int $pessoa, $data){
+        $atestados = Atestado::where('pessoa',$pessoa)->where('tipo','medico')->where('status','aprovado')->whereYear('emissao',date('Y'))->get();
+        
+        if($atestados->count() == 0){
+            
+            return false;
+        }
+        else{
+            foreach($atestados as $atestado){
+                if(!isset($atestado->emissao) || !isset($atestado->validade)){
+                    
+                    return false;
+                }
+                    
+                $emissao = \Carbon\Carbon::instance($atestado->emissao);
+                $validade = \Carbon\Carbon::instance($atestado->validade);
+                
+                // se aula>=data_emissao e aula<=data_validade
+                if($data->greaterThanOrEqualTo($emissao) && $data->lessThanOrEqualTo($validade)){
+                    
+                    return true;
+                }
+                else{
+                    
+                    return false;
+                }
+
+            }
+            
+            return false;
+            
+
+        }
+    }
 }

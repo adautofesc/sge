@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Atestado extends Model
 {
     use SoftDeletes;
-    protected $dates = ['deleted_at'];
+    protected $dates = ['emissao','validade','created_at','deleted_at'];
    
 
     public function calcularVencimento($programa){
@@ -29,4 +29,10 @@ class Atestado extends Model
 
 
     }
+
+	public function getNome(){
+		return \App\Pessoa::getNome($this->pessoa);
+	}
+
+
 }

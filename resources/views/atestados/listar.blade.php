@@ -33,23 +33,28 @@
 					</label>
 				</div>
                 <div class="item-col item-col-header item-col-title">
+                    <div><span>COD</span></div>
+                </div>
+                <div class="item-col item-col-header item-col-title">
                     <div> <span>Nome</span> </div>
                 </div>
                 <div class="item-col item-col-header item-col-sales">
                     <div> <span>Tipo</span> </div>
                 </div>
                 <div class="item-col item-col-header item-col-sales">
-                    <div> <span>Data de Emissão</span> </div>
+                    <div> <span>Emissão</span> </div>
                 </div>
                 <div class="item-col item-col-header item-col-sales">
-                    <div> <span>Data de Validade</span> </div>
+                    <div> <span>Validade</span> </div>
                 </div>
                 <div class="item-col item-col-header item-col-sales">
-                    <div> <span>Data de envio</span> </div>
+                    <div> <span>Envio</span> </div>
                 </div>
-                <div class="item-col item-col-header item-col-sales "> </div>
-
-                <div class="item-col item-col-header fixed item-col-actions-dropdown"> </div>
+                <div class="item-col item-col-header item-col-sales">
+                    <div> <span>Status</span> </div>
+                </div>
+                <div class="item-col item-col-header item-col-sales ">&nbsp;</div>
+                <div class="item-col item-col-header item-col-sales ">&nbsp;</div>
             </div>
         </li>
         @foreach($atestados as $atestado)
@@ -59,13 +64,16 @@
                 	<label class="item-check" id="select-all-items">
 						<input type="checkbox" class="checkbox" value="">
 						<span></span>
-					</label> </div>                
-                <div class="item-col fixed pull-left item-col-title">
+					</label> 
+                </div>
+                <div class="item-col item-col-sales">
+                    <div class="item-heading">COD</div>
+                    <div> {{$atestado->id}}</div>
+                </div>                
+                <div class="item-col fixed item-col-title">
                     <div class="item-heading">Nome</div>
                     <div>
-                        
-                            <h4 class="item-title">{{$atestado->pessoa}} </h4>
-                        
+                        <h4 class="item-title"><a href="#">{{$atestado->getNome()}} </a></h4>
                     </div>
                 </div>
                 <div class="item-col item-col-sales">
@@ -74,22 +82,46 @@
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Emissão</div>
-                    <div> {{$atestado->emissao}}</div>
+                    <div> {{$atestado->emissao->format('d/m/Y')}}</div>
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Validade</div>
-                    <div> {{$atestado->validade}}</div>
+                    <div> {{isset($atestado->validade)?$atestado->validade->format('d/m/Y'):'-'}}</div>
                 </div>
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Recebido em</div>
                     <div>
-                       {{$atestado->cadastro}}
+                       {{$atestado->created_at->format('d/m/Y')}}
+                    </div>
+                </div> 
+                <div class="item-col item-col-sales">
+                    <div class="item-heading">status</div>
+                    @switch($atestado->status)
+                    @case('analisando')
+                        <div class="badge badge-pill badge-warning">
+                            @break
+                    @case('aprovado')
+                        <div class="badge badge-pill badge-success">
+                            @break
+                    @case('recusado')
+                        <div class="badge badge-pill badge-danger">
+                        @break
+                    @case('vencido')
+                        <div class="badge badge-pill badge-secondary">
+                            @break
+                    @default
+                        <div class="badge badge-pill badge-primary">
+                            @break
+                    @endswitch
+
+
+                       {{$atestado->status}}
                     </div>
                 </div> 
                 <div class="item-col item-col-sales">
                     <div class="item-heading">Analisar</div>
                     <div>
-                       <a href="/pessoa/atestado/analisar/{{$atestado->id}}" class="btn btn-primary btn-sm">Analisar</a>
+                       <a href="/pessoa/atestado/analisar/{{$atestado->id}}" class="btn btn-primary btn-rounded btn-sm">Analisar</a>
                     </div>
                 </div> 
             

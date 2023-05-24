@@ -10,11 +10,12 @@ class Aula extends Model
 {
     use SoftDeletes;
     public $timestamps = false;
+    protected $dates = ['data'];
 
-    public function getDataAttribute($value){
+    /*public function getDataAttribute($value){
         $newdata = \DateTime::createFromFormat('Y-m-d',$value);
         return $newdata;
-    }
+    }*/
 
     public function getAlunosPresentes(){
         $presentes = array();

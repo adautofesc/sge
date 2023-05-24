@@ -26,7 +26,7 @@ class CreateEventosTable extends Migration
             $table->enum('frequencia',['unico','semanal','quinzenal','mensal','bimensal']);
             $table->string('dias_semana',25);
             $table->unsignedInteger('responsavel');
-            $table->unsignedInteger('parceria');
+            $table->unsignedInteger('parceria')->nullable();
             $table->unsignedInteger('sala')->nullable();
             $table->string('local',100)->nullable();
             $table->string('desc',500)->nullable();

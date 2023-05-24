@@ -882,6 +882,7 @@ class MatriculaController extends Controller
     }
 
     public function analiseFinanceira($id = null){
+        return "Relatório em manutenção";
         $matriculas_alvo = Array();
         
         if($id)

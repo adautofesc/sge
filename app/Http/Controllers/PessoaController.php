@@ -290,6 +290,7 @@ class PessoaController extends Controller
 	public function dadosPessoa($id)
 	{
 		
+		
 		$pessoa=Pessoa::find($id);
 		// Verifica se a pessoa existe
 		if(!$pessoa)
@@ -317,8 +318,11 @@ class PessoaController extends Controller
 				//return view('error-404-alt')->with(array('error'=>['id'=>'403.6','desc'=>'Esta pessoa possui restrição de acesso aos seus dados']));	
 
 		}
+		
 	
 		$pessoa=$this->formataParaMostrar($pessoa);
+
+		dd($pessoa);
 
 		return $pessoa;
 	}

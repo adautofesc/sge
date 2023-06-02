@@ -15,6 +15,7 @@ use App\Http\Controllers\AulaController;
 use App\Http\Controllers\JornadaController;
 use App\Http\Controllers\Reports\JornadaDocentes;
 use App\Http\Controllers\Reports\JornadaPrograma;
+use App\Http\Controllers\Reports\JornadaHTP;
 use App\Http\Controllers\SalaController;
 use App\Http\Controllers\UsoLivreController;
 use App\Http\Controllers\MatriculaController;
@@ -304,7 +305,7 @@ Route::middleware(['auth','login']) ->group(function(){
 
 	});
 
-	Route::middleware('liberar.recurso:18')->prefix('ins')->group(function(){
+	Route::middleware('liberar.recurso:18')->prefix('tags')->group(function(){
 		Route::get('/{pessoa?}',[TagController::class,'index']);
 		Route::get('/apagar/{id}/{pessoa}',[TagController::class,'apagar']);
 		Route::post('/{pessoa}/criar',[TagController::class,'criar']);
@@ -708,6 +709,9 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('salas',  [SalaController::class,'relatorioOcupacao']);
 		Route::get('jornadas-por-programa/{programa}', [JornadaPrograma::class,'index']);
 		Route::get('uso-livre', [UsoLivreController::class,'relatorio']);
+		Route::get('horarios-htp/{programas}', [JornadaHTP::class,'index']); 
+
+		
 		
 
 	});

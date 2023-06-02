@@ -1054,31 +1054,34 @@ class TurmaController extends Controller
             if($worksheet->getCell('A'.$i)->getValue() != null){
                 $insc= (object)[];
                 $insc->id = $i;
-                $insc->nome=$worksheet->getCell('A'.$i)->getValue();
-                $insc->nascimento=$worksheet->getCell('G'.$i)->getFormattedValue();
+                $insc->nome=trim($worksheet->getCell('A'.$i)->getValue());
+                $insc->nascimento=trim(iconv("UTF-8","ISO-8859-1",$worksheet->getCell('G'.$i)->getFormattedValue())," \t\n\r\0\x0B\xA0");
                 try{
                     $insc->nascimento = \Carbon\Carbon::createFromFormat('d/m/Y', $insc->nascimento)->format('Y-m-d');
                 }
                 catch(\Exception $e){
                     
                 }
-                $insc->genero=$worksheet->getCell('B'.$i)->getValue();
 
-                $insc->fone=$worksheet->getCell('E'.$i)->getValue().' '.$worksheet->getCell('F'.$i)->getValue();
-                $insc->rg=$worksheet->getCell('C'.$i)->getValue();
-                $insc->cpf=$worksheet->getCell('D'.$i)->getValue();
-                $insc->endereco=$worksheet->getCell('H'.$i)->getValue();
-                $insc->numero=$worksheet->getCell('I'.$i)->getValue();
-                $insc->bairro=$worksheet->getCell('K'.$i)->getValue();
-                $insc->complemento=$worksheet->getCell('J'.$i)->getValue();
-                $insc->cep=$worksheet->getCell('L'.$i)->getValue();
-                $insc->cidade=$worksheet->getCell('M'.$i)->getValue();
-                $insc->estado=$worksheet->getCell('N'.$i)->getValue();
-                $insc->turma=$worksheet->getCell('O'.$i)->getValue();
+                $insc->genero=trim($worksheet->getCell('B'.$i)->getValue());
+                $insc->rg=trim($worksheet->getCell('C'.$i)->getValue());
+                $insc->cpf=trim($worksheet->getCell('D'.$i)->getValue());
+                $insc->email=trim($worksheet->getCell('E'.$i)->getValue());
+                $insc->fone=trim($worksheet->getCell('F'.$i)->getValue());         
+                $insc->endereco=trim($worksheet->getCell('H'.$i)->getValue());
+                $insc->numero=trim($worksheet->getCell('I'.$i)->getValue());
+                $insc->bairro=trim($worksheet->getCell('K'.$i)->getValue());
+                $insc->complemento=trim($worksheet->getCell('J'.$i)->getValue());
+                $insc->cep=trim($worksheet->getCell('L'.$i)->getValue());
+                $insc->cidade=trim($worksheet->getCell('M'.$i)->getValue());
+                $insc->estado=trim($worksheet->getCell('N'.$i)->getValue());
+                $insc->turma=trim($worksheet->getCell('O'.$i)->getValue());
                 $pessoas->push($insc);
             }
         }
         $pessoas = $pessoas->sortBy('nome');
+
+        //dd($pessoas);
 
         return view('turmas.listar-importados')->with('pessoas',$pessoas)->with('arquivo',$request->arquivo);
     }
@@ -1086,13 +1089,15 @@ class TurmaController extends Controller
 
 
     public function processarImportacao(Request $request){
-        //dd($request);
-        $cadastrados = array();
-
+        
+        $cadastrados = array();        
         foreach ($request->pessoa as $id=>$key){ // para cada elemento do array pessoa (campo checkbox)
-            $nascimento = \Carbon\Carbon::createFromFormat('Y-m-d', $request->nascimento[$id])->format('Y-m-d');
             
-            if($key == 'on'){ //se o checkbox estiver marcado
+            
+                
+                
+                $nascimento = \Carbon\Carbon::createFromFormat('Y-m-d', $request->nascimento[$id])->format('Y-m-d');
+
                 //verifica se já está cadastrado
                 
                 if(isset($request->cpf[$id])){
@@ -1111,21 +1116,19 @@ class TurmaController extends Controller
                         $pessoa = PessoaController::cadastrarPessoa($request->nome[$id],$request->genero[$id],\DateTime::createFromFormat('Y-m-d',$request->nascimento[$id]));
                 }
 
-                //dd($pessoa);
-                
-              
 
-                
                    
-                if(isset($request->rg[$id]))
-                    PessoaDadosGeraisController::gravarDocumento($pessoa->id,'rg',$request->rg[$id]);
-                if(isset($request->cpf[$id]))
-                    PessoaDadosGeraisController::gravarDocumento($pessoa->id,'cpf',$request->cpf[$id]);
-                if(isset($request->telefone[$id]))
-                    PessoaDadosContatoController::gravarTelefone($pessoa->id,$request->telefone[$id]);
-               
+                if(isset($request->rg[$id]) && strlen($request->rg[$id])>5)
+                    $rg = PessoaDadosGeraisController::gravarDocumento($pessoa->id,'rg',$request->rg[$id]);
+                if(isset($request->cpf[$id]) && strlen($request->cpf[$id])>5)
+                    $cpf = PessoaDadosGeraisController::gravarDocumento($pessoa->id,'cpf',$request->cpf[$id]);
+                if(isset($request->telefone[$id]) && strlen($request->telefone[$id])>5)
+                    $telefone = PessoaDadosContatoController::gravarTelefone($pessoa->id,$request->telefone[$id]);
+               //dd($rg);
+               if($pessoa->id=='37001')
+               dd($cpf);
                 
-                if(isset($request->endereco[$id]) && isset($request->cep[$id])){
+                if(isset($request->endereco[$id]) && strlen($request->endereco[$id])>5 && isset($request->cep[$id]) && strlen($request->cep[$id])>5){
                     $dado = PessoaDadosContato::where('dado','6')->where('pessoa',$pessoa->id)->get();
                     if(count($dado) == 0){
                         $endereco = new \App\Endereco;
@@ -1163,7 +1166,7 @@ class TurmaController extends Controller
                 }
 
 
-            }
+            
             
         }
         //return $cadastrados;

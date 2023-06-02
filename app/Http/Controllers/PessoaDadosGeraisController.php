@@ -51,19 +51,22 @@ class PessoaDadosGeraisController extends Controller
 		
 		switch($documento){
 			case "rg": 
-				$tipo = 3;
-			break;
-				
-			case "cpf" : 
 				$tipo = 4;
+			break;			
+			case "cpf" : 
+				$tipo = 3;
 			break;	
 			default : 
 			 die('Tipo de dado não especificado. PessoaDadosController 60');
 			break;			
 		}
-		$existente = PessoaDadosGerais::where('dado',$tipo)->where('pessoa',$pessoa)->get();
-		if(is_null($existente) && $numero !=0 && $numero!=' '){
+
+		
+		$existente = PessoaDadosGerais::where('dado',$tipo)->where('pessoa',$pessoa)->first();
+		
+		if(is_null($existente) && $numero > 0){
 			$doc = new PessoaDadosGerais;
+			$doc->pessoa= $pessoa;
 			$doc->dado = $tipo;
 			$doc->valor = preg_replace( '/[^0-9]/is', '', $numero);
 			$doc->save();

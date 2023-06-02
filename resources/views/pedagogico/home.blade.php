@@ -123,7 +123,7 @@
                                 <a href="/relatorios/jornadas-por-programa/cec" class="btn btn-primary-outline col-xs-12 text-xs-left">
                                     <i class=" fa fa-file-text-o"></i>
                                      &nbsp;&nbsp;Jornadas CEC</a>
-                            @endif
+                                @endif
 
                                 @if(in_array('2',$programas))
                                 <a href="/relatorios/jornadas-por-programa/pid" class="btn btn-primary-outline col-xs-12 text-xs-left">
@@ -134,6 +134,10 @@
                                         <i class=" fa fa-file-text-o"></i>
                                          &nbsp;&nbsp;Uso Livre</a>
                                 @endif
+                                <a href="/relatorios/horarios-htp/{{implode('.',$programas)}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                                    <i class=" fa fa-file-text-o"></i>
+                                     &nbsp;&nbsp;HTP Educadores</a>
+
 
                                 
                     </div>

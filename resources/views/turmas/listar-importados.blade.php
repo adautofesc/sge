@@ -59,30 +59,31 @@
         <li class="item">
             <div class="item-row">
                 <div class="item-col fixed item-col-check"> 
-                	<label class="item-check" id="select-all-items">
-						<input type="checkbox" class="checkbox" name="pessoa[{{$pessoa->id}}]" checked>
+                	<label title="{{$pessoa->id}}" class="item-check" id="select-all-items">
+						<input type="checkbox" class="checkbox" name="pessoa[{{$pessoa->id}}]" checked >
 						<span></span>
                     </label> 
                 </div>  
-                <div class="item-col item-col-sales">
+                <div class="item-col">
                     <div class="item-heading">Turma</div>
-                    <div><input type="number" class="form-control boxed" name="turma[{{$pessoa->id}}]" value="{{$pessoa->turma}}" maxlength="10" title="Código da turma" required="required">  </div>
+                    <div><input type="number" class="form-control form-control-sm boxed" name="turma[{{$pessoa->id}}]" value="{{$pessoa->turma}}" maxlength="10" title="Código da turma" required="required">  </div>
                 </div>              
-                <div class="item-col fixed item-col-title">
+                <div class="item-col">
                     <div class="item-heading">Nome</div>
                     <div>             
-                            <input type="text" class="form-control boxed" name="nome[{{$pessoa->id}}]" value="{{$pessoa->nome}}" maxlength="250" title="Nome da pessoa" required="required"> 
+                            <input type="text" class="form-control form-control-sm boxed" name="nome[{{$pessoa->id}}]" value="{{$pessoa->nome}}" maxlength="250" title="Nome da pessoa" required="required"> 
                     </div>
                 </div>
-                <div class="item-col item-col-sales">
+                <div class="item-col">
                     <div class="item-heading">Nascimento</div>
-                    <div> <input type="date" class="form-control boxed" name="nascimento[{{$pessoa->id}}]" value="{{$pessoa->nascimento}}" maxlength="11" title="Nascimento" required="required"> </div>
-                </div>
-                <div class="item-col item-col-sales">
+                    <div> 
+                        <input type="date" class="form-control form-control-sm boxed" name="nascimento[{{$pessoa->id}}]" value="{{$pessoa->nascimento}}" maxlength="11" title="Nascimento" required="required"> </div>
+                    </div>
+                <div class="item-col ">
                     <div class="item-heading">Contato</div>
                     <div>
                         
-                        <input type="text" class="form-control boxed" name="telefone[{{$pessoa->id}}]" maxlength="12" title="Telefone"
+                        <input type="text" class="form-control form-control-sm boxed" name="telefone[{{$pessoa->id}}]" maxlength="12" title="Telefone"
                         @if(isset($pessoa->fone))
                         value="{{$pessoa->fone}}" 
                         @endif
@@ -91,30 +92,30 @@
                 </div> 
                 @if(isset($pessoa->rg))
             
-                    <div class="item-col item-col-sales">
+                    <div class="item-col ">
                         <div class="item-heading">RG</div>
-                        <div><input type="text" class="form-control boxed" name="rg[{{$pessoa->id}}]" value="{{$pessoa->rg}}" title="RG" maxlength="14">  </div>
+                        <div><input type="text" class="form-control form-control-sm boxed" name="rg[{{$pessoa->id}}]" value="{{$pessoa->rg}}" title="RG" maxlength="14">  </div>
                     </div>  
 
                 
                 @endif
-                @if(isset($pessoa->rg))
+                @if(isset($pessoa->cpf))
                 
-                    <div class="item-col item-col-sales">
+                    <div class="item-col ">
                         <div class="item-heading">CPF</div>
-                        <div><input type="text" class="form-control boxed" name="cpf[{{$pessoa->id}}]" value="{{$pessoa->cpf}}" title="CPF" maxlength="14">  </div>
+                        <div><input type="text" class="form-control form-control-sm boxed" name="cpf[{{$pessoa->id}}]" value="{{$pessoa->cpf}}" title="CPF" maxlength="14">  </div>
                     </div>  
 
                 
                 @endif
-                <div class="item-col item-col-sales">
+                <div class="item-col ">
                     <div class="item-heading">Genero</div>
                     <div>
                         <label title="Gênero Masculino">
-                            <input class="radio" name="genero[{{$pessoa->id}}]" value="M" {{$pessoa->genero=="M"?"checked":""}} type="radio" required><span>M</span>
+                            <input class="radio" name="genero[{{$pessoa->id}}]" value="M" {{$pessoa->genero=="M"||$pessoa->genero=="m"?"checked":""}} type="radio" required><span>M</span>
                         </label>
                         <label title="Gênero Feminino">
-                            <input class="radio" name="genero[{{$pessoa->id}}]" value="F" {{$pessoa->genero=="F"?"checked":""}} type="radio"><span>F</span>
+                            <input class="radio" name="genero[{{$pessoa->id}}]" value="F" {{$pessoa->genero=="F"||$pessoa->genero=="f"?"checked":""}} type="radio"><span>F</span>
                         </label> 
                     </div>
                 </div> 
@@ -125,63 +126,68 @@
             
             @if(isset($pessoa->endereco))
             
-                <div class="item-col item-col-sales">
+                <div class="item-col ">
                     <div class="item-heading">Endereço</div>
-                    <div><input type="text" class="form-control boxed" name="endereco[{{$pessoa->id}}]" value="{{$pessoa->endereco}}" title="Endereço" maxlength="150">  </div>
+                    <div><input type="text" class="form-control form-control-sm boxed" name="endereco[{{$pessoa->id}}]" value="{{$pessoa->endereco}}" title="Endereço" maxlength="150">  </div>
                 </div>  
 
     
             @endif
             @if(isset($pessoa->numero))
             
-                <div class="item-col item-col-sales">
+                <div class="item-col ">
                     <div class="item-heading">Número</div>
-                    <div><input type="text" class="form-control boxed" name="numero[{{$pessoa->id}}]" value="{{$pessoa->numero}}" title="Numero Endereço" max="5">  </div>
+                    <div><input type="text" class="form-control form-control-sm boxed" name="numero[{{$pessoa->id}}]" value="{{$pessoa->numero}}" title="Numero Endereço" max="5">  </div>
                 </div>  
 
     
             @endif
             @if(isset($pessoa->complemento))
             
-                <div class="item-col item-col-sales">
+                <div class="item-col ">
                     <div class="item-heading">Complemento</div>
-                    <div><input type="text" class="form-control boxed" name="complemento[{{$pessoa->id}}]" value="{{$pessoa->complemento}}" title="Complemento" maxlength="20">  </div>
+                    <div><input type="text" class="form-control form-control-sm boxed" name="complemento[{{$pessoa->id}}]" value="{{$pessoa->complemento}}" title="Complemento" maxlength="20">  </div>
                 </div>  
 
     
             @endif
             @if(isset($pessoa->bairro))
             
-                <div class="item-col item-col-sales">
+                <div class="item-col ">
                     <div class="item-heading">Bairro</div>
-                    <div><input type="text" class="form-control boxed" name="bairro[{{$pessoa->id}}]" value="{{$pessoa->bairro}}" title="Bairro" maxlength="200">  </div>
+                    <div><input type="text" class="form-control form-control-sm boxed" name="bairro[{{$pessoa->id}}]" value="{{$pessoa->bairro}}" title="Bairro" maxlength="200">  </div>
                 </div>  
 
     
             @endif
             @if(isset($pessoa->cidade))
             
-                <div class="item-col item-col-sales">
+                <div class="item-col ">
                     <div class="item-heading">Cidade</div>
-                    <div><input type="text" class="form-control boxed" name="cidade[{{$pessoa->id}}]" value="{{$pessoa->cidade}}" title="Cidade" maxlength="50">  </div>
+                    <div><input type="text" class="form-control form-control-sm boxed" name="cidade[{{$pessoa->id}}]" value="{{$pessoa->cidade}}" title="Cidade" maxlength="50">  </div>
                 </div>  
 
     
             @endif
             @if(isset($pessoa->estado))
             
-                <div class="item-col item-col-sales">
+                <div class="item-col ">
                     <div class="item-heading">UF</div>
-                    <div><input type="text" class="form-control boxed" name="estado[{{$pessoa->id}}]" value="{{$pessoa->estado}}" title="UF" maxlength="2">  </div>
+                    <div><input type="text" class="form-control form-control-sm boxed" name="estado[{{$pessoa->id}}]" value="{{$pessoa->estado}}" title="UF" maxlength="2">  </div>
                 </div>  
 
     
             @endif
             @if(isset($pessoa->cep))
             
-                <div class="item-col item-col-sales">
+                <div class="item-col">
                     <div class="item-heading">CEP</div>
-                    <div><input type="text" class="form-control boxed" name="cep[{{$pessoa->id}}]" value="{{$pessoa->cep}}" title="CEP" maxlength="8">  </div>
+                    <div><input type="text" class="form-control form-control-sm boxed" name="cep[{{$pessoa->id}}]" value="{{$pessoa->cep}}" title="CEP" maxlength="8">  </div>
+                </div> 
+
+                <div class="item-col">
+                    <div class="item-heading">Email</div>
+                    <div><input type="text" class="form-control form-control-sm boxed" name="email[{{$pessoa->id}}]" value="{{$pessoa->email}}" title="Email" maxlength="200">  </div>
                 </div> 
     
             @endif

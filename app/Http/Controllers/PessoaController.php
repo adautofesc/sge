@@ -322,7 +322,7 @@ class PessoaController extends Controller
 	
 		$pessoa=$this->formataParaMostrar($pessoa);
 
-		dd($pessoa);
+		//dd($pessoa);
 
 		return $pessoa;
 	}

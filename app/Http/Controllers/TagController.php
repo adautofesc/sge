@@ -36,7 +36,7 @@ class TagController extends Controller
             
             $tag = new Tag;
             $tag->pessoa = $r->pessoa;
-            $tag->tag = $r->tag;
+            $tag->tag = str_pad($r->tag,20,'0',STR_PAD_LEFT);
             $tag->data = new \DateTime();
             $tag->responsavel = Auth::user()->pessoa;
             $tag->save();

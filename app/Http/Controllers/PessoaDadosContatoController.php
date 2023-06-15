@@ -43,4 +43,28 @@ class PessoaDadosContatoController extends Controller
         }
 
     }
+
+    public static function gravarEmail(int $pessoa, string $email){
+        
+        $address = explode('@', $email);
+        if(count($address)!=2)
+            return false;
+        else{
+            list($username, $domain) = $address;
+            if (checkdnsrr($domain, 'MX')) {
+                $contato = new PessoaDadosContato;
+                $contato->pessoa = $pessoa;
+                $contato->dado = '1';
+                $contato->valor = $email;
+                $contato->save();
+                return $contato;
+            }
+            else {
+                return false;
+            }
+        }
+
+        
+
+    }
 }

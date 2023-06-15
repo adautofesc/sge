@@ -311,12 +311,16 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::post('/{pessoa}/criar',[TagController::class,'criar']);
 	});
 
+	Route::middleware('liberar.recurso:18')->prefix('inscricoes')->group(function(){
+		Route::post('importar-dados','InscricaoController@importarDados');
+	});
+
 //**************************************************************************SETORES******************************** */
 
 	//Desenvoldedor
 	Route::middleware('liberar.recurso:22')->prefix('dev')->group(function(){
 		Route::get('/','painelController@indexDev');
-		Route::get('testar-classe/', 'BoletoController@registrarBoletosOnline');
+		Route::get('testar-classe/', 'PessoaDadosGeraisController@rastrearDuplicados');
 		Route::post('testar-classe', 'painelController@testarClassePost');
 		Route::get('/bolsa/gerador', 'BolsaController@gerador');
 		Route::get('/corrigir-boletos','BoletoController@corrigirBoletosSemParcelas');
@@ -664,6 +668,7 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::get('atualizar/{id}','MatriculaController@atualizar');
 			Route::get('cancelamento', 'MatriculaController@regularizarCancelamentos');
 			Route::prefix('inscricao')->group(function(){
+
 				Route::get('editar/{id}', 'InscricaoController@editar');
 				Route::post('editar/{id}', 'InscricaoController@update');
 				Route::get('apagar/{id}', 'InscricaoController@viewCancelar');
@@ -674,6 +679,7 @@ Route::middleware(['auth','login']) ->group(function(){
 				Route::get('imprimir/cancelamento/{inscricao}', 'InscricaoController@imprimirCancelamento');
 				Route::get('imprimir/transferencia/{inscricao}', 'TransferenciaController@imprimir');
 			});
+
 		});
 		Route::middleware('liberar.recurso:20')->get('ativar_matriculas_em_espera','MatriculaController@ativarEmEspera');
 		Route::get('visualizar-ficha-tecnica/{id}',[FichaTecnicaController::class,'visualizar']);

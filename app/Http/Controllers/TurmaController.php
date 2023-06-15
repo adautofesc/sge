@@ -1047,9 +1047,14 @@ class TurmaController extends Controller
         $spreadsheet = $reader->load($request->arquivo);
         $worksheet = $spreadsheet->getActiveSheet();
         $highestRow = $worksheet->getHighestDataRow();
-        if($highestRow>200)
-            return redirect()->back()->withErrors('Erro: o arquivo importado não pode ter mais de 200 registros neste momento.');
-        $pessoas = collect();
+        if($highestRow>500)
+            return redirect()->back()->withErrors('Erro: o arquivo importado não pode ter mais de 500 registros neste momento.');
+        // Verificador da versão do modelo (nesse caso verifica se coluna E = e-mail)
+        if($worksheet->getCell('E1')->getValue()!='E-mail')
+            return redirect()->back()->withErrors('Erro: Versão do arquivo diferente do modelo. ');
+        
+        
+            $pessoas = collect();
         for($i=2;$i<=$highestRow;$i++){
             if($worksheet->getCell('A'.$i)->getValue() != null){
                 $insc= (object)[];
@@ -1057,7 +1062,7 @@ class TurmaController extends Controller
                 $insc->nome=trim($worksheet->getCell('A'.$i)->getValue());
                 $insc->nascimento=trim(iconv("UTF-8","ISO-8859-1",$worksheet->getCell('G'.$i)->getFormattedValue())," \t\n\r\0\x0B\xA0");
                 try{
-                    $insc->nascimento = \Carbon\Carbon::createFromFormat('d/m/Y', $insc->nascimento)->format('Y-m-d');
+                    $insc->nascimento = \Carbon\Carbon::createFromFormat('m/d/Y', $insc->nascimento)->format('Y-m-d');
                 }
                 catch(\Exception $e){
                     
@@ -1126,7 +1131,7 @@ class TurmaController extends Controller
                     $telefone = PessoaDadosContatoController::gravarTelefone($pessoa->id,$request->telefone[$id]);
                //dd($rg);
                if($pessoa->id=='37001')
-               dd($cpf);
+               //dd($cpf);
                 
                 if(isset($request->endereco[$id]) && strlen($request->endereco[$id])>5 && isset($request->cep[$id]) && strlen($request->cep[$id])>5){
                     $dado = PessoaDadosContato::where('dado','6')->where('pessoa',$pessoa->id)->get();

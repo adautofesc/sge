@@ -690,6 +690,98 @@ class InscricaoController extends Controller
 
     }
 
+    /**
+     * Importador de inscrições via planilha da secretaria
+     *
+     * @param Request $r
+     * @return array
+     */
+    public function importarDados(Request $r)
+    {
+        $alunos = json_decode($r->alunos, true);
+        foreach($alunos as $aluno){
+            $nascimento = \Carbon\Carbon::createFromFormat('Y-m-d', $aluno['nascimento'])->format('Y-m-d');
+
+            //verifica se já está cadastrado
+            
+            if(isset($aluno['cpf'])){
+                $buscar_porcpf = \App\PessoaDadosGerais::where('dado',3)->where('valor',preg_replace( '/[^0-9]/is', '', $aluno['cpf']))->first();
+                if(!is_null($buscar_porcpf))
+                    $pessoa = Pessoa::find($buscar_porcpf->pessoa);
+                else{
+                    $pessoa = Pessoa::where('nome','like',$aluno['nome'])->where('nascimento',$nascimento)->first();
+                    if(is_null($pessoa))
+                        $pessoa = PessoaController::cadastrarPessoa($aluno['nome'],$aluno['genero'],\DateTime::createFromFormat('Y-m-d',$aluno['nascimento']));        
+                }
+            }
+            else{
+                $pessoa = Pessoa::where('nome','like',$aluno['nome'])->where('nascimento',$nascimento)->first();
+                if(is_null($pessoa))
+                    $pessoa = PessoaController::cadastrarPessoa($aluno['nome'],$aluno['genero'],\DateTime::createFromFormat('Y-m-d',$aluno['nascimento']));
+            }
+
+
+                
+            if(isset($aluno['rg']) && strlen($aluno['rg'])>5)
+                $rg = PessoaDadosGeraisController::gravarDocumento($pessoa->id,'rg',$aluno['rg']);
+            if(isset($aluno['cpf']) && strlen($aluno['cpf'])>5)
+                $cpf = PessoaDadosGeraisController::gravarDocumento($pessoa->id,'cpf',$aluno['cpf']);
+            if(isset($aluno['telefone']) && strlen($aluno['telefone'])>5)
+                $telefone = PessoaDadosContatoController::gravarTelefone($pessoa->id,$aluno['telefone']);
+            if(isset($aluno['email']) && strlen($aluno['email'])>5){
+
+                $email = PessoaDadosContatoController::gravarEmail($pessoa->id,$aluno['email']);
+            
+            }
+            if(isset($aluno['endereco']) && strlen($aluno['endereco'])>5 && isset($aluno['cep']) && strlen($aluno['cep'])>5){
+                
+                $dado = \App\PessoaDadosContato::where('dado','6')->where('pessoa',$pessoa->id)->get();
+                if($dado->count() == 0){
+                    $endereco = new \App\Endereco;
+                    $endereco->logradouro = $aluno['endereco'];
+                    if(isset($aluno['cidade']))
+                        $endereco->cidade = $aluno['cidade'];
+                    if(isset($aluno['estado']))
+                        $endereco->estado = $aluno['estado'];
+
+                    $endereco->cep = preg_replace( '/[^0-9]/is', '', $aluno['cep']);
+                    $bairro = \App\classes\CepUtils::bairroCompativel(preg_replace( '/[^0-9]/is', '', $aluno['cep']));  
+                    if(isset($endereco->bairro_str))
+                        $endereco->bairro_str = $aluno['bairro'];       
+                    
+                    if($bairro>0)
+                        $endereco->bairro = $bairro;
+                    else
+                        $endereco->bairro = 0;
+                    $endereco->save();
+                    $dado_contato = new \App\PessoaDadosContato;
+                    $dado_contato->pessoa = $pessoa->id;
+                    $dado_contato->dado = 6;
+                    $dado_contato->valor = $endereco->id;
+                    $dado_contato->save();
+                }
+
+            }
+            //verifica se a turma existe
+            $turma = Turma::find($aluno['turma']);
+            if($turma != null){
+                //Inscreve a pessoa (ele verifica antes se a pessoa está inscrita)
+                if(InscricaoController::inscreverAluno($pessoa->id,$turma->id))
+                    $cadastrados[$aluno['nome']]='ok';
+                else
+                    $cadastrados[$aluno['nome']]='falha';
+
+            }
+            else
+                $cadastrados[$aluno['nome']] = 'Turma invalida';
+                
+        }//endforeach alunos
+
+        
+        return json_encode($cadastrados);
+        //return response("ok",200);
+    }
+
 
 
 }

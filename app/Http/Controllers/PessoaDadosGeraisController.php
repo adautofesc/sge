@@ -68,13 +68,30 @@ class PessoaDadosGeraisController extends Controller
 			$doc = new PessoaDadosGerais;
 			$doc->pessoa= $pessoa;
 			$doc->dado = $tipo;
-			$doc->valor = preg_replace( '/[^0-9]/is', '', $numero);
+			if($tipo==4)
+				$doc->valor = preg_replace( '/[^A-Za-z0-9]/is', '', $numero);
+			else
+				$doc->valor = preg_replace( '/[^0-9]/is', '', $numero);
 			$doc->save();
 		}
 		else {
 			$doc = null;
 		}
 		return $doc;
+
+	}
+
+	public function rastrearDuplicados(){
+		$repetidos = collect();
+		$pessoas = Pessoa::where('nome','ADAUTO DE BRITO TEIXEIRA')->GET();
+		foreach($pessoas as $pessoa){
+			$repetidos = Pessoa::where('nome','like',$pessoa->nome)->where('id','!=',$pessoa->id)->get();
+			if($repetidos->count()>0)
+				$repetidos->push($pessoa);
+
+		}
+
+		return $repetidos;
 
 	}
 

@@ -249,11 +249,6 @@ class loginController extends Controller
 
 	public function listarUsuarios_data($r = '')
 	{
-		//dd($r);
-		
-
-		if(!in_array('10', Auth::user()->recursos))			
-				return view('error-404-alt')->with(array('error'=>['id'=>'403.10','desc'=>'Desculpe, você não tem autorização para listar os usuários.']));
 
 		if($r=='')
 			$usuarios=PessoaDadosAcesso::orderBy('username','ASC')->paginate(50);

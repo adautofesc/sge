@@ -757,9 +757,9 @@ Route::middleware(['auth','login']) ->group(function(){
 	Route::middleware('liberar.recurso:15')->prefix('admin')->group(function(){
 		Route::middleware('liberar.recurso:8')->get('credenciais/{var}', 'loginController@credenciais_view');
 		Route::middleware('liberar.recurso:8')->post('credenciais/{var}', 'loginController@credenciais_exec');
-		Route::get('listarusuarios', 'loginController@listarUsuarios_view');
-		Route::get('listarusuarios/{var}', 'loginController@listarUsuarios_view');
-		Route::post('listarusuarios/{var}', 'loginController@listarUsuarios_action');
+		Route::middleware('liberar.recurso:10')->get('listarusuarios', 'loginController@listarUsuarios_view');
+		Route::middleware('liberar.recurso:10')->get('listarusuarios/{var}', 'loginController@listarUsuarios_view');
+		Route::middleware('liberar.recurso:10')->post('listarusuarios/{var}', 'loginController@listarUsuarios_action');
 		Route::get('alterar/{acao}/{itens}', 'loginController@alterar');
 		Route::get('/turmascursosnavka', 'painelController@verTurmasAnterioresCursos');
 		Route::post('/turmascursosnavka', 'painelController@gravarMigracao');
@@ -789,7 +789,7 @@ Route::get('renova-login','loginController@sendNewPassword');
 
 //----------------------------- Errors treatment
 
-Route::get('403/{recurso}', function(string $recurso){
+Route::get('403/{recurso?}', function(string $recurso){
    return view('errors.403')->with('recurso',$recurso);
 })->name('403');
 Route::get('404',function(){

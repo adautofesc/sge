@@ -789,8 +789,8 @@ Route::get('renova-login','loginController@sendNewPassword');
 
 //----------------------------- Errors treatment
 
-Route::get('403',function(){
-   return view('errors.403');
+Route::get('403/{recurso}', function(string $recurso){
+   return view('errors.403')->with('recurso',$recurso);
 })->name('403');
 Route::get('404',function(){
    return view('errors.404');

@@ -42,7 +42,7 @@
                         <h2 class="error-sub-title"> Sem permissão de acesso </h2>
                     </div>
                     <div class="error-container">
-                        <p>Para acessar esse recurso você precisa se uma autorização específica. Comunique o responsável para adquirí-la</p>
+                        <p>Para acessar esse recurso você precisa de uma autorização específica. Comunique o responsável para adquirí-la</p>
                         @if(isset($recurso))
                         <p><small>Error 403:{{$recurso}}</small></p>
                         @else
@@ -53,8 +53,7 @@
                 </div>
             </article>
         </div>
-      ]
-       
+
       <script src="{{ asset('js/vendor-min.js') }}" ></script>
       <script src="{{ asset('js/app.js') }} "></script>
     </body>

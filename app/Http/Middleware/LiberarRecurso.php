@@ -21,7 +21,7 @@ class LiberarRecurso
         if(in_array($recurso,$user->recursos))
             return $next($request);
         else
-            return view('errors.403')->with('recurso', $recurso);
+            return redirect()->route('403',['recurso'=>$recurso]);
 
         
             

@@ -30,7 +30,7 @@ class TurmaController extends Controller
         $turmas = $this->listagemGlobal($request->filtro,$request->valor,$request->removefiltro,$request->remove);
 
         $programas=Programa::all();
-        $professores=PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
+        $professores=PessoaDadosAdministrativos::getEducadores();
         $professores = $professores->sortBy('nome_simples');
         $locais = Local::select(['id','sigla','nome'])->orderBy('sigla')->get();
         $periodos = \App\classes\Data::semestres();
@@ -294,8 +294,7 @@ class TurmaController extends Controller
         
         $turmas = $this->listagemGlobal($request->filtro,$request->valor,$request->removefiltro,$request->remove);
         $programas=Programa::all();
-        $professores=PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
-        $professores = $professores->sortBy('nome_simples');
+        $professores=PessoaDadosAdministrativos::getEducadores();
         $locais = Local::select(['id','sigla','nome'])->orderBy('sigla')->get();
 
         return view('turmas.listar-secretaria', compact('turmas'))->with('programas',$programas)->with('professores', $professores)->with('locais',$locais)->with('filtros',$_SESSION['filtro_turmas'])->with('periodos',\App\classes\Data::semestres());
@@ -350,7 +349,7 @@ class TurmaController extends Controller
 
         $programas=Programa::get();
         $requisitos=RequisitosController::listar();
-        $professores=PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
+        $professores=PessoaDadosAdministrativos::getEducadores();
         $unidades=Local::get(['id' ,'nome']);
         $parcerias=Parceria::orderBy('nome')->get();
         $pacote_cursos =\App\PacoteCurso::get();
@@ -513,7 +512,7 @@ class TurmaController extends Controller
             $programas=Programa::orderBy('nome')->get();
             $parcerias=Parceria::orderBy('nome')->get();
             $requisitos=RequisitosController::listar();
-            $professores=PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
+            $professores=PessoaDadosAdministrativos::getEducadores();
             $unidades=Local::orderBy('nome')->get();
             $salas= \App\Sala::where('local',$turma->local->id)->get();
             $dados=collect();
@@ -1093,91 +1092,7 @@ class TurmaController extends Controller
 
 
 
-    public function processarImportacao(Request $request){
-        
-        $cadastrados = array();        
-        foreach ($request->pessoa as $id=>$key){ // para cada elemento do array pessoa (campo checkbox)
-            
-            
-                
-                
-                $nascimento = \Carbon\Carbon::createFromFormat('Y-m-d', $request->nascimento[$id])->format('Y-m-d');
-
-                //verifica se já está cadastrado
-                
-                if(isset($request->cpf[$id])){
-                    $buscar_porcpf = \App\PessoaDadosGerais::where('dado',3)->where('valor',preg_replace( '/[^0-9]/is', '', $request->cpf[$id]))->first();
-                    if(!is_null($buscar_porcpf))
-                        $pessoa = Pessoa::find($buscar_porcpf->pessoa);
-                    else{
-                        $pessoa = Pessoa::where('nome','like',$request->nome[$id])->where('nascimento',$nascimento)->first();
-                        if(is_null($pessoa))
-                            $pessoa = PessoaController::cadastrarPessoa($request->nome[$id],$request->genero[$id],\DateTime::createFromFormat('Y-m-d',$request->nascimento[$id]));        
-                    }
-                }
-                else{
-                    $pessoa = Pessoa::where('nome','like',$request->nome[$id])->where('nascimento',$nascimento)->first();
-                    if(is_null($pessoa))
-                        $pessoa = PessoaController::cadastrarPessoa($request->nome[$id],$request->genero[$id],\DateTime::createFromFormat('Y-m-d',$request->nascimento[$id]));
-                }
-
-
-                   
-                if(isset($request->rg[$id]) && strlen($request->rg[$id])>5)
-                    $rg = PessoaDadosGeraisController::gravarDocumento($pessoa->id,'rg',$request->rg[$id]);
-                if(isset($request->cpf[$id]) && strlen($request->cpf[$id])>5)
-                    $cpf = PessoaDadosGeraisController::gravarDocumento($pessoa->id,'cpf',$request->cpf[$id]);
-                if(isset($request->telefone[$id]) && strlen($request->telefone[$id])>5)
-                    $telefone = PessoaDadosContatoController::gravarTelefone($pessoa->id,$request->telefone[$id]);
-               //dd($rg);
-               if($pessoa->id=='37001')
-               //dd($cpf);
-                
-                if(isset($request->endereco[$id]) && strlen($request->endereco[$id])>5 && isset($request->cep[$id]) && strlen($request->cep[$id])>5){
-                    $dado = PessoaDadosContato::where('dado','6')->where('pessoa',$pessoa->id)->get();
-                    if(count($dado) == 0){
-                        $endereco = new \App\Endereco;
-                        $endereco->logradouro = $request->endereco[$id];
-                        if(isset($request->cidade[$id]))
-                            $endereco->cidade = $request->cidade[$id];
-                        if(isset($request->estado[$id]))
-                            $endereco->estado = $request->estado[$id];
-
-                        $endereco->cep = preg_replace( '/[^0-9]/is', '', $request->cep[$id]);
-                        $bairro = \App\classes\CepUtils::bairroCompativel(preg_replace( '/[^0-9]/is', '', $request->cep[$id]));  
-                        if(isset($endereco->bairro_str))
-                            $endereco->bairro_str = $request->bairro[$id];       
-                        
-                        if($bairro>0)
-                            $endereco->bairro = $bairro;
-                        else
-                            $endereco->bairro = 0;
-                        $endereco->save();
-                        $dado_contato = new PessoaDadosContato;
-                        $dado_contato->pessoa = $pessoa->id;
-                        $dado_contato->dado = 6;
-                        $dado_contato->valor = $endereco->id;
-                        $dado_contato->save();
-                    }
-
-                }
-                //verifica se a turma existe
-                $turma = Turma::find($request->turma[$id]);
-                if($turma != null){
-                    //Inscreve a pessoa (ele verifica antes se a pessoa está inscrita)
-                    if(InscricaoController::inscreverAluno($pessoa->id,$turma->id)){
-                        $cadastrados[]=$id;
-                    }
-                }
-
-
-            
-            
-        }
-        //return $cadastrados;
-        return view('turmas.confirmar-importados')->with('cadastrados',$cadastrados)->with('pessoas',$request->nome);
-    }
-
+    
     /**
      * Modifica a quantidade de pessoas inscritas na turma.
      * @param  \App\Turma  $turma
@@ -1216,7 +1131,7 @@ class TurmaController extends Controller
             case 'relancar':
                 
                 $programas=Programa::orderBy('nome')->get();
-                $professores=PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
+                $professores=PessoaDadosAdministrativos::getEducadores();
                 $unidades=Local::orderBy('nome')->get(['id' ,'nome']);
                 $parcerias=Parceria::orderBy('nome')->get();
                 $dados=collect();
@@ -1565,7 +1480,7 @@ class TurmaController extends Controller
         
         $programas=Programa::get();
         $requisitos=RequisitosController::listar();
-        $professores=PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador de Parceria']);
+        $professores=PessoaDadosAdministrativos::getEducadores();
         $unidades=Local::get(['id' ,'nome']);
         $salas = \App\Sala::where('local',$ficha->local)->get();
         $parcerias=Parceria::orderBy('nome')->get();

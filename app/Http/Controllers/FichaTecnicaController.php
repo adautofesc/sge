@@ -68,7 +68,7 @@ class FichaTecnicaController extends Controller
         
         $fichas = FichaTecnica::where('id','>','1');
         $programas=Programa::whereIn('id',[1,2,3,4,12])->orderBy('sigla')->get();
-        $professores = \App\PessoaDadosAdministrativos::getFuncionarios('Educador','Educador Temporário','Educador Terceirizado','Educador de Parceria');
+        $professores = \App\PessoaDadosAdministrativos::getEducadores();
 
         if(in_array('13', Auth::user()->recursos) && !in_array('17', Auth::user()->recursos)){
             $fichas = FichaTecnica::where('docente',Auth::user()->pessoa);

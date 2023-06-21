@@ -31,6 +31,8 @@ class FichaTecnicaController extends Controller
 
         session_start();
         //dd($_GET['rem_filtro']);
+        $view=null;
+
  
         
         if(isset($_SESSION['filtro_fichas']))
@@ -38,6 +40,17 @@ class FichaTecnicaController extends Controller
         
         else
             $filtros = array();
+
+
+
+        if(!isset($filtros['status']) && !isset($_GET['filtro'])){
+            $filtros['status'] = ['docente','coordenacao','diretoria','administracao','presidencia','secretaria'];
+            
+        }
+        
+
+    
+        
             
         if(isset($_GET['filtro']) && isset($_GET['valor'])){
            
@@ -62,6 +75,8 @@ class FichaTecnicaController extends Controller
             if(isset($filtros[$_GET['removefiltro']]))
                 unset($filtros[$_GET['removefiltro']]);
         }
+
+        //dd($filtro);
         
 
         $_SESSION['filtro_fichas'] = $filtros;
@@ -93,13 +108,17 @@ class FichaTecnicaController extends Controller
             $professores = $professores->sortBy('nome');
             $programas_ficha = \App\PessoaDadosAdministrativos::where('pessoa',Auth::user()->pessoa)->where('dado','programa')->pluck('valor')->toArray();
             $fichas = FichaTecnica::whereIn('programa',$programas_ficha);
-        } 
+        }
+
+    
         
         if(isset($_GET['busca'])){
             
             $fichas = $fichas->where('id',$_GET['busca'])->orwhere('curso','like','%'.$_GET['busca'].'%');
 
         }
+
+        
 
         if(isset($filtros['programa']) && count($filtros['programa'])){
             $fichas = $fichas->whereIn('programa', $filtros['programa']); 
@@ -116,6 +135,7 @@ class FichaTecnicaController extends Controller
             $fichas = $fichas->whereIn('status', $filtros['status']); 
         }
         
+        
         $fichas = $fichas->paginate($ipp);
         $locais = Local::all();
 
@@ -128,6 +148,7 @@ class FichaTecnicaController extends Controller
             ->with('locais',$locais)
             ->with('professores',$professores)
             ->with('filtros',$_SESSION['filtro_fichas'])
+            ->with('view',$view)
             ->with('fichas',$fichas);
 
     }

@@ -90,8 +90,8 @@
 									Usuário
 								</label>
 								<div class="col-sm-2"> 
-									@if(isset($pessoa->acesso->usuario))
-									{{$pessoa->acesso->usuario}}
+									@if(isset($pessoa->acesso->username))
+									{{$pessoa->acesso->username}}
 									@endif
 								</div>
 								<label class="col-sm-2 form-control-label text-xs-right">

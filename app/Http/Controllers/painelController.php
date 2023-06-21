@@ -334,7 +334,7 @@ class painelController extends Controller
         $user = Auth::user();
         $professores_dos_programas = collect();
         $programas = \App\PessoaDadosAdministrativos::where('pessoa',$user->pessoa)->where('dado','programa')->pluck('valor')->toArray();
-        $professores = \App\PessoaDadosAdministrativos::getFuncionarios(['Educador','Educador Temporário','Educador Terceirizado']);
+        $professores = \App\PessoaDadosAdministrativos::getEducadores();
         foreach($professores as $professor){
             $comparisson = array_intersect($programas,$professor->getProgramas());
             if(count($comparisson))

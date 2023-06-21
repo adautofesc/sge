@@ -34,9 +34,14 @@
                 <h3 class="title"> Fichas Técnicas <a href="/fichas/cadastrar" class="btn btn-primary btn-sm rounded-s"> Cadastrar nova </a>
                     <!--
 -->
-                    <div class="action dropdown">
+                    <div class="action dropdown">{{$view}}
                         <button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Opções... </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu1" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 5px, 0px);" x-out-of-boundaries="">
+                            @if($view=='all')
+                            <a class="dropdown-item" href="?" style="text-decoration: none; font-weight: 550;"><i class="fa fa-eye-slash"></i> Ocultar lançadas</a>
+                            @else
+                            <a class="dropdown-item" href="?view=all" style="text-decoration: none; font-weight: 550;"><i class="fa fa-eye"></i> Visualizar lançadas</a>
+                            @endif
                             <a class="dropdown-item" href="/fichas/exportar" style="text-decoration: none; font-weight: 550;"><img src="/img/excel.png" width="17px;"> Exportar dados</a>
                             
                         </div>

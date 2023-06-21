@@ -241,8 +241,10 @@
 				
 				
 				<button type="cancel" name="btn" value="1" class="btn btn-primary" onclick="history.back(2)">Voltar</button> 
-				@if($ficha->status !='lancada' && in_array('13', Auth::user()->recursos))
-					<a class="btn btn-primary" href="/fichas/editar/{{$ficha->id}}">Editar</a> 
+				@if($ficha->status !='lancada')
+					@if(in_array('13', Auth::user()->recursos))
+					<a class="btn btn-primary" href="/fichas/editar/{{$ficha->id}}">Editar</a>
+					@endif
 					<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modal-encaminhar-ficha" title="Encaminhar ficha para..." >
 						Encaminhar para ...
 					</a>

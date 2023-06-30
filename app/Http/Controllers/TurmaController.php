@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 
 class TurmaController extends Controller
 {
+    const DATA_LIMITE_ALTERACAO = '0330';
     /**
      * Listagem de turmas para o setor pedagógico.
      *
@@ -509,6 +510,12 @@ class TurmaController extends Controller
     {
         $turma=Turma::find($id);
         if($turma){
+
+            //limita edição somente até marco do ano seguinte
+            if(date('Y')-date('Y', strtotime($turma->data_inicio))>=1){      
+                if(date('Y')-date('Y', strtotime($turma->data_inicio))!=1 && date('md') > self::DATA_LIMITE_ALTERACAO)
+                    return redirect()->back()->withErrors(['Não é possível modificar dados de turmas de anos anteriores.']);    
+            }
             $programas=Programa::orderBy('nome')->get();
             $parcerias=Parceria::orderBy('nome')->get();
             $requisitos=RequisitosController::listar();
@@ -579,7 +586,7 @@ class TurmaController extends Controller
         
         //limita edição somente até marco do ano seguinte
         if(date('Y')-date('Y', strtotime($request->dt_inicio))>=1){      
-            if(date('Y')-date('Y', strtotime($request->dt_inicio))==1 && date('md')<'0330')
+            if(date('Y')-date('Y', strtotime($request->dt_inicio))==1 && date('md') < self::DATA_LIMITE_ALTERACAO)
             $alteracoes = 'Edição dos dados: '; 
             else
                 return redirect()->back()->withErrors(['Não é possível modificar dados de turmas de anos anteriores.']);
@@ -1306,7 +1313,7 @@ class TurmaController extends Controller
 
         foreach($turmas as $turma){
               
-            $turma->weekday = \App\classes\Strings::convertWeekDay($turma->dias_semana[0]);
+            $turma->weekday = \App\Utils\WeekHandler::toNumber($turma->dias_semana[0]);
 
         }
     

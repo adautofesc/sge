@@ -190,15 +190,28 @@ class InscricaoController extends Controller
         else
             $idPacote = null;
 
-        // verifica se é EAD pra não exigir vacinação
+        //verificação de atestado
         if(AtestadoController::VerificaParaInscricao($aluno,$turma)){
             if($turma->status == 'iniciada')
                 $status="ativa";    
             else
                 $status="espera";
         }
-        else
-            $status="pendente";
+        else{
+            if($aluno == $atendente)
+            {
+                \App\PessoaDadosAdministrativos::cadastrarUnico($pessoa,'pendencia','Falta atestado de saúde aprovado.');	
+                $status="pendente";
+
+            }              
+            else
+            {
+                redirect()->back()->withErrors(['Sem atestado válido.']);
+                return false; 
+            }
+            
+        }
+            
                 
         if(InscricaoController::verificaSeInscrito($aluno,$turma->id))
                 return Inscricao::find(InscricaoController::verificaSeInscrito($aluno,$turma->id));

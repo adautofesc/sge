@@ -131,10 +131,22 @@ class painelController extends Controller
     public function administrativo(){
         return view('admin.home');
     }
+
+
+
+    /**
+     * Painel de chamadas docentes
+     *
+     * @param integer $id
+     * @param integer $semestre
+     * @return void
+     */
     public function docentes($id=0,$semestre=0){
         if($id == 0){
             $id = Auth::user()->pessoa;
         }
+
+        //return  \App\Utils\WeekHandler::toNumber('seg');
         $horarios = array();
         $dias = ['seg','ter','qua','qui','sex','sab'];
         $carga_ativa = Carbon::createFromTime(0, 0, 0, 'America/Sao_Paulo'); ;
@@ -260,6 +272,8 @@ class painelController extends Controller
 
 
     }
+
+    
     public function financeiro(){
         return view('financeiro.home');
     }

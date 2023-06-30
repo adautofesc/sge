@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Atestado;
 use App\AtestadoLog;
 use Auth;
+use Carbon\Carbon;
 
 class AtestadoController extends Controller
 {
@@ -243,12 +244,10 @@ class AtestadoController extends Controller
 			$vacina = false;		
 		}*/
 		
-
 		$requisito_turma = \App\CursoRequisito::where('para_tipo','turma')->where('curso',$turma->id)->where('requisito',18)->first();
 		if(isset($requisito_turma->id)){
 			$saude =  Atestado::where('pessoa',$pessoa)->where('tipo','saude')->where('status','aprovado')->first();
 			if(!$saude){
-				\App\PessoaDadosAdministrativos::cadastrarUnico($pessoa,'pendencia','Falta atestado de saúde aprovado.');	
 				$atestado = false;
 			}
 
@@ -259,6 +258,44 @@ class AtestadoController extends Controller
 		else
 			return false;		
 
+	}
+
+	public function analiseAtestados(){
+		$atestados = Atestado::where('tipo','saude')->where('status','aprovado')->where('pessoa','14075')->get();
+		$atual = $atestados->first();
+		$vencido = $atual->emissao->addMonths(12);
+		//dd($atual);
+		
+		foreach($atestados as $atestado){
+			$hoje = Carbon::now();
+			$vencimento = $atestado->emissao->addMonths(12);
+			//se venceu
+			if($hoje->gte($vencimento)){
+				$atestado->status = 'vencido';
+				$atestado->save();
+
+			}
+			/*
+			//verificar se a pessoa que tem outro atestado senão valida os atuais
+			$outro_atestado = Atestado::where('tipo','saude')->where('status','aprovado')->where('pessoa',$atestado->pessoa)->first();
+			if(is_null($outro_atestado)){
+				//verificar se a pessoa tem matricula ativa que precisa de atestado
+				$inscricoes = App\Inscricao::where('pessoa',$atestado->pessoa)->where('status','regular')->get();
+				foreach($inscricoes as $inscricao){
+					if($inscricao->turma->verificaSeAtividadeFisica() != false){
+						//coloca pessoa pendente se necessário.
+						$inscricao->alterarStatus('pendente');
+						\App\PessoaDadosAdministrativos::cadastrarUnico($pessoa,'pendencia','Atestado médico vencido.');
+
+
+					}
+				}
+
+
+			}*/
+
+		}
+		return $atestados;
 	}
 
 	

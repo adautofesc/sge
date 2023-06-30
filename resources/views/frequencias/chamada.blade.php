@@ -13,7 +13,7 @@
 
 
   <div class="title-block">
-        <h3 class="title"> <i class=" fa fa-check-square-o"></i> Aula Digital</h3>
+        <h3 class="title"> <i class=" fa fa-check-square-o"></i> Chamada Digital</h3>
   <small>Turma {{$turma->id.' - '.$turma->getNomeCurso()}}</small>
     </div>
     <form name="item" method="POST">

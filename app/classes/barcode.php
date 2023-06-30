@@ -1,4 +1,5 @@
 <?php
+namespace App\classes;
 /*
  * Barcode Encoder tool
  * (C) 2008, Eric Stern

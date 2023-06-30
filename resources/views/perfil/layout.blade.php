@@ -13,6 +13,9 @@
     text-align: left;
     background-color: WhiteSmoke;    
 }
+a:link{
+  color: #fb771a;
+}
 .main-body {
     padding: 15px;
 }
@@ -68,8 +71,9 @@
 .navbar-brand, .nav-link{
   color:#fff !important;
 }
+
 .list-group-item a{
-  color: #fb771a !important;
+  color: #504b48 !important;
 
 }
 
@@ -120,29 +124,14 @@
                   <div class="card">
                     <div class="card-body">
                       <div class="d-flex flex-column align-items-center text-center">
-                        <img src="{{asset('img/default-user.png')}}" alt="Admin" class="rounded-circle" width="150">
-                        <div class="mt-3">
-                          <h4>{{$pessoa->nome_simples}}</h4>
-                          @if(isset($pessoa->email))
-                            <p class="text-secondary mb-1">{{$pessoa->email}}</p>
-                          @else
-                            <p class="text-danger mb-1">EMAIL NÃO CADASTRADO</p>
-                            <small>clique em alterar dados para cadastrar</small>
-                          @endif
-                          @if(isset($pessoa->celular))
-                          <p class="text-muted font-size-sm">{{\App\classes\Strings::formataTelefone($pessoa->celular)}}</p>
-                          @else 
-                          <p class="text-danger font-size-sm">CELULAR NÃO CADASTRADO</p>
-                          <small>clique em alterar dados para cadastrar</small>
-                          @endif
-                          <a href="/perfil/alterar-dados">Alterar dados do perfil</a>
+                        <a href="https://fesc.com.br/programacao-2o-semestre-2023"><img src="{{asset('img/programacao_2_2023.jpg')}}" alt="Cartaz com os valores das atividades" width="300" title="Clique para programação completa"></a>
                        
-                        </div>
                       </div>
                     </div>
                   </div>
                   <div class="card mt-3">
                     <ul class="list-group list-group-flush menu">
+                      <!--
                       <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                         
                     
@@ -153,7 +142,7 @@
                                 Atendimento presencial
                             </h6>
                             </a>
-                      </li>
+                      </li>-->
                       <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                         <a href="/perfil/atestado">
                             <h6 class="mb-0">

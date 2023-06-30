@@ -325,16 +325,16 @@ class CarneController extends Controller
 			
 			if($data_matricula>$data_ini_curso){
 				
-				
+				if(date('d') >= $this::data_corte && $primeiro_vencimento->format('m') == 6){
+					$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),'08',$this::vencimento);
+
 				//gerar boletos para pessoas que entram em cursos já iniciados ou fizeram matricula em julho
-				
-				if(date('d') >= $this::data_corte || $primeiro_vencimento->format('m') == 7){
+				}
+				elseif(date('d') >= $this::data_corte || $primeiro_vencimento->format('m') == 7){
 				//if(date('d') >= $this::data_corte){	
 					
 					//$primeiro_vencimento->modify('+1 month');
 					$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$primeiro_vencimento->format('m')+1,$this::vencimento);
-					
-
 				}
 				else{
 					
@@ -349,7 +349,11 @@ class CarneController extends Controller
 			elseif($data_ini_curso->format('m')>date('m')  || $data_ini_curso->format('Y')>date('Y')  ){ 
 				
 				//boleto gerado na data correta, antes do inicio do curso um mes ou mais antes
-				$primeiro_vencimento->setDate($data_ini_curso->format('Y'),$data_ini_curso->format('m'),$this::vencimento);
+				//Curso inicia no meio do ano
+				if($data_ini_curso->format('m')==6 || $data_ini_curso->format('m')==7 )
+					$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),'08',$this::vencimento);
+				else
+					$primeiro_vencimento->setDate($data_ini_curso->format('Y'),$data_ini_curso->format('m'),$this::vencimento);
 			}
 			else{
 				

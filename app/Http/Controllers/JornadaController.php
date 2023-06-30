@@ -292,7 +292,7 @@ class JornadaController extends Controller
 
         foreach($jornadas as $jornada){
               
-            $jornada->weekday = \App\classes\Strings::convertWeekDay($jornada->dias_semana[0]);
+            $jornada->weekday = \App\Utils\WeekHandler::toNumber($jornada->dias_semana[0]);
 
         }
     

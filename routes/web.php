@@ -10,7 +10,7 @@
 | contains the 'web' middleware group. Now create something great!
 |
 */
-
+use App\Http\Controllers\AtestadoController;
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\JornadaController;
 use App\Http\Controllers\Reports\JornadaDocentes;
@@ -140,6 +140,8 @@ Route::middleware(['auth','login']) ->group(function(){
 	Route::get('lista/{id}','TurmaController@impressao'); //lista de chamada aberta
 	Route::get('listas/{id}','TurmaController@impressaoMultipla'); //lista de chamada aberta
 	Route::get('frequencia/{turma}','TurmaController@frequencia');
+	Route::get('chamadas','FrequenciaController@index');
+	Route::get('chamadas/{id}/{semestre?}','FrequenciaController@index');
 	
 //******************************************************RECURSOS************************************************************** */	
 	
@@ -155,6 +157,11 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('/{data?}','AgendaAtendimentoController@index');
 		Route::post('/{data?}','AgendaAtendimentoController@gravar');
 		Route::get('alterar/{id}/{status}','AgendaAtendimentoController@alterarStatus');
+
+	});
+
+	Route::prefix('atestados')->group(function(){
+		Route::get('/',[AtestadoController::class,'analiseAtestados']);
 
 	});
 	Route::prefix('turmas')->group(function(){

@@ -11,6 +11,26 @@ use Auth;
 
 class FrequenciaController extends Controller
 {
+    public function index($id=0,$semestre=0){
+        if($id == 0){
+            $id = Auth::user()->pessoa;
+        }
+
+        $turmas = \App\Http\Controllers\TurmaController::listarTurmasDocente($id,$semestre);
+        $semestres = \App\classes\Data::semestres();
+        $docente = \App\Pessoa::withTrashed()->find($id);
+        //dd($semestres);
+
+        return view('frequencias.index')
+                    ->with('turmas',$turmas)
+                    ->with('semestres',$semestres)
+                    ->with('docente',$docente)
+                    ->with('semestre_selecionado',$semestre);
+
+
+        
+    }
+
     public function listaChamadaUnitaria(int $turma){
         $turma = Turma::find($turma);
         $aulas = Aula::where('turma',$turma->id)->orderBy('data')->get();
@@ -50,7 +70,13 @@ class FrequenciaController extends Controller
 
 
     public function preencherChamada_view(int $turma){
+        
         $turma = Turma::find($turma);
+
+        if(date('Y')-date('Y', strtotime($turma->data_inicio))>=1){      
+            if(date('Y')-date('Y', strtotime($turma->data_inicio))!=1 && date('md') > TurmaController::DATA_LIMITE_ALTERACAO)
+                return redirect()->back()->withErrors(['Não é possível modificar dados de turmas de anos anteriores.']);    
+        }
 
         if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)){
             LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
@@ -64,8 +90,10 @@ class FrequenciaController extends Controller
         if(isset($_GET['filtrar']))
         $inscritos=\App\Inscricao::where('turma',$turma->id)->get();
         else
-        $inscritos=\App\Inscricao::where('turma',$turma->id)->whereIn('status',['regular','espera','ativa','pendente'])->get();
+        $inscritos=\App\Inscricao::where('turma',$turma->id)->whereIn('status',['regular','espera','ativa','pendente','finalizada'])->get();
         $inscritos= $inscritos->sortBy('pessoa.nome');
+
+        
 
         //dd($aulas);
         return view('frequencias.lista-unitaria-editavel',compact('inscritos'))->with('i',1)->with('aulas',$aulas)->with('turma',$turma);
@@ -148,6 +176,11 @@ class FrequenciaController extends Controller
     public function novaChamada_view(int $turma){
         $aulas = Aula::where('turma',$turma)->where('status','prevista')->orderBy('data')->get();         
         $turma = \App\Turma::find($turma);
+
+        if(date('Y')-date('Y', strtotime($turma->data_inicio))>=1){      
+            if(date('Y')-date('Y', strtotime($turma->data_inicio))!=1 && date('md') > TurmaController::DATA_LIMITE_ALTERACAO)
+                return redirect()->back()->withErrors(['Não é possível modificar dados de turmas de anos anteriores.']);    
+        }
 
         if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)){
             LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);

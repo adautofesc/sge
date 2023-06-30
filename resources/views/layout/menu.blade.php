@@ -32,6 +32,12 @@
                                     <a href="{{asset('/bolsas/liberacao')}}"> <i class="fa fa-heart"></i> Bolsas </a>
                                 </li>
                                 @endif
+                                
+                                @if(in_array('13', Auth::user()->recursos))
+                                <li  >
+                                    <a href="{{asset('/chamadas')}}"> <i class="fa fa-check-square-o"></i> Chamadas </a>
+                                </li>
+                                @endif
                                 @if(in_array('22', Auth::user()->recursos))
                                 <li  >
                                     <a href="{{asset('/dev')}}"> <i class="fa fa-flask"></i> Desenvolvimento </a>
@@ -59,6 +65,7 @@
                                     <a href="{{asset('/financeiro')}}"> <i class="fa fa-usd"></i> Financeiro </a>
                                 </li>
                                 @endif
+                                
                                 @if(in_array('15', Auth::user()->recursos))
                                 <li  >
                                     <a href="{{asset('/gestaopessoal')}}"> <i class="fa fa-users"></i> Gestão Pessoal </a>

@@ -309,8 +309,7 @@ class Turma extends Model
 			else
 				return false;
 
-		}
-			
+		}		
 		$idade_minima = 0;
 		$idade_maxima = 0;
 		$atestado = 0;
@@ -375,10 +374,6 @@ class Turma extends Model
 			else
 				return false;
 		}
-		
-		
-			
-		
 		if($atestado ==1){
 			$atestado_m = Atestado::where('pessoa',$aluno->id)->where('tipo','saude')->where('status','aprovado')->first();
 			if($atestado_m == null){
@@ -392,16 +387,30 @@ class Turma extends Model
 				}
 				else
 					return false;
-			}
-				
-			
+			}	
 		}
-		
+		return true;		
+	}
 
-		
-		return true;
-		
-		
+
+	public function verificaSeAtividadeFisica(){
+		$reqs = CursoRequisito::where('para_tipo','turma')->where('curso',$this->id)->get();
+		if($reqs->count==0)
+		{
+			return false;
+		}
+		else
+		{
+			if($reqs->where('requisito','27')->fisrt())
+				return 6;
+
+			if($reqs->where('requisito','18')->fisrt())
+				return 12;
+			
+			return false;
+
+
+		}
 
 	}
 

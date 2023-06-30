@@ -51,5 +51,34 @@ class Inscricao extends Model
 		return true;
 	}
 
+	public function alterarStatus($status){     
+		$this->status = $status;
+		$this->save();
+		switch($status){
+			case "pendente" :
+				\App\Http\Controllers\MatriculaController::atualizar($this->matricula);
+				break;
+			case "regular": 
+				\App\Http\Controllers\TurmaController::modInscritos($this->turma->id);
+				\App\Http\Controllers\MatriculaController::atualizar($this->matricula);
+				break;
+			case "finalizada": 
+				\App\Http\Controllers\MatriculaController::atualizar($this->matricula);
+				break;
+			case "cancelada":
+				\App\Http\Controllers\TurmaController::modInscritos($this->turma->id);
+				\App\Http\Controllers\MatriculaController::atualizar($this->matricula);
+				break;
+			case "transferida": 
+				\App\Http\Controllers\TurmaController::modInscritos($this->turma->id);
+				\App\Http\Controllers\MatriculaController::atualizar($this->matricula);
+				break;
+		}
+                    
+    }
+            
+        
+    
+
 
 }

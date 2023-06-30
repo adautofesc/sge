@@ -26,27 +26,20 @@
                       
     <div class="card-body">
       <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-12">
           <h5 class="mb-0">Matriculas ativas</h5>
           
-          <p class="text-secondary"><small>Abaixo você encontrará a lista de matrículas ativas.</small></p>
+          <p class="text-secondary"><small>Abaixo você encontrará a lista com suas matrículas.</small></p>
           
           
           
-        </div>
-        <div class="col-sm-4">
-          <a class="btn btn-success" href="/perfil/matricula/inscricao" title="Abre página para escolher os cursos que deseja se matricular.">Adicionar Matricula</a>
         </div>
         
+        
       </div>
-      <div class="alert alert-warning">
-        <button type="button" class="close" data-dismiss="alert" >×</button>       
-        <p class="modal-title"><i class="fa fa-warning"></i> Os cursos virtuais serão realizados de forma síncrona (nos dias e horários previstos) através da plataforma Microsoft Teams. Os alunos receberão os dados de acesso e instruções por e-mail antes do início das aulas. Em caso de dúvidas ligue: (16) 3362-0580</p>
-      </div>
-      <div class="alert alert-danger">
-        <button type="button" class="close" data-dismiss="alert" >×</button>       
-        <p class="modal-title"><i class="fa fa-danger"></i>Antes de se matricular verifique se sua conxão e seu equipamento de acesso suportam o aplicativo Microsoft Teams</p>
-      </div>
+      
+      <a class="btn btn-success" href="/perfil/matricula/inscricao" title="Abre página para escolher os cursos que deseja se matricular.">Nova Matricula</a>
+
       <hr>
       <div class="row">
         <div class="col-sm-12">
@@ -69,9 +62,13 @@
       
                   </div>
                   <div class="col-sm-2">
+                    @if($inscricao->status='pendente')
+                    <a href="#"  class="btn btn-outline-secondary btn-sm" onclick="alert('Pendências encontradas: aguarde a validação do seu atestado ou entre em contato com a secretaria')" title="Termo de matrícula disponível após resolução das pendências">
+                      Termo</a>
+                    @else
                     <a href="/perfil/matricula/termo/{{$matricula->id}}?type=ead" target="_blank" class="btn btn-outline-info btn-sm" title="Termo de matrícula">
                       Termo</a>
-                    
+                    @endif
                   </div>
                 </div>
 

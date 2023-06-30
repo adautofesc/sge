@@ -21,14 +21,10 @@
           
           <p class="alert alert-info">Matrículas abertas! Clique <a href="/perfil/matricula/inscricao">aqui</a>  para se inscrever!</p>
           
-          <p class="alert alert-success">Envie seus atestados OnLine. Clique <a href="/perfil/atestado">aqui</a>  para se acessar.</p>
-          <p class="alert alert-warning">Os boletos dos seus cursos podem ser encontrados no menu "Boletos"</p>
           @if(isset($login))
           <p class="alert alert-success">Seu login de acesso ao Teams é <b>{{$login}}</b> A senha foi enviada para seu e-mail pessoal. Caso não encontrar, verifique também em sua caixa de SPAM.</p>
           @endif
-          <div class="alert alert-danger">
-            <button type="button" class="close" data-dismiss="alert" >×</button>                   
-          </div>
+          
         </div>
       </div>
       <hr>
@@ -40,13 +36,33 @@
                 </div>
             @endforeach
           @endif
-      <div class="row">
-        <div class="col-sm-12">
-          <img src="{{asset('/img/matriculas_2021_02.jpg')}}" width="400rem">
+      
+    </div>
+
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex flex-column align-items-center text-center">
+        <img src="{{asset('img/default-user.png')}}" alt="Admin" class="rounded-circle" width="150">
+        <div class="mt-3">
+          <h4>{{$pessoa->nome_simples}}</h4>
+          @if(isset($pessoa->email))
+            <p class="text-secondary mb-1">{{$pessoa->email}}</p>
+          @else
+            <p class="text-danger mb-1">EMAIL NÃO CADASTRADO</p>
+            <small>clique em alterar dados para cadastrar</small>
+          @endif
+          @if(isset($pessoa->celular))
+          <p class="text-muted font-size-sm">{{\App\classes\Strings::formataTelefone($pessoa->celular)}}</p>
+          @else 
+          <p class="text-danger font-size-sm">CELULAR NÃO CADASTRADO</p>
+          <small>clique em alterar dados para cadastrar</small>
+          @endif
+          <a href="/perfil/alterar-dados">Alterar dados do perfil</a>
+       
         </div>
       </div>
     </div>
-
   </div>
 <!--<div class="card mb-3">
   

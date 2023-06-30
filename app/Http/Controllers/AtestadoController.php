@@ -261,7 +261,7 @@ class AtestadoController extends Controller
 	}
 
 	public function analiseAtestados(){
-		$atestados = Atestado::where('tipo','saude')->where('status','aprovado')->where('pessoa','14075')->get();
+		$atestados = Atestado::where('tipo','saude')->where('status','aprovado')->get();
 		$atual = $atestados->first();
 		$vencido = $atual->emissao->addMonths(12);
 		//dd($atual);

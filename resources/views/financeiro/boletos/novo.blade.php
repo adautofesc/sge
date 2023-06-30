@@ -24,9 +24,12 @@
             	@foreach($matriculas as $matricula)
 				<div>
 					<label>
+					@if($matricula->getParcelas()>0)
 					<input class="checkbox" id="{{$matricula->id}}" type="checkbox" name="matriculas[]" onchange="atualizaValor({{$matricula->id}},{{$matricula->valor->valor/$matricula->getParcelas()}})" value="{{$matricula->id}}">
+					
 					<span>{{$matricula->id}} <small>({{$matricula->status}})</small>  - {{$matricula->getNomeCurso().' R$ '.number_format($matricula->valor->valor/$matricula->getParcelas(),2,',','.')}} </span>
-					</label>
+					@endif	
+				</label>
 				</div>
 				@endforeach
         	</div>

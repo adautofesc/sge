@@ -510,12 +510,14 @@ class TurmaController extends Controller
     {
         $turma=Turma::find($id);
         if($turma){
+            
 
             //limita edição somente até marco do ano seguinte
-            if(date('Y')-date('Y', strtotime($turma->data_inicio))>=1){      
-                if(date('Y')-date('Y', strtotime($turma->data_inicio))!=1 && date('md') > self::DATA_LIMITE_ALTERACAO)
+            if((date('Y')-substr($turma->data_inicio,6,4))>=1){   
+                if((date('Y')-substr($turma->data_inicio,6,4))!=1 || date('md') > self::DATA_LIMITE_ALTERACAO)
                     return redirect()->back()->withErrors(['Não é possível modificar dados de turmas de anos anteriores.']);    
             }
+
             $programas=Programa::orderBy('nome')->get();
             $parcerias=Parceria::orderBy('nome')->get();
             $requisitos=RequisitosController::listar();
@@ -585,7 +587,8 @@ class TurmaController extends Controller
         ]);
         
         //limita edição somente até marco do ano seguinte
-        if(date('Y')-date('Y', strtotime($request->dt_inicio))>=1){      
+        if(date('Y')-date('Y', strtotime($request->dt_inicio))>=1){ 
+            
             if(date('Y')-date('Y', strtotime($request->dt_inicio))==1 && date('md') < self::DATA_LIMITE_ALTERACAO)
             $alteracoes = 'Edição dos dados: '; 
             else

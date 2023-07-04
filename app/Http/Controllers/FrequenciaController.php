@@ -73,8 +73,8 @@ class FrequenciaController extends Controller
         
         $turma = Turma::find($turma);
 
-        if(date('Y')-date('Y', strtotime($turma->data_inicio))>=1){      
-            if(date('Y')-date('Y', strtotime($turma->data_inicio))!=1 && date('md') > TurmaController::DATA_LIMITE_ALTERACAO)
+        if((date('Y')-substr($turma->data_inicio,6,4))>=1){   
+            if((date('Y')-substr($turma->data_inicio,6,4))!=1 || date('md') > self::DATA_LIMITE_ALTERACAO)
                 return redirect()->back()->withErrors(['Não é possível modificar dados de turmas de anos anteriores.']);    
         }
 
@@ -177,8 +177,8 @@ class FrequenciaController extends Controller
         $aulas = Aula::where('turma',$turma)->where('status','prevista')->orderBy('data')->get();         
         $turma = \App\Turma::find($turma);
 
-        if(date('Y')-date('Y', strtotime($turma->data_inicio))>=1){      
-            if(date('Y')-date('Y', strtotime($turma->data_inicio))!=1 && date('md') > TurmaController::DATA_LIMITE_ALTERACAO)
+        if((date('Y')-substr($turma->data_inicio,6,4))>=1){   
+            if((date('Y')-substr($turma->data_inicio,6,4))!=1 || date('md') > self::DATA_LIMITE_ALTERACAO)
                 return redirect()->back()->withErrors(['Não é possível modificar dados de turmas de anos anteriores.']);    
         }
 

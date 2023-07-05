@@ -38,7 +38,7 @@
 			 <tr>
 			 	
 			 	<td>{{$turma->id}}</td>
-				<td>{{$turma->nome_curso}}{{$turma->nome_curso}}
+				<td>{{$turma->nome_curso}}
 				@switch($turma->status_matriculas)
 					@case('presencial')
 						(MP)

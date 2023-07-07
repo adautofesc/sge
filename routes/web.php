@@ -722,7 +722,8 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('salas',  [SalaController::class,'relatorioOcupacao']);
 		Route::get('jornadas-por-programa/{programa}', [JornadaPrograma::class,'index']);
 		Route::get('uso-livre', [UsoLivreController::class,'relatorio']);
-		Route::get('horarios-htp/{programas}', [JornadaHTP::class,'index']); 
+		Route::get('horarios-htp/{programas}', [JornadaHTP::class,'index']);
+		Route::get('conteudo-aulas/{turmas}','AulaDadoController@relatorioConteudo');
 
 		
 		

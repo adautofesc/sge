@@ -495,11 +495,12 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::post('editar/{id}','BoletoController@update');
 			Route::get('imprimir/{id}','BoletoController@imprimir');
 			Route::get('imprimir-carne/{pessoa}','CarneController@imprimirCarne');
-			//Route::get('registrar/{id}','BoletoController@registrar');//registrar para o banco
+			Route::get('registrar/{id}','IntegracaoBBController@listarBoletos');//registrar para o banco
 			Route::get('divida-ativa','DividaAtivaController@gerarDividaAtiva');// envia boletos para divida ativa;
 			Route::get('listar-por-pessoa','BoletoController@listarPorPessoa');
 			Route::get('informacoes/{id}','BoletoController@historico');
 			Route::get('cancelar/{id}','BoletoController@cancelarView');
+			Route::get('registrar/{ids}','IntegracaoBBController@registrarBoletos');
 			Route::get('gerar-carne/{pessoa}','CarneController@gerarCarneIndividual');
 			Route::middleware('liberar.recurso:23')->post('cancelar/{id}','BoletoController@cancelar');
 			Route::middleware('liberar.recurso:23')->get('cancelar-todos/{id}','BoletoController@cancelarTodosVw');
@@ -711,7 +712,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('bolsas','RelatorioController@bolsas');
 		Route::get('tce-alunos/{ano?}','RelatorioController@tceAlunos');
 		Route::get('tce-educadores/{ano?}',[JornadaDocentes::class,'relatorioGeral']);
-		Route::get('tce-turmas/{ano?}','RelatorioController@tceTurmas');
+		Route::get('tce-turmas/{ano?}/','RelatorioController@tceTurmas');
 		Route::get('tce-turmas-alunos/{ano?}','RelatorioController@tceTurmasAlunos');
 		Route::get('tce-vagas/{ano?}','RelatorioController@tceVagas');
 		Route::get('alunos-conselho/{ano?}','RelatorioController@alunosConselho');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use App\classes\BarCodeGenrator;
 use App\classes\BoletoFuncional;
 use App\Lancamento;
@@ -17,6 +18,7 @@ use Session;
 use Auth;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
+
 
 ini_set('max_execution_time', 300);
 
@@ -332,8 +334,7 @@ class BoletoController extends Controller
 				$str_lancamentos.= $lancamento->referencia." ".$lancamento->matricula.'<br>';
 			}
 		
-		if($boleto->status == 'gravado' || $boleto->status == 'impresso'){
-			
+		if($boleto->status == 'gravado' || $boleto->status == 'impresso'){	
 			$pessoa = Pessoa::withTrashed()->find($boleto->pessoa);
 			$pessoa = PessoaController::formataParaMostrar($pessoa);
 			//dd($pessoa);
@@ -341,10 +342,7 @@ class BoletoController extends Controller
 			$boleto->status = 'pelosite';
 			$boleto->remessa=intval(date('YmdHi'));
 			$boleto->save();
-			
-
 			BoletoLogController::alteracaoBoleto($boleto->id,'Registro do boleto pelo site BB');
-
 			return view('financeiro.boletos.registrar')->with('boleto',$boleto)->with('lancamentos',$str_lancamentos)->with('pessoa',$pessoa)->with('vencido',$vencido);
 
 		}
@@ -473,24 +471,35 @@ class BoletoController extends Controller
 
 
 	public function cancelarView($id){
-		$boleto = Boleto::find($id);
-		$boleto->getLancamentos();
-		if($boleto->status == 'gravado'){
-			foreach($boleto->lancamentos as $lancamento){
-				$lancamento->delete();
+		$excluidos = 0;
+		$cancelados = 0;
+		$boletos = preg_split('/,/', $id, -1, PREG_SPLIT_NO_EMPTY);
+		foreach($boletos as $boleto_id){
+			$boleto = Boleto::find($boleto_id);
+			$boleto->getLancamentos();
+			if($boleto->status == 'gravado'){
+				foreach($boleto->lancamentos as $lancamento){
+					$lancamento->delete();
+				}
+				$boleto->delete();
+				$excluidos++;	
 			}
-			$boleto->delete();
-
-			return redirect()->back()->withErrors(["Boleto excluído."]);
+			else
+				$cancelados++;
 		}
-		else		
+		if($cancelados>0)			
 			return view('financeiro.boletos.cancelamento')->with('boleto',$id);
+		else
+			return redirect()->back()->withErrors(["Boleto(s) excluído(s)."]);
 	}
 
 
 
 	public function cancelar(Request $r){
-		BoletoController::cancelamentoDireto($r->boleto, $r->motivo.' '.$r->motivo2);
+		$boletos = preg_split('/,/', $r->boleto, -1, PREG_SPLIT_NO_EMPTY);
+		foreach($boletos as $boleto){
+			BoletoController::cancelamentoDireto($boleto, $r->motivo.' '.$r->motivo2);
+		}
 		return redirect('/secretaria/atender/');
 
 	}
@@ -953,6 +962,8 @@ class BoletoController extends Controller
 		
 		return $boletos;
 	}
+
+	
 
 		
 

@@ -509,7 +509,8 @@ Event::where('status' , 0)
 
 
 
-    public function tceTurmasAlunos($ano = 2020){
+    public function tceTurmasAlunos($ano = 2024){
+        $programas = \App\Programa::where('id','>',0)->get();
         if(!is_numeric($ano))
             die('O ano informado é inválido.');
         $turmas = \App\Turma::whereBetween('data_inicio', [($ano-1).'-11-20%',$ano.'-11-20%'])
@@ -535,18 +536,30 @@ Event::where('status' , 0)
 
         return view('relatorios.tce-turmas-alunos')
             ->with('ano',$ano)
+            ->with('programas',$programas)
             ->with('turmas',$turmas);
 
     }
     
-    public function tceTurmas($ano = 2020){
+    public function tceTurmas($ano = 2024){
+        $programas = \App\Programa::where('id','>',0)->orderBy('sigla')->get();
         if(!is_numeric($ano))
             die('O ano informado é inválido.');
-        $turmas = \App\Turma::whereBetween('data_inicio', [($ano-1).'-11-20%',$ano.'-11-20%'])
+        if(isset($_GET['programa'])){
+            preg_match("/^[0-9]+$/", $_GET['programa'], $programa);
+            $turmas = \App\Turma::whereBetween('data_inicio', [($ano-1).'-11-20%',$ano.'-11-20%'])
+                ->where('status', '!=','cancelada')
+                ->where('programa', $programa[0])
+                ->orderBy('data_inicio')
+                ->get();
+        }
+        else{
+            $turmas = \App\Turma::whereBetween('data_inicio', [($ano-1).'-11-20%',$ano.'-11-20%'])
             ->where('status', '!=','cancelada')
-            ->orderBy('data_inicio')
-            
+            ->orderBy('data_inicio')      
             ->get();
+        }
+            
 
         foreach($turmas as $turma){   
             $turma->nome_curso = $turma->getNomeCurso();
@@ -561,6 +574,7 @@ Event::where('status' , 0)
 
         return view('relatorios.tce-turmas')
             ->with('ano',$ano)
+            ->with('programas',$programas)
             ->with('turmas',$turmas);
 
     }

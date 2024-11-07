@@ -4,7 +4,7 @@
     </IfModule>
 
     RewriteEngine On
-    
+
 
 
     # Redirect Trailing Slashes If Not A Folder...
@@ -19,4 +19,7 @@
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+<IfModule mod_rewrite.c>
+    
 </IfModule>

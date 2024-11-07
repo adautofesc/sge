@@ -111,6 +111,7 @@ public function gerar($boleto){
 		$dadosboleto["endereco"] = "Rua São Sebastiao, 2828, Vila Nery ";
 		$dadosboleto["cidade_uf"] = "São Carlos / SP";
 		$dadosboleto["cedente"] = "FUNDAÇÃO EDUCACIONAL SÃO CARLOS";
+		$dadosboleto["pix"] = 000000;
 
 		#####################################################################################
 		$codigobanco = "001";
@@ -184,6 +185,8 @@ public function gerar($boleto){
 		$dadosboleto["agencia_codigo"] = $agencia_codigo;
 		$dadosboleto["nosso_numero"] = $nossonumero;
 		$dadosboleto["codigo_banco_com_dv"] = $codigo_banco_com_dv;
+
+		
 
 		//$dadosboleto["codebar"] = BoletoFuncional::fbarcode($dadosboleto["codigo_barras"]);
 		$boleto->dados=$dadosboleto;

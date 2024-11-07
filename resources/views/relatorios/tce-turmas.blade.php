@@ -68,6 +68,53 @@
 
 <body>
 	<div class="container">
+	<div class="row hide-onprint">
+			<div class="col-xs-12" style="margin-top: 20px;margin-bottom: 50px;">
+				<form class="inline-form" method="GET">
+				
+               
+              
+                <div class="action dropdown" style="float: left; margin-right: 10px;"> 
+							<button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Ano
+                            </button>
+
+                            <ul class="dropdown-menu" >
+							@for($a=2018;$a<=date('Y');$a++)
+								<li>
+									
+								<a href="\relatorios\tce-turmas\{{$a}}">
+									<small>&nbsp;{{$a}}</small>			
+								</a>
+
+								</li>
+							@endfor
+							</ul>
+                            
+
+                </div>
+				<div class="action dropdown" style="float: left; margin-right: 10px;"> 
+							<button class="btn  rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Programa
+                            </button>
+
+                            <ul class="dropdown-menu" >
+							@foreach($programas as $programa)
+								<li>
+									
+								<a href="?programa={{$programa->id}}">
+									<small>&nbsp;{{$programa->sigla}}</small>			
+								</a>
+
+								</li>
+								@endforeach
+							</ul>
+                            
+
+                </div>
+				
+				<a href="#" class="btn btn-primary" onclick="print();">Imprimir</a>
+			
+			</div>
+		</div>
 		
 		<div class="row">
 			<div class="col-xs-2 col-sm-2">
@@ -169,26 +216,7 @@
 <script type="text/javascript">
 	var options = [];
 
-$( '.dropdown-menu a' ).on( 'click', function( event ) {
 
-   var $target = $( event.currentTarget ),
-       val = $target.attr( 'data-value' ),
-       $inp = $target.find( 'input' ),
-       idx;
-
-   if ( ( idx = options.indexOf( val ) ) > -1 ) {
-      options.splice( idx, 1 );
-      setTimeout( function() { $inp.prop( 'checked', false ) }, 0);
-   } else {
-      options.push( val );
-      setTimeout( function() { $inp.prop( 'checked', true ) }, 0);
-   }
-
-   $( event.target ).blur();
-      
-   console.log( options );
-   return false;
-});
 </script>
 
 </html>

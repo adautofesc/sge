@@ -520,13 +520,19 @@
                                     <label><i class="fa fa-cogs icon text-success"></i> <span> Gerador Automático</span></label>
                                 </a> 
                                 <a class="dropdown-item" href="{{asset('financeiro/boletos/novo'.'/'.session('pessoa_atendimento'))}}" title="Cria um boleto manualmente">
-                                    <label><i class="fa fa-barcode icon text-success"></i> Boleto manual</label>
+                                    <label><i class="fa fa-plus icon text-success"></i> Boleto manual</label>
+                                </a> 
+                                <a class="dropdown-item" href="#" onclick="registrarBoletosSelecionados()" title="Registrar boletos">
+                                    <label><i class="fa fa-barcode icon text-info"></i> Registrar selecionados</label>
                                 </a> 
                                 <a class="dropdown-item" href="/financeiro/boletos/imprimir-carne/{{$pessoa->id}}" title="Gerar PDF do carnê com todos boletos">
                                     <label><i class="fa fa-stack-overflow icon text-info"></i> Imprimir Carnê</label>
                                 </a> 
                                 <a class="dropdown-item" href="#"  onclick="cancelarBoletos();" title="Cancelar todos boletos em aberto.">
                                     <label><i class="fa fa-times-circle icon text-danger"></i><span> Cancelar próximos</span></label>
+                                </a>
+                                <a class="dropdown-item" href="#"  onclick="cancelarBoletosSelecionados();" title="Cancelar Selecionados">
+                                    <label><i class="fa fa-times-circle icon text-danger"></i><span> Cancelar Selecionados</span></label>
                                 </a> 
                                 <!--
                                 <a class="dropdown-item" href="#" onclick="alterarStatus('apagar')">
@@ -547,7 +553,7 @@
                         <li class="item item-list-header ">
                             <div class="row ">
                                 <div class="col-xl-5 " style="line-height:40px !important; padding-left: 30px;">
-                                    <div><input type="checkbox"> &nbsp;<small><b>Número</b></small></div>
+                                    <div><input type="checkbox" onchange="toggleBoletos(this)"> &nbsp;<small><b>Número</b></small></div>
                                 </div>
                                 <div class="col-xl-2" style="line-height:40px !important;">
                                     <div><small><b>Vencimento</b></small></div>
@@ -574,7 +580,7 @@
                                 <div class="col-xl-5 " style="line-height:40px !important; padding-left: 30px;">
                                     <div class="dropdown-toggle">
                                         @if($boleto->status == 'impresso' || $boleto->status == 'gravado' ||  $boleto->status == 'emitido')
-                                        <input type="checkbox">
+                                        <input type="checkbox" id="boleto[{{$boleto->id}}]" name="{{$boleto->id}}" class="boleto">
                                         @else
                                         <i class=" fa fa-barcode "></i>
                                         @endif
@@ -819,6 +825,16 @@
     if(confirm('Tem certeza que deseja reativar esta matrícula?'))
         window.location.replace("{{asset('/secretaria/matricula/reativar/')}}/"+matricula);
   }
+
+
+  function toggleBoletos(obj){
+    console.log(obj.checked);
+    boletos = $("input[id^='boleto']").each(function(){
+            //console.log($(this).attr("name"));
+             $(this).prop("checked", obj.checked);
+        });
+
+  }
   function cancelarBoleto(boleto){
     if(confirm('Tem certeza que deseja cancelar este boleto? Todos lançamentos deste serão cancelados.'))
         window.location.replace("{{asset('/financeiro/boletos/cancelar/')}}/"+boleto);
@@ -826,6 +842,35 @@
   function cancelarBoletos(){
     if(confirm('Tem certeza que deseja cancelar todos os boletos futuros?'))
         window.location.replace("{{asset('/financeiro/boletos/cancelar-todos/')}}/{{$pessoa->id}}");
+  }
+  function cancelarBoletosSelecionados(){
+    var itens = '';
+
+    if(confirm('Confirmar cancelamento dos boletos selecionados?')){
+        boletos = $("input[id^='boleto']:checked:enabled").each(function(){
+            //console.log($(this).attr("name"));
+            itens += $(this).attr("name")+',';
+        });
+        
+        console.log(itens);
+        window.location.replace("{{asset('/financeiro/boletos/cancelar/')}}/"+itens);
+    }
+        
+
+  }
+  function registrarBoletosSelecionados(){
+    var itens = '';
+
+    if(confirm('Confirmar registro dos boletos selecionados?')){
+        boletos = $("input[id^='boleto']:checked:enabled").each(function(){
+            //console.log($(this).attr("name"));
+            itens += $(this).attr("name")+',';
+        });
+        
+        window.location.replace("{{asset('/financeiro/boletos/registrar/')}}/"+itens);
+    }
+        
+
   }
   function reativarBoleto(boleto){
     if(confirm('Tem certeza que deseja cancelar este boleto? Todos lançamentos deste serão cancelados.'))

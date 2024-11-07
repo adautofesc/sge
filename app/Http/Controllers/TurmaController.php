@@ -117,7 +117,7 @@ class TurmaController extends Controller
      */
     public function listagemGlobal($filtro=null,$valor=null,$rem_filtro=null,$remove=0,$ipp=50){
 
-        session_start();
+        //session_start();
  
         
         if(isset($_SESSION['filtro_turmas']))

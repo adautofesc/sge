@@ -1,8 +1,7 @@
 <?php
-
 namespace App\classes;
 
-Class keyGen {
+Class KeyGen {
 
 	public static function generate(){
 		//Cria chave para validar recurso de esquecimento de email

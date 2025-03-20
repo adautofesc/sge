@@ -11,7 +11,7 @@ namespace App\classes;
  */
 
 
-class barcode {
+class Barcode {
 	protected static $code39 = array(
 	'0' => 'bwbwwwbbbwbbbwbw','1' => 'bbbwbwwwbwbwbbbw',
 	'2' => 'bwbbbwwwbwbwbbbw','3' => 'bbbwbbbwwwbwbwbw',

@@ -1,0 +1,17 @@
+name: "Deploy para VPS"
+on:
+    push:
+        branches:
+            - master
+jobs:
+    build_deply:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: appleboy/ssh-action@v1.2.1
+              with:
+                host: ${{ secrets.HOST }}
+                username: sgefesc
+                key: ${{ secrets.KEY }}
+                port: ${{ secrets.HOST_PORT }}
+                script: whoami

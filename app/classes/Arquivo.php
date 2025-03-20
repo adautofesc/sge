@@ -5,7 +5,7 @@ Class Arquivo {
 
 	public static function download($arquivo){
 
-	  //require $arquivo;
+	  //require $arquivo teste;
             $arquivo = str_replace('-.-','/',$arquivo);
             //dd(substr($arquivo,1));
             if(substr($arquivo,0,1) =='/')

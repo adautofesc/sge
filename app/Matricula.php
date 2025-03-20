@@ -107,6 +107,7 @@ class Matricula extends Model
 	 * @return [Int] [quantidade de parcelas da matrícula]
 	 */
 	public function getParcelas(){
+		//Fazer uma verificação inicial 
 		if($this->parcelas>0)
 			return  $this->parcelas;
 		

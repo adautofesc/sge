@@ -101,19 +101,6 @@
                     <tbody>
                     	
                     	<tr>
-							<td>Não definido</td>
-							<td>{{$turmas['0']}}</td>
-							<td>{{$vagas['0']}}</td>
-							<td>{{$ocupacao['0']}}</td>
-							@if($vagas['0']>0)
-							<td>{{number_format(($ocupacao['0']*100)/$vagas['0'],2)}}</td>
-							@else 
-							<td>0</td>
-							@endif
-					
-                    		
-						</tr>
-                    	<tr>
 							<td>Universidade Aberta da Terceira Idade</td>
 							<td>{{$turmas['3']}}</td>
 							<td>{{$vagas['3']}}</td>
@@ -159,32 +146,6 @@
 							<td>{{$ocupacao['4']}}</td>
 							@if($ocupacao['4']>0)
 							<td>{{number_format(($ocupacao['4']*100)/$vagas['4'],2)}}</td>
-							@else 
-							<td>0</td>
-							@endif
-					
-                    		
-						</tr>
-						<tr>
-							<td>TVE</td>
-							<td>{{$turmas['5']}}</td>
-							<td>{{$vagas['5']}}</td>
-							<td>{{$ocupacao['5']}}</td>
-							@if($ocupacao['5']>0)
-							<td>{{number_format(($ocupacao['5']*100)/$vagas['5'],2)}}</td>
-							@else 
-							<td>0</td>
-							@endif
-					
-                    		
-						</tr>
-						<tr>
-							<td>Universidade Aberta do Brasil</td>
-							<td>{{$turmas['6']}}</td>
-							<td>{{$vagas['6']}}</td>
-							<td>{{$ocupacao['6']}}</td>
-							@if($ocupacao['6']>0)
-							<td>{{number_format(($ocupacao['6']*100)/$vagas['6'],2)}}</td>
 							@else 
 							<td>0</td>
 							@endif

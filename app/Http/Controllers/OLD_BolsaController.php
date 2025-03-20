@@ -213,8 +213,8 @@ class BolsaController extends Controller
             $bolsa->rematricula = $request->rematricula;
             $bolsa->validade = $validade;
 
-            //ativa atutomaticamente os encaminhamentos do caps, saúde e idade maior que 60
-            if($request->desconto == 7 || $request->desconto == 8 || $request->desconto == 13)
+            //ativa atutomaticamente os encaminhamentos do caps e saúde
+            if($request->desconto == 7 || $request->desconto == 8)
                 $bolsa->status = 'ativa';
             else 
                 $bolsa->status = 'analisando';

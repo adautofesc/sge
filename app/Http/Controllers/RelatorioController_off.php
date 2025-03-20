@@ -509,8 +509,7 @@ Event::where('status' , 0)
 
 
 
-    public function tceTurmasAlunos($ano = 2024){
-        $programas = \App\Programa::where('id','>',0)->get();
+    public function tceTurmasAlunos($ano = 2020){
         if(!is_numeric($ano))
             die('O ano informado é inválido.');
         $turmas = \App\Turma::whereBetween('data_inicio', [($ano-1).'-11-20%',$ano.'-11-20%'])
@@ -536,30 +535,18 @@ Event::where('status' , 0)
 
         return view('relatorios.tce-turmas-alunos')
             ->with('ano',$ano)
-            ->with('programas',$programas)
             ->with('turmas',$turmas);
 
     }
     
-    public function tceTurmas($ano = 2024){
-        $programas = \App\Programa::where('id','>',0)->orderBy('sigla')->get();
+    public function tceTurmas($ano = 2020){
         if(!is_numeric($ano))
             die('O ano informado é inválido.');
-        if(isset($_GET['programa'])){
-            preg_match("/^[0-9]+$/", $_GET['programa'], $programa);
-            $turmas = \App\Turma::whereBetween('data_inicio', [($ano-1).'-11-20%',$ano.'-11-20%'])
-                ->where('status', '!=','cancelada')
-                ->where('programa', $programa[0])
-                ->orderBy('data_inicio')
-                ->get();
-        }
-        else{
-            $turmas = \App\Turma::whereBetween('data_inicio', [($ano-1).'-11-20%',$ano.'-11-20%'])
+        $turmas = \App\Turma::whereBetween('data_inicio', [($ano-1).'-11-20%',$ano.'-11-20%'])
             ->where('status', '!=','cancelada')
-            ->orderBy('data_inicio')      
-            ->get();
-        }
+            ->orderBy('data_inicio')
             
+            ->get();
 
         foreach($turmas as $turma){   
             $turma->nome_curso = $turma->getNomeCurso();
@@ -574,7 +561,6 @@ Event::where('status' , 0)
 
         return view('relatorios.tce-turmas')
             ->with('ano',$ano)
-            ->with('programas',$programas)
             ->with('turmas',$turmas);
 
     }
@@ -611,10 +597,10 @@ Event::where('status' , 0)
         $ocupacao = array();
         if(!is_numeric($ano))
              die('O ano informado é inválido.');
-        $programas = array('0','1','2','3','4','5','6','12');
+        $programas = array('1','2','3','4','12');
             foreach($programas as $programa){
-                $vagas[$programa] = \App\Turma::whereYear('data_inicio',$ano)->where('programa',$programa)->whereIn('status',['iniciada','encerrada','fechada','cancelada','lancada'])->sum('vagas');
-                $turmas[$programa] = \App\Turma::whereYear('data_inicio',$ano)->where('programa',$programa)->whereIn('status',['iniciada','encerrada','fechada','cancelada','lancada'])->count();
+                $vagas[$programa] = \App\Turma::whereYear('data_inicio',$ano)->where('programa',$programa)->whereIn('status',['iniciada','encerrada'])->sum('vagas');
+                $turmas[$programa] = \App\Turma::whereYear('data_inicio',$ano)->where('programa',$programa)->whereIn('status',['iniciada','encerrada'])->count();
 
 
                 //dd(\App\Turma::whereYear('data_inicio',$ano)->where('programa',2)->whereIn('status',['iniciada','encerrada'])->get());
@@ -632,14 +618,14 @@ Event::where('status' , 0)
                                                         ->where('inscricoes.status','cancelada')
                                                         ->where('inscricoes.updated_at','>=','2020-03-20')
                                                         ->count();
-                } elseif ($ano >= 2021 && $ano <= 2022) {
+                } elseif ($ano >= 2021 && $ano <= 2023) {
 					$ocupacao[$programa] = \App\Turma::whereYear('data_inicio',$ano)
                                                         ->where('programa',$programa)
                                                         ->sum('matriculados');
 				} else                  
                     $ocupacao[$programa] = \App\Turma::whereYear('data_inicio',$ano)
                                                         ->where('programa',$programa)
-														->whereIn('status',['iniciada','encerrada','fechada','cancelada','lancada'])
+														->whereIn('status',['iniciada','encerrada'])
                                                         ->sum('matriculados');
         
             }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use App\classes\BarCodeGenrator;
 use App\classes\BoletoFuncional;
 use App\Lancamento;
@@ -18,7 +17,6 @@ use Session;
 use Auth;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
-
 
 ini_set('max_execution_time', 300);
 
@@ -334,7 +332,8 @@ class BoletoController extends Controller
 				$str_lancamentos.= $lancamento->referencia." ".$lancamento->matricula.'<br>';
 			}
 		
-		if($boleto->status == 'gravado' || $boleto->status == 'impresso'){	
+		if($boleto->status == 'gravado' || $boleto->status == 'impresso'){
+			
 			$pessoa = Pessoa::withTrashed()->find($boleto->pessoa);
 			$pessoa = PessoaController::formataParaMostrar($pessoa);
 			//dd($pessoa);
@@ -342,7 +341,10 @@ class BoletoController extends Controller
 			$boleto->status = 'pelosite';
 			$boleto->remessa=intval(date('YmdHi'));
 			$boleto->save();
+			
+
 			BoletoLogController::alteracaoBoleto($boleto->id,'Registro do boleto pelo site BB');
+
 			return view('financeiro.boletos.registrar')->with('boleto',$boleto)->with('lancamentos',$str_lancamentos)->with('pessoa',$pessoa)->with('vencido',$vencido);
 
 		}
@@ -471,35 +473,24 @@ class BoletoController extends Controller
 
 
 	public function cancelarView($id){
-		$excluidos = 0;
-		$cancelados = 0;
-		$boletos = preg_split('/,/', $id, -1, PREG_SPLIT_NO_EMPTY);
-		foreach($boletos as $boleto_id){
-			$boleto = Boleto::find($boleto_id);
-			$boleto->getLancamentos();
-			if($boleto->status == 'gravado'){
-				foreach($boleto->lancamentos as $lancamento){
-					$lancamento->delete();
-				}
-				$boleto->delete();
-				$excluidos++;	
+		$boleto = Boleto::find($id);
+		$boleto->getLancamentos();
+		if($boleto->status == 'gravado'){
+			foreach($boleto->lancamentos as $lancamento){
+				$lancamento->delete();
 			}
-			else
-				$cancelados++;
+			$boleto->delete();
+
+			return redirect()->back()->withErrors(["Boleto excluído."]);
 		}
-		if($cancelados>0)			
+		else		
 			return view('financeiro.boletos.cancelamento')->with('boleto',$id);
-		else
-			return redirect()->back()->withErrors(["Boleto(s) excluído(s)."]);
 	}
 
 
 
 	public function cancelar(Request $r){
-		$boletos = preg_split('/,/', $r->boleto, -1, PREG_SPLIT_NO_EMPTY);
-		foreach($boletos as $boleto){
-			BoletoController::cancelamentoDireto($boleto, $r->motivo.' '.$r->motivo2);
-		}
+		BoletoController::cancelamentoDireto($r->boleto, $r->motivo.' '.$r->motivo2);
 		return redirect('/secretaria/atender/');
 
 	}
@@ -576,81 +567,7 @@ class BoletoController extends Controller
 	 * @param  Boleto
 	 * @return [type]
 	 */
-	 
-	 public static function gerarBoleto(Boleto $boleto){
-    $cliente = Pessoa::withTrashed()->find($boleto->pessoa);
-    $cliente = PessoaController::formataParaMostrar($cliente);
-    $lancamentos = LancamentoController::listarPorBoleto($boleto->id);
-    $array_lancamentos = array();
-
-    foreach ($lancamentos as $lancamento) {
-        $array_lancamentos[] = $lancamento->referencia;
-    }
-
-    $array_lancamentos = array_slice($array_lancamentos, 0, 4);
-
-    $beneficiario = new \Eduardokum\LaravelBoleto\Pessoa([
-        'documento' => '45.361.904/0001-80',
-        'nome'      => 'Fundação Educacional São Carlos',
-        'cep'       => '13560-230',
-        'endereco'  => 'Rua São Sebastiao, 2828, ',
-        'bairro'    => 'Vila Nery',
-        'uf'        => 'SP',
-        'cidade'    => 'São Carlos',
-    ]);
-
-    if (is_null($cliente->cpf)) {
-        $cliente->cpf = '111.111.111-11';
-    }
-
-    $pagador = new \Eduardokum\LaravelBoleto\Pessoa([
-        'documento' => $cliente->cpf,
-        'nome'      => str_replace(['º', 'ª', '°', '´', '~', '^', '`', '\''], '', substr($cliente->nome, 0, 37)),
-        'cep'       => $cliente->cep ? $cliente->cep : '13560-970',
-        'endereco'  => str_replace(['º', 'ª', '°', '´', '~', '^', '`', '\''], '', $cliente->logradouro . ' ' . $cliente->end_numero . ' ' . $cliente->end_complemento),
-        'bairro'    => substr(($cliente->bairro == 'Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro), 0, 15),
-        'uf'        => $cliente->estado,
-        'cidade'    => $cliente->cidade,
-    ]);
-
-    // Ajuste do fator de vencimento
-    $dataBaseAntiga = Carbon::create(1997, 10, 7); // Base inicial do fator de vencimento
-    $dataBaseNova = Carbon::create(2025, 2, 22); // Nova base a partir da reinicialização
-
-    if (Carbon::parse($boleto->vencimento)->greaterThanOrEqualTo($dataBaseNova)) {
-        $fatorVencimento = Carbon::parse($boleto->vencimento)->diffInDays($dataBaseNova) + 1000;
-    } else {
-        $fatorVencimento = Carbon::parse($boleto->vencimento)->diffInDays($dataBaseAntiga);
-    }
-
-    $bb = new \Eduardokum\LaravelBoleto\Boleto\Banco\Bb([
-        'logo'                => 'img/logo-small.png',
-        'dataVencimento'      => Carbon::parse($boleto->vencimento),
-        'fatorVencimento'     => $fatorVencimento, // Fator de vencimento corrigido
-        'valor'               => $boleto->valor,
-        'numero'              => $boleto->id,
-        'numeroDocumento'     => $boleto->id,
-        'pagador'             => $pagador,
-        'beneficiario'        => $beneficiario,
-        'carteira'            => 17,
-        'variacaoCarteira'    => '019',
-        'agencia'             => '0295', // Removido o "X"
-        'convenio'            => 2838669,
-        'conta'               => 52822,
-        'descricaoDemonstrativo' => $array_lancamentos,
-        'instrucoes' => [
-            'Sr. Caixa, cobrar multa de 2% após o vencimento',
-            'Cobrar juros de 1% ao mês por atraso.',
-            'Após o vencimento, o pagamento dever ser feito no Banco do Brasil',
-            'Em caso de dúvidas ou divergências entre em contato conosco: 3362-0580'
-        ],
-    ]);
-
-    return $bb;
-}
-
-	 
-	/* public static function gerarBoleto(Boleto $boleto){
+	public static function gerarBoleto(Boleto $boleto){
 		$cliente=Pessoa::withTrashed()->find($boleto->pessoa);
 		$cliente=PessoaController::formataParaMostrar($cliente);
 		$lancamentos= LancamentoController::listarPorBoleto($boleto->id); //objetos lancamentos
@@ -710,7 +627,7 @@ class BoletoController extends Controller
 			//dd($bb);
 		    return $bb;
 
-		} */
+		}
 
 		public function consultarBoletosCPF(Request $request){
 			$dados_pessoa = PessoaDadosGerais::where('dado',3)->where('valor',$requent->cpf)->get();
@@ -1036,8 +953,6 @@ class BoletoController extends Controller
 		
 		return $boletos;
 	}
-
-	
 
 		
 

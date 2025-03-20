@@ -725,10 +725,6 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('uso-livre', [UsoLivreController::class,'relatorio']);
 		Route::get('horarios-htp/{programas}', [JornadaHTP::class,'index']);
 		Route::get('conteudo-aulas/{turmas}','AulaDadoController@relatorioConteudo');
-
-		
-		
-
 	});
 
 	//Docentes

@@ -11,6 +11,8 @@ use Auth;
 
 class FrequenciaController extends Controller
 {
+    const DATA_LIMITE_ALTERACAO = '0330';
+
     public function index($id=0,$semestre=0){
         if($id == 0){
             $id = Auth::user()->pessoa;
@@ -69,11 +71,10 @@ class FrequenciaController extends Controller
 
 
 
-    public function preencherChamada_view(int $turma){
-        
+    public function preencherChamada_view(int $turma){        
         $turma = Turma::find($turma);
-
-        if((date('Y')-substr($turma->data_inicio,6,4))>=1){   
+        //se ano da turma for menor que o ano atual, não permite alteração exceto se for do ano anteruir até 30/03
+        if((date('Y')-substr($turma->data_inicio,6,4))>=1){   //2025 - 2024 = 1
             if((date('Y')-substr($turma->data_inicio,6,4))!=1 || date('md') > self::DATA_LIMITE_ALTERACAO)
                 return redirect()->back()->withErrors(['Não é possível modificar dados de turmas de anos anteriores.']);    
         }

@@ -48,7 +48,7 @@ public function gerar($boleto){
 		// INFORMACOES PARA O CLIENTE
 		$lancamentos = \App\Lancamento::select('referencia')->where('boleto', $boleto->id)->get();
 		for($i=0;$i<$lancamentos->count();$i++){
-			$dadosboleto["referencia".$i] = $lancamentos{$i}->referencia;
+			$dadosboleto["referencia".$i] = $lancamentos[$i]->referencia;
 		}
 		
 		$dadosboleto["demonstrativo1"] = "Pagamento FESC";

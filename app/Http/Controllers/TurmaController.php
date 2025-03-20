@@ -1359,11 +1359,11 @@ class TurmaController extends Controller
        $ws = json_decode($result);
 
 
-       if( isset($ws{0}->url) )
-            return redirect( $ws{0}->url);
+       if( isset($ws[0]->url) )
+            return redirect( $ws[0]->url);
 
-        elseif(isset($ws{0}->url_pdf))
-            return redirect( $ws{0}->url_pdf);
+        elseif(isset($ws[0]->url_pdf))
+            return redirect( $ws[0]->url_pdf);
 
         else
 
@@ -1398,9 +1398,9 @@ class TurmaController extends Controller
 
         $ws = json_decode($result);
 
-        if( isset($ws{0}->url) )
+        if( isset($ws[0]->url) )
 
-            return redirect( $ws{0}->url);
+            return redirect( $ws[0]->url);
 
         else
 

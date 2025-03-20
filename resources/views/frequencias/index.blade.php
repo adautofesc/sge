@@ -17,25 +17,17 @@
             <div class="card-header">
                 <div class="header-block">
                     <p class="title" style="color:white">Listas de Frequência &nbsp;&nbsp;</p>
+                    <select class="form-control" id="semestre" name="semestre" style="width: 200px; display: inline-block;" onchange="window.location.href='/chamadas/{{$docente->id}}/'+this.value">
+                        <option value="0">Selecione o semestre</option>
+                        @foreach($semestres as $semestre)
+                        @if(isset($semestre_selecionado) && array_search($semestre->semestre.$semestre->ano,[$semestre_selecionado]) !== false)
+                        <option value="{{$semestre->semestre.$semestre->ano}}" selected>{{$semestre->semestre>0?'.......'.$semestre->semestre.'º Sem. '.$semestre->ano:' '.$semestre->ano}}</option>
+                        @else
+                        <option value="{{$semestre->semestre.$semestre->ano}}">{{$semestre->semestre>0?'.......'.$semestre->semestre.'º Sem. '.$semestre->ano:' '.$semestre->ano}}</option>
+                        @endif
+                        @endforeach
+                    </select>
 
-                    <div class="action dropdown pull-right" >
-
-                        <button class="btn  rounded-s btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Semestre de início
-                        </button>
-                        <div class="dropdown-menu "  aria-labelledby="dropdownMenu5"> 
-                            @foreach($semestres as $semestre)
-                            @if(isset($semestre_selecionado) && array_search($semestre->semestre.$semestre->ano,[$semestre_selecionado]) !== false)
-                            <a class="dropdown-item" href="/chamadas/{{$docente->id}}/{{$semestre->semestre.$semestre->ano}}" style="text-decoration: none;">
-                                <i class="fa fa-check-circle-o icon"></i> {{$semestre->semestre>0?$semestre->semestre.'º Sem. '.$semestre->ano:' '.$semestre->ano}}
-                            </a> 
-                            @else
-                            <a class="dropdown-item" href="/chamadas/{{$docente->id}}/{{$semestre->semestre.$semestre->ano}}" style="text-decoration: none;">
-                                <i class="fa fa-circle-o icon"></i> {{$semestre->semestre>0?$semestre->semestre.'º Sem. '.$semestre->ano:' '.$semestre->ano}}
-                            </a> 
-                            @endif
-                            @endforeach
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -121,16 +113,30 @@
                                         </a>
                                     @endif
 
-                                @else
-                                    <a href="/docentes/frequencia/preencher/{{$turma->id}}"  title="Chamada completa">
-                                        <i class=" fa fa-table "></i></a>
-                                    &nbsp;
-                                    <a href="/docentes/frequencia/listar/{{$turma->id}}"  title="Relatório de frequência.">
-                                        <i class=" fa fa-file-text-o "></i></a>
-                                    &nbsp;
-                                    
-                                    <a href="/lista/{{$turma->id}}" title="Impressão de lista em branco" >
-                                        <i class=" fa fa-print "></i></a>&nbsp;
+                                @else                        
+                                    <div class="action dropdown"> 
+                                        <!-- <a href="#" class="btn btn-sm rounded-s btn-secondary" title="Exportar para excel"><img src="/img/excel.svg" alt="excel" width="20px"></a> -->
+                                        <button class="btn btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"> Opções
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
+                        
+                                            <a class="dropdown-item" href="/docentes/frequencia/preencher/{{$turma->id}}">
+                                                <label><i class="fa fa-table icon text-secondary"></i> Chamada completa</label>
+                                            </a> 
+                                            <a class="dropdown-item" href="/docentes/frequencia/listar/{{$turma->id}}" >
+                                                <label><i class="fa fa-file-text-o icon text-secondary"></i> Relatório de frequência</label>
+                                            </a> 
+                                            
+                                            <a class="dropdown-item" href="/relatorios/conteudo-aulas/{{$turma->id}}" >
+                                                <label><i class="fa fa-file-text-o icon text-secondary"></i> Relatório de conteúdo</label>
+                                            </a> 
+                                            <a class="dropdown-item" href="/lista/{{$turma->id}}" >
+                                                <label><i class="fa fa-print icon text-secondary"></i> Lista em branco</label>
+                                            </a> 
+                                            
+                                            
+                                        </div>
+                                    </div>
                                 @endif
                             </td>
                         </tr>

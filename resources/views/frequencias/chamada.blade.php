@@ -62,10 +62,12 @@
 					@foreach($turma->inscricoes as $inscricao)
 					<div style="height:3rem;border-top: 1px solid #ccc; padding-top:1rem;">
 						<label class="item-check">
-						<input class="checkbox" type="checkbox" checked="true" name="aluno[]" value="{{$inscricao->pessoa->id}}">
+						
 						@if($inscricao->status!= 'regular')
+						<input class="checkbox" type="checkbox" checked="false" disabled name="aluno[]" value="{{$inscricao->pessoa->id}}">
 						<span ><small class="text-danger">({{$inscricao->status}})</small> {{$inscricao->pessoa->nome}}</span>
 						@else 
+						<input class="checkbox" type="checkbox" checked="true"  name="aluno[]" value="{{$inscricao->pessoa->id}}">
 						<span title="Adicionar/Remover presença">{{$inscricao->pessoa->nome}}</span>
 						@endif
 						</label>

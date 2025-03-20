@@ -52,11 +52,9 @@
                 <div class="card-block">
                     <ul>
                         <li>
-                            <strong>15:00</strong> - Nome do evento - FESC 1 - sala 24
+                           Sem eventos previstos.
                         </li>
-                        <li>
-                            <strong>15:00</strong> - Nome do evento - FESC 1 - sala 24
-                        </li>
+                     
                         
                     </ul>
                     
@@ -78,9 +76,11 @@
                     
                         <div class="list-group">
                             <a class="list-group-item" style="text-decoration:none;" href="https://outlook.office.com/mail/"><i class="fa fa-external-link"></i> Outlook (e-mail)</a>
+
                             <a class="list-group-item" style="text-decoration:none;" href="https://registro.topponto.com.br/registro/login"><i class="fa fa-external-link"></i> Top Ponto</a>
-                            <a class="list-group-item" style="text-decoration:none;" href="http://fesc.com.br/portarias"><i class="fa fa-external-link"></i> Portarias (link atualizado)</a>
-                            <a class="list-group-item" style="text-decoration:none;" href="http://fesc.com.br/resolucoes-fesc"><i class="fa fa-external-link"></i> Resoluções (link atualizado)</a>
+
+                            <a class="list-group-item" style="text-decoration:none;" href="https://cumbersome-equinox-6b6.notion.site/SGE-Documenta-o-Tutorial-11be57de45168012b35bc524847414cd?pvs=4"><i class="fa fa-book"></i> Manual SGE</a>
+
 
                         </div>
                    

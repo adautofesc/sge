@@ -7,6 +7,8 @@
  * @author   Taylor Otwell <taylor@laravel.com>
  */
 
+define('LARAVEL_START', microtime(true));
+
 /*
 |--------------------------------------------------------------------------
 | Register The Auto Loader
@@ -19,6 +21,7 @@
 |
 */
 
+//require __DIR__.'/../sge/vendor/autoload.php';
 require __DIR__.'/../bootstrap/autoload.php';
 
 /*
@@ -33,12 +36,8 @@ require __DIR__.'/../bootstrap/autoload.php';
 |
 */
 
+//$app = require_once __DIR__.'/../sge/bootstrap/app.php';
 $app = require_once __DIR__.'/../bootstrap/app.php';
-
-$app->bind('path.public', function() {
-    return __DIR__;
-});
-
 
 /*
 |--------------------------------------------------------------------------

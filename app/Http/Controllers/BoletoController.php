@@ -567,7 +567,81 @@ class BoletoController extends Controller
 	 * @param  Boleto
 	 * @return [type]
 	 */
-	public static function gerarBoleto(Boleto $boleto){
+	 
+	 public static function gerarBoleto(Boleto $boleto){
+    $cliente = Pessoa::withTrashed()->find($boleto->pessoa);
+    $cliente = PessoaController::formataParaMostrar($cliente);
+    $lancamentos = LancamentoController::listarPorBoleto($boleto->id);
+    $array_lancamentos = array();
+
+    foreach ($lancamentos as $lancamento) {
+        $array_lancamentos[] = $lancamento->referencia;
+    }
+
+    $array_lancamentos = array_slice($array_lancamentos, 0, 4);
+
+    $beneficiario = new \Eduardokum\LaravelBoleto\Pessoa([
+        'documento' => '45.361.904/0001-80',
+        'nome'      => 'Fundação Educacional São Carlos',
+        'cep'       => '13560-230',
+        'endereco'  => 'Rua São Sebastiao, 2828, ',
+        'bairro'    => 'Vila Nery',
+        'uf'        => 'SP',
+        'cidade'    => 'São Carlos',
+    ]);
+
+    if (is_null($cliente->cpf)) {
+        $cliente->cpf = '111.111.111-11';
+    }
+
+    $pagador = new \Eduardokum\LaravelBoleto\Pessoa([
+        'documento' => $cliente->cpf,
+        'nome'      => str_replace(['º', 'ª', '°', '´', '~', '^', '`', '\''], '', substr($cliente->nome, 0, 37)),
+        'cep'       => $cliente->cep ? $cliente->cep : '13560-970',
+        'endereco'  => str_replace(['º', 'ª', '°', '´', '~', '^', '`', '\''], '', $cliente->logradouro . ' ' . $cliente->end_numero . ' ' . $cliente->end_complemento),
+        'bairro'    => substr(($cliente->bairro == 'Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro), 0, 15),
+        'uf'        => $cliente->estado,
+        'cidade'    => $cliente->cidade,
+    ]);
+
+    // Ajuste do fator de vencimento
+    $dataBaseAntiga = Carbon::create(1997, 10, 7); // Base inicial do fator de vencimento
+    $dataBaseNova = Carbon::create(2025, 2, 22); // Nova base a partir da reinicialização
+
+    if (Carbon::parse($boleto->vencimento)->greaterThanOrEqualTo($dataBaseNova)) {
+        $fatorVencimento = Carbon::parse($boleto->vencimento)->diffInDays($dataBaseNova) + 1000;
+    } else {
+        $fatorVencimento = Carbon::parse($boleto->vencimento)->diffInDays($dataBaseAntiga);
+    }
+
+    $bb = new \Eduardokum\LaravelBoleto\Boleto\Banco\Bb([
+        'logo'                => 'img/logo-small.png',
+        'dataVencimento'      => Carbon::parse($boleto->vencimento),
+        'fatorVencimento'     => $fatorVencimento, // Fator de vencimento corrigido
+        'valor'               => $boleto->valor,
+        'numero'              => $boleto->id,
+        'numeroDocumento'     => $boleto->id,
+        'pagador'             => $pagador,
+        'beneficiario'        => $beneficiario,
+        'carteira'            => 17,
+        'variacaoCarteira'    => '019',
+        'agencia'             => '0295', // Removido o "X"
+        'convenio'            => 2838669,
+        'conta'               => 52822,
+        'descricaoDemonstrativo' => $array_lancamentos,
+        'instrucoes' => [
+            'Sr. Caixa, cobrar multa de 2% após o vencimento',
+            'Cobrar juros de 1% ao mês por atraso.',
+            'Após o vencimento, o pagamento dever ser feito no Banco do Brasil',
+            'Em caso de dúvidas ou divergências entre em contato conosco: 3362-0580'
+        ],
+    ]);
+
+    return $bb;
+}
+
+	 
+	/* public static function gerarBoleto(Boleto $boleto){
 		$cliente=Pessoa::withTrashed()->find($boleto->pessoa);
 		$cliente=PessoaController::formataParaMostrar($cliente);
 		$lancamentos= LancamentoController::listarPorBoleto($boleto->id); //objetos lancamentos
@@ -627,7 +701,7 @@ class BoletoController extends Controller
 			//dd($bb);
 		    return $bb;
 
-		}
+		} */
 
 		public function consultarBoletosCPF(Request $request){
 			$dados_pessoa = PessoaDadosGerais::where('dado',3)->where('valor',$requent->cpf)->get();

@@ -113,10 +113,15 @@ public function gerar($boleto){
 		$dadosboleto["cedente"] = "FUNDAÇÃO EDUCACIONAL SÃO CARLOS";
 
 		#####################################################################################
+		/* $codigobanco = "001";
+		$codigo_banco_com_dv = $this->geraCodigoBanco($codigobanco);
+		$nummoeda = "9";
+		$fator_vencimento = $this->fator_vencimento($dadosboleto["data_vencimento"]); */
 		$codigobanco = "001";
 		$codigo_banco_com_dv = $this->geraCodigoBanco($codigobanco);
 		$nummoeda = "9";
-		$fator_vencimento = $this->fator_vencimento($dadosboleto["data_vencimento"]);
+		$fator_vencimento = $this->calcularFatorVencimento($dadosboleto["data_vencimento"]);
+
 
 
 
@@ -192,6 +197,21 @@ public function gerar($boleto){
 		return $boleto;	
 	}
 	
+
+
+private function calcularFatorVencimento($dataVencimento)
+{
+    $dataVencimento = Carbon::parse($dataVencimento);
+    $dataBaseAntiga = Carbon::create(1997, 10, 7); // Base antiga do fator de vencimento
+    $dataBaseNova = Carbon::create(2025, 2, 22); // Nova base do fator
+
+    if ($dataVencimento->greaterThanOrEqualTo($dataBaseNova)) {
+        return $dataVencimento->diffInDays($dataBaseNova) + 1000;
+    } else {
+        return $dataVencimento->diffInDays($dataBaseAntiga);
+    }
+}
+
 
 	public static function formata_numero($numero,$loop,$insert,$tipo = "geral") {
 		if ($tipo == "geral") {

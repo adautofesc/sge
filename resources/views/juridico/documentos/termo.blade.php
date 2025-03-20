@@ -85,7 +85,7 @@
                     <strong>1. OBJETO</strong><br />
                     <strong>1.1</strong> O presente formaliza a inscrição do ALUNO nas seguinte atividades:</p>
                     
-                   <table cellspacing="0" rules="all" border="1" id="FormView1_g1" style="border-color:Black;border-width:1px;border-style:Solid;width:100%;border-collapse:collapse;">
+          <table cellspacing="0" rules="all" border="1" id="FormView1_g1" style="border-color:Black;border-width:1px;border-style:Solid;width:100%;border-collapse:collapse;">
                 <tr class="header-tabela">
                     <th align="left" scope="col">&nbsp;CURSO </th>
                     <th align="center" scope="col" width="80px">&nbsp;DIAS </th>
@@ -159,8 +159,10 @@
                         <br>
                         5.2 A desistência da continuidade no serviço educacional pelo(a) Aluno(a) e/ou Representante Legal após o pagamento somente será aceita se o pedido for formalizado e protocolado na Secretaria Escolar ou enviado ao e-mail: secretaria{{'@'}}fesc.saocarlos.sp.gov.br.
                         <br>
+                        5.3. Para as atividades da Universidade Aberta da Terceira Idade, haverá cancelamento da inscrição nas disciplinas em que o aluno deixar de frequentar por no máximo 30 (trinta) dias. A matrícula só será cancelada após pedido formalizado de cancelamento na Secretaria Escolar.
+                        <br>
                     <strong>6.  DA PRIORIDADE DE MATRÍCULAS</strong><br>
-                        6.1. Aos alunos dos cursos não certificados da Universidade Aberta da Terceira Idade que tiverem assiduidade superior a 75% e apresentarem rendimento atribuído pelos Educadores “com aproveitamento” terão prioridade de matrícula em período antecessor ao período de matrículas abertas a novos alunos e alunos evadidos ou classificados como rendimento “sem aproveitamento.
+                        6.1. Aos alunos dos cursos não certificados da Universidade Aberta da Terceira Idade que tiverem assiduidade superior a 75% e apresentarem rendimento atribuído pelos Educadores “com aproveitamento” terão prioridade de matrícula em período antecessor ao período de matrículas abertas a novos alunos e alunos evadidos ou classificados como rendimento “sem aproveitamento”.
                         <br>
                     <strong>7. OBRIGAÇÕES GERAIS</strong><br />
                         7.1 O ALUNO regularmente matriculado fica submetido aos Regimentos Internos, disponibilizados no site FESC.SAOCARLOS.SP.GOV.BR, submetendo-se às suas disposições, bem como às demais obrigações constantes da legislação aplicável à FESC.
@@ -187,8 +189,8 @@
                     <p>
                         São Carlos,
                                 <span id="FormView1_data_atual">{{date("d/m/Y")}}</span>
-                    </p>
-                </div>
+                  </p>
+          </div>
                 
                                 <table border="0" cellpadding="2" cellspacing="2" width="100%" style="height:100px;" class="texto">
                                     <tr>
@@ -199,7 +201,7 @@
                                             </br>
                                             <strong>Diretor Presidente da FESC</strong>
                                        
-                                        <td align="center" style="text-align:center;">
+                                      <td align="center" style="text-align:center;">
                                             <br><br><br><br><br>
                                             <span>
                                             __________________________________</spam><br/>
@@ -210,7 +212,7 @@
                                             <strong>Aluno(a) ou Responsável por procuração.</strong>
                                             </br><span id="FormView1_MatResNomLabel"></span>
                                             </br>
-                                        </td>
+                                      </td>
                                     </tr>
                                 </table>
 
@@ -224,7 +226,7 @@
 
 		</div>
                 
-            </td>
+      </td>
 	</tr>
 </table>
 

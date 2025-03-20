@@ -8,6 +8,31 @@
 #pie-chart{
   min-height: 250px;
 }
+.stat{
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+.stats-container a {
+    color: #4f5f6f;
+}
+
+.stat-icon {
+
+    display: inline-block;
+    font-size: 26px;
+    text-align: center;
+    vertical-align: middle;
+    width: 50px;
+    line-height: 3rem;
+    border-radius: 5%;
+    background-color: #f5f5f5;
+}
+.blue{
+    background-color: #007bff;
+}
+
+
 </style>
 <div class="title-block">
     <div class="row">
@@ -18,23 +43,90 @@
     </div>
 </div>
 <section class="section">
+    
     <div class="row">
-        <div class="col-md-4 center-block">
+        <div class="col-md-6 center-block">
+            
+            
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Configurações</p>
+                        <p class="title" style="color:white">Opções</p>
                     </div>
                 </div>
                 <div class="card-block">
+                    <div class="card-block">
+                        <div class="row row-sm stats-container">
+                            <a href="/dev/testar-classe" title="Executa classe de teste painelController.">
+                                <div class="col-12 col-sm-6 stat-col">
+                                    <div class="stat-icon">
+                                        <i class="fa fa-flask"></i>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="value"> Testar </div>
+                                        <div class="name"> Metodo de teste</div>
+                                    </div>
+                                    <div class="progress stat-progress">
+                                        <div class="progress-bar" style="width: 25%;"></div>
+                                    </div>
+                                </div>
+                            </a>
+                            
+                            <a href="/dev/testar-classe" title="Executa classe de teste painelController.">
+                                <div class="col-12 col-sm-6 stat-col">
+                                    <div class="stat-icon">
+                                        <i class="fa fa-flask"></i>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="value"> Testar </div>
+                                        <div class="name"> Metodo de teste</div>
+                                    </div>
+                                    <div class="progress stat-progress">
+                                        <div class="progress-bar" style="width: 25%;"></div>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <a href="/dev/testar-classe" title="Executa classe de teste painelController.">
+                                <div class="col-12 col-sm-6 stat-col">
+                                    <div class="stat-icon">
+                                        <i class="fa fa-flask"></i>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="value"> Testar </div>
+                                        <div class="name"> Metodo de teste</div>
+                                    </div>
+                                    <div class="progress stat-progress">
+                                        <div class="progress-bar" style="width: 25%;"></div>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <a href="/dev/testar-classe" title="Executa classe de teste painelController.">
+                                <div class="col-12 col-sm-6 stat-col">
+                                    <div class="stat-icon">
+                                        <i class="fa fa-flask"></i>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="value"> Testar </div>
+                                        <div class="name"> Metodo de teste</div>
+                                    </div>
+                                    <div class="progress stat-progress">
+                                        <div class="progress-bar" style="width: 25%;"></div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                
+
+
                     <div>
-                        <a href="/dev/testar-classe" title="Executa classe de teste painelController." target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Metodo de teste </a>
+                        
                         <a href="/dev/gerar-dias-nao-letivos" title="Cadastrar dias não letivos" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                             <i class=" fa fa-arrow-right "></i>
                             &nbsp;&nbsp;Cadastrar dias não letivos</a>
-                            <a href="/dev/add-recesso" title="Cadastrar recesso de dias não letivos" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="/dev/add-recesso" title="Cadastrar recesso de dias não letivos" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                                 <i class=" fa fa-arrow-right "></i>
                                 &nbsp;&nbsp;Cadastrar recesso</a>
                     </div>    

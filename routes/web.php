@@ -169,9 +169,9 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::middleware('liberar.recurso:30')->get('gerar-por-ficha/{id?}',[TurmaController::class,'gerarPorFichaView']);
 		Route::middleware('liberar.recurso:30')->post('gerar-por-ficha/{id?}',[TurmaController::class,'store']);
 		Route::middleware('liberar.recurso:18')->group(function(){
+			Route::get('/',[TurmaController::class,'listarSecretaria'])->name('turmas');
 			Route::post('cadastrar',[TurmaController::class,'store']);
 			Route::post('recadastrar',[TurmaController::class,'storeRecadastro']);
-			Route::get('/',[TurmaController::class,'listarSecretaria'])->name('turmas');
 			Route::get('/alterar/{acao}/{turmas}', [TurmaController::class,'acaolote']);
 			Route::post('editar/{var}', [TurmaController::class,'update']);
 			Route::get('status/{status}/{turma}', [TurmaController::class,'status']);

@@ -44,9 +44,6 @@ class TurmaController extends Controller
     }
 
 
-
-
-
     /**
      * Pedagogico ver dados das turmas.
      * @param  [type] $turma [description]
@@ -94,7 +91,6 @@ class TurmaController extends Controller
            
         }
         
-        //return $inscricoes;
         return view('turmas.dados-pedagogico',compact('turma'))->with('inscricoes',$inscricoes)->with('requisitos',$requisitos)->with('aulas',$aulas);
 
 
@@ -116,23 +112,18 @@ class TurmaController extends Controller
      * @return [type]          [description]
      */
     public function listagemGlobal($filtro=null,$valor=null,$rem_filtro=null,$remove=0,$ipp=50){
+        
+        session_start(); 
 
-        //session_start();
- 
-        
         if(isset($_SESSION['filtro_turmas']))
-            $filtros = $_SESSION['filtro_turmas'];
-        
+            $filtros = $_SESSION['filtro_turmas'];    
         else
-            $filtros = array();
-            
-        if(isset($filtro) && isset($valor)){
-           
+            $filtros = array();        
+        if(isset($filtro) && isset($valor)){           
             if(array_key_exists($filtro, $filtros)){
                 $busca = array_search($valor, $filtros[$filtro]);
-                if($busca === false){
-                    $filtros[$filtro][] = $valor;
-                }
+                if($busca === false)
+                    $filtros[$filtro][] = $valor;                
                 else
                 {
                     if($remove > 0){
@@ -142,17 +133,13 @@ class TurmaController extends Controller
             }
             else{
                 $filtros[$filtro][] = $valor;
-            }
-            
+            }            
         }
         if($rem_filtro != null){
             if(isset($filtros[$rem_filtro]))
                 unset($filtros[$rem_filtro]);
-        }
-        
-
+        } 
         $_SESSION['filtro_turmas'] = $filtros;
-
         $turmas=Turma::select('*', 'turmas.id as id' ,'turmas.vagas as vagas','turmas.carga as carga', 
             'turmas.programa as programa', 'turmas.periodicidade as periodicidade','disciplinas.id as disciplinaid','cursos.id as cursoid',
             'turmas.programa as programaid','turmas.valor as valor')
@@ -255,17 +242,11 @@ class TurmaController extends Controller
         if(!isset($filtros['periodo']) && !isset($filtros['status']) && !isset($filtros['status_matriculas'])){
             $turmas = $turmas->whereIn('turmas.status', ['iniciada','lancada']); 
 
-        }
-
-       
-    
+        }         
 
         $turmas = $turmas->orderBy('cursos.nome')->orderBy('disciplinas.nome');
 
         $turmas = $turmas->paginate($ipp);
-
-        //$turmas = $turmas->toSql();
-        //dd($turmas);
 
         foreach($turmas as $turma){
             //$turma->parcelas = Turma::find($turma->id);
@@ -274,8 +255,6 @@ class TurmaController extends Controller
             $turma->parcelas = $turma->getParcelas();
             $turma->getSala();
         }
-
-        //dd($turmas);
         
         return $turmas;
 

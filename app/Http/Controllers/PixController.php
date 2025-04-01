@@ -101,6 +101,13 @@ class PixController extends Controller
         return self::ID_CRC16.'04'.strtoupper(dechex($resultado));
     }
 
+    /**
+     * Envia o registo do boletos para o banco e recebe o código pix
+     */
+    public function testePix(){
+        return env('BB_gw');
+    }
+
 
 }
 

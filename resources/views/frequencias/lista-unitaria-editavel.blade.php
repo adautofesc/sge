@@ -5,7 +5,7 @@
 <meta content="pt-br" http-equiv="Content-Language" />
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<title>Lista de frequência</title>
+<title>Lista de frequência Completa</title>
 <meta content="Sheets" name="generator" />
 <style type="text/css"><!--br {mso-data-placement:same-cell;}
 body{
@@ -360,7 +360,7 @@ body{
 		<td class="presenca aula-{{$aula->id}} aluno-{{$inscrito->id}}" >
 		@if(isset($aula->presentes) && in_array($inscrito->pessoa->id,$aula->presentes))
 			<input type="checkbox" pessoa="{{$inscrito->pessoa->id}}" aula="{{$aula->id}}" name="presente[{{$inscrito->pessoa->id}},{{$aula->id}}]" checked="true" style="margin: 0;padding:0;" class="aula-{{$aula->id}} insc-{{$inscrito->id}}" onclick="contarFaltas('{{$inscrito->id}}')">
-		@elseif($aula->status == 'executada' &&  ($inscrito->status == 'regular' || $inscrito->status == 'finalizada' ) && $inscrito->created_at < $aula->data->format('Y-m-d') ) 
+		@elseif($aula->status == 'executada' &&  ($inscrito->status == 'regular' || $inscrito->status == 'finalizada' ) && ($inscrito->created_at < $aula->data->format('Y-m-d') || $chamada_liberada) ) 
 			@php ($falta++)
 			<input type="checkbox" pessoa="{{$inscrito->pessoa->id}}" aula="{{$aula->id}}" name="presente[{{$inscrito->pessoa->id}},{{$aula->id}}]"   style="margin: 0;padding:0;" class="aula-{{$aula->id}} insc-{{$inscrito->id}}" onclick="contarFaltas('{{$inscrito->id}}')">
 		@elseif($aula->status == 'executada')

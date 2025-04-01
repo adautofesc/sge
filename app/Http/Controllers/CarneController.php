@@ -209,21 +209,39 @@ class CarneController extends Controller
     }
 
 	public function gerarCarneIndividual(int $pessoa){
-		//$boletos = collect();
+		//Excluir todos boletos gravados e seus lançamentos
 		$boletos_gravados = Boleto::where('pessoa',$pessoa)->where('status','gravado')->get();
 		foreach($boletos_gravados as $boleto_gravado){
 			\App\Lancamento::where('boleto',$boleto_gravado->id)->delete();
 			$boleto_gravado->delete();
-
-
 		}
 		
+		//Pegar todas matrículas ativas, em espera ou pendentes
 		$matriculas = \App\Matricula::whereIn('status',['ativa','pendente', 'espera'])->where('pessoa',$pessoa)->get();	
+
+		//Se não tiver matrícula, retorna erro.
 		if($matriculas->count()==0)
 			return redirect()->back()->withErrors('Nenhuma matrícula para gerar boletos.');
 			
+		
+		
 		foreach($matriculas as $matricula){
-			// limpa todos lançamentos
+
+			//Verifica se a matrícula tem inscrição
+					
+			$inscricoes = $matricula->getinscricoes('regular,pendente,finalizada');
+			if($inscricoes->count()>0){
+				$data_ini_curso = $inscricoes->first()->turma->data_inicio;	
+				$data_ini_curso = \DateTime::createFromFormat('d/m/Y', $data_ini_curso);
+			}
+			else
+				continue;
+
+			
+
+
+
+			// limpa todos lançamentos da matrícula sem boletos e de status nulo
 			$boletos_lancados = \App\Lancamento::leftjoin('boletos','lancamentos.boleto','=','boletos.id')
 													->where('lancamentos.matricula',$matricula->id)
 													->where('lancamentos.boleto','!=', null)
@@ -239,23 +257,12 @@ class CarneController extends Controller
 			$LC->gerarTodosLancamentos($matricula);	
 
 			
-			//lista as parcelas e se nçao tiver pula pra proxima matrícula
+			//lista as parcelas e se não tiver pula pra proxima matrícula
 			$lancamentos_matricula = \App\Lancamento::where('matricula',$matricula->id)->where('status',null)->get();
-
-			//dd($lancamentos_matricula);
-
-			
 			if($lancamentos_matricula->count() ==0)
-				continue;
-
-		
-
-
-
-			
+				continue;			
 			 
 
-			//****************geração dos boletos
 			//lista boletos já lançados dessa matrícula
 			$boletos_lancados = \App\Lancamento::leftjoin('boletos','lancamentos.boleto','=','boletos.id')
 													->whereIn('boletos.status',['pago','gravado','emitido','impresso'])
@@ -265,20 +272,17 @@ class CarneController extends Controller
 													->get();
 
 			
-			//calcula quantos boletos falta gerar
+			//calcula quantos boletos falta gerar a partir da matricula
 			$boletos_restantes = $matricula->getParcelas()-$boletos_lancados->count();
-			//dd($matricula->getParcelas());
-			//dd($boletos_restantes);
-			//dd($boletos_lancados);
-
 			
 
 			//gera o numero de boletos restantes
 			if($boletos_restantes > 0){
+				//listar todos boletos gravados
 				$boletos_gravados = \App\Boleto::where('pessoa',$pessoa)->where('status','gravado')->get();
 				$boletos_restantes = $boletos_restantes-$boletos_gravados->count();
 				if($boletos_restantes > 0){
-					
+					//Enquanto não tiver a quantidade certa de boletos gravados, gerar boletos
 					for($i=0;$i<$boletos_restantes;$i++){
 						$boleto = new \App\Boleto;
 						$boleto->pessoa = $pessoa;
@@ -287,44 +291,21 @@ class CarneController extends Controller
 						if($boleto->pessoa > 0)
 							$boleto->save();
 						$boleto->matricula = $matricula->id;
-						//$boletos->push($boleto);
-
 					}
 
 				}
 
 			}
-
-
-			$data_matricula = \DateTime::createFromFormat('Y-m-d', $matricula->data);			
-			$inscricoes = $matricula->getinscricoes('regular,pendente,finalizada');
-
-			//dd($inscricoes->count());
-
-			if($inscricoes->count()>0){
-				$data_ini_curso = $inscricoes->first()->turma->data_inicio;	
-				$data_ini_curso = \DateTime::createFromFormat('d/m/Y', $data_ini_curso);
-			}
-			else{
-				\App\Boleto::where('pessoa',$pessoa)->where('status','gravado')->where('valor',0)->forceDelete();
-				\App\Lancamento::where('matricula',$matricula->id)->where('boleto',null)->delete();
-				continue;
-
-
-			}
-
-			//dd('aqui');
-				
-
 		
-			/*********************************************************** atribuição de datas nos boletos */
+			/************* atribuição de datas nos boletos */
 			$primeiro_vencimento = new \DateTime;
-			//$vencimento = date('Y-m-d 23:23:59', strtotime("+5 days",strtotime(date('Y-m-d')))); 
-
-
+			$data_matricula = \DateTime::createFromFormat('Y-m-d', $matricula->data);	
 			
+
+
+			//se a matricula for feita depois do inicio do curso
 			if($data_matricula>$data_ini_curso){
-				
+			
 				if(date('d') >= $this::data_corte && $primeiro_vencimento->format('m') == 6){
 					$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),'08',$this::vencimento);
 
@@ -338,17 +319,21 @@ class CarneController extends Controller
 				}
 				else{
 					
-					if(date('d') >= ($this::vencimento-$this::dias_adicionais))
-						$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$primeiro_vencimento->format('m'),date('d')+$this::dias_adicionais);
-					else
+					if(date('d') >= ($this::vencimento-$this::dias_adicionais)){
+						//aqui não
+						$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$primeiro_vencimento->format('m'),date('d'));
+						$primeiro_vencimento->modify('+'.$this::dias_adicionais.' days');
+					}
+					else{
+						//não aqui
 						$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$primeiro_vencimento->format('m'),$this::vencimento);
+					}
 				}
 			}
-			
-			//matricula feita antes  do início do curso e boleto sendo gerado no mes antes do primeiro vencimento
+			//matricula feita antes do inicio do curso
+			//senão se mes de inicio do curso for maior que mes atual ou ano de inicio maior que o atual
 			elseif($data_ini_curso->format('m')>date('m')  || $data_ini_curso->format('Y')>date('Y')  ){ 
 				
-				//boleto gerado na data correta, antes do inicio do curso um mes ou mais antes
 				//Curso inicia no meio do ano
 				if($data_ini_curso->format('m')==6 || $data_ini_curso->format('m')==7 )
 					$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),'08',$this::vencimento);
@@ -358,8 +343,13 @@ class CarneController extends Controller
 			else{
 				
 				//boleto gerado no mes do vencimento do primeiro boleto
-				if(date('d') >= ($this::vencimento-$this::dias_adicionais))
-					$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$primeiro_vencimento->format('m'),date('d')+$this::dias_adicionais);
+				if(date('d') >= ($this::vencimento-$this::dias_adicionais)){
+					//aquiiii
+					$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$primeiro_vencimento->format('m'),date('d'));
+					$primeiro_vencimento->modify('+'.$this::dias_adicionais.' days');
+					//dd($primeiro_vencimento);
+				}
+					
 					
 				else
 					$primeiro_vencimento->setDate($data_ini_curso->format('Y'),$data_ini_curso->format('m'),$this::vencimento);
@@ -377,6 +367,7 @@ class CarneController extends Controller
 
 			foreach($boletos_gravados as $boleto){
 				//seleciona boleto com lancamento da matricula com vencimento no mesmo mes
+				
 				$boleto_lancamento = \App\Boleto::join('lancamentos','boletos.id','=','lancamentos.boleto')
 													->whereIn('boletos.status',['pago','gravado','emitido','impresso'])
 													->where('lancamentos.matricula',$matricula->id)
@@ -385,7 +376,8 @@ class CarneController extends Controller
 													->whereYear('boletos.vencimento','=', $primeiro_vencimento->format('Y'))
 													->get();	
 				while($boleto_lancamento->count()>0){
-					$primeiro_vencimento->modify('+1 month');
+					$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),$primeiro_vencimento->format('m')+1,$this::vencimento);
+					//$primeiro_vencimento->modify('+1 month');
 					$boleto_lancamento = Boleto::join('lancamentos','boletos.id','=','lancamentos.boleto')
 													->whereIn('boletos.status',['pago','gravado','emitido','impresso'])
 													->where('lancamentos.matricula',$matricula->id)
@@ -396,6 +388,7 @@ class CarneController extends Controller
 													
 
 				}
+													
 				//dd($primeiro_vencimento);
 				//dd($boleto->vencimento=='0000-00-00 00:00:00'?'yes':'no');
 

@@ -20,7 +20,7 @@ use Illuminate\Http\Request;
 
 class TurmaController extends Controller
 {
-    const DATA_LIMITE_ALTERACAO = '0330';
+    const DATA_LIMITE_ALTERACAO = '0430';
     /**
      * Listagem de turmas para o setor pedagógico.
      *
@@ -459,7 +459,7 @@ class TurmaController extends Controller
             $dado_turma->save();
             unset($dado_turma);
         }
-        LogController::registrar('turma',$turma->id,'Turma cadastrada', \Auth::user()->pessoa);
+        TurmaLogController::registrar('turma',$turma->id,'Turma cadastrada', \Auth::user()->pessoa);
 
         if($request->btn==1)
             return redirect(asset('/turmas'));
@@ -518,6 +518,11 @@ class TurmaController extends Controller
             $turma->vagas_emg = $turma_dados->where('dado','vagas_emg')->first();
             $turma->proxima = $turma_dados->where('dado','proxima_turma')->pluck('valor')->toArray();
             $turma->professor_extra = $turma_dados->where('dado','professor_extra')->pluck('valor')->first();
+            $turma->professor_substituto = $turma_dados->where('dado','professor_substituto')->pluck('valor')->first();
+            $turma->chamada_liberada = $turma_dados->where('dado','chamada_liberada')->first();
+
+            
+
             
             
            
@@ -617,9 +622,7 @@ class TurmaController extends Controller
         
 
         $alteracoes = 'Edição dos dados: ';
-        $colunas = \Schema::getColumnListing('turmas'); // users table
-
-        
+        $colunas = \Schema::getColumnListing('turmas'); // users table        
         foreach($colunas as $dado){
             if($turma->isDirty($dado))
                 if(isset($turma->$dado->id) && isset(($turma->getOriginal($dado))->id))
@@ -633,7 +636,7 @@ class TurmaController extends Controller
 
         }
         
-        LogController::registrar('turma',$turma->id,$alteracoes, \Auth::user()->pessoa);
+        TurmaLogController::registrar('turma',$turma->id,$alteracoes, \Auth::user()->pessoa);
         $turma->update();
 
         $turma_dados = \App\TurmaDados::where('turma',$turma->id)->get();
@@ -642,7 +645,7 @@ class TurmaController extends Controller
         foreach($turma->proxima as $nx_turma){
             \App\TurmaDados::destroy($nx_turma->id);
             if($request->proxima_turma !='')
-                LogController::registrar('turma',$turma->id,'Próxima turma excluída', \Auth::user()->pessoa);
+                TurmaLogController::registrar('turma',$turma->id,'Próxima turma excluída', \Auth::user()->pessoa);
 
         }
         if($request->proxima_turma !=''){   
@@ -651,16 +654,16 @@ class TurmaController extends Controller
             $nx_turma->dado = 'proxima_turma';
             $nx_turma->valor = $request->proxima_turma;
             $nx_turma->save();
-            LogController::registrar('turma',$turma->id,'Modificação de proxima turma ', \Auth::user()->pessoa);
+            TurmaLogController::registrar('turma',$turma->id,'Modificação de proxima turma ', \Auth::user()->pessoa);
 
         }
         
-
+        //Atributos de pacotes de valores
         $turma->pacote = $turma_dados->where('dado','pacote')->pluck('valor')->toArray();
         foreach($turma->pacote as $pcte){ 
             if(!isset($request->pacote) || !in_array($pcte,$request->pacote)){
                 \App\TurmaDados::where('turma',$turma->id)->where('dado','pacote')->where('valor',$pcte)->delete();
-                LogController::registrar('turma',$turma->id,'Remoção do pacote '.$pcte, \Auth::user()->pessoa);
+                TurmaLogController::registrar('turma',$turma->id,'Remoção do pacote '.$pcte, \Auth::user()->pessoa);
 
             }
         }
@@ -672,17 +675,18 @@ class TurmaController extends Controller
                     $pacote->dado = 'pacote';
                     $pacote->valor = $pcte;
                     $pacote->save();
-                    LogController::registrar('turma',$turma->id,'Adição do pacote '.$pcte, \Auth::user()->pessoa);
+                    TurmaLogController::registrar('turma',$turma->id,'Adição do pacote '.$pcte, \Auth::user()->pessoa);
                 }
                     
             }
         }
         
+        //Atributo de turma mista EMG
         $turma->mista = $turma_dados->where('dado','mista_emg');
         foreach($turma->mista as $mista){
             \App\TurmaDados::destroy($mista->id);
             if(!isset($request->mista))
-                LogController::registrar('turma',$turma->id,'Removido atributo de turma mista EMG ', \Auth::user()->pessoa);
+                TurmaLogController::registrar('turma',$turma->id,'Removido atributo de turma mista EMG ', \Auth::user()->pessoa);
 
         }
         if(isset($request->mista)){   
@@ -691,15 +695,15 @@ class TurmaController extends Controller
             $dado_mista->dado = 'mista_emg';
             $dado_mista->valor = '1';
             $dado_mista->save();
-            LogController::registrar('turma',$turma->id,'Adicionado atributo de turma mista EMG ', \Auth::user()->pessoa);
+            TurmaLogController::registrar('turma',$turma->id,'Adicionado atributo de turma mista EMG ', \Auth::user()->pessoa);
         }
     
+        //Atributo de vagas EMG
         $turma->vagas_emg = $turma_dados->where('dado','vagas_emg');
         foreach($turma->vagas_emg as $vagas_emg){
             \App\TurmaDados::destroy($vagas_emg->id);
             if(!isset($request->vagas_emg))
-                LogController::registrar('turma',$turma->id,'Removido atributo vagas EMG ', \Auth::user()->pessoa);
-
+                TurmaLogController::registrar('turma',$turma->id,'Removido atributo vagas EMG ', \Auth::user()->pessoa);
         }
         if(isset($request->vagas_emg)){   
             $dado_vagas_emg = new \App\TurmaDados;
@@ -707,15 +711,15 @@ class TurmaController extends Controller
             $dado_vagas_emg->dado = 'vagas_emg';
             $dado_vagas_emg->valor = $request->vagas_emg;
             $dado_vagas_emg->save();
-            LogController::registrar('turma',$turma->id,'Adicionado atributo de vagas EMG ', \Auth::user()->pessoa);
+            TurmaLogController::registrar('turma',$turma->id,'Adicionado atributo de vagas EMG ', \Auth::user()->pessoa);
         }
 
+        //Atributo de professor extra
         $turma->prof_extra = $turma_dados->where('dado','professor_extra');
         foreach($turma->prof_extra as $prof_extra){
             \App\TurmaDados::destroy($prof_extra->id);
             if($request->professor_extra == 0)
-                LogController::registrar('turma',$turma->id,'Removido atributo professor extra', \Auth::user()->pessoa);
-
+                TurmaLogController::registrar('turma',$turma->id,'Removido atributo professor extra', \Auth::user()->pessoa);
         }
         if($request->professor_extra>0){   
             $prof_extra = new \App\TurmaDados;
@@ -723,9 +727,56 @@ class TurmaController extends Controller
             $prof_extra->dado = 'professor_extra';
             $prof_extra->valor = $request->professor_extra;
             $prof_extra->save();
-            LogController::registrar('turma',$turma->id,'Adicionado atributo de professor extra', \Auth::user()->pessoa);
+            TurmaLogController::registrar('turma',$turma->id,'Adicionado atributo de professor extra', \Auth::user()->pessoa);
         }
 
+        //Atributo de professor substituto
+        $prof_substituto = \App\TurmaDados::where('turma',$turma->id)->where('dado','professor_substituto')->first();
+        if($prof_substituto){
+            if($request->professor_substituto == 0){
+                \App\TurmaDados::destroy($prof_substituto->id);
+                TurmaLogController::registrar('turma',$turma->id,'Professor substituto removido');
+            }
+            else{
+                if($prof_substituto->valor != $request->professor_substituto){
+                    $prof_substituto->valor = $request->professor_substituto;
+                    $prof_substituto->save();
+                    TurmaLogController::registrar('turma',$turma->id,'Professor substituto modificado');
+                }
+            }
+        }
+        else{
+            if($request->professor_substituto > 0){
+                $prof_substituto = new \App\TurmaDados;
+                $prof_substituto->turma = $turma->id;
+                $prof_substituto->dado = 'professor_substituto';
+                $prof_substituto->valor = $request->professor_substituto;
+                $prof_substituto->save();
+                TurmaLogController::registrar('turma',$turma->id,'Professor substituto adicionado');
+            }
+                
+        }
+
+        //Atributo de chamada liberada
+        $chamada_liberada = \App\TurmaDados::where('turma',$turma->id)->where('dado','chamada_liberada')->first();
+        if($request->chamada_liberada){
+            if(!isset($chamada_liberada->id)){
+                $chamada_liberada = new \App\TurmaDados;
+                $chamada_liberada->turma = $turma->id;
+                $chamada_liberada->dado = 'chamada_liberada';
+                $chamada_liberada->valor = true;
+                $chamada_liberada->save();
+                TurmaLogController::registrar('turma',$turma->id,'Chamada liberada foi ativada');
+            }
+        }
+        else{
+            if($chamada_liberada){
+                \App\TurmaDados::destroy($chamada_liberada->id);
+                TurmaLogController::registrar('turma',$turma->id,'Chamada liberada foi desativada');
+            }
+        }
+       
+        //Atributo de requisitos
         CursoRequisito::where('curso', $turma->id)->where('para_tipo','turma')->delete();
         if($request->requisito){
             foreach($request->requisito as $requisito){
@@ -748,12 +799,7 @@ class TurmaController extends Controller
             
             }
         }
-        
-
-
-
-        return redirect(asset('/turmas'))->with(['success'=>'Turma modificada com sucesso.']);
-       
+        return redirect(asset('/turmas'))->with(['success'=>'Turma modificada com sucesso.']);   
     }
 
     /**
@@ -773,11 +819,11 @@ class TurmaController extends Controller
                     $inscricoes=Inscricao::where('turma',$turma->id)->count();
                     if($inscricoes==0){
                         $msgs[]= "Turma ".$turma->id." excluída com sucesso.";
-                        LogController::registrar('turma',$turma->id,'Turma excluída.', \Auth::user()->pessoa);
+                        TurmaLogController::registrar('turma',$turma->id,'Turma excluída.', \Auth::user()->pessoa);
                         $turma->delete();
                     }
                     else{
-                        LogController::registrar('turma',$turma->id,'Solicitação de exclusão de turma falha por já conter inscrições', \Auth::user()->pessoa);
+                        TurmaLogController::registrar('turma',$turma->id,'Solicitação de exclusão de turma falha por já conter inscrições', \Auth::user()->pessoa);
                         $msgs[]="Turma ".$turma->id." não pôde ser excluída pois possui alunos inscritos. Caso não apareça, a inscrição pode ter sido cancelada, mesmo assim precisamos preservar o histórico das inscrições.";
                     }
                 }
@@ -795,7 +841,7 @@ class TurmaController extends Controller
             if(is_numeric($turma)){
                 $turma=Turma::find($turma);
                 if(isset($turma->id)){
-                    LogController::registrar('turma',$turma->id,'Status alterado de '.$turma->status.' para '.$status, \Auth::user()->pessoa);  
+                    TurmaLogController::registrar('turma',$turma->id,'Status alterado de '.$turma->status.' para '.$status, \Auth::user()->pessoa);  
                     switch($status){
                         case 'encerrada':
                             $this->finalizarTurma($turma);
@@ -837,7 +883,7 @@ class TurmaController extends Controller
         foreach($turmas as $turma){
             if(is_numeric($turma)){
                 $turma=Turma::find($turma);
-                LogController::registrar('turma',$turma->id,'Status de Matrículas da turma alterado de '.$turma->status_matriculas.' para '.$status, \Auth::user()->pessoa);
+                TurmaLogController::registrar('turma',$turma->id,'Status de Matrículas da turma alterado de '.$turma->status_matriculas.' para '.$status, \Auth::user()->pessoa);
                 if(isset($turma->id) && $turma->status!='encerrada' && $turma->status!='cancelada'){
                     $turma->status_matriculas = $status;
                     $msgs['alert_sucess'][]="Turma ".$turma->id." modificada com sucesso.";      
@@ -1112,7 +1158,7 @@ class TurmaController extends Controller
                     $turma = Turma::find($turma_id);
                     if(isset($turma->id)){
                         $this->finalizarTurma($turma);
-                        LogController::registrar('turma',$turma->id,'Turma encerrada', \Auth::user()->pessoa);
+                        TurmaLogController::registrar('turma',$turma->id,'Turma encerrada', \Auth::user()->pessoa);
                     }
                 }
                 return redirect()->back()->withErrors(['Turmas encerradas com sucesso']);
@@ -1258,8 +1304,8 @@ class TurmaController extends Controller
             //dd($novaturma);
 
             $novaturma->save();
-            LogController::registrar('turma',$novaturma->id,'Turma criada a partir da turma '.$turma->id, \Auth::user()->pessoa);
-            LogController::registrar('turma',$turma->id,'Turma relançada sobre o código '.$novaturma->id, \Auth::user()->pessoa);
+            TurmaLogController::registrar('turma',$novaturma->id,'Turma criada a partir da turma '.$turma->id, \Auth::user()->pessoa);
+            TurmaLogController::registrar('turma',$turma->id,'Turma relançada sobre o código '.$novaturma->id, \Auth::user()->pessoa);
 
             $requisitos = CursoRequisito::where('para_tipo','turma')->where('curso',$turma->id)->get();
             foreach($requisitos as $requisito){
@@ -1285,6 +1331,11 @@ class TurmaController extends Controller
         return redirect('/turmas')->withErrors(['Turmas recadastradas com sucesso.']);
     }
     public static function listarTurmasDocente($docente,$semestre){
+        $substituto = \App\TurmaDados::where('dado','professor_substituto')->where('valor',$docente)->pluck('turma')->toArray();
+     
+
+        $turmas_subistituir = Turma::whereIn('id',$substituto)->get();
+
         if($semestre > 0){
             $intervalo = \App\classes\Data::periodoSemestreTurmas($semestre);
             $turmas = Turma::where('professor', $docente)->whereIn('status',['lancada','iniciada','encerrada'])->whereBetween('data_inicio', $intervalo)->orderBy('hora_inicio')->get();
@@ -1300,7 +1351,12 @@ class TurmaController extends Controller
         }
     
         $turmas = $turmas->sortBy('weekday');
-         return $turmas;
+
+        //dd($turmas_subistituir);
+        
+
+        //dd($turmas);
+         return $turmas->merge($turmas_subistituir);
     }
     public function getChamada($turma_id,$page,$opt,$mostrar='todos'){
 

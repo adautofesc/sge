@@ -6,12 +6,13 @@ use Illuminate\Http\Request;
 use App\Aula;
 use App\AulaDado;
 use App\Turma;
+use App\TurmaDados;
 use App\Frequencia;
 use Auth;
 
 class FrequenciaController extends Controller
 {
-    const DATA_LIMITE_ALTERACAO = '0330';
+    const DATA_LIMITE_ALTERACAO = '0430';
 
     public function index($id=0,$semestre=0){
         if($id == 0){
@@ -71,7 +72,20 @@ class FrequenciaController extends Controller
 
 
 
-    public function preencherChamada_view(int $turma){        
+    public function preencherChamada_view(int $turma){
+        
+        $substituto = TurmaDados::where('turma',$turma)->where('dado','substituto')->first();
+        if(isset($substituto->valor))
+            $psubstituto = $substituto->valor;
+        else
+            $psubstituto = null;
+
+        $chamada_liberada = TurmaDados::where('turma',$turma)->where('dado','chamada_liberada')->first();
+        if($chamada_liberada)
+            $chamada_liberada = true;
+        else
+            $chamada_liberada = false;    
+
         $turma = Turma::find($turma);
         //se ano da turma for menor que o ano atual, não permite alteração exceto se for do ano anteruir até 30/03
         if((date('Y')-substr($turma->data_inicio,6,4))>=1){   //2025 - 2024 = 1
@@ -79,7 +93,7 @@ class FrequenciaController extends Controller
                 return redirect()->back()->withErrors(['Não é possível modificar dados de turmas de anos anteriores.']);    
         }
 
-        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)){
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)  && Auth::user()->pessoa != $psubstituto){
             LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
         }
@@ -97,7 +111,7 @@ class FrequenciaController extends Controller
         
 
         //dd($aulas);
-        return view('frequencias.lista-unitaria-editavel',compact('inscritos'))->with('i',1)->with('aulas',$aulas)->with('turma',$turma);
+        return view('frequencias.lista-unitaria-editavel',compact('inscritos'))->with('i',1)->with('aulas',$aulas)->with('turma',$turma)->with('chamada_liberada',$chamada_liberada);
     }
 
     /**
@@ -107,13 +121,19 @@ class FrequenciaController extends Controller
      * @return void
      */
     public function preencherChamada_exec(Request $r){
+        $substituto = TurmaDados::where('turma',$turma)->where('dado','substituto')->first();
+        if(isset($substituto->valor))
+            $psubstituto = $substituto->valor;
+        else
+            $psubstituto = null;
+
         $presentes = json_decode($r->presente, true);
         $conceitos = json_decode($r->conceitos, true);
         //dd(isset($presentes['7597']['29178']));
         //carregar todas presenças dessa turma
         $turma = Turma::find($r->turma);
 
-        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)){
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)  && Auth::user()->pessoa != $psubstituto){
             LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
         }
@@ -175,7 +195,13 @@ class FrequenciaController extends Controller
     }
 
     public function novaChamada_view(int $turma){
-        $aulas = Aula::where('turma',$turma)->where('status','prevista')->orderBy('data')->get();         
+
+        $aulas = Aula::where('turma',$turma)->where('status','prevista')->orderBy('data')->get();
+        $substituto = TurmaDados::where('turma',$turma)->where('dado','substituto')->first();
+        if(isset($substituto->valor))
+            $psubstituto = $substituto->valor;
+        else
+            $psubstituto = null;
         $turma = \App\Turma::find($turma);
 
         if((date('Y')-substr($turma->data_inicio,6,4))>=1){   
@@ -183,7 +209,7 @@ class FrequenciaController extends Controller
                 return redirect()->back()->withErrors(['Não é possível modificar dados de turmas de anos anteriores.']);    
         }
 
-        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)){
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos) && Auth::user()->pessoa != $psubstituto){
             LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
         }
@@ -207,7 +233,12 @@ class FrequenciaController extends Controller
     }
 
     public function novaChamada_exec(Request $req){
-       
+        $substituto = TurmaDados::where('turma',$turma)->where('dado','substituto')->first();
+        if(isset($substituto->valor))
+            $psubstituto = $substituto->valor;
+        else
+            $psubstituto = null;
+
         if($req->aula>0)
             $aula = Aula::find($req->aula);
         else{
@@ -221,7 +252,7 @@ class FrequenciaController extends Controller
 
         $turma = \App\Turma::find($aula->turma);
         
-        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)){
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos) && Auth::user()->pessoa != $psubstituto){
             LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
         }
@@ -251,6 +282,11 @@ class FrequenciaController extends Controller
 
 
     public function editarChamada_view(int $aula){
+        $substituto = TurmaDados::where('turma',$turma)->where('dado','substituto')->first();
+        if(isset($substituto->valor))
+            $psubstituto = $substituto->valor;
+        else
+            $psubstituto = null;
 
         $aula = Aula::find($aula);
     
@@ -265,7 +301,7 @@ class FrequenciaController extends Controller
         $ocorrencia = AulaDado::where('aula',$aula->id)->where('dado','ocorrencia')->first();
 
 
-        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)){
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos) && Auth::user()->pessoa != $psubstituto){
             LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
         }
@@ -298,6 +334,12 @@ class FrequenciaController extends Controller
 
     }
     public function editarChamada_exec(Request $req){   
+        $substituto = TurmaDados::where('turma',$turma)->where('dado','substituto')->first();
+        if(isset($substituto->valor))
+            $psubstituto = $substituto->valor;
+        else
+            $psubstituto = null;
+
         $aula = Aula::find($req->aula);
         $aula->data = $req->data;
         $aula->save();
@@ -305,7 +347,7 @@ class FrequenciaController extends Controller
         $arr_frequencias = $frequencias->pluck('aluno')->toArray();
         $turma = \App\Turma::find($req->turma);
 
-        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)){
+        if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos) && Auth::user()->pessoa != $psubstituto){
             LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
             return 'Turma não corresponte ao professor logado. Ocorrência enviada ao setor de segurança.';
         }

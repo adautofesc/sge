@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Exception;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7\Message;
 
 class IntegracaoBBController extends Controller
 {
@@ -27,8 +31,6 @@ class IntegracaoBBController extends Controller
 			'grant_type'=>'client_credentials',
 			'scope'=>'cobrancas.boletos-info'
 
-			
-		
 		]);
 		
 		$curl = curl_init();

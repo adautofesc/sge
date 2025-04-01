@@ -14,7 +14,8 @@ jobs:
                 username: sgefesc
                 key: ${{ secrets.KEY }}
                 port: ${{ secrets.HOST_PORT }}
-                script: cd sge |
+                script:  |
+                        cd sge
                         git pull origin master 
                         php artisan config:clear
                         php artisan route:clear

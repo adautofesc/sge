@@ -58,7 +58,7 @@
                     <div class="card-block">
                         <div class="row row-sm stats-container">
                             <a href="/dev/testar-classe" title="Executa classe de teste painelController.">
-                                <div class="col-12 col-sm-6 stat-col">
+                                <div class="col-6 col-sm-6 stat-col">
                                     <div class="stat-icon">
                                         <i class="fa fa-flask"></i>
                                     </div>
@@ -72,8 +72,23 @@
                                 </div>
                             </a>
                             
+                            <a href="/dev/teste-pix" title="Executa classe de teste painelController.">
+                                <div class="col-6 col-sm-6 stat-col">
+                                    <div class="stat-icon">
+                                        <i class="fa fa-flask"></i>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="value"> PIX </div>
+                                        <div class="name">Testar Boleto PIX</div>
+                                    </div>
+                                    <div class="progress stat-progress">
+                                        <div class="progress-bar" style="width: 25%;"></div>
+                                    </div>
+                                </div>
+                            </a>
+
                             <a href="/dev/testar-classe" title="Executa classe de teste painelController.">
-                                <div class="col-12 col-sm-6 stat-col">
+                                <div class="col-6 col-sm-6 stat-col">
                                     <div class="stat-icon">
                                         <i class="fa fa-flask"></i>
                                     </div>
@@ -88,22 +103,7 @@
                             </a>
 
                             <a href="/dev/testar-classe" title="Executa classe de teste painelController.">
-                                <div class="col-12 col-sm-6 stat-col">
-                                    <div class="stat-icon">
-                                        <i class="fa fa-flask"></i>
-                                    </div>
-                                    <div class="stat">
-                                        <div class="value"> Testar </div>
-                                        <div class="name"> Metodo de teste</div>
-                                    </div>
-                                    <div class="progress stat-progress">
-                                        <div class="progress-bar" style="width: 25%;"></div>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <a href="/dev/testar-classe" title="Executa classe de teste painelController.">
-                                <div class="col-12 col-sm-6 stat-col">
+                                <div class="col-6 col-sm-6 stat-col">
                                     <div class="stat-icon">
                                         <i class="fa fa-flask"></i>
                                     </div>

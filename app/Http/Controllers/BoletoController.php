@@ -314,7 +314,6 @@ class BoletoController extends Controller
 				//dd($boleto->pessoa.$r->pessoa->id);
 				return redirect()->back()->withErrors(['Usuário não corresponde ao boleto requerido']);
 
-		
 
 		$vencido = false;
 

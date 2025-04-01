@@ -284,12 +284,44 @@
 		</div>
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">
+				Professor Substituto
+			</label>
+			<div class="col-sm-6"> 
+				<select class="c-select form-control boxed" name="professor_substituto">
+					<option value='0'>Selecione um professor</option>
+					@if(isset($dados['professores']))
+						@foreach($dados['professores'] as $professor)
+							@if(isset($turma->professor_substituto) && $turma->professor_substituto == $professor->id)
+								<option value="{{$professor->id}}" selected="selected" >{{$professor->nome}}</option>
+							@else
+								<option value="{{$professor->id}}">{{$professor->nome}}</option>
+							@endif
+						@endforeach
+					@endif
+				</select> 
+			</div>
+		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">
 				Próxima turma
 			</label>
 			<div class="col-sm-2"> 
 				<input type="text" class="form-control boxed" name="proxima_turma" title="Digite o código caso já houver turma de continuação definida para rematrícula, separadas por vírgula" placeholder="xxxx, xxxx ..."value="{{implode(',',$turma->proxima)}}"> 
 			</div>
 		</div>
+		<div class="form-group row"> 
+			<label class="col-sm-2 form-control-label text-xs-right">Chamada </label>
+            <div class="col-sm-6"> 	
+				<div>
+					<label>
+					<input class="checkbox" type="checkbox"  {{$turma->chamada_liberada?'checked':''}} name="chamada_liberada" value="1">
+					<span>Liberar todo período</span>
+					</label>
+				</div>	
+        	</div>
+			
+                
+        </div>
 		
 		<div class="form-group row"> 
 			<label class="col-sm-2 form-control-label text-xs-right">Requisitos </label>

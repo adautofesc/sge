@@ -368,6 +368,23 @@ class MatriculaController extends Controller
         return redirect('/secretaria/matricula/imprimir-cancelamento/'.$r->matricula);
     }
 
+    public function imprimirCancelamento($matricula){
+        
+        $matricula = Matricula::find($matricula);
+        if(!$matricula)
+            return redirect()->back()->withErrors('Matrícula não encontrada para gerar a impressão.');
+        $pessoa = Pessoa::find($matricula->pessoa);
+        $inscricoes = Inscricao::where('matricula',$matricula->id)->where('updated_at', $matricula->updated_at)->get();
+        $vencimento = \Carbon\Carbon::today()->addDays(-5);    
+        $boletos = \App\Boleto::where('pessoa',$pessoa->id)
+            ->whereIn('status',['emitido','divida','ABERTO EXECUTADO'])
+            ->where('vencimento','<',$vencimento->toDateString())
+            ->orderBy('id','desc')
+            ->get();
+
+        return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula)->with('inscricoes',$inscricoes)->with('boletos',count($boletos));
+    }
+
     public static function cancelar(int $matricula,$responsavel=0){
 
         $matricula=Matricula::find($matricula);
@@ -833,22 +850,7 @@ class MatriculaController extends Controller
         return redirect()->back()->withErrors([$contador.'Matriculas ativadas com sucesso.']);
     }
 
-    public function imprimirCancelamento($matricula){
-        
-        $matricula = Matricula::find($matricula);
-        if(!$matricula)
-            return redirect()->back()->withErrors('Matrícula não encontrada para gerar a impressão.');
-        $pessoa = Pessoa::find($matricula->pessoa);
-        $inscricoes = Inscricao::where('matricula',$matricula->id)->where('updated_at', $matricula->updated_at)->get();
-        $vencimento = \Carbon\Carbon::today()->addDays(-5);    
-        $boletos = \App\Boleto::where('pessoa',$pessoa->id)
-            ->whereIn('status',['emitido','divida','ABERTO EXECUTADO'])
-            ->where('vencimento','<',$vencimento->toDateString())
-            ->orderBy('id','desc')
-            ->get();
-
-        return view('juridico.documentos.cancelamento-matricula')->with('pessoa',$pessoa)->with('matricula',$matricula)->with('inscricoes',$inscricoes)->with('boletos',count($boletos));
-    }
+   
 
 
 

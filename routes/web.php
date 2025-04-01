@@ -327,6 +327,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	//Desenvoldedor
 	Route::middleware('liberar.recurso:22')->prefix('dev')->group(function(){
 		Route::get('/','painelController@indexDev');
+		Route::get('teste-pix','PixController@testePix');
 		Route::get('testar-classe/', 'PessoaDadosGeraisController@rastrearDuplicados');
 		Route::post('testar-classe', 'painelController@testarClassePost');
 		Route::get('/bolsa/gerador', 'BolsaController@gerador');

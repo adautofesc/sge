@@ -78,11 +78,9 @@
 				
 		       <ul>
 		       	@foreach($inscricoes as $inscricao)
-		       		@if(isset($inscricao->turma->disciplina->nome))
-		       		<li> {{$inscricao->turma->curso->nome}},{{$inscricao->turma->disciplina->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}  das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
-		       		@else
-		       		<li> {{$inscricao->turma->curso->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}. das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
-		       		@endif
+		       		
+		       		<li> {{$inscricao->turma->getNomeCurso()}} ({{implode(',',$inscricao->turma->dias_semana)}}. das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
+		       		
 
 		       	@endforeach
 			   </ul>
@@ -142,11 +140,7 @@
 			   
 		       <ul>
 		       	@foreach($inscricoes as $inscricao)
-		       		@if(isset($inscricao->turma->disciplina->nome))
-		       		<li> {{$inscricao->turma->curso->nome}},{{$inscricao->turma->disciplina->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}  das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
-		       		@else
-		       		<li> {{$inscricao->turma->curso->nome}} ({{implode(',',$inscricao->turma->dias_semana)}}. das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
-		       		@endif
+				   <li> {{$inscricao->turma->getNomeCurso()}} ({{implode(',',$inscricao->turma->dias_semana)}}. das  {{$inscricao->turma->hora_inicio}} às {{$inscricao->turma->hora_termino}})</li>
 		       	@endforeach
 			   </ul>
 			   @if(isset($boletos) && $boletos>0)

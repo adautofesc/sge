@@ -121,17 +121,18 @@ class FrequenciaController extends Controller
      * @return void
      */
     public function preencherChamada_exec(Request $r){
-        $substituto = TurmaDados::where('turma',$turma)->where('dado','substituto')->first();
-        if(isset($substituto->valor))
-            $psubstituto = $substituto->valor;
-        else
-            $psubstituto = null;
+       
 
         $presentes = json_decode($r->presente, true);
         $conceitos = json_decode($r->conceitos, true);
         //dd(isset($presentes['7597']['29178']));
         //carregar todas presenças dessa turma
         $turma = Turma::find($r->turma);
+        $substituto = TurmaDados::where('turma',$turma->id)->where('dado','substituto')->first();
+        if(isset($substituto->valor))
+            $psubstituto = $substituto->valor;
+        else
+            $psubstituto = null;
 
         if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos)  && Auth::user()->pessoa != $psubstituto){
             LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
@@ -233,11 +234,7 @@ class FrequenciaController extends Controller
     }
 
     public function novaChamada_exec(Request $req){
-        $substituto = TurmaDados::where('turma',$turma)->where('dado','substituto')->first();
-        if(isset($substituto->valor))
-            $psubstituto = $substituto->valor;
-        else
-            $psubstituto = null;
+        
 
         if($req->aula>0)
             $aula = Aula::find($req->aula);
@@ -251,6 +248,12 @@ class FrequenciaController extends Controller
 
 
         $turma = \App\Turma::find($aula->turma);
+
+        $substituto = TurmaDados::where('turma',$turma->id)->where('dado','substituto')->first();
+        if(isset($substituto->valor))
+            $psubstituto = $substituto->valor;
+        else
+            $psubstituto = null;
         
         if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos) && Auth::user()->pessoa != $psubstituto){
             LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);
@@ -282,12 +285,7 @@ class FrequenciaController extends Controller
 
 
     public function editarChamada_view(int $aula){
-        $substituto = TurmaDados::where('turma',$turma)->where('dado','substituto')->first();
-        if(isset($substituto->valor))
-            $psubstituto = $substituto->valor;
-        else
-            $psubstituto = null;
-
+        
         $aula = Aula::find($aula);
     
         if(!isset($aula->id)){
@@ -296,6 +294,13 @@ class FrequenciaController extends Controller
         }    
         
         $turma = \App\Turma::find($aula->turma);
+
+        $substituto = TurmaDados::where('turma',$turma->id)->where('dado','substituto')->first();
+        if(isset($substituto->valor))
+            $psubstituto = $substituto->valor;
+        else
+            $psubstituto = null;
+
 
         $conteudo = AulaDado::where('aula',$aula->id)->where('dado','conteudo')->first();
         $ocorrencia = AulaDado::where('aula',$aula->id)->where('dado','ocorrencia')->first();
@@ -334,11 +339,7 @@ class FrequenciaController extends Controller
 
     }
     public function editarChamada_exec(Request $req){   
-        $substituto = TurmaDados::where('turma',$turma)->where('dado','substituto')->first();
-        if(isset($substituto->valor))
-            $psubstituto = $substituto->valor;
-        else
-            $psubstituto = null;
+        
 
         $aula = Aula::find($req->aula);
         $aula->data = $req->data;
@@ -346,6 +347,11 @@ class FrequenciaController extends Controller
         $frequencias = Frequencia::select('aluno')->where('aula', $aula->id)->get();
         $arr_frequencias = $frequencias->pluck('aluno')->toArray();
         $turma = \App\Turma::find($req->turma);
+        $substituto = TurmaDados::where('turma',$turma->id)->where('dado','substituto')->first();
+        if(isset($substituto->valor))
+            $psubstituto = $substituto->valor;
+        else
+            $psubstituto = null;
 
         if($turma->professor->id != Auth::user()->pessoa && !in_array('17', Auth::user()->recursos) && Auth::user()->pessoa != $psubstituto){
             LogController::registrar('turma',$turma->id,'Acesso negado a frequencia da turma '.$turma->id.' para '. Auth::user()->nome, Auth::user()->pessoa);

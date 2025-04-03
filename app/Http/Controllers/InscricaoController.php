@@ -487,7 +487,7 @@ class InscricaoController extends Controller
 
             $inscricao->atestado = $inscricao->getAtestado();
             if($inscricao->atestado){
-                $inscricao->atestado->validade =  $inscricao->atestado->calcularVencimento($turma->programa->id);
+                $inscricao->atestado->validade =  $inscricao->atestado->calcularVencimento($turma->sala);
                 //dd($inscricao->atestado);
             }
            

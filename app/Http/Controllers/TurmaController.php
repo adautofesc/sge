@@ -62,7 +62,7 @@ class TurmaController extends Controller
 
             $inscricao->atestado = $inscricao->getAtestado();
             if($inscricao->atestado){
-                $inscricao->atestado->validade =  $inscricao->atestado->calcularVencimento($turma->programa->id);
+                $inscricao->atestado->validade =  $inscricao->atestado->calcularVencimento($turma->sala);
                 //dd($inscricao->atestado);
             }
            
@@ -391,7 +391,7 @@ class TurmaController extends Controller
         $turma->hora_termino=$request->hr_termino;
         $turma->parceria=$request->parceria;
         $turma->periodicidade=$request->periodicidade;
-        $turma->valor=str_replace(',','.',$request->valor);
+        $turma->valor=str_replace(',','.',str_replace('.','',$request->valor));
         $turma->parcelas = $request->parcelas;
         $turma->vagas=$request->vagas;
         $turma->carga=$request->carga;
@@ -609,7 +609,7 @@ class TurmaController extends Controller
         $turma->data_termino=$request->dt_termino;
         $turma->hora_inicio=$request->hr_inicio;
         $turma->hora_termino=$request->hr_termino;
-        $turma->valor=str_replace(',','.',$request->valor);
+        $turma->valor=str_replace(',','.',str_replace('.','',$request->valor));
         $turma->parcelas = $request->parcelas;
         $turma->vagas=$request->vagas;
         $turma->carga=$request->carga;

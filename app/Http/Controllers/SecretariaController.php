@@ -126,11 +126,10 @@ class SecretariaController extends Controller
 		if($atestado){
 			$atividades_aquaticas = $matriculas->whereIn('status',['ativa','pendente','espera'])->WhereIn('curso',['898','1151','1152','1493']);
 			if(count($atividades_aquaticas)>0){
-				$atestado->validade = $atestado->calcularVencimento(12);
-			}
-				
+				$atestado->validade = $atestado->calcularVencimento(6);
+			}	
 			else{
-				$atestado->validade = $atestado->calcularVencimento(3);
+				$atestado->validade = $atestado->calcularVencimento(0);
 			}
 				
 
@@ -242,11 +241,11 @@ class SecretariaController extends Controller
 		if($atestado){
 			$atividades_aquaticas = $matriculas->whereIn('status',['ativa','pendente','espera'])->WhereIn('curso',['898','1151','1152','1493']);
 			if(count($atividades_aquaticas)>0){
-				$atestado->validade = $atestado->calcularVencimento(12);
+				$atestado->validade = $atestado->calcularVencimento(6);
 			}
 				
 			else{
-				$atestado->validade = $atestado->calcularVencimento(3);
+				$atestado->validade = $atestado->calcularVencimento(0);
 			}
 				
 

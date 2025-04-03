@@ -204,7 +204,8 @@ public function gerar($boleto){
 
 private function calcularFatorVencimento($dataVencimento)
 {
-    $dataVencimento = Carbon::parse($dataVencimento);
+	//dd($dataVencimento);
+    $dataVencimento = Carbon::createFromFormat('d/m/Y',$dataVencimento);
     $dataBaseAntiga = Carbon::create(1997, 10, 7); // Base antiga do fator de vencimento
     $dataBaseNova = Carbon::create(2025, 2, 22); // Nova base do fator
 

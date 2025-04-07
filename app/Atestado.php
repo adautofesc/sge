@@ -10,8 +10,12 @@ class Atestado extends Model
     use SoftDeletes;
     protected $dates = ['emissao','validade','created_at','deleted_at'];
    
-	//Verifica se 
-    public function calcularVencimento($sala){
+	/**
+	 * The attributes that are mass assignable.
+	 * @param int $sala
+	 * @return string
+	 */
+    public function calcularVencimento(int $sala){
     	if($sala == 6) //se for piscina
     		$validade = "+6 months";
     	else

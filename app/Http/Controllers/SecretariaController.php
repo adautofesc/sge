@@ -34,6 +34,7 @@ class SecretariaController extends Controller
 
 	public function atender($id=0){
 		$devedor = false;
+	
 
 		if($id>0)
 			session('pessoa_atendimento',$id);
@@ -122,10 +123,12 @@ class SecretariaController extends Controller
 		
 
 		$atestado = \App\Atestado::where('pessoa',$id)->where('tipo','saude')->orderByDesc('id')->first();
+		$turmas_inscritas = \DB::table('inscricoes')->where('pessoa',$id)->whereIn('status',['regular','pendente'])->pluck('turma')->toArray();
+		$turma_aquatica = \App\Turma::whereIn('id',$turmas_inscritas)->where('sala',6)->first();
+		
 		
 		if($atestado){
-			$atividades_aquaticas = $matriculas->whereIn('status',['ativa','pendente','espera'])->WhereIn('curso',['898','1151','1152','1493']);
-			if(count($atividades_aquaticas)>0){
+			if($turma_aquatica){
 				$atestado->validade = $atestado->calcularVencimento(6);
 			}	
 			else{

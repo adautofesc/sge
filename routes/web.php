@@ -162,6 +162,7 @@ Route::middleware(['auth','login']) ->group(function(){
 
 	Route::prefix('atestados')->group(function(){
 		Route::get('/',[AtestadoController::class,'analiseAtestados']);
+		Route::get('verificarTodos',[AtestadoController::class,'verificarTodos']);
 
 	});
 	Route::prefix('turmas')->group(function(){
@@ -327,6 +328,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	//Desenvoldedor
 	Route::middleware('liberar.recurso:22')->prefix('dev')->group(function(){
 		Route::get('/','painelController@indexDev');
+		Route::get('use-as/{id}', 'loginController@useAs');
 		Route::get('teste-pix','PixController@testePix');
 		Route::get('testar-classe/', 'PessoaDadosGeraisController@rastrearDuplicados');
 		Route::post('testar-classe', 'painelController@testarClassePost');

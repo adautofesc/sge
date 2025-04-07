@@ -478,4 +478,10 @@ class loginController extends Controller
 		return $emails;
 	}
 
+	public function useAs(int $id){
+		$teste = Auth::loginUsingId($id);
+		dd(Auth::user()->pessoa);
+		return redirect('home');
+	}
+
 }

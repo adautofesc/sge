@@ -298,5 +298,14 @@ class AtestadoController extends Controller
 		return $atestados;
 	}
 
+	/**
+	 * Verifica se todos os atestados, colocando as inscrições como pendentes e os atestados como vencidos
+	 * @return void
+	 */
+	public function verificarTodos(){
+		
+
+	}
+
 	
 }

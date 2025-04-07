@@ -74,7 +74,7 @@ class FrequenciaController extends Controller
 
     public function preencherChamada_view(int $turma){
         
-        $substituto = TurmaDados::where('turma',$turma)->where('dado','substituto')->first();
+        $substituto = TurmaDados::where('turma',$turma)->where('dado','professor_substituto')->first();
         if(isset($substituto->valor))
             $psubstituto = $substituto->valor;
         else
@@ -128,7 +128,7 @@ class FrequenciaController extends Controller
         //dd(isset($presentes['7597']['29178']));
         //carregar todas presenças dessa turma
         $turma = Turma::find($r->turma);
-        $substituto = TurmaDados::where('turma',$turma->id)->where('dado','substituto')->first();
+        $substituto = TurmaDados::where('turma',$turma->id)->where('dado','professor_substituto')->first();
         if(isset($substituto->valor))
             $psubstituto = $substituto->valor;
         else
@@ -197,8 +197,10 @@ class FrequenciaController extends Controller
 
     public function novaChamada_view(int $turma){
 
+
+
         $aulas = Aula::where('turma',$turma)->where('status','prevista')->orderBy('data')->get();
-        $substituto = TurmaDados::where('turma',$turma)->where('dado','substituto')->first();
+        $substituto = TurmaDados::where('turma',$turma)->where('dado','professor_substituto')->first();
         if(isset($substituto->valor))
             $psubstituto = $substituto->valor;
         else
@@ -249,7 +251,7 @@ class FrequenciaController extends Controller
 
         $turma = \App\Turma::find($aula->turma);
 
-        $substituto = TurmaDados::where('turma',$turma->id)->where('dado','substituto')->first();
+        $substituto = TurmaDados::where('turma',$turma->id)->where('dado','professor_substituto')->first();
         if(isset($substituto->valor))
             $psubstituto = $substituto->valor;
         else
@@ -295,7 +297,7 @@ class FrequenciaController extends Controller
         
         $turma = \App\Turma::find($aula->turma);
 
-        $substituto = TurmaDados::where('turma',$turma->id)->where('dado','substituto')->first();
+        $substituto = TurmaDados::where('turma',$turma->id)->where('dado','professor_substituto')->first();
         if(isset($substituto->valor))
             $psubstituto = $substituto->valor;
         else
@@ -347,7 +349,7 @@ class FrequenciaController extends Controller
         $frequencias = Frequencia::select('aluno')->where('aula', $aula->id)->get();
         $arr_frequencias = $frequencias->pluck('aluno')->toArray();
         $turma = \App\Turma::find($req->turma);
-        $substituto = TurmaDados::where('turma',$turma->id)->where('dado','substituto')->first();
+        $substituto = TurmaDados::where('turma',$turma->id)->where('dado','professor_substituto')->first();
         if(isset($substituto->valor))
             $psubstituto = $substituto->valor;
         else

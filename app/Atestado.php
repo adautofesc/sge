@@ -28,12 +28,34 @@ class Atestado extends Model
 
     	return $vencimento;
 
-
-
     }
+
+	/**
+	 * Verifica se o atestado está vencido
+	 * @param int $turma
+	 * @return bool vencido ou não
+	 */
+	public function verificaPorTurma(int $turma){
+		$turma = \App\Turma::find($turma);
+		if($turma == null)
+			return false;
+		if($this->calcularVencimento($turma->sala) < date('Y-m-d 23:23:59'))
+			return false;
+		else
+			return true;
+
+	}
 
 	public function getNome(){
 		return \App\Pessoa::getNome($this->pessoa);
+	}
+
+	public function validar(){
+		$validade = $this->calcularVencimento(0);
+		if($validade < date('Y-m-d 23:23:59'))
+			return true;
+		else
+			return false;
 	}
 
 

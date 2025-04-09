@@ -123,11 +123,12 @@ class SecretariaController extends Controller
 		
 
 		$atestado = \App\Atestado::where('pessoa',$id)->where('tipo','saude')->orderByDesc('id')->first();
-		$turmas_inscritas = \DB::table('inscricoes')->where('pessoa',$id)->whereIn('status',['regular','pendente'])->pluck('turma')->toArray();
-		$turma_aquatica = \App\Turma::whereIn('id',$turmas_inscritas)->where('sala',6)->first();
+		
 		
 		
 		if($atestado){
+			$turmas_inscritas = \DB::table('inscricoes')->where('pessoa',$id)->whereIn('status',['regular','pendente'])->pluck('turma')->toArray();
+			$turma_aquatica = \App\Turma::whereIn('id',$turmas_inscritas)->where('sala',6)->first();
 			if($turma_aquatica){
 				$atestado->validade = $atestado->calcularVencimento(6);
 			}	

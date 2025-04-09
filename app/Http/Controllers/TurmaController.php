@@ -1544,6 +1544,21 @@ class TurmaController extends Controller
         
     }
 
+    public function forcarExclusao($turma_id){
+        $turma = Turma::find($turma_id);
+        if(isset($turma->id)){
+            $inscricoes=Inscricao::where('turma',$turma->id)->get();
+            foreach($inscricoes as $inscricao){
+                \App\Matricula::destroy($inscricao->matricula);
+                $inscricao->delete();
+            }
+            $turma->delete();
+            TurmaLogController::registrar('turma',$turma->id,'Turma excluída por duplicidade', \Auth::user()->pessoa);
+            
+        }
+        return "turma ".$turma_id." excluída com sucesso.";
+    }
+
     
 
    

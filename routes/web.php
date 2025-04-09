@@ -162,7 +162,7 @@ Route::middleware(['auth','login']) ->group(function(){
 
 	Route::prefix('atestados')->group(function(){
 		Route::get('/',[AtestadoController::class,'analiseAtestados']);
-		Route::get('verificarTodos',[AtestadoController::class,'verificarTodos']);
+		Route::get('verificador-diario',[AtestadoController::class,'verificadorDiario']);
 
 	});
 	Route::prefix('turmas')->group(function(){
@@ -170,6 +170,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::middleware('liberar.recurso:30')->get('gerar-por-ficha/{id?}',[TurmaController::class,'gerarPorFichaView']);
 		Route::middleware('liberar.recurso:30')->post('gerar-por-ficha/{id?}',[TurmaController::class,'store']);
 		Route::middleware('liberar.recurso:18')->group(function(){
+			Route::get('forcar-exclusao/{turma}', [TurmaController::class,'forcarExclusao']);
 			Route::get('/',[TurmaController::class,'listarSecretaria'])->name('turmas');
 			Route::post('cadastrar',[TurmaController::class,'store']);
 			Route::post('recadastrar',[TurmaController::class,'storeRecadastro']);

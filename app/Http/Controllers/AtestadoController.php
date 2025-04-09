@@ -302,7 +302,54 @@ class AtestadoController extends Controller
 	 * Verifica se todos os atestados, colocando as inscrições como pendentes e os atestados como vencidos
 	 * @return void
 	 */
-	public function verificarTodos(){
+	public function verificadorDiario(){
+		$itens = array();
+		//lista todas turmas que precisam de atestado médico - atividade fisica
+		$turmas = \App\CursoRequisito::join('turmas','cursos_requisitos.curso','turmas.id')
+		->where('turmas.status','iniciada')
+		->where('cursos_requisitos.para_tipo','turma')
+		->whereIn('cursos_requisitos.requisito',[18,27])
+		->pluck('turmas.id')->toArray();
+
+		$inscricoes = \App\Inscricao::whereIn('turma',$turmas)->where('status','regular')->get();
+
+
+		foreach($inscricoes as $inscricao){
+			$atestado = Atestado::where('pessoa',$inscricao->pessoa)->where('tipo','saude')->where('status','aprovado')->orderByDesc('id')->first();
+
+			//se não tem atestado valido
+			if($atestado == null){
+				$inscricao->alterarStatus('pendente');
+				//\App\PessoaDadosAdministrativos::cadastrarUnico($inscricao->pessoa,'pendencia','Atestado médico vencido.');
+				$inscricao->save();
+				if(in_array($inscricao->pessoa,$itens) == false)
+					$itens[] = $inscricao->pessoa->id;
+				
+				continue;
+			}
+			
+			//verifica se o atestado está vencido para a turma
+			if($atestando->verificaPorTurma($inscricao->turma)==false){			
+				$inscricao->alterarStatus('pendente');
+				//\App\PessoaDadosAdministrativos::cadastrarUnico($inscricao->pessoa,'pendencia','Atestado médico vencido.');
+				$inscricao->save();
+				if(in_array($inscricao->pessoa,$itens) == false)
+					$itens[] = $inscricao->pessoa->id;
+
+			}
+			//verifica se o atestado está vencido (1 ano)
+			if($atestado->validar() == false){
+				$atestado->status = 'vencido';
+				$atestado->save();
+				if(in_array($inscricao->pessoa,$itens) == false)
+					$itens[] = $inscricao->pessoa->id;
+				
+			}
+
+		}
+		
+		return $itens;
+
 		
 
 	}

@@ -20,7 +20,7 @@ use Illuminate\Http\Request;
 
 class TurmaController extends Controller
 {
-    const DATA_LIMITE_ALTERACAO = '0430';
+    const DATA_LIMITE_ALTERACAO = '0330';
     /**
      * Listagem de turmas para o setor pedagógico.
      *

@@ -356,10 +356,24 @@ class painelController extends Controller
         }
         
         return view('pedagogico.home')->with('professores',$professores_dos_programas)->with('programas',$programas);
-
-
-
     }
+
+    public function novoPedagogico(){
+        $user = Auth::user();
+        $professores_dos_programas = collect();
+        $programas = \App\PessoaDadosAdministrativos::where('pessoa',$user->pessoa)->where('dado','programa')->pluck('valor')->toArray();
+        $professores = \App\PessoaDadosAdministrativos::getEducadores();
+        foreach($professores as $professor){
+            $comparisson = array_intersect($programas,$professor->getProgramas());
+            if(count($comparisson))
+                $professores_dos_programas->push($professor);
+        }
+        
+        return view('pedagogico.novo')->with('professores',$professores_dos_programas)->with('programas',$programas);
+    }
+
+
+
     public function secretaria(){
         if(session('pessoa_atendimento')){            
             $pessoa=session('pessoa_atendimento');

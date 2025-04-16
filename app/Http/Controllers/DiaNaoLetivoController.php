@@ -18,6 +18,7 @@ class DiaNaoLetivoController extends Controller
     }
 
     public function addRecesso(string $inicio, string $termino){
+      
         $inicio = \DateTime::createFromFormat('d/m/Y',$inicio);
         $termino = \DateTime::createFromFormat('d/m/Y',$termino);
         for($i=$inicio; $i<=$termino; $i->add(new \DateInterval('P1D'))){
@@ -31,29 +32,36 @@ class DiaNaoLetivoController extends Controller
 
         }
 
-        return "Recesso inserido com sucesso.";
+        return "Recesso inserido com sucesso. Desde ".$inicio->format('d/m/Y')." até ".$termino->format('d/m/Y');
     }
 
     public function ViewAddRecesso(){
 
-        return $this->addRecesso('03/07/2023','14/07/2023');
+        return $this->addRecesso('06/07/2025','20/07/2025');
     }
 
-    public function cadastroAnual($ano = 2023){
+    public function cadastroAnual($ano = 2025){
         $feriados_nacionais = \App\classes\Data::diasFeriados($ano);
         $feriados_estaduais =  ['Revolução Constitucionalista' => $ano.'-'.'07-09'];
         $feriados_municipais = ['N.S. da Babilônia' => $ano.'-'.'08-15', 
                                 'Aniversário da cidade' => $ano.'-'.'11-04'];
                             
-        $pontos_facultativos = ['Quarta de cinzas'=>$ano.'-02-22',
-                                'Ponto facultativo' => $ano.'-06-09',
-                                'Ponto facultativo' => $ano.'-08-14',
-                                'Ponto facultativo' => $ano.'-09-08',
-                                'Ponto facultativo' => $ano.'-10-13',
-                                'Ponto facultativo' => $ano.'-11-03',
-                                'Ponto facultativo' => $ano.'-12-26',
-
+        $pontos_facultativos = [
+                                'Ponto facultativo IV'=>$ano.'-04-17',
+                                'Ponto facultativo V'=>$ano.'-04-19',
+                                'Ponto facultativo VII' => $ano.'-05-02',
+                                'Ponto facultativo VIII' => $ano.'-05-03',
+                                'Ponto facultativo X' => $ano.'-06-20',
+                                'Ponto facultativo XI' => $ano.'-06-21',
+                                'Ponto facultativo XVI' => $ano.'-10-27',
                                 'Dia do Funcionário Público' => $ano.'-10-28',
+                                'Dia do Professor' => $ano.'-10-15',
+                                'Ponto facultativo XIX' => $ano.'-11-03',
+                                'Ponto facultativo XXIII' => $ano.'-11-21',
+                                'Ponto facultativo XXIV' => $ano.'-11-22',
+                              
+
+                                
                                 
 
        
@@ -62,6 +70,9 @@ class DiaNaoLetivoController extends Controller
         $feriados = array_merge($feriados_nacionais,$feriados_estaduais,$feriados_municipais,$pontos_facultativos);
 
         asort($feriados);
+
+
+        //dd($feriados);
 
         
         
@@ -78,4 +89,6 @@ class DiaNaoLetivoController extends Controller
         return $feriados;
 
     }
+
+   
 }

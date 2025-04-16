@@ -604,6 +604,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	//Pedagógico
 	Route::middleware('liberar.recurso:17')->prefix('pedagogico')->group(function(){
 		Route::get('/','painelController@pedagogico');
+		Route::get('novo', 'painelController@novoPedagogico');
 		//Turmas
 		Route::prefix('turmas')->group(function(){
 			Route::get('cadastrar','TurmaController@create');

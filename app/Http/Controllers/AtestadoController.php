@@ -304,6 +304,7 @@ class AtestadoController extends Controller
 	 */
 	public function verificadorDiario(){
 		$itens = array();
+		
 		//lista todas turmas que precisam de atestado médico - atividade fisica
 		$turmas = \App\CursoRequisito::join('turmas','cursos_requisitos.curso','turmas.id')
 		->where('turmas.status','iniciada')

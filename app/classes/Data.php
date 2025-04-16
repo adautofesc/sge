@@ -245,6 +245,7 @@ Class Data
                         'Todos os santos' => date("Y-m-d", mktime(0, 0, 0, 11, 2, $ano)), // Todos os santos - Lei nº 662, de 06/04/49
                         'Proclamação da republica' => date("Y-m-d", mktime(0, 0, 0, 11, 15, $ano)), // Proclamação da republica - Lei nº 662, de 06/04/49
                         'Natal' => date("Y-m-d", mktime(0, 0, 0, 12, 25, $ano)), // Natal - Lei nº 662, de 06/04/49
+                        'Dia da Consciência Negra' => date("Y-m-d", mktime(0, 0, 0, 11, 20, $ano)), // Dia da Consciência Negra -  nº 14.759/2023
 
                         // Essas Datas depem diretamente da data de Pascoa
                         // mktime(0, 0, 0, $mes_pascoa, $dia_pascoa - 48, $ano_pascoa), //2ºferia Carnaval

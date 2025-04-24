@@ -35,7 +35,6 @@
 	<input type="hidden" name="cep" value="{{preg_replace( '/[^0-9]/is', '',$pessoa->cep)}}">
 	<input type="hidden" name="msgLoja" value="{!!$lancamentos!!}">
 
-
     <div class="card card-block">
     	<div class="row">
 			<div class="col-sm-12">

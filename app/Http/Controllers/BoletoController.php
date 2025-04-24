@@ -239,13 +239,8 @@ class BoletoController extends Controller
 		foreach($boletos as $boleto){
 			
 			$pessoa = Pessoa::withTrashed()->find($boleto->pessoa);
-			
-
 			$boleto_completo = $inst->gerar($boleto);
-
 			$lancamentos = $boleto->getLancamentos();
-		
-
 			$linha["pessoa_id"] = $boleto->pessoa;
 			$linha["pessoa_nome"] = $boleto->dados['sacado'];
 			$linha["pessoa_cpf"] = '"'.$boleto->dados['cpf_sacado'].'"';
@@ -256,7 +251,6 @@ class BoletoController extends Controller
 				$linha["endereco_bairro"] = $boleto->cliente->bairro_alt;
 			else
 				$linha["endereco_bairro"] = $boleto->cliente->bairro;
-
 			$linha["endereco_cidade"] =  $boleto->cliente->cidade.' - '.$boleto->cliente->estado;
 			$linha["endereco_cep"] = $boleto->cliente->cep;
 			$linha["boleto_nossonumero"] = '"'.$boleto->dados['nosso_numero'].'"';
@@ -268,42 +262,32 @@ class BoletoController extends Controller
 			foreach ($lancamentos as $lancamento){
 				$linha["boleto_referencias"] .= $lancamento->referencia." ".$lancamento->matricula.'. ';
 			}
-
 			$linha["boleto_linha_digitavel"] = '"'.$boleto->dados['linha_digitavel'].'"';
 			$linha["boleto_codigo_barras"] = '"'.$boleto->dados['codigo_barras'].'"';
-			
-			
-
-
-/*
-			foreach($linha as $valor){
-				$valor = utf8_decode($valor);
-			}
-*/
 			fputcsv($file, $linha,';');
 
 
 		}//fim foreach boletos
 		fclose($file);
 
-		//die(mb_detect_encoding($linha["endereco_cidade"] ) );
-
-
 		return view('financeiro.boletos.gerador-csv',compact('boletos'));
 	}
-	public function imprimirLotex(){
-		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
-		$boletos = Boleto::where('status','gravado')->get();
+	public function imprimirLaravelBoleto($ids){
+		//$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Html();
+		$html = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
+		$boletos = explode(',',$ids);
+		$boletos = Boleto::whereIn('id',$boletos)->get();
 		foreach($boletos as $boleto){
 			$boleto_completo = $this->gerarBoleto($boleto);
 			$boleto->status = 'impresso';
-			//$boleto->save();
+			$boleto->save();
+			//dd($boleto_completo);
 			$html->addBoleto($boleto_completo);
 		}
-		$html->hideInstrucoes();
+		//$html->hideInstrucoes();
 		//$html->showPrint();
-		
-		return $html->gerarBoleto(false,false);
+		 return $html->gerarBoleto($html::OUTPUT_STANDARD,$save_path=null);
+		//return $html->gerarBoleto(false,false);
 
 	}
 	public function imprimir($boleto,Request $r){
@@ -324,8 +308,6 @@ class BoletoController extends Controller
 			$vencido = true;
 
 		}
-
-		
 		
 		$lancamentos = Lancamento::where('boleto', $boleto->id)->get();
 		$str_lancamentos ='';
@@ -354,14 +336,14 @@ class BoletoController extends Controller
 
 		}
 		
-		
-		
 		$inst = new BoletoFuncional;
 		$boleto_completo = $inst->gerar($boleto);
 		//return $boleto_completo; 
 		return view('financeiro.boletos.boleto')->with('boleto',$boleto_completo)->with('lancamentos',$lancamentos);
 
 	}
+
+
 	public function imprimirx($boleto){
 		$boleto = Boleto::find($boleto);
 		if($boleto == null)
@@ -371,11 +353,13 @@ class BoletoController extends Controller
 			$boleto->save();
 		}
 		$boleto_completo = $this->gerarBoleto($boleto);
-		
-
 		return $boleto_completo->renderHTML();
 		
 	}
+
+	/**
+	 * 
+	 */
 	public static function verificaSeCadastrado($pessoa,$valor,$vencimento){
 		$cadastrado=Boleto::where('pessoa',$pessoa)
 							->where('valor',$valor)
@@ -507,9 +491,7 @@ class BoletoController extends Controller
 
 	public static function cancelamentoDireto($id,$motivo){
 		$boleto=Boleto::find($id);
-
 		if($boleto != null){
-
 			switch($boleto->status){
 				case 'gravado':
 					$boleto->forceDelete();
@@ -575,341 +557,320 @@ class BoletoController extends Controller
 	 * @param  Boleto
 	 * @return [type]
 	 */
-	 
-	 public static function gerarBoleto(Boleto $boleto){
-    $cliente = Pessoa::withTrashed()->find($boleto->pessoa);
-    $cliente = PessoaController::formataParaMostrar($cliente);
-    $lancamentos = LancamentoController::listarPorBoleto($boleto->id);
-    $array_lancamentos = array();
-
-    foreach ($lancamentos as $lancamento) {
-        $array_lancamentos[] = $lancamento->referencia;
-    }
-
-    $array_lancamentos = array_slice($array_lancamentos, 0, 4);
-
-    $beneficiario = new \Eduardokum\LaravelBoleto\Pessoa([
-        'documento' => '45.361.904/0001-80',
-        'nome'      => 'Fundação Educacional São Carlos',
-        'cep'       => '13560-230',
-        'endereco'  => 'Rua São Sebastiao, 2828, ',
-        'bairro'    => 'Vila Nery',
-        'uf'        => 'SP',
-        'cidade'    => 'São Carlos',
-    ]);
-
-    if (is_null($cliente->cpf)) {
-        $cliente->cpf = '111.111.111-11';
-    }
-
-    $pagador = new \Eduardokum\LaravelBoleto\Pessoa([
-        'documento' => $cliente->cpf,
-        'nome'      => str_replace(['º', 'ª', '°', '´', '~', '^', '`', '\''], '', substr($cliente->nome, 0, 37)),
-        'cep'       => $cliente->cep ? $cliente->cep : '13560-970',
-        'endereco'  => str_replace(['º', 'ª', '°', '´', '~', '^', '`', '\''], '', $cliente->logradouro . ' ' . $cliente->end_numero . ' ' . $cliente->end_complemento),
-        'bairro'    => substr(($cliente->bairro == 'Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro), 0, 15),
-        'uf'        => $cliente->estado,
-        'cidade'    => $cliente->cidade,
-    ]);
-
-    // Ajuste do fator de vencimento
-    $dataBaseAntiga = Carbon::create(1997, 10, 7); // Base inicial do fator de vencimento
-    $dataBaseNova = Carbon::create(2025, 2, 22); // Nova base a partir da reinicialização
-
-    if (Carbon::parse($boleto->vencimento)->greaterThanOrEqualTo($dataBaseNova)) {
-        $fatorVencimento = Carbon::parse($boleto->vencimento)->diffInDays($dataBaseNova) + 1000;
-    } else {
-        $fatorVencimento = Carbon::parse($boleto->vencimento)->diffInDays($dataBaseAntiga);
-    }
-
-    $bb = new \Eduardokum\LaravelBoleto\Boleto\Banco\Bb([
-        'logo'                => 'img/logo-small.png',
-        'dataVencimento'      => Carbon::parse($boleto->vencimento),
-        'fatorVencimento'     => $fatorVencimento, // Fator de vencimento corrigido
-        'valor'               => $boleto->valor,
-        'numero'              => $boleto->id,
-        'numeroDocumento'     => $boleto->id,
-        'pagador'             => $pagador,
-        'beneficiario'        => $beneficiario,
-        'carteira'            => 17,
-        'variacaoCarteira'    => '019',
-        'agencia'             => '0295', // Removido o "X"
-        'convenio'            => 2838669,
-        'conta'               => 52822,
-        'descricaoDemonstrativo' => $array_lancamentos,
-        'instrucoes' => [
-            'Sr. Caixa, cobrar multa de 2% após o vencimento',
-            'Cobrar juros de 1% ao mês por atraso.',
-            'Após o vencimento, o pagamento dever ser feito no Banco do Brasil',
-            'Em caso de dúvidas ou divergências entre em contato conosco: 3362-0580'
-        ],
-    ]);
-
-    return $bb;
-}
-
-	 
-	/* public static function gerarBoleto(Boleto $boleto){
-		$cliente=Pessoa::withTrashed()->find($boleto->pessoa);
-		$cliente=PessoaController::formataParaMostrar($cliente);
-		$lancamentos= LancamentoController::listarPorBoleto($boleto->id); //objetos lancamentos
+	public static function gerarBoleto(Boleto $boleto){
+		$cliente = Pessoa::withTrashed()->find($boleto->pessoa);
+		$cliente = PessoaController::formataParaMostrar($cliente);
+		$lancamentos = LancamentoController::listarPorBoleto($boleto->id);
 		$array_lancamentos = array();
-		foreach($lancamentos as $lancamento){
+
+		foreach ($lancamentos as $lancamento) {
 			$array_lancamentos[] = $lancamento->referencia;
 		}
-		$array_lancamentos = array_slice($array_lancamentos,0,4);
-		$beneficiario = new \Eduardokum\LaravelBoleto\Pessoa([
-		    'documento' => '45.361.904/0001-80',
-		    'nome'      => 'Fundação Educacional São Carlos',
-		    'cep'       => '13560-230',
-		    'endereco'  => 'Rua São Sebastiao, 2828, ',
-		    'bairro' => ' Vila Nery',
-		    'uf'        => 'SP',
-		    'cidade'    => 'São Carlos',
-		]);
-		if(is_null($cliente->cpf)){	
-			//############# Return erro e envia notificação pra secretaria
-			$cliente->cpf = '111.111.111-11';
 
-		
+		$array_lancamentos = array_slice($array_lancamentos, 0, 5);
+
+		$beneficiario = new \Eduardokum\LaravelBoleto\Pessoa([
+			'documento' => '45.361.904/0001-80',
+			'nome'      => 'Fundação Educacional São Carlos',
+			'cep'       => '13560-230',
+			'endereco'  => 'Rua São Sebastiao, 2828, ',
+			'bairro'    => 'Vila Nery',
+			'uf'        => 'SP',
+			'cidade'    => 'São Carlos',
+		]);
+
+		if (is_null($cliente->cpf)) {
+			$cliente->cpf = '111.111.111-11';
 		}
-		//dd($cliente->cep);
+
 		$pagador = new \Eduardokum\LaravelBoleto\Pessoa([
 			'documento' => $cliente->cpf,
-		    //'documento' => $cliente->cpf > 0 ? $cliente->cpf : NotificacaoController::notificarCPFInvalido($cliente->id), //verificar cpf
-		    'nome'      =>  str_replace(['º','ª','°','´','~','^','`','\''],'',substr($cliente->nome,0,37)), //nome até x cara
-		    'cep'       => $cliente->cep ? $cliente->cep : '13560-970' ,
-		    'endereco'  => str_replace(['º','ª','°','´','~','^','`','\''], '',$cliente->logradouro.' '.$cliente->end_numero.' '.$cliente->end_complemento),
-		    'bairro' => substr(($cliente->bairro=='Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro),0,15),
-		    'uf'        => $cliente->estado,
-		    'cidade'    => $cliente->cidade,
+			'nome'      => str_replace(['º', 'ª', '°', '´', '~', '^', '`', '\''], '', substr($cliente->nome, 0, 37)),
+			'cep'       => $cliente->cep ? $cliente->cep : '13560-970',
+			'endereco'  => str_replace(['º', 'ª', '°', '´', '~', '^', '`', '\''], '', $cliente->logradouro . ' ' . $cliente->end_numero . ' ' . $cliente->end_complemento),
+			'bairro'    => substr(($cliente->bairro == 'Outros/Outra cidade' ? $cliente->bairro_alt : $cliente->bairro), 0, 15),
+			'uf'        => $cliente->estado,
+			'cidade'    => $cliente->cidade,
 		]);
-		//dd($pagador);
-		$bb = new \Eduardokum\LaravelBoleto\Boleto\Banco\Bb([
-		    'logo' =>'img/logo-small.png',
-		    'dataVencimento' => Carbon::parse($boleto->vencimento),
-		    'valor' => $boleto->valor,
-		    'numero' =>$boleto->id,
-		    'numeroDocumento' => $boleto->id,
-		    'pagador' => $pagador,
-		    'beneficiario' => $beneficiario,
-		    'carteira' => 17,
-		    'variacaoCarteira' =>'019',
-		    'agencia' => '0295-X',
-		    'convenio' => 2838669,
-		    'conta' => 52822,
-		    'descricaoDemonstrativo' => $array_lancamentos,
-		    'instrucoes' => [
-		    	'Sr. Caixa, cobrar multa de 2% após o vencimento', 
-		    	'Cobrar juros de 1% ao mês por atraso.', 
-		    	'Após o vencimento, o pagamento dever ser feito no Banco do Brasil',
-		    	'Em caso de dúvidas ou divergências entre em contato conosco: 3362-0580'
-		    ],
-		]);
-			//dd($bb);
-		    return $bb;
 
-		} */
+		// Ajuste do fator de vencimento
+		$dataBaseAntiga = Carbon::create(1997, 10, 7); // Base inicial do fator de vencimento
+		$dataBaseNova = Carbon::create(2025, 2, 22); // Nova base a partir da reinicialização
 
-		public function consultarBoletosCPF(Request $request){
-			$dados_pessoa = PessoaDadosGerais::where('dado',3)->where('valor',$requent->cpf)->get();
-			if($dados_pessoa->count() == 0){
-				return "CPF não encontrado.";
-			}
-			foreach($dados_pessoa as $dado){
-				$pessoa = Pessoa::where('id',$dado->pessoa)->where('nascimento',$request->nascimento)->get();
-				if ($pessoa->count()>0){
-					echo "hi";
-				}
-
-			}
-			
-
-
+		if (Carbon::parse($boleto->vencimento)->greaterThanOrEqualTo($dataBaseNova)) {
+			$fatorVencimento = Carbon::parse($boleto->vencimento)->diffInDays($dataBaseNova) + 1000;
+		} else {
+			$fatorVencimento = Carbon::parse($boleto->vencimento)->diffInDays($dataBaseAntiga);
 		}
 
-		public function novo($pessoa){
+		$pix = \Eduardokum\LaravelBoleto\Util::gerarPixCopiaECola(env('PIX_CHAVE'), $boleto->valor, 'BOL'.$boleto->id, $pagador, $beneficiario);
+		$convenio = env('BB_CONVENIO');
+		$conta = env('BB_CONTA');
 
+		if($boleto->pessoa == 19511){
+			$bb = new \Eduardokum\LaravelBoleto\Boleto\Banco\Bb([
 
-
-			$matriculas = \App\Matricula::where('pessoa',$pessoa)->whereIn('status',['ativa','pendente','espera'])->get();
-			$lancamentos = Lancamento::where('pessoa',$pessoa)->where('boleto',null)->where('status',null)->get();
-			return view('financeiro.boletos.novo')->with('matriculas',$matriculas)->with('pessoa',$pessoa)->with('lancamentos',$lancamentos);
-
-		}
-
-
-		public function create(Request $r){
-			if($r->valor >0){
-				$boleto = new Boleto;
-					$boleto->vencimento = $r->vencimento;
-					$boleto->pessoa = $r->pessoa;
-					$boleto->valor = $r->valor;
-					$boleto->status = 'gravado';
-					$boleto->save();
-				if(isset($r->matriculas) && count($r->matriculas)){				
-					foreach ($r->matriculas as $id_matricula){
-						$matricula = \App\Matricula::find($id_matricula);
-						if($matricula){
-							$lancamento = new Lancamento;
-							$lancamento->pessoa = $r->pessoa;
-							$lancamento->matricula = $matricula->id;
-							$lancamento->referencia = 'Parcela de '.$matricula->getNomeCurso();
-							$lancamento->valor = $matricula->valor->valor/$matricula->valor->parcelas;
-							$lancamento->boleto = $boleto->id;
-							$lancamento->save();
-						}
-					}	
-				}
-				if(isset($r->lancamentos) && count($r->lancamentos)){
-					$lancamentos = Lancamento::whereIn('id',$r->lancamentos)->update(['boleto'=>$boleto->id]);	
-				}		
-			}
-			else
-				return redirect()->back()->with(['danger'=>'Para gerar um boleto é necessário que o valor não seja zero.']);
-			AtendimentoController::novoAtendimento("Criação manual de boleto: ".$boleto->id, $boleto->pessoa, Auth::user()->pessoa);
-			return redirect(asset('secretaria/atender/'.$r->pessoa));
-
-
-
-		}
-		public function reativar($id){
-			$boleto=Boleto::find($id);
-			$boleto->status = 'impresso';
-			$boleto->save();
-			LancamentoController::reativarPorBoleto($id);
-			BoletoLogController::alteracaoBoleto($boleto->id,'Solicitação de reativação de boleto por '.Session::get('nome_usuario'));
-			//AtendimentoController::novoAtendimento("Solicitação de reativação de boleto: ".$id, $boleto->pessoa, Auth::user()->pessoa);
-			return redirect($_SERVER['HTTP_REFERER']);
-
-
-
-		}
-		public function editar($id){
-			$boleto = Boleto::find($id);
-			if($boleto != null){
-				$boleto->vencimento = \Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y');
-				$valor = $this->valorSoma($id);
-				return view('financeiro.boletos.editar')->with('boleto',$boleto)->with('valor',$valor);
-			}
-			else 
-				return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Boleto '.$id.' não encontrado.']);
-		}
-		public function update(Request $r){
-			
-			if($r->boleto > 0){
-				$boleto = Boleto::find($r->id);
-				BoletoLogController::alteracaoBoleto($boleto->id,'Boleto editado por '.Auth::user()->getPessoa()->nome_simples);
-				BoletoLogController::alteracaoBoleto($boleto->id,'Boleto editado: '.\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y').'->'.$r->vencimento.' status: '.$boleto->status.' ->'.$r->status) .'por '.Auth::user()->pessoa;
+				'id'				 => $boleto->id,
+				'logo'                => 'img/logo-small.png',
+				'dataVencimento'      => Carbon::parse($boleto->vencimento),
+				'fatorVencimento'     => $fatorVencimento, // Fator de vencimento corrigido
+				'valor'               => $boleto->valor,
+				'numero'              => $boleto->id,
+				'numeroDocumento'     => $boleto->id,
+				'pagador'             => $pagador,
+				'beneficiario'        => $beneficiario,
+				'carteira'            => 17,
+				'variacaoCarteira'    => '019',
+				'agencia'             => '0295', // Removido o "X"
+				'convenio'            => $convenio,
+				'conta'               => $conta,
+				'pix' => true,
+				'pixChaveTipo'		  =>'aleatoria',
+				'pixChave'			  => env('PIX_CHAVE'),
+				'pixQrCode' => $pix,
 				
-				if($boleto->vencimento != "0000-00-00 00:00:00")
-					$boleto->vencimento = \Carbon\Carbon::createFromFormat('d/m/Y', $r->vencimento, 'Europe/London')->format('Y-m-d 23:59:59');
-				else
-					$boleto->vencimento = \Carbon\Carbon::createFromFormat('d/m/Y', '10/01/2018', 'Europe/London')->format('Y-m-d 23:59:59');
-				$boleto->valor = str_replace(',','.',$r->valor);
-				$boleto->status = $r->status;
-				$boleto->save();
-
 				
-			}
-			return redirect(asset('secretaria/atendimento'));
-
-		}
-
-
-		public function valorSoma($boleto){
-			$lancamentos = Lancamento::where('boleto',$boleto)->where('status',null)->get();
-			$valor = 0;
-			foreach($lancamentos as $lancamento){
-				$valor+=$lancamento->valor;
-			}
-			return $valor;
-
-		}
-
-		public function segundaVia(Request $request){
-			//dd($request);
-			$this->validate($request, [
-				'cpf'=>'required'
-							
-
+		
+				'descricaoDemonstrativo' => $array_lancamentos,
+				'instrucoes' => [
+					'Sr. Caixa, cobrar multa de 2% após o vencimento',
+					'Cobrar juros de 1% ao mês por atraso.',
+					'Após o vencimento, o pagamento dever ser feito no Banco do Brasil',
+					'Em caso de dúvidas ou divergências entre em contato'
+				],
 			]);
-			$cpf_alt = preg_replace( '/[^0-9]/is', '', $request->cpf);
-			$cpf_alt_formated = \App\classes\Strings::mask(str_pad($cpf_alt,11,'0'),"###.###.###-##");
 
-			if($cpf_alt == '' || $cpf_alt_formated == '')
-				return redirect('/meuboleto')->withErrors(["Desculpe, mas os dados fornecidos não são validos: ".$cpf_alt ]);
-
-
-			$dados_pessoa = \App\PessoaDadosGerais::where('valor','like',$cpf_alt)->orWhere('valor','like',$cpf_alt_formated)->first();
-			if($dados_pessoa){
-				$pessoa = Pessoa::withTrashed()->find($dados_pessoa->pessoa);
-					
-					$boletos = Boleto::where('pessoa',$pessoa->id)
-							->where('status','emitido')
-							->get();
-					
-					return view('financeiro.boletos.meuboleto-lista',compact('boletos'))->with('nome',$pessoa->nome);
-
-			}
-			else
-
-				return redirect('/meuboleto')->withErrors(["Desculpe, não encontramos registro com os dados informados. Verifique o preenchimento e tente novamente. Caso o problema persistir entre em contato conosco pelo telefone 3362-0580 ou 3362-0581."]);
-
-
+		}    
+		else{
+			$bb = new \Eduardokum\LaravelBoleto\Boleto\Banco\Bb([
+				'id'				 => $boleto->id,
+				'logo'                => 'img/logo-small.png',
+				'dataVencimento'      => Carbon::parse($boleto->vencimento),
+				'fatorVencimento'     => $fatorVencimento, // Fator de vencimento corrigido
+				'valor'               => $boleto->valor,
+				'numero'              => $boleto->id,
+				'numeroDocumento'     => $boleto->id,
+				'pagador'             => $pagador,
+				'beneficiario'        => $beneficiario,
+				'carteira'            => 17,
+				'variacaoCarteira'    => '019',
+				'agencia'             => '0295', // Removido o "X"
+				'convenio'            => $convenio,
+				'conta'               => $conta,
+				
+				
+		
+				'descricaoDemonstrativo' => $array_lancamentos,
+				'instrucoes' => [
+					'Sr. Caixa, cobrar multa de 2% após o vencimento',
+					'Cobrar juros de 1% ao mês por atraso.',
+					'Após o vencimento, o pagamento dever ser feito no Banco do Brasil',
+					'Em caso de dúvidas ou divergências entre em contato conosco: 3362-0580'
+				],
+			]);
 		}
 
-		/**
-		 * Atualiza valor os boletos devido alguma alteração do valor dos lançamentos.
-		 *
-		 * @param integer $boleto
-		 * @return void
-		 */
-		public static function atualizarValor(int $numero_boleto){
-			$boleto = Boleto::find($numero_boleto);
-			$boleto->valor = Lancamento::where('boleto',$boleto->id)->sum('valor');
+		return $bb;
+}
+
+
+	public function consultarBoletosCPF(Request $request){
+		$dados_pessoa = PessoaDadosGerais::where('dado',3)->where('valor',$requent->cpf)->get();
+		if($dados_pessoa->count() == 0){
+			return "CPF não encontrado.";
+		}
+		foreach($dados_pessoa as $dado){
+			$pessoa = Pessoa::where('id',$dado->pessoa)->where('nascimento',$request->nascimento)->get();
+			if ($pessoa->count()>0){
+				echo "hi";
+			}
+
+		}
+		
+
+
+	}
+
+	public function novo($pessoa){
+
+		$matriculas = \App\Matricula::where('pessoa',$pessoa)->whereIn('status',['ativa','pendente','espera'])->get();
+		$lancamentos = Lancamento::where('pessoa',$pessoa)->where('boleto',null)->where('status',null)->get();
+		return view('financeiro.boletos.novo')->with('matriculas',$matriculas)->with('pessoa',$pessoa)->with('lancamentos',$lancamentos);
+
+	}
+
+
+	public function create(Request $r){
+		if($r->valor >0){
+			$boleto = new Boleto;
+				$boleto->vencimento = $r->vencimento;
+				$boleto->pessoa = $r->pessoa;
+				$boleto->valor = $r->valor;
+				$boleto->status = 'gravado';
+				$boleto->save();
+			if(isset($r->matriculas) && count($r->matriculas)){				
+				foreach ($r->matriculas as $id_matricula){
+					$matricula = \App\Matricula::find($id_matricula);
+					if($matricula){
+						$lancamento = new Lancamento;
+						$lancamento->pessoa = $r->pessoa;
+						$lancamento->matricula = $matricula->id;
+						$lancamento->referencia = 'Parcela de '.$matricula->getNomeCurso();
+						$lancamento->valor = $matricula->valor->valor/$matricula->valor->parcelas;
+						$lancamento->boleto = $boleto->id;
+						$lancamento->save();
+					}
+				}	
+			}
+			if(isset($r->lancamentos) && count($r->lancamentos)){
+				$lancamentos = Lancamento::whereIn('id',$r->lancamentos)->update(['boleto'=>$boleto->id]);	
+			}		
+		}
+		else
+			return redirect()->back()->with(['danger'=>'Para gerar um boleto é necessário que o valor não seja zero.']);
+		AtendimentoController::novoAtendimento("Criação manual de boleto: ".$boleto->id, $boleto->pessoa, Auth::user()->pessoa);
+		return redirect(asset('secretaria/atender/'.$r->pessoa));
+
+
+
+	}
+	public function reativar($id){
+		$boleto=Boleto::find($id);
+		$boleto->status = 'impresso';
+		$boleto->save();
+		LancamentoController::reativarPorBoleto($id);
+		BoletoLogController::alteracaoBoleto($boleto->id,'Solicitação de reativação de boleto por '.Session::get('nome_usuario'));
+		//AtendimentoController::novoAtendimento("Solicitação de reativação de boleto: ".$id, $boleto->pessoa, Auth::user()->pessoa);
+		return redirect($_SERVER['HTTP_REFERER']);
+
+
+
+	}
+	public function editar($id){
+		$boleto = Boleto::find($id);
+		if($boleto != null){
+			$boleto->vencimento = \Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y');
+			$valor = $this->valorSoma($id);
+			return view('financeiro.boletos.editar')->with('boleto',$boleto)->with('valor',$valor);
+		}
+		else 
+			return redirect($_SERVER['HTTP_REFERER'])->withErrors(['Boleto '.$id.' não encontrado.']);
+	}
+	public function update(Request $r){
+		
+		if($r->boleto > 0){
+			$boleto = Boleto::find($r->id);
+			BoletoLogController::alteracaoBoleto($boleto->id,'Boleto editado por '.Auth::user()->getPessoa()->nome_simples);
+			BoletoLogController::alteracaoBoleto($boleto->id,'Boleto editado: '.\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y').'->'.$r->vencimento.' status: '.$boleto->status.' ->'.$r->status) .'por '.Auth::user()->pessoa;
+			
+			if($boleto->vencimento != "0000-00-00 00:00:00")
+				$boleto->vencimento = \Carbon\Carbon::createFromFormat('d/m/Y', $r->vencimento, 'Europe/London')->format('Y-m-d 23:59:59');
+			else
+				$boleto->vencimento = \Carbon\Carbon::createFromFormat('d/m/Y', '10/01/2018', 'Europe/London')->format('Y-m-d 23:59:59');
+			$boleto->valor = str_replace(',','.',$r->valor);
+			$boleto->status = $r->status;
 			$boleto->save();
 
+			
 		}
-		
-		
-		/**
-		 * [Gera relatório (view) com todos boletos em aberto]
-		 * @return [type] [description]
-		 */
-		public function relatorioBoletosAbertos($ativos=1){
-			switch($ativos){
-				case 0:
-					$boletos = Boleto::whereIn('status',['emitido','pelosite'])->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y')-1)->orderBy('pessoa')->get();
-					foreach($boletos as $boleto){
-						BoletoController::alterarStatus($boleto, 'inscrever');
-					}
-					break;
-				case 1:
-					$boletos = Boleto::whereIn('status',['emitido','pelosite'])->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->orderBy('pessoa')->get();
-					break;
-				case 2:
-					$boletos = Boleto::where('status','divida')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
-					break;
-				case 3:
-					$boletos = Boleto::where('status','pelosite')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
-					break;
+		return redirect(asset('secretaria/atendimento'));
+
+	}
+
+
+	public function valorSoma($boleto){
+		$lancamentos = Lancamento::where('boleto',$boleto)->where('status',null)->get();
+		$valor = 0;
+		foreach($lancamentos as $lancamento){
+			$valor+=$lancamento->valor;
+		}
+		return $valor;
+
+	}
+
+	public function segundaVia(Request $request){
+		//dd($request);
+		$this->validate($request, [
+			'cpf'=>'required'
+						
+
+		]);
+		$cpf_alt = preg_replace( '/[^0-9]/is', '', $request->cpf);
+		$cpf_alt_formated = \App\classes\Strings::mask(str_pad($cpf_alt,11,'0'),"###.###.###-##");
+
+		if($cpf_alt == '' || $cpf_alt_formated == '')
+			return redirect('/meuboleto')->withErrors(["Desculpe, mas os dados fornecidos não são validos: ".$cpf_alt ]);
+
+
+		$dados_pessoa = \App\PessoaDadosGerais::where('valor','like',$cpf_alt)->orWhere('valor','like',$cpf_alt_formated)->first();
+		if($dados_pessoa){
+			$pessoa = Pessoa::withTrashed()->find($dados_pessoa->pessoa);
 				
-				default:
-					$boletos = Boleto::whereIn('status',['emitido','pelosite'])->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->orderBy('pessoa')->get();
-					break;
-	
+				$boletos = Boleto::where('pessoa',$pessoa->id)
+						->where('status','emitido')
+						->get();
+				
+				return view('financeiro.boletos.meuboleto-lista',compact('boletos'))->with('nome',$pessoa->nome);
+
+		}
+		else
+
+			return redirect('/meuboleto')->withErrors(["Desculpe, não encontramos registro com os dados informados. Verifique o preenchimento e tente novamente. Caso o problema persistir entre em contato conosco pelo telefone 3362-0580 ou 3362-0581."]);
+
+
+	}
+
+	/**
+	 * Atualiza valor os boletos devido alguma alteração do valor dos lançamentos.
+	 *
+	 * @param integer $boleto
+	 * @return void
+	 */
+	public static function atualizarValor(int $numero_boleto){
+		$boleto = Boleto::find($numero_boleto);
+		$boleto->valor = Lancamento::where('boleto',$boleto->id)->sum('valor');
+		$boleto->save();
+
+	}
+		
+		
+	/**
+	 * [Gera relatório (view) com todos boletos em aberto]
+	 * @return [type] [description]
+	 */
+	public function relatorioBoletosAbertos($ativos=1){
+		switch($ativos){
+			case 0:
+				$boletos = Boleto::whereIn('status',['emitido','pelosite'])->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y')-1)->orderBy('pessoa')->get();
+				foreach($boletos as $boleto){
+					BoletoController::alterarStatus($boleto, 'inscrever');
 				}
-
-			foreach($boletos as $boleto){
-				$boleto->aluno = \App\Pessoa::withTrashed()->find($boleto->pessoa);
-				$boleto->aluno->telefones =  $boleto->aluno->getTelefones();
-
+				break;
+			case 1:
+				$boletos = Boleto::whereIn('status',['emitido','pelosite'])->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->orderBy('pessoa')->get();
+				break;
+			case 2:
+				$boletos = Boleto::where('status','divida')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
+				break;
+			case 3:
+				$boletos = Boleto::where('status','pelosite')->where('vencimento','<',date('Y-m-d'))->orderBy('pessoa')->get();
+				break;
+			
+			default:
+				$boletos = Boleto::whereIn('status',['emitido','pelosite'])->where('vencimento','<',date('Y-m-d'))->whereYear('vencimento',date('Y'))->orderBy('pessoa')->get();
+				break;
 
 			}
-			
-			return view('relatorios.boletos_vencidos')->with('boletos',$boletos)->with('ativos',$ativos);
+
+		foreach($boletos as $boleto){
+			$boleto->aluno = \App\Pessoa::withTrashed()->find($boleto->pessoa);
+			$boleto->aluno->telefones =  $boleto->aluno->getTelefones();
+
+
 		}
+		
+		return view('relatorios.boletos_vencidos')->with('boletos',$boletos)->with('ativos',$ativos);
+	}
 
 
 	public function limparDebitos(){

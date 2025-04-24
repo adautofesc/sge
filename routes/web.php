@@ -503,6 +503,7 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::get('divida-ativa','DividaAtivaController@gerarDividaAtiva');// envia boletos para divida ativa;
 			Route::get('listar-por-pessoa','BoletoController@listarPorPessoa');
 			Route::get('informacoes/{id}','BoletoController@historico');
+			Route::get('imprimir-laravel-boleto/{ids}','BoletoController@imprimirLaravelBoleto');
 			Route::get('cancelar/{id}','BoletoController@cancelarView');
 			Route::get('registrar/{ids}','IntegracaoBBController@registrarBoletos');
 			Route::get('gerar-carne/{pessoa}','CarneController@gerarCarneIndividual');

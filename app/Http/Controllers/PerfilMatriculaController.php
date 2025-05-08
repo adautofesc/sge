@@ -120,12 +120,16 @@ class PerfilMatriculaController extends Controller
 
 
     public function rematricula_view(Request $r){
+
         $devedor = \App\Boleto::verificarDebitos($r->pessoa->id);
         if($devedor->count()>0)
             return redirect()->back()->withErrors(['Pendências encontradas em seu cadastro. Verifique seus boletos ou entre em contato com nossa secretaria.']);
+
+        if(date('m')<8)
+            $data_limite = (date('Y')-1).'-11-01';
         $matriculas = Matricula::where('pessoa', $r->pessoa->id)
                 ->whereIn('status',['expirada','ativa'])
-                ->whereDate('data','>','2021-11-01')
+                ->whereDate('data','>',(date('Y')-1).'-11-01')
                 ->orderBy('id','desc')->get();
         foreach($matriculas as $matricula){
             $matricula->inscricoes = \App\Inscricao::where('matricula',$matricula->id)->whereIn('status',['regular','finalizada'])->get();

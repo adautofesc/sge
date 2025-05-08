@@ -86,7 +86,7 @@ Route::prefix('perfil')->group(function(){
 
 		});
 		Route::prefix('rematricula')->group(function(){
-			Route::get('/','PerfilMatriculaController@rematricula_view');
+			Route::get('/','Perfil\RematriculaController@rematricula_view');
 			Route::post('/','PerfilMatriculaController@confirmacao');
 
 		});
@@ -730,7 +730,8 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('jornadas-por-programa/{programa}', [JornadaPrograma::class,'index']);
 		Route::get('uso-livre', [UsoLivreController::class,'relatorio']);
 		Route::get('horarios-htp/{programas}', [JornadaHTP::class,'index']);
-		Route::get('conteudo-aulas/{turmas}','AulaDadoController@relatorioConteudo');
+		Route::get('conteudo-aulas/{turmas}/{datas?}','AulaDadoController@relatorioConteudo');
+		Route::get('conteudo-ocorrencias/{turmas}/{datas?}','AulaDadoController@relatorioConteudo');
 	});
 
 	//Docentes
@@ -742,7 +743,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('jornadas/{educador?}',[JornadaController::class,'modalJornadaDocente']);
 		Route::get('cargas/{educador?}',[PessoaDadosJornadaController::class,'modalCargaDocente']);
 		Route::prefix('frequencia')->group( function(){
-			Route::get('listar/{turma}','FrequenciaController@listaChamada');
+			Route::get('listar/{turma}/{datas?}','FrequenciaController@listaChamada');
 			Route::get('nova-aula/{turma}/{aula?}','FrequenciaController@novaChamada_view');
 			Route::post('nova-aula/{turma}/{aula?}','FrequenciaController@novaChamada_exec');
 			Route::get('editar-aula/{aula}','FrequenciaController@editarChamada_view');

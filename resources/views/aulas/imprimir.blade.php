@@ -65,13 +65,15 @@
 			<table class="table table-condensed table-sm">
 				<tr>
 					<td><strong>Aula</strong></td>
-					<td><strong>Data</strong></td>
-					<td><strong>conteúdo</strong></td>
+					<td><strong>Data</strong></td><td>
+						<strong>Dado</strong></td>
+					<td><strong>Conteúdo</strong></td>
 				</tr>
 				@foreach($conteudo->where('turma', $turma->id) as $cont)
 				<tr>
 					<td>{{$i++}}</td>
 					<td>{{\App\classes\Data::converteParaUsuario($cont->data)}}</td>
+					<td>{{$cont->dado}}</td>
 					<td>{{$cont->valor}}</td>
 				</tr>
 				

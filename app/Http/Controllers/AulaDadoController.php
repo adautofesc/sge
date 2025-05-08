@@ -76,12 +76,22 @@ class AulaDadoController extends Controller
         return redirect()->back()->withErrors(['success'=>'Dados atualizados com sucesso']);
     }
 
-    public function relatorioConteudo(string $turmas){
+    public function relatorioConteudo(string $turmas, string $datas=null){
         $arr_turma = explode(',',$turmas);
-        $conteudo = AulaDado::join('aulas','aulas.id','aula_dados.aula')
+        if($datas){
+            $arr_datas = explode(',',$datas);
+            $conteudo = AulaDado::join('aulas','aulas.id','aula_dados.aula')
+                    ->whereBetween('aulas.data',$arr_datas)
                     ->whereIn('aulas.turma',$arr_turma)
                     ->orderByDesc('aulas.turma','aulas.data')
                     ->get();
+
+        }
+        else
+            $conteudo = AulaDado::join('aulas','aulas.id','aula_dados.aula')
+                        ->whereIn('aulas.turma',$arr_turma)
+                        ->orderByDesc('aulas.turma','aulas.data')
+                        ->get();
         $turmas = \App\Turma::whereIn('id',$arr_turma)->get();
 
         

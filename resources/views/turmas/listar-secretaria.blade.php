@@ -210,9 +210,15 @@
                                 <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=fechada');">
                                     <i class="fa fa-circle-o icon"></i> Fechadas
                                 </label>
-                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=rematricula');">
-                                    <i class="fa fa-circle-o icon"></i> Rematrícula
+                                
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=rematricula_presencial');">
+                                    <i class="fa fa-circle-o icon"></i> Rematrícula Presencial
                                 </label>
+
+                                <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=rematricula');">
+                                    <i class="fa fa-circle-o icon"></i> Rematrícula Geral
+                                </label>
+
                                 <label class="dropdown-item" onclick="window.location.replace('?filtro=status_matriculas&valor=online');">
                                     <i class="fa fa-circle-o icon"></i> Online 
                                 </label>
@@ -302,9 +308,13 @@
                                     <a class="dropdown-item" href="#" onclick="alterarStatusMatricula('fechada')" title="Encerra todas formas matrículas" style="line-height: 30px; text-decoration: none">
                                         <i class="fa fa-circle-o icon"></i> Fechar Matrículas
                                     </a>
-                                    <a class="dropdown-item" href="#" onclick="alterarStatusMatricula('rematricula')" title="Abrir apenas para alunos anteriores" style="line-height: 30px; text-decoration: none">
-                                        <i class="fa fa-circle-o icon"></i> Abrir para Rematrícula
+                                    <a class="dropdown-item" href="#" onclick="alterarStatusMatricula('rematricula_presencial')" title="Abrir apenas para alunos anteriores, somente presencial" style="line-height: 30px; text-decoration: none">
+                                        <i class="fa fa-circle-o icon"></i> Abrir para Rematrícula Presencial
                                     </a>
+                                    <a class="dropdown-item" href="#" onclick="alterarStatusMatricula('rematricula')" title="Abrir apenas para alunos anteriores presencial ou online" style="line-height: 30px; text-decoration: none">
+                                        <i class="fa fa-circle-o icon"></i> Abrir para Rematrícula Geral
+                                    </a>
+
                                     <label class="dropdown-item btn btn-sm btn-primary" href="#" style="line-height: 20px;text-decoration: none; color:white">
                                     Alterar status para:
                                      </label>
@@ -419,6 +429,7 @@
                                                                     @case('online')
                                                                     @case('presencial')
                                                                     @case('rematricula')
+                                                                    @case('rematricula_presencial')
                                                                         <span  class="badge badge-pill badge-info" style="font-size: 0.8rem">
                                                                             <i class="fa fa-sign-in  icon" title="Matriculas {{$turma->status_matriculas}} abertas"></i> Inscrições abertas p/{{$turma->status_matriculas}}
                                                                         </span>

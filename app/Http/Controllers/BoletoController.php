@@ -602,12 +602,13 @@ class BoletoController extends Controller
 		} else {
 			$fatorVencimento = Carbon::parse($boleto->vencimento)->diffInDays($dataBaseAntiga);
 		}
-
-		$pix = \Eduardokum\LaravelBoleto\Util::gerarPixCopiaECola(env('PIX_CHAVE'), $boleto->valor, 'BOL'.$boleto->id, $pagador, $beneficiario);
+		
 		$convenio = env('BB_CONVENIO');
 		$conta = env('BB_CONTA');
 
 		if($boleto->pessoa == 19511){
+			
+			$pix_cc = \Eduardokum\LaravelBoleto\Util::gerarPixCopiaECola(env('PIX_CHAVE'), $boleto->valor, 'BOL'.$boleto->id, $pagador, $beneficiario);
 			$bb = new \Eduardokum\LaravelBoleto\Boleto\Banco\Bb([
 
 				'id'				 => $boleto->id,
@@ -624,11 +625,22 @@ class BoletoController extends Controller
 				'agencia'             => '0295', // Removido o "X"
 				'convenio'            => $convenio,
 				'conta'               => $conta,
-				'pix' => true,
-				'pixChaveTipo'		  =>'aleatoria',
-				'pixChave'			  => env('PIX_CHAVE'),
-				'pixQrCode' => $pix,
-				
+
+				//'pixChaveTipo'		  =>'aleatoria',
+				//'pixChave'			  => env('PIX_CHAVE'),
+				//'pixQrCode' => $pix_cc,
+
+				'qrCode' => [
+					'tipo' => 'static', // ou 'static'
+					'chave' => env('PIX_CHAVE'), // Chave PIX (CPF/CNPJ/Telefone/Email/Chave Aleatória)
+					'nome' => $beneficiario->getNome(),
+					'cidade' => $beneficiario->getCidade(),
+					'txId' => 'BOLETO' . $boleto->id,
+					'valor' => 250.75, // Mesmo valor do boleto
+					'solicitacaoPagador' => 'Pagamento do boleto #' . $boleto->id,
+					
+        		],
+    				
 				
 		
 				'descricaoDemonstrativo' => $array_lancamentos,

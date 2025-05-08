@@ -51,11 +51,18 @@ class FrequenciaController extends Controller
         return view('frequencias.lista-unitaria',compact('inscritos'))->with('i',1)->with('aulas',$aulas)->with('turma',$turma);
     }
 
-    public function listaChamada($ids){
+    public function listaChamada($ids,$datas=null){
+        
         $turmas_arr = explode(',',$ids);
         $turmas = \App\Turma::whereIn('id',$turmas_arr)->get();
         foreach($turmas as &$turma){      
-            $turma->aulas = Aula::where('turma',$turma->id)->orderBy('data')->get();
+            if($datas){      
+                $datas_arr = explode(',',$datas);           
+                $turma->aulas = Aula::where('turma',$turma->id)->whereBetween('data',$datas_arr)->orderBy('data')->get(); 
+            }
+            else
+                $turma->aulas = Aula::where('turma',$turma->id)->orderBy('data')->get();
+            
             foreach($turma->aulas as &$aula){
                 $aula->presentes = $aula->getAlunosPresentes();    
             }

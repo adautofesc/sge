@@ -15,6 +15,7 @@ class CreateEventoInscricaoLogsTable extends Migration
     {
         Schema::create('evento_inscricao_logs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('evento_id')->constrained('eventos')->onDelete('cascade');
             $table->timestamps();
         });
     }

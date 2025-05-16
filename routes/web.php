@@ -265,7 +265,21 @@ Route::middleware(['auth','login']) ->group(function(){
 	});
 	Route::prefix('boletos')->group(function(){
 		Route::get('/','BoletoController@painel');
+		
 
+	});
+	Route::prefix('BB')->group(function(){
+		Route::get('testar','IntegracaoBBController@testar');
+		Route::get('boletos','IntegracaoBBController@listarBoletos');//listar
+		Route::post('boletos','IntegracaoBBController@registroBoletosLote');//registrar
+		Route::get('boletos/{id}','IntegracaoBBController@detalhesBoleto');//detalhes
+		Route::post('boletos/{id}/alterar','IntegracaoBBController@alterarBoleto');//alterar (patch)
+		Route::post('boletos/{id}/baixar','IntegracaoBBController@baixarBoleto');//baixa ou cancelamento
+		Route::post('boletos/{id}/cancelar-pix','IntegracaoBBController@cancelarPix');//baixa ou cancelamento
+		Route::post('boletos/{id}/gerar-pix','IntegracaoBBController@geraPix');//baixa ou cancelamento
+
+
+		
 	});
 
 	Route::prefix('uso-livre')->group(function(){
@@ -555,6 +569,8 @@ Route::middleware(['auth','login']) ->group(function(){
 
 
 	});
+
+
 
 
 	// Gestão Pessoal

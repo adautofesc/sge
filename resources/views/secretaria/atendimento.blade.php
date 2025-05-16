@@ -859,15 +859,35 @@
 
   }
   function registrarBoletosSelecionados(){
-    var itens = '';
+    var itens = [];
 
     if(confirm('Confirmar registro dos boletos selecionados?')){
+        
         boletos = $("input[id^='boleto']:checked:enabled").each(function(){
             //console.log($(this).attr("name"));
-            itens += $(this).attr("name")+',';
+            itens.push($(this).attr("name"));
         });
+
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            method: "POST",
+            url: "/BB/boletos",
+            data: { boletos: itens}
         
-        window.location.replace("{{asset('/financeiro/boletos/registrar/')}}/"+itens);
+            })
+            .done(function(msg){
+               console.log(msg);
+
+            })
+            .fail(function(msg){
+                console.log(msg);
+            });
+
+
+        
+        
     }
         
 

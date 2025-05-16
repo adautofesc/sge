@@ -36,11 +36,6 @@
 
 
         </div>
-    
-
-
-
-    @if(in_array('18', Auth::user()->recursos))
 
         <div class="col-md-6 center-block">
             <div class="card card-primary">
@@ -91,7 +86,7 @@
 
         </div>
     
-    @endif
+    
     </div>
 </section>
 

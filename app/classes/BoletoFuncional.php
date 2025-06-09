@@ -104,15 +104,19 @@ public function gerar($boleto){
 		#################################################
 		*/
 
-
+		$qrcode = $boleto->getQRCode();
+		if($qrcode!=null)
+			$dadosboleto["pix"] = $qrcode->emv;
+		
+	
 		// SEUS DADOS
 		$dadosboleto["identificacao"] = "Fundação Educacional São Carlos";
 		$dadosboleto["cpf_cnpj"] = "45.361.904/0001-80";
 		$dadosboleto["endereco"] = "Rua São Sebastiao, 2828, Vila Nery ";
 		$dadosboleto["cidade_uf"] = "São Carlos / SP";
 		$dadosboleto["cedente"] = "FUNDAÇÃO EDUCACIONAL SÃO CARLOS";
-		$dadosboleto["pix"] = 000000;
 
+		
 		#####################################################################################
 		/* $codigobanco = "001";
 		$codigo_banco_com_dv = $this->geraCodigoBanco($codigobanco);

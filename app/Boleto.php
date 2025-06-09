@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Lancamento;
+use App\QrcodeBoletos;
 
 
 class Boleto extends Model
@@ -32,5 +33,10 @@ class Boleto extends Model
         $vencimento = \Carbon\Carbon::today()->addDays(-3);
 		$boletos_vencidos = Boleto::where('pessoa',$pessoa)->whereIn('status',['emitido','divida','aberto executado'])->where('vencimento','<',$vencimento->toDateString());
 		return $boletos_vencidos;
+    }
+
+    public function getQRCode(){
+        $qrcoe = QrcodeBoletos::where('boleto_id',$this->id)->first();
+        return $qrcoe;
     }
 }

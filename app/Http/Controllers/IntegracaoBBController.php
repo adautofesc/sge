@@ -215,14 +215,18 @@ class IntegracaoBBController extends Controller
 
     }
 
-
+    /**
+     * Monta o array de dados do boleto para registro
+     * @param Boleto $boleto
+     * @return array
+     */
     public function montarBoletoBB(Boleto $boleto){
         $cliente = Pessoa::withTrashed()->find($boleto->pessoa);
         $cliente = PessoaController::formataParaMostrar($cliente);
         return array(
-                'numeroConvenio' => 3128557, //env('BB_CONVENIO'),
+                'numeroConvenio' => env('BB_CONVENIO'),
                 'numeroCarteira' => 17,
-                'numeroVariacaoCarteira' => 35,//19
+                'numeroVariacaoCarteira' => env('BB_CARTEIRA'),
                 'dataEmissao' => date('d.m.Y'),
                 'dataVencimento'=> Carbon::parse($boleto->vencimento)->format('d.m.Y'),
                 'valorOriginal' => $boleto->valor,
@@ -231,7 +235,7 @@ class IntegracaoBBController extends Controller
                 'codigoTipoTitulo' => '2',
                 'descricaoTipoTitulo' => 'Cobrança de Pagamento',
                 'numeroTituloBeneficiario' => $boleto->id,
-                'numeroTituloCliente' =>'0003128557'.str_pad($boleto->id,10,'0',STR_PAD_LEFT),// '000'.env('BB_CONVENIO').str_pad($boleto->id,10,'0',STR_PAD_LEFT),
+                'numeroTituloCliente' =>'000'.env('BB_CONVENIO').str_pad($boleto->id,10,'0',STR_PAD_LEFT),
                 'mensagemBloquetoOcorrencia' => 'Boleto gerado pelo sistema de cobrança',
 
                 'pagador' => array(
@@ -259,6 +263,11 @@ class IntegracaoBBController extends Controller
 
     }
 
+    public function viewRegistroBoleto(Boleto $boleto){
+        $boleto_BB = $this->montarBoletoBB($boleto);
+        return view('integracao.bb.registro_boleto', compact('boleto_BB','boleto'));
+    }
+
 
 
     public function registrarBoleto(array $fields){
@@ -284,10 +293,11 @@ class IntegracaoBBController extends Controller
     }
 
     public function alterarBoleto(string $id, array $fields){
+        $txId = '000'.env('BB_CONVENIO').str_pad($id,10,'0',STR_PAD_LEFT);
         try {
             $response = $this->clientCobranca->request(
                 'PATCH',
-                "/cobrancas/v2/boletos/{$id}",
+                "/cobrancas/v2/boletos/{$txId}",
                 [
                     'headers' => [
                         'accept' => 'application/json',
@@ -315,11 +325,12 @@ class IntegracaoBBController extends Controller
         }
     }
 
-    public function detalheDoBoleto(string $id){
+    public function detalharBoleto(string $id){
+        $txId = '000'.env('BB_CONVENIO').str_pad($id,10,'0',STR_PAD_LEFT);
         try {
             $response = $this->clientCobranca->request(
                 'GET',
-                "/cobrancas/v2/boletos/{$id}",
+                "/cobrancas/v2/boletos/{$txId}",
                 [
                     'headers' => [
                         'X-Developer-Application-Key' => env('BB_dev_app_key'),
@@ -344,7 +355,29 @@ class IntegracaoBBController extends Controller
         }
     }
 
-    public function listarBoletos($filters){
+    public function listarBoletos(Request $request){
+
+        if(!$request->has('dataInicioVencimento')) {
+            $data_inicial = Carbon::now()->subDays(30)->format('d.m.Y');
+        }
+        else{
+            $data_inicial = Carbon::createFromFormat('d.m.Y', $request->dataInicioVencimento)->format('d.m.Y');
+        }
+        if(!$request->has('dataFimVencimento')) {
+            $data_final = Carbon::now()->format('d.m.Y');
+        }
+        else{
+            $data_final = Carbon::createFromFormat('d.m.Y', $request->dataFimVencimento)->format('d.m.Y');
+        }
+
+        if(!$request->has('tipo_boleto')) 
+            $tipo = 'A'; // A - Todos, B - Boletos
+        else
+            $tipo = 'B'; 
+
+        
+
+        $filters = $request->all();
         try {
             $response = $this->clientCobranca->request(
                 'GET',
@@ -357,12 +390,12 @@ class IntegracaoBBController extends Controller
                     'verify' => false,
                     'query' => [
                         'gw-dev-app-key' => env('BB_dev_app_key'),
-                        'indicadorSituacao' => 'B', // A ou B - Abertos ou Baixados
-                        'agenciaBeneficiario' =>'0295' ,
-                        'contaBeneficiario' => env('BB_CONTA'),
-                        'carteiraConvenio' =>17,
-                        'dataInicioVencimento' => $filters['dataInicioVencimento'],
-                        'dataFimVencimento' => $filters['dataFimVencimento']
+                        'indicadorSituacao' => $tipo, // A ou B - Abertos ou Baixados
+                        'agenciaBeneficiario' =>env('BB_AGENCIA'),
+                        'contaBeneficiario' =>env('BB_CONTA'),
+                        'dataInicioVencimento' => $data_inicial,
+                        'dataFimVencimento' => $data_final,
+                     
                         
                     ],
                 ]
@@ -376,14 +409,17 @@ class IntegracaoBBController extends Controller
             $response = $e->getMessage();
             return ['error' => "Falha ao baixar Boleto Cobranca: {$response}"];
         }
+
+        
     }
 
     public function baixarBoleto(string $id){
+        $txId = '000'.env('BB_CONVENIO').str_pad($id,10,'0',STR_PAD_LEFT);
         $fields['numeroConvenio'] = env('BB_CONVENIO');
         try {
             $response = $this->clientCobranca->request(
                 'POST',
-                "/cobrancas/v2/boletos/{$id}/baixar",
+                "/cobrancas/v2/boletos/{$txId}/baixar",
                 [
                     'headers' => [
                         'Content-Type' => 'application/json',
@@ -410,11 +446,12 @@ class IntegracaoBBController extends Controller
         }
     }
 
-    public function consultaPixBoleto(string $id){
+    public function consultarPixBoleto(string $id){
+        $txId = '000'.env('BB_CONVENIO').str_pad($id,10,'0',STR_PAD_LEFT);
         try {
             $response = $this->clientCobranca->request(
                 'GET',
-                "/cobrancas/v2/boletos/{$id}/pix",
+                "/cobrancas/v2/boletos/{$txId}/pix",
                 [
                     'headers' => [
                         'Content-Type' => 'application/json',
@@ -439,16 +476,51 @@ class IntegracaoBBController extends Controller
     }
 
     public function cancelarPixBoleto(string $id){
+        $txId = '000'.env('BB_CONVENIO').str_pad($id,10,'0',STR_PAD_LEFT);
         $fields['numeroConvenio'] = env('BB_CONVENIO');
         try {
             $response = $this->clientCobranca->request(
                 'POST',
-                "/cobrancas/v2/boletos/{$id}/cancelar-pix",
+                "/cobrancas/v2/boletos/{$txId}/cancelar-pix",
                 [
                     'headers' => [
                         'accept' => 'application/json',
                         'Content-Type' => 'application/json',
                         'Authorization' => 'Bearer ' . $this->token.''
+                    ],
+                    'verify' => false,
+                    'query' => [
+                        'gw-dev-app-key' => env('BB_dev_app_key'),
+                    ],
+                    'body' => json_encode($fields),
+                ]
+            );
+            $statusCode = $response->getStatusCode();
+            $result = json_decode($response->getBody()->getContents());
+            
+        } catch (ClientException $e) {
+            return ($e);
+        } catch (\Exception $e) {
+            $response = $e->getMessage();
+            return ['error' => "Falha ao baixar Boleto Cobranca: {$response}"];
+        }
+        QRCode::where('boleto_id', $id)->delete();
+        return array('status' => $statusCode, 'response' => $result);
+    }
+    
+    public function gerarPixBoleto(string $id){
+        $txId = '000'.env('BB_CONVENIO').str_pad($id,10,'0',STR_PAD_LEFT);
+        $fields['numeroConvenio'] = env('BB_CONVENIO');
+        try {
+            $response = $this->clientCobranca->request(
+                'POST',
+                "/cobrancas/v2/boletos/{$txId}/gerar-pix",
+                [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $this->token.'',
+                        'accept' => 'application/json',
+                        'Content-Type' => 'application/json',
+                        // 'X-Developer-Application-Key' => env('BB_dev_app_key'),
                     ],
                     'verify' => false,
                     'query' => [
@@ -467,39 +539,9 @@ class IntegracaoBBController extends Controller
             return ['error' => "Falha ao baixar Boleto Cobranca: {$response}"];
         }
     }
-    
-    public function gerarPixBoleto(string $id){
-        $fields['numeroConvenio'] = env('BB_CONVENIO');
-        try {
-            $response = $this->clientCobranca->request(
-                'POST',
-                "/cobrancas/v2/boletos/{$id}/gerar-pix",
-                [
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . $this->token.'',
-                        'accept' => 'application/json',
-                        'Content-Type' => 'application/json',
-                        // 'X-Developer-Application-Key' => env('BB_dev_app_key'),
-                    ],
-                    'verify' => false,
-                    'query' => [
-                        'gw-dev-app-key' => env('BB_dev_app_key'),
-                    ],
-                    'body' => '{"numeroConvenio": 3128557}',
-                ]
-            );
-            $statusCode = $response->getStatusCode();
-            $result = json_decode($response->getBody()->getContents());
-            return array('status' => $statusCode, 'response' => $result);
-        } catch (ClientException $e) {
-            return ($e);
-        } catch (\Exception $e) {
-            $response = $e->getMessage();
-            return ['error' => "Falha ao baixar Boleto Cobranca: {$response}"];
-        }
-    }
 
     public function gerarPixBoleto2(string $id, array $fields){
+        $txId = '000'.env('BB_CONVENIO').str_pad($id,10,'0',STR_PAD_LEFT);
         $this->headers([
             "Authorization"     => "Bearer " . $this->token,
             "accept"      => "application/json",
@@ -508,7 +550,7 @@ class IntegracaoBBController extends Controller
         ]);
         $this->fields($fields,'json');
 
-        $curl = curl_init("https://api.sandbox.bb.com.br/cobrancas/v2/boletos/00031285570000150024/gerar-pix?gw-dev-app-key=d27be77909ffab001369e17d80050056b9b1a5b0");
+        $curl = curl_init("https://api.sandbox.bb.com.br/cobrancas/v2/boletos/".$txId."/gerar-pix?gw-dev-app-key=d27be77909ffab001369e17d80050056b9b1a5b0");
         curl_setopt_array($curl,[
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_MAXREDIRS => 10,

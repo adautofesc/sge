@@ -884,9 +884,6 @@
             .fail(function(msg){
                 console.log(msg);
             });
-
-
-        
         
     }
         

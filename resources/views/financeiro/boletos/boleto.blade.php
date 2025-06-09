@@ -241,9 +241,10 @@
                      </table>
                   </td>
                   <td class="notopborder nobottomborder noleftborder" style="text-align:center">
-                     <!--
+                     @if(isset($boleto->dados["pix"]))
                      <img src="{{asset('img/qrcode.php').'?code='. $boleto->dados["pix"]}}" alt="QR Code" width="100px" />
-                     -->
+                     @endif
+                     
                   </td>
                </tr>
                <tr>

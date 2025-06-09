@@ -47,8 +47,13 @@
 
 
                <br>
-               <strong>Remessa: </strong>{{$boleto->remessa}}  
+               <strong>Remessa: </strong>{{$boleto->remessa}} <br>
                <strong>Retorno:</strong> {{$boleto->retorno}}<br>
+               <strong>Informação bancária:</strong> 
+               <a href="/BB/boletos/{{ $boleto->id }}" title="Consultar dados bancários"> {{ $boleto->id }}</a> 
+               <a href="/BB/boletos/{{ $boleto->id }}/pix" title="Consultar dados do PIX"> PIX</a> 
+               <a href="/BB/boletos/{{ $boleto->id }}/gerar-pix" title="Gerar chave PIX"> Gerar PIX</a> 
+               <a href="/BB/boletos/{{ $boleto->id }}/cancelar-pix" title="Cancelar PIX do boleto"> Cancelar PIX</a> <br>
                @if($boleto->pagamento)
                <strong>Pagamento:</strong> {{\Carbon\Carbon::parse($boleto->pagamento)->format('d/m/Y')}}<br>
                @endif

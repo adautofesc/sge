@@ -291,7 +291,7 @@ class BoletoController extends Controller
 
 	}
 	public function imprimir($boleto,Request $r){
-
+		
 		$boleto = Boleto::find($boleto);
 		if(!isset(Auth::user()->pessoa))
 			if(!isset($r->pessoa->id) || $r->pessoa->id != $boleto->pessoa)
@@ -302,7 +302,7 @@ class BoletoController extends Controller
 		$vencido = false;
 
 		if(!$boleto)
-			return redirect()->back();
+			return redirect()->back()->withErrors(['Boleto não encontrado']);
 
 		if($boleto->vencimento < date('Y-m-d')){
 			$vencido = true;
@@ -344,18 +344,7 @@ class BoletoController extends Controller
 	}
 
 
-	public function imprimirx($boleto){
-		$boleto = Boleto::find($boleto);
-		if($boleto == null)
-			throw new \Exception("Boleto Inexistente", 1);
-		if($boleto->status == 'gravado'){
-			$boleto->status = 'impresso';
-			$boleto->save();
-		}
-		$boleto_completo = $this->gerarBoleto($boleto);
-		return $boleto_completo->renderHTML();
-		
-	}
+	
 
 	/**
 	 * 
@@ -607,8 +596,14 @@ class BoletoController extends Controller
 		$conta = env('BB_CONTA');
 
 		if($boleto->pessoa == 19511){
-			
-			$pix_cc = \Eduardokum\LaravelBoleto\Util::gerarPixCopiaECola(env('PIX_CHAVE'), $boleto->valor, 'BOL'.$boleto->id, $pagador, $beneficiario);
+			$qrcode = $boleto->getQRCode();
+			if($qrcode){
+				$pix_cc = \Eduardokum\LaravelBoleto\Util::gerarPixCopiaECola($qrcode->url, $boleto->valor,$qrcode->txid, $pagador, $beneficiario);
+			}
+			else{
+				$pix_cc = null;
+			}
+			 
 			$bb = new \Eduardokum\LaravelBoleto\Boleto\Banco\Bb([
 
 				'id'				 => $boleto->id,
@@ -626,22 +621,9 @@ class BoletoController extends Controller
 				'convenio'            => $convenio,
 				'conta'               => $conta,
 
-				//'pixChaveTipo'		  =>'aleatoria',
-				//'pixChave'			  => env('PIX_CHAVE'),
-				//'pixQrCode' => $pix_cc,
-
-				'qrCode' => [
-					'tipo' => 'static', // ou 'static'
-					'chave' => env('PIX_CHAVE'), // Chave PIX (CPF/CNPJ/Telefone/Email/Chave Aleatória)
-					'nome' => $beneficiario->getNome(),
-					'cidade' => $beneficiario->getCidade(),
-					'txId' => 'BOLETO' . $boleto->id,
-					'valor' => 250.75, // Mesmo valor do boleto
-					'solicitacaoPagador' => 'Pagamento do boleto #' . $boleto->id,
-					
-        		],
-    				
-				
+				'pixChaveTipo'		  =>'aleatoria',
+				'pixChave'			  => env('PIX_CHAVE'),
+				'pixQrCode' => $pix_cc,
 		
 				'descricaoDemonstrativo' => $array_lancamentos,
 				'instrucoes' => [
@@ -681,6 +663,7 @@ class BoletoController extends Controller
 				],
 			]);
 		}
+		
 
 		return $bb;
 }
@@ -717,7 +700,7 @@ class BoletoController extends Controller
 			$boleto = new Boleto;
 				$boleto->vencimento = $r->vencimento;
 				$boleto->pessoa = $r->pessoa;
-				$boleto->valor = $r->valor;
+				$boleto->valor = str_replace(',','.',str_replace('.','',$r->valor));
 				$boleto->status = 'gravado';
 				$boleto->save();
 			if(isset($r->matriculas) && count($r->matriculas)){				
@@ -770,22 +753,74 @@ class BoletoController extends Controller
 	}
 	public function update(Request $r){
 		
+
 		if($r->boleto > 0){
 			$boleto = Boleto::find($r->id);
-			BoletoLogController::alteracaoBoleto($boleto->id,'Boleto editado por '.Auth::user()->getPessoa()->nome_simples);
-			BoletoLogController::alteracaoBoleto($boleto->id,'Boleto editado: '.\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y').'->'.$r->vencimento.' status: '.$boleto->status.' ->'.$r->status) .'por '.Auth::user()->pessoa;
+			if($boleto == null)
+				return redirect()->back()->withErrors(['Boleto '.$r->id.' não encontrado.']);
+
+			$vencimento_boleto = \Carbon\Carbon::parse($boleto->vencimento);
+			try{
+				$vencimento_request = \Carbon\Carbon::createFromFormat('d/m/Y',$r->vencimento);
+			}
+			catch(\Exception $e){
+				return redirect()->back()->withErrors(['Data de vencimento inválida.']);
+			}
+			
+			$valor_boleto = $boleto->valor;
+			$valor_request = str_replace(',','.',str_replace('.','',$r->valor));
 			
 			if($boleto->vencimento != "0000-00-00 00:00:00")
-				$boleto->vencimento = \Carbon\Carbon::createFromFormat('d/m/Y', $r->vencimento, 'Europe/London')->format('Y-m-d 23:59:59');
+				$boleto->vencimento = $vencimento_request->format('Y-m-d 23:59:59');
 			else
-				$boleto->vencimento = \Carbon\Carbon::createFromFormat('d/m/Y', '10/01/2018', 'Europe/London')->format('Y-m-d 23:59:59');
-			$boleto->valor = str_replace(',','.',$r->valor);
-			$boleto->status = $r->status;
-			$boleto->save();
+				$boleto->vencimento = \Carbon\Carbon::createFromFormat('d/m/Y', '10/'.date('m').'/'.date('Y'), 'Europe/London')->format('Y-m-d 23:59:59');
 
-			
-		}
-		return redirect(asset('secretaria/atendimento'));
+
+			$boleto->valor = str_replace(',','.',str_replace('.','',$r->valor));
+			$boleto->status = $r->status;
+
+			if($boleto->status == 'emitido'){
+
+				$fields = ['numeroConvenio' => env('BB_CONVENIO'),			
+					'valorBoleto' => $boleto->valor,
+					'numeroTituloCliente' =>'000'.env('BB_CONVENIO').str_pad($boleto->id,10,'0',STR_PAD_LEFT)];
+
+				if($vencimento_boleto->ne($vencimento_request)){
+					$fields['indicadorNovaDataVencimento'] = 'S';
+					$fields['alteracaoData'] = ['novaDataVencimento'=> Carbon::createFromFormat('d/m/Y',$r->vencimento)->format('d.m.Y')];
+				}
+				
+				if($valor_boleto != $valor_request){
+					$fields['indicadorNovoValorNominal'] = 'S';
+					$fields['novoValorNominal'] = $boleto->valor;
+				}
+
+
+				//******************************************************* */
+				// IntegracaoBBController
+				$integracao_bb = new IntegracaoBBController;
+				$alteracao = $integracao_bb->alterarBoleto($boleto->id, $fields);
+				//******************************************************* */
+
+				if(isset( $alteracao->errors[0]->messageAndAction))
+					$msg = ['danger' => $alteracao->errors[0]->messageAndAction];
+				elseif(isset($alteracao->numeroConvenio)){
+					$msg = ['success' => 'Boleto '.$boleto->id.' atualizado com sucesso.'];
+					$boleto->save();
+					BoletoLogController::alteracaoBoleto($boleto->id,'Boleto editado por '.Auth::user()->getPessoa()->nome_simples);
+					BoletoLogController::alteracaoBoleto($boleto->id,'Boleto editado: '.\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y').'->'.$r->vencimento.' status: '.$boleto->status.' ->'.$r->status) .'por '.Auth::user()->pessoa;
+				}
+				else
+					$msg = ['success' => 'Boleto '.$boleto->id.' atualizado com sucesso.'];
+			}
+			else{
+				$msg = ['success' => 'Boleto '.$boleto->id.' atualizado com sucesso.'];
+				$boleto->save();
+				BoletoLogController::alteracaoBoleto($boleto->id,'Boleto editado por '.Auth::user()->getPessoa()->nome_simples);
+				BoletoLogController::alteracaoBoleto($boleto->id,'Boleto editado: '.\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y').'->'.$r->vencimento.' status: '.$boleto->status.' ->'.$r->status) .'por '.Auth::user()->pessoa;
+			}	
+		}	
+		return redirect(asset('secretaria/atendimento'))->with($msg);
 
 	}
 

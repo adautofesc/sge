@@ -521,7 +521,7 @@
                                 </a> 
                                 <a class="dropdown-item" href="{{asset('financeiro/boletos/novo'.'/'.session('pessoa_atendimento'))}}" title="Cria um boleto manualmente">
                                     <label><i class="fa fa-plus icon text-success"></i> Boleto manual</label>
-                                </a> 
+                                </a>  
                                 <a class="dropdown-item" href="#" onclick="registrarBoletosSelecionados()" title="Registrar boletos">
                                     <label><i class="fa fa-barcode icon text-info"></i> Registrar selecionados</label>
                                 </a> 

@@ -700,7 +700,7 @@ class BoletoController extends Controller
 			$boleto = new Boleto;
 				$boleto->vencimento = $r->vencimento;
 				$boleto->pessoa = $r->pessoa;
-				$boleto->valor = str_replace(',','.',str_replace('.','',$r->valor));
+				$boleto->valor = $r->valor;
 				$boleto->status = 'gravado';
 				$boleto->save();
 			if(isset($r->matriculas) && count($r->matriculas)){				
@@ -780,6 +780,7 @@ class BoletoController extends Controller
 			$boleto->status = $r->status;
 
 			//dd($boleto);
+			$msg = ['success' => 'Boleto '.$boleto->id.' atualizado com sucesso.'];
 			$boleto->save();
 			/*
 			if($boleto->status == 'emitido'){

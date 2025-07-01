@@ -332,13 +332,13 @@ class CarneController extends Controller
 			}
 			//matricula feita antes do inicio do curso
 			//senão se mes de inicio do curso for maior que mes atual ou ano de inicio maior que o atual
-			elseif($data_ini_curso->format('m')>date('m')  || $data_ini_curso->format('Y')>date('Y')  ){ 
+			elseif($data_ini_curso->format('m')>=date('m')  || $data_ini_curso->format('Y')>date('Y')  ){ 
 				
 				//Curso inicia no meio do ano
-				if($data_ini_curso->format('m')==6 || $data_ini_curso->format('m')==7 )
+				if($data_ini_curso->format('m')==7 || $data_ini_curso->format('m')==8 )
 					$primeiro_vencimento->setDate($primeiro_vencimento->format('Y'),'08',$this::vencimento);
 				else
-					$primeiro_vencimento->setDate($data_ini_curso->format('Y'),$data_ini_curso->format('m'),$this::vencimento);
+					$primeiro_vencimento->setDate($data_ini_curso->format('Y'),'03',$this::vencimento);
 			}
 			else{
 				

@@ -276,6 +276,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('boletos/{id}/registrar','IntegracaoBBController@viewRegistrarBoleto');//view registrar
 		Route::get('boletos/{id}/pix','IntegracaoBBController@consultarPixBoleto');//detalhes do pix
 		Route::post('boletos/{id}/alterar','IntegracaoBBController@alterarBoleto');//alterar (patch)
+		Route::get('boletos/{id}/baixar','IntegracaoBBController@viewBaixarBoleto');//baixa ou cancelamento
 		Route::post('boletos/{id}/baixar','IntegracaoBBController@baixarBoleto');//baixa ou cancelamento
 		Route::get('boletos/{id}/cancelar-pix','IntegracaoBBController@cancelarPixBoleto');//baixa ou cancelamento
 		Route::get('boletos/{id}/gerar-pix','IntegracaoBBController@gerarPixBoleto');//baixa ou cancelamento

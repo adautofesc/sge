@@ -1,1 +1,1 @@
-ssh -p 22022 sgefesc@fesc.com.br
+ssh -p 22022 sgefesc@162.241.92.149

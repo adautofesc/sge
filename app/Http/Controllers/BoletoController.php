@@ -779,6 +779,9 @@ class BoletoController extends Controller
 			$boleto->valor = str_replace(',','.',str_replace('.','',$r->valor));
 			$boleto->status = $r->status;
 
+			//dd($boleto);
+			$boleto->save();
+			/*
 			if($boleto->status == 'emitido'){
 
 				$fields = ['numeroConvenio' => env('BB_CONVENIO'),			
@@ -796,11 +799,11 @@ class BoletoController extends Controller
 				}
 
 
-				//******************************************************* */
+				//******************************************************* 
 				// IntegracaoBBController
 				$integracao_bb = new IntegracaoBBController;
 				$alteracao = $integracao_bb->alterarBoleto($boleto->id, $fields);
-				//******************************************************* */
+				//******************************************************* 
 
 				if(isset( $alteracao->errors[0]->messageAndAction))
 					$msg = ['danger' => $alteracao->errors[0]->messageAndAction];
@@ -819,6 +822,7 @@ class BoletoController extends Controller
 				BoletoLogController::alteracaoBoleto($boleto->id,'Boleto editado por '.Auth::user()->getPessoa()->nome_simples);
 				BoletoLogController::alteracaoBoleto($boleto->id,'Boleto editado: '.\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y').'->'.$r->vencimento.' status: '.$boleto->status.' ->'.$r->status) .'por '.Auth::user()->pessoa;
 			}	
+				*/
 		}	
 		return redirect(asset('secretaria/atendimento'))->with($msg);
 

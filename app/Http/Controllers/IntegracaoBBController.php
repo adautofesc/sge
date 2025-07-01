@@ -413,6 +413,10 @@ class IntegracaoBBController extends Controller
         
     }
 
+    public function viewBaixarBoleto($id){
+        return view('financeiro.boletos.baixar', compact('id'));
+    }
+
     public function baixarBoleto(string $id){
         $txId = '000'.env('BB_CONVENIO').str_pad($id,10,'0',STR_PAD_LEFT);
         $fields['numeroConvenio'] = env('BB_CONVENIO');

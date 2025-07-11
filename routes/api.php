@@ -19,3 +19,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 route::get('tag/{tag}/{key}', [TagController::class,'tagAccess']);
 
+//Banking Payment Notification
+//Route::POST('BPN', [IntegracaoBBController::class,'notificacaoPagamento']);

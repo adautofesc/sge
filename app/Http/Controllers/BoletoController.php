@@ -779,11 +779,8 @@ class BoletoController extends Controller
 			$boleto->valor = str_replace(',','.',str_replace('.','',$r->valor));
 			$boleto->status = $r->status;
 
-			//dd($boleto);
-			$msg = ['success' => 'Boleto '.$boleto->id.' atualizado com sucesso.'];
-			$boleto->save();
-			/*
-			if($boleto->status == 'emitido'){
+			//VERIFICA SE ESTÁ EM HOMOLOGAÇÃO ATRAVES DO NUMERO DE CONVENIO
+			if($boleto->status == 'emitido' && env('BB_CONVENIO') == 3128557 ){
 
 				$fields = ['numeroConvenio' => env('BB_CONVENIO'),			
 					'valorBoleto' => $boleto->valor,
@@ -823,7 +820,7 @@ class BoletoController extends Controller
 				BoletoLogController::alteracaoBoleto($boleto->id,'Boleto editado por '.Auth::user()->getPessoa()->nome_simples);
 				BoletoLogController::alteracaoBoleto($boleto->id,'Boleto editado: '.\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y').'->'.$r->vencimento.' status: '.$boleto->status.' ->'.$r->status) .'por '.Auth::user()->pessoa;
 			}	
-				*/
+				
 		}	
 		return redirect(asset('secretaria/atendimento'))->with($msg);
 
@@ -859,7 +856,7 @@ class BoletoController extends Controller
 			$pessoa = Pessoa::withTrashed()->find($dados_pessoa->pessoa);
 				
 				$boletos = Boleto::where('pessoa',$pessoa->id)
-						->where('status','emitido')
+						->whereIn('status',['emitido','pelosite'])
 						->get();
 				
 				return view('financeiro.boletos.meuboleto-lista',compact('boletos'))->with('nome',$pessoa->nome);
@@ -867,7 +864,7 @@ class BoletoController extends Controller
 		}
 		else
 
-			return redirect('/meuboleto')->withErrors(["Desculpe, não encontramos registro com os dados informados. Verifique o preenchimento e tente novamente. Caso o problema persistir entre em contato conosco pelo telefone 3362-0580 ou 3362-0581."]);
+			return redirect('/meuboleto')->withErrors(["Desculpe, não encontramos registro com os dados informados. Verifique o preenchimento e tente novamente. Caso o problema persistir entre em contato conosco pelo telefone 3362-0580."]);
 
 
 	}

@@ -280,6 +280,8 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::post('boletos/{id}/baixar','IntegracaoBBController@baixarBoleto');//baixa ou cancelamento
 		Route::get('boletos/{id}/cancelar-pix','IntegracaoBBController@cancelarPixBoleto');//baixa ou cancelamento
 		Route::get('boletos/{id}/gerar-pix','IntegracaoBBController@gerarPixBoleto');//baixa ou cancelamento
+		Route::get('baixar-cancelamentos','IntegracaoBBController@baixarCancelamentos');//baixar cancelamentos
+		Route::get('sincronizar','IntegracaoBBController@sincronizarDados');//processamento diario
 
 
 		

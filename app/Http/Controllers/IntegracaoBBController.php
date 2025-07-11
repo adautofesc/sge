@@ -292,6 +292,36 @@ class IntegracaoBBController extends Controller
         
     }
 
+    public function registrarBoletosImpressos(){
+        $boletos = Boleto::where('status','impresso')->get();
+        $registros = array();
+        foreach($boletos as $boleto){
+            $boleto_BB = $this->montarBoletoBB($boleto);
+            try{
+                $req_registro = $this->registrarBoleto($boleto_BB);
+                $registro = $this->processarRegistro($req_registro, $boleto);
+                $registros[$boleto->id] = $registro;
+            } 
+            catch (ClientException $e) {
+                $response = $e->getResponse();
+                $responseBodyAsString = json_decode($response->getBody()->getContents());
+                if($responseBodyAsString==''){
+                    return ($response);
+                }
+                $registros[$boleto->id] = "Falha ao registrar boleto: {$responseBodyAsString->erros[0]->mensagem}";
+                continue;
+
+            } 
+            catch (\Exception $e) {
+                $response = $e->getMessage();
+                $registros[$boleto->id] = "Falha ao registrar boleto: {$response}";
+                continue;
+            }
+            
+        }
+        return $registros;
+    }
+
     public function alterarBoleto(string $id, array $fields){
         $txId = '000'.env('BB_CONVENIO').str_pad($id,10,'0',STR_PAD_LEFT);
         try {
@@ -572,6 +602,134 @@ class IntegracaoBBController extends Controller
         $gerarPixBoleto = json_decode(curl_exec($curl));
         return $gerarPixBoleto;
     }
+
+    public function baixarPagamentos(Request $request){
+
+        if(!$request->has('dataInicioVencimento')) {
+            $data_inicial = Carbon::now()->subDays(1)->format('d.m.Y');
+        }
+        else{
+            $data_inicial = Carbon::createFromFormat('d.m.Y', $request->dataInicioVencimento)->format('d.m.Y');
+        }
+        if(!$request->has('dataFimVencimento')) {
+            $data_final = Carbon::now()->subDays(1)->format('d.m.Y');
+        }
+        else{
+            $data_final = Carbon::createFromFormat('d.m.Y', $request->dataFimVencimento)->format('d.m.Y');
+        }
+
+        $filters = $request->all();
+        try {
+            $response = $this->clientCobranca->request(
+                'GET',
+                "/cobrancas/v2/boletos-baixa-operacional",
+                [
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'Authorization' => 'Bearer ' . $this->token.''
+                    ],
+                    'verify' => false,
+                    'query' => [
+                        'gw-dev-app-key' => env('BB_dev_app_key'),
+                        
+                        'agencia' =>env('BB_AGENCIA'),
+                        'conta' =>env('BB_CONTA'),
+                        'carteira' => env('BB_CARTEIRA'),
+                        'variacao' => env('BB_VARIACAO_CARTEIRA'),
+                        'dataInicioVencimento' => $data_inicial,
+                        'dataFimVencimento' => $data_final,
+                     
+                        
+                    ],
+                ]
+            );
+            $statusCode = $response->getStatusCode();
+            $result = json_decode($response->getBody()->getContents());
+            return array('status' => $statusCode, 'response' => $result);
+        } catch (ClientException $e) {
+            return ($e);
+        } catch (\Exception $e) {
+            $response = $e->getMessage();
+            return ['error' => "Falha ao baixar Boleto Cobranca: {$response}"];
+        }
+
+        
+    }
+
+    /**
+     * Metodo para baixar os boletos que foram cancelados
+     * @return array
+     */
+    public function baixarCancelamentos(){
+        $boletos = Boleto::where('status','cancelar')->get();
+        $cancelamentos = array();
+        foreach($boletos as $boleto){
+            try{
+                $boleto->baixa = $this->baixarBoleto($boleto->id);
+            }
+            catch (ClientException $e) {
+                $response = $e->getResponse();
+                $responseBodyAsString = json_decode($response->getBody()->getContents());
+                $cancelamentos[$boleto->id] = "Falha ao baixar boleto: {$responseBodyAsString}";
+                continue;
+            } 
+            catch (\Exception $e) {
+                $response = $e->getMessage();
+                $cancelamentos[$boleto->id] = "Falha ao baixar boleto: {$response}";
+                continue;
+            }
+            $cancelamentos[$boleto->id] = "Boleto {$boleto->id} cancelado com sucesso";
+            $boleto->status = 'cancelado';
+            $boleto->save();
+        }
+        return $cancelamentos;
+    }
+
+    /**
+     * Metodo para sincronizar os dados do BB com o sistema
+     * @return void 
+     */
+    public function sincronizarDados(){
+       
+
+        //Baixa Operacional (pagamentos) - OK
+        $pagamentos = $this->baixarPagamentos();
+
+         //Registrar boletos - OK
+        $registros = $this->registraBoletosImpressos();
+
+        //Cancelar boletos - OK
+        $cancelamento = $this->baixarCancelamentos();
+
+        return array(
+            'pagamentos' => $pagamentos,
+            'registros' => $registros,
+            'cancelamento' => $cancelamento
+        );
+
+
+    }
+
+    public function notificacaoPagamento(Request $request){
+        $pix = $request->pix;
+        $txId = $pix->txId;
+        $QRCode = QrcodeBoletos::where('txId', $txId)->first();
+        if(!$QRCode)
+            return response()->json(['error' => 'QR Code não encontrado'], 404);
+        else{
+            $boleto = Boleto::find($QRCode->boleto_id);
+            if(!$boleto)
+                return response()->json(['error' => 'Boleto não encontrado'], 404);
+            else{
+                $boleto->status = 'pago';
+                $boleto->save();
+                BoletoLogController::alteracaoBoleto($boleto->id,'Boleto pago via API BB');
+                return response()->json(['success' => 'Boleto pago com sucesso'], 200);
+            }
+        }
+
+    }
+
 
     ######################################################
     ############## FIM - COBRANÇAS #######################

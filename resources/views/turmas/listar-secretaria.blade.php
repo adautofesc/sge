@@ -20,7 +20,7 @@
 
                     <a href="?removefiltro={{$filtro}}" class="badge badge-primary" style="color:white;text-decoration: none;" title="Remover este filtro">
                         <i class="fa fa-remove" ></i>
-                        {{$filtro}}
+                        {{$filtro}}: {{ implode(',',$valor) }}
                     </a>
                 @endif
             @endforeach
@@ -255,7 +255,8 @@
                     </div>
                     <div class="col-md-4">
                         <div class="input-group input-group-sm" style="float:left;">
-                            <input type="text" class="form-control" name="buscar" id ="busca" placeholder="Buscar por turma" onkeypress="enter(event)" title="Você pode procurar pelo código da turma, nome do curso/disciplina, nome do professor, sigla do programa ou dia da semana (os 3 primeiros caracteres de cada dia, separado por virgula).">
+                            <input type="hidden" name="filtro" value="busca">
+                            <input type="text" class="form-control" name="valor" id ="busca" placeholder="Buscar por turma" onkeypress="enter(event)" title="Você pode procurar pelo código da turma, nome do curso/disciplina, nome do professor, sigla do programa ou dia da semana (os 3 primeiros caracteres de cada dia, separado por virgula).">
                             <i class="input-group-addon fa fa-search" onclick="buscar()" style="cursor:pointer;"></i>
                         </div>
                     </div>

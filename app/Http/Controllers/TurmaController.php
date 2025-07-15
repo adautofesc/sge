@@ -113,22 +113,34 @@ class TurmaController extends Controller
      */
     public function listagemGlobal($filtro=null,$valor=null,$rem_filtro=null,$remove=0,$ipp=50){
         
+        
         session_start(); 
+
+    
+        
 
         if(isset($_SESSION['filtro_turmas']))
             $filtros = $_SESSION['filtro_turmas'];    
         else
-            $filtros = array();        
+            $filtros = array(); 
+
         if(isset($filtro) && isset($valor)){           
             if(array_key_exists($filtro, $filtros)){
                 $busca = array_search($valor, $filtros[$filtro]);
-                if($busca === false)
-                    $filtros[$filtro][] = $valor;                
+                if($busca === false){
+                    if($filtro == 'busca'){
+                            
+                            unset($filtros['busca']);
+                            
+                    }
+                    $filtros[$filtro][] = $valor; 
+                }                   
                 else
                 {
                     if($remove > 0){
                         unset($filtros[$filtro][$busca]);
                     }
+                    
                 }
             }
             else{

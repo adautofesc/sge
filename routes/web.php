@@ -746,6 +746,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('bolsistas-com-3-faltas','RelatorioController@bolsistasComTresFaltas');
 		Route::get('celulares','PessoaController@relatorioCelulares');
 		Route::get('receita-anual-programa/{ano}/{mes?}','Reports\ReceitaAnualReportController@receitaPorPrograma');
+		Route::get('receita-curso/{cursos}/{ano}/{mes?}','Reports\ReceitaAnualReportController@receitaPorCurso');
 		Route::get('carga-docentes/{ano?}', [JornadaDocentes::class,'relatorioGeral']); //rotas inteligentes
 		Route::get('salas',  [SalaController::class,'relatorioOcupacao']);
 		Route::get('jornadas-por-programa/{programa}', [JornadaPrograma::class,'index']);

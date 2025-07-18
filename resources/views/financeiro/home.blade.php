@@ -136,8 +136,13 @@
                 <div class="card-block">
                         <div>
                             <a href="/relatorios/receita-anual-programa/{{date('Y')-1}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                            <i class=" fa fa-file-text-o "></i>
+                            <i class=" fa fa-usd "></i>
                             &nbsp;&nbsp;Receita Anual Por Programa</a>
+                        </div>
+                        <div>
+                            <a href="/relatorios/receita-curso/1780/{{date('Y')}}" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                            <i class=" fa fa-usd "></i>
+                            &nbsp;&nbsp;Receita Anual Por Curso</a>
                         </div>
                         <div>
                             <a href="{{asset('/')}}financeiro/cobranca/cartas" class="btn btn-primary-outline col-xs-12 text-xs-left">

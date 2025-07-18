@@ -106,4 +106,57 @@ class ReceitaAnualReportController extends Controller
         return view('relatorios.receitas')->with('programas',$programas)->with('ano',$ano)->with('valor_total',$valor_total)->with('mes',$mes);
 
     }
+
+    public function receitaPorCurso($cursos, int $ano, int $mes=null){
+        //return 'relatório receita por curso';
+
+        $array_matriculas = array();
+        $array_valor = array();
+        $array_cursos = explode(',', $cursos);
+
+        $valor_total = 0;
+
+        //dd($array_cursos);
+
+        if(count($array_cursos) == 0)
+            return redirect()->back()->with('error','Nenhum curso selecionado');
+        
+        foreach($array_cursos as $curso_id){
+            $curso = \App\Curso::find($curso_id);
+            if($curso == null)
+                return redirect()->back()->with('error','Curso inválido: '.$curso_id);
+            else{
+                $array_valor[$curso->id] ['valor']= 0;
+                $array_valor[$curso->id] ['nome']= $curso->nome;
+
+                $turmas = \App\Turma::whereYear('data_inicio',$ano)
+                                            ->where('curso',$curso->id)
+                                            ->pluck('id')->toArray();
+
+                if(count($turmas) > 0){
+                    $matriculas = \App\Inscricao::whereIn('turma',$turmas)
+                                                ->groupBy('matricula')
+                                                ->pluck('matricula')->toArray();
+
+                    if(count($matriculas) > 0){
+                        $soma_lancamentos = \App\Lancamento::join('boletos','boletos.id','=','lancamentos.boleto')
+                            ->whereIn('boletos.status',['pago'])
+                            ->whereIn('lancamentos.matricula',$matriculas)
+                            ->sum('lancamentos.valor');
+                        $valor_total += $soma_lancamentos;
+                        $array_valor[$curso->id] ['valor'] = $soma_lancamentos;
+                    }
+                    
+                }
+                
+            }
+        }
+        //dd($array_valor);
+
+        return view('relatorios.receitas-curso')->with('valores',$array_valor)->with('ano',$ano)->with('valor_total',$valor_total);
+
+    }
+        
+
+        
 }

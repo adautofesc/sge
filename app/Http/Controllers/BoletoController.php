@@ -293,9 +293,8 @@ class BoletoController extends Controller
 	public function imprimir($boleto,Request $r){
 		
 		$boleto = Boleto::find($boleto);
-		if(!isset(Auth::user()->pessoa))
-			if(!isset($r->pessoa->id) || $r->pessoa->id != $boleto->pessoa)
-				//dd($boleto->pessoa.$r->pessoa->id);
+		if(!isset(Auth::user()->pessoa) && $r->token != hash('sha256', $boleto->pessoa))
+			//dd($boleto->pessoa.$r->pessoa->id);
 				return redirect()->back()->withErrors(['Usuário não corresponde ao boleto requerido']);
 
 
@@ -853,6 +852,7 @@ class BoletoController extends Controller
 
 		$dados_pessoa = \App\PessoaDadosGerais::where('valor','like',$cpf_alt)->orWhere('valor','like',$cpf_alt_formated)->first();
 		if($dados_pessoa){
+			session('');
 			$pessoa = Pessoa::withTrashed()->find($dados_pessoa->pessoa);
 				
 				$boletos = Boleto::where('pessoa',$pessoa->id)

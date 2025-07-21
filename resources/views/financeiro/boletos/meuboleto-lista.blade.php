@@ -61,7 +61,7 @@
                           <th scope="row">{{$boleto->id}}</th>
                           <td>{{\Carbon\Carbon::parse($boleto->vencimento)->format('d/m/Y')}}</td>
                           <td>R$ {{number_format($boleto->valor,2,',','.')}}</td>
-                          <td class="text-xs-center"><a href="{{asset('/boleto').'/'.$boleto->id}}" target="_blank"><i class="fa fa-print"></i></a></td>
+                          <td class="text-xs-center"><a href="{{asset('/boleto').'/'.$boleto->id}}/{{hash('sha256', $boleto->pessoa)}}" target="_blank"><i class="fa fa-print"></i></a></td>
                         </tr>
                     @endforeach
                       </tbody>

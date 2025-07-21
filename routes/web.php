@@ -34,7 +34,7 @@ Route::get('cursos-disponiveis', 'TurmaController@turmasSite');
 Route::get('vagas', 'TurmaController@turmasSite');
 Route::get('meuboleto', function(){ return view('financeiro.boletos.meuboleto');});
 Route::post('meuboleto', 'BoletoController@segundaVia');
-Route::get('boleto/{id}','BoletoController@imprimir');
+Route::get('boleto/{id}/{token}','BoletoController@imprimir');
 Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
 Route::get('ipca','ValorController@getIPCA');
 Route::get('agenda-atendimento/{data}','AgendaAtendimentoController@horariosData');

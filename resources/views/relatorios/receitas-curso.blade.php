@@ -85,7 +85,7 @@
 		<br/>
 		<div class="title-block">
 			<center>
-            <h3 class="title"> Relatório de receitas por programa </h3>
+            <h3 class="title"> Relatório de receitas por Curso </h3>
 			<h5 class="title">Ref.: <small> {{isset($mes)?$mes.'/'.$ano : $ano}} </small>
 			
             </h5></center>
@@ -111,7 +111,7 @@
 						@endforeach
 						<tr>
 							<th>Total</th>
-							<td>R$ {{number_format($valor_total, 2, ',', '.')}}</td>	
+							<th>R$ {{number_format($valor_total, 2, ',', '.')}}</th>	
 						</tr>
 
 						

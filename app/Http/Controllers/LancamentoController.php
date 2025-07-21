@@ -115,7 +115,6 @@ class LancamentoController extends Controller
 
 	
 	public function gerarTodosLancamentos(\App\Matricula $matricula){
-		//dd($matricula->valor);
 		if($matricula->valor->valor>0){
 			//dd($matricula->valor->parcelas);
 			for($i=1;$i<=$matricula->getParcelas();$i++){

@@ -124,7 +124,7 @@ class Matricula extends Model
 			}
 			
 		}
-		//dd($parcelas);
+		
 		if($this->pacote>0){
 			$valor = Valor::where('pacote',$this->pacote)->where('ano',substr($turma->data_inicio,-4))->first();
 			if(isset($valor->parcelas))
@@ -139,15 +139,15 @@ class Matricula extends Model
 		
 
 		
-
-		if($dt_mt->format('m') < $pp_dt->format('m') || $dt_mt->format('Y') < $pp_dt->format('Y'))
+		//se a data de matrícula for anterior ao início do curso
+		if($dt_mt->format('m') <= $pp_dt->format('m') || $dt_mt->format('Y') < $pp_dt->format('Y'))
 			//para reduzir numero de parcelas em julho
-			if($parcelas>5 && $dt_mt->format('m')>=7 && $dt_mt->format('Y') == $pp_dt->format('Y'))
+			if($parcelas>=5 && $dt_mt->format('m')>=7 && $dt_mt->format('Y') == $pp_dt->format('Y'))
 				return 5;
 			else
 				return $parcelas;
 		else{
-
+			
 			if($parcelas >5 && $dt_mt->format('m')>7)
 				$parcelas++;//n
 				
@@ -171,6 +171,7 @@ class Matricula extends Model
 
 
 		}
+	
 
 
 		return $parcelas;

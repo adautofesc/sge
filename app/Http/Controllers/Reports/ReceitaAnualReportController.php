@@ -140,7 +140,7 @@ class ReceitaAnualReportController extends Controller
 
                     if(count($matriculas) > 0){
                         $soma_lancamentos = \App\Lancamento::join('boletos','boletos.id','=','lancamentos.boleto')
-                            ->whereIn('boletos.status',['pago'])
+                            ->where('boletos.status','pago')
                             ->whereIn('lancamentos.matricula',$matriculas)
                             ->sum('lancamentos.valor');
                         $valor_total += $soma_lancamentos;

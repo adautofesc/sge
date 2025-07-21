@@ -117,7 +117,7 @@
 							<th>Total</th>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
-							<td>R$ {{number_format($valor_total, 2, ',', '.')}}</td>	
+							<th>R$ {{number_format($valor_total, 2, ',', '.')}}</th>	
 						</tr>
 
 						

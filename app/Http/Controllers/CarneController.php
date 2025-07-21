@@ -209,6 +209,7 @@ class CarneController extends Controller
     }
 
 	public function gerarCarneIndividual(int $pessoa){
+		
 		//Excluir todos boletos gravados e seus lançamentos
 		$boletos_gravados = Boleto::where('pessoa',$pessoa)->where('status','gravado')->get();
 		foreach($boletos_gravados as $boleto_gravado){
@@ -259,6 +260,8 @@ class CarneController extends Controller
 			
 			//lista as parcelas e se não tiver pula pra proxima matrícula
 			$lancamentos_matricula = \App\Lancamento::where('matricula',$matricula->id)->where('status',null)->get();
+
+			//dd($lancamentos_matricula);
 			if($lancamentos_matricula->count() ==0)
 				continue;			
 			 

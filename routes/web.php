@@ -815,6 +815,7 @@ Route::prefix('services')->group(function(){
 	Route::get('turmas','WebServicesController@apiTurmas');
 	Route::get('salas-api/{id}','SalaController@listarPorLocalApi');
 	Route::get('salas-locaveis-api/{id}','SalaController@listarLocaveisPorLocalApi');
+	Route::get('catraca','CatracaController@sendData');
 
 });
 

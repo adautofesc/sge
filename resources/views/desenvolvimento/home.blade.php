@@ -1,139 +1,18 @@
 @extends('layout.app')
 @section('pagina')
-<style>
-    #area-chart,
-#line-chart,
-#bar-chart,
-#stacked,
-#pie-chart{
-  min-height: 250px;
-}
-.stat{
-    display: inline-block;
-    margin-left: 10px;
-    vertical-align: middle;
-}
-.stats-container a {
-    color: #4f5f6f;
-}
 
-.stat-icon {
-
-    display: inline-block;
-    font-size: 26px;
-    text-align: center;
-    vertical-align: middle;
-    width: 50px;
-    line-height: 3rem;
-    border-radius: 5%;
-    background-color: #f5f5f5;
-}
-.blue{
-    background-color: #007bff;
-}
-
-
-</style>
 <div class="title-block">
     <div class="row">
         <div class="col-md-6">
             <h3 class="title">Setor de Desenvolvimento</h3>
-            <p class="title-description">Configurações e rotinas de ajustes</p>
+            <p class="title-description">Uso de API's</p>
         </div>
     </div>
 </div>
 <section class="section">
     
     <div class="row">
-        <div class="col-md-6 center-block">
-            
-            
-            <div class="card card-primary">
-                <div class="card-header">
-                    <div class="header-block">
-                        <p class="title" style="color:white">Opções</p>
-                    </div>
-                </div>
-                <div class="card-block">
-                    <div class="card-block">
-                        <div class="row row-sm stats-container">
-                            <a href="/dev/testar-classe" title="Executa classe de teste painelController.">
-                                <div class="col-6 col-sm-6 stat-col">
-                                    <div class="stat-icon">
-                                        <i class="fa fa-flask"></i>
-                                    </div>
-                                    <div class="stat">
-                                        <div class="value"> Testar </div>
-                                        <div class="name"> Metodo de teste</div>
-                                    </div>
-                                    <div class="progress stat-progress">
-                                        <div class="progress-bar" style="width: 25%;"></div>
-                                    </div>
-                                </div>
-                            </a>
-                            
-                            <a href="/dev/teste-pix" title="Executa classe de teste painelController.">
-                                <div class="col-6 col-sm-6 stat-col">
-                                    <div class="stat-icon">
-                                        <i class="fa fa-flask"></i>
-                                    </div>
-                                    <div class="stat">
-                                        <div class="value"> PIX </div>
-                                        <div class="name">Testar Boleto PIX</div>
-                                    </div>
-                                    <div class="progress stat-progress">
-                                        <div class="progress-bar" style="width: 25%;"></div>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <a href="/dev/testar-classe" title="Executa classe de teste painelController.">
-                                <div class="col-6 col-sm-6 stat-col">
-                                    <div class="stat-icon">
-                                        <i class="fa fa-flask"></i>
-                                    </div>
-                                    <div class="stat">
-                                        <div class="value"> Testar </div>
-                                        <div class="name"> Metodo de teste</div>
-                                    </div>
-                                    <div class="progress stat-progress">
-                                        <div class="progress-bar" style="width: 25%;"></div>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <a href="/dev/testar-classe" title="Executa classe de teste painelController.">
-                                <div class="col-6 col-sm-6 stat-col">
-                                    <div class="stat-icon">
-                                        <i class="fa fa-flask"></i>
-                                    </div>
-                                    <div class="stat">
-                                        <div class="value"> Testar </div>
-                                        <div class="name"> Metodo de teste</div>
-                                    </div>
-                                    <div class="progress stat-progress">
-                                        <div class="progress-bar" style="width: 25%;"></div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                
-
-
-                    <div>
-                        
-                        <a href="/dev/gerar-dias-nao-letivos" title="Cadastrar dias não letivos" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                            <i class=" fa fa-arrow-right "></i>
-                            &nbsp;&nbsp;Cadastrar dias não letivos</a>
-                        <a href="/dev/add-recesso" title="Cadastrar recesso de dias não letivos" target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                                <i class=" fa fa-arrow-right "></i>
-                                &nbsp;&nbsp;Cadastrar recesso</a>
-                    </div>    
-                            
-                </div>
-            </div>
-        </div>
+        
         <div class="col-md-4 center-block">
             <div class="card card-primary">
                 <div class="card-header">
@@ -169,84 +48,79 @@
             <div class="card card-primary">
                 <div class="card-header">
                     <div class="header-block">
-                        <p class="title" style="color:white">Rotinas adminstrativas</p>
+                        <p class="title" style="color:white">Tokens de autorização</p>
                     </div>
                 </div>
                 <div class="card-block">
                      <div>
-                        <a href="/secretaria/relatorios/turmas"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="#"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Alunos 1º Semestre de 2018</a>
+                        &nbsp;&nbsp;Gerar Token</a>
                     </div> 
                     <div>
-                        <a href="/relatorios/alunos-posto/"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <a href="#"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
                         <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Alunos por unidade</a>
+                        &nbsp;&nbsp;Apagar Token</a>
                     </div>
-                    <div>
-                        <a href="/relatorios/faixasuati/"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Faixas insc. UATI</a>
-                    </div>   
-                    <div>
-                        <a href="/dev/importar-status-boletos"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
-                        <i class=" fa fa-arrow-right "></i>
-                        &nbsp;&nbsp;Processar arquivo de dívida ativa.</a>
-                    </div>               
+                   
+                             
                 </div>
             </div>
         </div>
 
+        <div class="col-md-4 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">Tokens de autorização</p>
+                    </div>
+                </div>
+                <div class="card-block">
+                     <div>
+                        <a href="#"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Gerar Token</a>
+                    </div> 
+                    <div>
+                        <a href="#"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Apagar Token</a>
+                    </div>
+                   
+                             
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 center-block">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <div class="header-block">
+                        <p class="title" style="color:white">API Catraca</p>
+                    </div>
+                </div>
+                <div class="card-block">
+                    <div>
+                        <a href="/api/gerar-token"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Gerar API</a>
+                    </div> 
+                    <div>
+                        <a href="/api/apagar-token"  target="_blank" class="btn btn-primary-outline col-xs-12 text-xs-left">
+                        <i class=" fa fa-arrow-right "></i>
+                        &nbsp;&nbsp;Apagar API</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     
 </section>
-<section>
-    <div class="row">
-        <div class="col-md-12">
-            <canvas id="myChart"></canvas>
-        </div>
-    </div>
-</section>
+
 
 
 @endsection
 @section('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
-<script type="text/javascript">
-const labels = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-  ];
 
-  const data = {
-    labels: labels,
-    datasets: [{
-      label: 'My First dataset',
-      backgroundColor: 'rgb(255, 99, 132)',
-      borderColor: 'rgb(255, 99, 132)',
-      data: [0, 10, 5, 2, 20, 30, 45],
-    }]
-  };
-
-  const configChart = {
-    type: 'bar',
-    data: data,
-    options: {}
-  };
-
-  const myChart = new Chart(
-    document.getElementById('myChart'),
-    configChart
-  );
-
-
-    
-
-</script>
 
 
 @endsection

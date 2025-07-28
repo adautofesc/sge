@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\CatracaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,10 @@ use App\Http\Controllers\TagController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::middleware('auth:sanctum','abilities:catraca')->get('/catraca', [CatracaController::class,'sendData']);
+    
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

@@ -497,7 +497,7 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::get('relancar/{lancamento}','LancamentoController@relancarParcela');
 			Route::get('editar/{lancamento}','LancamentoController@editar');
 			Route::post('editar/{lancamento}','LancamentoController@update');
-			Route::middleware('liberar.recurso:19')->get('gerar/{parcela}', 'LancamentoController@gerarLancamentos' );//gerar parcela para todas pessoas
+			
 		});
 		Route::middleware('liberar.recurso:19')->prefix('carne')->group(function(){
 			Route::get('gerar', function(){ return view('financeiro.carne.home');});

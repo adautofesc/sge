@@ -12,6 +12,7 @@ class CatracaController extends Controller
         // or database and updating the local records accordingly.
 
         $headers = getallheaders();
+        dd($headers);
 
 
         if(!isset($headers['Authorization']) || $headers['Authorization'] !== 'cdEvWp6rqGCgisIZ2fzse2m20rgT6OyY1xy8SJxDva'){

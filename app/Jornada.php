@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Jornada extends Model
 {
     public $timestamps = false;
-	protected $dates = ['inicio','termino'];
+	//protected $dates = ['inicio','termino'];
+	protected $casts = [
+    'inicio' => 'date',
+	'termino' => 'date',
+    ];
 
     public function setDiasSemanaAttribute($value){
 		$this->attributes['dias_semana']= implode(',',$value);

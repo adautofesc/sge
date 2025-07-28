@@ -13,6 +13,10 @@ class FichaTecnica extends Model
 
     protected $table  = 'fichas_tecnicas';
     protected $dates = ['data_inicio','data_termino'];
+       protected $casts = [
+    'data_inicio' => 'date',
+    'data_termino' => 'date',
+    ];
 
 
     public function getDocente(){

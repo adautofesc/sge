@@ -11,5 +11,9 @@ class Tag extends Model
     use HasFactory;
     public $timestamps = false;
     use SoftDeletes;
-    protected $dates = ['data','deleted_at'];
+    //protected $dates = ['data','deleted_at'];
+    protected $casts = [
+    'data' => 'date',
+	'deleted_at' => 'date',
+    ];
 }

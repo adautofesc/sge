@@ -9,7 +9,10 @@ class UsoLivre extends Model
 {
     use HasFactory;
     public $timestamps = false;
-    protected $dates = ['inicio'];
+    //protected $dates = ['inicio'];
+    protected $casts = [
+    'inicio' => 'date',
+    ];
 
     public function getUsuario(){
         $pessoa = \App\Pessoa::find($this->atendido);

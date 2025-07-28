@@ -10,7 +10,10 @@ class Aula extends Model
 {
     use SoftDeletes;
     public $timestamps = false;
-    protected $dates = ['data'];
+    //protected $dates = ['data'];
+    protected $casts = [
+    'data' => 'date',
+    ];
 
     /*public function getDataAttribute($value){
         $newdata = \DateTime::createFromFormat('Y-m-d',$value);

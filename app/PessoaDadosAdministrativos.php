@@ -9,7 +9,10 @@ class PessoaDadosAdministrativos extends Model
 {
     //
     use SoftDeletes;
-    protected $dates = ['deleted_at'];
+    //protected $dates = ['deleted_at'];
+	protected $casts = [
+    'deleted_at' => 'date',
+    ];
 
 	protected $table  = 'pessoas_dados_administrativos';
 

@@ -11,7 +11,11 @@ class PessoaDadosJornadas extends Model
    
     protected $table  = 'pessoas_dados_jornadas';
     public $timestamps = false;
-    protected $dates = ['inicio','termino'];
+    //protected $dates = ['inicio','termino'];
+    protected $casts = [
+    'inicio' => 'date',
+	'termino' => 'date',
+    ];
 
     public static function getCarga(int $pessoa){
         $carga = PessoaDadosJornadas::where('pessoa',$pessoa)->orderByDesc('id')->first();

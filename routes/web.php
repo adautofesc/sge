@@ -12,6 +12,7 @@
 */
 use App\Http\Controllers\AtestadoController;
 use App\Http\Controllers\AulaController;
+use App\Http\Controllers\BoletoController;
 use App\Http\Controllers\JornadaController;
 use App\Http\Controllers\Reports\JornadaDocentes;
 use App\Http\Controllers\Reports\JornadaPrograma;
@@ -23,26 +24,29 @@ use App\Http\Controllers\PessoaDadosJornadasController;
 use App\Http\Controllers\FichaTecnicaController;
 use App\Http\Controllers\TurmaController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\ValorController;
+use App\Http\Controllers\Auth\PerfilAuthController;
 
-Route::get('/', 'painelController@index');
+Route::get('/', [App\Http\Controllers\painelController::class,'index']);
 
 
 
 //Publicos**************************************************************
 
-Route::get('cursos-disponiveis', 'TurmaController@turmasSite'); 
-Route::get('vagas', 'TurmaController@turmasSite');
+Route::get('cursos-disponiveis', [TurmaController::class,'turmasSite']); 
+Route::get('vagas', [TurmaController::class,'turmasSite']);
 Route::get('meuboleto', function(){ return view('financeiro.boletos.meuboleto');});
-Route::post('meuboleto', 'BoletoController@segundaVia');
-Route::get('boleto/{id}/{token}','BoletoController@imprimir');
-Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
-Route::get('ipca','ValorController@getIPCA');
+Route::post('meuboleto', [BoletoController::class,'segundaVia']);
+Route::get('boleto/{id}/{token}',[BoletoController::class,'imprimir']);
+Route::get('buscarbairro/{var}',[App\Http\Controllers\EnderecoController::class,'buscarBairro']);
+Route::get('ipca',[ValorController::class,'getIPCA']);
 Route::get('agenda-atendimento/{data}','AgendaAtendimentoController@horariosData');
 
 Route::get('gerar-token', [App\Http\Controllers\Auth\TokenController::class, 'gerarToken'])->name('gerar.token');
 Route::get('apagar-token', [App\Http\Controllers\Auth\TokenController::class, 'apagarToken'])->name('apagar.token');
-//Route::get('correcao-valor','ValorController@correcaoValor');
-//Route::get('boletos-com-erros','BoletoController@analisarBoletosComErro');
+//Route::get('correcao-valor',[ValorController::class,'correcaoValor']);
+//Route::get('boletos-com-erros',[BoletoController::class,'analisarBoletosComErro']);
 Route::get('rematricula', function(){
 	return view('perfil.cpf');
 });
@@ -51,25 +55,25 @@ Route::prefix('perfil')->group(function(){
 	Route::get('cpf', function(){
 		return view('perfil.cpf');
 	});
-	Route::get('cadastrar-pessoa/{cpf}','PerfilController@cadastrarView');
-	Route::post('cadastrar-pessoa/{cpf}','PerfilController@cadastrarExec');
-	Route::get('autentica/{cpf}','Auth\PerfilAuthController@verificarCPF');
-	Route::post('autentica/{cpf}','Auth\PerfilAuthController@autenticaCPF');
-	Route::get('recuperar-senha/{cpf}','Auth\PerfilAuthController@recuperarSenhaView');
-	Route::get('resetar-senha/{token}','Auth\PerfilAuthController@recuperarSenhaExec');
-	Route::post('cadastrar-senha','Auth\PerfilAuthController@cadastrarSenha');
+	Route::get('cadastrar-pessoa/{cpf}',[PerfilController::class,'cadastrarView']);
+	Route::post('cadastrar-pessoa/{cpf}',[PerfilController::class,'cadastrarExec']);
+	Route::get('autentica/{cpf}',[PerfilAuthController::class,'verificarCPF']);
+	Route::post('autentica/{cpf}',[PerfilAuthController::class,'autenticaCPF']);
+	Route::get('recuperar-senha/{cpf}',[PerfilAuthController::class,'recuperarSenhaView']);
+	Route::get('resetar-senha/{token}',[PerfilAuthController::class,'recuperarSenhaExec']);
+	Route::post('cadastrar-senha',[PerfilAuthController::class,'cadastrarSenha']);
 	Route::middleware('login.perfil')->group(function(){
-		Route::get('/','PerfilController@painel');
-		Route::get('parceria','PerfilController@parceriaIndex');
-		Route::post('parceria','PerfilController@parceriaExec');
-		Route::get('parceria/curriculo','PerfilController@parceriaCurriculo');
-		Route::get('parceria/cancelar','PerfilController@parceriaCancelar');
-		Route::get('alterar-senha','Auth\PerfilAuthController@trocarSenhaView');
-		Route::post('alterar-senha','Auth\PerfilAuthController@trocarSenhaExec');
-		Route::get('alterar-dados','PerfilController@alterarDadosView');
-		Route::post('alterar-dados','PerfilController@alterarDadosExec');
-		Route::get('boletos','PerfilController@boletosPerfil');
-		Route::get('boleto/{numero}','BoletoController@imprimir');
+		Route::get('/',[PerfilController::class,'painel']);
+		Route::get('parceria',[PerfilController::class,'parceriaIndex']);
+		Route::post('parceria',[PerfilController::class,'parceriaExec']);
+		Route::get('parceria/curriculo',[PerfilController::class,'parceriaCurriculo']);
+		Route::get('parceria/cancelar',[PerfilController::class,'parceriaCancelar']);
+		Route::get('alterar-senha',[PerfilAuthController::class,'trocarSenhaView']);
+		Route::post('alterar-senha',[PerfilAuthController::class,'trocarSenhaExec']);
+		Route::get('alterar-dados',[PerfilController::class,'alterarDadosView']);
+		Route::post('alterar-dados',[PerfilController::class,'alterarDadosExec']);
+		Route::get('boletos',[PerfilController::class,'boletosPerfil']);
+		Route::get('boleto/{numero}',[BoletoController::class,'imprimir']);
 		Route::prefix('matricula')->group(function(){
 			Route::get('/','PerfilMatriculaController@matriculasAtivas');
 			Route::get('inscricao','PerfilMatriculaController@turmasDisponiveis');
@@ -82,9 +86,9 @@ Route::prefix('perfil')->group(function(){
 			});
 		});
 		Route::prefix('atestado')->group(function(){
-			Route::get('/','PerfilController@atestadoIndex');
-			Route::get('cadastrar','PerfilController@cadastrarAtestadoView');
-			Route::post('cadastrar','PerfilController@cadastrarAtestadoexec');
+			Route::get('/',[PerfilController::class,'atestadoIndex']);
+			Route::get('cadastrar',[PerfilController::class,'cadastrarAtestadoView']);
+			Route::post('cadastrar',[PerfilController::class,'cadastrarAtestadoexec']);
 
 		});
 		Route::prefix('rematricula')->group(function(){
@@ -101,7 +105,7 @@ Route::prefix('perfil')->group(function(){
 
 	});
 	
-	Route::get('logout','Auth\PerfilAuthController@logout');
+	Route::get('logout',[PerfilAuthController::class,'logout']);
 
 });
 
@@ -139,20 +143,20 @@ Route::middleware(['auth','login']) ->group(function(){
 	});
 	
 	Route::get('/atestado/{id}', 'painelController@index');
-	Route::get('lista/{id}','TurmaController@impressao'); //lista de chamada aberta
-	Route::get('listas/{id}','TurmaController@impressaoMultipla'); //lista de chamada aberta
-	Route::get('frequencia/{turma}','TurmaController@frequencia');
+	Route::get('lista/{id}',[TurmaController::class,'impressao']); //lista de chamada aberta
+	Route::get('listas/{id}',[TurmaController::class,'impressaoMultipla']); //lista de chamada aber]ta
+	Route::get('frequencia/{turma}',[TurmaController::class,'frequencia']);
 	Route::get('chamadas','FrequenciaController@index');
 	Route::get('chamadas/{id}/{semestre?}','FrequenciaController@index');
 	
 //******************************************************RECURSOS************************************************************** */	
 	
 	Route::prefix('aulas')->group(function(){
-		//Route::get('/{turma}','AulaController@viewAulasTurma');
-		Route::get('gerar/{turma}','AulaController@gerarAulas');
-		Route::POST('alterar-status','AulaController@alterarStatus');
+		//Route::get('/{turma}',[AulaController::class,'viewAulasTurma']);
+		Route::get('gerar/{turma}',[AulaController::class,'gerarAulas']);
+		Route::POST('alterar-status',[AulaController::class,'alterarStatus']);
 		Route::POST('limpar-dado', 'AulaDadoController@limparDado');
-		Route::GET('recriar/{turma}','AulaController@recriarAulasView');	
+		Route::GET('recriar/{turma}',[AulaController::class,'recriarAulasView']);	
 
 	});
 	Route::prefix('agendamento')->group(function(){
@@ -180,25 +184,25 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::post('editar/{var}', [TurmaController::class,'update']);
 			Route::get('status/{status}/{turma}', [TurmaController::class,'status']);
 			Route::get('status-matriculas/{status}/{turma}', [TurmaController::class,'statusMatriculas']);
-			Route::post('importar', [TurmaController::class, 'uploadImportaTurma'] );
+			Route::post('importar', [TurmaController::class,'uploadImportaTurma']);
 
 		});
-		Route::get('listar', [TurmaController::class, 'index']);
-		Route::get('apagar/{var}', [TurmaController::class, 'destroy']);
-		Route::get('editar/{var}', [TurmaController::class, 'edit']);		
-		Route::get('turmasjson', [TurmaController::class, 'turmasJSON']);
+		Route::get('listar', [TurmaController::class,'index']);
+		Route::get('apagar/{var}', [TurmaController::class,'destroy']);
+		Route::get('editar/{var}', [TurmaController::class,'edit']);		
+		Route::get('turmasjson', [TurmaController::class,'turmasJSON']);
 		Route::get('inscritos/{turma}','InscricaoController@verInscritos');
 		Route::get('lista/{id}','painelController@chamada');
 		Route::get('importar', function(){ return view('turmas.upload');});		
-		Route::post('processar-importacao', [TurmaController::class, 'processarImportacao']);
-		Route::get('expiradas', [TurmaController::class, 'processarTurmasExpiradas'])->name('turmas.expiradas');
+		Route::post('processar-importacao', [TurmaController::class,'processarImportacao']);
+		Route::get('expiradas', [TurmaController::class,'processarTurmasExpiradas'])->name('turmas.expiradas');
 		Route::get('modificar-requisitos/{id}','RequisitosController@editRequisitosTurma');
 		Route::post('turmas-requisitos','RequisitosController@editRequisitosTurma');
 		Route::post('modificar-requisitos/{id}','RequisitosController@storeRequisitosTurma');
-		Route::get('atualizar-inscritos', [TurmaController::class, 'atualizarInscritos']);
+		Route::get('atualizar-inscritos', [TurmaController::class,'atualizarInscritos']);
 		Route::get('/{turma}', 'InscricaoController@verInscricoes'); //dados da turma secretaria
 		Route::post('/{turma}', 'InscricaoController@inscreverAlunoLote'); // inserção de alunos direto pelo painel
-		Route::get('/dados-gerais/{turma}', [TurmaController::class, 'mostrarTurma']);//dados da turma pedagógico
+		Route::get('/dados-gerais/{turma}', [TurmaController::class,'mostrarTurma']);//dados da turma pedagógico
 
 	});
 
@@ -266,7 +270,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		
 	});
 	Route::prefix('boletos')->group(function(){
-		Route::get('/','BoletoController@painel');
+		Route::get('/',[BoletoController::class,'painel']);
 		
 
 	});
@@ -355,19 +359,19 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('testar-classe/', 'PessoaDadosGeraisController@rastrearDuplicados');
 		Route::post('testar-classe', 'painelController@testarClassePost');
 		Route::get('/bolsa/gerador', 'BolsaController@gerador');
-		Route::get('/corrigir-boletos','BoletoController@corrigirBoletosSemParcelas');
+		Route::get('/corrigir-boletos',[BoletoController::class,'corrigirBoletosSemParcelas']);
 		Route::get('ajusteBolsas', 'BolsaController@ajusteBolsaSemMatricula');
 		Route::get('gerar-dias-nao-letivos','DiaNaoLetivoController@cadastroAnual');
 		Route::get('importar-status-boletos','painelController@importarStatusBoletos');
 		Route::get('add-recesso','DiaNaoLetivoController@ViewAddRecesso');
-		Route::get('cadastrarValores','ValorController@cadastrarValores');
+		Route::get('cadastrarValores',[ValorController::class,'cadastrarValores']);
 	});
 
 	Route::prefix('pessoa')->group(function(){
 	// Pessoas
 		Route::post('registrar-contato','ContatoController@registrar');
 		Route::get('contato-whatsapp','ContatoController@enviarWhats');
-		Route::get('resetar-senha-perfil/{id}','Auth\PerfilAuthController@resetarSenha');
+		Route::get('resetar-senha-perfil/{id}',[PerfilAuthController::class,'resetarSenha']);
 		Route::get ('listar','PessoaController@listarTodos');//->middleware('autorizar:56')
 		Route::post('listar','PessoaController@procurarPessoasAjax');
 		Route::get ('cadastrar', 'PessoaController@create')->name('pessoa.cadastrar');
@@ -472,7 +476,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	// Financeiro
 	Route::prefix('financeiro')->group(function(){
 		Route::middleware('liberar.recurso:14')->get('/','painelController@financeiro');
-		Route::get('limpar-debitos','BoletoController@limparDebitos');
+		Route::get('limpar-debitos',[BoletoController::class,'limparDebitos']);
 
 		Route::prefix('cobranca')->group(function(){
 			Route::get('cartas','CobrancaController@cartas');
@@ -516,32 +520,34 @@ Route::middleware(['auth','login']) ->group(function(){
 
 		Route::prefix('boletos')->group(function(){
 			Route::middleware('liberar.recurso:19')->get('home',  function(){ return view('financeiro.boletos.home'); });
-			Route::get('editar/{id}','BoletoController@editar');
-			Route::post('editar/{id}','BoletoController@update');
-			Route::get('imprimir/{id}','BoletoController@imprimir');
+			Route::get('editar/{id}',[BoletoController::class,'editar']);
+			Route::post('editar/{id}',[BoletoController::class,'update']);
+			Route::get('imprimir/{id}',[BoletoController::class,'imprimir']);
 			Route::get('imprimir-carne/{pessoa}','CarneController@imprimirCarne');
-			Route::get('registrar/{id}','IntegracaoBBController@listarBoletos');//registrar para o banco
-			Route::get('divida-ativa','DividaAtivaController@gerarDividaAtiva');// envia boletos para divida ativa;
-			Route::get('listar-por-pessoa','BoletoController@listarPorPessoa');
-			Route::get('informacoes/{id}','BoletoController@historico');
-			Route::get('imprimir-laravel-boleto/{ids}','BoletoController@imprimirLaravelBoleto');
-			Route::get('cancelar/{id}','BoletoController@cancelarView');
+			Route::get('registrar/{id}','IntegracaoBBController@listarBoletos');
+			//registrar para o banco
+			Route::get('divida-ativa','DividaAtivaController@gerarDividaAtiva');
+			// envia boletos para divida ativa;
+			Route::get('listar-por-pessoa',[BoletoController::class,'listarPorPessoa']);
+			Route::get('informacoes/{id}',[BoletoController::class,'historico']);
+			Route::get('imprimir-laravel-boleto/{ids}',[BoletoController::class,'imprimirLaravelBoleto']);
+			Route::get('cancelar/{id}',[BoletoController::class,'cancelarView']);
 			Route::get('registrar/{ids}','IntegracaoBBController@registrarBoletos');
 			Route::get('gerar-carne/{pessoa}','CarneController@gerarCarneIndividual');
-			Route::middleware('liberar.recurso:23')->post('cancelar/{id}','BoletoController@cancelar');
-			Route::middleware('liberar.recurso:23')->get('cancelar-todos/{id}','BoletoController@cancelarTodosVw');
-			Route::middleware('liberar.recurso:23')->post('cancelar-todos/{id}','BoletoController@cancelarTodos');
+			Route::middleware('liberar.recurso:23')->post('cancelar/{id}',[BoletoController::class,'cancelar']);
+			Route::middleware('liberar.recurso:23')->get('cancelar-todos/{id}',[BoletoController::class,'cancelarTodosVw']);
+			Route::middleware('liberar.recurso:23')->post('cancelar-todos/{id}',[BoletoController::class,'cancelarTodos']);
 
-			Route::get('reativar/{id}','BoletoController@reativar');
-			Route::get('gerar-individual/{pessoa}','BoletoController@cadastarIndividualmente');
-			Route::get('gerar','BoletoController@gerar');
-			Route::middleware('liberar.recurso:19')->get('gerar-boletos', 'BoletoController@cadastrar');//gerar boletos em lote para todos alunos
-			Route::get('imprimir-lote', 'BoletoController@imprimirLote');
-			Route::middleware('liberar.recurso:19')->get('confirmar-impressao', 'BoletoController@confirmarImpressao');//confirma impressao de todos boletos gravados
-			Route::get('novo/{pesssoa}', 'BoletoController@novo');//precisa de middleware
-			Route::post('novo/{pesssoa}', 'BoletoController@create');//precisa de middleware
-			Route::get('/lote-csv', 'BoletoController@gerarArquivoCSV');
-			Route::get('corrigir2022','BoletoController@corrigir2022');
+			Route::get('reativar/{id}',[BoletoController::class,'reativar']);
+			Route::get('gerar-individual/{pessoa}',[BoletoController::class,'cadastarIndividualmente']);
+			Route::get('gerar',[BoletoController::class,'gerar']);
+			Route::middleware('liberar.recurso:19')->get('gerar-boletos', [BoletoController::class,'cadastrar']);//gerar boletos em lote para todos alunos
+			Route::get('imprimir-lote', [BoletoController::class,'imprimirLote']);
+			Route::middleware('liberar.recurso:19')->get('confirmar-impressao', [BoletoController::class,'confirmarImpressao']);//confirma impressao de todos boletos gravados
+			Route::get('novo/{pesssoa}', [BoletoController::class,'novo']);
+			Route::post('novo/{pesssoa}', [BoletoController::class,'create']);
+			Route::get('/lote-csv', [BoletoController::class,'gerarArquivoCSV']);
+			Route::get('corrigir2022',[BoletoController::class,'corrigir2022']);
 			Route::prefix('remessa')->group(function(){
 				Route::get('home',  function(){ return view('financeiro.remessa.home'); });
 				Route::get('gerar', 'RemessaController@gerarRemessa');//precisa de middleware
@@ -566,8 +572,8 @@ Route::middleware(['auth','login']) ->group(function(){
 
 		});
 		Route::prefix('relatorios')->group(function(){
-				Route::get('boletos', 'BoletoController@relatorioBoletosAbertos');
-				Route::get('boletos/{ativos}', 'BoletoController@relatorioBoletosAbertos');
+				Route::get('boletos', [BoletoController::class,'relatorioBoletosAbertos']);
+				Route::get('boletos/{ativos}', [BoletoController::class,'relatorioBoletosAbertos']);
 				Route::get('/cobranca-xls', 'CobrancaController@relatorioDevedoresXls');
 				Route::get('/cobranca-xls/{ativos}', 'CobrancaController@relatorioDevedoresXls');
 				Route::get('/cobranca-sms', 'CobrancaController@relatorioDevedoresSms');
@@ -631,27 +637,27 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('novo', 'painelController@novoPedagogico');
 		//Turmas
 		Route::prefix('turmas')->group(function(){
-			Route::get('cadastrar','TurmaController@create');
-			Route::post('cadastrar','TurmaController@store');
-			Route::post('recadastrar','TurmaController@storeRecadastro');
-			Route::get('/','TurmaController@index');
-			Route::get('/alterar/{acao}/{turmas}','TurmaController@acaolote');
-			Route::get('listar','TurmaController@index');
-			Route::get('apagar/{var}','TurmaController@destroy');
-			Route::get('editar/{var}','TurmaController@edit');
-			Route::post('editar/{var}','TurmaController@update');
-			Route::get('status/{status}/{turma}','TurmaController@status');
-			Route::get('turmasjson','TurmaController@turmasJSON');
+			Route::get('cadastrar',[TurmaController::class,'create']);
+			Route::post('cadastrar',[TurmaController::class,'store']);
+			Route::post('recadastrar',[TurmaController::class,'storeRecadastro']);
+			Route::get('/',[TurmaController::class,'index']);
+			Route::get('/alterar/{acao}/{turmas}',[TurmaController::class,'acaolote']);
+			Route::get('listar',[TurmaController::class,'index']);
+			Route::get('apagar/{var}',[TurmaController::class,'destroy']);
+			Route::get('editar/{var}',[TurmaController::class,'edit']);
+			Route::post('editar/{var}',[TurmaController::class,'update']);
+			Route::get('status/{status}/{turma}',[TurmaController::class,'status']);
+			Route::get('turmasjson',[TurmaController::class,'turmasJSON']);
 			Route::get('inscritos/{turma}','InscricaoController@verInscritos');
 			Route::get('lista/{id}','painelController@chamada');
 			Route::get('importar', function(){ return view('pedagogico.turma.upload');});
-			Route::post('importar', 'TurmaController@uploadImportaTurma' );
-			Route::post('processar-importacao', 'TurmaController@processarImportacao');
-			Route::get('expiradas','TurmaController@processarTurmasExpiradas');
+			Route::post('importar', [TurmaController::class,'uploadImportaTurma' ]);
+			Route::post('processar-importacao', [TurmaController::class,'processarImportacao']);
+			Route::get('expiradas',[TurmaController::class,'processarTurmasExpiradas']);
 			Route::get('modificar-requisitos/{id}','RequisitosController@editRequisitosTurma');
 			Route::post('turmas-requisitos','RequisitosController@editRequisitosTurma');
 			Route::post('modificar-requisitos/{id}','RequisitosController@storeRequisitosTurma');
-			Route::get('atualizar-inscritos','TurmaController@atualizarInscritos');
+			Route::get('atualizar-inscritos',[TurmaController::class,'atualizarInscritos']);
 
 		});
 		
@@ -669,9 +675,9 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('atender/{var}','SecretariaController@atender');
 		Route::get('profile/{var}','SecretariaController@profile');
 		Route::get('processar-documentos','SecretariaController@processarDocumentos');
-		Route::get('turmas', 'TurmaController@listarSecretaria');
-		Route::get('turmas-disponiveis/{pessoa}/{turmas}/{busca?}', 'TurmaController@turmasDisponiveis');
-		Route::get('turmas-escolhidas/{turmas}/', 'TurmaController@turmasEscolhidas');
+		Route::get('turmas', [TurmaController::class,'listarSecretaria']);
+		Route::get('turmas-disponiveis/{pessoa}/{turmas}/{busca?}', [TurmaController::class,'turmasDisponiveis']);
+		Route::get('turmas-escolhidas/{turmas}/', [TurmaController::class,'turmasEscolhidas']);
 		Route::get('upload','SecretariaController@uploadGlobal_vw');
 		Route::post('upload','SecretariaController@uploadGlobal');
 		Route::get('frequencia/{turma}','FrequenciaController@listaChamada');
@@ -762,8 +768,8 @@ Route::middleware(['auth','login']) ->group(function(){
 	
 	Route::middleware('liberar.recurso:13')->prefix('docentes')->group(function(){
 		Route::get('docente/{id?}/{semestre?}','painelController@docentes');
-		Route::get('turmas-professor', 'TurmaController@listarProfessores');
-		Route::post('turmas-professor', 'TurmaController@turmasProfessor');
+		Route::get('turmas-professor', [TurmaController::class,'listarProfessores']);
+		Route::post('turmas-professor', [TurmaController::class,'turmasProfessor']);
 		Route::get('jornadas/{educador?}',[JornadaController::class,'modalJornadaDocente']);
 		Route::get('cargas/{educador?}',[PessoaDadosJornadaController::class,'modalCargaDocente']);
 		Route::prefix('frequencia')->group( function(){
@@ -774,7 +780,7 @@ Route::middleware(['auth','login']) ->group(function(){
 			Route::post('editar-aula/{aula}','FrequenciaController@editarChamada_exec');
 			Route::get('preencher/{aula}','FrequenciaController@preencherChamada_view');
 			Route::post('preencher/{aula}','FrequenciaController@preencherChamada_exec');
-			Route::get('apagar-aula/{aula}','AulaController@apagarAula');
+			Route::get('apagar-aula/{aula}',[AulaController::class,'apagarAula']);
 			Route::get('conteudos/{turma}','AulaDadoController@editarConteudo_view');
 			Route::post('conteudos/{turma}','AulaDadoController@editarConteudo_exec');
 		});
@@ -785,8 +791,8 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::post('encerrar','JornadaController@encerrar');
 
 	});
-	Route::get('chamada/{id}/{pg}/{url}/{hide?}','TurmaController@getChamada'); //optional parameter is used here!
-	Route::get('plano/{professor}/{tipo}/{curso}','TurmaController@getPlano');
+	Route::get('chamada/{id}/{pg}/{url}/{hide?}',[TurmaController::class,'getChamada']); //optiona]l parameter is used here!
+	Route::get('plano/{professor}/{tipo}/{curso}',[TurmaController::class,'getPlano']);
 	
 	//Administração
 
@@ -801,12 +807,12 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::post('/turmascursosnavka', 'painelController@gravarMigracao');
 		Route::get('/turmasaulasnavka', 'painelController@verTurmasAnterioresAulas');
 		Route::get('importarLocais','painelController@importarLocais');
-		Route::get('atualizar-inscritos','TurmaController@atualizarInscritos');
+		Route::get('atualizar-inscritos',[TurmaController::class,'atualizarInscritos']);
 		Route::get('inscricoes','InscricaoController@incricoesPorPosto');
 	});
 
 	Route::get('cobranca-automatica','CobrancaController@cobrancaAutomatica');
-	Route::post('services/excluir-aulas','AulaController@excluir');
+	Route::post('services/excluir-aulas',[AulaController::class,'excluir']);
 	
 });//end middleware login
 Route::prefix('services')->group(function(){
@@ -820,7 +826,7 @@ Route::prefix('services')->group(function(){
 });
 
 Route::get('alerta-covid','painelController@alertaCovid');
-Route::get('cancelamento-covid','BoletoController@cancelarCovid');
+Route::get('cancelamento-covid',[BoletoController::class,'cancelarCovid']);
 Route::get('renova-login','loginController@sendNewPassword');
 
 

@@ -238,6 +238,7 @@ class FrequenciaController extends Controller
             $aula_anterior->ocorrencia = $aula_anterior->getOcorrencia();
         }
 
+
         return view('frequencias.chamada')->with('turma',$turma)->with('aulas',$aulas)->with('anteriores',$aulas_anteriores);
 
     }

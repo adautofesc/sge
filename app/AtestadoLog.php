@@ -9,7 +9,10 @@ class AtestadoLog extends Model
 {
     use HasFactory;
     public $timestamps = false;
-    protected $dates = ['data'];
+    //protected $dates = ['data'];
+    protected $casts = [
+    'data' => 'date',
+    ];
 
 
     public function getNomeResponsavel(){

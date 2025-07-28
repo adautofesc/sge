@@ -9,7 +9,12 @@ use App\classes\Strings;
 class Pessoa extends Model
 {
 	use SoftDeletes;
-    protected $dates = ['deleted_at'];
+    //protected $dates = ['deleted_at'];
+
+
+	protected $casts = [
+    'deleted_at' => 'date',
+    ];
 	protected $appends=['nome_simples'];
 
 	public function dadosAcesso(){

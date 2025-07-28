@@ -8,7 +8,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Atestado extends Model
 {
     use SoftDeletes;
-    protected $dates = ['emissao','validade','created_at','deleted_at'];
+    //protected $dates = ['emissao','validade','created_at','deleted_at'];
+	protected $casts = [
+    'emissao' => 'date',
+	'validade' => 'date',
+	'created_at' => 'date',
+	'deleted_at' => 'date',
+    ];
    
 	/**
 	 * The attributes that are mass assignable.

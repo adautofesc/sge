@@ -10,7 +10,11 @@ class TurmaLog extends Model
     use HasFactory;
 
     public $timestamps = false;
-    protected $dates = ['data'];
+    //protected $dates = ['data'];
+    protected $casts = [
+    'data' => 'date',
+
+    ];
 
     public function getPessoa(){
         $pessoa = \App\Pessoa::withTrashed()->find($this->pessoa);

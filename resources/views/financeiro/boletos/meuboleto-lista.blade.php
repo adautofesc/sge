@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title> Sistema de Gestão Educacional - SGE FESC </title>
+        <title>Sistema de Gestão Educacional - SGE FESC</title>
         <meta name="description" content="Página de login do SGE da FESC">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="apple-touch-icon" href="apple-touch-icon.png">

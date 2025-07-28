@@ -39,6 +39,8 @@ Route::get('buscarbairro/{var}','EnderecoController@buscarBairro');
 Route::get('ipca','ValorController@getIPCA');
 Route::get('agenda-atendimento/{data}','AgendaAtendimentoController@horariosData');
 
+Route::get('gerar-token', [App\Http\Controllers\Auth\TokenController::class, 'gerarToken'])->name('gerar.token');
+Route::get('apagar-token', [App\Http\Controllers\Auth\TokenController::class, 'apagarToken'])->name('apagar.token');
 //Route::get('correcao-valor','ValorController@correcaoValor');
 //Route::get('boletos-com-erros','BoletoController@analisarBoletosComErro');
 Route::get('rematricula', function(){

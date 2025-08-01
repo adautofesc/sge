@@ -27,6 +27,8 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ValorController;
 use App\Http\Controllers\Auth\PerfilAuthController;
+use App\Http\Controllers\loginController;
+use App\Http\Controllers\PessoaController;
 
 Route::get('/', [App\Http\Controllers\painelController::class,'index']);
 
@@ -117,12 +119,12 @@ Auth::routes(['register' => false]);
 Route::middleware(['auth','login']) ->group(function(){
 
 	Route::get('home', 'painelController@index');
-	Route::get('/trocarminhasenha','loginController@trocarMinhaSenha_view');
-	Route::post('/trocarminhasenha','loginController@trocarMinhaSenha_exec');
-	Route::get('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_view');
-	Route::post('/pessoa/trocarsenha/{var}','loginController@trocarSenhaUsuario_exec');
-	Route::get('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_view');
-	Route::post('/pessoa/cadastraracesso/{var}','loginController@cadastrarAcesso_exec');
+	Route::get('/trocarminhasenha', [loginController::class, 'trocarMinhaSenha_view']);
+	Route::post('/trocarminhasenha', [loginController::class, 'trocarMinhaSenha_exec']);
+	Route::get('/pessoa/trocarsenha/{var}', [loginController::class, 'trocarSenhaUsuario_view']);
+	Route::post('/pessoa/trocarsenha/{var}', [loginController::class, 'trocarSenhaUsuario_exec']);
+	Route::get('/pessoa/cadastraracesso/{var}', [loginController::class, 'cadastrarAcesso_view']);
+	Route::post('/pessoa/cadastraracesso/{var}', [loginController::class, 'cadastrarAcesso_exec']);
 
 
 
@@ -354,7 +356,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	//Desenvoldedor
 	Route::middleware('liberar.recurso:22')->prefix('dev')->group(function(){
 		Route::get('/','painelController@indexDev');
-		Route::get('use-as/{id}', 'loginController@useAs');
+		Route::get('use-as/{id}',  [loginController::class, 'useAs']);
 		Route::get('teste-pix','PixController@testePix');
 		Route::get('testar-classe/', 'PessoaDadosGeraisController@rastrearDuplicados');
 		Route::post('testar-classe', 'painelController@testarClassePost');
@@ -372,15 +374,15 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::post('registrar-contato','ContatoController@registrar');
 		Route::get('contato-whatsapp','ContatoController@enviarWhats');
 		Route::get('resetar-senha-perfil/{id}',[PerfilAuthController::class,'resetarSenha']);
-		Route::get ('listar','PessoaController@listarTodos');//->middleware('autorizar:56')
-		Route::post('listar','PessoaController@procurarPessoasAjax');
-		Route::get ('cadastrar', 'PessoaController@create')->name('pessoa.cadastrar');
-		Route::post('cadastrar','PessoaController@gravarPessoa');
-		Route::middleware('liberar.recurso:18')->get('mostrar','PessoaController@listarTodos');//->middleware(['autorizar:56', 'privacy'])
-		Route::get ('mostrar/{var}','PessoaController@mostrar');
-		Route::get('buscarapida/{var}','PessoaController@liveSearchPessoa');
-		Route::get('apagar-atributo/{var}','PessoaController@apagarAtributo');
-		Route::get('apagar-pendencia/{var}','PessoaController@apagarPendencia');
+		Route::get ('listar',[PessoaController::class,'listarTodos']);//->middleware('autorizar:56]')
+		Route::post('listar',[PessoaController::class,'procurarPessoasAjax']);
+		Route::get ('cadastrar', [PessoaController::class,'create'])->name('pessoa.cadastrar');
+		Route::post('cadastrar',[PessoaController::class,'gravarPessoa']);
+		Route::middleware('liberar.recurso:18')->get('mostrar',[PessoaController::class,'listarTodos']);//->middleware(['autorizar:56', 'privacy'])
+		Route::get ('mostrar/{var}',[PessoaController::class,'mostrar']);
+		Route::get('buscarapida/{var}',[PessoaController::class,'liveSearchPessoa']);
+		Route::get('apagar-atributo/{var}',[PessoaController::class,'apagarAtributo']);
+		Route::get('apagar-pendencia/{var}',[PessoaController::class,'apagarPendencia']);
 		Route::POST('inserir-dado-clinico','PessoaDadosClinicosController@store');
 		Route::delete('apagar-dado-clinico/{id}','PessoaDadosClinicosController@delete');
 
@@ -417,19 +419,19 @@ Route::middleware(['auth','login']) ->group(function(){
 
 		
 	//Dependentes
-		Route::get('adicionardependente/{var}','PessoaController@addDependente_view');
-		Route::get('gravardependente/{pessoa}/{dependente}','PessoaController@addDependente_exec');
-		Route::get('removervinculo/{var}','PessoaController@remVinculo_exec');
-		Route::get('adicionarresponsavel/{var}','PessoaController@addResponsavel_view');
-		Route::post('adicionarresponsavel/{var}','PessoaController@addResponsavel_exec');
-		Route::get('removerdependente/{var}','PessoaController@remResponsavel_exec');
-		Route::get('buscarendereco/{var}','PessoaController@buscarEndereco');
+		Route::get('adicionardependente/{var}',[PessoaController::class,'addDependente_view']);
+		Route::get('gravardependente/{pessoa}/{dependente}',[PessoaController::class,'addDependente_exec']);
+		Route::get('removervinculo/{var}',[PessoaController::class,'remVinculo_exec']);
+		Route::get('adicionarresponsavel/{var}',[PessoaController::class,'addResponsavel_view']);
+		Route::post('adicionarresponsavel/{var}',[PessoaController::class,'addResponsavel_exec']);
+		Route::get('removerdependente/{var}',[PessoaController::class,'remResponsavel_exec']);
+		Route::get('buscarendereco/{var}',[PessoaController::class,'buscarEndereco']);
 	// Editar dados das pessoas
 		Route::prefix('editar')->group(function(){
-			Route::get('geral/{id}','PessoaController@editarGeral_view');
-			Route::post('geral/{var}','PessoaController@editarGeral_exec');
-			Route::get('contato/{var}','PessoaController@editarContato_view');
-			Route::post('contato/{var}','PessoaController@editarContato_exec');
+			Route::get('geral/{id}',[PessoaController::class,'editarGeral_view']);
+			Route::post('geral/{var}',[PessoaController::class,'editarGeral_exec']);
+			Route::get('contato/{var}',[PessoaController::class,'editarContato_view']);
+			Route::post('contato/{var}',[PessoaController::class,'editarContato_exec']);
 			Route::get('dadosclinicos/{var}','PessoaDadosClinicosController@editarDadosClinicos_view');
 			Route::post('dadosclinicos/{var}','PessoaDadosClinicosController@editarDadosClinicos_exec');
 			Route::get('observacoes/{var}','PessoaDadosGeraisController@editarObservacoes_view');
@@ -752,7 +754,7 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::get('tce-vagas/{ano?}','RelatorioController@tceVagas');
 		Route::get('alunos-conselho/{ano?}','RelatorioController@alunosConselho');
 		Route::get('bolsistas-com-3-faltas','RelatorioController@bolsistasComTresFaltas');
-		Route::get('celulares','PessoaController@relatorioCelulares');
+		Route::get('celulares',[PessoaController::class,'relatorioCelulares']);
 		Route::get('receita-anual-programa/{ano}/{mes?}','Reports\ReceitaAnualReportController@receitaPorPrograma');
 		Route::get('receita-curso/{cursos}/{ano}/{mes?}','Reports\ReceitaAnualReportController@receitaPorCurso');
 		Route::get('carga-docentes/{ano?}', [JornadaDocentes::class,'relatorioGeral']); //rotas inteligentes
@@ -797,12 +799,12 @@ Route::middleware(['auth','login']) ->group(function(){
 	//Administração
 
 	Route::middleware('liberar.recurso:15')->prefix('admin')->group(function(){
-		Route::middleware('liberar.recurso:8')->get('credenciais/{var}', 'loginController@credenciais_view');
-		Route::middleware('liberar.recurso:8')->post('credenciais/{var}', 'loginController@credenciais_exec');
-		Route::middleware('liberar.recurso:10')->get('listarusuarios', 'loginController@listarUsuarios_view');
-		Route::middleware('liberar.recurso:10')->get('listarusuarios/{var}', 'loginController@listarUsuarios_view');
-		Route::middleware('liberar.recurso:10')->post('listarusuarios/{var}', 'loginController@listarUsuarios_action');
-		Route::get('alterar/{acao}/{itens}', 'loginController@alterar');
+		Route::middleware('liberar.recurso:8')->get('credenciais/{var}',  [loginController::class], 'credenciais_view');
+		Route::middleware('liberar.recurso:8')->post('credenciais/{var}',  [loginController::class], 'credenciais_exec');
+		Route::middleware('liberar.recurso:10')->get('listarusuarios',  [loginController::class], 'listarUsuarios_view');
+		Route::middleware('liberar.recurso:10')->get('listarusuarios/{var}',  [loginController::class], 'listarUsuarios_view');
+		Route::middleware('liberar.recurso:10')->post('listarusuarios/{var}',  [loginController::class], 'listarUsuarios_action');
+		Route::get('alterar/{acao}/{itens}',  [loginController::class, 'alterar']);
 		Route::get('/turmascursosnavka', 'painelController@verTurmasAnterioresCursos');
 		Route::post('/turmascursosnavka', 'painelController@gravarMigracao');
 		Route::get('/turmasaulasnavka', 'painelController@verTurmasAnterioresAulas');
@@ -827,7 +829,7 @@ Route::prefix('services')->group(function(){
 
 Route::get('alerta-covid','painelController@alertaCovid');
 Route::get('cancelamento-covid',[BoletoController::class,'cancelarCovid']);
-Route::get('renova-login','loginController@sendNewPassword');
+Route::get('renova-login', [loginController::class, 'sendNewPassword']);
 
 
 //----------------------------- Errors treatment

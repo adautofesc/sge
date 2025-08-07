@@ -21,6 +21,8 @@ class Matricula extends Model
 				];
 
 	private const CORTE = 20;
+
+
     protected $appends=['valor'];
 	public function getValorAttribute($value){		
 		$valor = \App\Http\Controllers\ValorController::valorMatricula($this->id);
@@ -101,12 +103,14 @@ class Matricula extends Model
 			return \App\Programa::find(1);
 	}
 
+	
+
 
 	/**
 	 * função pra calcular quantas parcelas a pessoa terá que pagar na hora de gerar matricula
 	 * @return [Int] [quantidade de parcelas da matrícula]
 	 */
-	public function getParcelas(){
+	public function getParcelas():int{
 		//Fazer uma verificação inicial 
 		if($this->parcelas>0)
 			return  $this->parcelas;
@@ -117,6 +121,8 @@ class Matricula extends Model
 			 unset($this->inscricoes);
 			return 0;
 		}
+
+		//pega a quantidade de parcelas da turma
 		foreach($inscricoes as $inscricao){
 			$turma= \App\Turma::find($inscricao->turma->id); 
 			if($parcelas < $turma->getParcelas()){
@@ -125,6 +131,7 @@ class Matricula extends Model
 			
 		}
 		
+		//se pacote
 		if($this->pacote>0){
 			$valor = Valor::where('pacote',$this->pacote)->where('ano',substr($turma->data_inicio,-4))->first();
 			if(isset($valor->parcelas))
@@ -132,48 +139,24 @@ class Matricula extends Model
 		}
 
 		//transforma data de inicio da turma e matrícula em objeto de data 
-		$pp_dt = \DateTime::createFromFormat('d/m/Y', $turma->data_inicio);
-		$dt_mt = \DateTime::createFromFormat('Y-m-d',$this->data);
-		$interval = $pp_dt->diff($dt_mt);
+		$primeira_parcela = $turma->getDataPrimeiraParcela();
+		$data_matricula = \DateTime::createFromFormat('Y-m-d',$this->data);
+		$interval = $primeira_parcela->diff($data_matricula);
 
 		
 
 		
 		//se a data de matrícula for anterior ao início do curso
-		if($dt_mt->format('m') <= $pp_dt->format('m') || $dt_mt->format('Y') < $pp_dt->format('Y'))
-			//para reduzir numero de parcelas em julho
-			if($parcelas>=5 && $dt_mt->format('m')>=7 && $dt_mt->format('Y') == $pp_dt->format('Y'))
-				return 5;
-			else
-				return $parcelas;
+		if($data_matricula->format('m') <= $primeira_parcela->format('m') || $data_matricula->format('Y') < $primeira_parcela->format('Y'))
+			return $parcelas;
 		else{
-			
-			if($parcelas >5 && $dt_mt->format('m')>7)
-				$parcelas++;//n
-				
-			
-			if($dt_mt->format('d')>$this::CORTE && $dt_mt->format('m')==7 && $parcelas>5)//n
-					$parcelas++;//n
-			
-	
-			if($dt_mt->format('d')>$this::CORTE)//n
-				$parcelas--;//10
-			
-						// - 6
-			$parcelas = $parcelas - ($dt_mt->format('m')-$pp_dt->format('m'));
-			//
-			// Bloco criado para retirar a parcela de julho e jogar para dezembro
-			//if($dt_mt->format('m')>7 || ($dt_mt->format('m')==7 && $dt_mt->format('d')>$this::CORTE)){
-				//$parcelas++;//4
-
-			//}
-			
-
+			// se for de agosto em diante, adiciona uma parcela pois pula-se julho (se o curso começar antes de julho e a matricula depois de junho)
+			if($primeira_parcela->format('m') < 7 && $data_matricula->format('m')>6)
+				$parcelas = $parcelas - ($data_matricula->format('m')-$primeira_parcela->format('m'))+1;
+			else
+				$parcelas = $parcelas - ($data_matricula->format('m')-$primeira_parcela->format('m'));
 
 		}
-	
-
-
 		return $parcelas;
 
 	}

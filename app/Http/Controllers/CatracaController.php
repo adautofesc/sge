@@ -3,22 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Tag;
+use App\Inscricao;
+use App\Turma;
+use App\Boleto;
+use App\Atestado;
+use App\classes\Data;
 
 class CatracaController extends Controller
-{
+{   
+  
     public function sendData(){
         // https://dev.to/yasserelgammal/dive-into-laravel-sanctum-token-abilities-n8f
         // Implementation details would go here, such as fetching data from an external API
         // or database and updating the local records accordingly.
 
         $headers = getallheaders();
-        //dd($headers);
-
-
-        if(!isset($headers['Token']) || $headers['Token'] !== 'cdEvWp6rqGCgisIZ2fzse2m20rgT6OyY1xy8SJxDva'){
+        if(!isset($headers['Token']) || $headers['Token'] !== env('HASH_API_CATRACA')){
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
+        $dados = array();
+/*
         $dados = [
     [
         "aluno_id" => 32132,
@@ -42,9 +48,107 @@ class CatracaController extends Controller
         "status" => "BOA AULA! CICLANO",
         "admin" => false
     ]
-];
+];*/
+
+        // Tags
+        $tags = Tag::join('pessoas', 'tags.pessoa', '=', 'pessoas.id')->get();
+           
+        foreach($tags as $tag){
+            $liberado = false;
+            $status = "";
+            $horarios = array();
+
+            $inscricoes = Inscricao::where('inscricoes.pessoa', $tag->pessoa)
+                ->join('turmas', 'inscricoes.turma', '=', 'turmas.id')
+                ->where('turmas.sala', 6) // Assuming 6 is the pool
+                ->where('inscricoes.turma', '!=', null)
+                ->get();
+
+            $horarios = array();
+            foreach ($inscricoes as $inscricao) {
+                // Adiciona diretamente ao array $horarios, sem criar subarrays
+                $horarios[] = [
+                    'hora' => $inscricao->hora_inicio,
+                    'dias' => explode(',', $inscricao->dias_semana)
+                ];
+            }
+
+            // Se precisar garantir que não haja arrays vazios/nulos:
+            $horarios = array_values(array_filter($horarios));
+            
+                
+            
+
+            //verificar pagamento
+            $boletos = Boleto::verificarDebitos($tag->pessoa);
+            if($boletos->count() == 0)
+                $liberado = True;                
+            else
+                $status = "PENDENTE DE PAGAMENTO";
+                
+            //verificar atestado
+            $atestado = Atestado::verificarPessoa($tag->pessoa,6);
+
+            if(!$atestado){
+                $liberado = False;
+                $status = "ATESTADO MÉDICO PENDENTE";
+            }
+
+            //verificar se é admin
+            $acesso = \App\ControleAcessoRecurso::where('pessoa', $tag->pessoa)
+                ->where('recurso', '31')
+                ->first();
+            if($acesso){
+                $admin = true;
+                $liberado = true;
+                $status = "ACESSO ADMINISTRATIVO";
+            }
+
+
+
+            if(!array_search($tag->pessoa, array_column($dados, 'aluno_id'))){
+                $dados[] = [
+                    "aluno_id" => $tag->pessoa,
+                    "credencial" => $tag->tag,
+                    "horarios" => $horarios,
+                    "liberado" => $liberado,
+                    "status" => $status,
+                    "admin" => isset($admin)? true : false,
+                ];
+            }
+            
+
+
+        }
+
 
         // Selecionar todas as turmas que são da piscina
+        /*
+        $turmas = Turma::where('sala',6)->whereIn('status',['lancada','iniciada'])->get();
+
+
+        foreach($turmas as $turma){
+            // Para cada turma, selecionar as inscrições
+            $inscricoes = Inscricao::where('turma', $turma->id)->get();
+
+            foreach($inscricoes as $inscricao){
+                // Verificar se a pessoa já está no array de dados
+                $alunoId = $inscricao->pessoa->id;
+                if(!array_search($alunoId, array_column($dados, 'aluno_id'))){
+                    $dados[] = [
+                        "aluno_id" => $alunoId,
+                        "credencial" => $inscricao->credencial,
+                        "horarios" => [],
+                        "liberado" => true,
+                        "status" => "BOA AULA! " . $inscricao->pessoa->nome,
+                        "admin" => false
+                    ];
+                }
+                // Adicionar horário
+                $dados[-1]['horarios'][] = [$turma->horario, $turma->dia_semana];
+            }
+        }
+*/
         // selecionar todas as inscrições que são da piscina e adicionar a pessoas em um array caso ainda não esteja adicionado com o hotário de inicio da turma e dia da semana
 
         // para cada pessoa verifica se há pendencia de pagamento, se sim marcar flag de liberado como false e status como "PENDENTE DE PAGAMENTO"
@@ -55,118 +159,153 @@ class CatracaController extends Controller
         // senão retornar como verdadero e retornar data de inicio da turma e dia da semana
 
 
+
+
 //return response()->json_encode($dados, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         return response()->json($dados, 200);
     }
 
-    public function verificarAcessoPiscina()
-    {
-        // Selecionar turmas da piscina
-        $turmasPiscina = DB::table('turmas')
-            ->where('turmas.sala',  6)
-            ->select('turmas.id', 'turmas.hora_inicio', 'turmas.dias_semana')
-            ->get();
-
-        // Selecionar inscrições da piscina
-        $inscricoesPiscina = DB::table('inscricoes')
-            ->join('turmas', 'inscricoes.turma', '=', 'turmas.id')
-            ->join('pessoas', 'inscricoes.pessoa', '=', 'pessoas.id')
-            ->where('turmas.sala', 6)
-            ->select('pessoas.id as pessoa_id', 'pessoas.nome', 'turmas.hora_inicio', 'turmas.dias_semana')
-            ->distinct()
-            ->get();
-
-        $pessoasProcessadas = [];
-
-        foreach ($inscricoesPiscina as $inscricao) {
-            $pessoaId = $inscricao->pessoa_id;
-            
-            // Verificar pendências de pagamento
-            $pendenciaPagamento = DB::table('boletos')
-                ->where('pessoa', $pessoaId)
-                ->whereIn('status', ['gravado', 'emitido', 'divida'])
-                ->exists();
-
-            // Verificar pendências de atestado
-            $pendenciaAtestado = DB::table('atestados')
-                ->where('pessoa', $pessoaId)
-                ->whereIn('status', ['analisando', 'recusado'])
-                ->exists();
-
-            // Preparar dados da pessoa
-            $dadosPessoa = [
-                'id' => $pessoaId,
-                'nome' => $inscricao->nome,
-                'horario_inicio' => $inscricao->hora_inicio,
-                'dia_semana' => $this->converterDiaSemana($inscricao->dias_semana),
-                'liberado' => !($pendenciaPagamento || $pendenciaAtestado),
-                'status' => $this->definirStatus($pendenciaPagamento, $pendenciaAtestado)
-            ];
-
-            $pessoasProcessadas[] = $dadosPessoa;
-        }
-
-        return response()->json($pessoasProcessadas);
-    }
 
     /**
-     * Converte dias da semana para número
+     * Import attendance data from the post request catraca endpoint.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    private function converterDiaSemana($diasSemana)
-    {
-        $mapeamentoDias = [
-            'segunda' => 1,
-            'terca' => 2,
-            'quarta' => 3,
-            'quinta' => 4,
-            'sexta' => 5,
-            'sabado' => 6,
-            'domingo' => 7
-        ];
-
-        foreach ($mapeamentoDias as $dia => $numero) {
-            if (stripos($diasSemana, $dia) !== false) {
-                return $numero;
-            }
-        }
-
-        return 0; // Dia não identificado
-    }
-
-    /**
-     * Define o status com base nas pendências
-     */
-    private function definirStatus($pendenciaPagamento, $pendenciaAtestado)
-    {
-        if ($pendenciaPagamento) {
-            return 'PENDENTE DE PAGAMENTO';
-        }
-
-        if ($pendenciaAtestado) {
-            return 'ATESTADO MÉDICO PENDENTE';
-        }
-
-        return 'LIBERADO';
-    }
-
-    public function importarPresenca(Request $request){
-        // This method would handle the import of attendance data.
-        // It could involve parsing the request data and saving it to the database.
-
+    public function importData(Request $request){
+        // Provisory Authentication ******************************************************************
+        // In a production environment, you would use a more secure method of authentication
         $headers = getallheaders();
-        if(!isset($headers['Token']) || $headers['Token'] !== 'cdEvWp6rqGCgisIZ2fzse2m20rgT6OyY1xy8SJxDva'){
+        if(!isset($headers['Token']) || $headers['Token'] !== env('HASH_API_CATRACA')){
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+        // *****************************************************************************************
 
-        // Assuming the request contains JSON data
+        // Initialize an empty response array
+        // This will hold the processed data or any errors encountered
+        $response = array();
+
+        
         $data = $request->json()->all();
+        if(empty($data))
+            return response()->json(['error' => 'No data provided'], 400);
+        
 
-        foreach($request->registro as $registro){
+        foreach($data as $registro){
+            $aluno = $registro['aluno'];
+            $dataHora = $registro['acesso'];
+            try{
+                $objetoDataHora = new \DateTime("@$dataHora");
+            }
+            catch(\Exception $e){
+                $response[] = [
+                    'acesso' => $registro['id_acesso'],
+                    'status' => 'failed',
+                    'message' => 'Invalid date format: ' . $dataHora
+                ];
+                continue;
+            }
+            // Pega a turma iniciada compatível com o horário (com a tolerância) e dia da semana
             
-        }
+            $turma = \App\Turma::select('id')
+                ->where('sala', 6)
+                ->whereRaw('TIME(hora_inicio) BETWEEN ? AND ?', [
+                                (clone $objetoDataHora)->modify('-'.env('TOLERANCIA_ATRASO').' minutes')->format('H:i:s'),
+                                (clone $objetoDataHora)->modify('+'.env('TOLERANCIA_ATRASO').' minutes')->format('H:i:s')
+                            ]
+                        )
+                ->where('dias_semana', 'like', '%'.Data::stringDiaSemana($objetoDataHora->format('d/m/Y')).'%') // N returns the day of the week (1 for Monday, 7 for Sunday)
+                ->where('status', 'iniciada')
+                ->first();
 
-        // Here you would typically process the data, e.g., save it to the database
-        // For now, we'll just return the received data as a response
-        return response()->json(['message' => 'Data imported successfully', 'data' => $data], 200);
+            if(is_null($turma)){
+                $response[] = [
+                    'acesso' => $registro['id_acesso'],
+                    'status' => 'failed',
+                    'message' => 'Nenhuma turma corresponde ao dia e horário '
+                ];
+                continue;
+            }
+
+            $inscrito = \App\Inscricao::where('pessoa', $aluno)
+                ->where('turma', $turma->id)
+                ->first();
+
+            if(is_null($inscrito)){
+                $response[] = [
+                    'acesso' => $registro['id_acesso'],
+                    'status' => 'failed',
+                    'message' => 'Aluno não inscrito na turma'
+                ];
+                continue;
+            }
+
+            $aula = \App\Aula::where('turma', $turma->id)
+                ->whereDate('data', $objetoDataHora->format('Y-m-d'))
+                ->first();
+
+            if(is_null($aula)){
+                $response[] = [
+                    'acesso' => $registro['id_acesso'],
+                    'status' => 'failed',
+                    'message' => 'Sem aula neste dia'
+                ];
+                continue;
+            }
+            else{
+
+                if($aula->status == 'prevista'){
+                    $aula->status = 'realizada';
+                    $aula->save();
+                }
+
+                // If the presence record already exists, skip to the next iteration
+                $presencaExistente = \App\Frequencia::where('aula', $aula->id)
+                    ->where('aluno', $aluno)
+                    ->first();  
+                if($presencaExistente){
+                    $response[] = [
+                        'acesso' => $registro['id_acesso'],
+                        'status' => 'failed',
+                        'message' => 'Presença já registrada'
+                    ];
+                    continue;
+                }
+                else{
+                    $presenca =  new \App\Frequencia();
+                    $presenca->aula = $aula->id;
+                    $presenca->aluno = $aluno;
+                    try{
+                        $presenca->save();
+                    }
+                    catch(\Illuminate\Database\QueryException $e){
+                        $response[] = [
+                            'acesso' => $registro['id_acesso'],
+                            'status' => 'failed',
+                            'message' => 'Erro ao registrar presença: ' . $e->getMessage()
+                        ];
+                        continue;
+                    }
+                    
+                    $response[] = [
+                        'acesso' => $registro['id_acesso'],
+                        'status' => 'success',
+                        'message' => 'Presença registrada'
+                    ];
+
+                }
+                
+
+            }
+                
+            /*dd([
+                'dataHora' => $objetoDataHora->format('d/m/Y H:i:s'),
+                'sql' => $turma->toSql(),
+                'bindings' => $turma->getBindings(),
+                'dados' => $turma->get()
+            ]);*/
+
+        }
+        return response()->json($response, 200);
     }
 }

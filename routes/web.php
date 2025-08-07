@@ -799,11 +799,11 @@ Route::middleware(['auth','login']) ->group(function(){
 	//Administração
 
 	Route::middleware('liberar.recurso:15')->prefix('admin')->group(function(){
-		Route::middleware('liberar.recurso:8')->get('credenciais/{var}',  [loginController::class], 'credenciais_view');
-		Route::middleware('liberar.recurso:8')->post('credenciais/{var}',  [loginController::class], 'credenciais_exec');
-		Route::middleware('liberar.recurso:10')->get('listarusuarios',  [loginController::class], 'listarUsuarios_view');
-		Route::middleware('liberar.recurso:10')->get('listarusuarios/{var}',  [loginController::class], 'listarUsuarios_view');
-		Route::middleware('liberar.recurso:10')->post('listarusuarios/{var}',  [loginController::class], 'listarUsuarios_action');
+		Route::middleware('liberar.recurso:8')->get('credenciais/{var}',  [loginController::class, 'credenciais_view']);
+		Route::middleware('liberar.recurso:8')->post('credenciais/{var}',  [loginController::class, 'credenciais_exec']);
+		Route::middleware('liberar.recurso:10')->get('listarusuarios',  [loginController::class, 'listarUsuarios_view']);
+		Route::middleware('liberar.recurso:10')->get('listarusuarios/{var}',  [loginController::class, 'listarUsuarios_view']);
+		Route::middleware('liberar.recurso:10')->post('listarusuarios/{var}',  [loginController::class, 'listarUsuarios_action']);
 		Route::get('alterar/{acao}/{itens}',  [loginController::class, 'alterar']);
 		Route::get('/turmascursosnavka', 'painelController@verTurmasAnterioresCursos');
 		Route::post('/turmascursosnavka', 'painelController@gravarMigracao');
@@ -814,7 +814,7 @@ Route::middleware(['auth','login']) ->group(function(){
 	});
 
 	Route::get('cobranca-automatica','CobrancaController@cobrancaAutomatica');
-	Route::post('services/excluir-aulas',[AulaController::class,'excluir']);
+	
 	
 });//end middleware login
 Route::prefix('services')->group(function(){
@@ -823,7 +823,9 @@ Route::prefix('services')->group(function(){
 	Route::get('turmas','WebServicesController@apiTurmas');
 	Route::get('salas-api/{id}','SalaController@listarPorLocalApi');
 	Route::get('salas-locaveis-api/{id}','SalaController@listarLocaveisPorLocalApi');
-	Route::get('catraca','CatracaController@sendData');
+	Route::post('excluir-aulas',[AulaController::class,'excluir']);
+	//Route::get('catraca','CatracaController@sendData');
+	Route::post('catracax','CatracaController@importarPresenca');
 
 });
 

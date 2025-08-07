@@ -45,8 +45,12 @@ class Atestado extends Model
 		$turma = \App\Turma::find($turma);
 		if($turma == null)
 			return false;
-		if($this->calcularVencimento($turma->sala) < date('Y-m-d 23:23:59'))
+		if($this->calcularVencimento($turma->sala) < date('Y-m-d 23:23:59')){
+			$this->status = 'vencido';
+			$this->save();
 			return false;
+		}
+			
 		else
 			return true;
 
@@ -62,6 +66,25 @@ class Atestado extends Model
 			return true;
 		else
 			return false;
+	}
+
+	public static function verificarPessoa(int $pessoa, int $sala = 0){
+		$atestado = Atestado::where('pessoa', $pessoa)
+			->where('status', 'ativo')
+			->where('tipo','saude')
+			->orderBy('id', 'desc')
+			->first();
+
+		if($atestado == null)
+			return false;
+		else{
+			
+
+		}
+
+		
+
+		
 	}
 
 

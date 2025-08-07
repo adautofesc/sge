@@ -12,7 +12,7 @@
 				Nome
 			</label>
 			<div class="col-sm-8"> 
-				<input type="search" id="search" name="nome"  class="form-control boxed" placeholder="Você pode digitar numero, nome, RG e CPF"> 
+				<input type="search" id="search" name="nome"  class="form-control boxed" placeholder="Você pode digitar numero, nome, RG e CPF" autofocus> 
 
 				<input type="hidden" name="id_pessoa">
 				{{ csrf_field() }}

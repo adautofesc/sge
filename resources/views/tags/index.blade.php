@@ -51,7 +51,7 @@
 				Tag
 			</label>
 			<div class="col-sm-3"> 
-				<input type="text" class="form-control boxed" name="tag" placeholder="" required > 
+				<input type="text" class="form-control boxed" name="tag" placeholder="" required autofocus> 
             </div>
             
 			<div class="col-sm-3"> 

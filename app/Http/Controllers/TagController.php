@@ -29,8 +29,9 @@ class TagController extends Controller
     }
 
     public function criar(Request $r){
+   
         if($r->tag>0){
-            $tag = Tag::where('tag',$r->tag)->first();
+            $tag = Tag::where('tag',str_pad($r->tag,20,'0',STR_PAD_LEFT))->first();
             if($tag)
                 return redirect()->back()->with(['warning'=>'Tag já cadastrada']);
             

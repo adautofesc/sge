@@ -100,19 +100,18 @@ class Turma extends Model
 		//procura curso/carga/ano.
 		$valorc= Valor::where('curso',$this->curso->id)->where('carga',$this->carga)->where('ano',substr($this->data_inicio,-4))->get();
 		if($valorc->count()!=1)
-
-				//procura curso/ano
-				$valorc= Valor::where('curso',$this->curso->id)->where('ano',substr($this->data_inicio,-4))->get();
+				$valorc = Valor::where('curso',$this->curso->id)
+							->where('ano',substr($this->data_inicio,-4))
+							->get();
 
 		if($valorc->count()!=1)
-
-			//programa/carga/ano
-			$valorc= Valor::where('programa',$this->programa->id)->where('carga',$this->carga)->where('ano',substr($this->data_inicio,-4))->get();
+			$valorc = Valor::where('programa',$this->programa->id)
+							->where('carga',$this->carga)->where('ano',substr($this->data_inicio,-4))->get();
 
 		if($valorc->count()!=1){
 			if($this->parcelas == 0){
 				//se não tiver na tabela, pega do valor da tabela turma mesmo;
-				$dt_i=Carbon::createFromFormat('d/m/Y', $this->data_inicio);
+				$dt_i=Carbon::createFromFormat('d/m/Y', $this->getDataPrimeiraParcela($this->data_inicio));
 				$dt_t=Carbon::createFromFormat('d/m/Y', $this->data_termino);
 				$diference=$dt_i->diffInMonths($dt_t);
 				$diference++;
@@ -122,11 +121,27 @@ class Turma extends Model
 				return $this->parcelas;
 		}
 		else
-			//dd( $valorc);
 			return $valorc->first()->parcelas;
 				
 
 		
+	}
+
+	/**
+	 * Função para pegar a data de início da primeira parcela
+	 * Se data de inicio do curso > 10 fica pro mes seguinte ao início senão fica para o mesmo mês
+	 * @param  Turma $turma [turma que será usada para pegar a data de início]
+	 * @return \Datetime [data de início da primeira parcela]
+	 */
+	public function getDataPrimeiraParcela():\Datetime {
+		$inicio_curso = \DateTime::createFromFormat('d/m/Y', $this->data_inicio);
+		if($inicio_curso->format('d') > env('DATA_CORTE'))
+			$inicio_curso = \DateTime::createFromFormat('d/m/Y', '10/' . $inicio_curso->format('m')+1 . '/' . $inicio_curso->format('Y'));
+		else
+			$inicio_curso = \DateTime::createFromFormat('d/m/Y', '10/' . $inicio_curso->format('m') . '/' . $inicio_curso->format('Y'));
+
+		return $inicio_curso;
+
 	}
 
 

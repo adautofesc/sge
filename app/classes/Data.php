@@ -223,6 +223,8 @@ Class Data
                 }
         }
 
+        
+
         //guiliredu/feriados-brasileiros-em-php.php
         public static function diasFeriados($ano = null){
                 if(empty($ano))

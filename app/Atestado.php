@@ -78,7 +78,7 @@ class Atestado extends Model
 		if($atestado == null)
 			return false;
 		else{
-			
+			return true;
 
 		}
 

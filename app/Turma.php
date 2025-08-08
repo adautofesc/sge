@@ -111,10 +111,17 @@ class Turma extends Model
 		if($valorc->count()!=1){
 			if($this->parcelas == 0){
 				//se não tiver na tabela, pega do valor da tabela turma mesmo;
-				$dt_i=Carbon::createFromFormat('d/m/Y', $this->getDataPrimeiraParcela($this->data_inicio));
+				try{
+				$primeira_parcela = $this->getDataPrimeiraParcela();
+				$dt_i=Carbon::createFromFormat('d/m/Y', $primeira_parcela->format('d/m/Y'));
 				$dt_t=Carbon::createFromFormat('d/m/Y', $this->data_termino);
 				$diference=$dt_i->diffInMonths($dt_t);
 				$diference++;
+				}
+				catch(\Exception $e){
+					echo $e->getMessage();
+					return 0;
+				}
 				return $diference;
 			}
 			else
@@ -135,6 +142,7 @@ class Turma extends Model
 	 */
 	public function getDataPrimeiraParcela():\Datetime {
 		$inicio_curso = \DateTime::createFromFormat('d/m/Y', $this->data_inicio);
+	
 		if($inicio_curso->format('d') > env('DATA_CORTE'))
 			$inicio_curso = \DateTime::createFromFormat('d/m/Y', '10/' . $inicio_curso->format('m')+1 . '/' . $inicio_curso->format('Y'));
 		else

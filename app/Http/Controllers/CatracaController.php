@@ -148,13 +148,19 @@ class CatracaController extends Controller
             $turma = \App\Turma::select('id')
                 ->where('sala', 6)
                 ->whereRaw('TIME(hora_inicio) BETWEEN ? AND ?', [
-                                (clone $objetoDataHora)->modify($tolerancia_acima)->format('H:i:s'),
-                                (clone $objetoDataHora)->modify($tolerancia_abaixo)->format('H:i:s')
+                                (clone $objetoDataHora)->modify($tolerancia_abaixo)->format('H:i:s'),
+                                (clone $objetoDataHora)->modify($tolerancia_acima)->format('H:i:s')
                             ]
                         )
                 ->where('dias_semana', 'like', '%'.Data::stringDiaSemana($objetoDataHora->format('d/m/Y')).'%') // N returns the day of the week (1 for Monday, 7 for Sunday)
                 ->where('status', 'iniciada')
                 ->first();
+                /*dd([
+                    (clone $objetoDataHora)->modify($tolerancia_acima)->format('H:i:s'),
+                    (clone $objetoDataHora)->modify($tolerancia_abaixo)->format('H:i:s'),
+                    Data::stringDiaSemana($objetoDataHora->format('d/m/Y')),
+                    $objetoDataHora,
+                    $turma]);*/
 
             if(is_null($turma)){
                 $response[] = [
@@ -204,7 +210,7 @@ class CatracaController extends Controller
                 if($presencaExistente){
                     $response[] = [
                         'acesso' => $registro['id_acesso'],
-                        'status' => 'failed',
+                        'status' => 'success',
                         'message' => 'Presença já registrada'
                     ];
                     continue;

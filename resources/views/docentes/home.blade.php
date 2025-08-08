@@ -222,6 +222,7 @@
                             <td class="col-sm-2 col-xs-2"title="Inicio: {{$turma->data_inicio}}"><small>{{implode(', ',$turma->dias_semana)}}<br>{{$turma->data_inicio}}</small></td>
                                 <td class="col-sm-2 col-xs-2"><small>{{$turma->hora_inicio}}h<br>{{$turma->hora_termino}}h</small></td>
                                 <td class="col-sm-5 col-xs-5">
+                                        
                                     @if(substr($turma->data_inicio,6,4)<2020)
                                     
                                     

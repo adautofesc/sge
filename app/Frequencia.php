@@ -128,4 +128,14 @@ class Frequencia extends Model
 
         }
     }
+    /**
+     * 
+     */
+    public static function verificarPontualidadeChamada($turma){
+        $atrasadas = \App\Aula::where('turma',$turma)
+                ->where('data','<',date('Y-m-d'))
+                ->where('status','prevista')
+                ->count();
+        return $atrasadas == 0 ? true : false;
+    }
 }

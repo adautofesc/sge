@@ -55,4 +55,6 @@ class Aula extends Model
             return '';
 
     }
+
+    
 }

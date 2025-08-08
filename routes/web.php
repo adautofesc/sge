@@ -351,6 +351,16 @@ Route::middleware(['auth','login']) ->group(function(){
 		Route::post('importar-dados','InscricaoController@importarDados');
 	});
 
+	Route::prefix('htp')->group(function(){
+		Route::get('.', [HtpController::class, 'index']);
+		Route::get('novo', [HtpController::class, 'create']);
+		Route::post('novo', [HtpController::class, 'store']);
+		Route::get('editar/{id}', [HtpController::class, 'edit']);
+		Route::post('editar/{id}', [HtpController::class, 'update']);
+		Route::get('apagar/{id}', [HtpController::class, 'destroy']);
+
+	});
+
 //**************************************************************************SETORES******************************** */
 
 	//Desenvoldedor

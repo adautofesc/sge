@@ -1359,6 +1359,7 @@ class TurmaController extends Controller
         foreach($turmas as $turma){
               
             $turma->weekday = \App\Utils\WeekHandler::toNumber($turma->dias_semana[0]);
+            $turma->chamada_regular = \App\Frequencia::verificarPontualidadeChamada($turma->id);
 
         }
     

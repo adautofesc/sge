@@ -62,6 +62,7 @@ class CatracaController extends Controller
                 ->join('turmas', 'inscricoes.turma', '=', 'turmas.id')
                 ->where('turmas.sala', 6) // Assuming 6 is the pool
                 ->where('inscricoes.turma', '!=', null)
+                ->where('inscricoes.status', 'regular')
                 ->get();
 
             $horarios = array();

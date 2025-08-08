@@ -89,6 +89,7 @@ class CatracaController extends Controller
                 
             //verificar atestado
             $atestado = Atestado::verificarPessoa($tag->pessoa,6);
+            
 
             if(!$atestado){
                 $liberado = False;

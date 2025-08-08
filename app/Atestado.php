@@ -70,11 +70,11 @@ class Atestado extends Model
 
 	public static function verificarPessoa(int $pessoa, int $sala = 0){
 		$atestado = Atestado::where('pessoa', $pessoa)
-			->where('status', 'ativo')
+			->where('status', 'aprovado')
 			->where('tipo','saude')
 			->orderBy('id', 'desc')
 			->first();
-
+		
 		if($atestado == null)
 			return false;
 		else{

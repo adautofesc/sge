@@ -55,7 +55,7 @@ class CatracaController extends Controller
            
         foreach($tags as $tag){
             $liberado = false;
-            $status = "";
+            $status = "Boa aula ".substr($tag->nome, 0, 10);
             $horarios = array();
 
             $inscricoes = Inscricao::where('inscricoes.pessoa', $tag->pessoa)
@@ -89,7 +89,7 @@ class CatracaController extends Controller
                 
             //verificar atestado
             $atestado = Atestado::verificarPessoa($tag->pessoa,6);
-            
+
 
             if(!$atestado){
                 $liberado = False;

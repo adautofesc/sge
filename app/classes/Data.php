@@ -197,6 +197,7 @@ Class Data
         }
 
         public static function stringDiaSemana($data){
+                //dd($data);
                 $data_obj = \DateTime::createFromFormat('d/m/Y',$data);
                 switch($data_obj->format('w')){
                         case 0:

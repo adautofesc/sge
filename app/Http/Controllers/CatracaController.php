@@ -24,31 +24,6 @@ class CatracaController extends Controller
         }
 
         $dados = array();
-/*
-        $dados = [
-    [
-        "aluno_id" => 32132,
-        "credencial" => 3914005,
-        "horarios" => [
-            ["13:00", 1],
-            ["16:00", 3]
-        ],
-        "liberado" => true,
-        "status" => "BOA AULA! FULANO",
-        "admin" => false
-    ],
-    [
-        "aluno_id" => 32133,
-        "credencial" => 20859544,
-        "horarios" => [
-            ["13:00", 2],
-            ["16:00", 5]
-        ],
-        "liberado" => true,
-        "status" => "BOA AULA! CICLANO",
-        "admin" => false
-    ]
-];*/
 
         // Tags
         $tags = Tag::join('pessoas', 'tags.pessoa', '=', 'pessoas.id')->get();
@@ -77,7 +52,6 @@ class CatracaController extends Controller
             // Se precisar garantir que não haja arrays vazios/nulos:
             $horarios = array_values(array_filter($horarios));
             
-                
             
 
             //verificar pagamento
@@ -119,51 +93,8 @@ class CatracaController extends Controller
                 ];
             }
             
-
-
         }
 
-
-        // Selecionar todas as turmas que são da piscina
-        /*
-        $turmas = Turma::where('sala',6)->whereIn('status',['lancada','iniciada'])->get();
-
-
-        foreach($turmas as $turma){
-            // Para cada turma, selecionar as inscrições
-            $inscricoes = Inscricao::where('turma', $turma->id)->get();
-
-            foreach($inscricoes as $inscricao){
-                // Verificar se a pessoa já está no array de dados
-                $alunoId = $inscricao->pessoa->id;
-                if(!array_search($alunoId, array_column($dados, 'aluno_id'))){
-                    $dados[] = [
-                        "aluno_id" => $alunoId,
-                        "credencial" => $inscricao->credencial,
-                        "horarios" => [],
-                        "liberado" => true,
-                        "status" => "BOA AULA! " . $inscricao->pessoa->nome,
-                        "admin" => false
-                    ];
-                }
-                // Adicionar horário
-                $dados[-1]['horarios'][] = [$turma->horario, $turma->dia_semana];
-            }
-        }
-*/
-        // selecionar todas as inscrições que são da piscina e adicionar a pessoas em um array caso ainda não esteja adicionado com o hotário de inicio da turma e dia da semana
-
-        // para cada pessoa verifica se há pendencia de pagamento, se sim marcar flag de liberado como false e status como "PENDENTE DE PAGAMENTO"
-
-        // para cada pessoa verificar se há pendencia de atestado, se sim marcar flag de liberado como false e status como "ATESTADO MÉDICO PENDENTE"
-
-        
-        // senão retornar como verdadero e retornar data de inicio da turma e dia da semana
-
-
-
-
-//return response()->json_encode($dados, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         return response()->json($dados, 200);
     }
 
@@ -186,16 +117,19 @@ class CatracaController extends Controller
         // Initialize an empty response array
         // This will hold the processed data or any errors encountered
         $response = array();
+        //dd($request->json()->all());
 
         
         $data = $request->json()->all();
         if(empty($data))
             return response()->json(['error' => 'No data provided'], 400);
+
         
 
         foreach($data as $registro){
+            //dd($registro);
             $aluno = $registro['aluno'];
-            $dataHora = $registro['acesso'];
+            $dataHora = $registro['acesso']/1000;
             try{
                 $objetoDataHora = new \DateTime("@$dataHora");
             }
@@ -208,12 +142,14 @@ class CatracaController extends Controller
                 continue;
             }
             // Pega a turma iniciada compatível com o horário (com a tolerância) e dia da semana
+            $tolerancia_acima = '+'.env('TOLERANCIA_ATRASO').' minutes';
+            $tolerancia_abaixo = '-'.env('TOLERANCIA_ATRASO').' minutes';
             
             $turma = \App\Turma::select('id')
                 ->where('sala', 6)
                 ->whereRaw('TIME(hora_inicio) BETWEEN ? AND ?', [
-                                (clone $objetoDataHora)->modify('-'.env('TOLERANCIA_ATRASO').' minutes')->format('H:i:s'),
-                                (clone $objetoDataHora)->modify('+'.env('TOLERANCIA_ATRASO').' minutes')->format('H:i:s')
+                                (clone $objetoDataHora)->modify($tolerancia_acima)->format('H:i:s'),
+                                (clone $objetoDataHora)->modify($tolerancia_abaixo)->format('H:i:s')
                             ]
                         )
                 ->where('dias_semana', 'like', '%'.Data::stringDiaSemana($objetoDataHora->format('d/m/Y')).'%') // N returns the day of the week (1 for Monday, 7 for Sunday)
@@ -294,18 +230,9 @@ class CatracaController extends Controller
                         'status' => 'success',
                         'message' => 'Presença registrada'
                     ];
-
                 }
-                
 
             }
-                
-            /*dd([
-                'dataHora' => $objetoDataHora->format('d/m/Y H:i:s'),
-                'sql' => $turma->toSql(),
-                'bindings' => $turma->getBindings(),
-                'dados' => $turma->get()
-            ]);*/
 
         }
         return response()->json($response, 200);

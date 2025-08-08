@@ -275,24 +275,7 @@ class AtestadoController extends Controller
 				$atestado->save();
 
 			}
-			/*
-			//verificar se a pessoa que tem outro atestado senão valida os atuais
-			$outro_atestado = Atestado::where('tipo','saude')->where('status','aprovado')->where('pessoa',$atestado->pessoa)->first();
-			if(is_null($outro_atestado)){
-				//verificar se a pessoa tem matricula ativa que precisa de atestado
-				$inscricoes = App\Inscricao::where('pessoa',$atestado->pessoa)->where('status','regular')->get();
-				foreach($inscricoes as $inscricao){
-					if($inscricao->turma->verificaSeAtividadeFisica() != false){
-						//coloca pessoa pendente se necessário.
-						$inscricao->alterarStatus('pendente');
-						\App\PessoaDadosAdministrativos::cadastrarUnico($pessoa,'pendencia','Atestado médico vencido.');
-
-
-					}
-				}
-
-
-			}*/
+			
 
 		}
 		return $atestados;

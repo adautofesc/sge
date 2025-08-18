@@ -3,8 +3,10 @@
 namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
+
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Jobs\ControleFaltas;
+use Illuminate\Console\Command;
 
 class Kernel extends ConsoleKernel
 {
@@ -14,6 +16,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        Commands\VerificarAtestados::class,
         //
     ];
 
@@ -37,8 +40,9 @@ class Kernel extends ConsoleKernel
                 dispatch(new ControleBoletos);
             })->daily()->at('18:07');
 
-         //verificar boletos em aberto 
-         //
+         //coloca atestados como vencidos 
+         $schedule->command('app:verificar-atestados')->dailyAt('06:00');
+
 
          
     }
@@ -50,6 +54,9 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
+        
         require base_path('routes/console.php');
+
+
     }
 }

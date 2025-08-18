@@ -22,6 +22,10 @@ class AtestadoController extends Controller
 
 		return view('atestados.cadastrar-atestado',compact('pessoa'));
 	}
+
+
+
+	
 	public function create(Request $r){
 		if(substr($r->emissao,0,4)<(date('Y')-1))
 			return redirect()->back()->withErrors(['Digite o ano com 4 algarismos']);
@@ -262,10 +266,7 @@ class AtestadoController extends Controller
 
 	public function analiseAtestados(){
 		$atestados = Atestado::where('tipo','saude')->where('status','aprovado')->get();
-		$atual = $atestados->first();
-		$vencido = $atual->emissao->addMonths(12);
-		//dd($atual);
-		
+
 		foreach($atestados as $atestado){
 			$hoje = Carbon::now();
 			$vencimento = $atestado->emissao->addMonths(12);

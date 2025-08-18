@@ -127,17 +127,16 @@ class CatracaController extends Controller
         
 
         foreach($data as $registro){
-            //dd($registro);
-            $aluno = $registro['aluno'];
-            $dataHora = $registro['acesso']/1000;
             try{
+                $aluno = $registro['aluno'];
+                $dataHora = $registro['acesso']/1000;
                 $objetoDataHora = new \DateTime("@$dataHora");
             }
             catch(\Exception $e){
                 $response[] = [
                     'acesso' => $registro['id_acesso'],
                     'status' => 'failed',
-                    'message' => 'Invalid date format: ' . $dataHora
+                    'message' => 'Invalid data format'
                 ];
                 continue;
             }
